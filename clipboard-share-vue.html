@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 Clipboard Share - 이미지 공유</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* 홈 화면 */
+        .home-screen {
+            max-width: 500px;
+            margin: 60px auto;
+            text-align: center;
+        }
+
+        .home-screen .logo {
+            font-size: 6rem;
+            margin-bottom: 30px;
+        }
+
+        .home-screen h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .home-screen p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 모달 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        /* 룸 정보 */
+        .room-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .room-code-section {
+            flex: 1;
+        }
+
+        .room-code-section h3 {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .room-code {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+            letter-spacing: 3px;
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 8px;
+        }
+
+        /* 사용법 */
+        .instructions {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .instructions li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .instructions li:last-child {
+            border-bottom: none;
+        }
+
+        .instructions strong {
+            color: #ffd700;
+        }
+
+        /* 갤러리 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .image-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-info {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .image-info .time {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state .icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            font-size: 1.3rem;
+        }
+
+        /* 알림 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s ease;
+        }
+
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .home-screen .logo {
+                font-size: 4rem;
+            }
+
+            .home-screen h2 {
+                font-size: 1.8rem;
+            }
+
+            .room-code {
+                font-size: 1.5rem;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .image-card img {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 홈 화면 -->
+        <div v-if="!currentRoomId" class="home-screen">
+            <div class="logo">📋</div>
+            <h2>Clipboard Share</h2>
+            <p>다른 디바이스와 이미지를 실시간으로 공유하세요</p>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" @click="createNewRoom">
+                    🎲 새 룸 만들기
+                </button>
+                <button class="btn btn-secondary" @click="showJoinModal = true">
+                    🔗 룸 코드로 입장
+                </button>
+            </div>
+        </div>
+
+        <!-- 룸 입장 모달 -->
+        <div class="modal" :class="{ active: showJoinModal }">
+            <div class="modal-content">
+                <h3>룸 코드 입력</h3>
+                <input
+                    v-model="joinRoomCode"
+                    type="text"
+                    placeholder="예: ABC123"
+                    maxlength="6"
+                    @keyup.enter="joinRoom"
+                    style="text-transform: uppercase"
+                />
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" @click="showJoinModal = false">취소</button>
+                    <button class="btn btn-primary" @click="joinRoom">입장</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인 화면 -->
+        <div v-if="currentRoomId" class="container">
+            <div class="header">
+                <h1>📋 Clipboard Share</h1>
+            </div>
+
+            <div class="room-info">
+                <div class="room-code-section">
+                    <h3>🔗 룸 코드:</h3>
+                    <div class="room-code">{{ currentRoomId }}</div>
+                    <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 5px;">
+                        다른 디바이스에서 이 코드로 입장하세요
+                    </p>
+                </div>
+                <div class="room-actions">
+                    <button class="btn btn-secondary btn-small" @click="copyRoomCode">
+                        📋 코드 복사
+                    </button>
+                    <button class="btn btn-secondary btn-small" @click="leaveRoom">
+                        🚪 나가기
+                    </button>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <ul>
+                    <li><strong>Ctrl+V</strong> (Mac: Cmd+V) - 클립보드의 이미지를 업로드</li>
+                    <li><strong>클릭</strong> - 이미지를 클립보드에 복사</li>
+                    <li>업로드된 이미지는 실시간으로 모든 디바이스에 표시됩니다</li>
+                </ul>
+            </div>
+
+            <!-- 갤러리 -->
+            <div v-if="files.length === 0" class="empty-state">
+                <div class="icon">📸</div>
+                <p>Ctrl+V (Cmd+V)로 이미지를 붙여넣으세요</p>
+            </div>
+
+            <div v-else class="gallery">
+                <div
+                    v-for="file in files"
+                    :key="file.name"
+                    class="image-card"
+                    @click="copyImageToClipboard(file.url)"
+                >
+                    <img :src="file.url" :alt="file.name" loading="lazy">
+                    <div class="image-info">
+                        <div class="time">{{ formatTime(file.created) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 알림 -->
+        <transition name="fade">
+            <div v-if="notification" class="notification">
+                {{ notification }}
+            </div>
+        </transition>
+    </div>
+
+    <script type="module">
+        const { createApp } = Vue;
+        const { createClient } = supabase;
+
+        const SUPABASE_URL = 'https://whtfudtyjojzswqqndhr.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndodGZ1ZHR5am9qenN3cXFuZGhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyOTg4NDUsImV4cCI6MjA3ODg3NDg0NX0.c4nnnlUC1-VLGvg7M5Z-B50Sd5Gv0JWN-wR12_-pp-U';
+
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        createApp({
+            data() {
+                return {
+                    currentRoomId: null,
+                    files: [],
+                    showJoinModal: false,
+                    joinRoomCode: '',
+                    notification: null,
+                    pollInterval: null
+                };
+            },
+            methods: {
+                generateRoomCode() {
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                    let code = '';
+                    for (let i = 0; i < 6; i++) {
+                        code += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return code;
+                },
+
+                createNewRoom() {
+                    const roomCode = this.generateRoomCode();
+                    this.enterRoom(roomCode);
+                },
+
+                joinRoom() {
+                    const code = this.joinRoomCode.trim().toUpperCase();
+                    if (code.length === 0) {
+                        this.showNotification('룸 코드를 입력하세요');
+                        return;
+                    }
+                    this.showJoinModal = false;
+                    this.joinRoomCode = '';
+                    this.enterRoom(code);
+                },
+
+                enterRoom(roomCode) {
+                    console.log('룸 입장:', roomCode);
+                    this.currentRoomId = roomCode;
+                    this.loadFiles();
+
+                    // 실시간 폴링 (1초마다)
+                    if (this.pollInterval) clearInterval(this.pollInterval);
+                    this.pollInterval = setInterval(() => {
+                        this.loadFiles();
+                    }, 1000);
+                },
+
+                leaveRoom() {
+                    if (this.pollInterval) {
+                        clearInterval(this.pollInterval);
+                        this.pollInterval = null;
+                    }
+                    this.currentRoomId = null;
+                    this.files = [];
+                },
+
+                copyRoomCode() {
+                    navigator.clipboard.writeText(this.currentRoomId)
+                        .then(() => this.showNotification('룸 코드 복사됨!'))
+                        .catch(() => this.showNotification('복사 실패'));
+                },
+
+                async loadFiles() {
+                    if (!this.currentRoomId) return;
+
+                    try {
+                        console.log('파일 로딩:', this.currentRoomId);
+
+                        const { data, error } = await supabaseClient.storage
+                            .from('test')
+                            .list(this.currentRoomId, {
+                                sortBy: { column: 'created_at', order: 'desc' }
+                            });
+
+                        console.log('Supabase 응답:', { data, error });
+
+                        if (error) {
+                            console.error('파일 로드 오류:', error);
+                            return;
+                        }
+
+                        if (data) {
+                            this.files = data
+                                .filter(file => file.name !== '.emptyFolderPlaceholder')
+                                .map(file => ({
+                                    name: file.name,
+                                    url: `${SUPABASE_URL}/storage/v1/object/public/test/${this.currentRoomId}/${file.name}`,
+                                    created: file.created_at
+                                }));
+
+                            console.log('파일 목록:', this.files);
+                        }
+                    } catch (err) {
+                        console.error('예외 발생:', err);
+                    }
+                },
+
+                async handlePaste(e) {
+                    if (!this.currentRoomId) return;
+
+                    const items = e.clipboardData?.items;
+                    if (!items) return;
+
+                    for (let item of items) {
+                        if (item.type.startsWith('image/')) {
+                            const file = item.getAsFile();
+                            if (!file) continue;
+
+                            const fileName = `${Date.now()}.png`;
+
+                            try {
+                                this.showNotification('업로드 중...');
+
+                                const { data, error } = await supabaseClient.storage
+                                    .from('test')
+                                    .upload(`${this.currentRoomId}/${fileName}`, file, {
+                                        contentType: file.type,
+                                        upsert: false
+                                    });
+
+                                console.log('업로드 결과:', { data, error });
+
+                                if (error) {
+                                    console.error('업로드 오류:', error);
+                                    this.showNotification('업로드 실패: ' + error.message);
+                                    return;
+                                }
+
+                                this.showNotification('이미지 업로드 완료!');
+                                await this.loadFiles();
+                            } catch (err) {
+                                console.error('업로드 예외:', err);
+                                this.showNotification('업로드 중 오류 발생');
+                            }
+                        }
+                    }
+                },
+
+                async copyImageToClipboard(url) {
+                    try {
+                        this.showNotification('복사 중...');
+
+                        const response = await fetch(url);
+                        const blob = await response.blob();
+
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ [blob.type]: blob })
+                        ]);
+
+                        this.showNotification('클립보드에 복사됨! ✓');
+                    } catch (err) {
+                        console.error('복사 오류:', err);
+                        window.open(url, '_blank');
+                        this.showNotification('새 탭에서 열었습니다');
+                    }
+                },
+
+                showNotification(message) {
+                    this.notification = message;
+                    setTimeout(() => {
+                        this.notification = null;
+                    }, 3000);
+                },
+
+                formatTime(created) {
+                    if (!created) return '방금 전';
+                    return new Date(created).toLocaleString('ko-KR');
+                }
+            },
+            mounted() {
+                // Ctrl+V 이벤트 리스너
+                document.addEventListener('paste', this.handlePaste);
+            },
+            beforeUnmount() {
+                document.removeEventListener('paste', this.handlePaste);
+                if (this.pollInterval) {
+                    clearInterval(this.pollInterval);
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
