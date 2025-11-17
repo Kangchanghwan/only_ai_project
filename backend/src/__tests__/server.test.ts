@@ -125,6 +125,18 @@ describe('Socket.IO Server - Room Management (TDD)', () => {
       const testMessage = { type: 'text', content: 'Hello!' };
       let messageCount = 0;
 
+      const messageHandler = (msg: any) => {
+        expect(msg).toEqual(testMessage);
+        messageCount++;
+        if (messageCount === 2) { // Both clients received
+          done();
+        }
+      };
+
+      // Set up message handlers BEFORE any events
+      client1.on('message', messageHandler);
+      client2.on('message', messageHandler);
+
       client1.on('registered', (roomNumber: number) => {
         client1RoomNumber = roomNumber;
       });
@@ -134,20 +146,11 @@ describe('Socket.IO Server - Room Management (TDD)', () => {
       });
 
       client2.on('subscribed', () => {
-        // Both clients in same room, send message
-        client1.emit('publish', testMessage);
+        // Add small delay to ensure both clients are ready
+        setTimeout(() => {
+          client1.emit('publish', testMessage);
+        }, 50);
       });
-
-      const messageHandler = (msg: any) => {
-        expect(msg).toEqual(testMessage);
-        messageCount++;
-        if (messageCount === 2) { // Both clients received
-          done();
-        }
-      };
-
-      client1.on('message', messageHandler);
-      client2.on('message', messageHandler);
     });
   });
 

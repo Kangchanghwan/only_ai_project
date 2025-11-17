@@ -1,9 +1,9 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  testEnvironment: '<rootDir>/jest-environment.js',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts'],
-  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
+  setupFiles: ['<rootDir>/src/__tests__/setup.ts'],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -12,4 +12,9 @@ module.exports = {
   coverageDirectory: 'coverage',
   verbose: true,
   testTimeout: 10000,
+  globals: {
+    'ts-jest': {
+      isolatedModules: true
+    }
+  }
 };
