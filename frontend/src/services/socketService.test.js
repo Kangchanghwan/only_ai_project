@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { io } from 'socket.io-client'
 import { socketService } from './socketService'
 
 // Socket.IO 클라이언트 모킹
@@ -44,6 +45,17 @@ describe('SocketService', () => {
       expect(socketService.isConnected.value).toBe(false)
       expect(socketService.currentRoomNr.value).toBeNull()
       expect(socketService.usersInRoom.value).toBe(0)
+    })
+
+    it('connect 호출 시 1초의 재연결 딜레이 옵션을 포함해야 한다', () => {
+      socketService.connect().catch(() => {}) // 에러는 무시
+
+      expect(io).toHaveBeenCalledWith(
+        socketService.serverUrl,
+        expect.objectContaining({
+          reconnectionDelay: 1000
+        })
+      )
     })
   })
 

@@ -116,6 +116,14 @@ export function useFileManager() {
     console.log('[useFileManager] 파일 목록 초기화')
   }
 
+  /**
+   * 파일 목록에 새 파일을 추가합니다. (UX 개선용)
+   * @param {Object} file - 추가할 파일 객체
+   */
+  function addFile(file) {
+    files.value.unshift(file)
+  }
+
   return {
     /**
      * @property {import('vue').Readonly<Array>} files
@@ -158,6 +166,10 @@ export function useFileManager() {
     /**
      * 파일 목록을 초기화하는 함수.
      */
-    clearFiles
+    clearFiles,
+    /**
+     * 파일 목록에 새 파일을 추가하는 함수.
+     */
+    addFile
   }
 }

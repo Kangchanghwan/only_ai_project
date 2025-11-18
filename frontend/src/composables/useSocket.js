@@ -22,6 +22,10 @@ export function useSocket() {
    */
   function onMessage(callback) {
     socketService.on('message', callback)
+    // cleanup 함수 반환
+    return () => {
+      socketService.off('message', callback)
+    }
   }
 
   /**

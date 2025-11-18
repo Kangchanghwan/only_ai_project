@@ -4,7 +4,7 @@ import { ref } from 'vue'
 const props = defineProps({
   roomId: {
     type: String,
-    required: true
+    default: null
   },
   files: {
     type: Array,
@@ -17,24 +17,33 @@ const props = defineProps({
   userCount: {
     type: Number,
     default: 1
+  },
+  isConnecting: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['leave-room', 'copy-room-code', 'copy-image', 'join-other-room'])
+const emit = defineEmits(['copy-room-code', 'copy-image', 'join-other-room'])
 
-const showJoinModal = ref(false)
 const joinRoomCode = ref('')
 
 function formatTime(created) {
   if (!created) return '방금 전'
-  return new Date(created).toLocaleString('ko-KR')
+  const now = new Date()
+  const past = new Date(created)
+  const diff = Math.round((now - past) / 1000)
+
+  if (diff < 60) return `${diff}초 전`
+  if (diff < 3600) return `${Math.round(diff / 60)}분 전`
+  if (diff < 86400) return `${Math.round(diff / 3600)}시간 전`
+  return past.toLocaleDateString('ko-KR')
 }
 
 function handleJoinOtherRoom() {
-  const code = joinRoomCode.value.trim()
-  if (code) {
+  const code = joinRoomCode.value.trim().toUpperCase()
+  if (code && code.length === 6) {
     emit('join-other-room', code)
-    showJoinModal.value = false
     joinRoomCode.value = ''
   }
 }
@@ -42,332 +51,334 @@ function handleJoinOtherRoom() {
 
 <template>
   <div class="container">
-    <div class="header">
-      <h1>📋 Clipboard Share</h1>
-    </div>
-
-    <div class="room-info">
-      <div class="room-code-section">
-        <h3>🔗 룸 코드:</h3>
-        <div class="room-code">{{ roomId }}</div>
-        <p class="hint">다른 디바이스에서 이 코드로 입장하세요 ({{ userCount }}명 접속 중)</p>
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">📋</span>
+        <span class="logo-text">Clipboard Share</span>
       </div>
-      <div class="room-actions">
-        <button class="btn btn-secondary btn-small" @click="$emit('copy-room-code')">
-          📋 코드 복사
-        </button>
-        <button class="btn btn-secondary btn-small" @click="showJoinModal = true">
-          🔄 다른 룸 입장
-        </button>
-      </div>
-    </div>
-
-    <!-- 다른 룸 입장 모달 -->
-    <div v-if="showJoinModal" class="modal active" @click.self="showJoinModal = false">
-      <div class="modal-content">
-        <h3>다른 룸 입장</h3>
-        <input
-          v-model="joinRoomCode"
-          type="text"
-          placeholder="6자리 룸 번호 입력"
-          maxlength="6"
-          @keyup.enter="handleJoinOtherRoom"
-          autofocus
-        />
-        <div class="modal-buttons">
-          <button class="btn btn-secondary btn-small" @click="showJoinModal = false">취소</button>
-          <button class="btn btn-primary btn-small" @click="handleJoinOtherRoom">입장</button>
+      <div class="room-controls">
+        <span class="user-count">{{ userCount }}명 접속 중</span>
+        <div class="room-join">
+          <input
+            v-model="joinRoomCode"
+            type="text"
+            placeholder="다른 룸 코드로 입장"
+            maxlength="6"
+            class="room-join-input"
+            :disabled="isConnecting"
+            @keyup.enter="handleJoinOtherRoom"
+          />
+          <button class="room-join-button" :disabled="isConnecting" @click="handleJoinOtherRoom">→</button>
         </div>
       </div>
-    </div>
+    </header>
 
-    <div class="instructions">
-      <ul>
-        <li><strong>Ctrl+V</strong> (Mac: Cmd+V) - 클립보드의 이미지를 업로드</li>
-        <li><strong>클릭</strong> - 이미지를 클립보드에 복사</li>
-        <li>업로드된 이미지는 실시간으로 모든 디바이스에 표시됩니다</li>
-      </ul>
-    </div>
+    <main class="main-content">
+      <div class="room-info">
+        <span class="room-code-label">현재 룸 코드:</span>
+        <div v-if="isConnecting" class="connecting-indicator">
+          <div class="spinner-small"></div>
+          <span>연결 중...</span>
+        </div>
+        <template v-else-if="roomId">
+          <span class="room-code" @click="$emit('copy-room-code')">{{ roomId }}</span>
+          <button class="copy-button" @click="$emit('copy-room-code')">복사</button>
+        </template>
+      </div>
 
-    <!-- 빈 상태 -->
-    <div v-if="files.length === 0" class="empty-state">
-      <div class="icon">📸</div>
-      <p>Ctrl+V (Cmd+V)로 이미지를 붙여넣으세요</p>
-    </div>
+      <div class="instructions">
+        <p>📋 <strong>Ctrl+V</strong> (Cmd+V)로 이미지를 붙여넣거나, <strong>클릭</strong>해서 복사하세요.</p>
+      </div>
 
-    <!-- 갤러리 -->
-    <div v-else class="gallery">
-      <div
-        v-for="file in files"
-        :key="file.name"
-        class="image-card"
-        @click="$emit('copy-image', file.url)"
-      >
-        <img :src="file.url" :alt="file.name" loading="lazy">
-        <div class="image-info">
-          <div class="time">{{ formatTime(file.created) }}</div>
+      <div v-if="isLoading" class="loading-gallery">
+        <div class="spinner"></div>
+      </div>
+
+      <div v-else-if="files.length === 0" class="empty-state">
+        <div class="empty-icon">🖼️</div>
+        <p>이 룸은 아직 비어있습니다.</p>
+        <p class="sub-text">클립보드의 이미지를 붙여넣어 공유를 시작하세요.</p>
+      </div>
+
+      <div v-else class="gallery">
+        <div
+          v-for="file in files"
+          :key="file.name"
+          class="image-card"
+          @click="$emit('copy-image', file.url)"
+        >
+          <img :src="file.url" :alt="file.name" loading="lazy" class="image-preview" />
+          <div class="image-overlay">
+            <span class="image-time">{{ formatTime(file.created) }}</span>
+            <span class="image-copy-hint">클릭해서 복사</span>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <style scoped>
+:root {
+  --background-color: #1a1a1a;
+  --surface-color: #2a2a2a;
+  --primary-color: #42b883;
+  --text-color: #e0e0e0;
+  --text-secondary-color: #a0a0a0;
+  --border-color: #3a3a3a;
+}
+
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 1.5rem;
+  color: var(--text-color);
 }
 
 .header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.header h1 {
-  font-size: 3rem;
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
-
-.room-info {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 25px;
-  margin-bottom: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 2rem;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 1rem;
 }
 
-.room-code-section {
-  flex: 1;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
-.room-code-section h3 {
+.logo-icon {
+  font-size: 2rem;
+}
+
+.room-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-count {
   font-size: 0.9rem;
-  opacity: 0.8;
-  margin-bottom: 8px;
+  color: var(--text-secondary-color);
+  white-space: nowrap;
+}
+
+.room-join {
+  display: flex;
+}
+
+.room-join-input {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 8px 0 0 8px;
+  width: 180px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+.room-join-input::placeholder {
+  color: var(--text-secondary-color);
+  text-transform: none;
+}
+.room-join-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.room-join-button {
+  background-color: var(--primary-color);
+  border: none;
   color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.room-join-input:disabled,
+.room-join-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.main-content {
+  background-color: var(--surface-color);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  min-height: 38px; /* To prevent layout shift */
+}
+
+.connecting-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+  color: var(--text-secondary-color);
+}
+
+.spinner-small {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.room-code-label {
+  color: var(--text-secondary-color);
 }
 
 .room-code {
-  font-size: 2rem;
   font-weight: bold;
-  color: #ffd700;
-  letter-spacing: 3px;
-}
-
-.hint {
-  font-size: 0.9rem;
-  opacity: 0.7;
-  margin-top: 5px;
-  color: white;
-}
-
-.room-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.btn {
-  padding: 18px 40px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 12px;
+  font-size: 1.5rem;
+  color: var(--primary-color);
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+.copy-button {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary-color);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
 }
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.btn-small {
-  padding: 10px 20px;
-  font-size: 0.9rem;
-  border-radius: 8px;
+.copy-button:hover {
+  background-color: var(--border-color);
+  color: var(--text-color);
 }
 
 .instructions {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  color: var(--text-secondary-color);
+  font-size: 0.9rem;
 }
 
-.instructions ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.instructions li {
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.instructions li:last-child {
-  border-bottom: none;
-}
-
-.instructions strong {
-  color: #ffd700;
-}
-
-.empty-state {
+.loading-gallery, .empty-state {
   text-align: center;
-  padding: 80px 20px;
-  opacity: 0.7;
-  color: white;
+  padding: 4rem 0;
+  color: var(--text-secondary-color);
 }
 
-.empty-state .icon {
-  font-size: 5rem;
-  margin-bottom: 20px;
+.loading-gallery .spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
 }
 
 .empty-state p {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+.empty-state .sub-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
 }
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
 }
 
 .image-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
+  position: relative;
+  border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .image-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-.image-card img {
+.image-preview {
   width: 100%;
-  height: 250px;
+  height: 200px;
   object-fit: cover;
   display: block;
 }
 
-.image-info {
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.2);
-  color: white;
-}
-
-.image-info .time {
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
+.image-overlay {
+  position: absolute;
+  bottom: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal.active {
+  right: 0;
+  padding: 0.75rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.image-card:hover .image-overlay {
+  opacity: 1;
 }
 
-.modal-content {
-  background: white;
-  color: #333;
-  padding: 40px;
-  border-radius: 20px;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+.image-time {
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
-.modal-content h3 {
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #667eea;
-}
-
-.modal-content input {
-  width: 100%;
-  padding: 15px;
-  font-size: 1.5rem;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: center;
-  letter-spacing: 3px;
-  font-weight: bold;
-}
-
-.modal-content input:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.modal-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.modal-buttons .btn {
-  flex: 1;
-}
-
-.btn-primary {
-  background: #667eea;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #5568d3;
+.image-copy-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
 }
 
 @media (max-width: 768px) {
-  .header h1 {
-    font-size: 2rem;
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-
-  .room-code {
-    font-size: 1.5rem;
+  .room-controls {
+    width: 100%;
+    justify-content: space-between;
   }
-
+  .room-join-input {
+    width: 100%;
+  }
   .gallery {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
   }
-
-  .image-card img {
+  .image-preview {
     height: 150px;
   }
 }
