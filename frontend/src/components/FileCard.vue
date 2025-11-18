@@ -16,12 +16,16 @@ const props = defineProps({
 const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file'])
 
 // 파일 메타데이터 계산
-const fileMetadata = computed(() => ({
-  icon: getFileIcon(props.file.name),
-  type: getFileType(props.file.name),
-  size: formatFileSize(props.file.size),
-  uploadTime: formatUploadTime(props.file.created)
-}))
+const fileMetadata = computed(() => {
+  const type = getFileType(props.file.name)
+  return {
+    icon: getFileIcon(props.file.name),
+    type: type,
+    isImage: type === 'image',
+    size: formatFileSize(props.file.size),
+    uploadTime: formatUploadTime(props.file.created)
+  }
+})
 
 function handleDownload(event) {
   event.stopPropagation()
@@ -37,12 +41,22 @@ function handleDownload(event) {
     }"
     @click="$emit('copy-image', file.url)"
   >
+    <!-- 이미지 타입: 미리보기 표시 -->
     <img
+      v-if="fileMetadata.isImage"
       :src="file.url"
       :alt="file.name"
       loading="lazy"
       class="w-full h-[200px] object-cover block"
     />
+
+    <!-- 비이미지 타입: 큰 이모지 표시 -->
+    <div
+      v-else
+      class="w-full h-[200px] flex items-center justify-center bg-background"
+    >
+      <span class="text-[120px]" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
+    </div>
 
     <!-- 파일 정보 오버레이 (항상 표시) - 체크박스 포함 -->
     <div class="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 via-black/50 to-transparent">
@@ -56,7 +70,7 @@ function handleDownload(event) {
           @change="$emit('toggle-selection', file.name)"
         />
 
-        <!-- 파일 아이콘 -->
+        <!-- 파일 아이콘 (작은 버전) -->
         <span class="text-2xl flex-shrink-0" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
 
         <!-- 파일 정보 (파일명 제외) -->
