@@ -1,179 +1,93 @@
-import { ref, onUnmounted } from 'vue'
-import { io } from 'socket.io-client'
+import { readonly } from 'vue'
+import { socketService } from '../services/socketService.js'
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001'
-
+/**
+ * @composable useSocket
+ * @description `socketService`와 상호작용하여 Socket.IO 연결 상태 및 이벤트를 관리하는 컴포저블.
+ *              Vue 컴포넌트에서 실시간 통신 기능을 쉽게 사용할 수 있도록 반응형 상태와 메서드를 제공합니다.
+ *
+ * Vue 3 Best Practice:
+ * - readonly()를 사용하여 외부에서 상태를 직접 수정하지 못하도록 보호
+ * - 서비스 레이어와의 명확한 책임 분리
+ * - 이벤트 리스너는 컴포넌트에서 직접 관리
+ */
 export function useSocket() {
-  const socket = ref(null)
-  const isConnected = ref(false)
-  const currentRoomNr = ref(null)
-  const usersInRoom = ref(0)
-
   /**
-   * Socket.io 서버에 연결하고 자동 생성된 룸 번호를 받음
-   */
-  function connect() {
-    if (socket.value) {
-      console.warn('이미 소켓에 연결되어 있습니다')
-      return Promise.resolve({ roomNr: currentRoomNr.value, users: usersInRoom.value })
-    }
-
-    console.log('Socket.io 서버에 연결 중:', SOCKET_URL)
-
-    return new Promise((resolve, reject) => {
-      socket.value = io(SOCKET_URL, {
-        transports: ['websocket', 'polling'],
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000
-      })
-
-      const timeout = setTimeout(() => {
-        socket.value.off('registered', onRegistered)
-        reject(new Error('Connection timeout'))
-      }, 10000)
-
-      const onRegistered = (roomNr) => {
-        console.log('자동 룸 생성 완료:', roomNr)
-        clearTimeout(timeout)
-        currentRoomNr.value = roomNr
-        usersInRoom.value = 1
-        socket.value.off('registered', onRegistered)
-        resolve({ roomNr, users: 1 })
-      }
-
-      socket.value.on('connect', () => {
-        console.log('Socket.io 연결됨:', socket.value.id)
-        isConnected.value = true
-      })
-
-      socket.value.on('disconnect', () => {
-        console.log('Socket.io 연결 해제됨')
-        isConnected.value = false
-      })
-
-      socket.value.on('connect_error', (error) => {
-        console.error('Socket.io 연결 오류:', error)
-        isConnected.value = false
-        clearTimeout(timeout)
-        reject(error)
-      })
-
-      // 자동 룸 생성 이벤트 리스너
-      socket.value.on('registered', onRegistered)
-    })
-  }
-
-
-  /**
-   * 기존 룸에 입장
-   */
-  function joinRoom(roomNr) {
-    if (!socket.value) {
-      console.error('소켓이 연결되지 않았습니다')
-      return Promise.reject(new Error('Socket not connected'))
-    }
-
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        socket.value.off('subscribed', onSubscribed)
-        socket.value.off('room-not-found', onRoomNotFound)
-        reject(new Error('Join room timeout'))
-      }, 5000)
-
-      const onSubscribed = (roomNumber, userCount) => {
-        console.log('룸 입장 완료:', roomNumber, '사용자:', userCount)
-        clearTimeout(timeout)
-        currentRoomNr.value = roomNumber
-        usersInRoom.value = userCount
-        socket.value.off('subscribed', onSubscribed)
-        socket.value.off('room-not-found', onRoomNotFound)
-        resolve({ roomNr: roomNumber, users: userCount })
-      }
-
-      const onRoomNotFound = () => {
-        console.error('룸이 존재하지 않습니다')
-        clearTimeout(timeout)
-        socket.value.off('subscribed', onSubscribed)
-        socket.value.off('room-not-found', onRoomNotFound)
-        reject(new Error('Room does not exist'))
-      }
-
-      socket.value.on('subscribed', onSubscribed)
-      socket.value.on('room-not-found', onRoomNotFound)
-
-      // 기존 룸 입장 요청
-      socket.value.emit('join', roomNr)
-    })
-  }
-
-  /**
-   * 메시지 전송 (파일 정보, 텍스트 등)
-   */
-  function publishMessage(message) {
-    if (!socket.value) {
-      console.error('소켓이 연결되지 않았습니다')
-      return
-    }
-
-    console.log('메시지 전송:', message)
-    socket.value.emit('publish', message)
-  }
-
-  /**
-   * 메시지 수신 이벤트 리스너
+   * 서버로부터 메시지를 수신할 때 호출될 콜백 함수를 등록합니다.
+   *
+   * 주의: 컴포넌트 언마운트 시 `socketService.off('message', callback)`으로
+   *       이벤트 리스너를 해제해야 합니다.
+   *
+   * @param {Function} callback - 메시지 수신 시 실행될 콜백 함수.
    */
   function onMessage(callback) {
-    if (!socket.value) {
-      console.error('소켓이 연결되지 않았습니다')
-      return
-    }
-
-    socket.value.on('message', callback)
+    socketService.on('message', callback)
   }
 
   /**
-   * 사용자 퇴장 이벤트 리스너
+   * 룸에서 사용자가 퇴장할 때 호출될 콜백 함수를 등록합니다.
+   * `socketService`의 `usersInRoom` 반응형 참조를 자동으로 업데이트합니다.
+   *
+   * 주의: 컴포넌트 언마운트 시 반환된 cleanup 함수를 호출하여
+   *       이벤트 리스너를 해제해야 합니다.
+   *
+   * @param {Function} callback - 사용자 퇴장 시 실행될 콜백 함수. (현재 사용자 수를 인자로 받음)
+   * @returns {Function} cleanup - 이벤트 리스너를 해제하는 함수
    */
   function onUserLeft(callback) {
-    if (!socket.value) return
-    socket.value.on('user-left', (userCount) => {
-      usersInRoom.value = userCount
+    const handler = (userCount) => {
+      socketService.usersInRoom.value = userCount // 서비스의 상태를 직접 업데이트
       callback(userCount)
-    })
-  }
+    }
+    socketService.on('user-left', handler)
 
-  /**
-   * 소켓 연결 해제
-   */
-  function disconnect() {
-    if (socket.value) {
-      console.log('소켓 연결 해제 중')
-      socket.value.disconnect()
-      socket.value = null
-      isConnected.value = false
-      currentRoomNr.value = null
-      usersInRoom.value = 0
+    // cleanup 함수를 반환하여 컴포넌트에서 직접 관리하도록 함
+    return () => {
+      socketService.off('user-left', handler)
     }
   }
 
-  /**
-   * 컴포넌트 언마운트 시 자동 연결 해제
-   */
-  onUnmounted(() => {
-    disconnect()
-  })
+  // 컴포넌트 언마운트 시 소켓 연결 해제는 App.vue에서 전역적으로 관리합니다.
 
   return {
-    socket,
-    isConnected,
-    currentRoomNr,
-    usersInRoom,
-    connect,
-    disconnect,
-    joinRoom,
-    publishMessage,
+    /**
+     * @property {import('vue').Readonly<boolean>} isConnected
+     * 소켓 연결 상태 (읽기 전용).
+     */
+    isConnected: readonly(socketService.isConnected),
+    /**
+     * @property {import('vue').Readonly<number|null>} currentRoomNr
+     * 현재 연결된 룸 번호 (읽기 전용).
+     */
+    currentRoomNr: readonly(socketService.currentRoomNr),
+    /**
+     * @property {import('vue').Readonly<number>} usersInRoom
+     * 현재 룸에 있는 사용자 수 (읽기 전용).
+     */
+    usersInRoom: readonly(socketService.usersInRoom),
+
+    /**
+     * Socket.IO 서버에 연결을 시도합니다.
+     * @returns {Promise<{roomNr: number, users: number}>}
+     */
+    connect: socketService.connect.bind(socketService),
+    /**
+     * 현재 소켓 연결을 해제합니다.
+     */
+    disconnect: socketService.disconnect.bind(socketService),
+    /**
+     * 특정 룸에 입장합니다.
+     * @param {number} roomNr - 입장할 룸 번호.
+     * @returns {Promise<{roomNr: number, users: number}>}
+     */
+    joinRoom: socketService.joinRoom.bind(socketService),
+    /**
+     * 서버로 메시지를 발행합니다.
+     * @param {object} message - 전송할 메시지 객체.
+     */
+    publishMessage: socketService.publishMessage.bind(socketService),
+
     onMessage,
-    onUserLeft
+    onUserLeft,
   }
 }

@@ -1,9 +1,19 @@
 /**
- * 클립보드 관련 기능을 제공하는 Composable
+ * @composable useClipboard
+ * @description 클립보드 관련 기능을 제공하는 컴포저블.
+ *              텍스트 및 이미지를 클립보드에 복사하고, 붙여넣기 이벤트에서 이미지를 추출합니다.
+ *
+ * Vue 3 Best Practice:
+ * - 상태가 없는 유틸리티 함수 모음
+ * - 명확한 에러 처리
+ * - 브라우저 API와의 안전한 상호작용
  */
 export function useClipboard() {
   /**
-   * 텍스트를 클립보드에 복사
+   * 텍스트를 클립보드에 복사합니다.
+   *
+   * @param {string} text - 복사할 텍스트
+   * @returns {Promise<{success: boolean, error?: Error}>} 복사 결과
    */
   async function copyText(text) {
     try {
@@ -16,7 +26,13 @@ export function useClipboard() {
   }
 
   /**
-   * 이미지를 클립보드에 복사
+   * 이미지를 클립보드에 복사합니다.
+   *
+   * 이미지 URL을 fetch하여 Blob으로 변환한 후 클립보드에 씁니다.
+   * CORS 정책에 따라 일부 이미지는 복사되지 않을 수 있습니다.
+   *
+   * @param {string} imageUrl - 복사할 이미지 URL
+   * @returns {Promise<{success: boolean, error?: Error}>} 복사 결과
    */
   async function copyImage(imageUrl) {
     try {
@@ -38,7 +54,12 @@ export function useClipboard() {
   }
 
   /**
-   * 붙여넣기 이벤트에서 이미지 파일 추출
+   * 붙여넣기 이벤트에서 이미지 파일을 추출합니다.
+   *
+   * ClipboardEvent의 clipboardData를 순회하며 이미지 타입의 파일만 추출합니다.
+   *
+   * @param {ClipboardEvent} event - 붙여넣기 이벤트 객체
+   * @returns {Array<File>} 추출된 이미지 파일 배열
    */
   function extractImagesFromPaste(event) {
     const items = event.clipboardData?.items
