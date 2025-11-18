@@ -19,6 +19,7 @@ const emit = defineEmits([
   'download-file',
   'download-selected',
   'download-all',
+  'download-parallel',
   'copy-selected-to-clipboard'
 ])
 
@@ -47,6 +48,13 @@ function toggleFileSelection(fileName) {
 function downloadSelected() {
   if (selectedCount.value > 0) {
     emit('download-selected', selectedFilesArray.value)
+  }
+}
+
+// 병렬 다운로드
+function downloadParallel() {
+  if (selectedCount.value > 0) {
+    emit('download-parallel', selectedFilesArray.value)
   }
 }
 
@@ -91,6 +99,7 @@ onUnmounted(() => {
       v-if="files.length > 0"
       :selected-count="selectedCount"
       @download-selected="downloadSelected"
+      @download-parallel="downloadParallel"
       @download-all="downloadAll"
     />
 

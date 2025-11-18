@@ -48,11 +48,18 @@ describe('useDownload', () => {
         url: 'https://example.com/test.png'
       }
 
+      // fetch mock 설정
+      global.fetch.mockResolvedValue({
+        ok: true,
+        blob: () => Promise.resolve(new Blob(['test'], { type: 'image/png' }))
+      })
+
       await download.downloadFile(file)
 
-      expect(mockLink.href).toBe(file.url)
+      expect(global.fetch).toHaveBeenCalledWith(file.url)
       expect(mockLink.download).toBe(file.name)
       expect(mockLink.click).toHaveBeenCalled()
+      expect(global.URL.createObjectURL).toHaveBeenCalled()
     })
 
     it('다운로드 실패시 에러를 반환해야 한다', async () => {
@@ -61,10 +68,8 @@ describe('useDownload', () => {
         url: 'invalid-url'
       }
 
-      // click이 에러를 던지도록 설정
-      mockLink.click = vi.fn(() => {
-        throw new Error('Download failed')
-      })
+      // fetch가 실패하도록 설정
+      global.fetch.mockRejectedValue(new Error('Network error'))
 
       const result = await download.downloadFile(file)
 
@@ -198,6 +203,12 @@ describe('useDownload', () => {
         { name: 'test3.jpg', url: 'https://example.com/test3.jpg' }
       ]
 
+      // fetch mock 설정
+      global.fetch.mockResolvedValue({
+        ok: true,
+        blob: () => Promise.resolve(new Blob(['test'], { type: 'image/png' }))
+      })
+
       const result = await download.downloadParallel(files)
 
       expect(result.success).toBe(true)
@@ -212,6 +223,12 @@ describe('useDownload', () => {
       const files = [
         { name: 'test1.png', url: 'https://example.com/test1.png' }
       ]
+
+      // fetch mock 설정
+      global.fetch.mockResolvedValue({
+        ok: true,
+        blob: () => Promise.resolve(new Blob(['test'], { type: 'image/png' }))
+      })
 
       const result = await download.downloadParallel(files)
 
@@ -229,12 +246,16 @@ describe('useDownload', () => {
       ]
 
       let callCount = 0
-      mockLink.click = vi.fn(() => {
+      // 두 번째 fetch만 실패하도록 설정
+      global.fetch.mockImplementation((url) => {
         callCount++
-        // 두 번째 파일에서 에러 발생
         if (callCount === 2) {
-          throw new Error('Download failed')
+          return Promise.reject(new Error('Network error'))
         }
+        return Promise.resolve({
+          ok: true,
+          blob: () => Promise.resolve(new Blob(['test'], { type: 'image/png' }))
+        })
       })
 
       const result = await download.downloadParallel(files)
@@ -285,6 +306,12 @@ describe('useDownload', () => {
         { name: 'test1.png', url: 'https://example.com/test1.png' },
         { name: 'test2.pdf', url: 'https://example.com/test2.pdf' }
       ]
+
+      // fetch mock 설정
+      global.fetch.mockResolvedValue({
+        ok: true,
+        blob: () => Promise.resolve(new Blob(['test'], { type: 'image/png' }))
+      })
 
       const startTime = Date.now()
       const clickTimes = []

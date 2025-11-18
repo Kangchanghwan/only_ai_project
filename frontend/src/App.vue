@@ -15,6 +15,7 @@ import { useClipboard } from './composables/useClipboard'
 import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
+import { useTextShare } from './composables/useTextShare'
 
 import RoomScreen from './components/RoomScreen.vue'
 import NotificationToast from './components/NotificationToast.vue'
@@ -29,6 +30,7 @@ const clipboard = useClipboard()
 const socket = useSocket()
 const notification = useNotification()
 const download = useDownload()
+const textShare = useTextShare()
 const isConnecting = ref(false)
 
 // 이벤트 리스너 cleanup 함수들을 저장
@@ -54,6 +56,7 @@ async function connectToRoom(roomCode) {
     if (cleanupUserLeft) cleanupUserLeft()
     if (cleanupOnMessage) cleanupOnMessage()
     fileManager.clearFiles()
+    textShare.clearAllTexts()
 
     // 소켓 연결
     const { roomNr } = await socket.connect()
@@ -90,6 +93,26 @@ function setupSocketListeners() {
       if (roomManager.currentRoomId.value) {
         await fileManager.loadFiles(roomManager.currentRoomId.value)
       }
+    } else if (message.type === 'text-shared') {
+      // 다른 사용자가 텍스트를 공유한 경우
+      // 중복 방지: 이미 존재하는 ID는 무시
+      const exists = textShare.sharedTexts.value.some(t => t.id === message.textId)
+      if (!exists) {
+        const newText = {
+          id: message.textId,
+          content: message.content,
+          timestamp: message.timestamp
+        }
+        textShare.sharedTexts.value.push(newText)
+        notification.showInfo('새 텍스트가 공유되었습니다!')
+      }
+    } else if (message.type === 'text-removed') {
+      // 다른 사용자가 텍스트를 삭제한 경우
+      textShare.removeText(message.textId)
+    } else if (message.type === 'texts-cleared') {
+      // 다른 사용자가 모든 텍스트를 삭제한 경우
+      textShare.clearAllTexts()
+      notification.showInfo('모든 텍스트가 삭제되었습니다.')
     }
   })
 
@@ -205,6 +228,25 @@ async function handleDownloadSelected(files) {
   }
 }
 
+async function handleDownloadParallel(files) {
+  if (!files || files.length === 0) return
+
+  notification.showInfo(`${files.length}개 파일을 병렬로 다운로드 중...`)
+  const result = await download.downloadParallel(files)
+
+  if (result.success) {
+    if (result.failCount > 0) {
+      notification.showInfo(
+        `${result.successCount}개 성공, ${result.failCount}개 실패`
+      )
+    } else {
+      notification.showSuccess(`${result.successCount}개 파일 다운로드 완료!`)
+    }
+  } else {
+    notification.showError('병렬 다운로드 실패')
+  }
+}
+
 async function handleDownloadAll(files) {
   if (!files || files.length === 0) return
 
@@ -246,6 +288,65 @@ async function handleCopySelectedToClipboard(files) {
 }
 
 // ========================================
+// 텍스트 공유 핸들러
+// ========================================
+
+async function handleAddText(content) {
+  if (!roomManager.currentRoomId.value) return
+
+  const newText = textShare.addText(content)
+  if (!newText) return
+
+  // 소켓을 통해 다른 사용자에게 전송
+  socket.publishMessage({
+    type: 'text-shared',
+    textId: newText.id,
+    content: newText.content,
+    timestamp: newText.timestamp,
+    roomId: roomManager.currentRoomId.value
+  })
+
+  notification.showSuccess('텍스트가 공유되었습니다!')
+}
+
+async function handleRemoveText(textId) {
+  if (!roomManager.currentRoomId.value) return
+
+  const removed = textShare.removeText(textId)
+  if (!removed) return
+
+  // 소켓을 통해 다른 사용자에게 전송
+  socket.publishMessage({
+    type: 'text-removed',
+    textId,
+    roomId: roomManager.currentRoomId.value
+  })
+}
+
+async function handleClearAllTexts() {
+  if (!roomManager.currentRoomId.value) return
+
+  textShare.clearAllTexts()
+
+  // 소켓을 통해 다른 사용자에게 전송
+  socket.publishMessage({
+    type: 'texts-cleared',
+    roomId: roomManager.currentRoomId.value
+  })
+
+  notification.showInfo('모든 텍스트가 삭제되었습니다.')
+}
+
+async function handleCopyText(textId) {
+  const result = await textShare.copyTextToClipboard(textId)
+  if (result.success) {
+    notification.showSuccess('클립보드에 복사됨!')
+  } else {
+    notification.showError('복사 실패')
+  }
+}
+
+// ========================================
 // 라이프사이클 훅
 // ========================================
 
@@ -268,6 +369,7 @@ onUnmounted(() => {
       :is-connecting="isConnecting"
       :room-id="roomManager.currentRoomId.value"
       :files="fileManager.files.value"
+      :texts="textShare.sharedTexts.value"
       :is-loading="fileManager.isLoading.value || isConnecting"
       :user-count="socket.usersInRoom.value"
       @copy-room-code="handleCopyRoomCode"
@@ -276,8 +378,13 @@ onUnmounted(() => {
       @upload-files="handleUploadFiles"
       @download-file="handleDownloadFile"
       @download-selected="handleDownloadSelected"
+      @download-parallel="handleDownloadParallel"
       @download-all="handleDownloadAll"
       @copy-selected-to-clipboard="handleCopySelectedToClipboard"
+      @add-text="handleAddText"
+      @remove-text="handleRemoveText"
+      @clear-all-texts="handleClearAllTexts"
+      @copy-text="handleCopyText"
     />
 
     <!-- 알림 토스트 -->

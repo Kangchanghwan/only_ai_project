@@ -14,18 +14,35 @@ export function useDownload() {
   /**
    * 개별 파일을 다운로드합니다.
    *
+   * Blob URL을 사용하여 CORS 및 리다이렉트 문제를 해결합니다.
+   * 외부 URL을 직접 사용하면 브라우저가 페이지를 리다이렉트할 수 있습니다.
+   *
    * @param {Object} file - 다운로드할 파일 객체 { name, url }
    * @returns {Promise<{success: boolean, error?: Error}>} 다운로드 결과
    */
   async function downloadFile(file) {
     try {
+      // 파일을 fetch로 가져와서 Blob으로 변환
+      const response = await fetch(file.url)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const blob = await response.blob()
+
+      // Blob URL 생성
+      const blobUrl = URL.createObjectURL(blob)
+
+      // 다운로드 트리거
       const link = document.createElement('a')
-      link.href = file.url
+      link.href = blobUrl
       link.download = file.name
       link.style.display = 'none'
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+
+      // 메모리 해제 (약간의 지연 후)
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 100)
 
       return { success: true }
     } catch (err) {
@@ -118,9 +135,47 @@ export function useDownload() {
     }
   }
 
+  /**
+   * 여러 파일을 병렬로 다운로드합니다.
+   *
+   * ZIP으로 압축하지 않고 각 파일을 개별적으로 동시에 다운로드합니다.
+   * Promise.all을 사용하여 모든 다운로드를 병렬로 처리합니다.
+   *
+   * @param {Array<Object>} files - 다운로드할 파일 배열 [{ name, url }, ...]
+   * @returns {Promise<{success: boolean, successCount: number, failCount: number, total: number, errors?: Array, error?: Error}>} 다운로드 결과
+   */
+  async function downloadParallel(files) {
+    try {
+      if (!files || files.length === 0) {
+        throw new Error('다운로드할 파일이 없습니다')
+      }
+
+      // 각 파일을 병렬로 다운로드
+      const downloadPromises = files.map(file => downloadFile(file))
+      const results = await Promise.all(downloadPromises)
+
+      // 결과 집계
+      const successCount = results.filter(r => r.success).length
+      const failCount = results.filter(r => !r.success).length
+      const errors = results.filter(r => !r.success).map(r => r.error)
+
+      return {
+        success: successCount > 0, // 하나라도 성공하면 true
+        successCount,
+        failCount,
+        total: files.length,
+        errors: errors.length > 0 ? errors : undefined
+      }
+    } catch (err) {
+      console.error('병렬 다운로드 실패:', err)
+      return { success: false, error: err }
+    }
+  }
+
   return {
     downloadFile,
     downloadAsZip,
-    copyFilesToClipboard
+    copyFilesToClipboard,
+    downloadParallel
   }
 }

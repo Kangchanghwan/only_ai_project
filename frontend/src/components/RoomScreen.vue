@@ -3,6 +3,7 @@ import AppHeader from './AppHeader.vue'
 import RoomInfo from './RoomInfo.vue'
 import FileUploadSection from './FileUploadSection.vue'
 import FileGallery from './FileGallery.vue'
+import TextShareBox from './TextShareBox.vue'
 
 const props = defineProps({
   roomId: {
@@ -10,6 +11,10 @@ const props = defineProps({
     default: null
   },
   files: {
+    type: Array,
+    default: () => []
+  },
+  texts: {
     type: Array,
     default: () => []
   },
@@ -34,8 +39,13 @@ const emit = defineEmits([
   'upload-files',
   'download-file',
   'download-selected',
+  'download-parallel',
   'download-all',
-  'copy-selected-to-clipboard'
+  'copy-selected-to-clipboard',
+  'add-text',
+  'remove-text',
+  'clear-all-texts',
+  'copy-text'
 ])
 </script>
 
@@ -62,9 +72,21 @@ const emit = defineEmits([
         @copy-image="$emit('copy-image', $event)"
         @download-file="$emit('download-file', $event)"
         @download-selected="$emit('download-selected', $event)"
+        @download-parallel="$emit('download-parallel', $event)"
         @download-all="$emit('download-all', $event)"
         @copy-selected-to-clipboard="$emit('copy-selected-to-clipboard', $event)"
       />
+
+      <!-- Text Sharing Section -->
+      <div class="mt-8">
+        <TextShareBox
+          :texts="texts"
+          @add-text="$emit('add-text', $event)"
+          @remove-text="$emit('remove-text', $event)"
+          @clear-all="$emit('clear-all-texts')"
+          @copy-text="$emit('copy-text', $event)"
+        />
+      </div>
     </main>
   </div>
 </template>
