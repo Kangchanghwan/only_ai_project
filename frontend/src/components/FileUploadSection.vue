@@ -44,8 +44,18 @@ function handleDrop(event) {
 </script>
 
 <template>
-
-  <div class="mb-8">
+  <!-- 파일 카드 형태의 업로드 섹션 -->
+  <div
+    class="relative rounded-lg overflow-hidden cursor-pointer border-2 border-dashed transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30"
+    :class="{
+      'border-primary bg-primary/10': isDragging,
+      'border-border bg-background': !isDragging
+    }"
+    @dragover="handleDragOver"
+    @dragleave="handleDragLeave"
+    @drop="handleDrop"
+    @click="openFileDialog"
+  >
     <!-- 숨겨진 파일 입력 -->
     <input
       ref="fileInputRef"
@@ -54,46 +64,32 @@ function handleDrop(event) {
       class="hidden"
       @change="handleFileSelect"
     />
-    <!-- 업로드 방법 안내 -->
-    <div class="px-6 py-4 bg-black/20 rounded-lg text-text-secondary text-sm">
-      <p class="my-2">
-        <strong class="text-text-primary">업로드 방법:</strong>
-      </p>
-      <ul class="list-none p-0 my-4">
-        <li class="py-2 leading-6">
-          📁 <strong class="text-text-primary">파일 선택</strong>: 버튼을 클릭하여 파일 선택
-        </li>
-        <li class="py-2 leading-6">
-          🖱️ <strong class="text-text-primary">드래그 앤 드롭</strong>: 파일을 위 영역으로 드래그
-        </li>
-        <li class="py-2 leading-6">
-          📋 <strong class="text-text-primary">붙여넣기</strong>: Ctrl+V (Cmd+V)로 클립보드에서 붙여넣기
-        </li>
-      </ul>
-      <p class="text-xs text-orange-500 opacity-90 mt-4">
-        ⚠️ 파일 크기 제한: {{ maxFileSizeMB }}MB 이하
+
+    <!-- 메인 컨텐츠 영역 -->
+    <div class="w-full h-[200px] flex flex-col items-center justify-center gap-3 bg-surface/50">
+      <div class="text-[80px]">📤</div>
+      <p class="text-sm font-semibold text-text-primary">파일 업로드</p>
+      <p class="text-xs text-text-secondary px-4 text-center">
+        클릭 또는 드래그 & 드롭<br />
+        (Ctrl+V로 붙여넣기)
       </p>
     </div>
-    <!-- 드래그 앤 드롭 영역 -->
-    <div
-      class="border-2 border-dashed border-border rounded-xl p-12 text-center bg-black/10 transition-all duration-300 cursor-pointer mb-6 hover:border-primary hover:bg-primary/5"
-      :class="{ 'border-primary bg-primary/10 scale-[1.02]': isDragging }"
-      @dragover="handleDragOver"
-      @dragleave="handleDragLeave"
-      @drop="handleDrop"
-    >
-      <div class="pointer-events-none">
-        <div class="text-5xl mb-4">📤</div>
-        <p class="text-lg text-text-primary mb-6">파일을 드래그하거나 클릭하여 업로드</p>
-        <button
-          class="bg-primary text-white border-none px-8 py-3 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 pointer-events-auto hover:bg-primary/80 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0"
-          @click="openFileDialog"
-        >
-          📁 파일 선택
-        </button>
+
+    <!-- 상단 정보 오버레이 -->
+    <div class="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 via-black/50 to-transparent">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">📁</span>
+        <div class="flex items-center gap-2 text-xs text-white/90">
+          <span>최대 {{ maxFileSizeMB }}MB</span>
+        </div>
       </div>
     </div>
 
-
+    <!-- 하단 액션 오버레이 (호버시 표시) -->
+    <div
+      class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex justify-center items-end opacity-0 transition-opacity duration-200 hover:opacity-100"
+    >
+      <span class="text-xs font-medium text-white">여기를 클릭하거나 파일을 드롭하세요</span>
+    </div>
   </div>
 </template>

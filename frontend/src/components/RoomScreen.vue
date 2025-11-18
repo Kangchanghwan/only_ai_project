@@ -1,7 +1,6 @@
 <script setup>
 import AppHeader from './AppHeader.vue'
 import RoomInfo from './RoomInfo.vue'
-import FileUploadSection from './FileUploadSection.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 
@@ -54,7 +53,6 @@ const emit = defineEmits([
     <AppHeader
       :user-count="userCount"
       :is-connecting="isConnecting"
-      @join-other-room="$emit('join-other-room', $event)"
     />
 
     <main class="bg-surface rounded-xl p-8 border border-border">
@@ -62,9 +60,8 @@ const emit = defineEmits([
         :room-id="roomId"
         :is-connecting="isConnecting"
         @copy-room-code="$emit('copy-room-code')"
+        @join-other-room="$emit('join-other-room', $event)"
       />
-
-      <FileUploadSection @upload-files="$emit('upload-files', $event)" />
 
       <FileGallery
         :files="files"
@@ -75,6 +72,7 @@ const emit = defineEmits([
         @download-parallel="$emit('download-parallel', $event)"
         @download-all="$emit('download-all', $event)"
         @copy-selected-to-clipboard="$emit('copy-selected-to-clipboard', $event)"
+        @upload-files="$emit('upload-files', $event)"
       />
 
       <!-- Text Sharing Section -->
