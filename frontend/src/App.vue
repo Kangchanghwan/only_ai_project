@@ -158,7 +158,12 @@ async function uploadFiles(files) {
         roomId: roomManager.currentRoomId.value
       })
       // 로컬 목록에 즉시 추가 (UX 개선)
-      fileManager.addFile(result)
+      fileManager.addFile({
+        name: result.fileName,
+        url: result.url,
+        size: result.size,
+        created: result.created
+      })
       successCount++
     } catch (err) {
       failCount++

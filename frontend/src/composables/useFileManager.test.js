@@ -79,10 +79,27 @@ describe('useFileManager', () => {
 
     it('업로드된 파일 이름은 타임스탬프를 포함해야 한다', () => {
       // supabaseService의 generateFileName 메서드 테스트
-      const fileName = supabaseService.generateFileName()
+      const fileName = supabaseService.generateFileName('test.png')
 
-      // 타임스탬프_랜덤문자열.png 형식
+      // 타임스탬프_랜덤문자열.png 형식 (원본 확장자 유지)
       expect(fileName).toMatch(/^\d+_[a-z0-9]{6}\.png$/)
+    })
+
+    it('원본 파일의 확장자를 유지해야 한다', () => {
+      const pdfFileName = supabaseService.generateFileName('document.pdf')
+      const jpgFileName = supabaseService.generateFileName('photo.jpg')
+      const txtFileName = supabaseService.generateFileName('readme.txt')
+
+      expect(pdfFileName).toMatch(/^\d+_[a-z0-9]{6}\.pdf$/)
+      expect(jpgFileName).toMatch(/^\d+_[a-z0-9]{6}\.jpg$/)
+      expect(txtFileName).toMatch(/^\d+_[a-z0-9]{6}\.txt$/)
+    })
+
+    it('확장자가 없는 파일도 처리해야 한다', () => {
+      const fileName = supabaseService.generateFileName('noextension')
+
+      // 확장자 없이 타임스탬프_랜덤문자열 형식
+      expect(fileName).toMatch(/^\d+_[a-z0-9]{6}$/)
     })
   })
 

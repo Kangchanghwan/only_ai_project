@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../utils/fileUtils'
 
 const props = defineProps({
   file: {
@@ -14,19 +15,13 @@ const props = defineProps({
 
 const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file'])
 
-function formatTime(created) {
-  if (!created) return '방금 전'
-  const now = new Date()
-  const past = new Date(created)
-  const diff = Math.round((now - past) / 1000)
-
-  if (diff < 60) return `${diff}초 전`
-  if (diff < 3600) return `${Math.round(diff / 60)}분 전`
-  if (diff < 86400) return `${Math.round(diff / 3600)}시간 전`
-  return past.toLocaleDateString('ko-KR')
-}
-
-const formattedTime = computed(() => formatTime(props.file.created))
+// 파일 메타데이터 계산
+const fileMetadata = computed(() => ({
+  icon: getFileIcon(props.file.name),
+  type: getFileType(props.file.name),
+  size: formatFileSize(props.file.size),
+  uploadTime: formatUploadTime(props.file.created)
+}))
 
 function handleDownload(event) {
   event.stopPropagation()
@@ -58,20 +53,35 @@ function handleDownload(event) {
       class="w-full h-[200px] object-cover block"
     />
 
+    <!-- 파일 정보 오버레이 (항상 표시) -->
+    <div class="absolute top-10 left-0 right-0 p-2 bg-gradient-to-b from-black/70 to-transparent">
+      <div class="flex items-start gap-2">
+        <span class="text-2xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-semibold text-white truncate" :title="file.name">
+            {{ file.name }}
+          </p>
+          <div class="flex items-center gap-2 text-[10px] text-white/80 mt-0.5">
+            <span>{{ fileMetadata.size }}</span>
+            <span>•</span>
+            <span>{{ fileMetadata.uploadTime }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 액션 버튼 오버레이 (호버시 표시) -->
     <div
       class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end opacity-0 transition-opacity duration-200 group-hover:opacity-100"
     >
-      <span class="text-xs font-medium">{{ formattedTime }}</span>
-      <div class="flex items-center gap-2">
-        <button
-          class="bg-primary/90 border-none text-white px-2 py-1.5 rounded cursor-pointer text-base transition-all duration-200 hover:bg-primary hover:scale-110"
-          @click="handleDownload"
-          title="다운로드"
-        >
-          ⬇️
-        </button>
-        <span class="text-xs text-text-secondary">클릭해서 복사</span>
-      </div>
+      <span class="text-xs font-medium text-white">클릭해서 복사</span>
+      <button
+        class="bg-primary/90 border-none text-white px-3 py-1.5 rounded cursor-pointer text-sm font-semibold transition-all duration-200 hover:bg-primary hover:scale-110"
+        @click="handleDownload"
+        title="다운로드"
+      >
+        ⬇️ 다운로드
+      </button>
     </div>
   </div>
 </template>

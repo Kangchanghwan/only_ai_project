@@ -28,15 +28,25 @@ class SupabaseService {
    * 파일명을 생성합니다
    *
    * 타임스탬프를 기반으로 고유한 파일명을 생성합니다.
-   * 추가 보안을 위해 랜덤 문자열을 추가할 수도 있습니다.
+   * 원본 파일명에서 확장자를 추출하여 사용합니다.
    *
-   * @param {string} extension - 파일 확장자 (기본값: 'png')
+   * @param {string} originalFileName - 원본 파일명
    * @returns {string} 생성된 파일명
    */
-  generateFileName(extension = 'png') {
+  generateFileName(originalFileName) {
     const timestamp = Date.now()
     const random = Math.random().toString(36).substring(2, 8)
-    return `${timestamp}_${random}.${extension}`
+
+    // 원본 파일명에서 확장자 추출
+    let extension = ''
+    if (originalFileName && typeof originalFileName === 'string') {
+      const lastDot = originalFileName.lastIndexOf('.')
+      if (lastDot !== -1) {
+        extension = originalFileName.slice(lastDot) // 점(.)을 포함한 확장자
+      }
+    }
+
+    return `${timestamp}_${random}${extension}`
   }
 
   /**
@@ -158,7 +168,8 @@ class SupabaseService {
     const { fileName, upsert = false } = options
 
     // 파일명 생성 또는 사용자 정의 파일명 사용
-    const finalFileName = fileName || this.generateFileName()
+    // 원본 파일명을 전달하여 확장자를 유지
+    const finalFileName = fileName || this.generateFileName(file.name)
     const filePath = `${roomId}/${finalFileName}`
 
     console.log('[SupabaseService] 파일 업로드 시작:', { roomId, fileName: finalFileName, size: file.size })
@@ -184,7 +195,9 @@ class SupabaseService {
         success: true,
         path: data.path,
         fileName: finalFileName,
-        url: this.getFileUrl(roomId, finalFileName)
+        url: this.getFileUrl(roomId, finalFileName),
+        size: file.size,
+        created: new Date().toISOString()
       }
     } catch (error) {
       console.error('[SupabaseService] 업로드 예외:', error)
