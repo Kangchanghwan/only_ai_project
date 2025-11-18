@@ -73,6 +73,192 @@ describe('RoomScreen.vue', () => {
     expect(wrapper.emitted('copy-image')[0][0]).toBe('http://example.com/test1.png')
   })
 
+  describe('다중 파일 다운로드', () => {
+    it('각 파일 카드에 체크박스가 표시되어야 한다', () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() },
+        { name: 'test2.pdf', url: 'http://example.com/test2.pdf', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const checkboxes = wrapper.findAll('.file-checkbox')
+      expect(checkboxes.length).toBe(2)
+    })
+
+    it('체크박스 클릭 시 파일 선택 상태가 토글되어야 한다', async () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const checkbox = wrapper.find('.file-checkbox')
+      expect(checkbox.element.checked).toBe(false)
+
+      await checkbox.setChecked(true)
+      expect(checkbox.element.checked).toBe(true)
+
+      await checkbox.setChecked(false)
+      expect(checkbox.element.checked).toBe(false)
+    })
+
+    it('여러 파일을 동시에 선택할 수 있어야 한다', async () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() },
+        { name: 'test2.pdf', url: 'http://example.com/test2.pdf', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const checkboxes = wrapper.findAll('.file-checkbox')
+      await checkboxes[0].setChecked(true)
+      await checkboxes[1].setChecked(true)
+
+      expect(checkboxes[0].element.checked).toBe(true)
+      expect(checkboxes[1].element.checked).toBe(true)
+    })
+
+    it('파일이 선택되지 않았을 때 "선택 항목 다운로드" 버튼이 비활성화되어야 한다', () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const downloadSelectedButton = wrapper.find('.download-selected-button')
+      expect(downloadSelectedButton.attributes('disabled')).toBeDefined()
+    })
+
+    it('파일이 선택되었을 때 "선택 항목 다운로드" 버튼이 활성화되어야 한다', async () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const checkbox = wrapper.find('.file-checkbox')
+      await checkbox.setChecked(true)
+
+      const downloadSelectedButton = wrapper.find('.download-selected-button')
+      expect(downloadSelectedButton.attributes('disabled')).toBeUndefined()
+    })
+
+    it('"선택 항목 다운로드" 버튼 클릭 시 "download-selected" 이벤트를 발생시켜야 한다', async () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const checkbox = wrapper.find('.file-checkbox')
+      await checkbox.setChecked(true)
+
+      const downloadSelectedButton = wrapper.find('.download-selected-button')
+      await downloadSelectedButton.trigger('click')
+
+      expect(wrapper.emitted()).toHaveProperty('download-selected')
+      expect(wrapper.emitted('download-selected')[0][0]).toEqual([files[0]])
+    })
+
+    it('"전체 다운로드" 버튼이 표시되어야 한다', () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      expect(wrapper.find('.download-all-button').exists()).toBe(true)
+    })
+
+    it('"전체 다운로드" 버튼 클릭 시 "download-all" 이벤트를 발생시켜야 한다', async () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() },
+        { name: 'test2.pdf', url: 'http://example.com/test2.pdf', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const downloadAllButton = wrapper.find('.download-all-button')
+      await downloadAllButton.trigger('click')
+
+      expect(wrapper.emitted()).toHaveProperty('download-all')
+      expect(wrapper.emitted('download-all')[0][0]).toEqual(files)
+    })
+
+    it('Ctrl+C 키를 누르면 선택된 파일을 클립보드에 저장하는 이벤트를 발생시켜야 한다', async () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const checkbox = wrapper.find('.file-checkbox')
+      await checkbox.setChecked(true)
+
+      // Ctrl+C 키 이벤트를 document에서 시뮬레이션
+      const event = new KeyboardEvent('keydown', { key: 'c', ctrlKey: true })
+      document.dispatchEvent(event)
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.emitted()).toHaveProperty('copy-selected-to-clipboard')
+      expect(wrapper.emitted('copy-selected-to-clipboard')[0][0]).toEqual([files[0]])
+    })
+
+    it('파일이 선택되지 않았을 때 Ctrl+C를 눌러도 이벤트가 발생하지 않아야 한다', async () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      // Ctrl+C 키 이벤트를 document에서 시뮬레이션 (파일 선택 안 함)
+      const event = new KeyboardEvent('keydown', { key: 'c', ctrlKey: true })
+      document.dispatchEvent(event)
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.emitted('copy-selected-to-clipboard')).toBeUndefined()
+    })
+
+    it('개별 파일 다운로드 버튼이 각 파일 카드에 표시되어야 한다', () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() },
+        { name: 'test2.pdf', url: 'http://example.com/test2.pdf', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const downloadButtons = wrapper.findAll('.file-download-button')
+      expect(downloadButtons.length).toBe(2)
+    })
+
+    it('개별 파일 다운로드 버튼 클릭 시 "download-file" 이벤트를 발생시켜야 한다', async () => {
+      const files = [
+        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+      })
+
+      const downloadButton = wrapper.find('.file-download-button')
+      await downloadButton.trigger('click')
+
+      expect(wrapper.emitted()).toHaveProperty('download-file')
+      expect(wrapper.emitted('download-file')[0][0]).toEqual(files[0])
+    })
+  })
+
   describe('파일 업로드 UI', () => {
     it('파일 선택 버튼이 표시되어야 한다', () => {
       const wrapper = mount(RoomScreen, {

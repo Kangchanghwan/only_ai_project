@@ -14,6 +14,7 @@ import { useFileManager } from './composables/useFileManager'
 import { useClipboard } from './composables/useClipboard'
 import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
+import { useDownload } from './composables/useDownload'
 
 import RoomScreen from './components/RoomScreen.vue'
 import NotificationToast from './components/NotificationToast.vue'
@@ -27,6 +28,7 @@ const fileManager = useFileManager()
 const clipboard = useClipboard()
 const socket = useSocket()
 const notification = useNotification()
+const download = useDownload()
 const isConnecting = ref(false)
 
 // 이벤트 리스너 cleanup 함수들을 저장
@@ -176,6 +178,74 @@ async function handleCopyRoomCode() {
 }
 
 // ========================================
+// 파일 다운로드 핸들러
+// ========================================
+
+async function handleDownloadFile(file) {
+  notification.showInfo(`${file.name} 다운로드 중...`)
+  const result = await download.downloadFile(file)
+  if (result.success) {
+    notification.showSuccess('다운로드 완료!')
+  } else {
+    notification.showError('다운로드 실패')
+  }
+}
+
+async function handleDownloadSelected(files) {
+  if (!files || files.length === 0) return
+
+  notification.showInfo(`${files.length}개 파일을 ZIP으로 압축 중...`)
+  const zipName = `clipboard-share-${Date.now()}.zip`
+  const result = await download.downloadAsZip(files, zipName)
+
+  if (result.success) {
+    notification.showSuccess(`${files.length}개 파일 다운로드 완료!`)
+  } else {
+    notification.showError('ZIP 다운로드 실패')
+  }
+}
+
+async function handleDownloadAll(files) {
+  if (!files || files.length === 0) return
+
+  notification.showInfo(`전체 ${files.length}개 파일을 ZIP으로 압축 중...`)
+  const zipName = `clipboard-share-all-${Date.now()}.zip`
+  const result = await download.downloadAsZip(files, zipName)
+
+  if (result.success) {
+    notification.showSuccess(`${files.length}개 파일 다운로드 완료!`)
+  } else {
+    notification.showError('ZIP 다운로드 실패')
+  }
+}
+
+async function handleCopySelectedToClipboard(files) {
+  if (!files || files.length === 0) return
+
+  // 브라우저 제한으로 단일 파일만 클립보드 복사 가능
+  if (files.length > 1) {
+    notification.showInfo('클립보드에 첫 번째 파일만 복사됩니다...')
+  } else {
+    notification.showInfo('클립보드에 복사 중...')
+  }
+
+  const result = await download.copyFilesToClipboard(files)
+
+  if (result.success) {
+    if (result.totalCount > 1) {
+      notification.showSuccess(
+        `${files[0].name}이 클립보드에 복사됨! (${result.totalCount}개 중 1개)\n` +
+        '💡 여러 파일은 "선택 항목 다운로드"를 사용하세요.'
+      )
+    } else {
+      notification.showSuccess('클립보드에 복사됨!')
+    }
+  } else {
+    notification.showError('클립보드 복사 실패')
+  }
+}
+
+// ========================================
 // 라이프사이클 훅
 // ========================================
 
@@ -204,6 +274,10 @@ onUnmounted(() => {
       @copy-image="handleCopyImage"
       @join-other-room="connectToRoom"
       @upload-files="handleUploadFiles"
+      @download-file="handleDownloadFile"
+      @download-selected="handleDownloadSelected"
+      @download-all="handleDownloadAll"
+      @copy-selected-to-clipboard="handleCopySelectedToClipboard"
     />
 
     <!-- 알림 토스트 -->

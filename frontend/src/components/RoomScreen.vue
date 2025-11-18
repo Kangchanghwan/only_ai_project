@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   roomId: {
@@ -24,14 +24,32 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['copy-room-code', 'copy-image', 'join-other-room', 'upload-files'])
+const emit = defineEmits([
+  'copy-room-code',
+  'copy-image',
+  'join-other-room',
+  'upload-files',
+  'download-file',
+  'download-selected',
+  'download-all',
+  'copy-selected-to-clipboard'
+])
 
 const joinRoomCode = ref('')
 const fileInputRef = ref(null)
 const isDragging = ref(false)
+const selectedFiles = ref(new Set())
 
 // 환경 변수에서 최대 파일 크기 가져오기 (기본값: 10MB)
 const maxFileSizeMB = computed(() => import.meta.env.VITE_MAX_FILE_SIZE_MB || 10)
+
+// 선택된 파일 개수
+const selectedCount = computed(() => selectedFiles.value.size)
+
+// 선택된 파일 배열
+const selectedFilesArray = computed(() => {
+  return props.files.filter(file => selectedFiles.value.has(file.name))
+})
 
 function formatTime(created) {
   if (!created) return '방금 전'
@@ -88,6 +106,54 @@ function handleDrop(event) {
     emit('upload-files', Array.from(files))
   }
 }
+
+// 파일 선택/해제
+function toggleFileSelection(fileName) {
+  if (selectedFiles.value.has(fileName)) {
+    selectedFiles.value.delete(fileName)
+  } else {
+    selectedFiles.value.add(fileName)
+  }
+  // Set은 반응성을 위해 새 객체로 교체
+  selectedFiles.value = new Set(selectedFiles.value)
+}
+
+// 개별 파일 다운로드
+function downloadFile(file, event) {
+  event.stopPropagation() // 카드 클릭(이미지 복사) 이벤트 방지
+  emit('download-file', file)
+}
+
+// 선택 항목 다운로드
+function downloadSelected() {
+  if (selectedCount.value > 0) {
+    emit('download-selected', selectedFilesArray.value)
+  }
+}
+
+// 전체 다운로드
+function downloadAll() {
+  emit('download-all', props.files)
+}
+
+// Ctrl+C 키보드 이벤트 핸들러
+function handleKeydown(event) {
+  if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+    if (selectedCount.value > 0) {
+      emit('copy-selected-to-clipboard', selectedFilesArray.value)
+      // 기본 동작(텍스트 복사) 방지하지 않음 - 클립보드 API는 별도로 처리
+    }
+  }
+}
+
+// 라이프사이클 훅
+onMounted(() => {
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <template>
@@ -177,17 +243,56 @@ function handleDrop(event) {
         <p class="sub-text">클립보드의 이미지를 붙여넣어 공유를 시작하세요.</p>
       </div>
 
-      <div v-else class="gallery">
-        <div
-          v-for="file in files"
-          :key="file.name"
-          class="image-card"
-          @click="$emit('copy-image', file.url)"
-        >
-          <img :src="file.url" :alt="file.name" loading="lazy" class="image-preview" />
-          <div class="image-overlay">
-            <span class="image-time">{{ formatTime(file.created) }}</span>
-            <span class="image-copy-hint">클릭해서 복사</span>
+      <div v-else>
+        <!-- 다운로드 컨트롤 버튼 -->
+        <div v-if="files.length > 0" class="download-controls">
+          <button
+            class="download-selected-button"
+            :disabled="selectedCount === 0"
+            @click="downloadSelected"
+          >
+            📥 선택 항목 다운로드 ({{ selectedCount }})
+          </button>
+          <button class="download-all-button" @click="downloadAll">
+            📦 전체 다운로드
+          </button>
+          <span v-if="selectedCount > 0" class="keyboard-hint">
+            💡 Tip: Ctrl+C로 클립보드 복사 (단일 파일만 가능, 다중 파일은 ZIP 다운로드 권장)
+          </span>
+        </div>
+
+        <div class="gallery">
+          <div
+            v-for="file in files"
+            :key="file.name"
+            class="image-card"
+            :class="{ selected: selectedFiles.has(file.name) }"
+            @click="$emit('copy-image', file.url)"
+          >
+            <!-- 체크박스 -->
+            <input
+              type="checkbox"
+              class="file-checkbox"
+              :checked="selectedFiles.has(file.name)"
+              @click.stop
+              @change="toggleFileSelection(file.name)"
+            />
+
+            <img :src="file.url" :alt="file.name" loading="lazy" class="image-preview" />
+
+            <div class="image-overlay">
+              <span class="image-time">{{ formatTime(file.created) }}</span>
+              <div class="overlay-buttons">
+                <button
+                  class="file-download-button"
+                  @click="downloadFile(file, $event)"
+                  title="다운로드"
+                >
+                  ⬇️
+                </button>
+                <span class="image-copy-hint">클릭해서 복사</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -478,6 +583,51 @@ function handleDrop(event) {
   color: var(--text-secondary-color);
 }
 
+/* 다운로드 컨트롤 */
+.download-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.download-selected-button,
+.download-all-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.download-selected-button:hover:not(:disabled),
+.download-all-button:hover {
+  background-color: #35a372;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 184, 131, 0.3);
+}
+
+.download-selected-button:disabled {
+  background-color: var(--border-color);
+  color: var(--text-secondary-color);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.keyboard-hint {
+  font-size: 0.85rem;
+  color: var(--text-secondary-color);
+  font-style: italic;
+}
+
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -490,11 +640,30 @@ function handleDrop(event) {
   overflow: hidden;
   cursor: pointer;
   border: 1px solid var(--border-color);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
+
+.image-card.selected {
+  border-color: var(--primary-color);
+  border-width: 3px;
+  box-shadow: 0 0 0 3px rgba(66, 184, 131, 0.2);
+}
+
 .image-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 파일 체크박스 */
+.file-checkbox {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  z-index: 10;
+  accent-color: var(--primary-color);
 }
 
 .image-preview {
@@ -524,6 +693,28 @@ function handleDrop(event) {
 .image-time {
   font-size: 0.8rem;
   font-weight: 500;
+}
+
+.overlay-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-download-button {
+  background-color: rgba(66, 184, 131, 0.9);
+  border: none;
+  color: white;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.file-download-button:hover {
+  background-color: var(--primary-color);
+  transform: scale(1.1);
 }
 
 .image-copy-hint {
