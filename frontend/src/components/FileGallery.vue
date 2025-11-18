@@ -89,12 +89,6 @@ onUnmounted(() => {
     <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-5"></div>
   </div>
 
-  <div v-else-if="files.length === 0" class="text-center py-16 text-text-secondary">
-    <div class="text-6xl mb-4">🖼️</div>
-    <p class="text-xl text-text-primary">이 룸은 아직 비어있습니다.</p>
-    <p class="text-sm text-text-secondary">클립보드의 이미지를 붙여넣어 공유를 시작하세요.</p>
-  </div>
-
   <div v-else>
     <!-- 다운로드 컨트롤 버튼 -->
     <DownloadControls

@@ -41,7 +41,6 @@ const emit = defineEmits([
   'download-parallel',
   'download-all',
   'copy-selected-to-clipboard',
-  'add-text',
   'remove-text',
   'clear-all-texts',
   'copy-text'
@@ -79,7 +78,6 @@ const emit = defineEmits([
       <div class="mt-8">
         <TextShareBox
           :texts="texts"
-          @add-text="$emit('add-text', $event)"
           @remove-text="$emit('remove-text', $event)"
           @clear-all="$emit('clear-all-texts')"
           @copy-text="$emit('copy-text', $event)"

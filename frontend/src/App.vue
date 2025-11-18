@@ -127,10 +127,20 @@ function setupSocketListeners() {
 
 async function handlePaste(event) {
   if (!roomManager.currentRoomId.value) return
-  const files = clipboard.extractFilesFromPaste(event)
-  if (files.length === 0) return
 
-  await uploadFiles(files)
+  // 파일이 있는지 확인
+  const files = clipboard.extractFilesFromPaste(event)
+
+  if (files.length > 0) {
+    // 파일이 있으면 파일 업로드
+    await uploadFiles(files)
+  } else {
+    // 파일이 없으면 텍스트로 처리
+    const pastedText = event.clipboardData?.getData('text')
+    if (pastedText && pastedText.trim()) {
+      await handleAddText(pastedText.trim())
+    }
+  }
 }
 
 async function handleUploadFiles(files) {
@@ -386,7 +396,6 @@ onUnmounted(() => {
       @download-parallel="handleDownloadParallel"
       @download-all="handleDownloadAll"
       @copy-selected-to-clipboard="handleCopySelectedToClipboard"
-      @add-text="handleAddText"
       @remove-text="handleRemoveText"
       @clear-all-texts="handleClearAllTexts"
       @copy-text="handleCopyText"
