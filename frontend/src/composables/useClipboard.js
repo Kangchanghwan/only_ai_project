@@ -54,34 +54,34 @@ export function useClipboard() {
   }
 
   /**
-   * 붙여넣기 이벤트에서 이미지 파일을 추출합니다.
+   * 붙여넣기 이벤트에서 파일을 추출합니다.
    *
-   * ClipboardEvent의 clipboardData를 순회하며 이미지 타입의 파일만 추출합니다.
+   * ClipboardEvent의 clipboardData를 순회하며 모든 파일을 추출합니다.
+   * 텍스트 항목은 무시하고 파일만 추출합니다.
    *
    * @param {ClipboardEvent} event - 붙여넣기 이벤트 객체
-   * @returns {Array<File>} 추출된 이미지 파일 배열
+   * @returns {Array<File>} 추출된 파일 배열
    */
-  function extractImagesFromPaste(event) {
+  function extractFilesFromPaste(event) {
     const items = event.clipboardData?.items
     if (!items) return []
 
-    const imageFiles = []
+    const files = []
 
     for (let item of items) {
-      if (item.type.startsWith('image/')) {
-        const file = item.getAsFile()
-        if (file) {
-          imageFiles.push(file)
-        }
+      // getAsFile()은 파일이 있을 때만 File 객체를 반환하고, 텍스트 등은 null 반환
+      const file = item.getAsFile()
+      if (file) {
+        files.push(file)
       }
     }
 
-    return imageFiles
+    return files
   }
 
   return {
     copyText,
     copyImage,
-    extractImagesFromPaste
+    extractFilesFromPaste
   }
 }

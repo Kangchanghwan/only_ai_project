@@ -102,10 +102,10 @@ function setupSocketListeners() {
 
 async function handlePaste(event) {
   if (!roomManager.currentRoomId.value) return
-  const imageFiles = clipboard.extractImagesFromPaste(event)
-  if (imageFiles.length === 0) return
+  const files = clipboard.extractFilesFromPaste(event)
+  if (files.length === 0) return
 
-  await uploadFiles(imageFiles)
+  await uploadFiles(files)
 }
 
 async function handleUploadFiles(files) {

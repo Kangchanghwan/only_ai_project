@@ -69,13 +69,39 @@ describe('useClipboard', () => {
         }
       }
 
-      const files = clipboard.extractImagesFromPaste(mockEvent)
+      const files = clipboard.extractFilesFromPaste(mockEvent)
 
       expect(files.length).toBe(1)
       expect(files[0]).toBe(mockFile)
     })
 
-    it('이미지가 아닌 항목은 무시해야 한다', () => {
+    it('붙여넣기 이벤트에서 모든 파일 형식을 추출할 수 있어야 한다', () => {
+      const mockImageFile = new File(['image'], 'test.png', { type: 'image/png' })
+      const mockPdfFile = new File(['pdf'], 'test.pdf', { type: 'application/pdf' })
+
+      const mockEvent = {
+        clipboardData: {
+          items: [
+            {
+              type: 'image/png',
+              getAsFile: () => mockImageFile
+            },
+            {
+              type: 'application/pdf',
+              getAsFile: () => mockPdfFile
+            }
+          ]
+        }
+      }
+
+      const files = clipboard.extractFilesFromPaste(mockEvent)
+
+      expect(files.length).toBe(2)
+      expect(files[0]).toBe(mockImageFile)
+      expect(files[1]).toBe(mockPdfFile)
+    })
+
+    it('파일이 아닌 항목(텍스트)은 무시해야 한다', () => {
       const mockEvent = {
         clipboardData: {
           items: [
@@ -87,7 +113,15 @@ describe('useClipboard', () => {
         }
       }
 
-      const files = clipboard.extractImagesFromPaste(mockEvent)
+      const files = clipboard.extractFilesFromPaste(mockEvent)
+
+      expect(files.length).toBe(0)
+    })
+
+    it('clipboardData가 없으면 빈 배열을 반환해야 한다', () => {
+      const mockEvent = {}
+
+      const files = clipboard.extractFilesFromPaste(mockEvent)
 
       expect(files.length).toBe(0)
     })
