@@ -64,6 +64,19 @@ export function useFileManager() {
       throw new Error('roomId와 file이 필요합니다')
     }
 
+    // 파일 크기 검증
+    // 환경 변수에서 최대 파일 크기를 가져오거나 기본값 10MB 사용
+    const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 10
+    const MAX_FILE_SIZE = maxFileSizeMB * 1024 * 1024
+
+    if (file.size === 0) {
+      throw new Error('파일이 비어있습니다')
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(`파일 크기는 ${maxFileSizeMB}MB를 초과할 수 없습니다`)
+    }
+
     try {
       console.log('[useFileManager] 파일 업로드 시작:', file.name)
 

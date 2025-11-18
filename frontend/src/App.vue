@@ -119,7 +119,14 @@ async function handlePaste(event) {
       fileManager.addFile(result)
       notification.showSuccess('이미지 업로드 완료!')
     } catch (err) {
-      notification.showError('업로드 실패: ' + err.message)
+      // 파일 크기 제한 에러는 더 명확한 메시지로 표시
+      if (err.message.includes('MB를 초과할 수 없습니다')) {
+        notification.showError(`${file.name}: ${err.message}`)
+      } else if (err.message.includes('비어있습니다')) {
+        notification.showError('파일이 비어있습니다')
+      } else {
+        notification.showError('업로드 실패: ' + err.message)
+      }
     }
   }
 }

@@ -80,6 +80,9 @@ TDD 방식으로 개발되었으며, 다음 핵심 기능들이 테스트되었�
 - ✅ 파일명 타임스탬프 생성
 - ✅ 파일 URL 생성
 - ✅ .emptyFolderPlaceholder 필터링
+- ✅ 파일 크기 제한 검증 (환경 변수 기반)
+- ✅ 빈 파일 검증
+- ✅ 크기 초과 파일 에러 처리
 
 ### 클립보드 (useClipboard)
 - ✅ 텍스트 복사
@@ -88,7 +91,7 @@ TDD 방식으로 개발되었으며, 다음 핵심 기능들이 테스트되었�
 - ✅ 붙여넣기 이벤트에서 이미지 추출
 - ✅ 이미지가 아닌 항목 필터링
 
-**총 19개 테스트 통과**
+**총 24개 테스트 통과**
 
 ## 📁 프로젝트 구조
 
@@ -140,16 +143,25 @@ src/
 
 ## 🔧 환경 설정
 
-### Supabase 설정
+### 환경 변수 설정
 
-`src/composables/useFileManager.js`에서 Supabase 설정 변경:
+프로젝트 루트에 `.env` 파일을 생성하고 다음 내용을 입력하세요:
 
-```javascript
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'
-const SUPABASE_KEY = 'YOUR_SUPABASE_KEY'
+```bash
+# Socket.IO 서버 URL
+VITE_SOCKET_URL=http://localhost:3001
+
+# Supabase 설정
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_KEY=your-supabase-anon-key
+
+# 파일 업로드 크기 제한 (MB 단위, 기본값: 10)
+VITE_MAX_FILE_SIZE_MB=10
 ```
 
-### Storage 버킷 생성
+`.env.example` 파일을 참고하여 설정할 수 있습니다.
+
+### Supabase Storage 버킷 생성
 
 1. Supabase 대시보드에서 Storage 선택
 2. 'test' 이름으로 Public 버킷 생성

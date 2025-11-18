@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   roomId: {
@@ -27,6 +27,9 @@ const props = defineProps({
 const emit = defineEmits(['copy-room-code', 'copy-image', 'join-other-room'])
 
 const joinRoomCode = ref('')
+
+// 환경 변수에서 최대 파일 크기 가져오기 (기본값: 10MB)
+const maxFileSizeMB = computed(() => import.meta.env.VITE_MAX_FILE_SIZE_MB || 10)
 
 function formatTime(created) {
   if (!created) return '방금 전'
@@ -88,6 +91,7 @@ function handleJoinOtherRoom() {
 
       <div class="instructions">
         <p>📋 <strong>Ctrl+V</strong> (Cmd+V)로 이미지를 붙여넣거나, <strong>클릭</strong>해서 복사하세요.</p>
+        <p class="file-size-limit">⚠️ 파일 크기 제한: {{ maxFileSizeMB }}MB 이하</p>
       </div>
 
       <div v-if="isLoading" class="loading-gallery">
@@ -278,6 +282,24 @@ function handleJoinOtherRoom() {
   border-radius: 8px;
   color: var(--text-secondary-color);
   font-size: 0.9rem;
+}
+
+.instructions p {
+  margin: 0.5rem 0;
+}
+
+.instructions p:first-child {
+  margin-top: 0;
+}
+
+.instructions p:last-child {
+  margin-bottom: 0;
+}
+
+.file-size-limit {
+  font-size: 0.8rem;
+  color: #ffa500;
+  opacity: 0.9;
 }
 
 .loading-gallery, .empty-state {
