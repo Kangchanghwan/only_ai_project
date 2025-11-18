@@ -37,15 +37,6 @@ function handleDownload(event) {
     }"
     @click="$emit('copy-image', file.url)"
   >
-    <!-- 체크박스 -->
-    <input
-      type="checkbox"
-      class="absolute top-2.5 left-2.5 w-6 h-6 cursor-pointer z-10 accent-primary"
-      :checked="isSelected"
-      @click.stop
-      @change="$emit('toggle-selection', file.name)"
-    />
-
     <img
       :src="file.url"
       :alt="file.name"
@@ -53,19 +44,26 @@ function handleDownload(event) {
       class="w-full h-[200px] object-cover block"
     />
 
-    <!-- 파일 정보 오버레이 (항상 표시) -->
-    <div class="absolute top-10 left-0 right-0 p-2 bg-gradient-to-b from-black/70 to-transparent">
-      <div class="flex items-start gap-2">
-        <span class="text-2xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
-        <div class="flex-1 min-w-0">
-          <p class="text-xs font-semibold text-white truncate" :title="file.name">
-            {{ file.name }}
-          </p>
-          <div class="flex items-center gap-2 text-[10px] text-white/80 mt-0.5">
-            <span>{{ fileMetadata.size }}</span>
-            <span>•</span>
-            <span>{{ fileMetadata.uploadTime }}</span>
-          </div>
+    <!-- 파일 정보 오버레이 (항상 표시) - 체크박스 포함 -->
+    <div class="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 via-black/50 to-transparent">
+      <div class="flex items-center gap-3">
+        <!-- 체크박스 -->
+        <input
+          type="checkbox"
+          class="w-5 h-5 cursor-pointer accent-primary flex-shrink-0"
+          :checked="isSelected"
+          @click.stop
+          @change="$emit('toggle-selection', file.name)"
+        />
+
+        <!-- 파일 아이콘 -->
+        <span class="text-2xl flex-shrink-0" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
+
+        <!-- 파일 정보 (파일명 제외) -->
+        <div class="flex items-center gap-2 text-xs text-white/90">
+          <span>{{ fileMetadata.size }}</span>
+          <span>•</span>
+          <span>{{ fileMetadata.uploadTime }}</span>
         </div>
       </div>
     </div>
