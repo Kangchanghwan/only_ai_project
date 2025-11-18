@@ -24,9 +24,11 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['copy-room-code', 'copy-image', 'join-other-room'])
+const emit = defineEmits(['copy-room-code', 'copy-image', 'join-other-room', 'upload-files'])
 
 const joinRoomCode = ref('')
+const fileInputRef = ref(null)
+const isDragging = ref(false)
 
 // 환경 변수에서 최대 파일 크기 가져오기 (기본값: 10MB)
 const maxFileSizeMB = computed(() => import.meta.env.VITE_MAX_FILE_SIZE_MB || 10)
@@ -48,6 +50,42 @@ function handleJoinOtherRoom() {
   if (code && code.length === 6) {
     emit('join-other-room', code)
     joinRoomCode.value = ''
+  }
+}
+
+// 파일 업로드 핸들러
+function openFileDialog() {
+  fileInputRef.value?.click()
+}
+
+function handleFileSelect(event) {
+  const files = event.target.files
+  if (files && files.length > 0) {
+    emit('upload-files', Array.from(files))
+    // 입력 초기화 (같은 파일 재선택 가능하도록)
+    event.target.value = ''
+  }
+}
+
+// 드래그 앤 드롭 핸들러
+function handleDragOver(event) {
+  event.preventDefault()
+  isDragging.value = true
+}
+
+function handleDragLeave(event) {
+  event.preventDefault()
+  isDragging.value = false
+}
+
+function handleDrop(event) {
+  event.preventDefault()
+  isDragging.value = false
+
+  const files = event.dataTransfer?.files
+  if (files && files.length > 0) {
+    // 모든 파일 형식 허용
+    emit('upload-files', Array.from(files))
   }
 }
 </script>
@@ -89,9 +127,44 @@ function handleJoinOtherRoom() {
         </template>
       </div>
 
-      <div class="instructions">
-        <p>📋 <strong>Ctrl+V</strong> (Cmd+V)로 이미지를 붙여넣거나, <strong>클릭</strong>해서 복사하세요.</p>
-        <p class="file-size-limit">⚠️ 파일 크기 제한: {{ maxFileSizeMB }}MB 이하</p>
+      <!-- 파일 업로드 영역 -->
+      <div class="upload-section">
+        <!-- 숨겨진 파일 입력 -->
+        <input
+          ref="fileInputRef"
+          type="file"
+          multiple
+          style="display: none"
+          @change="handleFileSelect"
+        />
+
+        <!-- 드래그 앤 드롭 영역 -->
+        <div
+          class="drop-zone"
+          :class="{ 'drag-over': isDragging }"
+          @dragover="handleDragOver"
+          @dragleave="handleDragLeave"
+          @drop="handleDrop"
+        >
+          <div class="drop-zone-content">
+            <div class="upload-icon">📤</div>
+            <p class="upload-title">파일을 드래그하거나 클릭하여 업로드</p>
+            <button class="file-upload-button" @click="openFileDialog">
+              📁 파일 선택
+            </button>
+          </div>
+        </div>
+
+        <!-- 업로드 방법 안내 -->
+        <div class="upload-instructions">
+          <p><strong>업로드 방법:</strong></p>
+          <ul>
+            <li>📁 <strong>파일 선택</strong>: 버튼을 클릭하여 파일 선택</li>
+            <li>🖱️ <strong>드래그 앤 드롭</strong>: 파일을 위 영역으로 드래그</li>
+            <li>📋 <strong>붙여넣기</strong>: Ctrl+V (Cmd+V)로 클립보드에서 붙여넣기</li>
+          </ul>
+          <p class="file-size-limit">⚠️ 파일 크기 제한: {{ maxFileSizeMB }}MB 이하</p>
+        </div>
       </div>
 
       <div v-if="isLoading" class="loading-gallery">
@@ -275,31 +348,104 @@ function handleJoinOtherRoom() {
   color: var(--text-color);
 }
 
-.instructions {
+/* 파일 업로드 영역 */
+.upload-section {
   margin-bottom: 2rem;
-  padding: 1rem;
+}
+
+.drop-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+}
+
+.drop-zone:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(66, 184, 131, 0.05);
+}
+
+.drop-zone.drag-over {
+  border-color: var(--primary-color);
+  background-color: rgba(66, 184, 131, 0.1);
+  transform: scale(1.02);
+}
+
+.drop-zone-content {
+  pointer-events: none;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.upload-title {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
+}
+
+.file-upload-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+
+.file-upload-button:hover {
+  background-color: #35a372;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 184, 131, 0.3);
+}
+
+.file-upload-button:active {
+  transform: translateY(0);
+}
+
+/* 업로드 방법 안내 */
+.upload-instructions {
+  padding: 1rem 1.5rem;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   color: var(--text-secondary-color);
   font-size: 0.9rem;
 }
 
-.instructions p {
+.upload-instructions p {
   margin: 0.5rem 0;
 }
 
-.instructions p:first-child {
-  margin-top: 0;
+.upload-instructions strong {
+  color: var(--text-color);
 }
 
-.instructions p:last-child {
-  margin-bottom: 0;
+.upload-instructions ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.upload-instructions li {
+  padding: 0.5rem 0;
+  line-height: 1.5;
 }
 
 .file-size-limit {
   font-size: 0.8rem;
   color: #ffa500;
   opacity: 0.9;
+  margin-top: 1rem;
 }
 
 .loading-gallery, .empty-state {

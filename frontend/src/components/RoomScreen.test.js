@@ -72,4 +72,122 @@ describe('RoomScreen.vue', () => {
     expect(wrapper.emitted()).toHaveProperty('copy-image')
     expect(wrapper.emitted('copy-image')[0][0]).toBe('http://example.com/test1.png')
   })
+
+  describe('파일 업로드 UI', () => {
+    it('파일 선택 버튼이 표시되어야 한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      expect(wrapper.find('.file-upload-button').exists()).toBe(true)
+    })
+
+    it('숨겨진 파일 입력 요소가 존재해야 한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      const fileInput = wrapper.find('input[type="file"]')
+      expect(fileInput.exists()).toBe(true)
+      // 모든 파일 형식 허용 (accept 속성 없음)
+      expect(fileInput.attributes('accept')).toBeUndefined()
+      expect(fileInput.attributes('multiple')).toBeDefined()
+    })
+
+    it('파일 선택 버튼 클릭 시 파일 입력이 트리거되어야 한다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      const fileInput = wrapper.find('input[type="file"]')
+      const clickSpy = vi.spyOn(fileInput.element, 'click')
+
+      await wrapper.find('.file-upload-button').trigger('click')
+
+      expect(clickSpy).toHaveBeenCalled()
+    })
+
+    it('파일 선택 시 "upload-files" 이벤트를 발생시켜야 한다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      const fileInput = wrapper.find('input[type="file"]')
+      const mockFiles = [
+        new File(['test'], 'test.png', { type: 'image/png' })
+      ]
+
+      Object.defineProperty(fileInput.element, 'files', {
+        value: mockFiles,
+        writable: false
+      })
+
+      await fileInput.trigger('change')
+
+      expect(wrapper.emitted()).toHaveProperty('upload-files')
+      expect(wrapper.emitted('upload-files')[0][0]).toEqual(mockFiles)
+    })
+
+    it('드래그 앤 드롭 영역이 존재해야 한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      expect(wrapper.find('.drop-zone').exists()).toBe(true)
+    })
+
+    it('파일 드롭 시 "upload-files" 이벤트를 발생시켜야 한다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      const mockFiles = [
+        new File(['test'], 'test.png', { type: 'image/png' })
+      ]
+
+      const dropEvent = new Event('drop')
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: { files: mockFiles }
+      })
+
+      await wrapper.find('.drop-zone').trigger('drop', { dataTransfer: { files: mockFiles } })
+
+      expect(wrapper.emitted()).toHaveProperty('upload-files')
+    })
+
+    it('드래그 오버 시 드롭 영역에 시각적 피드백이 표시되어야 한다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      const dropZone = wrapper.find('.drop-zone')
+
+      await dropZone.trigger('dragover')
+      expect(dropZone.classes()).toContain('drag-over')
+
+      await dropZone.trigger('dragleave')
+      expect(dropZone.classes()).not.toContain('drag-over')
+    })
+
+    it('업로드 방법 안내가 표시되어야 한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      const instructions = wrapper.find('.upload-instructions')
+      expect(instructions.exists()).toBe(true)
+      expect(instructions.text()).toContain('파일 선택')
+      expect(instructions.text()).toContain('드래그')
+    })
+
+    it('모든 파일 형식을 허용해야 한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+      })
+
+      const fileInput = wrapper.find('input[type="file"]')
+      // accept 속성이 없으면 모든 파일 형식 허용
+      expect(fileInput.attributes('accept')).toBeUndefined()
+    })
+  })
 })

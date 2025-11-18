@@ -105,8 +105,25 @@ async function handlePaste(event) {
   const imageFiles = clipboard.extractImagesFromPaste(event)
   if (imageFiles.length === 0) return
 
-  notification.showInfo('업로드 중...')
-  for (const file of imageFiles) {
+  await uploadFiles(imageFiles)
+}
+
+async function handleUploadFiles(files) {
+  if (!roomManager.currentRoomId.value) return
+  if (!files || files.length === 0) return
+
+  await uploadFiles(files)
+}
+
+async function uploadFiles(files) {
+  if (!roomManager.currentRoomId.value) return
+
+  notification.showInfo(`${files.length}개 파일 업로드 중...`)
+
+  let successCount = 0
+  let failCount = 0
+
+  for (const file of files) {
     try {
       const result = await fileManager.uploadFile(roomManager.currentRoomId.value, file)
       socket.publishMessage({
@@ -117,17 +134,23 @@ async function handlePaste(event) {
       })
       // 로컬 목록에 즉시 추가 (UX 개선)
       fileManager.addFile(result)
-      notification.showSuccess('이미지 업로드 완료!')
+      successCount++
     } catch (err) {
+      failCount++
       // 파일 크기 제한 에러는 더 명확한 메시지로 표시
       if (err.message.includes('MB를 초과할 수 없습니다')) {
         notification.showError(`${file.name}: ${err.message}`)
       } else if (err.message.includes('비어있습니다')) {
-        notification.showError('파일이 비어있습니다')
+        notification.showError(`${file.name}: 파일이 비어있습니다`)
       } else {
-        notification.showError('업로드 실패: ' + err.message)
+        notification.showError(`${file.name}: 업로드 실패`)
       }
     }
+  }
+
+  // 최종 결과 알림
+  if (successCount > 0) {
+    notification.showSuccess(`${successCount}개 파일 업로드 완료!`)
   }
 }
 
@@ -180,6 +203,7 @@ onUnmounted(() => {
       @copy-room-code="handleCopyRoomCode"
       @copy-image="handleCopyImage"
       @join-other-room="connectToRoom"
+      @upload-files="handleUploadFiles"
     />
 
     <!-- 알림 토스트 -->
