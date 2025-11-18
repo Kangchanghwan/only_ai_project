@@ -44,6 +44,7 @@ function handleDrop(event) {
 </script>
 
 <template>
+
   <div class="mb-8">
     <!-- 숨겨진 파일 입력 -->
     <input
@@ -53,27 +54,6 @@ function handleDrop(event) {
       class="hidden"
       @change="handleFileSelect"
     />
-
-    <!-- 드래그 앤 드롭 영역 -->
-    <div
-      class="border-2 border-dashed border-border rounded-xl p-12 text-center bg-black/10 transition-all duration-300 cursor-pointer mb-6 hover:border-primary hover:bg-primary/5"
-      :class="{ 'border-primary bg-primary/10 scale-[1.02]': isDragging }"
-      @dragover="handleDragOver"
-      @dragleave="handleDragLeave"
-      @drop="handleDrop"
-    >
-      <div class="pointer-events-none">
-        <div class="text-5xl mb-4">📤</div>
-        <p class="text-lg text-text-primary mb-6">파일을 드래그하거나 클릭하여 업로드</p>
-        <button
-          class="bg-primary text-white border-none px-8 py-3 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 pointer-events-auto hover:bg-primary/80 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0"
-          @click="openFileDialog"
-        >
-          📁 파일 선택
-        </button>
-      </div>
-    </div>
-
     <!-- 업로드 방법 안내 -->
     <div class="px-6 py-4 bg-black/20 rounded-lg text-text-secondary text-sm">
       <p class="my-2">
@@ -94,5 +74,26 @@ function handleDrop(event) {
         ⚠️ 파일 크기 제한: {{ maxFileSizeMB }}MB 이하
       </p>
     </div>
+    <!-- 드래그 앤 드롭 영역 -->
+    <div
+      class="border-2 border-dashed border-border rounded-xl p-12 text-center bg-black/10 transition-all duration-300 cursor-pointer mb-6 hover:border-primary hover:bg-primary/5"
+      :class="{ 'border-primary bg-primary/10 scale-[1.02]': isDragging }"
+      @dragover="handleDragOver"
+      @dragleave="handleDragLeave"
+      @drop="handleDrop"
+    >
+      <div class="pointer-events-none">
+        <div class="text-5xl mb-4">📤</div>
+        <p class="text-lg text-text-primary mb-6">파일을 드래그하거나 클릭하여 업로드</p>
+        <button
+          class="bg-primary text-white border-none px-8 py-3 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 pointer-events-auto hover:bg-primary/80 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0"
+          @click="openFileDialog"
+        >
+          📁 파일 선택
+        </button>
+      </div>
+    </div>
+
+
   </div>
 </template>

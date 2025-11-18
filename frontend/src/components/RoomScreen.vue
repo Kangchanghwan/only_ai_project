@@ -50,7 +50,7 @@ const emit = defineEmits([
 </script>
 
 <template>
-  <div class="max-w-[1400px] mx-auto p-6 text-text-primary">
+  <div class="max-w-[1600px] mx-auto p-6 text-text-primary">
     <AppHeader
       :user-count="userCount"
       :is-connecting="isConnecting"
