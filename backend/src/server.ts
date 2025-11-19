@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { RoomManager } from './managers/RoomManager';
 import { setupSocketHandlers } from './handlers/socketHandlers';
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './types';
+import logger from './utils/logger';
 
 // === 환경 설정 ===
 
@@ -69,30 +70,30 @@ app.get('/stats', (_req, res) => {
 
 if (process.env.NODE_ENV !== 'test') {
     httpServer.listen(PORT, () => {
-        console.log(`[${new Date().toISOString()}] 서버 시작: 포트 ${PORT}`);
-        console.log(`[${new Date().toISOString()}] 환경: ${process.env.NODE_ENV || 'development'}`);
+        logger.info(`서버 시작: 포트 ${PORT}`);
+        logger.info(`환경: ${process.env.NODE_ENV || 'development'}`);
     });
 }
 
 // === Graceful Shutdown ===
 
 const gracefulShutdown = (signal: string) => {
-    console.log(`[${new Date().toISOString()}] ${signal} 시그널 수신: 서버 종료 시작`);
+    logger.info(`${signal} 시그널 수신: 서버 종료 시작`);
 
     // Socket.IO 연결 종료
     io.close(() => {
-        console.log(`[${new Date().toISOString()}] Socket.IO 연결 종료 완료`);
+        logger.info('Socket.IO 연결 종료 완료');
     });
 
     // HTTP 서버 종료
     httpServer.close(() => {
-        console.log(`[${new Date().toISOString()}] HTTP 서버 종료 완료`);
+        logger.info('HTTP 서버 종료 완료');
         process.exit(0);
     });
 
     // 10초 후 강제 종료
     setTimeout(() => {
-        console.error(`[${new Date().toISOString()}] 타임아웃으로 강제 종료`);
+        logger.error('타임아웃으로 강제 종료');
         process.exit(1);
     }, 10000);
 };
@@ -103,12 +104,12 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 // 예외 처리
 process.on('uncaughtException', (error) => {
-    console.error(`[${new Date().toISOString()}] Uncaught Exception:`, error);
+    logger.error('Uncaught Exception:', error);
     gracefulShutdown('UNCAUGHT_EXCEPTION');
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-    console.error(`[${new Date().toISOString()}] Unhandled Rejection:`, promise, 'reason:', reason);
+    logger.error('Unhandled Rejection:', promise, 'reason:', reason);
 });
 
 // === 테스트용 Export ===

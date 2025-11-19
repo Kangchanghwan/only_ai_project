@@ -1,23 +1,50 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine
+# ============================================
+# Build Stage
+# ============================================
+FROM node:18-alpine AS builder
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy package files
 COPY backend/package*.json ./
 
-# Install any needed packages
-RUN npm install
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci
 
-# Bundle app source
+# Copy source code
 COPY backend/ .
 
-# Build the TypeScript code
-RUN npm run build
+# Build TypeScript code in production mode
+ENV NODE_ENV=production
+RUN npm run build:prod
 
-# Your app binds to port 3001 so you'll use that
+# ============================================
+# Production Stage
+# ============================================
+FROM node:18-alpine AS production
+
+# Set production environment
+ENV NODE_ENV=production
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copy package files
+COPY backend/package*.json ./
+
+# Install ONLY production dependencies
+RUN npm ci --omit=dev
+
+# Copy built files from builder stage
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Expose port
 EXPOSE 3001
 
-# Define the command to run your app
-CMD [ "npm", "start" ]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Run the app in production mode
+CMD [ "node", "dist/server.js" ]

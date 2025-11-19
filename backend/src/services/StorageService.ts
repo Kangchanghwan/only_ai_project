@@ -1,4 +1,5 @@
 import { supabase, BUCKET_NAME } from '../config/supabase';
+import logger from '../utils/logger';
 
 /**
  * 파일 삭제 결과 인터페이스
@@ -25,7 +26,7 @@ export class StorageService {
         try {
             // Supabase가 설정되지 않은 경우
             if (!supabase) {
-                console.warn(`[${new Date().toISOString()}] Supabase not configured. Skipping file deletion for room ${roomNr}`);
+                logger.warn(`Supabase not configured. Skipping file deletion for room ${roomNr}`);
                 return {
                     success: false,
                     deletedCount: 0,
@@ -41,7 +42,7 @@ export class StorageService {
                 .list(folderPath);
 
             if (listError) {
-                console.error(`[${new Date().toISOString()}] Failed to list files for room ${roomNr}:`, listError);
+                logger.error(`Failed to list files for room ${roomNr}:`, listError);
                 return {
                     success: false,
                     deletedCount: 0,
@@ -51,7 +52,7 @@ export class StorageService {
 
             // 파일이 없는 경우
             if (!files || files.length === 0) {
-                console.log(`[${new Date().toISOString()}] No files to delete for room ${roomNr}`);
+                logger.log(`No files to delete for room ${roomNr}`);
                 return {
                     success: true,
                     deletedCount: 0
@@ -71,7 +72,7 @@ export class StorageService {
                     .remove(batch);
 
                 if (deleteError) {
-                    console.error(`[${new Date().toISOString()}] Failed to delete batch for room ${roomNr}:`, deleteError);
+                    logger.error(`Failed to delete batch for room ${roomNr}:`, deleteError);
                     return {
                         success: false,
                         deletedCount: totalDeleted,
@@ -82,7 +83,7 @@ export class StorageService {
                 totalDeleted += batch.length;
             }
 
-            console.log(`[${new Date().toISOString()}] Successfully deleted ${totalDeleted} files for room ${roomNr}`);
+            logger.log(`Successfully deleted ${totalDeleted} files for room ${roomNr}`);
             return {
                 success: true,
                 deletedCount: totalDeleted
@@ -90,7 +91,7 @@ export class StorageService {
 
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            console.error(`[${new Date().toISOString()}] Unexpected error deleting files for room ${roomNr}:`, error);
+            logger.error(`Unexpected error deleting files for room ${roomNr}:`, error);
             return {
                 success: false,
                 deletedCount: 0,

@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+import logger from '../utils/logger';
 
 dotenv.config();
 
@@ -7,7 +8,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-    console.warn('[Supabase] Configuration missing. Storage features will be disabled.');
+    logger.warn('[Supabase] Configuration missing. Storage features will be disabled.');
 }
 
 /**

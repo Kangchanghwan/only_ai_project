@@ -1,5 +1,6 @@
 import { Rooms, RoomData } from '../types';
 import { StorageService } from '../services/StorageService';
+import logger from '../utils/logger';
 
 /**
  * 룸 관리 클래스
@@ -81,9 +82,9 @@ export class RoomManager {
             if (!isNaN(roomNr)) {
                 const result = await this.storageService.deleteRoomFiles(roomNr);
                 if (result.success) {
-                    console.log(`[${new Date().toISOString()}] Deleted ${result.deletedCount} files for room ${roomNr}`);
+                    logger.info(`Deleted ${result.deletedCount} files for room ${roomNr}`);
                 } else {
-                    console.error(`[${new Date().toISOString()}] Failed to delete files for room ${roomNr}: ${result.error}`);
+                    logger.error(`Failed to delete files for room ${roomNr}: ${result.error}`);
                 }
             }
 
