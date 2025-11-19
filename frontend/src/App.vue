@@ -366,7 +366,20 @@ async function handleCopyText(textId) {
 // ========================================
 
 onMounted(() => {
-  connectToRoom() // 초기 룸 연결
+  // URL에서 룸 코드 파라미터 확인 (예: /#/ABC123)
+  const hash = window.location.hash
+  const roomCodeFromUrl = hash.startsWith('#/') ? hash.substring(2) : null
+
+  if (roomCodeFromUrl && roomCodeFromUrl.length > 0) {
+    // URL에 룸 코드가 있으면 해당 룸으로 연결
+    connectToRoom(roomCodeFromUrl)
+    // URL을 깨끗하게 정리
+    window.history.replaceState(null, '', window.location.pathname)
+  } else {
+    // 일반적인 초기 룸 연결
+    connectToRoom()
+  }
+
   document.addEventListener('paste', handlePaste)
 })
 

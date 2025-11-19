@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import QRCodeModal from './QRCodeModal.vue'
 
 defineProps({
   roomId: {
@@ -15,6 +16,7 @@ defineProps({
 const emit = defineEmits(['copy-room-code', 'join-other-room'])
 
 const joinRoomCode = ref('')
+const isQRModalOpen = ref(false)
 
 function handleJoinOtherRoom() {
   const code = joinRoomCode.value.trim().toUpperCase()
@@ -22,6 +24,14 @@ function handleJoinOtherRoom() {
     emit('join-other-room', code)
     joinRoomCode.value = ''
   }
+}
+
+function openQRModal() {
+  isQRModalOpen.value = true
+}
+
+function closeQRModal() {
+  isQRModalOpen.value = false
 }
 </script>
 
@@ -41,12 +51,37 @@ function handleJoinOtherRoom() {
         >
           {{ roomId }}
         </span>
-        <button
-          class="bg-transparent border border-border text-text-secondary px-3 py-1 rounded-md cursor-pointer text-xs hover:bg-border hover:text-text-primary transition-colors"
-          @click="$emit('copy-room-code')"
-        >
-          복사
-        </button>
+        <div class="flex gap-2">
+          <button
+            class="bg-transparent border border-border text-text-secondary px-3 py-1 rounded-md cursor-pointer text-xs hover:bg-border hover:text-text-primary transition-colors"
+            @click="$emit('copy-room-code')"
+          >
+            복사
+          </button>
+          <button
+            class="bg-primary text-white px-3 py-1 rounded-md cursor-pointer text-xs hover:bg-primary/90 transition-colors flex items-center gap-1"
+            @click="openQRModal"
+            title="QR 코드로 공유"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            QR
+          </button>
+        </div>
       </template>
     </div>
 
@@ -72,5 +107,13 @@ function handleJoinOtherRoom() {
         </button>
       </div>
     </div>
+
+    <!-- QR 코드 모달 -->
+    <QRCodeModal
+      v-if="roomId"
+      :room-code="roomId"
+      :is-open="isQRModalOpen"
+      @close="closeQRModal"
+    />
   </div>
 </template>
