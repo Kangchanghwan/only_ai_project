@@ -2,8 +2,9 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, mode }) => {
   const isProd = mode === 'production'
+  const isBuild = command === 'build'
 
   return {
     plugins: [vue()],
@@ -12,9 +13,19 @@ export default defineConfig(({ mode }) => {
       environment: 'happy-dom',
     },
     build: {
-      // 프로덕션 빌드 최적화
-      minify: 'esbuild',
-      sourcemap: !isProd, // 프로덕션에서는 소스맵 비활성화
+      // 프로덕션 빌드 최적화 - terser로 console 완전 제거
+      minify: isBuild ? 'terser' : false,
+      terserOptions: isBuild ? {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
+        },
+        format: {
+          comments: false,
+        },
+      } : {},
+      sourcemap: false,
       rollupOptions: {
         output: {
           // 청크 분리 최적화
@@ -23,10 +34,6 @@ export default defineConfig(({ mode }) => {
             'socket': ['socket.io-client'],
           },
         },
-      },
-      esbuild: {
-        // 프로덕션에서 console 제거
-        drop: isProd ? ['console', 'debugger'] : [],
       },
     },
   }
