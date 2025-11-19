@@ -2,7 +2,18 @@ const NodeEnvironment = require('jest-environment-node').default;
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
-    super(config, context);
+    // Node.js 버전 호환성을 위해 config 객체 수정
+    const customConfig = {
+      ...config,
+      projectConfig: {
+        ...config.projectConfig,
+        testEnvironmentOptions: {
+          ...config.projectConfig?.testEnvironmentOptions
+        }
+      }
+    };
+
+    super(customConfig, context);
 
     // Mock localStorage immediately in constructor
     this.global.localStorage = {

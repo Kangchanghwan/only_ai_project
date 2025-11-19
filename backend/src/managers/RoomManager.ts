@@ -1,4 +1,5 @@
 import { Rooms, RoomData } from '../types';
+import { StorageService } from '../services/StorageService';
 
 /**
  * 룸 관리 클래스
@@ -12,6 +13,11 @@ export class RoomManager {
     private readonly MIN_ROOM_NR = 100000;  // 최소 룸 번호
     private readonly MAX_ROOM_NR = 999999;  // 최대 룸 번호
     private readonly MAX_RETRIES = 10;      // 룸 번호 생성 최대 재시도 횟수
+    private storageService: StorageService;
+
+    constructor(storageService?: StorageService) {
+        this.storageService = storageService || new StorageService();
+    }
 
     /** 중복되지 않는 6자리 룸 번호 생성 */
     generateRoomNumber(): number {
@@ -59,15 +65,28 @@ export class RoomManager {
     }
 
     /** 룸에서 사용자 제거 (빈 룸은 자동 삭제) */
-    removeUserFromRoom(roomId: string): number {
+    async removeUserFromRoom(roomId: string): Promise<number> {
         if (!this.rooms[roomId]) {
             return 0;
         }
 
         this.rooms[roomId].userCount--;
 
-        // 빈 룸 정리 (메모리 누수 방지)
+        // 빈 룸 정리 (메모리 누수 방지 + Supabase Storage 파일 삭제)
         if (this.rooms[roomId].userCount <= 0) {
+            // 룸 번호 추출 (room-123456 → 123456)
+            const roomNr = parseInt(roomId.replace('room-', ''));
+
+            // Supabase Storage에서 해당 방의 파일 삭제
+            if (!isNaN(roomNr)) {
+                const result = await this.storageService.deleteRoomFiles(roomNr);
+                if (result.success) {
+                    console.log(`[${new Date().toISOString()}] Deleted ${result.deletedCount} files for room ${roomNr}`);
+                } else {
+                    console.error(`[${new Date().toISOString()}] Failed to delete files for room ${roomNr}: ${result.error}`);
+                }
+            }
+
             delete this.rooms[roomId];
             return 0;
         }

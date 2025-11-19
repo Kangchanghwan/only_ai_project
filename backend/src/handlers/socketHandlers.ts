@@ -79,11 +79,11 @@ const handleConnection = (socket: ExtendedSocket, roomManager: RoomManager) => {
 };
 
 /** 연결 종료 처리 */
-const handleDisconnect = (socket: ExtendedSocket, io: Server, roomManager: RoomManager) => {
+const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager: RoomManager) => {
     if (!socket.roomId) return;
 
     try {
-        const remainingUsers = roomManager.removeUserFromRoom(socket.roomId);
+        const remainingUsers = await roomManager.removeUserFromRoom(socket.roomId);
 
         // 남은 사용자들에게 퇴장 알림
         io.to(socket.roomId).emit('user-left', remainingUsers);
@@ -143,7 +143,7 @@ const handlePublish = (
 };
 
 /** 기존 룸 입장 처리 */
-const handleJoinRoom = (
+const handleJoinRoom = async (
     socket: ExtendedSocket,
     io: Server,
     roomManager: RoomManager,
@@ -198,7 +198,7 @@ const handleJoinRoom = (
 
         // 기존 룸에서 나가기
         socket.leave(oldRoomId);
-        const remainingInOldRoom = roomManager.removeUserFromRoom(oldRoomId);
+        const remainingInOldRoom = await roomManager.removeUserFromRoom(oldRoomId);
         io.to(oldRoomId).emit('user-left', remainingInOldRoom);
 
         // 새 룸에 입장
