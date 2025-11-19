@@ -31,9 +31,6 @@ function closeHelpModal() {
       <span>Clipboard Share</span>
     </div>
     <div class="flex items-center gap-6">
-      <span class="text-sm text-text-secondary whitespace-nowrap">
-        {{ userCount }}명 접속 중
-      </span>
       <button
         class="w-9 h-9 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-bold text-lg transition-all duration-200 flex items-center justify-center border-2 border-primary/30 hover:border-primary/50"
         @click="openHelpModal"

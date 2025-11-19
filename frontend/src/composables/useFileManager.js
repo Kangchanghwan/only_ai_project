@@ -17,6 +17,7 @@ export function useFileManager() {
   const files = ref([])
   const isLoading = ref(false)
   const error = ref(null)
+  const totalSize = ref(0) // 룸의 총 파일 용량 (바이트)
 
   /**
    * 특정 룸의 파일 목록을 불러옵니다.
@@ -41,7 +42,11 @@ export function useFileManager() {
       const loadedFiles = await supabaseService.loadFiles(roomId, options)
 
       files.value = loadedFiles
-      console.log(`[useFileManager] 파일 로드 완료: ${loadedFiles.length}개`)
+
+      // 총 용량 계산
+      totalSize.value = loadedFiles.reduce((sum, file) => sum + (file.size || 0), 0)
+
+      console.log(`[useFileManager] 파일 로드 완료: ${loadedFiles.length}개, 총 용량: ${totalSize.value} bytes`)
     } catch (err) {
       console.error('[useFileManager] 파일 로드 오류:', err)
       error.value = err
@@ -77,13 +82,37 @@ export function useFileManager() {
       throw new Error(`파일 크기는 ${maxFileSizeMB}MB를 초과할 수 없습니다`)
     }
 
+    // 룸 총 용량 제한 검증
+    // 환경 변수에서 룸 최대 용량을 가져오거나 기본값 500MB 사용
+    const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 500
+    const MAX_ROOM_SIZE = maxRoomSizeMB * 1024 * 1024
+
+    // 현재 totalSize 상태를 사용 (API 호출 없음)
+    const totalSizeAfterUpload = totalSize.value + file.size
+
+    console.log(`[useFileManager] 현재 룸 용량: ${totalSize.value} bytes, 업로드 후: ${totalSizeAfterUpload} bytes`)
+
+    // 룸 용량 제한 체크
+    if (totalSizeAfterUpload > MAX_ROOM_SIZE) {
+      const currentSizeMB = (totalSize.value / 1024 / 1024).toFixed(2)
+      const fileSizeMB = (file.size / 1024 / 1024).toFixed(2)
+      throw new Error(
+        `룸 용량 제한(${maxRoomSizeMB}MB)을 초과합니다. 현재 사용량: ${currentSizeMB}MB, 업로드 파일: ${fileSizeMB}MB`
+      )
+    }
+
     try {
       console.log('[useFileManager] 파일 업로드 시작:', file.name)
 
       // 서비스 레이어를 통해 파일 업로드
       const result = await supabaseService.uploadFile(roomId, file, options)
 
+      // 업로드 성공 시 totalSize 업데이트
+      totalSize.value += file.size
+
       console.log('[useFileManager] 업로드 성공:', result)
+      console.log(`[useFileManager] 업데이트된 총 용량: ${totalSize.value} bytes`)
+
       return result
     } catch (err) {
       console.error('[useFileManager] 업로드 오류:', err)
@@ -106,11 +135,20 @@ export function useFileManager() {
     try {
       console.log('[useFileManager] 파일 삭제 시작:', fileName)
 
+      // 삭제할 파일 찾기
+      const fileToDelete = files.value.find(f => f.name === fileName)
+
       // 서비스 레이어를 통해 파일 삭제
       const result = await supabaseService.deleteFile(roomId, fileName)
 
       // 로컬 상태에서도 제거
       files.value = files.value.filter(f => f.name !== fileName)
+
+      // totalSize 업데이트
+      if (fileToDelete && fileToDelete.size) {
+        totalSize.value -= fileToDelete.size
+        console.log(`[useFileManager] 삭제 후 총 용량: ${totalSize.value} bytes`)
+      }
 
       console.log('[useFileManager] 삭제 성공:', result)
       return result
@@ -125,6 +163,7 @@ export function useFileManager() {
    */
   function clearFiles() {
     files.value = []
+    totalSize.value = 0
     error.value = null
     console.log('[useFileManager] 파일 목록 초기화')
   }
@@ -153,6 +192,11 @@ export function useFileManager() {
      * 에러 정보 (읽기 전용).
      */
     error: readonly(error),
+    /**
+     * @property {import('vue').Readonly<number>} totalSize
+     * 룸의 총 파일 용량 (바이트, 읽기 전용).
+     */
+    totalSize: readonly(totalSize),
 
     /**
      * 파일 목록을 불러오는 함수.

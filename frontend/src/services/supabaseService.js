@@ -290,6 +290,59 @@ class SupabaseService {
       throw error
     }
   }
+
+  /**
+   * 룸의 총 파일 용량을 바이트 단위로 반환합니다
+   *
+   * @param {string} roomId - 룸 ID
+   * @returns {Promise<number>} 총 파일 용량 (바이트)
+   */
+  async getRoomTotalSize(roomId) {
+    if (!roomId) {
+      throw new Error('roomId는 필수입니다')
+    }
+
+    console.log('[SupabaseService] 룸 총 용량 조회 시작:', roomId)
+
+    try {
+      // Supabase Storage에서 파일 목록 가져오기
+      const { data, error } = await this.client.storage
+        .from(this.bucketName)
+        .list(roomId)
+
+      if (error) {
+        console.error('[SupabaseService] 파일 목록 조회 오류:', error)
+        throw error
+      }
+
+      // 데이터가 없는 경우 0 반환
+      if (!data || data.length === 0) {
+        console.log('[SupabaseService] 파일이 없습니다')
+        return 0
+      }
+
+      // 실제 파일만 필터링하고 용량 합산
+      const totalSize = data
+        .filter(file => {
+          return (
+            file.name !== '.emptyFolderPlaceholder' &&
+            file.id !== null &&
+            !file.name.endsWith('/')
+          )
+        })
+        .reduce((sum, file) => {
+          const fileSize = file.metadata?.size || 0
+          return sum + fileSize
+        }, 0)
+
+      console.log(`[SupabaseService] 룸 총 용량: ${totalSize} bytes`)
+
+      return totalSize
+    } catch (error) {
+      console.error('[SupabaseService] 총 용량 조회 예외:', error)
+      throw error
+    }
+  }
 }
 
 // 싱글톤 인스턴스 생성 및 export
