@@ -1,17 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useFileManager } from './useFileManager'
-import { supabaseService } from '../services/supabaseService'
+import { r2Service } from '../services/r2Service'
 
-// Supabase 모킹
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => ({
-    storage: {
-      from: vi.fn(() => ({
-        list: vi.fn(),
-        upload: vi.fn(),
-      }))
-    }
-  }))
+// r2Service 모킹
+vi.mock('../services/r2Service', () => ({
+  r2Service: {
+    loadFiles: vi.fn(),
+    uploadFile: vi.fn(),
+    deleteFile: vi.fn(),
+    getFileUrl: vi.fn(),
+    getRoomTotalSize: vi.fn()
+  }
 }))
 
 describe('useFileManager', () => {
@@ -19,8 +18,10 @@ describe('useFileManager', () => {
 
   beforeEach(() => {
     fileManager = useFileManager()
-    // 모든 테스트에서 기본적으로 룸 용량을 0으로 모킹 (용량 제한에 걸리지 않도록)
-    vi.spyOn(supabaseService, 'getRoomTotalSize').mockResolvedValue(0)
+    vi.resetAllMocks()
+    // 환경 변수 초기화
+    delete import.meta.env.VITE_MAX_FILE_SIZE_MB
+    delete import.meta.env.VITE_MAX_ROOM_SIZE_MB
   })
 
   describe('파일 목록', () => {
@@ -44,8 +45,8 @@ describe('useFileManager', () => {
         }
       ]
 
-      // supabaseService.loadFiles를 모킹
-      vi.spyOn(supabaseService, 'loadFiles').mockResolvedValue(mockFiles)
+      // r2Service.loadFiles를 모킹
+      r2Service.loadFiles.mockResolvedValue(mockFiles)
 
       await fileManager.loadFiles('ROOM01')
 
@@ -78,7 +79,7 @@ describe('useFileManager', () => {
         }
       ]
 
-      vi.spyOn(supabaseService, 'loadFiles').mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue(mockFiles)
 
       await fileManager.loadFiles('ROOM01')
 
@@ -103,8 +104,8 @@ describe('useFileManager', () => {
     it('이미지 파일을 업로드할 수 있어야 한다', async () => {
       const mockFile = new File(['test'], 'test.png', { type: 'image/png' })
 
-      // supabaseService.uploadFile을 모킹
-      vi.spyOn(supabaseService, 'uploadFile').mockResolvedValue({
+      // r2Service.uploadFile을 모킹
+      r2Service.uploadFile.mockResolvedValue({
         success: true,
         path: 'ROOM01/test.png',
         fileName: 'test.png',
@@ -117,43 +118,19 @@ describe('useFileManager', () => {
       expect(uploadResult.success).toBe(true)
     })
 
-    it('업로드된 파일 이름은 타임스탬프를 포함해야 한다', () => {
-      // supabaseService의 generateFileName 메서드 테스트
-      const fileName = supabaseService.generateFileName('test.png')
+    it('r2Service.uploadFile이 올바르게 호출되어야 한다', async () => {
+      const mockFile = new File(['test'], 'test.pdf', { type: 'application/pdf' })
 
-      // 타임스탬프_랜덤문자열.png 형식 (원본 확장자 유지)
-      expect(fileName).toMatch(/^\d+_[a-z0-9]{6}\.png$/)
-    })
+      r2Service.uploadFile.mockResolvedValue({
+        success: true,
+        path: 'ROOM01/test.pdf',
+        fileName: 'test.pdf',
+        url: 'https://example.com/test.pdf'
+      })
 
-    it('원본 파일의 확장자를 유지해야 한다', () => {
-      const pdfFileName = supabaseService.generateFileName('document.pdf')
-      const jpgFileName = supabaseService.generateFileName('photo.jpg')
-      const txtFileName = supabaseService.generateFileName('readme.txt')
+      await fileManager.uploadFile('ROOM01', mockFile)
 
-      expect(pdfFileName).toMatch(/^\d+_[a-z0-9]{6}\.pdf$/)
-      expect(jpgFileName).toMatch(/^\d+_[a-z0-9]{6}\.jpg$/)
-      expect(txtFileName).toMatch(/^\d+_[a-z0-9]{6}\.txt$/)
-    })
-
-    it('확장자가 없는 파일도 처리해야 한다', () => {
-      const fileName = supabaseService.generateFileName('noextension')
-
-      // 확장자 없이 타임스탬프_랜덤문자열 형식
-      expect(fileName).toMatch(/^\d+_[a-z0-9]{6}$/)
-    })
-  })
-
-  describe('파일 URL', () => {
-    it('파일 URL을 올바르게 생성해야 한다', () => {
-      const roomId = 'ROOM01'
-      const fileName = '1234567890.png'
-
-      // supabaseService의 getFileUrl 메서드 테스트
-      const url = supabaseService.getFileUrl(roomId, fileName)
-
-      expect(url).toContain(roomId)
-      expect(url).toContain(fileName)
-      expect(url).toContain('/storage/v1/object/public/test/')
+      expect(r2Service.uploadFile).toHaveBeenCalledWith('ROOM01', mockFile, {})
     })
   })
 
@@ -163,7 +140,7 @@ describe('useFileManager', () => {
       const fiveMB = 5 * 1024 * 1024
       const mockFile = new File([new ArrayBuffer(fiveMB)], 'small.png', { type: 'image/png' })
 
-      vi.spyOn(supabaseService, 'uploadFile').mockResolvedValue({
+      r2Service.uploadFile.mockResolvedValue({
         success: true,
         path: 'ROOM01/small.png',
         fileName: 'small.png',
@@ -189,7 +166,7 @@ describe('useFileManager', () => {
       const tenMB = 10 * 1024 * 1024
       const mockFile = new File([new ArrayBuffer(tenMB)], 'exact.png', { type: 'image/png' })
 
-      vi.spyOn(supabaseService, 'uploadFile').mockResolvedValue({
+      r2Service.uploadFile.mockResolvedValue({
         success: true,
         path: 'ROOM01/exact.png',
         fileName: 'exact.png',
@@ -228,7 +205,7 @@ describe('useFileManager', () => {
 
       // loadFiles를 통해 totalSize 설정
       const mockFiles = [{ name: 'existing.png', size: currentRoomSize, url: 'http://test.com', created: new Date().toISOString(), type: 'image/png' }]
-      vi.spyOn(supabaseService, 'loadFiles').mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue(mockFiles)
       await fileManager.loadFiles('ROOM01')
 
       // 환경 변수 모킹
@@ -250,12 +227,12 @@ describe('useFileManager', () => {
 
       // loadFiles를 통해 totalSize 설정
       const mockFiles = [{ name: 'existing.png', size: currentRoomSize, url: 'http://test.com', created: new Date().toISOString(), type: 'image/png' }]
-      vi.spyOn(supabaseService, 'loadFiles').mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue(mockFiles)
       await fileManager.loadFiles('ROOM01')
 
       import.meta.env.VITE_MAX_ROOM_SIZE_MB = maxRoomSize
 
-      vi.spyOn(supabaseService, 'uploadFile').mockResolvedValue({
+      r2Service.uploadFile.mockResolvedValue({
         success: true,
         path: 'ROOM01/file.png',
         fileName: 'file.png',
@@ -284,10 +261,10 @@ describe('useFileManager', () => {
 
       // loadFiles를 통해 totalSize 설정
       const mockFiles = [{ name: 'existing.png', size: currentRoomSize, url: 'http://test.com', created: new Date().toISOString(), type: 'image/png' }]
-      vi.spyOn(supabaseService, 'loadFiles').mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue(mockFiles)
       await fileManager.loadFiles('ROOM01')
 
-      vi.spyOn(supabaseService, 'uploadFile').mockResolvedValue({
+      r2Service.uploadFile.mockResolvedValue({
         success: true,
         path: 'ROOM01/file.png',
         fileName: 'file.png',
@@ -312,12 +289,12 @@ describe('useFileManager', () => {
 
       // loadFiles를 통해 totalSize 설정
       const mockFiles = [{ name: 'existing.png', size: currentRoomSize, url: 'http://test.com', created: new Date().toISOString(), type: 'image/png' }]
-      vi.spyOn(supabaseService, 'loadFiles').mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue(mockFiles)
       await fileManager.loadFiles('ROOM01')
 
       import.meta.env.VITE_MAX_ROOM_SIZE_MB = maxRoomSize
 
-      vi.spyOn(supabaseService, 'uploadFile').mockResolvedValue({
+      r2Service.uploadFile.mockResolvedValue({
         success: true,
         path: 'ROOM01/exact.png',
         fileName: 'exact.png',

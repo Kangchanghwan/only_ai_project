@@ -2,378 +2,281 @@ import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import RoomScreen from './RoomScreen.vue'
 
+// 하위 컴포넌트 스텁
+const stubs = {
+  AppHeader: {
+    name: 'AppHeader',
+    template: '<div class="app-header-stub"><slot /></div>',
+    props: ['userCount', 'isConnecting']
+  },
+  RoomInfo: {
+    name: 'RoomInfo',
+    template: '<div class="room-info-stub"></div>',
+    props: ['roomId', 'isConnecting'],
+    emits: ['copy-room-code', 'join-other-room']
+  },
+  FileGallery: {
+    name: 'FileGallery',
+    template: '<div class="file-gallery-stub"></div>',
+    props: ['files', 'isLoading'],
+    emits: ['copy-image', 'download-file', 'download-selected', 'download-parallel', 'download-all', 'copy-selected-to-clipboard', 'upload-files']
+  },
+  TextShareBox: {
+    name: 'TextShareBox',
+    template: '<div class="text-share-box-stub"></div>',
+    props: ['texts'],
+    emits: ['remove-text', 'clear-all', 'copy-text']
+  }
+}
+
 describe('RoomScreen.vue', () => {
-  it('props로 전달된 룸 ID와 사용자 수를 올바르게 렌더링해야 한다', () => {
-    const wrapper = mount(RoomScreen, {
-      props: {
-        roomId: 'TEST123',
-        userCount: 3,
-        files: [],
-        isLoading: false
-      }
-    })
+  const defaultProps = {
+    roomId: 'TEST123',
+    files: [],
+    texts: [],
+    isLoading: false,
+    userCount: 1,
+    isConnecting: false
+  }
 
-    expect(wrapper.text()).toContain('TEST123')
-    expect(wrapper.text()).toContain('3명 접속 중')
-  })
-
-  it('룸 코드 복사 버튼을 클릭하면 "copy-room-code" 이벤트를 발생시켜야 한다', async () => {
-    const wrapper = mount(RoomScreen, {
-      props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-    })
-
-    await wrapper.find('.copy-button').trigger('click')
-
-    expect(wrapper.emitted()).toHaveProperty('copy-room-code')
-  })
-
-  it('다른 룸 입장 입력 후 버튼을 클릭하면 "join-other-room" 이벤트를 발생시켜야 한다', async () => {
-    const wrapper = mount(RoomScreen, {
-      props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-    })
-
-    await wrapper.find('.room-join-input').setValue('NEW456')
-    await wrapper.find('.room-join-button').trigger('click')
-
-    expect(wrapper.emitted()).toHaveProperty('join-other-room')
-    expect(wrapper.emitted('join-other-room')[0][0]).toBe('NEW456')
-  })
-
-  it('파일이 없을 때 "비어있습니다" 메시지를 표시해야 한다', () => {
-    const wrapper = mount(RoomScreen, {
-      props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-    })
-
-    expect(wrapper.text()).toContain('이 룸은 아직 비어있습니다.')
-  })
-
-  it('파일이 있을 때 갤러리를 표시해야 한다', () => {
-    const files = [
-      { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-    ]
-    const wrapper = mount(RoomScreen, {
-      props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
-    })
-
-    expect(wrapper.find('.gallery').exists()).toBe(true)
-    expect(wrapper.findAll('.image-card').length).toBe(1)
-  })
-
-  it('이미지 카드를 클릭하면 "copy-image" 이벤트를 발생시켜야 한다', async () => {
-    const files = [
-      { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-    ]
-    const wrapper = mount(RoomScreen, {
-      props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
-    })
-
-    await wrapper.find('.image-card').trigger('click')
-
-    expect(wrapper.emitted()).toHaveProperty('copy-image')
-    expect(wrapper.emitted('copy-image')[0][0]).toBe('http://example.com/test1.png')
-  })
-
-  describe('다중 파일 다운로드', () => {
-    it('각 파일 카드에 체크박스가 표시되어야 한다', () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() },
-        { name: 'test2.pdf', url: 'http://example.com/test2.pdf', created: new Date().toISOString() }
-      ]
+  describe('컴포넌트 렌더링', () => {
+    it('모든 하위 컴포넌트가 렌더링되어야 한다', () => {
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const checkboxes = wrapper.findAll('.file-checkbox')
-      expect(checkboxes.length).toBe(2)
+      expect(wrapper.find('.app-header-stub').exists()).toBe(true)
+      expect(wrapper.find('.room-info-stub').exists()).toBe(true)
+      expect(wrapper.find('.file-gallery-stub').exists()).toBe(true)
+      expect(wrapper.find('.text-share-box-stub').exists()).toBe(true)
     })
 
-    it('체크박스 클릭 시 파일 선택 상태가 토글되어야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-      ]
+    it('props가 하위 컴포넌트에 올바르게 전달되어야 한다', () => {
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: {
+          ...defaultProps,
+          roomId: 'ROOM456',
+          userCount: 5,
+          isConnecting: true
+        },
+        global: { stubs }
       })
 
-      const checkbox = wrapper.find('.file-checkbox')
-      expect(checkbox.element.checked).toBe(false)
+      const appHeader = wrapper.findComponent({ name: 'AppHeader' })
+      const roomInfo = wrapper.findComponent({ name: 'RoomInfo' })
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
 
-      await checkbox.setChecked(true)
-      expect(checkbox.element.checked).toBe(true)
+      expect(appHeader.props('userCount')).toBe(5)
+      expect(appHeader.props('isConnecting')).toBe(true)
+      expect(roomInfo.props('roomId')).toBe('ROOM456')
+      expect(fileGallery.props('isLoading')).toBe(false)
+    })
+  })
 
-      await checkbox.setChecked(false)
-      expect(checkbox.element.checked).toBe(false)
+  describe('이벤트 전파', () => {
+    it('RoomInfo에서 copy-room-code 이벤트가 전파되어야 한다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { stubs }
+      })
+
+      const roomInfo = wrapper.findComponent({ name: 'RoomInfo' })
+      await roomInfo.vm.$emit('copy-room-code')
+
+      expect(wrapper.emitted()).toHaveProperty('copy-room-code')
     })
 
-    it('여러 파일을 동시에 선택할 수 있어야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() },
-        { name: 'test2.pdf', url: 'http://example.com/test2.pdf', created: new Date().toISOString() }
-      ]
+    it('RoomInfo에서 join-other-room 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const checkboxes = wrapper.findAll('.file-checkbox')
-      await checkboxes[0].setChecked(true)
-      await checkboxes[1].setChecked(true)
+      const roomInfo = wrapper.findComponent({ name: 'RoomInfo' })
+      await roomInfo.vm.$emit('join-other-room', 'NEW456')
 
-      expect(checkboxes[0].element.checked).toBe(true)
-      expect(checkboxes[1].element.checked).toBe(true)
+      expect(wrapper.emitted()).toHaveProperty('join-other-room')
+      expect(wrapper.emitted('join-other-room')[0][0]).toBe('NEW456')
     })
 
-    it('파일이 선택되지 않았을 때 "선택 항목 다운로드" 버튼이 비활성화되어야 한다', () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-      ]
+    it('FileGallery에서 copy-image 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const downloadSelectedButton = wrapper.find('.download-selected-button')
-      expect(downloadSelectedButton.attributes('disabled')).toBeDefined()
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      await fileGallery.vm.$emit('copy-image', 'https://example.com/image.png')
+
+      expect(wrapper.emitted()).toHaveProperty('copy-image')
+      expect(wrapper.emitted('copy-image')[0][0]).toBe('https://example.com/image.png')
     })
 
-    it('파일이 선택되었을 때 "선택 항목 다운로드" 버튼이 활성화되어야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-      ]
+    it('FileGallery에서 download-file 이벤트가 전파되어야 한다', async () => {
+      const file = { name: 'test.png', url: 'https://example.com/test.png' }
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const checkbox = wrapper.find('.file-checkbox')
-      await checkbox.setChecked(true)
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      await fileGallery.vm.$emit('download-file', file)
 
-      const downloadSelectedButton = wrapper.find('.download-selected-button')
-      expect(downloadSelectedButton.attributes('disabled')).toBeUndefined()
+      expect(wrapper.emitted()).toHaveProperty('download-file')
+      expect(wrapper.emitted('download-file')[0][0]).toEqual(file)
     })
 
-    it('"선택 항목 다운로드" 버튼 클릭 시 "download-selected" 이벤트를 발생시켜야 한다', async () => {
+    it('FileGallery에서 download-selected 이벤트가 전파되어야 한다', async () => {
       const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
+        { name: 'test1.png', url: 'https://example.com/test1.png' },
+        { name: 'test2.png', url: 'https://example.com/test2.png' }
       ]
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const checkbox = wrapper.find('.file-checkbox')
-      await checkbox.setChecked(true)
-
-      const downloadSelectedButton = wrapper.find('.download-selected-button')
-      await downloadSelectedButton.trigger('click')
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      await fileGallery.vm.$emit('download-selected', files)
 
       expect(wrapper.emitted()).toHaveProperty('download-selected')
-      expect(wrapper.emitted('download-selected')[0][0]).toEqual([files[0]])
+      expect(wrapper.emitted('download-selected')[0][0]).toEqual(files)
     })
 
-    it('"전체 다운로드" 버튼이 표시되어야 한다', () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-      ]
+    it('FileGallery에서 download-parallel 이벤트가 전파되어야 한다', async () => {
+      const files = [{ name: 'test.png', url: 'https://example.com/test.png' }]
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      expect(wrapper.find('.download-all-button').exists()).toBe(true)
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      await fileGallery.vm.$emit('download-parallel', files)
+
+      expect(wrapper.emitted()).toHaveProperty('download-parallel')
+      expect(wrapper.emitted('download-parallel')[0][0]).toEqual(files)
     })
 
-    it('"전체 다운로드" 버튼 클릭 시 "download-all" 이벤트를 발생시켜야 한다', async () => {
+    it('FileGallery에서 download-all 이벤트가 전파되어야 한다', async () => {
       const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() },
-        { name: 'test2.pdf', url: 'http://example.com/test2.pdf', created: new Date().toISOString() }
+        { name: 'test1.png', url: 'https://example.com/test1.png' },
+        { name: 'test2.pdf', url: 'https://example.com/test2.pdf' }
       ]
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const downloadAllButton = wrapper.find('.download-all-button')
-      await downloadAllButton.trigger('click')
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      await fileGallery.vm.$emit('download-all', files)
 
       expect(wrapper.emitted()).toHaveProperty('download-all')
       expect(wrapper.emitted('download-all')[0][0]).toEqual(files)
     })
 
-    it('Ctrl+C 키를 누르면 선택된 파일을 클립보드에 저장하는 이벤트를 발생시켜야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-      ]
+    it('FileGallery에서 copy-selected-to-clipboard 이벤트가 전파되어야 한다', async () => {
+      const files = [{ name: 'test.png', url: 'https://example.com/test.png' }]
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const checkbox = wrapper.find('.file-checkbox')
-      await checkbox.setChecked(true)
-
-      // Ctrl+C 키 이벤트를 document에서 시뮬레이션
-      const event = new KeyboardEvent('keydown', { key: 'c', ctrlKey: true })
-      document.dispatchEvent(event)
-      await wrapper.vm.$nextTick()
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      await fileGallery.vm.$emit('copy-selected-to-clipboard', files)
 
       expect(wrapper.emitted()).toHaveProperty('copy-selected-to-clipboard')
-      expect(wrapper.emitted('copy-selected-to-clipboard')[0][0]).toEqual([files[0]])
+      expect(wrapper.emitted('copy-selected-to-clipboard')[0][0]).toEqual(files)
     })
 
-    it('파일이 선택되지 않았을 때 Ctrl+C를 눌러도 이벤트가 발생하지 않아야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-      ]
+    it('FileGallery에서 upload-files 이벤트가 전파되어야 한다', async () => {
+      const files = [new File(['test'], 'test.png', { type: 'image/png' })]
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      // Ctrl+C 키 이벤트를 document에서 시뮬레이션 (파일 선택 안 함)
-      const event = new KeyboardEvent('keydown', { key: 'c', ctrlKey: true })
-      document.dispatchEvent(event)
-      await wrapper.vm.$nextTick()
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      await fileGallery.vm.$emit('upload-files', files)
 
-      expect(wrapper.emitted('copy-selected-to-clipboard')).toBeUndefined()
+      expect(wrapper.emitted()).toHaveProperty('upload-files')
+      expect(wrapper.emitted('upload-files')[0][0]).toEqual(files)
     })
 
-    it('개별 파일 다운로드 버튼이 각 파일 카드에 표시되어야 한다', () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() },
-        { name: 'test2.pdf', url: 'http://example.com/test2.pdf', created: new Date().toISOString() }
-      ]
+    it('TextShareBox에서 remove-text 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const downloadButtons = wrapper.findAll('.file-download-button')
-      expect(downloadButtons.length).toBe(2)
+      const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
+      await textShareBox.vm.$emit('remove-text', 'text-id-123')
+
+      expect(wrapper.emitted()).toHaveProperty('remove-text')
+      expect(wrapper.emitted('remove-text')[0][0]).toBe('text-id-123')
     })
 
-    it('개별 파일 다운로드 버튼 클릭 시 "download-file" 이벤트를 발생시켜야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'http://example.com/test1.png', created: new Date().toISOString() }
-      ]
+    it('TextShareBox에서 clear-all 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: files, isLoading: false }
+        props: defaultProps,
+        global: { stubs }
       })
 
-      const downloadButton = wrapper.find('.file-download-button')
-      await downloadButton.trigger('click')
+      const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
+      await textShareBox.vm.$emit('clear-all')
 
-      expect(wrapper.emitted()).toHaveProperty('download-file')
-      expect(wrapper.emitted('download-file')[0][0]).toEqual(files[0])
+      expect(wrapper.emitted()).toHaveProperty('clear-all-texts')
+    })
+
+    it('TextShareBox에서 copy-text 이벤트가 전파되어야 한다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { stubs }
+      })
+
+      const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
+      await textShareBox.vm.$emit('copy-text', 'text-id-456')
+
+      expect(wrapper.emitted()).toHaveProperty('copy-text')
+      expect(wrapper.emitted('copy-text')[0][0]).toBe('text-id-456')
     })
   })
 
-  describe('파일 업로드 UI', () => {
-    it('파일 선택 버튼이 표시되어야 한다', () => {
-      const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-      })
-
-      expect(wrapper.find('.file-upload-button').exists()).toBe(true)
-    })
-
-    it('숨겨진 파일 입력 요소가 존재해야 한다', () => {
-      const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-      })
-
-      const fileInput = wrapper.find('input[type="file"]')
-      expect(fileInput.exists()).toBe(true)
-      // 모든 파일 형식 허용 (accept 속성 없음)
-      expect(fileInput.attributes('accept')).toBeUndefined()
-      expect(fileInput.attributes('multiple')).toBeDefined()
-    })
-
-    it('파일 선택 버튼 클릭 시 파일 입력이 트리거되어야 한다', async () => {
-      const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-      })
-
-      const fileInput = wrapper.find('input[type="file"]')
-      const clickSpy = vi.spyOn(fileInput.element, 'click')
-
-      await wrapper.find('.file-upload-button').trigger('click')
-
-      expect(clickSpy).toHaveBeenCalled()
-    })
-
-    it('파일 선택 시 "upload-files" 이벤트를 발생시켜야 한다', async () => {
-      const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-      })
-
-      const fileInput = wrapper.find('input[type="file"]')
-      const mockFiles = [
-        new File(['test'], 'test.png', { type: 'image/png' })
+  describe('Props 변경', () => {
+    it('files props가 FileGallery에 전달되어야 한다', () => {
+      const files = [
+        { name: 'test1.png', url: 'https://example.com/test1.png', created: new Date().toISOString() }
       ]
-
-      Object.defineProperty(fileInput.element, 'files', {
-        value: mockFiles,
-        writable: false
+      const wrapper = mount(RoomScreen, {
+        props: { ...defaultProps, files },
+        global: { stubs }
       })
 
-      await fileInput.trigger('change')
-
-      expect(wrapper.emitted()).toHaveProperty('upload-files')
-      expect(wrapper.emitted('upload-files')[0][0]).toEqual(mockFiles)
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      expect(fileGallery.props('files')).toEqual(files)
     })
 
-    it('드래그 앤 드롭 영역이 존재해야 한다', () => {
-      const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-      })
-
-      expect(wrapper.find('.drop-zone').exists()).toBe(true)
-    })
-
-    it('파일 드롭 시 "upload-files" 이벤트를 발생시켜야 한다', async () => {
-      const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-      })
-
-      const mockFiles = [
-        new File(['test'], 'test.png', { type: 'image/png' })
+    it('texts props가 TextShareBox에 전달되어야 한다', () => {
+      const texts = [
+        { id: '1', content: 'Hello', timestamp: Date.now() }
       ]
-
-      const dropEvent = new Event('drop')
-      Object.defineProperty(dropEvent, 'dataTransfer', {
-        value: { files: mockFiles }
+      const wrapper = mount(RoomScreen, {
+        props: { ...defaultProps, texts },
+        global: { stubs }
       })
 
-      await wrapper.find('.drop-zone').trigger('drop', { dataTransfer: { files: mockFiles } })
-
-      expect(wrapper.emitted()).toHaveProperty('upload-files')
+      const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
+      expect(textShareBox.props('texts')).toEqual(texts)
     })
 
-    it('드래그 오버 시 드롭 영역에 시각적 피드백이 표시되어야 한다', async () => {
+    it('isLoading props가 FileGallery에 전달되어야 한다', () => {
       const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
+        props: { ...defaultProps, isLoading: true },
+        global: { stubs }
       })
 
-      const dropZone = wrapper.find('.drop-zone')
-
-      await dropZone.trigger('dragover')
-      expect(dropZone.classes()).toContain('drag-over')
-
-      await dropZone.trigger('dragleave')
-      expect(dropZone.classes()).not.toContain('drag-over')
-    })
-
-    it('업로드 방법 안내가 표시되어야 한다', () => {
-      const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-      })
-
-      const instructions = wrapper.find('.upload-instructions')
-      expect(instructions.exists()).toBe(true)
-      expect(instructions.text()).toContain('파일 선택')
-      expect(instructions.text()).toContain('드래그')
-    })
-
-    it('모든 파일 형식을 허용해야 한다', () => {
-      const wrapper = mount(RoomScreen, {
-        props: { roomId: 'TEST123', userCount: 1, files: [], isLoading: false }
-      })
-
-      const fileInput = wrapper.find('input[type="file"]')
-      // accept 속성이 없으면 모든 파일 형식 허용
-      expect(fileInput.attributes('accept')).toBeUndefined()
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      expect(fileGallery.props('isLoading')).toBe(true)
     })
   })
 })

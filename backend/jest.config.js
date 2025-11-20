@@ -1,6 +1,10 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: '<rootDir>/jest-environment.js',
+  testEnvironment: 'node',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
+    localStorage: false,
+  },
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts'],
   setupFiles: ['<rootDir>/src/__tests__/setup.ts'],
