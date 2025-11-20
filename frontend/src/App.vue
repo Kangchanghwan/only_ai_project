@@ -155,19 +155,41 @@ async function uploadFiles(files) {
 
   notification.showInfo(`${files.length}개 파일 업로드 중...`)
 
+  // 1. 전체 용량 미리 검증
+  const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 500
+  const MAX_ROOM_SIZE = maxRoomSizeMB * 1024 * 1024
+  const totalUploadSize = files.reduce((sum, f) => sum + f.size, 0)
+
+  if (fileManager.totalSize.value + totalUploadSize > MAX_ROOM_SIZE) {
+    const currentSizeMB = (fileManager.totalSize.value / 1024 / 1024).toFixed(2)
+    const uploadSizeMB = (totalUploadSize / 1024 / 1024).toFixed(2)
+    notification.showError(
+      `총 업로드 용량이 제한(${maxRoomSizeMB}MB)을 초과합니다. 현재: ${currentSizeMB}MB, 업로드: ${uploadSizeMB}MB`
+    )
+    return
+  }
+
+  // 2. 병렬 업로드
+  const results = await Promise.allSettled(
+    files.map(async (file) => {
+      const result = await fileManager.uploadFile(roomManager.currentRoomId.value, file)
+      return { file, result }
+    })
+  )
+
+  // 3. 결과 처리
   let successCount = 0
   let failCount = 0
 
-  for (const file of files) {
-    try {
-      const result = await fileManager.uploadFile(roomManager.currentRoomId.value, file)
+  for (const settledResult of results) {
+    if (settledResult.status === 'fulfilled') {
+      const { file, result } = settledResult.value
       socket.publishMessage({
         type: 'file-uploaded',
         fileName: result.fileName,
         url: result.url,
         roomId: roomManager.currentRoomId.value
       })
-      // 로컬 목록에 즉시 추가 (UX 개선)
       fileManager.addFile({
         name: result.fileName,
         url: result.url,
@@ -175,15 +197,16 @@ async function uploadFiles(files) {
         created: result.created
       })
       successCount++
-    } catch (err) {
+    } else {
       failCount++
-      // 파일 크기 제한 에러는 더 명확한 메시지로 표시
+      const err = settledResult.reason
+      // 에러에서 파일명 추출 시도
       if (err.message.includes('MB를 초과할 수 없습니다')) {
-        notification.showError(`${file.name}: ${err.message}`)
+        notification.showError(err.message)
       } else if (err.message.includes('비어있습니다')) {
-        notification.showError(`${file.name}: 파일이 비어있습니다`)
+        notification.showError(err.message)
       } else {
-        notification.showError(`${file.name}: 업로드 실패`)
+        notification.showError(`업로드 실패: ${err.message}`)
       }
     }
   }

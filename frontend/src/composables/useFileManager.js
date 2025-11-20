@@ -1,10 +1,10 @@
 import { ref, readonly } from 'vue'
-import { supabaseService } from '../services/supabaseService.js'
+import { r2Service } from '../services/r2Service.js'
 
 /**
  * @composable useFileManager
  * @description 파일 업로드 및 관리 기능을 제공하는 컴포저블.
- *              Supabase Storage와 상호작용하여 파일을 업로드하고 조회합니다.
+ *              Cloudflare R2 Storage와 상호작용하여 파일을 업로드하고 조회합니다.
  *
  * Vue 3 Best Practice:
  * - ref()를 사용한 반응형 상태 관리
@@ -39,7 +39,7 @@ export function useFileManager() {
       console.log('[useFileManager] 파일 로딩 시작:', roomId)
 
       // 서비스 레이어를 통해 파일 목록 가져오기
-      const loadedFiles = await supabaseService.loadFiles(roomId, options)
+      const loadedFiles = await r2Service.loadFiles(roomId, options)
 
       files.value = loadedFiles
 
@@ -105,7 +105,7 @@ export function useFileManager() {
       console.log('[useFileManager] 파일 업로드 시작:', file.name)
 
       // 서비스 레이어를 통해 파일 업로드
-      const result = await supabaseService.uploadFile(roomId, file, options)
+      const result = await r2Service.uploadFile(roomId, file, options)
 
       // 업로드 성공 시 totalSize 업데이트
       totalSize.value += file.size
@@ -139,7 +139,7 @@ export function useFileManager() {
       const fileToDelete = files.value.find(f => f.name === fileName)
 
       // 서비스 레이어를 통해 파일 삭제
-      const result = await supabaseService.deleteFile(roomId, fileName)
+      const result = await r2Service.deleteFile(roomId, fileName)
 
       // 로컬 상태에서도 제거
       files.value = files.value.filter(f => f.name !== fileName)
