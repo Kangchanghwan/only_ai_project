@@ -167,7 +167,10 @@ async function uploadFiles(files) {
     return
   }
 
-  // 2. 병렬 업로드 (프로그레스바 지원)
+  // 2. 병렬 업로드 (프로그레스바 지원) - 각 파일 완료 시 즉시 리스트 업데이트
+  let successCount = 0
+  let failCount = 0
+
   const results = await Promise.allSettled(
     files.map(async (file) => {
       const uploadId = crypto.randomUUID()
@@ -186,18 +189,43 @@ async function uploadFiles(files) {
           }
         )
 
-        // 업로드 완료
+        // 업로드 완료 즉시 리스트에 추가
+        socket.publishMessage({
+          type: 'file-uploaded',
+          fileName: result.fileName,
+          url: result.url,
+          roomId: roomManager.currentRoomId.value
+        })
+        fileManager.addFile({
+          name: result.fileName,
+          url: result.url,
+          size: result.size,
+          created: result.created
+        })
+        successCount++
+
+        // 프로그레스바 완료 표시
         notification.completeUpload(uploadId)
 
-        // 2초 후 프로그레스바에서 제거
+        // 1.5초 후 프로그레스바에서 제거
         setTimeout(() => {
           notification.removeUpload(uploadId)
-        }, 2000)
+        }, 1500)
 
         return { file, result, uploadId }
       } catch (error) {
         // 업로드 실패
+        failCount++
         notification.failUpload(uploadId, error.message)
+
+        // 에러 메시지 표시
+        if (error.message.includes('MB를 초과할 수 없습니다')) {
+          notification.showError(error.message)
+        } else if (error.message.includes('비어있습니다')) {
+          notification.showError(error.message)
+        } else {
+          notification.showError(`업로드 실패: ${error.message}`)
+        }
 
         // 5초 후 프로그레스바에서 제거
         setTimeout(() => {
@@ -208,40 +236,6 @@ async function uploadFiles(files) {
       }
     })
   )
-
-  // 3. 결과 처리
-  let successCount = 0
-  let failCount = 0
-
-  for (const settledResult of results) {
-    if (settledResult.status === 'fulfilled') {
-      const { file, result } = settledResult.value
-      socket.publishMessage({
-        type: 'file-uploaded',
-        fileName: result.fileName,
-        url: result.url,
-        roomId: roomManager.currentRoomId.value
-      })
-      fileManager.addFile({
-        name: result.fileName,
-        url: result.url,
-        size: result.size,
-        created: result.created
-      })
-      successCount++
-    } else {
-      failCount++
-      const err = settledResult.reason
-      // 에러에서 파일명 추출 시도
-      if (err.message.includes('MB를 초과할 수 없습니다')) {
-        notification.showError(err.message)
-      } else if (err.message.includes('비어있습니다')) {
-        notification.showError(err.message)
-      } else {
-        notification.showError(`업로드 실패: ${err.message}`)
-      }
-    }
-  }
 
   // 최종 결과 알림
   if (successCount > 0) {
