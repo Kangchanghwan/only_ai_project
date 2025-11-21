@@ -153,8 +153,6 @@ async function handleUploadFiles(files) {
 async function uploadFiles(files) {
   if (!roomManager.currentRoomId.value) return
 
-  notification.showInfo(`${files.length}개 파일 업로드 중...`)
-
   // 1. 전체 용량 미리 검증
   const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 500
   const MAX_ROOM_SIZE = maxRoomSizeMB * 1024 * 1024
@@ -169,11 +167,45 @@ async function uploadFiles(files) {
     return
   }
 
-  // 2. 병렬 업로드
+  // 2. 병렬 업로드 (프로그레스바 지원)
   const results = await Promise.allSettled(
     files.map(async (file) => {
-      const result = await fileManager.uploadFile(roomManager.currentRoomId.value, file)
-      return { file, result }
+      const uploadId = crypto.randomUUID()
+
+      // 업로드 시작 - 프로그레스바에 추가
+      notification.addUpload(uploadId, file.name)
+
+      try {
+        const result = await fileManager.uploadFile(
+          roomManager.currentRoomId.value,
+          file,
+          {
+            onProgress: (percent) => {
+              notification.updateUpload(uploadId, percent)
+            }
+          }
+        )
+
+        // 업로드 완료
+        notification.completeUpload(uploadId)
+
+        // 2초 후 프로그레스바에서 제거
+        setTimeout(() => {
+          notification.removeUpload(uploadId)
+        }, 2000)
+
+        return { file, result, uploadId }
+      } catch (error) {
+        // 업로드 실패
+        notification.failUpload(uploadId, error.message)
+
+        // 5초 후 프로그레스바에서 제거
+        setTimeout(() => {
+          notification.removeUpload(uploadId)
+        }, 5000)
+
+        throw error
+      }
     })
   )
 
@@ -438,7 +470,10 @@ onUnmounted(() => {
     />
 
     <!-- 알림 토스트 -->
-    <NotificationToast :message="notification.notification.value" />
+    <NotificationToast
+      :message="notification.notification.value"
+      :uploads="notification.uploads.value"
+    />
   </div>
 </template>
 

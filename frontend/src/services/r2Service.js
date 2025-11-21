@@ -79,9 +79,11 @@ class R2Service {
    *
    * @param {string} roomId - 룸 ID
    * @param {File} file - 업로드할 파일
+   * @param {Object} options - 옵션
+   * @param {Function} options.onProgress - 진행률 콜백 (percent: number) => void
    * @returns {Promise<Object>} 업로드 결과
    */
-  async uploadFile(roomId, file) {
+  async uploadFile(roomId, file, options = {}) {
     // 파라미터 검증
     if (!roomId) {
       throw new Error('roomId는 필수입니다')
@@ -98,7 +100,7 @@ class R2Service {
     console.log('[R2Service] 파일 업로드 시작:', { roomId, fileName: file.name, size: file.size })
 
 
-    return this.uploadWithPresignedUrl(roomId, file)
+    return this.uploadWithPresignedUrl(roomId, file, options)
   }
 
   /**
@@ -149,10 +151,14 @@ class R2Service {
    *
    * @param {string} roomId - 룸 ID
    * @param {File} file - 업로드할 파일
+   * @param {Object} options - 옵션
+   * @param {Function} options.onProgress - 진행률 콜백
    * @returns {Promise<Object>} 업로드 결과
    */
-  async uploadWithPresignedUrl(roomId, file) {
+  async uploadWithPresignedUrl(roomId, file, options = {}) {
     console.log('[R2Service] Presigned URL 방식 사용')
+
+    const { onProgress } = options
 
     try {
       // 1. 백엔드에서 Presigned URL 받기
@@ -174,29 +180,53 @@ class R2Service {
 
       const { uploadUrl, fileUrl, fileName } = await presignedResponse.json()
 
-      // 2. Presigned URL을 사용하여 R2에 직접 업로드
-      const uploadResponse = await fetch(uploadUrl, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': file.type || 'application/octet-stream',
-        },
+      // 2. XMLHttpRequest를 사용하여 R2에 직접 업로드 (진행률 추적)
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+
+        // 진행률 이벤트
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable && onProgress) {
+            const percent = Math.round((e.loaded / e.total) * 100)
+            onProgress(percent)
+          }
+        })
+
+        // 완료 이벤트
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            console.log('[R2Service] Presigned URL 업로드 성공:', fileName)
+            resolve({
+              success: true,
+              path: `${roomId}/${fileName}`,
+              fileName,
+              url: fileUrl,
+              size: file.size,
+              created: new Date().toISOString()
+            })
+          } else {
+            reject(new Error(`R2 업로드 실패: ${xhr.status}`))
+          }
+        })
+
+        // 에러 이벤트
+        xhr.addEventListener('error', () => {
+          reject(new Error('네트워크 오류로 업로드 실패'))
+        })
+
+        // 타임아웃 이벤트
+        xhr.addEventListener('timeout', () => {
+          reject(new Error('업로드 시간 초과'))
+        })
+
+        // 요청 설정
+        xhr.open('PUT', uploadUrl)
+        xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream')
+        xhr.timeout = 300000 // 5분 타임아웃
+
+        // 요청 전송
+        xhr.send(file)
       })
-
-      if (!uploadResponse.ok) {
-        throw new Error(`R2 업로드 실패: ${uploadResponse.status}`)
-      }
-
-      console.log('[R2Service] Presigned URL 업로드 성공:', fileName)
-
-      return {
-        success: true,
-        path: `${roomId}/${fileName}`,
-        fileName,
-        url: fileUrl,
-        size: file.size,
-        created: new Date().toISOString()
-      }
     } catch (error) {
       console.error('[R2Service] Presigned URL 업로드 예외:', error)
       throw error

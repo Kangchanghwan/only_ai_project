@@ -45,21 +45,53 @@ class R2Service {
   }
 
   /**
-   * 파일명을 생성합니다
+   * 파일명을 정리합니다 (원본 파일명 유지, URL-safe 처리)
    */
-  generateFileName(originalFileName: string): string {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 8);
-
-    let extension = '';
-    if (originalFileName && typeof originalFileName === 'string') {
-      const lastDot = originalFileName.lastIndexOf('.');
-      if (lastDot !== -1) {
-        extension = originalFileName.slice(lastDot);
-      }
+  sanitizeFileName(originalFileName: string): string {
+    if (!originalFileName || typeof originalFileName !== 'string') {
+      return 'unnamed_file';
     }
 
-    return `${timestamp}_${random}${extension}`;
+    // 확장자 분리
+    let baseName = originalFileName;
+    let extension = '';
+    const lastDot = originalFileName.lastIndexOf('.');
+    if (lastDot !== -1 && lastDot !== 0) {
+      baseName = originalFileName.slice(0, lastDot);
+      extension = originalFileName.slice(lastDot);
+    } else if (lastDot === 0) {
+      // .jpg 같은 경우 (확장자만 있는 경우)
+      extension = originalFileName;
+      baseName = '';
+    }
+
+    // 공백, 탭, 줄바꿈을 언더스코어로 변환
+    let sanitized = baseName.replace(/\s+/g, '_');
+
+    // URL-safe 문자만 허용 (영문, 숫자, 한글, 점, 하이픈, 언더스코어)
+    // Unicode property escape를 사용하여 한글을 안정적으로 매칭
+    sanitized = sanitized.replace(/[^a-zA-Z0-9\p{Script=Hangul}._-]/gu, '');
+
+    // 빈 문자열이면 기본값 사용
+    if (!sanitized) {
+      sanitized = 'unnamed_file';
+    }
+
+    // 파일명 길이 제한 (확장자 포함 255자)
+    const maxBaseLength = 255 - extension.length;
+    if (sanitized.length > maxBaseLength) {
+      sanitized = sanitized.slice(0, maxBaseLength);
+    }
+
+    return sanitized + extension;
+  }
+
+  /**
+   * 파일명을 생성합니다 (하위 호환성을 위해 유지)
+   * @deprecated sanitizeFileName을 사용하세요
+   */
+  generateFileName(originalFileName: string): string {
+    return this.sanitizeFileName(originalFileName);
   }
 
   /**

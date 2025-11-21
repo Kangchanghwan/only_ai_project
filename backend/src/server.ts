@@ -116,8 +116,13 @@ app.post('/api/r2/presigned-url', async (req, res) => {
             return;
         }
 
+        logger.info(`[API] Presigned URL 요청 - 원본 파일명: ${fileName}`);
+
         const r2Service = getR2Service();
         const generatedFileName = r2Service.generateFileName(fileName);
+
+        logger.info(`[API] Presigned URL 요청 - 변환된 파일명: ${generatedFileName}`);
+
         const result = await r2Service.getUploadPresignedUrl(roomId, generatedFileName, contentType);
 
         res.json(result);

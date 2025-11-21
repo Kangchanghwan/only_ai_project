@@ -11,9 +11,84 @@ class NotificationService {
     // 반응형 상태: 현재 표시 중인 알림 메시지
     this.notification = ref(null)
 
+    // 업로드 진행률 상태: Map<uploadId, { fileName, percent, status, error }>
+    this.uploads = ref(new Map())
+
     // 기본 설정
     this.defaultDuration = 3000 // 3초
     this.currentTimer = null
+  }
+
+  /**
+   * 업로드를 추가합니다
+   * @param {string} uploadId - 업로드 고유 ID
+   * @param {string} fileName - 파일명
+   */
+  addUpload(uploadId, fileName) {
+    this.uploads.value.set(uploadId, {
+      fileName,
+      percent: 0,
+      status: 'uploading',
+      error: null
+    })
+    // Map의 변경을 감지하기 위해 새 Map으로 교체
+    this.uploads.value = new Map(this.uploads.value)
+  }
+
+  /**
+   * 업로드 진행률을 업데이트합니다
+   * @param {string} uploadId - 업로드 고유 ID
+   * @param {number} percent - 진행률 (0-100)
+   */
+  updateUpload(uploadId, percent) {
+    const upload = this.uploads.value.get(uploadId)
+    if (upload) {
+      upload.percent = percent
+      this.uploads.value = new Map(this.uploads.value)
+    }
+  }
+
+  /**
+   * 업로드를 완료 상태로 변경합니다
+   * @param {string} uploadId - 업로드 고유 ID
+   */
+  completeUpload(uploadId) {
+    const upload = this.uploads.value.get(uploadId)
+    if (upload) {
+      upload.status = 'completed'
+      upload.percent = 100
+      this.uploads.value = new Map(this.uploads.value)
+    }
+  }
+
+  /**
+   * 업로드를 실패 상태로 변경합니다
+   * @param {string} uploadId - 업로드 고유 ID
+   * @param {string} error - 에러 메시지
+   */
+  failUpload(uploadId, error) {
+    const upload = this.uploads.value.get(uploadId)
+    if (upload) {
+      upload.status = 'failed'
+      upload.error = error
+      this.uploads.value = new Map(this.uploads.value)
+    }
+  }
+
+  /**
+   * 업로드를 목록에서 제거합니다
+   * @param {string} uploadId - 업로드 고유 ID
+   */
+  removeUpload(uploadId) {
+    this.uploads.value.delete(uploadId)
+    this.uploads.value = new Map(this.uploads.value)
+  }
+
+  /**
+   * 모든 업로드를 제거합니다
+   */
+  clearAllUploads() {
+    this.uploads.value = new Map()
   }
 
   /**

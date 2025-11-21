@@ -19,6 +19,12 @@ export function useNotification() {
     notification: readonly(notificationService.notification),
 
     /**
+     * @property {import('vue').Readonly<Map>} uploads
+     * 현재 업로드 진행 상태 (읽기 전용).
+     */
+    uploads: readonly(notificationService.uploads),
+
+    /**
      * 알림을 표시하는 함수.
      * @param {string} message - 표시할 메시지.
      * @param {number} [duration=3000] - 알림이 표시될 시간(밀리초).
@@ -50,5 +56,43 @@ export function useNotification() {
      * @param {number} [duration] - 알림이 표시될 시간(밀리초).
      */
     showInfo: notificationService.showInfo.bind(notificationService),
+
+    /**
+     * 업로드를 추가하는 함수.
+     * @param {string} uploadId - 업로드 고유 ID.
+     * @param {string} fileName - 파일명.
+     */
+    addUpload: notificationService.addUpload.bind(notificationService),
+
+    /**
+     * 업로드 진행률을 업데이트하는 함수.
+     * @param {string} uploadId - 업로드 고유 ID.
+     * @param {number} percent - 진행률 (0-100).
+     */
+    updateUpload: notificationService.updateUpload.bind(notificationService),
+
+    /**
+     * 업로드를 완료 상태로 변경하는 함수.
+     * @param {string} uploadId - 업로드 고유 ID.
+     */
+    completeUpload: notificationService.completeUpload.bind(notificationService),
+
+    /**
+     * 업로드를 실패 상태로 변경하는 함수.
+     * @param {string} uploadId - 업로드 고유 ID.
+     * @param {string} error - 에러 메시지.
+     */
+    failUpload: notificationService.failUpload.bind(notificationService),
+
+    /**
+     * 업로드를 목록에서 제거하는 함수.
+     * @param {string} uploadId - 업로드 고유 ID.
+     */
+    removeUpload: notificationService.removeUpload.bind(notificationService),
+
+    /**
+     * 모든 업로드를 제거하는 함수.
+     */
+    clearAllUploads: notificationService.clearAllUploads.bind(notificationService),
   }
 }
