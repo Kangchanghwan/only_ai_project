@@ -43,7 +43,8 @@ const emit = defineEmits([
   'copy-selected-to-clipboard',
   'remove-text',
   'clear-all-texts',
-  'copy-text'
+  'copy-text',
+  'paste-content'
 ])
 </script>
 
@@ -72,6 +73,7 @@ const emit = defineEmits([
         @download-all="$emit('download-all', $event)"
         @copy-selected-to-clipboard="$emit('copy-selected-to-clipboard', $event)"
         @upload-files="$emit('upload-files', $event)"
+        @paste-content="$emit('paste-content')"
       />
 
       <!-- Text Sharing Section -->

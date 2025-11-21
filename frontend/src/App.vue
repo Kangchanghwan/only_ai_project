@@ -410,6 +410,55 @@ async function handleCopyText(textId) {
   }
 }
 
+/**
+ * 붙여넣기 버튼 클릭 핸들러 (모바일용)
+ * navigator.clipboard API를 사용하여 클립보드 내용을 읽습니다.
+ */
+async function handlePasteContent() {
+  if (!roomManager.currentRoomId.value) return
+
+  try {
+    // 먼저 클립보드 읽기 권한 확인 및 데이터 읽기
+    const clipboardItems = await navigator.clipboard.read()
+
+    for (const item of clipboardItems) {
+      // 이미지 타입 확인
+      const imageType = item.types.find(type => type.startsWith('image/'))
+      if (imageType) {
+        const blob = await item.getType(imageType)
+        const file = new File([blob], `clipboard-image-${Date.now()}.png`, { type: imageType })
+        await uploadFiles([file])
+        return
+      }
+
+      // 텍스트 타입 확인
+      if (item.types.includes('text/plain')) {
+        const blob = await item.getType('text/plain')
+        const text = await blob.text()
+        if (text && text.trim()) {
+          await handleAddText(text.trim())
+        }
+        return
+      }
+    }
+
+    notification.showInfo('클립보드가 비어있습니다.')
+  } catch (error) {
+    // clipboard.read()가 지원되지 않는 경우 readText() 시도
+    try {
+      const text = await navigator.clipboard.readText()
+      if (text && text.trim()) {
+        await handleAddText(text.trim())
+      } else {
+        notification.showInfo('클립보드가 비어있습니다.')
+      }
+    } catch (textError) {
+      console.error('[App] 클립보드 읽기 실패:', textError)
+      notification.showError('클립보드 접근 권한이 필요합니다.')
+    }
+  }
+}
+
 // ========================================
 // 라이프사이클 훅
 // ========================================
@@ -461,6 +510,7 @@ onUnmounted(() => {
       @remove-text="handleRemoveText"
       @clear-all-texts="handleClearAllTexts"
       @copy-text="handleCopyText"
+      @paste-content="handlePasteContent"
     />
 
     <!-- 알림 토스트 -->

@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import FileCard from './FileCard.vue'
 import FileUploadSection from './FileUploadSection.vue'
+import PasteSection from './PasteSection.vue'
 import DownloadControls from './DownloadControls.vue'
 
 const props = defineProps({
@@ -22,7 +23,8 @@ const emit = defineEmits([
   'download-all',
   'download-parallel',
   'copy-selected-to-clipboard',
-  'upload-files'
+  'upload-files',
+  'paste-content'
 ])
 
 const selectedFiles = ref(new Set())
@@ -102,6 +104,9 @@ onUnmounted(() => {
     <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
       <!-- 파일 업로드 카드 (항상 맨 앞에 표시) -->
       <FileUploadSection @upload-files="$emit('upload-files', $event)" />
+
+      <!-- 붙여넣기 카드 (모바일 사용자용) -->
+      <PasteSection @paste-content="$emit('paste-content')" />
 
       <!-- 업로드된 파일 카드들 -->
       <FileCard
