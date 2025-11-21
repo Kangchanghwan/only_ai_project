@@ -82,25 +82,75 @@ function handleDownload(event) {
       </div>
     </div>
 
-    <!-- 액션 버튼 오버레이 (호버시 표시) -->
-    <div
-      class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-    >
-      <span class="text-xs font-medium text-white">클릭해서 복사</span>
-      <button
-        class="bg-primary/90 border-none text-white px-3 py-1.5 rounded cursor-pointer text-sm font-semibold transition-all duration-200 hover:bg-primary hover:scale-110"
-        @click="handleDownload"
-        title="다운로드"
-      >
-        ⬇️ 다운로드
-      </button>
+    <!-- 파일명 표시 (하단) -->
+    <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
+      <!-- 파일명 마퀴 애니메이션 -->
+      <div class="file-name-container overflow-hidden mb-2">
+        <div class="file-name-wrapper">
+          <span class="file-name text-sm font-medium text-white whitespace-nowrap">
+            {{ file.name }}
+          </span>
+        </div>
+      </div>
+
+      <!-- 액션 버튼 -->
+      <div class="flex justify-between items-center">
+        <span class="text-xs font-medium text-white/80">클릭해서 복사</span>
+        <button
+          class="bg-primary/90 border-none text-white px-3 py-1.5 rounded cursor-pointer text-sm font-semibold transition-all duration-200 hover:bg-primary hover:scale-110"
+          @click="handleDownload"
+          title="다운로드"
+        >
+          ⬇️ 다운로드
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* 호버시 오버레이 표시 */
-.relative:hover > div:last-child {
-  opacity: 1;
+/* 파일명 마퀴 애니메이션 */
+.file-name-container {
+  position: relative;
+  width: 100%;
+}
+
+.file-name-wrapper {
+  display: inline-block;
+  position: relative;
+  max-width: 100%;
+}
+
+.file-name {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* 호버 시 마퀴 애니메이션 */
+.relative:hover .file-name-wrapper {
+  animation: marquee 5s linear infinite;
+}
+
+.relative:hover .file-name {
+  text-overflow: unset;
+  overflow: visible;
+  max-width: none;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  10% {
+    transform: translateX(0%);
+  }
+  90% {
+    transform: translateX(calc(-100% + 180px));
+  }
+  100% {
+    transform: translateX(calc(-100% + 180px));
+  }
 }
 </style>
