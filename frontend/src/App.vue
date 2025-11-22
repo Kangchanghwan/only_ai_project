@@ -47,7 +47,7 @@ let cleanupOnMessage = null
  */
 async function connectToRoom(roomCode) {
   isConnecting.value = true
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  await new Promise((resolve) => setTimeout(resolve, 245))
   try {
     // 기존 연결 및 리스너 정리
     if (socket.isConnected.value) {
