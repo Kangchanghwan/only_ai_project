@@ -7,6 +7,7 @@ import { RoomManager } from './managers/RoomManager';
 import { setupSocketHandlers } from './handlers/socketHandlers';
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './types';
 import logger from './utils/logger';
+import requestLogger from './middleware/requestLogger';
 import { getR2Service } from './services/r2Service';
 
 // === Multer 설정 (직접 업로드용) ===
@@ -52,6 +53,9 @@ app.use((_req, res, next) => {
     }
     next();
 });
+
+// 요청 로깅 미들웨어
+app.use(requestLogger);
 
 const httpServer = createServer(app);
 
