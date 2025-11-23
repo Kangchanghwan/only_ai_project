@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+npm-debug.log
+package-lock.json
+
+# Development files
+backend/tsconfig.json
+backend/nodemon.json
+backend/.env
+backend/.env.development
+backend/.env.local
+
+# Testing
+backend/__tests__
+backend/**/*.test.ts
+backend/**/*.spec.ts
+backend/jest.config.js
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!backend/README.md
+PRODUCTION_OPTIMIZATION.md
+FLUTTER_MIGRATION.md
+GEMINI.md
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Frontend (not needed for backend image)
+frontend
+
+# Misc
+*.log
+.env*
+!.env.production
+dist
+coverage
+.cache
