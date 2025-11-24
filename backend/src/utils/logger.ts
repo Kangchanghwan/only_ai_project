@@ -27,10 +27,10 @@ export const logger = {
   },
 
   /**
-   * Log informational messages (disabled in production and test)
+   * Log informational messages (enabled in all environments except test)
    */
   info: (...args: any[]): void => {
-    if (!isProduction && !isTest) {
+    if (!isTest) {
       console.info(`[${getTimestamp()}] INFO:`, ...args)
     }
   },
