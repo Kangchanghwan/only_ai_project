@@ -1,10 +1,8 @@
 # Dependencies
 node_modules
 npm-debug.log
-package-lock.json
 
 # Development files
-backend/tsconfig.json
 backend/nodemon.json
 backend/.env
 backend/.env.development
