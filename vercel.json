@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build:prod",
+  "buildCommand": "npm run build:prod",
   "outputDirectory": "frontend/dist",
   "rewrites": [
     {
