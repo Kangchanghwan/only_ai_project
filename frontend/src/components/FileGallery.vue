@@ -35,6 +35,11 @@ const selectedFilesArray = computed(() => {
   return props.files.filter(file => selectedFiles.value.has(file.name))
 })
 
+// 모든 파일이 선택되었는지 확인
+const allFilesSelected = computed(() => {
+  return props.files.length > 0 && selectedFiles.value.size === props.files.length
+})
+
 // 파일 선택/해제
 function toggleFileSelection(fileName) {
   if (selectedFiles.value.has(fileName)) {
@@ -44,6 +49,17 @@ function toggleFileSelection(fileName) {
   }
   // Set은 반응성을 위해 새 객체로 교체
   selectedFiles.value = new Set(selectedFiles.value)
+}
+
+// 전체 선택/해제
+function toggleSelectAll() {
+  if (allFilesSelected.value) {
+    // 전체 해제
+    selectedFiles.value = new Set()
+  } else {
+    // 전체 선택
+    selectedFiles.value = new Set(props.files.map(file => file.name))
+  }
 }
 
 // 병렬 다운로드
@@ -82,7 +98,10 @@ onUnmounted(() => {
     <DownloadControls
       v-if="files.length > 0"
       :selected-count="selectedCount"
+      :total-count="files.length"
+      :all-selected="allFilesSelected"
       @download-parallel="downloadParallel"
+      @toggle-select-all="toggleSelectAll"
     />
 
     <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
