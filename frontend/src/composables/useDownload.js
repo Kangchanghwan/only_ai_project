@@ -1,14 +1,13 @@
 /**
  * @composable useDownload
  * @description 파일 다운로드 관련 기능을 제공하는 컴포저블.
- *              개별 파일 다운로드, ZIP 압축 다운로드, 클립보드 복사 기능을 제공합니다.
+ *              개별 파일 다운로드, 클립보드 복사 기능을 제공합니다.
  *
  * Vue 3 Best Practice:
  * - 상태가 없는 유틸리티 함수 모음
  * - 명확한 에러 처리
  * - 브라우저 API와의 안전한 상호작용
  */
-import JSZip from 'jszip'
 
 export function useDownload() {
   /**
@@ -47,50 +46,6 @@ export function useDownload() {
       return { success: true }
     } catch (err) {
       console.error('파일 다운로드 실패:', err)
-      return { success: false, error: err }
-    }
-  }
-
-  /**
-   * 여러 파일을 ZIP으로 압축하여 다운로드합니다.
-   *
-   * @param {Array<Object>} files - 다운로드할 파일 배열 [{ name, url }, ...]
-   * @param {string} zipName - ZIP 파일 이름 (기본값: 'files.zip')
-   * @returns {Promise<{success: boolean, error?: Error}>} 다운로드 결과
-   */
-  async function downloadAsZip(files, zipName = 'files.zip') {
-    try {
-      if (!files || files.length === 0) {
-        throw new Error('다운로드할 파일이 없습니다')
-      }
-
-      const zip = new JSZip()
-
-      // 모든 파일을 fetch하여 ZIP에 추가
-      for (const file of files) {
-        const response = await fetch(file.url)
-        const blob = await response.blob()
-        zip.file(file.name, blob)
-      }
-
-      // ZIP 파일 생성
-      const zipBlob = await zip.generateAsync({ type: 'blob' })
-
-      // ZIP 파일 다운로드
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(zipBlob)
-      link.download = zipName
-      link.style.display = 'none'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-
-      // 메모리 해제
-      URL.revokeObjectURL(link.href)
-
-      return { success: true }
-    } catch (err) {
-      console.error('ZIP 다운로드 실패:', err)
       return { success: false, error: err }
     }
   }
@@ -136,10 +91,10 @@ export function useDownload() {
   }
 
   /**
-   * 여러 파일을 병렬로 다운로드합니다.
+   * 여러 파일을 순차적으로 다운로드합니다.
    *
-   * ZIP으로 압축하지 않고 각 파일을 개별적으로 동시에 다운로드합니다.
-   * Promise.all을 사용하여 모든 다운로드를 병렬로 처리합니다.
+   * ZIP으로 압축하지 않고 각 파일을 개별적으로 하나씩 다운로드합니다.
+   * 브라우저의 다운로드 제한을 피하고 안정적인 다운로드를 제공합니다.
    *
    * @param {Array<Object>} files - 다운로드할 파일 배열 [{ name, url }, ...]
    * @returns {Promise<{success: boolean, successCount: number, failCount: number, total: number, errors?: Array, error?: Error}>} 다운로드 결과
@@ -150,9 +105,18 @@ export function useDownload() {
         throw new Error('다운로드할 파일이 없습니다')
       }
 
-      // 각 파일을 병렬로 다운로드
-      const downloadPromises = files.map(file => downloadFile(file))
-      const results = await Promise.all(downloadPromises)
+      const results = []
+
+      // 각 파일을 순차적으로 다운로드 (짧은 지연 시간 추가)
+      for (const file of files) {
+        const result = await downloadFile(file)
+        results.push(result)
+
+        // 각 다운로드 사이에 짧은 지연 추가 (브라우저 안정성)
+        if (results.length < files.length) {
+          await new Promise(resolve => setTimeout(resolve, 300))
+        }
+      }
 
       // 결과 집계
       const successCount = results.filter(r => r.success).length
@@ -167,14 +131,13 @@ export function useDownload() {
         errors: errors.length > 0 ? errors : undefined
       }
     } catch (err) {
-      console.error('병렬 다운로드 실패:', err)
+      console.error('다운로드 실패:', err)
       return { success: false, error: err }
     }
   }
 
   return {
     downloadFile,
-    downloadAsZip,
     copyFilesToClipboard,
     downloadParallel
   }

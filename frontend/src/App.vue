@@ -278,24 +278,10 @@ async function handleDownloadFile(file) {
   }
 }
 
-async function handleDownloadSelected(files) {
-  if (!files || files.length === 0) return
-
-  notification.showInfo(`${files.length}개 파일을 ZIP으로 압축 중...`)
-  const zipName = `clipboard-share-${Date.now()}.zip`
-  const result = await download.downloadAsZip(files, zipName)
-
-  if (result.success) {
-    notification.showSuccess(`${files.length}개 파일 다운로드 완료!`)
-  } else {
-    notification.showError('ZIP 다운로드 실패')
-  }
-}
-
 async function handleDownloadParallel(files) {
   if (!files || files.length === 0) return
 
-  notification.showInfo(`${files.length}개 파일을 병렬로 다운로드 중...`)
+  notification.showInfo(`${files.length}개 파일을 다운로드 중...`)
   const result = await download.downloadParallel(files)
 
   if (result.success) {
@@ -307,21 +293,7 @@ async function handleDownloadParallel(files) {
       notification.showSuccess(`${result.successCount}개 파일 다운로드 완료!`)
     }
   } else {
-    notification.showError('병렬 다운로드 실패')
-  }
-}
-
-async function handleDownloadAll(files) {
-  if (!files || files.length === 0) return
-
-  notification.showInfo(`전체 ${files.length}개 파일을 ZIP으로 압축 중...`)
-  const zipName = `clipboard-share-all-${Date.now()}.zip`
-  const result = await download.downloadAsZip(files, zipName)
-
-  if (result.success) {
-    notification.showSuccess(`${files.length}개 파일 다운로드 완료!`)
-  } else {
-    notification.showError('ZIP 다운로드 실패')
+    notification.showError('다운로드 실패')
   }
 }
 
@@ -503,9 +475,7 @@ onUnmounted(() => {
       @join-other-room="connectToRoom"
       @upload-files="handleUploadFiles"
       @download-file="handleDownloadFile"
-      @download-selected="handleDownloadSelected"
       @download-parallel="handleDownloadParallel"
-      @download-all="handleDownloadAll"
       @copy-selected-to-clipboard="handleCopySelectedToClipboard"
       @remove-text="handleRemoveText"
       @clear-all-texts="handleClearAllTexts"

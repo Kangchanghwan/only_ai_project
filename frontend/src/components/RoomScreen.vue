@@ -37,9 +37,7 @@ const emit = defineEmits([
   'join-other-room',
   'upload-files',
   'download-file',
-  'download-selected',
   'download-parallel',
-  'download-all',
   'copy-selected-to-clipboard',
   'remove-text',
   'clear-all-texts',
@@ -68,9 +66,7 @@ const emit = defineEmits([
         :is-loading="isLoading"
         @copy-image="$emit('copy-image', $event)"
         @download-file="$emit('download-file', $event)"
-        @download-selected="$emit('download-selected', $event)"
         @download-parallel="$emit('download-parallel', $event)"
-        @download-all="$emit('download-all', $event)"
         @copy-selected-to-clipboard="$emit('copy-selected-to-clipboard', $event)"
         @upload-files="$emit('upload-files', $event)"
         @paste-content="$emit('paste-content')"

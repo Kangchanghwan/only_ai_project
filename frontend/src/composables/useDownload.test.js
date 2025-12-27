@@ -78,46 +78,6 @@ describe('useDownload', () => {
     })
   })
 
-  describe('ZIP 다운로드', () => {
-    it('여러 파일을 ZIP으로 다운로드할 수 있어야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'https://example.com/test1.png' },
-        { name: 'test2.pdf', url: 'https://example.com/test2.pdf' }
-      ]
-
-      global.fetch.mockResolvedValue({
-        blob: () => Promise.resolve(new Blob(['test'], { type: 'image/png' }))
-      })
-
-      const result = await download.downloadAsZip(files, 'my-files.zip')
-
-      expect(result.success).toBe(true)
-      expect(global.fetch).toHaveBeenCalledTimes(2)
-      expect(mockLink.download).toBe('my-files.zip')
-      expect(mockLink.click).toHaveBeenCalled()
-    })
-
-    it('ZIP 다운로드 실패시 에러를 반환해야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'https://example.com/test1.png' }
-      ]
-
-      global.fetch.mockRejectedValue(new Error('Network error'))
-
-      const result = await download.downloadAsZip(files, 'my-files.zip')
-
-      expect(result.success).toBe(false)
-      expect(result.error).toBeDefined()
-    })
-
-    it('빈 파일 배열로 ZIP 다운로드 시도시 에러를 반환해야 한다', async () => {
-      const result = await download.downloadAsZip([], 'empty.zip')
-
-      expect(result.success).toBe(false)
-      expect(result.error.message).toContain('파일')
-    })
-  })
-
   describe('클립보드에 파일 저장', () => {
     it('선택한 파일들을 클립보드에 저장할 수 있어야 한다', async () => {
       const files = [

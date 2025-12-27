@@ -19,8 +19,6 @@ const props = defineProps({
 const emit = defineEmits([
   'copy-image',
   'download-file',
-  'download-selected',
-  'download-all',
   'download-parallel',
   'copy-selected-to-clipboard',
   'upload-files',
@@ -48,23 +46,11 @@ function toggleFileSelection(fileName) {
   selectedFiles.value = new Set(selectedFiles.value)
 }
 
-// 선택 항목 다운로드
-function downloadSelected() {
-  if (selectedCount.value > 0) {
-    emit('download-selected', selectedFilesArray.value)
-  }
-}
-
 // 병렬 다운로드
 function downloadParallel() {
   if (selectedCount.value > 0) {
     emit('download-parallel', selectedFilesArray.value)
   }
-}
-
-// 전체 다운로드
-function downloadAll() {
-  emit('download-all', props.files)
 }
 
 // Ctrl+C 키보드 이벤트 핸들러
@@ -96,9 +82,7 @@ onUnmounted(() => {
     <DownloadControls
       v-if="files.length > 0"
       :selected-count="selectedCount"
-      @download-selected="downloadSelected"
       @download-parallel="downloadParallel"
-      @download-all="downloadAll"
     />
 
     <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
