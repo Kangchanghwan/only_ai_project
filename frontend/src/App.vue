@@ -282,7 +282,42 @@ async function handleDownloadParallel(files) {
   if (!files || files.length === 0) return
 
   notification.showInfo(`${files.length}개 파일을 다운로드 중...`)
-  const result = await download.downloadParallel(files)
+
+  // 각 파일에 대한 다운로드 ID 생성 및 프로그레스바 추가
+  const downloadIds = new Map()
+
+  const result = await download.downloadParallel(files, {
+    onProgress: (file, status, error) => {
+      if (status === 'start') {
+        // 다운로드 시작 - 프로그레스바에 추가
+        const downloadId = crypto.randomUUID()
+        downloadIds.set(file.name, downloadId)
+        notification.addUpload(downloadId, file.name)
+      } else if (status === 'complete') {
+        // 다운로드 완료
+        const downloadId = downloadIds.get(file.name)
+        if (downloadId) {
+          notification.completeUpload(downloadId)
+
+          // 1.5초 후 프로그레스바에서 제거
+          setTimeout(() => {
+            notification.removeUpload(downloadId)
+          }, 1500)
+        }
+      } else if (status === 'failed') {
+        // 다운로드 실패
+        const downloadId = downloadIds.get(file.name)
+        if (downloadId) {
+          notification.failUpload(downloadId, error?.message || '다운로드 실패')
+
+          // 5초 후 프로그레스바에서 제거
+          setTimeout(() => {
+            notification.removeUpload(downloadId)
+          }, 5000)
+        }
+      }
+    }
+  })
 
   if (result.success) {
     if (result.failCount > 0) {

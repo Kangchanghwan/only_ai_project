@@ -97,20 +97,33 @@ export function useDownload() {
    * 브라우저의 다운로드 제한을 피하고 안정적인 다운로드를 제공합니다.
    *
    * @param {Array<Object>} files - 다운로드할 파일 배열 [{ name, url }, ...]
+   * @param {Object} options - 옵션 객체
+   * @param {Function} options.onProgress - 각 파일 시작/완료 시 호출되는 콜백 (file, status)
    * @returns {Promise<{success: boolean, successCount: number, failCount: number, total: number, errors?: Array, error?: Error}>} 다운로드 결과
    */
-  async function downloadParallel(files) {
+  async function downloadParallel(files, options = {}) {
     try {
       if (!files || files.length === 0) {
         throw new Error('다운로드할 파일이 없습니다')
       }
 
+      const { onProgress } = options
       const results = []
 
       // 각 파일을 순차적으로 다운로드 (짧은 지연 시간 추가)
       for (const file of files) {
+        // 다운로드 시작 알림
+        if (onProgress) {
+          onProgress(file, 'start')
+        }
+
         const result = await downloadFile(file)
         results.push(result)
+
+        // 다운로드 완료/실패 알림
+        if (onProgress) {
+          onProgress(file, result.success ? 'complete' : 'failed', result.error)
+        }
 
         // 각 다운로드 사이에 짧은 지연 추가 (브라우저 안정성)
         if (results.length < files.length) {

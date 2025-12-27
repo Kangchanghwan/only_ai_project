@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../utils/fileUtils'
+import FileQRCodeModal from './FileQRCodeModal.vue'
 
 const props = defineProps({
   file: {
@@ -14,6 +15,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file'])
+
+// QR 모달 상태 관리
+const isQRModalOpen = ref(false)
 
 // 파일 메타데이터 계산
 const fileMetadata = computed(() => {
@@ -30,6 +34,15 @@ const fileMetadata = computed(() => {
 function handleDownload(event) {
   event.stopPropagation()
   emit('download-file', props.file)
+}
+
+function openQRModal(event) {
+  event.stopPropagation()
+  isQRModalOpen.value = true
+}
+
+function closeQRModal() {
+  isQRModalOpen.value = false
 }
 </script>
 
@@ -96,16 +109,54 @@ function handleDownload(event) {
       <!-- 액션 버튼 -->
       <div class="flex justify-between items-center">
         <span class="text-xs font-medium text-white/80">클릭해서 복사</span>
-        <button
-          class="bg-primary/90 border-none text-white px-3 py-1.5 rounded cursor-pointer text-sm font-semibold transition-all duration-200 hover:bg-primary hover:scale-110"
-          @click="handleDownload"
-          title="다운로드"
-        >
-          ⬇️ 다운로드
-        </button>
+
+        <!-- 버튼 그룹 -->
+        <div class="flex gap-2">
+          <!-- QR 코드 버튼 -->
+          <button
+            class="bg-surface/80 border border-border text-primary p-2 rounded-full cursor-pointer transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110 flex items-center justify-center"
+            @click="openQRModal"
+            title="QR 코드로 공유"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+          </button>
+
+          <!-- 다운로드 버튼 -->
+          <button
+            class="bg-primary/90 border-none text-white px-3 py-1.5 rounded cursor-pointer text-sm font-semibold transition-all duration-200 hover:bg-primary hover:scale-110"
+            @click="handleDownload"
+            title="다운로드"
+          >
+            ⬇️ 다운로드
+          </button>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- QR 코드 모달 (Teleport로 body로 이동) -->
+  <Teleport to="body">
+    <FileQRCodeModal
+      :file="file"
+      :is-open="isQRModalOpen"
+      @close="closeQRModal"
+    />
+  </Teleport>
 </template>
 
 <style scoped>

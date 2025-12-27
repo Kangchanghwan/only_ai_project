@@ -21,11 +21,11 @@ const props = defineProps({
     </div>
   </transition>
 
-  <!-- 업로드 프로그레스 패널 -->
+  <!-- 업로드/다운로드 프로그레스 패널 -->
   <transition name="fade">
     <div v-if="uploads && uploads.size > 0" class="upload-panel">
       <div class="upload-header">
-        업로드 중 ({{ uploads.size }}개)
+        진행 중 ({{ uploads.size }}개)
       </div>
       <div class="upload-list">
         <UploadProgressItem
