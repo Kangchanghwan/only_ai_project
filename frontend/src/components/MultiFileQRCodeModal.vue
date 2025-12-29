@@ -23,6 +23,7 @@ const emit = defineEmits(['close', 'download'])
 
 const canvasRef = ref(null)
 const showUrlPreview = ref(false)
+const copySuccess = ref(false)
 
 // 다운로드 URL 생성
 const downloadUrl = computed(() => {
@@ -121,6 +122,20 @@ function handleBackdropClick(event) {
 function toggleUrlPreview() {
   showUrlPreview.value = !showUrlPreview.value
 }
+
+// URL 복사
+async function handleCopyUrl() {
+  try {
+    await navigator.clipboard.writeText(downloadUrl.value)
+    copySuccess.value = true
+    setTimeout(() => {
+      copySuccess.value = false
+    }, 2000)
+  } catch (error) {
+    console.error('URL 복사 실패:', error)
+    alert('URL 복사에 실패했습니다.')
+  }
+}
 </script>
 
 <template>
@@ -196,13 +211,32 @@ function toggleUrlPreview() {
           </p>
         </div>
 
+        <!-- URL 복사 영역 -->
+        <div class="bg-black/10 rounded-lg p-4 mb-4">
+          <p class="text-text-secondary text-sm mb-2">주소 (PC에서 복사하여 공유):</p>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              :value="downloadUrl"
+              readonly
+              class="flex-1 bg-black/20 text-text-primary px-3 py-2 rounded-lg text-sm font-mono border border-border focus:outline-none focus:border-primary"
+            />
+            <button
+              class="bg-primary text-white px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors text-sm whitespace-nowrap"
+              @click="handleCopyUrl"
+            >
+              {{ copySuccess ? '✓ 복사됨' : '복사' }}
+            </button>
+          </div>
+        </div>
+
         <!-- URL 미리보기 -->
         <div class="mb-6">
           <button
             class="text-sm text-text-secondary hover:text-text-primary transition-colors mb-2"
             @click="toggleUrlPreview"
           >
-            {{ showUrlPreview ? '▼' : '▶' }} URL 미리보기
+            {{ showUrlPreview ? '▼' : '▶' }} URL 상세 정보
           </button>
           <div v-if="showUrlPreview" class="bg-black/20 rounded-lg p-3">
             <p class="text-xs text-text-secondary break-all font-mono">

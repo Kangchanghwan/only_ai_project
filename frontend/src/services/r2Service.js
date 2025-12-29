@@ -11,7 +11,7 @@ class R2Service {
     this.apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
     // R2 퍼블릭 URL
-    this.publicUrl = import.meta.env.VITE_R2_PUBLIC_URL || 'https://clipboardapp.org'
+    this.publicUrl = import.meta.env.VITE_R2_PUBLIC_URL || 'https://store.clipboardapp.org'
 
     // 직접 업로드 임계값 (1MB) - 이 크기 이하는 서버를 통해 직접 업로드
     this.directUploadThreshold = 1 * 1024 * 1024

@@ -127,7 +127,7 @@ export function useDownload() {
 
         // 각 다운로드 사이에 짧은 지연 추가 (브라우저 안정성)
         if (results.length < files.length) {
-          await new Promise(resolve => setTimeout(resolve, 300))
+          await new Promise(resolve => setTimeout(resolve, 100))
         }
       }
 

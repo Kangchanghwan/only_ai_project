@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import { useQRCode } from '../composables/useQRCode'
 
 const props = defineProps({
@@ -17,6 +17,14 @@ const emit = defineEmits(['close', 'download'])
 
 const qrCode = useQRCode()
 const canvasRef = ref(null)
+const copySuccess = ref(false)
+
+// 룸 URL 생성
+const roomUrl = computed(() => {
+  const origin = window.location.origin
+  const path = window.location.pathname
+  return `${origin}${path}#/${props.roomCode}`
+})
 
 // QR 코드 생성
 async function generateQR() {
@@ -62,6 +70,20 @@ function handleBackdropClick(event) {
     handleClose()
   }
 }
+
+// URL 복사
+async function handleCopyUrl() {
+  try {
+    await navigator.clipboard.writeText(roomUrl.value)
+    copySuccess.value = true
+    setTimeout(() => {
+      copySuccess.value = false
+    }, 2000)
+  } catch (error) {
+    console.error('URL 복사 실패:', error)
+    alert('URL 복사에 실패했습니다.')
+  }
+}
 </script>
 
 <template>
@@ -102,6 +124,25 @@ function handleBackdropClick(event) {
             <p class="text-gray-800 font-bold text-xl">
               룸 코드: {{ roomCode }}
             </p>
+          </div>
+        </div>
+
+        <!-- URL 복사 영역 -->
+        <div class="bg-black/10 rounded-lg p-4 mb-6">
+          <p class="text-text-secondary text-sm mb-2">주소 (PC에서 복사하여 공유):</p>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              :value="roomUrl"
+              readonly
+              class="flex-1 bg-black/20 text-text-primary px-3 py-2 rounded-lg text-sm font-mono border border-border focus:outline-none focus:border-primary"
+            />
+            <button
+              class="bg-primary text-white px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors text-sm whitespace-nowrap"
+              @click="handleCopyUrl"
+            >
+              {{ copySuccess ? '✓ 복사됨' : '복사' }}
+            </button>
           </div>
         </div>
 
