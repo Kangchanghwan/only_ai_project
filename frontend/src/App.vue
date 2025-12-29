@@ -272,11 +272,31 @@ async function handleCopyRoomCode() {
 // ========================================
 
 async function handleDownloadFile(file) {
-  notification.showInfo(`${file.name} 다운로드 중...`)
+  // 다운로드 ID 생성 및 프로그레스바 추가
+  const downloadId = crypto.randomUUID()
+  notification.addUpload(downloadId, file.name)
+
   const result = await download.downloadFile(file)
+
   if (result.success) {
+    // 다운로드 완료
+    notification.completeUpload(downloadId)
+
+    // 1.5초 후 프로그레스바에서 제거
+    setTimeout(() => {
+      notification.removeUpload(downloadId)
+    }, 1500)
+
     notification.showSuccess('다운로드 완료!')
   } else {
+    // 다운로드 실패
+    notification.failUpload(downloadId, result.error?.message || '다운로드 실패')
+
+    // 5초 후 프로그레스바에서 제거
+    setTimeout(() => {
+      notification.removeUpload(downloadId)
+    }, 5000)
+
     notification.showError('다운로드 실패')
   }
 }
