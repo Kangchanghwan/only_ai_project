@@ -16,8 +16,10 @@ import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
+import { parseRoute } from './utils/router'
 
 import RoomScreen from './components/RoomScreen.vue'
+import DownloadPage from './components/DownloadPage.vue'
 import NotificationToast from './components/NotificationToast.vue'
 
 // ========================================
@@ -32,6 +34,7 @@ const notification = useNotification()
 const download = useDownload()
 const textShare = useTextShare()
 const isConnecting = ref(false)
+const currentRoute = ref({ type: 'home' })
 
 // 이벤트 리스너 cleanup 함수들을 저장
 let cleanupUserLeft = null
@@ -471,19 +474,29 @@ async function handlePasteContent() {
 // ========================================
 
 onMounted(() => {
-  // URL에서 룸 코드 파라미터 확인 (예: /#/ABC123)
+  // URL에서 라우트 정보 파싱
   const hash = window.location.hash
-  const roomCodeFromUrl = hash.startsWith('#/') ? hash.substring(2) : null
+  currentRoute.value = parseRoute(hash)
 
-  if (roomCodeFromUrl && roomCodeFromUrl.length > 0) {
+  console.log('[App] 라우트 파싱 결과:', currentRoute.value)
+
+  // 다운로드 페이지인 경우 소켓 연결하지 않고 바로 렌더링
+  if (currentRoute.value.type === 'download') {
+    console.log('[App] 다운로드 페이지 렌더링')
+    return
+  }
+
+  // 기존 룸 연결 로직
+  if (currentRoute.value.type === 'room') {
     // URL에 룸 코드가 있으면 해당 룸으로 연결
-    connectToRoom(roomCodeFromUrl)
-    // URL을 깨끗하게 정리
-    window.history.replaceState(null, '', window.location.pathname)
+    connectToRoom(currentRoute.value.roomCode)
   } else {
     // 일반적인 초기 룸 연결
     connectToRoom()
   }
+
+  // URL을 깨끗하게 정리
+  window.history.replaceState(null, '', window.location.pathname)
 
   document.addEventListener('paste', handlePaste)
 })
@@ -498,7 +511,16 @@ onUnmounted(() => {
 
 <template>
   <div id="app">
+    <!-- 다운로드 페이지 -->
+    <DownloadPage
+      v-if="currentRoute.type === 'download'"
+      :room-id="currentRoute.roomId"
+      :file-names-base64="currentRoute.fileNamesBase64"
+    />
+
+    <!-- 일반 룸 화면 -->
     <RoomScreen
+      v-else
       :is-connecting="isConnecting"
       :room-id="roomManager.currentRoomId.value"
       :files="fileManager.files.value"

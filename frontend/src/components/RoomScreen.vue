@@ -63,6 +63,7 @@ const emit = defineEmits([
 
       <FileGallery
         :files="files"
+        :room-id="roomId"
         :is-loading="isLoading"
         @copy-image="$emit('copy-image', $event)"
         @download-file="$emit('download-file', $event)"

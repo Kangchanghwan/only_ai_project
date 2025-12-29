@@ -4,6 +4,7 @@ import FileCard from './FileCard.vue'
 import FileUploadSection from './FileUploadSection.vue'
 import PasteSection from './PasteSection.vue'
 import DownloadControls from './DownloadControls.vue'
+import MultiFileQRCodeModal from './MultiFileQRCodeModal.vue'
 
 const props = defineProps({
   files: {
@@ -13,6 +14,10 @@ const props = defineProps({
   isLoading: {
     type: Boolean,
     default: false
+  },
+  roomId: {
+    type: String,
+    required: true
   }
 })
 
@@ -26,6 +31,7 @@ const emit = defineEmits([
 ])
 
 const selectedFiles = ref(new Set())
+const showMultiQRModal = ref(false)
 
 // 선택된 파일 개수
 const selectedCount = computed(() => selectedFiles.value.size)
@@ -69,6 +75,13 @@ function downloadParallel() {
   }
 }
 
+// QR 코드 모달 열기
+function showQRModal() {
+  if (selectedCount.value > 0) {
+    showMultiQRModal.value = true
+  }
+}
+
 // Ctrl+C 키보드 이벤트 핸들러
 function handleKeydown(event) {
   if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
@@ -102,6 +115,7 @@ onUnmounted(() => {
       :all-selected="allFilesSelected"
       @download-parallel="downloadParallel"
       @toggle-select-all="toggleSelectAll"
+      @show-multi-qr="showQRModal"
     />
 
     <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
@@ -122,5 +136,13 @@ onUnmounted(() => {
         @download-file="$emit('download-file', file)"
       />
     </div>
+
+    <!-- 다중 파일 QR 코드 모달 -->
+    <MultiFileQRCodeModal
+      :files="selectedFilesArray"
+      :room-id="roomId"
+      :is-open="showMultiQRModal"
+      @close="showMultiQRModal = false"
+    />
   </div>
 </template>
