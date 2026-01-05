@@ -188,7 +188,7 @@ function getStatusText(status) {
             파일 다운로드 중...
           </h1>
           <p class="text-text-secondary">
-            {{ totalFiles }}개 파일을 순차적으로 다운로드하고 있습니다
+            {{ totalFiles }}개 파일을 병렬로 다운로드하고 있습니다
           </p>
         </div>
 
