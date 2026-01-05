@@ -108,28 +108,25 @@ export function useDownload() {
       }
 
       const { onProgress } = options
-      const results = []
 
-      // 각 파일을 순차적으로 다운로드 (짧은 지연 시간 추가)
-      for (const file of files) {
+      // 각 파일을 병렬로 다운로드하면서 진행 상황 추적
+      const downloadPromises = files.map(async (file) => {
         // 다운로드 시작 알림
         if (onProgress) {
           onProgress(file, 'start')
         }
 
         const result = await downloadFile(file)
-        results.push(result)
 
         // 다운로드 완료/실패 알림
         if (onProgress) {
           onProgress(file, result.success ? 'complete' : 'failed', result.error)
         }
 
-        // 각 다운로드 사이에 짧은 지연 추가 (브라우저 안정성)
-        if (results.length < files.length) {
-          await new Promise(resolve => setTimeout(resolve, 100))
-        }
-      }
+        return result
+      })
+
+      const results = await Promise.all(downloadPromises)
 
       // 결과 집계
       const successCount = results.filter(r => r.success).length
@@ -144,7 +141,7 @@ export function useDownload() {
         errors: errors.length > 0 ? errors : undefined
       }
     } catch (err) {
-      console.error('다운로드 실패:', err)
+      console.error('병렬 다운로드 실패:', err)
       return { success: false, error: err }
     }
   }
