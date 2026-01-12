@@ -10,6 +10,20 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- 추가 정적 페이지가 있다면 여기 추가 -->
+  <!-- 사용법 페이지 -->
+  <url>
+    <loc>https://clipboardapp.org/how-to-use.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- FAQ 페이지 -->
+  <url>
+    <loc>https://clipboardapp.org/faq.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
 </urlset>

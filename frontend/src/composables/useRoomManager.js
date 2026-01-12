@@ -14,6 +14,12 @@ export function useRoomManager() {
   // 반응형 상태: 현재 입장한 룸 ID
   const currentRoomId = ref(null)
 
+  gtag('event', 'room_created', {
+    'event_category': 'engagement',
+    'event_label': 'Room Creation',
+    'room_id': roomCode
+  });
+
   /**
    * 6자리 영숫자 랜덤 룸 코드를 생성합니다.
    *

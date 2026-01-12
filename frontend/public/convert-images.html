@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 변환 도구 - Clipboard Share</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #42b883;
+        }
+        button {
+            background: #42b883;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #34A87C;
+        }
+        .preview {
+            margin: 20px 0;
+            border: 2px dashed #42b883;
+            padding: 20px;
+            text-align: center;
+        }
+        #canvas {
+            display: none;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f5e9;
+            border-left: 4px solid #42b883;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Clipboard Share - 이미지 변환 도구</h1>
+        <p>SVG 파일을 PNG로 변환하여 SEO 최적화에 필요한 이미지를 생성합니다.</p>
+
+        <h2>1. OG 이미지 생성 (1200 x 630px)</h2>
+        <button onclick="convertOGImage()">OG 이미지 다운로드 (PNG)</button>
+        <div class="preview" id="ogPreview"></div>
+        <div class="status" id="ogStatus">✅ OG 이미지가 생성되었습니다! 다운로드를 확인하세요.</div>
+
+        <h2>2. Favicon 생성</h2>
+        <button onclick="generateFavicon(16)">Favicon 16x16 다운로드</button>
+        <button onclick="generateFavicon(32)">Favicon 32x32 다운로드</button>
+        <button onclick="generateFavicon(180)">Apple Touch Icon 180x180 다운로드</button>
+        <div class="preview" id="faviconPreview"></div>
+        <div class="status" id="faviconStatus">✅ Favicon이 생성되었습니다!</div>
+
+        <h2>📋 사용 방법</h2>
+        <ol>
+            <li>각 버튼을 클릭하여 이미지를 다운로드합니다</li>
+            <li>다운로드된 파일을 <code>/frontend/public/</code> 폴더에 저장합니다</li>
+            <li>파일명을 다음과 같이 변경합니다:
+                <ul>
+                    <li><code>og-image.png</code></li>
+                    <li><code>favicon-16x16.png</code></li>
+                    <li><code>favicon-32x32.png</code></li>
+                    <li><code>apple-touch-icon.png</code></li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>⚠️ ICO 파일 생성</h2>
+        <p><code>favicon.ico</code> 파일은 다음 온라인 도구를 사용하여 생성하세요:</p>
+        <ul>
+            <li><a href="https://www.icoconverter.com" target="_blank">IcoConverter</a> - 16x16과 32x32 PNG를 업로드</li>
+            <li><a href="https://realfavicongenerator.net" target="_blank">Real Favicon Generator</a> - 모든 크기 자동 생성</li>
+        </ul>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        async function convertOGImage() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1200;
+            canvas.height = 630;
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
+            gradient.addColorStop(0, '#42b883');
+            gradient.addColorStop(1, '#34A87C');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1200, 630);
+
+            // Clipboard icon
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillRect(120, 210, 120, 150);
+            ctx.fillStyle = '#35495e';
+            ctx.fillRect(155, 195, 50, 25);
+            ctx.fillRect(160, 188, 40, 12);
+
+            // Lines
+            ctx.strokeStyle = '#42b883';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(140, 250);
+            ctx.lineTo(220, 250);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(140, 275);
+            ctx.lineTo(220, 275);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(140, 300);
+            ctx.lineTo(200, 300);
+            ctx.stroke();
+
+            // Text
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 72px Inter, Arial, sans-serif';
+            ctx.fillText('Clipboard Share', 380, 240);
+
+            ctx.font = '32px Inter, Arial, sans-serif';
+            ctx.globalAlpha = 0.95;
+            ctx.fillText('실시간 파일 공유의 새로운 기준', 380, 310);
+
+            ctx.font = '24px Inter, Arial, sans-serif';
+            ctx.globalAlpha = 0.85;
+            ctx.fillText('QR 코드로 빠르게 공유', 380, 370);
+            ctx.fillText('룸 기반으로 안전하게 전송', 380, 410);
+
+            ctx.font = '20px Inter, Arial, sans-serif';
+            ctx.globalAlpha = 0.7;
+            ctx.textAlign = 'right';
+            ctx.fillText('clipboardapp.org', 1050, 590);
+
+            // Preview
+            document.getElementById('ogPreview').innerHTML =
+                '<img src="' + canvas.toDataURL() + '" style="max-width: 100%; border-radius: 5px;">';
+
+            // Download
+            downloadCanvas(canvas, 'og-image.png');
+            document.getElementById('ogStatus').style.display = 'block';
+        }
+
+        function generateFavicon(size) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = size;
+            canvas.height = size;
+
+            // Background
+            ctx.fillStyle = '#42b883';
+            ctx.fillRect(0, 0, size, size);
+
+            // Clipboard icon (simplified)
+            const scale = size / 100;
+            ctx.fillStyle = 'white';
+            ctx.fillRect(25 * scale, 30 * scale, 50 * scale, 60 * scale);
+
+            // Clip
+            ctx.fillStyle = '#35495e';
+            ctx.fillRect(35 * scale, 20 * scale, 30 * scale, 12 * scale);
+
+            // Lines
+            ctx.strokeStyle = '#42b883';
+            ctx.lineWidth = 2 * scale;
+            ctx.beginPath();
+            ctx.moveTo(32 * scale, 45 * scale);
+            ctx.lineTo(68 * scale, 45 * scale);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(32 * scale, 55 * scale);
+            ctx.lineTo(68 * scale, 55 * scale);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(32 * scale, 65 * scale);
+            ctx.lineTo(60 * scale, 65 * scale);
+            ctx.stroke();
+
+            // Preview
+            document.getElementById('faviconPreview').innerHTML =
+                '<img src="' + canvas.toDataURL() + '" style="width: 64px; height: 64px; image-rendering: pixelated;">';
+
+            // Download
+            const filename = size === 180 ? 'apple-touch-icon.png' : `favicon-${size}x${size}.png`;
+            downloadCanvas(canvas, filename);
+            document.getElementById('faviconStatus').style.display = 'block';
+        }
+
+        function downloadCanvas(canvas, filename) {
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        }
+    </script>
+</body>
+</html>

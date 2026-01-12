@@ -19,6 +19,11 @@ export function useFileManager() {
   const error = ref(null)
   const totalSize = ref(0) // 룸의 총 파일 용량 (바이트)
 
+  gtag('event', 'file_shared', {
+    'event_category': 'engagement',
+    'event_label': 'File Upload',
+    'file_count': files.length
+  });
   /**
    * 특정 룸의 파일 목록을 불러옵니다.
    *

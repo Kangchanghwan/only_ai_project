@@ -16,6 +16,11 @@ export function useQRCode() {
   const isGenerating = ref(false)
   const error = ref(null)
 
+  gtag('event', 'qr_generated', {
+    'event_category': 'engagement',
+    'event_label': 'QR Code Generated'
+  });
+
   /**
    * 룸 코드를 포함한 URL로 QR 코드를 생성합니다.
    *
