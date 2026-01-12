@@ -1,0 +1,11 @@
+# Clipboard Share - Robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /#/download
+
+# Sitemap
+Sitemap: https://clipboardapp.org/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

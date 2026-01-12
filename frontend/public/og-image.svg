@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#42b883;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34A87C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+
+  <!-- Clipboard icon -->
+  <g transform="translate(120, 180)">
+    <!-- Clipboard board -->
+    <rect x="0" y="30" width="120" height="150" fill="white" rx="8" opacity="0.9"/>
+    <!-- Clipboard clip -->
+    <rect x="35" y="15" width="50" height="25" fill="#35495e" rx="5"/>
+    <rect x="40" y="8" width="40" height="12" fill="#35495e" rx="4"/>
+    <!-- Document lines -->
+    <line x1="20" y1="70" x2="100" y2="70" stroke="#42b883" stroke-width="3"/>
+    <line x1="20" y1="95" x2="100" y2="95" stroke="#42b883" stroke-width="3"/>
+    <line x1="20" y1="120" x2="80" y2="120" stroke="#42b883" stroke-width="3"/>
+  </g>
+
+  <!-- Share/Upload arrow -->
+  <g transform="translate(270, 240)">
+    <path d="M 0 40 L 0 0 L 30 15 Z" fill="white" opacity="0.8"/>
+    <circle cx="50" cy="15" r="12" fill="white" opacity="0.8"/>
+  </g>
+
+  <!-- Text content -->
+  <text x="380" y="240" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="700" fill="white">
+    Clipboard Share
+  </text>
+
+  <text x="380" y="310" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="400" fill="white" opacity="0.95">
+    실시간 파일 공유의 새로운 기준
+  </text>
+
+  <text x="380" y="370" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="400" fill="white" opacity="0.85">
+    QR 코드로 빠르게 공유
+  </text>
+  <text x="380" y="410" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="400" fill="white" opacity="0.85">
+    룸 기반으로 안전하게 전송
+  </text>
+
+  <!-- Domain -->
+  <text x="1050" y="590" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="400" fill="white" opacity="0.7" text-anchor="end">
+    clipboardapp.org
+  </text>
+</svg>
