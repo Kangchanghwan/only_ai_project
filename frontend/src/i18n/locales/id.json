@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Berbagi Clipboard",
+    "help": "Bantuan",
+    "helpTitle": "Cara Menggunakan"
+  },
+  "room": {
+    "connecting": "Menghubungkan...",
+    "connected": "Terhubung ke ruangan {roomId}.",
+    "userCount": "{count} pengguna di ruangan.",
+    "copyCode": "Salin kode ruangan",
+    "copied": "Kode ruangan disalin!"
+  },
+  "file": {
+    "upload": "Unggah File",
+    "download": "Unduh",
+    "downloading": "Mengunduh...",
+    "downloadComplete": "Unduhan selesai!",
+    "downloadFailed": "Unduhan gagal",
+    "uploaded": "File baru diunggah!",
+    "copyToClipboard": "Salin ke Clipboard",
+    "copied": "Disalin ke clipboard!",
+    "copyFailed": "Gagal menyalin"
+  },
+  "text": {
+    "share": "Bagikan Teks",
+    "shared": "Teks dibagikan!",
+    "newText": "Teks baru dibagikan!",
+    "removed": "Teks dihapus.",
+    "clearAll": "Hapus Semua Teks",
+    "cleared": "Semua teks dihapus."
+  },
+  "notification": {
+    "uploading": "Mengunggah...",
+    "uploadComplete": "{count} file diunggah!",
+    "uploadFailed": "Unggahan gagal: {message}",
+    "sizeLimitExceeded": "Ukuran total unggahan melebihi batas ({limit}MB). Saat ini: {current}MB, Unggah: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Tempel",
+    "empty": "Clipboard kosong.",
+    "permissionDenied": "Izin akses clipboard diperlukan."
+  }
+}

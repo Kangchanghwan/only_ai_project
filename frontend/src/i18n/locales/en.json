@@ -1,0 +1,57 @@
+{
+  "app": {
+    "title": "Clipboard Share",
+    "help": "Help",
+    "helpTitle": "How to Use"
+  },
+  "room": {
+    "connecting": "Connecting...",
+    "connected": "Connected to room {roomId}.",
+    "userCount": "{count} user(s) in the room.",
+    "copyCode": "Copy Room Code",
+    "copied": "Room code copied!",
+    "currentRoomCode": "Current Room Code:",
+    "copy": "Copy",
+    "qr": "QR",
+    "qrShareTitle": "Share with QR code",
+    "joinOtherRoom": "Join Other Room:",
+    "enterCode": "6-digit code"
+  },
+  "file": {
+    "upload": "Upload File",
+    "download": "Download",
+    "downloading": "Downloading...",
+    "downloadComplete": "Download complete!",
+    "downloadFailed": "Download failed",
+    "uploaded": "New file uploaded!",
+    "copyToClipboard": "Copy to Clipboard",
+    "copied": "Copied to clipboard!",
+    "copyFailed": "Copy failed"
+  },
+  "text": {
+    "share": "Share Text",
+    "shared": "Text shared!",
+    "newText": "New text shared!",
+    "removed": "Text removed.",
+    "clearAll": "Clear All Texts",
+    "cleared": "All texts cleared.",
+    "receivedText": "Received text",
+    "autoShareHint": "Text is automatically shared when you paste (Ctrl+V / Cmd+V)",
+    "noMessages": "No messages yet",
+    "clickToCopy": "Click to copy",
+    "delete": "Delete",
+    "messageCount": "{count} message",
+    "messageCount_plural": "{count} messages"
+  },
+  "notification": {
+    "uploading": "Uploading...",
+    "uploadComplete": "{count} file(s) uploaded!",
+    "uploadFailed": "Upload failed: {message}",
+    "sizeLimitExceeded": "Total upload size exceeds limit ({limit}MB). Current: {current}MB, Upload: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Paste",
+    "empty": "Clipboard is empty.",
+    "permissionDenied": "Clipboard access permission required."
+  }
+}

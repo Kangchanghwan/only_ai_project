@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import QRCodeModal from './QRCodeModal.vue'
+
+const { t } = useI18n()
 
 defineProps({
   roomId: {
@@ -39,10 +42,10 @@ function closeQRModal() {
   <div class="flex items-center gap-6 mb-4 flex-wrap">
     <!-- 현재 룸 코드 섹션 -->
     <div class="flex items-center gap-4 text-xl min-h-[38px]">
-      <span class="text-text-secondary">현재 룸 코드:</span>
+      <span class="text-text-secondary">{{ t('room.currentRoomCode') }}</span>
       <div v-if="isConnecting" class="flex items-center gap-3 text-xl text-text-secondary">
         <div class="w-6 h-6 border-3 border-border border-t-primary rounded-full animate-spin"></div>
-        <span>연결 중...</span>
+        <span>{{ t('room.connecting') }}</span>
       </div>
       <template v-else-if="roomId">
         <span
@@ -56,12 +59,12 @@ function closeQRModal() {
             class="bg-transparent border border-border text-text-secondary px-3 py-1 rounded-md cursor-pointer text-xs hover:bg-border hover:text-text-primary transition-colors"
             @click="$emit('copy-room-code')"
           >
-            복사
+            {{ t('room.copy') }}
           </button>
           <button
             class="bg-primary text-white px-3 py-1 rounded-md cursor-pointer text-xs hover:bg-primary/90 transition-colors flex items-center gap-1"
             @click="openQRModal"
-            title="QR 코드로 공유"
+            :title="t('room.qrShareTitle')"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +82,7 @@ function closeQRModal() {
               <rect x="14" y="14" width="7" height="7" />
               <rect x="3" y="14" width="7" height="7" />
             </svg>
-            QR
+            {{ t('room.qr') }}
           </button>
         </div>
       </template>
@@ -87,12 +90,12 @@ function closeQRModal() {
 
     <!-- 다른 룸 입장 섹션 -->
     <div class="flex items-center gap-3">
-      <span class="text-text-secondary text-sm">다른 룸 입장:</span>
+      <span class="text-text-secondary text-sm">{{ t('room.joinOtherRoom') }}</span>
       <div class="flex">
         <input
           v-model="joinRoomCode"
           type="text"
-          placeholder="6자리 코드"
+          :placeholder="t('room.enterCode')"
           maxlength="6"
           class="bg-surface border border-border text-text-primary px-3 py-1.5 rounded-l-lg w-32 text-sm uppercase placeholder:text-text-secondary placeholder:normal-case focus:outline-none focus:border-primary"
           :disabled="isConnecting"

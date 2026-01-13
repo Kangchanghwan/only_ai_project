@@ -1,0 +1,57 @@
+{
+  "app": {
+    "title": "Clipboard Share",
+    "help": "도움말",
+    "helpTitle": "사용 방법"
+  },
+  "room": {
+    "connecting": "연결 중...",
+    "connected": "룸 {roomId}에 연결되었습니다.",
+    "userCount": "현재 {count}명이 룸에 있습니다.",
+    "copyCode": "룸 코드 복사",
+    "copied": "룸 코드 복사됨!",
+    "currentRoomCode": "현재 룸 코드:",
+    "copy": "복사",
+    "qr": "QR",
+    "qrShareTitle": "QR 코드로 공유",
+    "joinOtherRoom": "다른 룸 입장:",
+    "enterCode": "6자리 코드"
+  },
+  "file": {
+    "upload": "파일 업로드",
+    "download": "다운로드",
+    "downloading": "다운로드 중...",
+    "downloadComplete": "다운로드 완료!",
+    "downloadFailed": "다운로드 실패",
+    "uploaded": "새 파일이 업로드되었습니다!",
+    "copyToClipboard": "클립보드에 복사",
+    "copied": "클립보드에 복사됨!",
+    "copyFailed": "복사 실패"
+  },
+  "text": {
+    "share": "텍스트 공유",
+    "shared": "텍스트가 공유되었습니다!",
+    "newText": "새 텍스트가 공유되었습니다!",
+    "removed": "텍스트가 삭제되었습니다.",
+    "clearAll": "모든 텍스트 삭제",
+    "cleared": "모든 텍스트가 삭제되었습니다.",
+    "receivedText": "Received text",
+    "autoShareHint": "텍스트를 붙여넣으면 자동으로 공유됩니다 (Ctrl+V / Cmd+V)",
+    "noMessages": "No messages yet",
+    "clickToCopy": "Click to copy",
+    "delete": "Delete",
+    "messageCount": "{count} message",
+    "messageCount_plural": "{count} messages"
+  },
+  "notification": {
+    "uploading": "업로드 중...",
+    "uploadComplete": "{count}개 파일 업로드 완료!",
+    "uploadFailed": "업로드 실패: {message}",
+    "sizeLimitExceeded": "총 업로드 용량이 제한({limit}MB)을 초과합니다. 현재: {current}MB, 업로드: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "붙여넣기",
+    "empty": "클립보드가 비어있습니다.",
+    "permissionDenied": "클립보드 접근 권한이 필요합니다."
+  }
+}

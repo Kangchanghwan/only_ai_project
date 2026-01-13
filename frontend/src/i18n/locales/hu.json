@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Vágólap Megosztás",
+    "help": "Súgó",
+    "helpTitle": "Használati útmutató"
+  },
+  "room": {
+    "connecting": "Csatlakozás...",
+    "connected": "Csatlakozva a(z) {roomId} szobához.",
+    "userCount": "{count} felhasználó a szobában.",
+    "copyCode": "Szobakód másolása",
+    "copied": "Szobakód másolva!"
+  },
+  "file": {
+    "upload": "Fájl feltöltése",
+    "download": "Letöltés",
+    "downloading": "Letöltés...",
+    "downloadComplete": "Letöltés befejezve!",
+    "downloadFailed": "Letöltés sikertelen",
+    "uploaded": "Új fájl feltöltve!",
+    "copyToClipboard": "Másolás vágólapra",
+    "copied": "Vágólapra másolva!",
+    "copyFailed": "Másolás sikertelen"
+  },
+  "text": {
+    "share": "Szöveg megosztása",
+    "shared": "Szöveg megosztva!",
+    "newText": "Új szöveg megosztva!",
+    "removed": "Szöveg eltávolítva.",
+    "clearAll": "Összes szöveg törlése",
+    "cleared": "Összes szöveg törölve."
+  },
+  "notification": {
+    "uploading": "Feltöltés...",
+    "uploadComplete": "{count} fájl feltöltve!",
+    "uploadFailed": "Feltöltés sikertelen: {message}",
+    "sizeLimitExceeded": "A teljes feltöltési méret meghaladja a korlátot ({limit}MB). Jelenlegi: {current}MB, Feltöltés: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Beillesztés",
+    "empty": "A vágólap üres.",
+    "permissionDenied": "Vágólap hozzáférési engedély szükséges."
+  }
+}

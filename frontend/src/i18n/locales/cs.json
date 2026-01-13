@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Sdílení schránky",
+    "help": "Nápověda",
+    "helpTitle": "Jak používat"
+  },
+  "room": {
+    "connecting": "Připojování...",
+    "connected": "Připojeno k místnosti {roomId}.",
+    "userCount": "{count} uživatel(ů) v místnosti.",
+    "copyCode": "Kopírovat kód místnosti",
+    "copied": "Kód místnosti zkopírován!"
+  },
+  "file": {
+    "upload": "Nahrát soubor",
+    "download": "Stáhnout",
+    "downloading": "Stahování...",
+    "downloadComplete": "Stahování dokončeno!",
+    "downloadFailed": "Stahování selhalo",
+    "uploaded": "Nový soubor nahrán!",
+    "copyToClipboard": "Kopírovat do schránky",
+    "copied": "Zkopírováno do schránky!",
+    "copyFailed": "Kopírování selhalo"
+  },
+  "text": {
+    "share": "Sdílet text",
+    "shared": "Text sdílen!",
+    "newText": "Nový text sdílen!",
+    "removed": "Text odstraněn.",
+    "clearAll": "Vymazat všechny texty",
+    "cleared": "Všechny texty vymazány."
+  },
+  "notification": {
+    "uploading": "Nahrávání...",
+    "uploadComplete": "{count} soubor(ů) nahráno!",
+    "uploadFailed": "Nahrávání selhalo: {message}",
+    "sizeLimitExceeded": "Celková velikost nahrávání překračuje limit ({limit}MB). Aktuální: {current}MB, Nahrávání: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Vložit",
+    "empty": "Schránka je prázdná.",
+    "permissionDenied": "Vyžadováno oprávnění k přístupu ke schránce."
+  }
+}

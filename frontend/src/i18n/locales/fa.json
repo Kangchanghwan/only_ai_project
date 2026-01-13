@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "اشتراک‌گذاری کلیپ‌بورد",
+    "help": "راهنما",
+    "helpTitle": "نحوه استفاده"
+  },
+  "room": {
+    "connecting": "در حال اتصال...",
+    "connected": "به اتاق {roomId} متصل شد.",
+    "userCount": "{count} کاربر در اتاق.",
+    "copyCode": "کپی کد اتاق",
+    "copied": "کد اتاق کپی شد!"
+  },
+  "file": {
+    "upload": "آپلود فایل",
+    "download": "دانلود",
+    "downloading": "در حال دانلود...",
+    "downloadComplete": "دانلود کامل شد!",
+    "downloadFailed": "دانلود ناموفق",
+    "uploaded": "فایل جدید آپلود شد!",
+    "copyToClipboard": "کپی به کلیپ‌بورد",
+    "copied": "به کلیپ‌بورد کپی شد!",
+    "copyFailed": "کپی ناموفق"
+  },
+  "text": {
+    "share": "اشتراک‌گذاری متن",
+    "shared": "متن به اشتراک گذاشته شد!",
+    "newText": "متن جدید به اشتراک گذاشته شد!",
+    "removed": "متن حذف شد.",
+    "clearAll": "پاک کردن همه متن‌ها",
+    "cleared": "همه متن‌ها پاک شدند."
+  },
+  "notification": {
+    "uploading": "در حال آپلود...",
+    "uploadComplete": "{count} فایل آپلود شد!",
+    "uploadFailed": "آپلود ناموفق: {message}",
+    "sizeLimitExceeded": "حجم کل آپلود از محدودیت ({limit}MB) بیشتر است. فعلی: {current}MB، آپلود: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "چسباندن",
+    "empty": "کلیپ‌بورد خالی است.",
+    "permissionDenied": "مجوز دسترسی به کلیپ‌بورد مورد نیاز است."
+  }
+}

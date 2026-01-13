@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Compartir Portapapeles",
+    "help": "Ayuda",
+    "helpTitle": "Cómo Usar"
+  },
+  "room": {
+    "connecting": "Conectando...",
+    "connected": "Conectado a la sala {roomId}.",
+    "userCount": "{count} usuario(s) en la sala.",
+    "copyCode": "Copiar Código de Sala",
+    "copied": "¡Código de sala copiado!"
+  },
+  "file": {
+    "upload": "Subir Archivo",
+    "download": "Descargar",
+    "downloading": "Descargando...",
+    "downloadComplete": "¡Descarga completa!",
+    "downloadFailed": "Descarga fallida",
+    "uploaded": "¡Nuevo archivo subido!",
+    "copyToClipboard": "Copiar al Portapapeles",
+    "copied": "¡Copiado al portapapeles!",
+    "copyFailed": "Copia fallida"
+  },
+  "text": {
+    "share": "Compartir Texto",
+    "shared": "¡Texto compartido!",
+    "newText": "¡Nuevo texto compartido!",
+    "removed": "Texto eliminado.",
+    "clearAll": "Borrar Todos los Textos",
+    "cleared": "Todos los textos borrados."
+  },
+  "notification": {
+    "uploading": "Subiendo...",
+    "uploadComplete": "¡{count} archivo(s) subido(s)!",
+    "uploadFailed": "Subida fallida: {message}",
+    "sizeLimitExceeded": "El tamaño total de la carga supera el límite ({limit}MB). Actual: {current}MB, Carga: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Pegar",
+    "empty": "El portapapeles está vacío.",
+    "permissionDenied": "Se requiere permiso de acceso al portapapeles."
+  }
+}

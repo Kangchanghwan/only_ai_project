@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Udostępnianie Schowka",
+    "help": "Pomoc",
+    "helpTitle": "Jak używać"
+  },
+  "room": {
+    "connecting": "Łączenie...",
+    "connected": "Połączono z pokojem {roomId}.",
+    "userCount": "{count} użytkownik(ów) w pokoju.",
+    "copyCode": "Kopiuj kod pokoju",
+    "copied": "Kod pokoju skopiowany!"
+  },
+  "file": {
+    "upload": "Prześlij plik",
+    "download": "Pobierz",
+    "downloading": "Pobieranie...",
+    "downloadComplete": "Pobieranie zakończone!",
+    "downloadFailed": "Pobieranie nieudane",
+    "uploaded": "Nowy plik przesłany!",
+    "copyToClipboard": "Kopiuj do schowka",
+    "copied": "Skopiowano do schowka!",
+    "copyFailed": "Kopiowanie nieudane"
+  },
+  "text": {
+    "share": "Udostępnij tekst",
+    "shared": "Tekst udostępniony!",
+    "newText": "Nowy tekst udostępniony!",
+    "removed": "Tekst usunięty.",
+    "clearAll": "Wyczyść wszystkie teksty",
+    "cleared": "Wszystkie teksty wyczyszczone."
+  },
+  "notification": {
+    "uploading": "Przesyłanie...",
+    "uploadComplete": "{count} plik(ów) przesłano!",
+    "uploadFailed": "Przesyłanie nieudane: {message}",
+    "sizeLimitExceeded": "Całkowity rozmiar przesyłania przekracza limit ({limit}MB). Aktualny: {current}MB, Przesyłanie: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Wklej",
+    "empty": "Schowek jest pusty.",
+    "permissionDenied": "Wymagane uprawnienie dostępu do schowka."
+  }
+}

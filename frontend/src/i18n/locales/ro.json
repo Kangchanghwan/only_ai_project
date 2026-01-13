@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Partajare Clipboard",
+    "help": "Ajutor",
+    "helpTitle": "Cum se folosește"
+  },
+  "room": {
+    "connecting": "Se conectează...",
+    "connected": "Conectat la camera {roomId}.",
+    "userCount": "{count} utilizator(i) în cameră.",
+    "copyCode": "Copiază codul camerei",
+    "copied": "Cod cameră copiat!"
+  },
+  "file": {
+    "upload": "Încarcă fișier",
+    "download": "Descarcă",
+    "downloading": "Se descarcă...",
+    "downloadComplete": "Descărcare completă!",
+    "downloadFailed": "Descărcare eșuată",
+    "uploaded": "Fișier nou încărcat!",
+    "copyToClipboard": "Copiază în clipboard",
+    "copied": "Copiat în clipboard!",
+    "copyFailed": "Copiere eșuată"
+  },
+  "text": {
+    "share": "Partajează text",
+    "shared": "Text partajat!",
+    "newText": "Text nou partajat!",
+    "removed": "Text eliminat.",
+    "clearAll": "Șterge toate textele",
+    "cleared": "Toate textele șterse."
+  },
+  "notification": {
+    "uploading": "Se încarcă...",
+    "uploadComplete": "{count} fișier(e) încărcat(e)!",
+    "uploadFailed": "Încărcare eșuată: {message}",
+    "sizeLimitExceeded": "Dimensiunea totală de încărcare depășește limita ({limit}MB). Actual: {current}MB, Încărcare: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Lipește",
+    "empty": "Clipboard-ul este gol.",
+    "permissionDenied": "Permisiune de acces la clipboard necesară."
+  }
+}

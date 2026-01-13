@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Pano Paylaşımı",
+    "help": "Yardım",
+    "helpTitle": "Nasıl Kullanılır"
+  },
+  "room": {
+    "connecting": "Bağlanıyor...",
+    "connected": "Oda {roomId}'ye bağlandı.",
+    "userCount": "Odada {count} kullanıcı.",
+    "copyCode": "Oda Kodunu Kopyala",
+    "copied": "Oda kodu kopyalandı!"
+  },
+  "file": {
+    "upload": "Dosya Yükle",
+    "download": "İndir",
+    "downloading": "İndiriliyor...",
+    "downloadComplete": "İndirme tamamlandı!",
+    "downloadFailed": "İndirme başarısız",
+    "uploaded": "Yeni dosya yüklendi!",
+    "copyToClipboard": "Panoya Kopyala",
+    "copied": "Panoya kopyalandı!",
+    "copyFailed": "Kopyalama başarısız"
+  },
+  "text": {
+    "share": "Metin Paylaş",
+    "shared": "Metin paylaşıldı!",
+    "newText": "Yeni metin paylaşıldı!",
+    "removed": "Metin kaldırıldı.",
+    "clearAll": "Tüm Metinleri Temizle",
+    "cleared": "Tüm metinler temizlendi."
+  },
+  "notification": {
+    "uploading": "Yükleniyor...",
+    "uploadComplete": "{count} dosya yüklendi!",
+    "uploadFailed": "Yükleme başarısız: {message}",
+    "sizeLimitExceeded": "Toplam yükleme boyutu sınırı ({limit}MB) aşıyor. Mevcut: {current}MB, Yükleme: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Yapıştır",
+    "empty": "Pano boş.",
+    "permissionDenied": "Pano erişim izni gerekli."
+  }
+}

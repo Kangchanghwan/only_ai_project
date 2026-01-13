@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Partage du Presse-papiers",
+    "help": "Aide",
+    "helpTitle": "Comment utiliser"
+  },
+  "room": {
+    "connecting": "Connexion...",
+    "connected": "Connecté à la salle {roomId}.",
+    "userCount": "{count} utilisateur(s) dans la salle.",
+    "copyCode": "Copier le code de la salle",
+    "copied": "Code de la salle copié!"
+  },
+  "file": {
+    "upload": "Télécharger le fichier",
+    "download": "Télécharger",
+    "downloading": "Téléchargement...",
+    "downloadComplete": "Téléchargement terminé!",
+    "downloadFailed": "Échec du téléchargement",
+    "uploaded": "Nouveau fichier téléchargé!",
+    "copyToClipboard": "Copier dans le presse-papiers",
+    "copied": "Copié dans le presse-papiers!",
+    "copyFailed": "Échec de la copie"
+  },
+  "text": {
+    "share": "Partager le texte",
+    "shared": "Texte partagé!",
+    "newText": "Nouveau texte partagé!",
+    "removed": "Texte supprimé.",
+    "clearAll": "Effacer tous les textes",
+    "cleared": "Tous les textes effacés."
+  },
+  "notification": {
+    "uploading": "Téléchargement...",
+    "uploadComplete": "{count} fichier(s) téléchargé(s)!",
+    "uploadFailed": "Échec du téléchargement: {message}",
+    "sizeLimitExceeded": "La taille totale du téléchargement dépasse la limite ({limit}MB). Actuel: {current}MB, Téléchargement: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Coller",
+    "empty": "Le presse-papiers est vide.",
+    "permissionDenied": "Permission d'accès au presse-papiers requise."
+  }
+}

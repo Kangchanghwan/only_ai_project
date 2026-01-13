@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "剪贴板共享",
+    "help": "帮助",
+    "helpTitle": "使用方法"
+  },
+  "room": {
+    "connecting": "连接中...",
+    "connected": "已连接到房间 {roomId}。",
+    "userCount": "房间内有 {count} 位用户。",
+    "copyCode": "复制房间代码",
+    "copied": "房间代码已复制！"
+  },
+  "file": {
+    "upload": "上传文件",
+    "download": "下载",
+    "downloading": "下载中...",
+    "downloadComplete": "下载完成！",
+    "downloadFailed": "下载失败",
+    "uploaded": "新文件已上传！",
+    "copyToClipboard": "复制到剪贴板",
+    "copied": "已复制到剪贴板！",
+    "copyFailed": "复制失败"
+  },
+  "text": {
+    "share": "分享文本",
+    "shared": "文本已分享！",
+    "newText": "新文本已分享！",
+    "removed": "文本已删除。",
+    "clearAll": "清除所有文本",
+    "cleared": "所有文本已清除。"
+  },
+  "notification": {
+    "uploading": "上传中...",
+    "uploadComplete": "{count} 个文件上传完成！",
+    "uploadFailed": "上传失败：{message}",
+    "sizeLimitExceeded": "总上传大小超出限制（{limit}MB）。当前：{current}MB，上传：{upload}MB"
+  },
+  "clipboard": {
+    "paste": "粘贴",
+    "empty": "剪贴板为空。",
+    "permissionDenied": "需要剪贴板访问权限。"
+  }
+}

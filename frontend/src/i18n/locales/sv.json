@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Urklipp Delning",
+    "help": "Hjälp",
+    "helpTitle": "Hur man använder"
+  },
+  "room": {
+    "connecting": "Ansluter...",
+    "connected": "Ansluten till rum {roomId}.",
+    "userCount": "{count} användare i rummet.",
+    "copyCode": "Kopiera rumskod",
+    "copied": "Rumskod kopierad!"
+  },
+  "file": {
+    "upload": "Ladda upp fil",
+    "download": "Ladda ner",
+    "downloading": "Laddar ner...",
+    "downloadComplete": "Nedladdning klar!",
+    "downloadFailed": "Nedladdning misslyckades",
+    "uploaded": "Ny fil uppladdad!",
+    "copyToClipboard": "Kopiera till urklipp",
+    "copied": "Kopierat till urklipp!",
+    "copyFailed": "Kopiering misslyckades"
+  },
+  "text": {
+    "share": "Dela text",
+    "shared": "Text delad!",
+    "newText": "Ny text delad!",
+    "removed": "Text borttagen.",
+    "clearAll": "Rensa alla texter",
+    "cleared": "Alla texter rensade."
+  },
+  "notification": {
+    "uploading": "Laddar upp...",
+    "uploadComplete": "{count} fil(er) uppladdade!",
+    "uploadFailed": "Uppladdning misslyckades: {message}",
+    "sizeLimitExceeded": "Total uppladdningsstorlek överstiger gränsen ({limit}MB). Nuvarande: {current}MB, Uppladdning: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Klistra in",
+    "empty": "Urklipp är tomt.",
+    "permissionDenied": "Åtkomstbehörighet till urklipp krävs."
+  }
+}

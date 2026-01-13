@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Compartilhamento de Área de Transferência",
+    "help": "Ajuda",
+    "helpTitle": "Como usar"
+  },
+  "room": {
+    "connecting": "Conectando...",
+    "connected": "Conectado à sala {roomId}.",
+    "userCount": "{count} usuário(s) na sala.",
+    "copyCode": "Copiar código da sala",
+    "copied": "Código da sala copiado!"
+  },
+  "file": {
+    "upload": "Enviar arquivo",
+    "download": "Baixar",
+    "downloading": "Baixando...",
+    "downloadComplete": "Download concluído!",
+    "downloadFailed": "Falha no download",
+    "uploaded": "Novo arquivo enviado!",
+    "copyToClipboard": "Copiar para área de transferência",
+    "copied": "Copiado para área de transferência!",
+    "copyFailed": "Falha ao copiar"
+  },
+  "text": {
+    "share": "Compartilhar texto",
+    "shared": "Texto compartilhado!",
+    "newText": "Novo texto compartilhado!",
+    "removed": "Texto removido.",
+    "clearAll": "Limpar todos os textos",
+    "cleared": "Todos os textos limpos."
+  },
+  "notification": {
+    "uploading": "Enviando...",
+    "uploadComplete": "{count} arquivo(s) enviado(s)!",
+    "uploadFailed": "Falha no envio: {message}",
+    "sizeLimitExceeded": "O tamanho total do upload excede o limite ({limit}MB). Atual: {current}MB, Upload: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Colar",
+    "empty": "A área de transferência está vazia.",
+    "permissionDenied": "Permissão de acesso à área de transferência necessária."
+  }
+}

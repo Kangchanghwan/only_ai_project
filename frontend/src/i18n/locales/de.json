@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Zwischenablage teilen",
+    "help": "Hilfe",
+    "helpTitle": "Wie zu verwenden"
+  },
+  "room": {
+    "connecting": "Verbinden...",
+    "connected": "Verbunden mit Raum {roomId}.",
+    "userCount": "{count} Benutzer im Raum.",
+    "copyCode": "Raumcode kopieren",
+    "copied": "Raumcode kopiert!"
+  },
+  "file": {
+    "upload": "Datei hochladen",
+    "download": "Herunterladen",
+    "downloading": "Wird heruntergeladen...",
+    "downloadComplete": "Download abgeschlossen!",
+    "downloadFailed": "Download fehlgeschlagen",
+    "uploaded": "Neue Datei hochgeladen!",
+    "copyToClipboard": "In Zwischenablage kopieren",
+    "copied": "In Zwischenablage kopiert!",
+    "copyFailed": "Kopieren fehlgeschlagen"
+  },
+  "text": {
+    "share": "Text teilen",
+    "shared": "Text geteilt!",
+    "newText": "Neuer Text geteilt!",
+    "removed": "Text entfernt.",
+    "clearAll": "Alle Texte löschen",
+    "cleared": "Alle Texte gelöscht."
+  },
+  "notification": {
+    "uploading": "Hochladen...",
+    "uploadComplete": "{count} Datei(en) hochgeladen!",
+    "uploadFailed": "Upload fehlgeschlagen: {message}",
+    "sizeLimitExceeded": "Gesamtgröße des Uploads überschreitet das Limit ({limit}MB). Aktuell: {current}MB, Upload: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Einfügen",
+    "empty": "Zwischenablage ist leer.",
+    "permissionDenied": "Zugriffsberechtigung für Zwischenablage erforderlich."
+  }
+}

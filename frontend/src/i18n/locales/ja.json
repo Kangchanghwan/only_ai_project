@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "クリップボード共有",
+    "help": "ヘルプ",
+    "helpTitle": "使い方"
+  },
+  "room": {
+    "connecting": "接続中...",
+    "connected": "ルーム {roomId} に接続しました。",
+    "userCount": "現在 {count} 人がルームにいます。",
+    "copyCode": "ルームコードをコピー",
+    "copied": "ルームコードをコピーしました！"
+  },
+  "file": {
+    "upload": "ファイルをアップロード",
+    "download": "ダウンロード",
+    "downloading": "ダウンロード中...",
+    "downloadComplete": "ダウンロード完了！",
+    "downloadFailed": "ダウンロード失敗",
+    "uploaded": "新しいファイルがアップロードされました！",
+    "copyToClipboard": "クリップボードにコピー",
+    "copied": "クリップボードにコピーしました！",
+    "copyFailed": "コピー失敗"
+  },
+  "text": {
+    "share": "テキストを共有",
+    "shared": "テキストを共有しました！",
+    "newText": "新しいテキストが共有されました！",
+    "removed": "テキストが削除されました。",
+    "clearAll": "すべてのテキストをクリア",
+    "cleared": "すべてのテキストがクリアされました。"
+  },
+  "notification": {
+    "uploading": "アップロード中...",
+    "uploadComplete": "{count} 個のファイルをアップロードしました！",
+    "uploadFailed": "アップロード失敗：{message}",
+    "sizeLimitExceeded": "合計アップロードサイズが制限（{limit}MB）を超えています。現在：{current}MB、アップロード：{upload}MB"
+  },
+  "clipboard": {
+    "paste": "貼り付け",
+    "empty": "クリップボードが空です。",
+    "permissionDenied": "クリップボードへのアクセス許可が必要です。"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "Klembord Delen",
+    "help": "Hulp",
+    "helpTitle": "Hoe te gebruiken"
+  },
+  "room": {
+    "connecting": "Verbinden...",
+    "connected": "Verbonden met kamer {roomId}.",
+    "userCount": "{count} gebruiker(s) in de kamer.",
+    "copyCode": "Kamercode kopiëren",
+    "copied": "Kamercode gekopieerd!"
+  },
+  "file": {
+    "upload": "Bestand uploaden",
+    "download": "Downloaden",
+    "downloading": "Downloaden...",
+    "downloadComplete": "Download voltooid!",
+    "downloadFailed": "Download mislukt",
+    "uploaded": "Nieuw bestand geüpload!",
+    "copyToClipboard": "Kopiëren naar klembord",
+    "copied": "Gekopieerd naar klembord!",
+    "copyFailed": "Kopiëren mislukt"
+  },
+  "text": {
+    "share": "Tekst delen",
+    "shared": "Tekst gedeeld!",
+    "newText": "Nieuwe tekst gedeeld!",
+    "removed": "Tekst verwijderd.",
+    "clearAll": "Alle teksten wissen",
+    "cleared": "Alle teksten gewist."
+  },
+  "notification": {
+    "uploading": "Uploaden...",
+    "uploadComplete": "{count} bestand(en) geüpload!",
+    "uploadFailed": "Upload mislukt: {message}",
+    "sizeLimitExceeded": "Totale uploadgrootte overschrijdt limiet ({limit}MB). Huidig: {current}MB, Upload: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "Plakken",
+    "empty": "Klembord is leeg.",
+    "permissionDenied": "Toegangsrechten voor klembord vereist."
+  }
+}

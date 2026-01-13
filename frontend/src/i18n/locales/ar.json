@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "مشاركة الحافظة",
+    "help": "مساعدة",
+    "helpTitle": "كيفية الاستخدام"
+  },
+  "room": {
+    "connecting": "جاري الاتصال...",
+    "connected": "متصل بالغرفة {roomId}.",
+    "userCount": "{count} مستخدم في الغرفة.",
+    "copyCode": "نسخ رمز الغرفة",
+    "copied": "تم نسخ رمز الغرفة!"
+  },
+  "file": {
+    "upload": "تحميل ملف",
+    "download": "تنزيل",
+    "downloading": "جاري التنزيل...",
+    "downloadComplete": "اكتمل التنزيل!",
+    "downloadFailed": "فشل التنزيل",
+    "uploaded": "تم تحميل ملف جديد!",
+    "copyToClipboard": "نسخ إلى الحافظة",
+    "copied": "تم النسخ إلى الحافظة!",
+    "copyFailed": "فشل النسخ"
+  },
+  "text": {
+    "share": "مشاركة النص",
+    "shared": "تمت مشاركة النص!",
+    "newText": "تمت مشاركة نص جديد!",
+    "removed": "تم حذف النص.",
+    "clearAll": "مسح جميع النصوص",
+    "cleared": "تم مسح جميع النصوص."
+  },
+  "notification": {
+    "uploading": "جاري التحميل...",
+    "uploadComplete": "تم تحميل {count} ملف!",
+    "uploadFailed": "فشل التحميل: {message}",
+    "sizeLimitExceeded": "يتجاوز حجم التحميل الإجمالي الحد ({limit}MB). الحالي: {current}MB، التحميل: {upload}MB"
+  },
+  "clipboard": {
+    "paste": "لصق",
+    "empty": "الحافظة فارغة.",
+    "permissionDenied": "مطلوب إذن الوصول إلى الحافظة."
+  }
+}
