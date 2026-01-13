@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   selectedCount: {
     type: Number,
@@ -23,28 +27,28 @@ const emit = defineEmits(['download-parallel', 'toggle-select-all', 'show-multi-
       class="bg-blue-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-blue-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-blue-500/30"
       :disabled="totalCount === 0"
       @click="$emit('toggle-select-all')"
-      :title="allSelected ? '모든 파일 선택 해제' : '모든 파일 선택'"
+      :title="allSelected ? t('download.deselectAllHint') : t('download.selectAllHint')"
     >
-      {{ allSelected ? '✓ 전체 해제' : '☐ 전체 선택' }} ({{ selectedCount }}/{{ totalCount }})
+      {{ allSelected ? '✓ ' + t('download.deselectAll') : '☐ ' + t('download.selectAll') }} ({{ selectedCount }}/{{ totalCount }})
     </button>
     <button
       class="bg-green-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-green-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-green-500/30"
       :disabled="selectedCount === 0"
       @click="$emit('download-parallel')"
-      title="선택된 파일들을 하나씩 순차적으로 다운로드합니다"
+      :title="t('download.downloadHint')"
     >
-      📥 다운로드 ({{ selectedCount }})
+      📥 {{ t('download.downloadSelected') }} ({{ selectedCount }})
     </button>
     <button
       class="bg-purple-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-purple-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-purple-500/30"
       :disabled="selectedCount === 0"
       @click="$emit('show-multi-qr')"
-      title="선택된 파일들의 QR 코드를 생성합니다"
+      :title="t('download.qrCodeHint')"
     >
-      📱 QR 코드 ({{ selectedCount }})
+      📱 {{ t('download.qrCode') }} ({{ selectedCount }})
     </button>
     <span v-if="selectedCount > 0" class="text-[0.85rem] text-text-secondary italic">
-      💡 Tip: 파일들을 하나씩 순차적으로 다운로드합니다
+      💡 {{ t('download.tipSequential') }}
     </span>
   </div>
 </template>

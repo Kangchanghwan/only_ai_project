@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 const emit = defineEmits(['paste-content'])
 
 function handlePasteClick() {
@@ -15,10 +19,10 @@ function handlePasteClick() {
     <!-- 메인 컨텐츠 영역 -->
     <div class="w-full h-[200px] flex flex-col items-center justify-center gap-3 bg-surface/50">
       <div class="text-[80px]">📋</div>
-      <p class="text-sm font-semibold text-text-primary">붙여넣기</p>
+      <p class="text-sm font-semibold text-text-primary">{{ t('clipboard.pasteTitle') }}</p>
       <p class="text-xs text-text-secondary px-4 text-center">
-        클립보드의 텍스트/이미지<br />
-        공유하기
+        {{ t('clipboard.pasteDescription') }}<br />
+        {{ t('clipboard.pasteDescription2') }}
       </p>
     </div>
 
@@ -27,7 +31,7 @@ function handlePasteClick() {
       <div class="flex items-center gap-3">
         <span class="text-2xl">📲</span>
         <div class="flex items-center gap-2 text-xs text-white/90">
-          <span>모바일 지원</span>
+          <span>{{ t('clipboard.mobileSupport') }}</span>
         </div>
       </div>
     </div>
@@ -36,7 +40,7 @@ function handlePasteClick() {
     <div
       class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex justify-center items-end opacity-0 transition-opacity duration-200 hover:opacity-100"
     >
-      <span class="text-xs font-medium text-white">클릭하여 클립보드 내용 공유</span>
+      <span class="text-xs font-medium text-white">{{ t('clipboard.pasteHint') }}</span>
     </div>
   </div>
 </template>

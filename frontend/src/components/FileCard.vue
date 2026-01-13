@@ -1,7 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../utils/fileUtils'
 import FileQRCodeModal from './FileQRCodeModal.vue'
+
+const { t } = useI18n()
 
 const props = defineProps({
   file: {
@@ -108,7 +111,7 @@ function closeQRModal() {
 
       <!-- 액션 버튼 -->
       <div class="flex justify-between items-center">
-        <span class="text-xs font-medium text-white/80">클릭해서 복사</span>
+        <span class="text-xs font-medium text-white/80">{{ t('text.clickToCopy') }}</span>
 
         <!-- 버튼 그룹 -->
         <div class="flex gap-2">
@@ -116,7 +119,7 @@ function closeQRModal() {
           <button
             class="bg-surface/80 border border-border text-primary p-2 rounded-full cursor-pointer transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110 flex items-center justify-center"
             @click="openQRModal"
-            title="QR 코드로 공유"
+            :title="t('room.qrShareTitle')"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -140,9 +143,9 @@ function closeQRModal() {
           <button
             class="bg-primary/90 border-none text-white px-3 py-1.5 rounded cursor-pointer text-sm font-semibold transition-all duration-200 hover:bg-primary hover:scale-110"
             @click="handleDownload"
-            title="다운로드"
+            :title="t('file.download')"
           >
-            ⬇️ 다운로드
+            ⬇️ {{ t('file.download') }}
           </button>
         </div>
       </div>

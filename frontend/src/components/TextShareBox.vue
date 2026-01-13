@@ -10,6 +10,9 @@
  * - Props and emits pattern for component communication
  * - Tailwind CSS for styling
  */
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   /**
@@ -46,20 +49,20 @@ function formatTime(timestamp) {
     <div class="bg-surface rounded-xl p-6 border border-border">
       <div class="flex items-center justify-between mb-2">
         <h2 class="text-lg font-semibold text-text-primary">
-          Received text
+          {{ t('text.receivedText') }}
         </h2>
         <button
           v-if="texts.length > 0"
           class="text-xs text-text-secondary hover:text-primary transition-colors duration-200"
           @click="$emit('clear-all')"
-          title="모든 텍스트 삭제"
+          :title="t('text.clearAll')"
         >
-          🗑️ Clear all
+          🗑️ {{ t('text.clearAll') }}
         </button>
       </div>
 
       <p class="text-xs text-text-secondary mb-4">
-        💡 텍스트를 붙여넣으면 자동으로 공유됩니다 (Ctrl+V / Cmd+V)
+        💡 {{ t('text.autoShareHint') }}
       </p>
 
       <!-- 텍스트 목록 -->
@@ -69,7 +72,7 @@ function formatTime(timestamp) {
           v-if="texts.length === 0"
           class="text-center py-12 text-text-secondary"
         >
-          <p class="text-sm">No messages yet</p>
+          <p class="text-sm">{{ t('text.noMessages') }}</p>
         </div>
 
         <!-- 텍스트 아이템 -->
@@ -83,7 +86,7 @@ function formatTime(timestamp) {
             <div
               class="flex-1 min-w-0 cursor-pointer"
               @click="$emit('copy-text', text.id)"
-              title="Click to copy"
+              :title="t('text.clickToCopy')"
             >
               <pre class="text-text-primary text-sm font-mono whitespace-pre-wrap break-words">{{ text.content }}</pre>
               <p class="text-xs text-text-secondary mt-2">
@@ -96,7 +99,7 @@ function formatTime(timestamp) {
               <button
                 class="text-text-secondary hover:text-red-500 transition-colors duration-200 p-1 text-xl"
                 @click="$emit('remove-text', text.id)"
-                title="Delete"
+                :title="t('text.delete')"
               >
                 🗑️
               </button>
@@ -110,7 +113,7 @@ function formatTime(timestamp) {
         v-if="texts.length > 0"
         class="mt-3 text-center text-xs text-text-secondary"
       >
-        {{ texts.length }} message{{ texts.length > 1 ? 's' : '' }}
+        {{ t(texts.length > 1 ? 'text.messageCount_plural' : 'text.messageCount', { count: texts.length }) }}
       </div>
     </div>
   </div>

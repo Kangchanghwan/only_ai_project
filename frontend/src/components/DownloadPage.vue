@@ -1,8 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { decodeFileNames } from '../utils/router'
 import { r2Service } from '../services/r2Service'
 import { useDownload } from '../composables/useDownload'
+
+const { t } = useI18n()
 
 const props = defineProps({
   roomId: {
@@ -51,7 +54,7 @@ function goHome() {
 async function startDownload() {
   if (files.value.length === 0) {
     hasError.value = true
-    errorMessage.value = '다운로드할 파일이 없습니다'
+    errorMessage.value = t('download.noFiles')
     return
   }
 
@@ -76,12 +79,12 @@ async function startDownload() {
     // 모든 파일이 실패한 경우
     if (failedCount.value === totalFiles.value) {
       hasError.value = true
-      errorMessage.value = '룸을 찾을 수 없거나 모든 파일 다운로드에 실패했습니다'
+      errorMessage.value = t('download.roomNotFound')
     }
   } catch (error) {
     console.error('[DownloadPage] 다운로드 중 오류 발생:', error)
     hasError.value = true
-    errorMessage.value = '다운로드 중 오류가 발생했습니다'
+    errorMessage.value = t('download.errorMessage')
     isComplete.value = true
   }
 }
@@ -99,7 +102,7 @@ onMounted(async () => {
 
     if (fileNames.value.length === 0) {
       hasError.value = true
-      errorMessage.value = '잘못된 링크입니다. URL을 확인해주세요.'
+      errorMessage.value = t('download.invalidLink')
       return
     }
 
@@ -124,7 +127,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('[DownloadPage] 초기화 실패:', error)
     hasError.value = true
-    errorMessage.value = '페이지 로딩 중 오류가 발생했습니다'
+    errorMessage.value = t('download.pageLoadError')
   }
 })
 
@@ -148,13 +151,13 @@ function getStatusIcon(status) {
 function getStatusText(status) {
   switch (status) {
     case 'pending':
-      return '대기중'
+      return t('download.pending')
     case 'downloading':
-      return '다운로드중'
+      return t('download.downloading')
     case 'complete':
-      return '완료'
+      return t('download.completed')
     case 'failed':
-      return '실패'
+      return t('download.failed')
     default:
       return ''
   }
@@ -168,13 +171,13 @@ function getStatusText(status) {
       <div v-if="hasError && !isComplete" class="bg-surface rounded-2xl p-8 border border-red-500/30 shadow-2xl">
         <div class="text-center">
           <div class="text-6xl mb-4">❌</div>
-          <h1 class="text-2xl font-bold mb-4 text-red-400">오류 발생</h1>
+          <h1 class="text-2xl font-bold mb-4 text-red-400">{{ t('download.error') }}</h1>
           <p class="text-text-secondary mb-6">{{ errorMessage }}</p>
           <button
             class="bg-primary text-white px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
             @click="goHome"
           >
-            메인으로 돌아가기
+            {{ t('download.backToMain') }}
           </button>
         </div>
       </div>
@@ -185,17 +188,17 @@ function getStatusText(status) {
         <div class="text-center mb-8">
           <div class="text-5xl mb-4">📥</div>
           <h1 class="text-3xl font-bold text-text-primary mb-2">
-            파일 다운로드 중...
+            {{ t('download.title') }}
           </h1>
           <p class="text-text-secondary">
-            {{ totalFiles }}개 파일을 병렬로 다운로드하고 있습니다
+            {{ t('download.filesCount', { count: totalFiles }) }} {{ t('download.parallel') }}
           </p>
         </div>
 
         <!-- 진행률 바 -->
         <div class="mb-8">
           <div class="flex justify-between items-center mb-2">
-            <span class="text-sm text-text-secondary">진행률</span>
+            <span class="text-sm text-text-secondary">{{ t('download.progress') }}</span>
             <span class="text-sm font-bold text-primary">{{ progress }}%</span>
           </div>
           <div class="w-full bg-black/30 rounded-full h-4 overflow-hidden">
@@ -205,7 +208,7 @@ function getStatusText(status) {
             />
           </div>
           <div class="text-center mt-2 text-sm text-text-secondary">
-            {{ completedCount }} / {{ totalFiles }} 완료
+            {{ completedCount }} / {{ totalFiles }} {{ t('download.completed') }}
           </div>
         </div>
 
@@ -240,7 +243,7 @@ function getStatusText(status) {
             {{ hasSuccess ? '✅' : '❌' }}
           </div>
           <h1 class="text-3xl font-bold text-text-primary mb-4">
-            {{ hasSuccess ? '다운로드 완료!' : '다운로드 실패' }}
+            {{ hasSuccess ? t('download.complete') : t('download.failed') }}
           </h1>
 
           <!-- 결과 요약 -->
@@ -248,18 +251,18 @@ function getStatusText(status) {
             <div class="grid grid-cols-2 gap-4 text-center">
               <div>
                 <p class="text-3xl font-bold text-green-400">{{ completedCount }}</p>
-                <p class="text-sm text-text-secondary">성공</p>
+                <p class="text-sm text-text-secondary">{{ t('download.success') }}</p>
               </div>
               <div>
                 <p class="text-3xl font-bold text-red-400">{{ failedCount }}</p>
-                <p class="text-sm text-text-secondary">실패</p>
+                <p class="text-sm text-text-secondary">{{ t('download.failed') }}</p>
               </div>
             </div>
           </div>
 
           <!-- 실패한 파일 목록 -->
           <div v-if="failedCount > 0" class="mb-6 text-left">
-            <p class="text-sm text-text-secondary mb-2">실패한 파일:</p>
+            <p class="text-sm text-text-secondary mb-2">{{ t('download.failedFiles') }}</p>
             <div class="bg-black/20 rounded-lg p-4 max-h-40 overflow-y-auto">
               <ul class="space-y-1">
                 <li
@@ -283,7 +286,7 @@ function getStatusText(status) {
             class="bg-primary text-white px-8 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
             @click="goHome"
           >
-            메인으로 돌아가기
+            {{ t('download.backToMain') }}
           </button>
         </div>
       </div>

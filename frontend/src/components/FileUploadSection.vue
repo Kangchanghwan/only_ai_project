@@ -1,5 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['upload-files'])
 
@@ -68,10 +71,10 @@ function handleDrop(event) {
     <!-- 메인 컨텐츠 영역 -->
     <div class="w-full h-[200px] flex flex-col items-center justify-center gap-3 bg-surface/50">
       <div class="text-[80px]">📤</div>
-      <p class="text-sm font-semibold text-text-primary">파일 업로드</p>
+      <p class="text-sm font-semibold text-text-primary">{{ t('file.uploadTitle') }}</p>
       <p class="text-xs text-text-secondary px-4 text-center">
-        클릭 또는 드래그 & 드롭<br />
-        (Ctrl+V로 붙여넣기)
+        {{ t('file.uploadHint') }}<br />
+        {{ t('file.uploadPasteHint') }}
       </p>
     </div>
 
@@ -80,7 +83,7 @@ function handleDrop(event) {
       <div class="flex items-center gap-3">
         <span class="text-2xl">📁</span>
         <div class="flex items-center gap-2 text-xs text-white/90">
-          <span>최대 {{ maxFileSizeMB }}MB</span>
+          <span>{{ t('file.maxSize', { size: maxFileSizeMB }) }}</span>
         </div>
       </div>
     </div>
@@ -89,7 +92,7 @@ function handleDrop(event) {
     <div
       class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex justify-center items-end opacity-0 transition-opacity duration-200 hover:opacity-100"
     >
-      <span class="text-xs font-medium text-white">여기를 클릭하거나 파일을 드롭하세요</span>
+      <span class="text-xs font-medium text-white">{{ t('file.uploadClickHint') }}</span>
     </div>
   </div>
 </template>
