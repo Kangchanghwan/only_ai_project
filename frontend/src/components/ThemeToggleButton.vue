@@ -55,9 +55,9 @@ const { currentTheme, toggleTheme } = useTheme()
   justify-content: center;
   padding: 0.5rem;
   background: transparent;
-  border: 1px solid var(--theme-border);
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  color: var(--theme-text);
+  color: var(--color-text-primary);
   font-size: 1.25rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -66,8 +66,8 @@ const { currentTheme, toggleTheme } = useTheme()
 }
 
 .theme-toggle-button:hover {
-  background: var(--theme-surface);
-  border-color: var(--theme-primary);
+  background: var(--color-surface);
+  border-color: var(--color-primary);
   transform: translateY(-1px);
 }
 

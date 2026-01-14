@@ -18,7 +18,19 @@ function handlePasteClick() {
   >
     <!-- 메인 컨텐츠 영역 -->
     <div class="w-full h-[200px] flex flex-col items-center justify-center gap-3 bg-surface/50">
-      <div class="text-[80px]">📋</div>
+      <!-- SVG 아이콘으로 대체하여 LCP 성능 개선 -->
+      <svg
+        class="w-20 h-20 text-primary"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      </svg>
       <p class="text-sm font-semibold text-text-primary">{{ t('clipboard.pasteTitle') }}</p>
       <p class="text-xs text-text-secondary px-4 text-center">
         {{ t('clipboard.pasteDescription') }}<br />

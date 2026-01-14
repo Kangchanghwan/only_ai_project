@@ -70,7 +70,20 @@ function handleDrop(event) {
 
     <!-- 메인 컨텐츠 영역 -->
     <div class="w-full h-[200px] flex flex-col items-center justify-center gap-3 bg-surface/50">
-      <div class="text-[80px]">📤</div>
+      <!-- SVG 아이콘으로 대체하여 LCP 성능 개선 -->
+      <svg
+        class="w-20 h-20 text-primary"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="17 8 12 3 7 8" />
+        <line x1="12" y1="3" x2="12" y2="15" />
+      </svg>
       <p class="text-sm font-semibold text-text-primary">{{ t('file.uploadTitle') }}</p>
       <p class="text-xs text-text-secondary px-4 text-center">
         {{ t('file.uploadHint') }}<br />

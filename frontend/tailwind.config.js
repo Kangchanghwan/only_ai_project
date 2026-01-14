@@ -7,12 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#1a1a1a',
-        surface: '#2a2a2a',
-        primary: '#42b883',
-        'text-primary': '#e0e0e0',
-        'text-secondary': '#a0a0a0',
-        border: '#3a3a3a',
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
+        primary: 'var(--color-primary)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        border: 'var(--color-border)',
       },
     },
   },
