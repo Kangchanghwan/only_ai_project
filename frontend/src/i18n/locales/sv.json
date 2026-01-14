@@ -40,5 +40,10 @@
     "paste": "Klistra in",
     "empty": "Urklipp är tomt.",
     "permissionDenied": "Åtkomstbehörighet till urklipp krävs."
+  },
+  "footer": {
+    "privacyPolicy": "Integritetspolicy",
+    "sourceOnGitHub": "Källkod på GitHub",
+    "createdBy": "Skapad av"
   }
 }

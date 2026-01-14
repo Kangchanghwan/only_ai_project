@@ -40,5 +40,10 @@
     "paste": "Beillesztés",
     "empty": "A vágólap üres.",
     "permissionDenied": "Vágólap hozzáférési engedély szükséges."
+  },
+  "footer": {
+    "privacyPolicy": "Adatvédelmi Irányelvek",
+    "sourceOnGitHub": "Forráskód a GitHubon",
+    "createdBy": "Készítette"
   }
 }

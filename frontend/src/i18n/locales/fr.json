@@ -40,5 +40,10 @@
     "paste": "Coller",
     "empty": "Le presse-papiers est vide.",
     "permissionDenied": "Permission d'accès au presse-papiers requise."
+  },
+  "footer": {
+    "privacyPolicy": "Politique de Confidentialité",
+    "sourceOnGitHub": "Source sur GitHub",
+    "createdBy": "Créé par"
   }
 }

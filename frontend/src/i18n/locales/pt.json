@@ -40,5 +40,10 @@
     "paste": "Colar",
     "empty": "A área de transferência está vazia.",
     "permissionDenied": "Permissão de acesso à área de transferência necessária."
+  },
+  "footer": {
+    "privacyPolicy": "Política de Privacidade",
+    "sourceOnGitHub": "Código no GitHub",
+    "createdBy": "Criado por"
   }
 }

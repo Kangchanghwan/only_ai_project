@@ -40,5 +40,10 @@
     "paste": "Wklej",
     "empty": "Schowek jest pusty.",
     "permissionDenied": "Wymagane uprawnienie dostępu do schowka."
+  },
+  "footer": {
+    "privacyPolicy": "Polityka Prywatności",
+    "sourceOnGitHub": "Kod na GitHub",
+    "createdBy": "Stworzone przez"
   }
 }

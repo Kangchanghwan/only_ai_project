@@ -149,5 +149,10 @@
     "tip2": "같은 네트워크에 있지 않아도 룸 코드만 알면 공유 가능합니다",
     "tip3": "모든 파일과 텍스트는 실시간으로 동기화됩니다",
     "confirm": "확인"
+  },
+  "footer": {
+    "privacyPolicy": "개인정보 처리방침",
+    "sourceOnGitHub": "GitHub 소스 코드",
+    "createdBy": "제작:"
   }
 }

@@ -40,5 +40,10 @@
     "paste": "لصق",
     "empty": "الحافظة فارغة.",
     "permissionDenied": "مطلوب إذن الوصول إلى الحافظة."
+  },
+  "footer": {
+    "privacyPolicy": "سياسة الخصوصية",
+    "sourceOnGitHub": "الكود على GitHub",
+    "createdBy": "تم الإنشاء بواسطة"
   }
 }

@@ -149,5 +149,10 @@
     "tip2": "You don't need to be on the same network, just the room code",
     "tip3": "All files and text are synchronized in real-time",
     "confirm": "Confirm"
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy",
+    "sourceOnGitHub": "Source on GitHub",
+    "createdBy": "Created by"
   }
 }

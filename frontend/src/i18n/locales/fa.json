@@ -40,5 +40,10 @@
     "paste": "چسباندن",
     "empty": "کلیپ‌بورد خالی است.",
     "permissionDenied": "مجوز دسترسی به کلیپ‌بورد مورد نیاز است."
+  },
+  "footer": {
+    "privacyPolicy": "سیاست حریم خصوصی",
+    "sourceOnGitHub": "کد منبع در GitHub",
+    "createdBy": "ایجاد شده توسط"
   }
 }

@@ -40,5 +40,10 @@
     "paste": "粘贴",
     "empty": "剪贴板为空。",
     "permissionDenied": "需要剪贴板访问权限。"
+  },
+  "footer": {
+    "privacyPolicy": "隐私政策",
+    "sourceOnGitHub": "GitHub 源代码",
+    "createdBy": "创建者"
   }
 }

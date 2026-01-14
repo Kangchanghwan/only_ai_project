@@ -3,6 +3,7 @@ import AppHeader from './AppHeader.vue'
 import RoomInfo from './RoomInfo.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
+import AppFooter from './AppFooter.vue'
 
 const props = defineProps({
   roomId: {
@@ -83,5 +84,7 @@ const emit = defineEmits([
         />
       </div>
     </main>
+
+    <AppFooter />
   </div>
 </template>

@@ -40,5 +40,10 @@
     "paste": "Tempel",
     "empty": "Clipboard kosong.",
     "permissionDenied": "Izin akses clipboard diperlukan."
+  },
+  "footer": {
+    "privacyPolicy": "Kebijakan Privasi",
+    "sourceOnGitHub": "Kode di GitHub",
+    "createdBy": "Dibuat oleh"
   }
 }

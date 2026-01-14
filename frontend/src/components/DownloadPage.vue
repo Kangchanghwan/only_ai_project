@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { decodeFileNames } from '../utils/router'
 import { r2Service } from '../services/r2Service'
 import { useDownload } from '../composables/useDownload'
+import AppFooter from './AppFooter.vue'
 
 const { t } = useI18n()
 
@@ -165,8 +166,9 @@ function getStatusText(status) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-[#1a1a2e] to-[#16213e] text-white flex items-center justify-center p-4">
-    <div class="max-w-2xl w-full">
+  <div class="min-h-screen bg-gradient-to-br from-[#1a1a2e] to-[#16213e] text-white flex flex-col">
+    <div class="flex-1 flex items-center justify-center p-4">
+      <div class="max-w-2xl w-full">
       <!-- 에러 화면 -->
       <div v-if="hasError && !isComplete" class="bg-surface rounded-2xl p-8 border border-red-500/30 shadow-2xl">
         <div class="text-center">
@@ -290,7 +292,10 @@ function getStatusText(status) {
           </button>
         </div>
       </div>
+      </div>
     </div>
+
+    <AppFooter />
   </div>
 </template>
 

@@ -40,5 +40,10 @@
     "paste": "Einfügen",
     "empty": "Zwischenablage ist leer.",
     "permissionDenied": "Zugriffsberechtigung für Zwischenablage erforderlich."
+  },
+  "footer": {
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "sourceOnGitHub": "Quellcode auf GitHub",
+    "createdBy": "Erstellt von"
   }
 }

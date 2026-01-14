@@ -40,5 +40,10 @@
     "paste": "Plakken",
     "empty": "Klembord is leeg.",
     "permissionDenied": "Toegangsrechten voor klembord vereist."
+  },
+  "footer": {
+    "privacyPolicy": "Privacybeleid",
+    "sourceOnGitHub": "Broncode op GitHub",
+    "createdBy": "Gemaakt door"
   }
 }

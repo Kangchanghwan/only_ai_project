@@ -40,5 +40,10 @@
     "paste": "Vložit",
     "empty": "Schránka je prázdná.",
     "permissionDenied": "Vyžadováno oprávnění k přístupu ke schránce."
+  },
+  "footer": {
+    "privacyPolicy": "Zásady Ochrany Osobních Údajů",
+    "sourceOnGitHub": "Zdrojový kód na GitHub",
+    "createdBy": "Vytvořil"
   }
 }

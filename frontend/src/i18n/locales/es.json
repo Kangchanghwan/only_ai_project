@@ -40,5 +40,10 @@
     "paste": "Pegar",
     "empty": "El portapapeles está vacío.",
     "permissionDenied": "Se requiere permiso de acceso al portapapeles."
+  },
+  "footer": {
+    "privacyPolicy": "Política de Privacidad",
+    "sourceOnGitHub": "Código en GitHub",
+    "createdBy": "Creado por"
   }
 }

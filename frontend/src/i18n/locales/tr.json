@@ -40,5 +40,10 @@
     "paste": "Yapıştır",
     "empty": "Pano boş.",
     "permissionDenied": "Pano erişim izni gerekli."
+  },
+  "footer": {
+    "privacyPolicy": "Gizlilik Politikası",
+    "sourceOnGitHub": "GitHub'da Kaynak Kod",
+    "createdBy": "Oluşturan"
   }
 }

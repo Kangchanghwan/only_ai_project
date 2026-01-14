@@ -40,5 +40,10 @@
     "paste": "Lipește",
     "empty": "Clipboard-ul este gol.",
     "permissionDenied": "Permisiune de acces la clipboard necesară."
+  },
+  "footer": {
+    "privacyPolicy": "Politica de Confidențialitate",
+    "sourceOnGitHub": "Cod sursă pe GitHub",
+    "createdBy": "Creat de"
   }
 }

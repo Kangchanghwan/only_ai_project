@@ -40,5 +40,10 @@
     "paste": "Dán",
     "empty": "Clipboard trống.",
     "permissionDenied": "Cần quyền truy cập clipboard."
+  },
+  "footer": {
+    "privacyPolicy": "Chính Sách Bảo Mật",
+    "sourceOnGitHub": "Mã Nguồn trên GitHub",
+    "createdBy": "Được tạo bởi"
   }
 }
