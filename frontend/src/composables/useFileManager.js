@@ -1,4 +1,4 @@
-import { ref, readonly } from 'vue'
+import { ref, readonly, computed } from 'vue'
 import { r2Service } from '../services/r2Service.js'
 
 /**
@@ -18,6 +18,11 @@ export function useFileManager() {
   const isLoading = ref(false)
   const error = ref(null)
   const totalSize = ref(0) // 룸의 총 파일 용량 (바이트)
+  const nextToken = ref(null) // 페이지네이션 토큰
+  const currentRoomId = ref(null) // 현재 룸 ID 저장
+
+  // 더 불러올 파일이 있는지 여부
+  const hasMore = computed(() => !!nextToken.value)
 
   gtag('event', 'file_shared', {
     'event_category': 'engagement',
@@ -28,7 +33,7 @@ export function useFileManager() {
    * 특정 룸의 파일 목록을 불러옵니다.
    *
    * @param {string} roomId - 룸 ID
-   * @param {Object} options - 로드 옵션 (limit, offset, sortBy, order)
+   * @param {Object} options - 로드 옵션 (limit, continuationToken)
    * @returns {Promise<void>}
    */
   async function loadFiles(roomId, options = {}) {
@@ -39,23 +44,26 @@ export function useFileManager() {
 
     isLoading.value = true
     error.value = null
+    currentRoomId.value = roomId
 
     try {
       console.log('[useFileManager] 파일 로딩 시작:', roomId)
 
       // 서비스 레이어를 통해 파일 목록 가져오기
-      const loadedFiles = await r2Service.loadFiles(roomId, options)
+      const result = await r2Service.loadFiles(roomId, options)
 
-      files.value = loadedFiles
+      files.value = result.files
+      nextToken.value = result.nextToken || null
 
       // 총 용량 계산
-      totalSize.value = loadedFiles.reduce((sum, file) => sum + (file.size || 0), 0)
+      totalSize.value = result.files.reduce((sum, file) => sum + (file.size || 0), 0)
 
-      console.log(`[useFileManager] 파일 로드 완료: ${loadedFiles.length}개, 총 용량: ${totalSize.value} bytes`)
+      console.log(`[useFileManager] 파일 로드 완료: ${result.files.length}개, 총 용량: ${totalSize.value} bytes, hasMore: ${hasMore.value}`)
     } catch (err) {
       console.error('[useFileManager] 파일 로드 오류:', err)
       error.value = err
       files.value = []
+      nextToken.value = null
     } finally {
       isLoading.value = false
     }
@@ -164,12 +172,59 @@ export function useFileManager() {
   }
 
   /**
+   * 추가 파일 목록을 불러옵니다 (페이지네이션).
+   *
+   * @param {Object} options - 로드 옵션 (limit)
+   * @returns {Promise<void>}
+   */
+  async function loadMore(options = {}) {
+    if (!currentRoomId.value) {
+      console.warn('[useFileManager] currentRoomId가 없습니다')
+      return
+    }
+
+    if (!nextToken.value) {
+      console.warn('[useFileManager] 더 이상 불러올 파일이 없습니다')
+      return
+    }
+
+    isLoading.value = true
+    error.value = null
+
+    try {
+      console.log('[useFileManager] 추가 파일 로딩 시작:', currentRoomId.value)
+
+      // 다음 페이지 파일 가져오기
+      const result = await r2Service.loadFiles(currentRoomId.value, {
+        ...options,
+        continuationToken: nextToken.value
+      })
+
+      // 기존 파일 목록에 추가
+      files.value = [...files.value, ...result.files]
+      nextToken.value = result.nextToken || null
+
+      // 총 용량 재계산
+      totalSize.value = files.value.reduce((sum, file) => sum + (file.size || 0), 0)
+
+      console.log(`[useFileManager] 추가 파일 로드 완료: ${result.files.length}개, 총 ${files.value.length}개, hasMore: ${hasMore.value}`)
+    } catch (err) {
+      console.error('[useFileManager] 추가 파일 로드 오류:', err)
+      error.value = err
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  /**
    * 파일 목록을 초기화합니다.
    */
   function clearFiles() {
     files.value = []
     totalSize.value = 0
     error.value = null
+    nextToken.value = null
+    currentRoomId.value = null
     console.log('[useFileManager] 파일 목록 초기화')
   }
 
@@ -202,6 +257,11 @@ export function useFileManager() {
      * 룸의 총 파일 용량 (바이트, 읽기 전용).
      */
     totalSize: readonly(totalSize),
+    /**
+     * @property {import('vue').ComputedRef<boolean>} hasMore
+     * 더 불러올 파일이 있는지 여부.
+     */
+    hasMore,
 
     /**
      * 파일 목록을 불러오는 함수.
@@ -210,6 +270,12 @@ export function useFileManager() {
      * @returns {Promise<void>}
      */
     loadFiles,
+    /**
+     * 추가 파일 목록을 불러오는 함수 (페이지네이션).
+     * @param {Object} options - 로드 옵션
+     * @returns {Promise<void>}
+     */
+    loadMore,
     /**
      * 파일을 업로드하는 함수.
      * @param {string} roomId - 룸 ID

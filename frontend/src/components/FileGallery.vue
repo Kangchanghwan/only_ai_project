@@ -18,6 +18,10 @@ const props = defineProps({
   roomId: {
     type: String,
     required: true
+  },
+  hasMore: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -27,7 +31,8 @@ const emit = defineEmits([
   'download-parallel',
   'copy-selected-to-clipboard',
   'upload-files',
-  'paste-content'
+  'paste-content',
+  'load-more'
 ])
 
 const selectedFiles = ref(new Set())
@@ -135,6 +140,21 @@ onUnmounted(() => {
         @toggle-selection="toggleFileSelection"
         @download-file="$emit('download-file', file)"
       />
+    </div>
+
+    <!-- 더 보기 버튼 -->
+    <div v-if="hasMore && !isLoading" class="flex justify-center mt-8">
+      <button
+        @click="$emit('load-more')"
+        class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+      >
+        {{ $t('fileGallery.loadMore') || '더 보기' }}
+      </button>
+    </div>
+
+    <!-- 로딩 중 표시 -->
+    <div v-if="isLoading" class="flex justify-center mt-8">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
     </div>
 
     <!-- 다중 파일 QR 코드 모달 -->

@@ -181,9 +181,10 @@ app.get('/api/r2/files/:roomId', async (req, res) => {
     try {
         const { roomId } = req.params;
         const limit = parseInt(req.query.limit as string) || 100;
+        const continuationToken = req.query.continuationToken as string | undefined;
 
         const r2Service = getR2Service();
-        const result = await r2Service.loadFiles(roomId, { limit });
+        const result = await r2Service.loadFiles(roomId, { limit, continuationToken });
 
         res.json(result);
     } catch (error) {

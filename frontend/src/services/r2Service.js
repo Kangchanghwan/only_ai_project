@@ -34,38 +34,48 @@ class R2Service {
    * @param {string} roomId - 룸 ID
    * @param {Object} options - 옵션
    * @param {number} options.limit - 최대 파일 수 (기본값: 100)
-   * @returns {Promise<Array>} 파일 목록
+   * @param {string} options.continuationToken - 다음 페이지 토큰
+   * @returns {Promise<{files: Array, nextToken: string|undefined}>} 파일 목록과 다음 토큰
    */
   async loadFiles(roomId, options = {}) {
     if (!roomId) {
       throw new Error('roomId는 필수입니다')
     }
 
-    const { limit = 100 } = options
+    const { limit = 100, continuationToken } = options
 
-    console.log('[R2Service] 파일 로드 시작:', { roomId, limit })
+    console.log('[R2Service] 파일 로드 시작:', { roomId, limit, continuationToken })
 
     try {
+      // URL 파라미터 구성
+      const params = new URLSearchParams({ limit: limit.toString() })
+      if (continuationToken) {
+        params.append('continuationToken', continuationToken)
+      }
+
       const response = await fetch(
-        `${this.apiUrl}/api/r2/files/${roomId}?limit=${limit}`
+        `${this.apiUrl}/api/r2/files/${roomId}?${params.toString()}`
       )
 
       if (!response.ok) {
         throw new Error(`파일 목록 조회 실패: ${response.status}`)
       }
 
-      const { files } = await response.json()
+      const { files, nextToken } = await response.json()
 
-      console.log(`[R2Service] 파일 로드 완료: ${files.length}개`)
+      console.log(`[R2Service] 파일 로드 완료: ${files.length}개, nextToken: ${nextToken ? '있음' : '없음'}`)
 
       // 파일 정보를 표준 형식으로 변환 (supabaseService와 동일한 형식)
-      return files.map(file => ({
-        name: file.name,
-        url: file.url,
-        created: file.lastModified,
-        size: file.size,
-        type: this.getMimeTypeFromFileName(file.name)
-      }))
+      return {
+        files: files.map(file => ({
+          name: file.name,
+          url: file.url,
+          created: file.lastModified,
+          size: file.size,
+          type: this.getMimeTypeFromFileName(file.name)
+        })),
+        nextToken
+      }
     } catch (error) {
       console.error('[R2Service] 파일 로드 예외:', error)
       throw error

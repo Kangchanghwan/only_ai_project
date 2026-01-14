@@ -29,6 +29,10 @@ const props = defineProps({
   isConnecting: {
     type: Boolean,
     default: false
+  },
+  hasMore: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -43,7 +47,8 @@ const emit = defineEmits([
   'remove-text',
   'clear-all-texts',
   'copy-text',
-  'paste-content'
+  'paste-content',
+  'load-more'
 ])
 </script>
 
@@ -66,12 +71,14 @@ const emit = defineEmits([
         :files="files"
         :room-id="roomId"
         :is-loading="isLoading"
+        :has-more="hasMore"
         @copy-image="$emit('copy-image', $event)"
         @download-file="$emit('download-file', $event)"
         @download-parallel="$emit('download-parallel', $event)"
         @copy-selected-to-clipboard="$emit('copy-selected-to-clipboard', $event)"
         @upload-files="$emit('upload-files', $event)"
         @paste-content="$emit('paste-content')"
+        @load-more="$emit('load-more')"
       />
 
       <!-- Text Sharing Section -->

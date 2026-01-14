@@ -71,7 +71,8 @@ async function connectToRoom(roomCode) {
     }
 
     roomManager.joinRoomByCode(targetRoom)
-    await fileManager.loadFiles(targetRoom)
+    // 파일 로딩을 백그라운드에서 실행 (연결 속도 최적화, 초기 10개만)
+    fileManager.loadFiles(targetRoom, { limit: 10 })
     notification.showSuccess(`룸 ${targetRoom}에 연결되었습니다.`)
 
     // 새 이벤트 리스너 설정
@@ -90,11 +91,12 @@ async function connectToRoom(roomCode) {
  * 소켓 이벤트 리스너를 설정합니다.
  */
 function setupSocketListeners() {
-  cleanupOnMessage = socket.onMessage(async (message) => {
+  cleanupOnMessage = socket.onMessage((message) => {
     if (message.type === 'file-uploaded') {
       notification.showInfo('새 파일이 업로드되었습니다!')
       if (roomManager.currentRoomId.value) {
-        await fileManager.loadFiles(roomManager.currentRoomId.value)
+        // 백그라운드에서 파일 목록 갱신
+        fileManager.loadFiles(roomManager.currentRoomId.value)
       }
     } else if (message.type === 'text-shared') {
       // 다른 사용자가 텍스트를 공유한 경우
@@ -489,6 +491,19 @@ async function handlePasteContent() {
   }
 }
 
+/**
+ * 추가 파일 목록을 불러옵니다 (페이지네이션)
+ */
+async function handleLoadMore() {
+  try {
+    await fileManager.loadMore({ limit: 10 })
+    console.log('[App] 추가 파일 로드 완료')
+  } catch (error) {
+    console.error('[App] 추가 파일 로드 실패:', error)
+    notification.showError('추가 파일 로드에 실패했습니다.')
+  }
+}
+
 // ========================================
 // 라이프사이클 훅
 // ========================================
@@ -547,6 +562,7 @@ onUnmounted(() => {
       :texts="textShare.sharedTexts.value"
       :is-loading="fileManager.isLoading.value || isConnecting"
       :user-count="socket.usersInRoom.value"
+      :has-more="fileManager.hasMore.value"
       @copy-room-code="handleCopyRoomCode"
       @copy-image="handleCopyImage"
       @join-other-room="connectToRoom"
@@ -558,6 +574,7 @@ onUnmounted(() => {
       @clear-all-texts="handleClearAllTexts"
       @copy-text="handleCopyText"
       @paste-content="handlePasteContent"
+      @load-more="handleLoadMore"
     />
 
     <!-- 알림 토스트 -->
