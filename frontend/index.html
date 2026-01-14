@@ -54,10 +54,86 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <!-- Preconnect -->
+    <!-- Preconnect and Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Critical CSS for LCP optimization -->
+    <style>
+      body {
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      }
+
+      /* Skeleton loader - exact layout match with RoomScreen */
+      .app-skeleton {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 1.5rem; /* p-6 */
+      }
+
+      .app-skeleton__main {
+        background-color: #2a2a2a; /* bg-surface */
+        border-radius: 0.75rem; /* rounded-xl */
+        padding: 2rem; /* p-8 */
+        border: 1px solid #3a3a3a; /* border-border */
+      }
+
+      .app-skeleton__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem; /* gap-6 */
+        margin-top: 2rem;
+      }
+
+      .app-skeleton__card {
+        position: relative;
+        border-radius: 0.5rem; /* rounded-lg */
+        overflow: hidden;
+        border: 2px dashed #3a3a3a; /* border-2 border-dashed border-border */
+        background-color: #1a1a1a; /* bg-background */
+        transition: all 0.2s;
+      }
+
+      .app-skeleton__card-content {
+        width: 100%;
+        height: 200px; /* h-[200px] */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem; /* gap-3 */
+        background-color: rgba(42, 42, 42, 0.5); /* bg-surface/50 */
+      }
+
+      .app-skeleton__icon {
+        font-size: 80px; /* text-[80px] - CRITICAL FOR LCP */
+        line-height: 1;
+      }
+
+      .app-skeleton__title {
+        font-size: 0.875rem; /* text-sm */
+        font-weight: 600; /* font-semibold */
+        color: #e0e0e0; /* text-text-primary */
+      }
+
+      .app-skeleton__subtitle {
+        font-size: 0.75rem; /* text-xs */
+        color: #a0a0a0; /* text-text-secondary */
+        padding: 0 1rem; /* px-4 */
+        text-align: center;
+      }
+
+      /* Hide skeleton when Vue app mounts */
+      #app:not(:empty) > .app-skeleton {
+        display: none;
+      }
+    </style>
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -88,7 +164,37 @@
     </script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <!-- Skeleton loader - matches exact layout of RoomScreen for LCP optimization -->
+      <div class="app-skeleton">
+        <div class="app-skeleton__main">
+          <div class="app-skeleton__grid">
+            <!-- File Upload Card - Primary LCP element -->
+            <div class="app-skeleton__card">
+              <div class="app-skeleton__card-content">
+                <div class="app-skeleton__icon">📤</div>
+                <p class="app-skeleton__title">파일 업로드</p>
+                <p class="app-skeleton__subtitle">
+                  클릭하거나 드래그하여 업로드<br />
+                  Ctrl+V로 붙여넣기 가능
+                </p>
+              </div>
+            </div>
+            <!-- Paste Card -->
+            <div class="app-skeleton__card">
+              <div class="app-skeleton__card-content">
+                <div class="app-skeleton__icon">📋</div>
+                <p class="app-skeleton__title">붙여넣기</p>
+                <p class="app-skeleton__subtitle">
+                  클립보드 내용 공유<br />
+                  모바일에서도 가능
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

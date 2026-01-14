@@ -26,12 +26,14 @@ export default defineConfig(({ command, mode }) => {
         },
       } : {},
       sourcemap: false,
+      cssCodeSplit: true, // CSS 코드 스플리팅 활성화
       rollupOptions: {
         output: {
           // 청크 분리 최적화
           manualChunks: {
             'vendor': ['vue'],
             'socket': ['socket.io-client'],
+            'i18n': ['vue-i18n'], // i18n 별도 청크
           },
         },
       },

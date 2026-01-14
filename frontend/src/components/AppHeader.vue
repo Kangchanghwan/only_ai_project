@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import HelpModal from './HelpModal.vue'
 import LanguageSelector from './LanguageSelector.vue'
+import ThemeToggleButton from './ThemeToggleButton.vue'
 
 const { t } = useI18n()
 
@@ -34,8 +35,9 @@ function closeHelpModal() {
       <span class="text-4xl">📋</span>
       <span>{{ t('app.title') }}</span>
     </div>
-    <div class="flex items-center gap-6">
+    <div class="flex items-center gap-4">
       <LanguageSelector />
+      <ThemeToggleButton />
       <button
         class="w-9 h-9 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-bold text-lg transition-all duration-200 flex items-center justify-center border-2 border-primary/30 hover:border-primary/50"
         @click="openHelpModal"
