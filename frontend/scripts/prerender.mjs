@@ -5,18 +5,26 @@
  * 빌드된 SPA를 puppeteer로 렌더링하여 정적 HTML을 생성합니다.
  * 검색 엔진 봇이 완전한 HTML을 크롤링할 수 있도록 합니다.
  *
+ * - 로컬 환경: puppeteer (bundled Chromium)
+ * - Vercel/CI 환경: puppeteer-core + @sparticuz/chromium
+ *
  * Usage: node scripts/prerender.mjs
  */
 
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
+import { writeFileSync, existsSync, mkdirSync } from 'fs'
 import { createServer } from 'http'
 import { readFile } from 'fs/promises'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const distDir = join(__dirname, '../dist')
+
+// Vercel 또는 CI 환경 감지
+const isVercel = process.env.VERCEL === '1'
+const isCI = process.env.CI === 'true'
+const isServerless = isVercel || isCI
 
 // Prerender할 라우트 목록
 const routes = [
@@ -68,8 +76,38 @@ function createStaticServer(dir, port) {
   })
 }
 
+/**
+ * 환경에 맞는 브라우저를 실행합니다
+ */
+async function launchBrowser() {
+  if (isServerless) {
+    // Vercel/CI 환경: puppeteer-core + @sparticuz/chromium
+    console.log('Serverless 환경 감지 - puppeteer-core 사용')
+
+    const chromium = await import('@sparticuz/chromium')
+    const puppeteer = await import('puppeteer-core')
+
+    return await puppeteer.default.launch({
+      args: chromium.default.args,
+      defaultViewport: chromium.default.defaultViewport,
+      executablePath: await chromium.default.executablePath(),
+      headless: chromium.default.headless
+    })
+  } else {
+    // 로컬 환경: 일반 puppeteer
+    console.log('로컬 환경 - puppeteer 사용')
+
+    const puppeteer = await import('puppeteer')
+    return await puppeteer.default.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    })
+  }
+}
+
 async function prerender() {
   console.log('Prerender 시작...\n')
+  console.log(`환경: ${isVercel ? 'Vercel' : isCI ? 'CI' : '로컬'}`)
 
   // dist 폴더 확인
   if (!existsSync(distDir)) {
@@ -78,24 +116,11 @@ async function prerender() {
     process.exit(1)
   }
 
-  // Puppeteer 동적 임포트
-  let puppeteer
-  try {
-    puppeteer = await import('puppeteer')
-  } catch {
-    console.error('Error: puppeteer가 설치되어 있지 않습니다.')
-    console.error('  npm install -D puppeteer')
-    process.exit(1)
-  }
-
   const port = 4173
   const server = await createStaticServer(distDir, port)
 
   try {
-    const browser = await puppeteer.default.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    })
+    const browser = await launchBrowser()
 
     for (const route of routes) {
       console.log(`Rendering: ${route}`)

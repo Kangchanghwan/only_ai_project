@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build:prod",
+  "buildCommand": "npm run build:seo",
   "outputDirectory": "dist",
   "rewrites": [
     {
