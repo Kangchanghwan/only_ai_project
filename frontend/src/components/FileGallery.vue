@@ -107,14 +107,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="isLoading" class="text-center py-16 text-text-secondary">
-    <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-5"></div>
-  </div>
-
-  <div v-else>
-    <!-- 다운로드 컨트롤 버튼 -->
+  <div>
+    <!-- 다운로드 컨트롤 버튼 (파일이 있고 로딩 중이 아닐 때) -->
     <DownloadControls
-      v-if="files.length > 0"
+      v-if="files.length > 0 && !isLoading"
       :selected-count="selectedCount"
       :total-count="files.length"
       :all-selected="allFilesSelected"
@@ -124,22 +120,29 @@ onUnmounted(() => {
     />
 
     <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
-      <!-- 파일 업로드 카드 (항상 맨 앞에 표시) -->
+      <!-- 파일 업로드 카드 (항상 표시) -->
       <FileUploadSection @upload-files="$emit('upload-files', $event)" />
 
-      <!-- 붙여넣기 카드 (모바일 사용자용) -->
+      <!-- 붙여넣기 카드 (항상 표시) -->
       <PasteSection @paste-content="$emit('paste-content')" />
 
-      <!-- 업로드된 파일 카드들 -->
-      <FileCard
-        v-for="file in files"
-        :key="file.name"
-        :file="file"
-        :is-selected="selectedFiles.has(file.name)"
-        @copy-image="$emit('copy-image', file.url)"
-        @toggle-selection="toggleFileSelection"
-        @download-file="$emit('download-file', file)"
-      />
+      <!-- 로딩 중일 때 스피너 표시 -->
+      <div v-if="isLoading" class="col-span-full flex justify-center py-16">
+        <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+      </div>
+
+      <!-- 업로드된 파일 카드들 (로딩 중이 아닐 때) -->
+      <template v-else>
+        <FileCard
+          v-for="file in files"
+          :key="file.name"
+          :file="file"
+          :is-selected="selectedFiles.has(file.name)"
+          @copy-image="$emit('copy-image', file.url)"
+          @toggle-selection="toggleFileSelection"
+          @download-file="$emit('download-file', file)"
+        />
+      </template>
     </div>
 
     <!-- 더 보기 버튼 -->
@@ -150,11 +153,6 @@ onUnmounted(() => {
       >
         {{ $t('fileGallery.loadMore') || '더 보기' }}
       </button>
-    </div>
-
-    <!-- 로딩 중 표시 -->
-    <div v-if="isLoading" class="flex justify-center mt-8">
-      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
     </div>
 
     <!-- 다중 파일 QR 코드 모달 -->
