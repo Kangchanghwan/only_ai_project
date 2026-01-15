@@ -23,6 +23,115 @@
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
+  <!-- Structured Data (JSON-LD) - HowTo -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Clipboard Share로 파일 공유하는 방법",
+    "description": "Clipboard Share를 사용하여 실시간으로 파일을 공유하는 단계별 가이드입니다. 회원가입 없이 QR 코드와 룸 기반으로 안전하게 파일을 전송할 수 있습니다.",
+    "image": "https://clipboardapp.org/og-image.png",
+    "totalTime": "PT2M",
+    "estimatedCost": {
+      "@type": "MonetaryAmount",
+      "currency": "KRW",
+      "value": "0"
+    },
+    "supply": [],
+    "tool": [
+      {
+        "@type": "HowToTool",
+        "name": "웹 브라우저 (Chrome, Firefox, Safari, Edge)"
+      }
+    ],
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "룸 생성하기",
+        "text": "메인 페이지에서 '새 룸 만들기' 버튼을 클릭하면 자동으로 6자리 룸 코드가 생성됩니다. 생성된 룸 코드를 다른 사람과 공유하세요.",
+        "url": "https://clipboardapp.org/#/new"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "룸 입장하기",
+        "text": "이미 생성된 룸에 참여하려면 메인 페이지에서 6자리 룸 코드를 입력하고 '입장' 버튼을 클릭하세요. QR 코드를 스캔하여 빠르게 입장할 수도 있습니다.",
+        "url": "https://clipboardapp.org"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "파일 업로드하기",
+        "text": "룸 안에서 '파일 선택' 버튼을 클릭하거나, 파일을 드래그 앤 드롭으로 업로드 영역에 놓거나, 클립보드에서 Ctrl+V로 붙여넣기를 할 수 있습니다. 업로드된 파일은 같은 룸의 모든 사용자에게 실시간으로 표시됩니다."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 4,
+        "name": "파일 다운로드하기",
+        "text": "공유된 파일을 받으려면 파일 카드의 '다운로드' 버튼을 클릭하세요. 여러 파일을 선택한 후 '선택한 파일 다운로드'를 클릭하거나, 모든 파일을 ZIP으로 압축하여 한 번에 다운로드할 수 있습니다."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 5,
+        "name": "QR 코드로 공유하기",
+        "text": "룸 화면에서 'QR 코드' 버튼을 클릭하면 해당 룸의 접속 링크가 포함된 QR 코드가 생성됩니다. 모바일 카메라로 스캔하면 자동으로 해당 룸으로 이동합니다."
+      }
+    ]
+  }
+  </script>
+
+  <!-- Structured Data (JSON-LD) - Article -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Clipboard Share 사용법 - 간편한 파일 공유 가이드",
+    "description": "Clipboard Share 사용 방법을 단계별로 알아보세요. 룸 생성, 파일 공유, QR 코드 사용법 등 자세한 가이드를 제공합니다.",
+    "image": "https://clipboardapp.org/og-image.png",
+    "author": {
+      "@type": "Organization",
+      "name": "Clipboard Share"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Clipboard Share",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://clipboardapp.org/logo.png"
+      }
+    },
+    "datePublished": "2026-01-01",
+    "dateModified": "2026-01-12",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://clipboardapp.org/how-to-use.html"
+    }
+  }
+  </script>
+
+  <!-- Structured Data (JSON-LD) - BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "홈",
+        "item": "https://clipboardapp.org"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "사용법",
+        "item": "https://clipboardapp.org/how-to-use.html"
+      }
+    ]
+  }
+  </script>
+
   <style>
     * {
       margin: 0;

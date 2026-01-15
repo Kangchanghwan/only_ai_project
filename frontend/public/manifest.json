@@ -1,0 +1,55 @@
+{
+  "name": "Clipboard Share - 실시간 파일 공유 플랫폼",
+  "short_name": "Clipboard Share",
+  "description": "간편한 실시간 파일 공유 서비스. QR 코드로 빠르게 공유하고, 룸 기반으로 안전하게 파일을 전송하세요.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#42b883",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ko-KR",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "label": "Clipboard Share 메인 화면"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "새 룸 만들기",
+      "short_name": "새 룸",
+      "description": "새로운 파일 공유 룸을 생성합니다",
+      "url": "/#/new",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

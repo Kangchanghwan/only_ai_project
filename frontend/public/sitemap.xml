@@ -5,7 +5,7 @@
   <!-- 메인 페이지 -->
   <url>
     <loc>https://clipboardapp.org/</loc>
-    <lastmod>2026-01-12</lastmod>
+    <lastmod>2026-01-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -13,7 +13,7 @@
   <!-- 사용법 페이지 -->
   <url>
     <loc>https://clipboardapp.org/how-to-use.html</loc>
-    <lastmod>2026-01-12</lastmod>
+    <lastmod>2026-01-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -21,7 +21,7 @@
   <!-- FAQ 페이지 -->
   <url>
     <loc>https://clipboardapp.org/faq.html</loc>
-    <lastmod>2026-01-12</lastmod>
+    <lastmod>2026-01-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
