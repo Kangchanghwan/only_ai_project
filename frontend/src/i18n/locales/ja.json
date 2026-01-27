@@ -15,7 +15,8 @@
     "qr": "QR",
     "qrShareTitle": "QRコードで共有",
     "joinOtherRoom": "他のルームに参加：",
-    "enterCode": "6桁のコード"
+    "enterCode": "6桁のコード",
+    "connectedDevices": "接続デバイス："
   },
   "file": {
     "upload": "ファイルをアップロード",

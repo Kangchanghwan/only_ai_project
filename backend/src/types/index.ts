@@ -1,11 +1,23 @@
 import { Socket } from 'socket.io';
 
+// === 디바이스 정보 타입 ===
+
+/** 접속 디바이스 정보 */
+export interface DeviceInfo {
+    socketId: string;
+    deviceType: string;   // 'desktop' | 'mobile' | 'tablet' 등
+    os: string;
+    browser: string;
+    joinedAt: Date;
+}
+
 // === 룸 관련 타입 ===
 
 /** 룸 데이터 (사용자 수, 생성 시간 저장) */
 export interface RoomData {
     userCount: number;
     createdAt: Date;
+    devices: Map<string, DeviceInfo>;
 }
 
 /** 룸 목록 (roomId를 키로 하는 객체) */
@@ -58,6 +70,7 @@ export interface ServerToClientEvents {
     'room-not-found': () => void;
     message: (msg: any) => void;
     'user-left': (userCount: number) => void;
+    'devices-updated': (devices: DeviceInfo[]) => void;
     error: (error: ErrorResponse) => void;
 }
 

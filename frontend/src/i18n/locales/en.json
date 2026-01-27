@@ -15,7 +15,8 @@
     "qr": "QR",
     "qrShareTitle": "Share with QR code",
     "joinOtherRoom": "Join Other Room:",
-    "enterCode": "6-digit code"
+    "enterCode": "6-digit code",
+    "connectedDevices": "Connected Devices:"
   },
   "file": {
     "upload": "Upload File",

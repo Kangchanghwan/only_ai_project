@@ -30,6 +30,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  devices: {
+    type: Array,
+    default: () => []
+  },
   hasMore: {
     type: Boolean,
     default: false
@@ -63,6 +67,7 @@ const emit = defineEmits([
       <RoomInfo
         :room-id="roomId"
         :is-connecting="isConnecting"
+        :devices="devices"
         @copy-room-code="$emit('copy-room-code')"
         @join-other-room="$emit('join-other-room', $event)"
       />

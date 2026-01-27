@@ -69,6 +69,11 @@ export function useSocket() {
      * 현재 룸에 있는 사용자 수 (읽기 전용).
      */
     usersInRoom: readonly(socketService.usersInRoom),
+    /**
+     * @property {import('vue').Readonly<Array>} devicesInRoom
+     * 현재 룸에 접속된 디바이스 목록 (읽기 전용).
+     */
+    devicesInRoom: readonly(socketService.devicesInRoom),
 
     /**
      * Socket.IO 서버에 연결을 시도합니다.

@@ -9,7 +9,8 @@
     "connected": "Đã kết nối vào phòng {roomId}.",
     "userCount": "{count} người dùng trong phòng.",
     "copyCode": "Sao chép mã phòng",
-    "copied": "Đã sao chép mã phòng!"
+    "copied": "Đã sao chép mã phòng!",
+    "connectedDevices": "Thiết bị đã kết nối:"
   },
   "file": {
     "upload": "Tải lên tệp",
