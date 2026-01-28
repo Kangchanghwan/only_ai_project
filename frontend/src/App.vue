@@ -53,22 +53,27 @@ async function connectToRoom(roomCode) {
   isConnecting.value = true
   await new Promise((resolve) => setTimeout(resolve, 245))
   try {
-    // 기존 연결 및 리스너 정리
-    if (socket.isConnected.value) {
-      socket.disconnect()
-    }
+    // 기존 연결 및 리스너 항상 정리 (소켓 누수 방지)
+    socket.disconnect()
     if (cleanupUserLeft) cleanupUserLeft()
     if (cleanupOnMessage) cleanupOnMessage()
     fileManager.clearFiles()
     textShare.clearAllTexts()
 
-    // 소켓 연결
+    // 소켓 연결 (서버가 자동으로 룸 생성)
     const { roomNr } = await socket.connect()
-    let targetRoom = roomCode || roomNr.toString()
+    let targetRoom = roomNr.toString()
 
-    // 룸 입장
+    // 특정 룸에 입장 시도
     if (roomCode) {
-      await socket.joinRoom(parseInt(roomCode))
+      try {
+        await socket.joinRoom(parseInt(roomCode))
+        targetRoom = roomCode
+      } catch (joinError) {
+        // 룸이 존재하지 않거나 입장 실패 → 자동 생성된 룸 사용
+        console.warn('[App] 룸 입장 실패:', joinError.message, '→ 새 룸 사용:', roomNr)
+        notification.showInfo(`룸 ${roomCode}에 입장할 수 없습니다. 새 룸을 생성합니다.`)
+      }
     }
 
     roomManager.joinRoomByCode(targetRoom)
@@ -535,53 +540,19 @@ async function rejoinRoom() {
 
   isRejoining = true
   try {
-    // Socket.IO 자동 재연결 기회를 위해 대기
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // 네트워크 안정화 대기
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
-    if (socket.isConnected.value) {
-      // 연결이 유지됨 - 파일 목록만 갱신
-      console.log('[App] 포그라운드 복귀: 연결 유지됨, 파일 목록 갱신')
-      fileManager.loadFiles(lastRoom)
-      return
-    }
-
-    // 연결 끊김 - HTTP로 룸 존재 여부 확인
-    console.log('[App] 포그라운드 복귀: 소켓 끊김, 룸 상태 확인 →', lastRoom)
+    // HTTP로 룸 존재 여부 확인
+    console.log('[App] 포그라운드 복귀: 룸 상태 확인 →', lastRoom)
     const roomStatus = await roomHealthService.checkRoom(lastRoom)
 
     if (roomStatus.exists || !roomStatus.reachable) {
-      // 룸 존재 또는 서버 응답 불가 (네트워크 미복구) → 기존 룸 재연결 시도
-      if (!roomStatus.reachable) {
-        console.log('[App] 서버 응답 불가, 이전 룸으로 재연결 시도')
-      } else {
-        console.log('[App] 룸 존재 확인, 소켓 재연결 시도')
-      }
-
-      // 기존 리스너 정리 (중복 방지)
-      if (cleanupUserLeft) cleanupUserLeft()
-      if (cleanupOnMessage) cleanupOnMessage()
-
-      const reconnected = await socket.reconnect()
-      if (reconnected) {
-        try {
-          await socket.joinRoom(parseInt(lastRoom))
-          roomManager.joinRoomByCode(lastRoom)
-          fileManager.loadFiles(lastRoom)
-          setupSocketListeners()
-          notification.showSuccess(`룸 ${lastRoom}에 재연결되었습니다.`)
-        } catch (joinError) {
-          // joinRoom 실패 (룸이 실제로 만료됨) → 새 룸 생성
-          console.log('[App] 룸 입장 실패, 새 룸 생성:', joinError.message)
-          notification.showInfo('이전 룸이 만료되었습니다. 새 룸을 생성합니다.')
-          await connectToRoom()
-        }
-      } else {
-        // 소켓 재연결 실패 → connectToRoom으로 폴백
-        console.log('[App] 소켓 재연결 실패, 새 연결로 폴백')
-        await connectToRoom(lastRoom)
-      }
+      // 룸 존재 (또는 서버 응답 불가) → 이전 룸으로 재연결
+      console.log('[App] 룸 재연결 시도 →', lastRoom)
+      await connectToRoom(lastRoom)
     } else {
-      // 서버에서 룸 없음을 확인 → 새 룸 생성
+      // 서버에서 룸 없음 확인 → 새 룸 생성
       console.log('[App] 이전 룸 만료됨, 새 룸 생성')
       notification.showInfo('이전 룸이 만료되었습니다. 새 룸을 생성합니다.')
       await connectToRoom()
