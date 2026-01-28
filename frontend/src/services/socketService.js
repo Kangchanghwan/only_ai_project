@@ -25,9 +25,9 @@ class SocketService {
     // 재연결 설정 (Socket.IO Best Practice)
     this.reconnectionConfig = {
       reconnection: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
+      reconnectionDelayMax: 10000,
       timeout: 10000
     }
   }
@@ -115,7 +115,7 @@ class SocketService {
 
       // 재연결 시도 이벤트
       this.socket.on('reconnect_attempt', (attemptNumber) => {
-        console.log(`[SocketService] 재연결 시도 ${attemptNumber}/${this.reconnectionConfig.reconnectionAttempts}`)
+        console.log(`[SocketService] 재연결 시도 ${attemptNumber}회`)
       })
 
       // 재연결 실패 이벤트
@@ -131,6 +131,27 @@ class SocketService {
       this.socket.on('devices-updated', (devices) => {
         this.devicesInRoom.value = devices
       })
+    })
+  }
+
+  /**
+   * 기존 소켓 인스턴스를 재활용해 연결을 복구합니다.
+   * connect()와 달리 새 소켓/룸을 생성하지 않습니다.
+   *
+   * @returns {Promise<boolean>} 재연결 성공 여부
+   */
+  reconnect() {
+    if (!this.socket) return Promise.resolve(false)
+    if (this.socket.connected) return Promise.resolve(true)
+
+    return new Promise((resolve) => {
+      const timeout = setTimeout(() => resolve(false), 5000)
+      this.socket.once('connect', () => {
+        clearTimeout(timeout)
+        this.isConnected.value = true
+        resolve(true)
+      })
+      this.socket.connect()
     })
   }
 

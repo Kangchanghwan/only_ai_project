@@ -17,6 +17,7 @@ import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
 import { parseRoute } from './utils/router'
+import { roomHealthService } from './services/roomHealthService.js'
 
 import RoomScreen from './components/RoomScreen.vue'
 import DownloadPage from './components/DownloadPage.vue'
@@ -534,17 +535,40 @@ async function rejoinRoom() {
 
   isRejoining = true
   try {
-    // Socket.IO 자체 재연결을 잠시 기다림
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    // Socket.IO 자동 재연결 기회를 위해 대기
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     if (socket.isConnected.value) {
-      // 연결은 유지됨 - 파일 목록만 갱신
-      console.log('[App] 포그라운드 복귀: 파일 목록 갱신')
+      // 연결이 유지됨 - 파일 목록만 갱신
+      console.log('[App] 포그라운드 복귀: 연결 유지됨, 파일 목록 갱신')
       fileManager.loadFiles(lastRoom)
+      return
+    }
+
+    // 연결 끊김 - HTTP로 룸 존재 여부 확인
+    console.log('[App] 포그라운드 복귀: 소켓 끊김, 룸 상태 확인 →', lastRoom)
+    const roomStatus = await roomHealthService.checkRoom(lastRoom)
+
+    if (roomStatus.exists) {
+      // 룸이 존재 → 기존 소켓 재연결 후 룸 재입장
+      console.log('[App] 룸 존재 확인, 소켓 재연결 시도')
+      const reconnected = await socket.reconnect()
+      if (reconnected) {
+        await socket.joinRoom(parseInt(lastRoom))
+        roomManager.joinRoomByCode(lastRoom)
+        fileManager.loadFiles(lastRoom)
+        setupSocketListeners()
+        notification.showSuccess(`룸 ${lastRoom}에 재연결되었습니다.`)
+      } else {
+        // 소켓 재연결 실패 → connectToRoom으로 폴백
+        console.log('[App] 소켓 재연결 실패, 새 연결로 폴백')
+        await connectToRoom(lastRoom)
+      }
     } else {
-      // 연결 끊김 - 이전 룸으로 재연결
-      console.log('[App] 포그라운드 복귀: 룸 재연결 시도 →', lastRoom)
-      await connectToRoom(lastRoom)
+      // 룸이 만료됨 → 안내 후 새 룸 생성
+      console.log('[App] 이전 룸 만료됨, 새 룸 생성')
+      notification.showInfo('이전 룸이 만료되었습니다. 새 룸을 생성합니다.')
+      await connectToRoom()
     }
   } catch (error) {
     console.error('[App] 포그라운드 복귀 재입장 실패:', error)

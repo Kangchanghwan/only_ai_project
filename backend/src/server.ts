@@ -109,6 +109,19 @@ app.get('/stats', (_req, res) => {
     });
 });
 
+/** 룸 상태 확인: 룸 존재 여부 및 사용자 수 */
+app.get('/api/room/:roomNr/status', (req, res) => {
+    const roomNr = parseInt(req.params.roomNr, 10);
+    if (isNaN(roomNr) || roomNr < 100000 || roomNr > 999999) {
+        res.status(400).json({ error: 'Invalid room number format' });
+        return;
+    }
+    const exists = roomManager.roomExists(roomNr);
+    const roomId = roomManager.getRoomId(roomNr);
+    const userCount = exists ? roomManager.getRoomUserCount(roomId) : 0;
+    res.json({ exists, roomNr, userCount, timestamp: new Date().toISOString() });
+});
+
 // === R2 Storage API 엔드포인트 ===
 
 /** 업로드용 Presigned URL 생성 */

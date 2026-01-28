@@ -91,6 +91,11 @@ export function useSocket() {
      */
     joinRoom: socketService.joinRoom.bind(socketService),
     /**
+     * 기존 소켓 인스턴스를 재활용해 연결을 복구합니다.
+     * @returns {Promise<boolean>} 재연결 성공 여부
+     */
+    reconnect: socketService.reconnect.bind(socketService),
+    /**
      * 서버로 메시지를 발행합니다.
      * @param {object} message - 전송할 메시지 객체.
      */
