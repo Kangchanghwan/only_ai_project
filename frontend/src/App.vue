@@ -505,55 +505,6 @@ async function handleLoadMore() {
 }
 
 // ========================================
-// 백그라운드/포그라운드 전환 처리
-// ========================================
-
-/**
- * 모바일 브라우저가 백그라운드로 전환되면 WebSocket이 끊어지고
- * 룸에서 자동으로 퇴장됩니다. 포그라운드 복귀 시 이전 룸에
- * 자동으로 재입장하여 파일 동기화를 복원합니다.
- */
-let isRejoining = false
-
-function handleVisibilityChange() {
-  if (document.hidden) {
-    // 백그라운드 진입: 현재 룸 번호 저장
-    if (roomManager.currentRoomId.value) {
-      localStorage.setItem('lastRoomId', roomManager.currentRoomId.value)
-    }
-  } else {
-    // 포그라운드 복귀: 재입장 시도
-    rejoinRoom()
-  }
-}
-
-async function rejoinRoom() {
-  if (isRejoining) return
-  const lastRoom = localStorage.getItem('lastRoomId')
-  if (!lastRoom) return
-
-  isRejoining = true
-  try {
-    // Socket.IO 자체 재연결을 잠시 기다림
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    if (socket.isConnected.value) {
-      // 연결은 유지됨 - 파일 목록만 갱신
-      console.log('[App] 포그라운드 복귀: 파일 목록 갱신')
-      fileManager.loadFiles(lastRoom)
-    } else {
-      // 연결 끊김 - 이전 룸으로 재연결
-      console.log('[App] 포그라운드 복귀: 룸 재연결 시도 →', lastRoom)
-      await connectToRoom(lastRoom)
-    }
-  } catch (error) {
-    console.error('[App] 포그라운드 복귀 재입장 실패:', error)
-  } finally {
-    isRejoining = false
-  }
-}
-
-// ========================================
 // 라이프사이클 훅
 // ========================================
 
@@ -583,14 +534,12 @@ onMounted(() => {
   window.history.replaceState(null, '', window.location.pathname)
 
   document.addEventListener('paste', handlePaste)
-  document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
 onUnmounted(() => {
   if (cleanupUserLeft) cleanupUserLeft()
   if (cleanupOnMessage) cleanupOnMessage()
   document.removeEventListener('paste', handlePaste)
-  document.removeEventListener('visibilitychange', handleVisibilityChange)
   socket.disconnect()
 })
 </script>
@@ -613,7 +562,6 @@ onUnmounted(() => {
       :texts="textShare.sharedTexts.value"
       :is-loading="fileManager.isLoading.value || isConnecting"
       :user-count="socket.usersInRoom.value"
-      :devices="socket.devicesInRoom.value"
       :has-more="fileManager.hasMore.value"
       @copy-room-code="handleCopyRoomCode"
       @copy-image="handleCopyImage"

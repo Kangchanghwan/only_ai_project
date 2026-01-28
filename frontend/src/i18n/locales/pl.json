@@ -9,8 +9,7 @@
     "connected": "Połączono z pokojem {roomId}.",
     "userCount": "{count} użytkownik(ów) w pokoju.",
     "copyCode": "Kopiuj kod pokoju",
-    "copied": "Kod pokoju skopiowany!",
-    "connectedDevices": "Podłączone urządzenia:"
+    "copied": "Kod pokoju skopiowany!"
   },
   "file": {
     "upload": "Prześlij plik",

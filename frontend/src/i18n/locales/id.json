@@ -9,8 +9,7 @@
     "connected": "Terhubung ke ruangan {roomId}.",
     "userCount": "{count} pengguna di ruangan.",
     "copyCode": "Salin kode ruangan",
-    "copied": "Kode ruangan disalin!",
-    "connectedDevices": "Perangkat terhubung:"
+    "copied": "Kode ruangan disalin!"
   },
   "file": {
     "upload": "Unggah File",

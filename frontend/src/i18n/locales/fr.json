@@ -9,8 +9,7 @@
     "connected": "Connecté à la salle {roomId}.",
     "userCount": "{count} utilisateur(s) dans la salle.",
     "copyCode": "Copier le code de la salle",
-    "copied": "Code de la salle copié!",
-    "connectedDevices": "Appareils connectés :"
+    "copied": "Code de la salle copié!"
   },
   "file": {
     "upload": "Télécharger le fichier",

@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import QRCodeModal from './QRCodeModal.vue'
-import ConnectedDevices from './ConnectedDevices.vue'
 
 const { t } = useI18n()
 
@@ -14,10 +13,6 @@ defineProps({
   isConnecting: {
     type: Boolean,
     default: false
-  },
-  devices: {
-    type: Array,
-    default: () => []
   }
 })
 
@@ -115,9 +110,6 @@ function closeQRModal() {
         </button>
       </div>
     </div>
-
-    <!-- 접속 디바이스 목록 -->
-    <ConnectedDevices :devices="devices" />
 
     <!-- QR 코드 모달 -->
     <QRCodeModal

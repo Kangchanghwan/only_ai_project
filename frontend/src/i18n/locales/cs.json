@@ -9,8 +9,7 @@
     "connected": "Připojeno k místnosti {roomId}.",
     "userCount": "{count} uživatel(ů) v místnosti.",
     "copyCode": "Kopírovat kód místnosti",
-    "copied": "Kód místnosti zkopírován!",
-    "connectedDevices": "Připojená zařízení:"
+    "copied": "Kód místnosti zkopírován!"
   },
   "file": {
     "upload": "Nahrát soubor",

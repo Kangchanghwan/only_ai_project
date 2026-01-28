@@ -9,8 +9,7 @@
     "connected": "Verbonden met kamer {roomId}.",
     "userCount": "{count} gebruiker(s) in de kamer.",
     "copyCode": "Kamercode kopiëren",
-    "copied": "Kamercode gekopieerd!",
-    "connectedDevices": "Verbonden apparaten:"
+    "copied": "Kamercode gekopieerd!"
   },
   "file": {
     "upload": "Bestand uploaden",

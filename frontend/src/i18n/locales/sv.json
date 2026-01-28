@@ -9,8 +9,7 @@
     "connected": "Ansluten till rum {roomId}.",
     "userCount": "{count} användare i rummet.",
     "copyCode": "Kopiera rumskod",
-    "copied": "Rumskod kopierad!",
-    "connectedDevices": "Anslutna enheter:"
+    "copied": "Rumskod kopierad!"
   },
   "file": {
     "upload": "Ladda upp fil",

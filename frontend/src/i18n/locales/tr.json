@@ -9,8 +9,7 @@
     "connected": "Oda {roomId}'ye bağlandı.",
     "userCount": "Odada {count} kullanıcı.",
     "copyCode": "Oda Kodunu Kopyala",
-    "copied": "Oda kodu kopyalandı!",
-    "connectedDevices": "Bağlı cihazlar:"
+    "copied": "Oda kodu kopyalandı!"
   },
   "file": {
     "upload": "Dosya Yükle",

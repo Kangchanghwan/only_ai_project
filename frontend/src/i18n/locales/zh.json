@@ -9,8 +9,7 @@
     "connected": "已连接到房间 {roomId}。",
     "userCount": "房间内有 {count} 位用户。",
     "copyCode": "复制房间代码",
-    "copied": "房间代码已复制！",
-    "connectedDevices": "已连接设备："
+    "copied": "房间代码已复制！"
   },
   "file": {
     "upload": "上传文件",

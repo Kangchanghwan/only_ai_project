@@ -9,8 +9,7 @@
     "connected": "به اتاق {roomId} متصل شد.",
     "userCount": "{count} کاربر در اتاق.",
     "copyCode": "کپی کد اتاق",
-    "copied": "کد اتاق کپی شد!",
-    "connectedDevices": "دستگاه‌های متصل:"
+    "copied": "کد اتاق کپی شد!"
   },
   "file": {
     "upload": "آپلود فایل",

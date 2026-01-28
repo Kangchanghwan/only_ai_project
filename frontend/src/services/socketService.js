@@ -16,7 +16,6 @@ class SocketService {
     this.isConnected = ref(false)
     this.currentRoomNr = ref(null)
     this.usersInRoom = ref(0)
-    this.devicesInRoom = ref([])
     this.connectionError = ref(null)
 
     // 설정
@@ -126,11 +125,6 @@ class SocketService {
 
       // 자동 룸 생성 이벤트 리스너 등록
       this.socket.on('registered', handleRegistered)
-
-      // 디바이스 목록 업데이트 리스너
-      this.socket.on('devices-updated', (devices) => {
-        this.devicesInRoom.value = devices
-      })
     })
   }
 
@@ -276,7 +270,6 @@ class SocketService {
       this.isConnected.value = false
       this.currentRoomNr.value = null
       this.usersInRoom.value = 0
-      this.devicesInRoom.value = []
       this.connectionError.value = null
 
       console.log('[SocketService] 소켓 연결 해제 완료')

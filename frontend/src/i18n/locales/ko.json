@@ -15,8 +15,7 @@
     "qr": "QR",
     "qrShareTitle": "QR 코드로 공유",
     "joinOtherRoom": "다른 룸 입장:",
-    "enterCode": "6자리 코드",
-    "connectedDevices": "접속 디바이스:"
+    "enterCode": "6자리 코드"
   },
   "file": {
     "upload": "파일 업로드",

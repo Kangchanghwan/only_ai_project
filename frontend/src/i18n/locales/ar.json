@@ -9,8 +9,7 @@
     "connected": "متصل بالغرفة {roomId}.",
     "userCount": "{count} مستخدم في الغرفة.",
     "copyCode": "نسخ رمز الغرفة",
-    "copied": "تم نسخ رمز الغرفة!",
-    "connectedDevices": "الأجهزة المتصلة:"
+    "copied": "تم نسخ رمز الغرفة!"
   },
   "file": {
     "upload": "تحميل ملف",

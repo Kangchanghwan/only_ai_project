@@ -9,8 +9,7 @@
     "connected": "Conectat la camera {roomId}.",
     "userCount": "{count} utilizator(i) în cameră.",
     "copyCode": "Copiază codul camerei",
-    "copied": "Cod cameră copiat!",
-    "connectedDevices": "Dispozitive conectate:"
+    "copied": "Cod cameră copiat!"
   },
   "file": {
     "upload": "Încarcă fișier",

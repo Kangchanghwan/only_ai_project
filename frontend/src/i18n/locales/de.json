@@ -9,8 +9,7 @@
     "connected": "Verbunden mit Raum {roomId}.",
     "userCount": "{count} Benutzer im Raum.",
     "copyCode": "Raumcode kopieren",
-    "copied": "Raumcode kopiert!",
-    "connectedDevices": "Verbundene Geräte:"
+    "copied": "Raumcode kopiert!"
   },
   "file": {
     "upload": "Datei hochladen",
