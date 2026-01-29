@@ -51,6 +51,22 @@ export function useSocket() {
     }
   }
 
+  /**
+   * 재연결 성공 + 룸 재입장 완료 시 콜백을 등록합니다
+   * @param {Function} callback - (rejoinedRoomNr) => void
+   */
+  function onReconnected(callback) {
+    socketService.onReconnected(callback)
+  }
+
+  /**
+   * 이전 룸 재입장 실패 시 콜백을 등록합니다
+   * @param {Function} callback - (oldRoomNr, newRoomNr) => void
+   */
+  function onRoomRejoinFailed(callback) {
+    socketService.onRoomRejoinFailed(callback)
+  }
+
   // 컴포넌트 언마운트 시 소켓 연결 해제는 App.vue에서 전역적으로 관리합니다.
 
   return {
@@ -59,6 +75,11 @@ export function useSocket() {
      * 소켓 연결 상태 (읽기 전용).
      */
     isConnected: readonly(socketService.isConnected),
+    /**
+     * @property {import('vue').Readonly<boolean>} isOnline
+     * 브라우저 네트워크 상태 (읽기 전용).
+     */
+    isOnline: readonly(socketService.isOnline),
     /**
      * @property {import('vue').Readonly<number|null>} currentRoomNr
      * 현재 연결된 룸 번호 (읽기 전용).
@@ -80,6 +101,10 @@ export function useSocket() {
      */
     disconnect: socketService.disconnect.bind(socketService),
     /**
+     * 모든 리소스를 정리합니다 (네트워크 리스너, 타이머 포함).
+     */
+    destroy: socketService.destroy.bind(socketService),
+    /**
      * 특정 룸에 입장합니다.
      * @param {number} roomNr - 입장할 룸 번호.
      * @returns {Promise<{roomNr: number, users: number}>}
@@ -93,5 +118,7 @@ export function useSocket() {
 
     onMessage,
     onUserLeft,
+    onReconnected,
+    onRoomRejoinFailed,
   }
 }

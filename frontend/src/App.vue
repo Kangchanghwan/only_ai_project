@@ -41,6 +41,44 @@ let cleanupUserLeft = null
 let cleanupOnMessage = null
 
 // ========================================
+// 재연결 콜백 등록
+// ========================================
+
+socket.onReconnected((roomNr) => {
+  console.log('[App] 재연결 완료, 룸:', roomNr)
+  roomManager.joinRoomByCode(roomNr.toString())
+
+  // 기존 이벤트 리스너 정리 후 재설정
+  if (cleanupUserLeft) cleanupUserLeft()
+  if (cleanupOnMessage) cleanupOnMessage()
+  setupSocketListeners()
+
+  // 파일 목록 다시 로드
+  fileManager.clearFiles()
+  textShare.clearAllTexts()
+  fileManager.loadFiles(roomNr.toString(), { limit: 10 })
+
+  notification.showSuccess('재연결 완료')
+})
+
+socket.onRoomRejoinFailed((oldRoomNr, newRoomNr) => {
+  console.log('[App] 이전 룸 재입장 실패, 이전:', oldRoomNr, '새:', newRoomNr)
+  roomManager.joinRoomByCode(newRoomNr.toString())
+
+  // 기존 이벤트 리스너 정리 후 재설정
+  if (cleanupUserLeft) cleanupUserLeft()
+  if (cleanupOnMessage) cleanupOnMessage()
+  setupSocketListeners()
+
+  // 새 룸의 파일 로드
+  fileManager.clearFiles()
+  textShare.clearAllTexts()
+  fileManager.loadFiles(newRoomNr.toString(), { limit: 10 })
+
+  notification.showInfo('이전 룸이 만료되어 새 룸에 연결되었습니다.')
+})
+
+// ========================================
 // 룸 관리 및 소켓 통신
 // ========================================
 
@@ -540,7 +578,7 @@ onUnmounted(() => {
   if (cleanupUserLeft) cleanupUserLeft()
   if (cleanupOnMessage) cleanupOnMessage()
   document.removeEventListener('paste', handlePaste)
-  socket.disconnect()
+  socket.destroy()
 })
 </script>
 

@@ -14,9 +14,20 @@ class SocketService {
 
     // 반응형 상태
     this.isConnected = ref(false)
+    this.isOnline = ref(navigator.onLine)
     this.currentRoomNr = ref(null)
     this.usersInRoom = ref(0)
     this.connectionError = ref(null)
+
+    // 재연결 관련 상태
+    this._lastRoomNr = null
+    this._isIntentionalDisconnect = false
+    this._reconnectTimer = null
+    this._reconnectFailed = false
+
+    // 콜백
+    this._onReconnectedCallbacks = []
+    this._onRoomRejoinFailedCallbacks = []
 
     // 설정
     this.serverUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001'
@@ -29,16 +40,137 @@ class SocketService {
       reconnectionDelayMax: 5000,
       timeout: 10000
     }
+
+    // 네트워크 이벤트 리스너 등록
+    this._boundHandleOnline = () => this._handleOnline()
+    this._boundHandleOffline = () => this._handleOffline()
+    this._setupNetworkListeners()
+  }
+
+  /**
+   * 브라우저 네트워크 상태 이벤트 리스너를 등록합니다
+   */
+  _setupNetworkListeners() {
+    window.addEventListener('online', this._boundHandleOnline)
+    window.addEventListener('offline', this._boundHandleOffline)
+  }
+
+  /**
+   * 브라우저가 온라인 상태로 전환되었을 때 호출됩니다
+   */
+  _handleOnline() {
+    console.log('[SocketService] 네트워크 온라인 감지')
+    this.isOnline.value = true
+    if (!this.socket?.connected && this._lastRoomNr) {
+      this._attemptReconnect()
+    }
+  }
+
+  /**
+   * 브라우저가 오프라인 상태로 전환되었을 때 호출됩니다
+   */
+  _handleOffline() {
+    console.log('[SocketService] 네트워크 오프라인 감지')
+    this.isOnline.value = false
+  }
+
+  /**
+   * 재연결 폴링 타이머를 시작합니다 (30초 간격)
+   * 일부 브라우저에서 online 이벤트가 신뢰되지 않을 수 있어 백업으로 사용
+   */
+  _startReconnectPolling() {
+    this._stopReconnectPolling()
+    console.log('[SocketService] 재연결 폴링 시작 (30초 간격)')
+    this._reconnectTimer = setInterval(() => {
+      if (navigator.onLine && !this.socket?.connected && this._lastRoomNr) {
+        console.log('[SocketService] 폴링에서 온라인 감지, 재연결 시도')
+        this._attemptReconnect()
+      }
+    }, 30000)
+  }
+
+  /**
+   * 재연결 폴링 타이머를 중지합니다
+   */
+  _stopReconnectPolling() {
+    if (this._reconnectTimer) {
+      clearInterval(this._reconnectTimer)
+      this._reconnectTimer = null
+    }
+  }
+
+  /**
+   * 기존 소켓을 정리하고 새로 연결한 뒤 이전 룸에 재입장을 시도합니다
+   */
+  async _attemptReconnect() {
+    if (!this._lastRoomNr) return
+
+    const roomToRejoin = this._lastRoomNr
+    console.log('[SocketService] 재연결 시도, 목표 룸:', roomToRejoin)
+
+    // 기존 소켓 정리
+    if (this.socket) {
+      this.socket.removeAllListeners()
+      this.socket.disconnect()
+      this.socket = null
+    }
+
+    try {
+      // 새 소켓 연결
+      await this.connect()
+
+      // 이전 룸에 재입장 시도
+      try {
+        await this.joinRoom(parseInt(roomToRejoin))
+        console.log('[SocketService] 룸 재입장 성공:', roomToRejoin)
+        this._lastRoomNr = null
+        this._reconnectFailed = false
+        this._stopReconnectPolling()
+        this._emitReconnected(roomToRejoin)
+      } catch (joinError) {
+        // 룸이 사라진 경우 — 새 룸으로 폴백 (connect에서 이미 registered로 새 룸 할당됨)
+        console.warn('[SocketService] 이전 룸 재입장 실패, 새 룸으로 진입:', this.currentRoomNr.value)
+        this._lastRoomNr = null
+        this._reconnectFailed = false
+        this._stopReconnectPolling()
+        this._emitRoomRejoinFailed(roomToRejoin, this.currentRoomNr.value)
+      }
+    } catch (connectError) {
+      console.error('[SocketService] 재연결 실패:', connectError.message)
+      // 연결 자체가 실패하면 _lastRoomNr을 유지하고 다음 시도를 기다림
+    }
+  }
+
+  /**
+   * 재연결 성공 콜백을 등록합니다
+   * @param {Function} callback - (rejoinedRoomNr) => void
+   */
+  onReconnected(callback) {
+    this._onReconnectedCallbacks.push(callback)
+  }
+
+  /**
+   * 룸 재입장 실패 콜백을 등록합니다
+   * @param {Function} callback - (oldRoomNr, newRoomNr) => void
+   */
+  onRoomRejoinFailed(callback) {
+    this._onRoomRejoinFailedCallbacks.push(callback)
+  }
+
+  _emitReconnected(roomNr) {
+    for (const cb of this._onReconnectedCallbacks) {
+      try { cb(roomNr) } catch (e) { console.error('[SocketService] onReconnected 콜백 에러:', e) }
+    }
+  }
+
+  _emitRoomRejoinFailed(oldRoomNr, newRoomNr) {
+    for (const cb of this._onRoomRejoinFailedCallbacks) {
+      try { cb(oldRoomNr, newRoomNr) } catch (e) { console.error('[SocketService] onRoomRejoinFailed 콜백 에러:', e) }
+    }
   }
 
   /**
    * 서버에 연결하고 자동으로 룸을 생성합니다
-   *
-   * Socket.IO Best Practice:
-   * - transports 우선순위 설정 (websocket 우선, polling 폴백)
-   * - 재연결 전략 설정
-   * - 타임아웃 처리
-   * - 에러 핸들링
    *
    * @returns {Promise<{roomNr: number, users: number}>} 생성된 룸 정보
    */
@@ -57,7 +189,7 @@ class SocketService {
     return new Promise((resolve, reject) => {
       // Socket.IO 클라이언트 초기화
       this.socket = io(this.serverUrl, {
-        transports: ['websocket', 'polling'], // WebSocket 우선, 실패 시 polling으로 폴백
+        transports: ['websocket', 'polling'],
         ...this.reconnectionConfig
       })
 
@@ -96,13 +228,18 @@ class SocketService {
         console.log('[SocketService] 연결 해제됨, 이유:', reason)
         this.isConnected.value = false
 
-        // 서버가 강제로 끊은 경우 재연결하지 않음
+        // 의도적 disconnect가 아닌 경우 현재 룸 번호를 보존
+        if (!this._isIntentionalDisconnect && this.currentRoomNr.value) {
+          this._lastRoomNr = this.currentRoomNr.value.toString()
+          console.log('[SocketService] 네트워크 끊김 — 룸 번호 보존:', this._lastRoomNr)
+        }
+
         if (reason === 'io server disconnect') {
           console.warn('[SocketService] 서버에서 연결을 종료했습니다')
         }
       })
 
-      // 연결 에러 이벤트 (Socket.IO Best Practice: 에러 핸들링)
+      // 연결 에러 이벤트
       this.socket.on('connect_error', (error) => {
         console.error('[SocketService] 연결 오류:', error.message)
         this.isConnected.value = false
@@ -117,10 +254,17 @@ class SocketService {
         console.log(`[SocketService] 재연결 시도 ${attemptNumber}/${this.reconnectionConfig.reconnectionAttempts}`)
       })
 
-      // 재연결 실패 이벤트
+      // 재연결 실패 이벤트 — 내장 재연결이 모두 실패한 후 네트워크 복구 대기
       this.socket.on('reconnect_failed', () => {
         console.error('[SocketService] 재연결 실패: 최대 시도 횟수 초과')
         this.connectionError.value = '서버 연결 실패'
+        this._reconnectFailed = true
+
+        // online 이벤트 대기 + 폴링 시작
+        if (this._lastRoomNr) {
+          console.log('[SocketService] 네트워크 복구 대기 시작')
+          this._startReconnectPolling()
+        }
       })
 
       // 자동 룸 생성 이벤트 리스너 등록
@@ -130,11 +274,6 @@ class SocketService {
 
   /**
    * 기존 룸에 입장합니다
-   *
-   * Socket.IO Best Practice:
-   * - acknowledgement 콜백 대신 Promise 기반 처리
-   * - 타임아웃 설정으로 무한 대기 방지
-   * - 에러 이벤트 처리
    *
    * @param {number} roomNr - 입장할 룸 번호
    * @returns {Promise<{roomNr: number, users: number}>} 입장한 룸 정보
@@ -155,10 +294,6 @@ class SocketService {
         reject(new Error('룸 입장 시간 초과'))
       }, 5000)
 
-      /**
-       * 'subscribed' 이벤트 핸들러
-       * 룸 입장이 성공했을 때 발생
-       */
       const handleSubscribed = (roomNumber, userCount) => {
         console.log('[SocketService] 룸 입장 완료:', roomNumber, '사용자:', userCount)
         clearTimeout(joinTimeout)
@@ -166,43 +301,31 @@ class SocketService {
         this.currentRoomNr.value = roomNumber
         this.usersInRoom.value = userCount
 
-        // 이벤트 리스너 정리
         this.socket.off('subscribed', handleSubscribed)
         this.socket.off('room-not-found', handleRoomNotFound)
 
         resolve({ roomNr: roomNumber, users: userCount })
       }
 
-      /**
-       * 'room-not-found' 이벤트 핸들러
-       * 입장하려는 룸이 존재하지 않을 때 발생
-       */
       const handleRoomNotFound = () => {
         console.error('[SocketService] 룸이 존재하지 않습니다:', roomNr)
         clearTimeout(joinTimeout)
 
-        // 이벤트 리스너 정리
         this.socket.off('subscribed', handleSubscribed)
         this.socket.off('room-not-found', handleRoomNotFound)
 
         reject(new Error('Room does not exist'))
       }
 
-      // 이벤트 리스너 등록
       this.socket.once('subscribed', handleSubscribed)
       this.socket.once('room-not-found', handleRoomNotFound)
 
-      // 룸 입장 요청 전송
       this.socket.emit('join', roomNr)
     })
   }
 
   /**
    * 메시지를 서버로 전송합니다
-   *
-   * Socket.IO Best Practice:
-   * - 구조화된 메시지 형식 사용
-   * - 에러 처리
    *
    * @param {Object} message - 전송할 메시지 객체
    * @param {string} message.type - 메시지 타입 (예: 'file-uploaded')
@@ -236,8 +359,6 @@ class SocketService {
   /**
    * 특정 이벤트의 리스너를 제거합니다
    *
-   * Vue 3 Best Practice: 컴포넌트 언마운트 시 이벤트 리스너를 제거하여 메모리 누수 방지
-   *
    * @param {string} event - 이벤트 이름
    * @param {Function} callback - 제거할 이벤트 핸들러 함수
    */
@@ -251,29 +372,41 @@ class SocketService {
   }
 
   /**
-   * 소켓 연결을 해제합니다
-   *
-   * Socket.IO Best Practice:
-   * - 명시적인 연결 해제
-   * - 상태 초기화
-   * - 리소스 정리
+   * 의도적으로 소켓 연결을 해제합니다
+   * 재연결 대상에서 제외됩니다 (_lastRoomNr을 보존하지 않음)
    */
   disconnect() {
-    if (this.socket) {
-      console.log('[SocketService] 소켓 연결 해제 중')
+    this._isIntentionalDisconnect = true
+    this._stopReconnectPolling()
 
-      // 소켓 연결 해제
+    if (this.socket) {
+      console.log('[SocketService] 소켓 연결 해제 중 (의도적)')
+
       this.socket.disconnect()
       this.socket = null
 
-      // 상태 초기화
       this.isConnected.value = false
       this.currentRoomNr.value = null
       this.usersInRoom.value = 0
       this.connectionError.value = null
+      this._lastRoomNr = null
 
       console.log('[SocketService] 소켓 연결 해제 완료')
     }
+
+    this._isIntentionalDisconnect = false
+  }
+
+  /**
+   * 모든 리소스를 정리합니다 (네트워크 리스너, 타이머, 콜백)
+   */
+  destroy() {
+    this._stopReconnectPolling()
+    window.removeEventListener('online', this._boundHandleOnline)
+    window.removeEventListener('offline', this._boundHandleOffline)
+    this._onReconnectedCallbacks = []
+    this._onRoomRejoinFailedCallbacks = []
+    this.disconnect()
   }
 }
 
