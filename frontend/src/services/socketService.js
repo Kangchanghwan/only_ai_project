@@ -126,6 +126,8 @@ class SocketService {
     if (!this._lastRoomNr) return
 
     const roomToRejoin = this._lastRoomNr
+    // connect() 내부의 connect 핸들러가 이중으로 joinRoom하지 않도록 미리 제거
+    this._lastRoomNr = null
     console.log('[SocketService] 재연결 시도, 목표 룸:', roomToRejoin)
 
     // 기존 소켓 정리
@@ -143,21 +145,19 @@ class SocketService {
       try {
         await this.joinRoom(parseInt(roomToRejoin))
         console.log('[SocketService] 룸 재입장 성공:', roomToRejoin)
-        this._lastRoomNr = null
         this._reconnectFailed = false
         this._stopReconnectPolling()
         this._emitReconnected(roomToRejoin)
       } catch (joinError) {
-        // 룸이 사라진 경우 — 새 룸으로 폴백 (connect에서 이미 registered로 새 룸 할당됨)
         console.warn('[SocketService] 이전 룸 재입장 실패, 새 룸으로 진입:', this.currentRoomNr.value)
-        this._lastRoomNr = null
         this._reconnectFailed = false
         this._stopReconnectPolling()
         this._emitRoomRejoinFailed(roomToRejoin, this.currentRoomNr.value)
       }
     } catch (connectError) {
       console.error('[SocketService] 재연결 실패:', connectError.message)
-      // 연결 자체가 실패하면 _lastRoomNr을 유지하고 다음 시도를 기다림
+      // 연결 실패 시 _lastRoomNr 복원하여 다음 시도에서 재사용
+      this._lastRoomNr = roomToRejoin
     }
   }
 
