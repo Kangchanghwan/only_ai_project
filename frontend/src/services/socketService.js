@@ -100,6 +100,26 @@ class SocketService {
   }
 
   /**
+   * 이전 룸에 재입장을 시도합니다 (자동 재연결 후 recovery 없이 호출)
+   */
+  async _rejoinPreviousRoom(roomNr) {
+    try {
+      await this.joinRoom(parseInt(roomNr))
+      console.log('[SocketService] 이전 룸 재입장 성공:', roomNr)
+      this._lastRoomNr = null
+      this._reconnectFailed = false
+      this._stopReconnectPolling()
+      this._emitReconnected(roomNr)
+    } catch (err) {
+      console.warn('[SocketService] 이전 룸 재입장 실패, 새 룸 유지:', this.currentRoomNr.value)
+      this._lastRoomNr = null
+      this._reconnectFailed = false
+      this._stopReconnectPolling()
+      this._emitRoomRejoinFailed(roomNr, this.currentRoomNr.value)
+    }
+  }
+
+  /**
    * 기존 소켓을 정리하고 새로 연결한 뒤 이전 룸에 재입장을 시도합니다
    */
   async _attemptReconnect() {
@@ -221,6 +241,26 @@ class SocketService {
         console.log('[SocketService] 연결 성공, Socket ID:', this.socket.id)
         this.isConnected.value = true
         this.connectionError.value = null
+
+        // Socket.IO 자동 재연결 성공 시 처리
+        if (this._lastRoomNr) {
+          if (this.socket.recovered) {
+            // 경우 A: connectionStateRecovery 성공 — 서버가 이전 룸 복원 완료
+            console.log('[SocketService] 연결 복구 완료 (recovery), 룸:', this._lastRoomNr)
+            const recoveredRoom = this._lastRoomNr
+            this._lastRoomNr = null
+            this._reconnectFailed = false
+            this._stopReconnectPolling()
+            this._emitReconnected(recoveredRoom)
+          } else {
+            // 경우 B: recovery 없이 자동 재연결 — registered 후 이전 룸 재입장 필요
+            console.log('[SocketService] 자동 재연결 성공 (recovery 없음), 이전 룸 재입장 시도')
+            const roomToRejoin = this._lastRoomNr
+            this.socket.once('registered', () => {
+              this._rejoinPreviousRoom(roomToRejoin)
+            })
+          }
+        }
       })
 
       // 연결 해제 이벤트

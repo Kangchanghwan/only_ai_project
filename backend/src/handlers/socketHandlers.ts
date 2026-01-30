@@ -51,10 +51,24 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
 /** 새 연결 처리: 자동으로 룸 생성 및 할당 */
 const handleConnection = (socket: ExtendedSocket, roomManager: RoomManager) => {
     try {
-        // 룸 번호 생성
+        // connectionStateRecovery로 복구된 연결
+        if (socket.recovered && socket.data.roomId) {
+            const restoredRoomId = socket.data.roomId;
+            socket.roomNr = socket.data.roomNr;
+            socket.roomId = restoredRoomId;
+            roomManager.addUserToRoom(restoredRoomId);
+            logger.log(`연결 복구 [${socket.id}] → ${restoredRoomId} (룸번호: ${socket.roomNr})`);
+            return;
+        }
+
+        // 신규 연결: 룸 번호 생성
         const roomNr = roomManager.generateRoomNumber();
         socket.roomNr = roomNr;
         socket.roomId = roomManager.getRoomId(roomNr);
+
+        // socket.data에 저장 (connectionStateRecovery 복원용)
+        socket.data.roomNr = roomNr;
+        socket.data.roomId = socket.roomId;
 
         // Socket.IO 룸에 입장 & 사용자 수 증가
         socket.join(socket.roomId);
@@ -200,6 +214,8 @@ const handleJoinRoom = async (
         // 새 룸에 입장
         socket.roomId = newRoomId;
         socket.roomNr = roomNr;
+        socket.data.roomId = newRoomId;
+        socket.data.roomNr = roomNr;
         socket.join(newRoomId);
 
         const usersInNewRoom = roomManager.addUserToRoom(newRoomId);
