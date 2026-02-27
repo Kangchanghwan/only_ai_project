@@ -16,18 +16,17 @@ export interface DeleteResult {
  */
 export class StorageService {
     /**
-     * 특정 방 번호의 모든 파일을 삭제합니다.
-     * @param roomNr - 방 번호 (예: 123456)
+     * 특정 룸의 모든 파일을 삭제합니다.
+     * @param roomId - 룸 ID (예: 'room-shared')
      * @returns 삭제 결과
      */
-    async deleteRoomFiles(roomNr: number): Promise<DeleteResult> {
+    async deleteRoomFiles(roomId: string): Promise<DeleteResult> {
         try {
             const r2Service = getR2Service();
-            const roomId = String(roomNr);
 
             const deletedCount = await r2Service.deleteAllFiles(roomId);
 
-            logger.log(`Successfully deleted ${deletedCount} files for room ${roomNr}`);
+            logger.log(`Successfully deleted ${deletedCount} files for room ${roomId}`);
             return {
                 success: true,
                 deletedCount
@@ -35,7 +34,7 @@ export class StorageService {
 
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            logger.error(`Unexpected error deleting files for room ${roomNr}:`, error);
+            logger.error(`Unexpected error deleting files for room ${roomId}:`, error);
             return {
                 success: false,
                 deletedCount: 0,

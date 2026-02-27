@@ -14,6 +14,7 @@
   "file": {
     "upload": "Datei hochladen",
     "download": "Herunterladen",
+    "share": "Teilen",
     "downloading": "Wird heruntergeladen...",
     "downloadComplete": "Download abgeschlossen!",
     "downloadFailed": "Download fehlgeschlagen",

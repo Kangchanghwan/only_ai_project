@@ -9,12 +9,6 @@ const stubs = {
     template: '<div class="app-header-stub"><slot /></div>',
     props: ['userCount', 'isConnecting']
   },
-  RoomInfo: {
-    name: 'RoomInfo',
-    template: '<div class="room-info-stub"></div>',
-    props: ['roomId', 'isConnecting'],
-    emits: ['copy-room-code', 'join-other-room']
-  },
   FileGallery: {
     name: 'FileGallery',
     template: '<div class="file-gallery-stub"></div>',
@@ -31,7 +25,7 @@ const stubs = {
 
 describe('RoomScreen.vue', () => {
   const defaultProps = {
-    roomId: 'TEST123',
+    roomId: 'room-shared',
     files: [],
     texts: [],
     isLoading: false,
@@ -47,7 +41,6 @@ describe('RoomScreen.vue', () => {
       })
 
       expect(wrapper.find('.app-header-stub').exists()).toBe(true)
-      expect(wrapper.find('.room-info-stub').exists()).toBe(true)
       expect(wrapper.find('.file-gallery-stub').exists()).toBe(true)
       expect(wrapper.find('.text-share-box-stub').exists()).toBe(true)
     })
@@ -56,7 +49,6 @@ describe('RoomScreen.vue', () => {
       const wrapper = mount(RoomScreen, {
         props: {
           ...defaultProps,
-          roomId: 'ROOM456',
           userCount: 5,
           isConnecting: true
         },
@@ -64,42 +56,15 @@ describe('RoomScreen.vue', () => {
       })
 
       const appHeader = wrapper.findComponent({ name: 'AppHeader' })
-      const roomInfo = wrapper.findComponent({ name: 'RoomInfo' })
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
 
       expect(appHeader.props('userCount')).toBe(5)
       expect(appHeader.props('isConnecting')).toBe(true)
-      expect(roomInfo.props('roomId')).toBe('ROOM456')
       expect(fileGallery.props('isLoading')).toBe(false)
     })
   })
 
   describe('이벤트 전파', () => {
-    it('RoomInfo에서 copy-room-code 이벤트가 전파되어야 한다', async () => {
-      const wrapper = mount(RoomScreen, {
-        props: defaultProps,
-        global: { stubs }
-      })
-
-      const roomInfo = wrapper.findComponent({ name: 'RoomInfo' })
-      await roomInfo.vm.$emit('copy-room-code')
-
-      expect(wrapper.emitted()).toHaveProperty('copy-room-code')
-    })
-
-    it('RoomInfo에서 join-other-room 이벤트가 전파되어야 한다', async () => {
-      const wrapper = mount(RoomScreen, {
-        props: defaultProps,
-        global: { stubs }
-      })
-
-      const roomInfo = wrapper.findComponent({ name: 'RoomInfo' })
-      await roomInfo.vm.$emit('join-other-room', 'NEW456')
-
-      expect(wrapper.emitted()).toHaveProperty('join-other-room')
-      expect(wrapper.emitted('join-other-room')[0][0]).toBe('NEW456')
-    })
-
     it('FileGallery에서 copy-image 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
@@ -127,23 +92,6 @@ describe('RoomScreen.vue', () => {
       expect(wrapper.emitted('download-file')[0][0]).toEqual(file)
     })
 
-    it('FileGallery에서 download-selected 이벤트가 전파되어야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'https://example.com/test1.png' },
-        { name: 'test2.png', url: 'https://example.com/test2.png' }
-      ]
-      const wrapper = mount(RoomScreen, {
-        props: defaultProps,
-        global: { stubs }
-      })
-
-      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
-      await fileGallery.vm.$emit('download-selected', files)
-
-      expect(wrapper.emitted()).toHaveProperty('download-selected')
-      expect(wrapper.emitted('download-selected')[0][0]).toEqual(files)
-    })
-
     it('FileGallery에서 download-parallel 이벤트가 전파되어야 한다', async () => {
       const files = [{ name: 'test.png', url: 'https://example.com/test.png' }]
       const wrapper = mount(RoomScreen, {
@@ -156,23 +104,6 @@ describe('RoomScreen.vue', () => {
 
       expect(wrapper.emitted()).toHaveProperty('download-parallel')
       expect(wrapper.emitted('download-parallel')[0][0]).toEqual(files)
-    })
-
-    it('FileGallery에서 download-all 이벤트가 전파되어야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'https://example.com/test1.png' },
-        { name: 'test2.pdf', url: 'https://example.com/test2.pdf' }
-      ]
-      const wrapper = mount(RoomScreen, {
-        props: defaultProps,
-        global: { stubs }
-      })
-
-      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
-      await fileGallery.vm.$emit('download-all', files)
-
-      expect(wrapper.emitted()).toHaveProperty('download-all')
-      expect(wrapper.emitted('download-all')[0][0]).toEqual(files)
     })
 
     it('FileGallery에서 copy-selected-to-clipboard 이벤트가 전파되어야 한다', async () => {

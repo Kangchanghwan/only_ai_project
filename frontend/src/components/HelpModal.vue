@@ -171,27 +171,6 @@ onUnmounted(() => {
               </div>
             </section>
 
-            <!-- 룸 관리 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                🚪 {{ t('help.roomTitle') }}
-              </h3>
-              <div class="space-y-3">
-                <div class="bg-background border border-border rounded-lg p-4">
-                  <h4 class="font-semibold text-text-primary mb-2">{{ t('help.roomCreate') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('help.roomCreateDesc') }}</p>
-                </div>
-                <div class="bg-background border border-border rounded-lg p-4">
-                  <h4 class="font-semibold text-text-primary mb-2">{{ t('help.roomJoin') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('help.roomJoinDesc') }}</p>
-                </div>
-                <div class="bg-background border border-border rounded-lg p-4">
-                  <h4 class="font-semibold text-text-primary mb-2">{{ t('help.roomCopy') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('help.roomCopyDesc') }}</p>
-                </div>
-              </div>
-            </section>
-
             <!-- 키보드 단축키 -->
             <section>
               <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">

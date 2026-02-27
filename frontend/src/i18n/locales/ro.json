@@ -14,6 +14,7 @@
   "file": {
     "upload": "Încarcă fișier",
     "download": "Descarcă",
+    "share": "Partajează",
     "downloading": "Se descarcă...",
     "downloadComplete": "Descărcare completă!",
     "downloadFailed": "Descărcare eșuată",

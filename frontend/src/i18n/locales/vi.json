@@ -14,6 +14,7 @@
   "file": {
     "upload": "Tải lên tệp",
     "download": "Tải xuống",
+    "share": "Chia sẻ",
     "downloading": "Đang tải xuống...",
     "downloadComplete": "Tải xuống hoàn tất!",
     "downloadFailed": "Tải xuống thất bại",

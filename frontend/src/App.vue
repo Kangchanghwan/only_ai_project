@@ -2,13 +2,9 @@
 /**
  * App.vue - 메인 애플리케이션 컴포넌트
  *
- * Vue 3 Best Practice:
- * - <script setup> 사용으로 간결한 컴포넌트 작성
- * - Composables를 통한 로직 재사용
- * - 명확한 이벤트 핸들링
- * - onMounted/onUnmounted로 라이프사이클 관리
+ * 단일 공유 룸(room-shared)에 자동 입장합니다.
  */
-import { onMounted, onUnmounted, watch, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoomManager } from './composables/useRoomManager'
 import { useFileManager } from './composables/useFileManager'
 import { useClipboard } from './composables/useClipboard'
@@ -44,9 +40,9 @@ let cleanupOnMessage = null
 // 재연결 콜백 등록
 // ========================================
 
-socket.onReconnected((roomNr) => {
-  console.log('[App] 재연결 완료, 룸:', roomNr)
-  roomManager.joinRoomByCode(roomNr.toString())
+socket.onReconnected(() => {
+  console.log('[App] 재연결 완료')
+  roomManager.enterSharedRoom()
 
   // 기존 이벤트 리스너 정리 후 재설정
   if (cleanupUserLeft) cleanupUserLeft()
@@ -56,26 +52,9 @@ socket.onReconnected((roomNr) => {
   // 파일 목록 다시 로드
   fileManager.clearFiles()
   textShare.clearAllTexts()
-  fileManager.loadFiles(roomNr.toString(), { limit: 10 })
+  fileManager.loadFiles(roomManager.currentRoomId.value, { limit: 10 })
 
   notification.showSuccess('재연결 완료')
-})
-
-socket.onRoomRejoinFailed((oldRoomNr, newRoomNr) => {
-  console.log('[App] 이전 룸 재입장 실패, 이전:', oldRoomNr, '새:', newRoomNr)
-  roomManager.joinRoomByCode(newRoomNr.toString())
-
-  // 기존 이벤트 리스너 정리 후 재설정
-  if (cleanupUserLeft) cleanupUserLeft()
-  if (cleanupOnMessage) cleanupOnMessage()
-  setupSocketListeners()
-
-  // 새 룸의 파일 로드
-  fileManager.clearFiles()
-  textShare.clearAllTexts()
-  fileManager.loadFiles(newRoomNr.toString(), { limit: 10 })
-
-  notification.showInfo('이전 룸이 만료되어 새 룸에 연결되었습니다.')
 })
 
 // ========================================
@@ -83,10 +62,9 @@ socket.onRoomRejoinFailed((oldRoomNr, newRoomNr) => {
 // ========================================
 
 /**
- * 특정 룸에 연결하고 관련 이벤트 리스너를 설정합니다.
- * @param {string} [roomCode] - 입장할 룸 코드. 없으면 새로 생성합니다.
+ * 공유 룸에 연결하고 관련 이벤트 리스너를 설정합니다.
  */
-async function connectToRoom(roomCode) {
+async function connectToRoom() {
   isConnecting.value = true
   await new Promise((resolve) => setTimeout(resolve, 245))
   try {
@@ -99,26 +77,19 @@ async function connectToRoom(roomCode) {
     fileManager.clearFiles()
     textShare.clearAllTexts()
 
-    // 소켓 연결
-    const { roomNr } = await socket.connect()
-    let targetRoom = roomCode || roomNr.toString()
+    // 소켓 연결 (자동으로 room-shared에 입장)
+    await socket.connect()
 
-    // 룸 입장
-    if (roomCode) {
-      await socket.joinRoom(parseInt(roomCode))
-    }
-
-    roomManager.joinRoomByCode(targetRoom)
-    // 파일 로딩을 백그라운드에서 실행 (연결 속도 최적화, 초기 10개만)
-    fileManager.loadFiles(targetRoom, { limit: 10 })
-    notification.showSuccess(`룸 ${targetRoom}에 연결되었습니다.`)
+    roomManager.enterSharedRoom()
+    // 파일 로딩을 백그라운드에서 실행 (초기 10개만)
+    fileManager.loadFiles(roomManager.currentRoomId.value, { limit: 10 })
+    notification.showSuccess('연결되었습니다.')
 
     // 새 이벤트 리스너 설정
     setupSocketListeners()
   } catch (error) {
-    console.error('[App] 룸 연결 실패:', error)
-    notification.showError(error.message || '룸 연결에 실패했습니다.')
-    // 실패 시 초기 화면으로 돌아가기 위해 룸 ID를 null로 설정
+    console.error('[App] 연결 실패:', error)
+    notification.showError(error.message || '연결에 실패했습니다.')
     roomManager.leaveRoom()
   } finally {
     isConnecting.value = false
@@ -133,12 +104,9 @@ function setupSocketListeners() {
     if (message.type === 'file-uploaded') {
       notification.showInfo('새 파일이 업로드되었습니다!')
       if (roomManager.currentRoomId.value) {
-        // 백그라운드에서 파일 목록 갱신
         fileManager.loadFiles(roomManager.currentRoomId.value)
       }
     } else if (message.type === 'text-shared') {
-      // 다른 사용자가 텍스트를 공유한 경우
-      // 중복 방지: 이미 존재하는 ID는 무시
       const exists = textShare.sharedTexts.value.some(t => t.id === message.textId)
       if (!exists) {
         const newText = {
@@ -150,10 +118,8 @@ function setupSocketListeners() {
         notification.showInfo('새 텍스트가 공유되었습니다!')
       }
     } else if (message.type === 'text-removed') {
-      // 다른 사용자가 텍스트를 삭제한 경우
       textShare.removeText(message.textId)
     } else if (message.type === 'texts-cleared') {
-      // 다른 사용자가 모든 텍스트를 삭제한 경우
       textShare.clearAllTexts()
       notification.showInfo('모든 텍스트가 삭제되었습니다.')
     }
@@ -171,14 +137,11 @@ function setupSocketListeners() {
 async function handlePaste(event) {
   if (!roomManager.currentRoomId.value) return
 
-  // 파일이 있는지 확인
   const files = clipboard.extractFilesFromPaste(event)
 
   if (files.length > 0) {
-    // 파일이 있으면 파일 업로드
     await uploadFiles(files)
   } else {
-    // 파일이 없으면 텍스트로 처리
     const pastedText = event.clipboardData?.getData('text')
     if (pastedText && pastedText.trim()) {
       await handleAddText(pastedText.trim())
@@ -196,7 +159,6 @@ async function handleUploadFiles(files) {
 async function uploadFiles(files) {
   if (!roomManager.currentRoomId.value) return
 
-  // 1. 전체 용량 미리 검증
   const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 500
   const MAX_ROOM_SIZE = maxRoomSizeMB * 1024 * 1024
   const totalUploadSize = files.reduce((sum, f) => sum + f.size, 0)
@@ -210,7 +172,6 @@ async function uploadFiles(files) {
     return
   }
 
-  // 2. 병렬 업로드 (프로그레스바 지원) - 각 파일 완료 시 즉시 리스트 업데이트
   let successCount = 0
   let failCount = 0
 
@@ -218,7 +179,6 @@ async function uploadFiles(files) {
     files.map(async (file) => {
       const uploadId = crypto.randomUUID()
 
-      // 업로드 시작 - 프로그레스바에 추가
       notification.addUpload(uploadId, file.name)
 
       try {
@@ -232,7 +192,6 @@ async function uploadFiles(files) {
           }
         )
 
-        // 업로드 완료 즉시 리스트에 추가
         socket.publishMessage({
           type: 'file-uploaded',
           fileName: result.fileName,
@@ -247,21 +206,17 @@ async function uploadFiles(files) {
         })
         successCount++
 
-        // 프로그레스바 완료 표시
         notification.completeUpload(uploadId)
 
-        // 1.5초 후 프로그레스바에서 제거
         setTimeout(() => {
           notification.removeUpload(uploadId)
         }, 1500)
 
         return { file, result, uploadId }
       } catch (error) {
-        // 업로드 실패
         failCount++
         notification.failUpload(uploadId, error.message)
 
-        // 에러 메시지 표시
         if (error.message.includes('MB를 초과할 수 없습니다')) {
           notification.showError(error.message)
         } else if (error.message.includes('비어있습니다')) {
@@ -270,7 +225,6 @@ async function uploadFiles(files) {
           notification.showError(`업로드 실패: ${error.message}`)
         }
 
-        // 5초 후 프로그레스바에서 제거
         setTimeout(() => {
           notification.removeUpload(uploadId)
         }, 5000)
@@ -280,7 +234,6 @@ async function uploadFiles(files) {
     })
   )
 
-  // 최종 결과 알림
   if (successCount > 0) {
     notification.showSuccess(`${successCount}개 파일 업로드 완료!`)
   }
@@ -297,46 +250,27 @@ async function handleCopyImage(imageUrl) {
   }
 }
 
-async function handleCopyRoomCode() {
-  if (!roomManager.currentRoomId.value) return
-  const result = await clipboard.copyText(roomManager.currentRoomId.value)
-  if (result.success) {
-    notification.showSuccess('룸 코드 복사됨!')
-  } else {
-    notification.showError('복사 실패')
-  }
-}
-
 // ========================================
 // 파일 다운로드 핸들러
 // ========================================
 
 async function handleDownloadFile(file) {
-  // 다운로드 ID 생성 및 프로그레스바 추가
   const downloadId = crypto.randomUUID()
   notification.addUpload(downloadId, file.name)
 
   const result = await download.downloadFile(file)
 
   if (result.success) {
-    // 다운로드 완료
     notification.completeUpload(downloadId)
-
-    // 1.5초 후 프로그레스바에서 제거
     setTimeout(() => {
       notification.removeUpload(downloadId)
     }, 1500)
-
     notification.showSuccess('다운로드 완료!')
   } else {
-    // 다운로드 실패
     notification.failUpload(downloadId, result.error?.message || '다운로드 실패')
-
-    // 5초 후 프로그레스바에서 제거
     setTimeout(() => {
       notification.removeUpload(downloadId)
     }, 5000)
-
     notification.showError('다운로드 실패')
   }
 }
@@ -346,34 +280,26 @@ async function handleDownloadParallel(files) {
 
   notification.showInfo(`${files.length}개 파일을 다운로드 중...`)
 
-  // 각 파일에 대한 다운로드 ID 생성 및 프로그레스바 추가
   const downloadIds = new Map()
 
   const result = await download.downloadParallel(files, {
     onProgress: (file, status, error) => {
       if (status === 'start') {
-        // 다운로드 시작 - 프로그레스바에 추가
         const downloadId = crypto.randomUUID()
         downloadIds.set(file.name, downloadId)
         notification.addUpload(downloadId, file.name)
       } else if (status === 'complete') {
-        // 다운로드 완료
         const downloadId = downloadIds.get(file.name)
         if (downloadId) {
           notification.completeUpload(downloadId)
-
-          // 1.5초 후 프로그레스바에서 제거
           setTimeout(() => {
             notification.removeUpload(downloadId)
           }, 1500)
         }
       } else if (status === 'failed') {
-        // 다운로드 실패
         const downloadId = downloadIds.get(file.name)
         if (downloadId) {
           notification.failUpload(downloadId, error?.message || '다운로드 실패')
-
-          // 5초 후 프로그레스바에서 제거
           setTimeout(() => {
             notification.removeUpload(downloadId)
           }, 5000)
@@ -398,7 +324,6 @@ async function handleDownloadParallel(files) {
 async function handleCopySelectedToClipboard(files) {
   if (!files || files.length === 0) return
 
-  // 브라우저 제한으로 단일 파일만 클립보드 복사 가능
   if (files.length > 1) {
     notification.showInfo('클립보드에 첫 번째 파일만 복사됩니다...')
   } else {
@@ -411,7 +336,7 @@ async function handleCopySelectedToClipboard(files) {
     if (result.totalCount > 1) {
       notification.showSuccess(
         `${files[0].name}이 클립보드에 복사됨! (${result.totalCount}개 중 1개)\n` +
-        '💡 여러 파일은 "선택 항목 다운로드"를 사용하세요.'
+        '여러 파일은 "선택 항목 다운로드"를 사용하세요.'
       )
     } else {
       notification.showSuccess('클립보드에 복사됨!')
@@ -431,7 +356,6 @@ async function handleAddText(content) {
   const newText = textShare.addText(content)
   if (!newText) return
 
-  // 소켓을 통해 다른 사용자에게 전송
   socket.publishMessage({
     type: 'text-shared',
     textId: newText.id,
@@ -449,7 +373,6 @@ async function handleRemoveText(textId) {
   const removed = textShare.removeText(textId)
   if (!removed) return
 
-  // 소켓을 통해 다른 사용자에게 전송
   socket.publishMessage({
     type: 'text-removed',
     textId,
@@ -462,7 +385,6 @@ async function handleClearAllTexts() {
 
   textShare.clearAllTexts()
 
-  // 소켓을 통해 다른 사용자에게 전송
   socket.publishMessage({
     type: 'texts-cleared',
     roomId: roomManager.currentRoomId.value
@@ -480,19 +402,13 @@ async function handleCopyText(textId) {
   }
 }
 
-/**
- * 붙여넣기 버튼 클릭 핸들러 (모바일용)
- * navigator.clipboard API를 사용하여 클립보드 내용을 읽습니다.
- */
 async function handlePasteContent() {
   if (!roomManager.currentRoomId.value) return
 
   try {
-    // 먼저 클립보드 읽기 권한 확인 및 데이터 읽기
     const clipboardItems = await navigator.clipboard.read()
 
     for (const item of clipboardItems) {
-      // 이미지 타입 확인
       const imageType = item.types.find(type => type.startsWith('image/'))
       if (imageType) {
         const blob = await item.getType(imageType)
@@ -501,7 +417,6 @@ async function handlePasteContent() {
         return
       }
 
-      // 텍스트 타입 확인
       if (item.types.includes('text/plain')) {
         const blob = await item.getType('text/plain')
         const text = await blob.text()
@@ -514,7 +429,6 @@ async function handlePasteContent() {
 
     notification.showInfo('클립보드가 비어있습니다.')
   } catch (error) {
-    // clipboard.read()가 지원되지 않는 경우 readText() 시도
     try {
       const text = await navigator.clipboard.readText()
       if (text && text.trim()) {
@@ -529,9 +443,6 @@ async function handlePasteContent() {
   }
 }
 
-/**
- * 추가 파일 목록을 불러옵니다 (페이지네이션)
- */
 async function handleLoadMore() {
   try {
     await fileManager.loadMore({ limit: 10 })
@@ -546,8 +457,54 @@ async function handleLoadMore() {
 // 라이프사이클 훅
 // ========================================
 
-onMounted(() => {
-  // URL에서 라우트 정보 파싱
+/**
+ * Service Worker에서 공유 데이터를 가져와 업로드/텍스트 공유 처리
+ */
+async function handleShareTargetData() {
+  if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+    console.warn('[App] Service Worker not ready for share target')
+    return
+  }
+
+  try {
+    const data = await new Promise((resolve, reject) => {
+      const channel = new MessageChannel()
+      const timeout = setTimeout(() => reject(new Error('SW timeout')), 3000)
+
+      channel.port1.onmessage = (event) => {
+        clearTimeout(timeout)
+        resolve(event.data?.data || null)
+      }
+
+      navigator.serviceWorker.controller.postMessage(
+        { type: 'GET_SHARE_DATA' },
+        [channel.port2]
+      )
+    })
+
+    if (!data) {
+      console.log('[App] No share data from SW')
+      return
+    }
+
+    // 파일이 있으면 업로드
+    if (data.files && data.files.length > 0) {
+      const fileList = Array.from(data.files)
+      await uploadFiles(fileList)
+    }
+
+    // 텍스트가 있으면 공유 (text, url, title 조합)
+    const textParts = [data.title, data.text, data.url].filter(Boolean)
+    const combinedText = textParts.join('\n').trim()
+    if (combinedText) {
+      await handleAddText(combinedText)
+    }
+  } catch (error) {
+    console.error('[App] Share target 처리 실패:', error)
+  }
+}
+
+onMounted(async () => {
   const hash = window.location.hash
   currentRoute.value = parseRoute(hash)
 
@@ -559,13 +516,16 @@ onMounted(() => {
     return
   }
 
-  // 기존 룸 연결 로직
-  if (currentRoute.value.type === 'room') {
-    // URL에 룸 코드가 있으면 해당 룸으로 연결
-    connectToRoom(currentRoute.value.roomCode)
-  } else {
-    // 일반적인 초기 룸 연결
-    connectToRoom()
+  // share-target 파라미터 감지
+  const isShareTarget = new URLSearchParams(window.location.search).has('share-target')
+
+  // 공유 룸에 연결
+  await connectToRoom()
+
+  // Web Share Target으로 진입한 경우 공유 데이터 처리
+  if (isShareTarget) {
+    console.log('[App] Share target 감지, 공유 데이터 처리 중...')
+    await handleShareTargetData()
   }
 
   // URL을 깨끗하게 정리
@@ -601,9 +561,7 @@ onUnmounted(() => {
       :is-loading="fileManager.isLoading.value || isConnecting"
       :user-count="socket.usersInRoom.value"
       :has-more="fileManager.hasMore.value"
-      @copy-room-code="handleCopyRoomCode"
       @copy-image="handleCopyImage"
-      @join-other-room="connectToRoom"
       @upload-files="handleUploadFiles"
       @download-file="handleDownloadFile"
       @download-parallel="handleDownloadParallel"

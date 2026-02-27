@@ -14,6 +14,7 @@
   "file": {
     "upload": "Ladda upp fil",
     "download": "Ladda ner",
+    "share": "Dela",
     "downloading": "Laddar ner...",
     "downloadComplete": "Nedladdning klar!",
     "downloadFailed": "Nedladdning misslyckades",

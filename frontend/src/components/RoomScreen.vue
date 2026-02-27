@@ -1,6 +1,5 @@
 <script setup>
 import AppHeader from './AppHeader.vue'
-import RoomInfo from './RoomInfo.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import AppFooter from './AppFooter.vue'
@@ -37,9 +36,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'copy-room-code',
   'copy-image',
-  'join-other-room',
   'upload-files',
   'download-file',
   'download-parallel',
@@ -60,13 +57,6 @@ const emit = defineEmits([
     />
 
     <main class="bg-surface rounded-xl p-8 border border-border">
-      <RoomInfo
-        :room-id="roomId"
-        :is-connecting="isConnecting"
-        @copy-room-code="$emit('copy-room-code')"
-        @join-other-room="$emit('join-other-room', $event)"
-      />
-
       <FileGallery
         :files="files"
         :room-id="roomId"

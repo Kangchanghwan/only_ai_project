@@ -14,6 +14,7 @@
   "file": {
     "upload": "Завантажити файл",
     "download": "Завантажити",
+    "share": "Поділитися",
     "downloading": "Завантаження...",
     "downloadComplete": "Завантаження завершено!",
     "downloadFailed": "Помилка завантаження",

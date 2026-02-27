@@ -14,6 +14,7 @@
   "file": {
     "upload": "Subir Archivo",
     "download": "Descargar",
+    "share": "Compartir",
     "downloading": "Descargando...",
     "downloadComplete": "¡Descarga completa!",
     "downloadFailed": "Descarga fallida",

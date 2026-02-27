@@ -14,6 +14,7 @@
   "file": {
     "upload": "Bestand uploaden",
     "download": "Downloaden",
+    "share": "Delen",
     "downloading": "Downloaden...",
     "downloadComplete": "Download voltooid!",
     "downloadFailed": "Download mislukt",

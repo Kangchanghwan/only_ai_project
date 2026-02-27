@@ -84,7 +84,8 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEve
 
 // === 룸 관리자 & 이벤트 핸들러 설정 ===
 
-const roomManager = new RoomManager();
+const gracePeriodSec = parseInt(process.env.ROOM_GRACE_PERIOD_SEC || '600', 10);
+const roomManager = new RoomManager(undefined, gracePeriodSec * 1000);
 setupSocketHandlers(io, roomManager);
 
 // === API 엔드포인트 ===
@@ -251,6 +252,9 @@ if (process.env.NODE_ENV !== 'test') {
 
 const gracefulShutdown = (signal: string) => {
     logger.info(`${signal} 시그널 수신: 서버 종료 시작`);
+
+    // 모든 룸 삭제 타이머 취소
+    roomManager.cancelAllTimers();
 
     // Socket.IO 연결 종료
     io.close(() => {

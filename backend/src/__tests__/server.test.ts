@@ -2,7 +2,7 @@ import { httpServer } from '../server';
 import ioClient from 'socket.io-client';
 import { AddressInfo } from 'net';
 
-describe('Socket.IO Server - Room Management (TDD)', () => {
+describe('Socket.IO Server - Single Shared Room', () => {
   let serverPort: number;
   const clients: ReturnType<typeof ioClient>[] = [];
 
@@ -34,96 +34,53 @@ describe('Socket.IO Server - Room Management (TDD)', () => {
     setTimeout(done, 100);
   });
 
-  describe('1. Room Creation Flow', () => {
-    test('should create room and return room number when client connects', (done) => {
+  describe('1. Connection Flow', () => {
+    test('should register client with shared room ID on connect', (done) => {
       const client = ioClient(`http://localhost:${serverPort}`);
       clients.push(client);
 
-      client.on('registered', (roomNumber: number) => {
-        expect(roomNumber).toBeDefined();
-        expect(typeof roomNumber).toBe('number');
-        expect(roomNumber).toBeGreaterThanOrEqual(100000);
-        expect(roomNumber).toBeLessThan(1000000);
+      client.on('registered', (roomId: string) => {
+        expect(roomId).toBe('room-shared');
         done();
       });
     });
 
-    test('should create unique room numbers for different clients', (done) => {
+    test('should register all clients with the same shared room ID', (done) => {
       const client1 = ioClient(`http://localhost:${serverPort}`);
       const client2 = ioClient(`http://localhost:${serverPort}`);
       clients.push(client1, client2);
 
-      const roomNumbers: number[] = [];
+      const roomIds: string[] = [];
 
       const checkCompletion = () => {
-        if (roomNumbers.length === 2) {
-          expect(roomNumbers[0]).not.toBe(roomNumbers[1]);
+        if (roomIds.length === 2) {
+          expect(roomIds[0]).toBe('room-shared');
+          expect(roomIds[1]).toBe('room-shared');
           done();
         }
       };
 
-      client1.on('registered', (roomNumber: number) => {
-        roomNumbers.push(roomNumber);
+      client1.on('registered', (roomId: string) => {
+        roomIds.push(roomId);
         checkCompletion();
       });
 
-      client2.on('registered', (roomNumber: number) => {
-        roomNumbers.push(roomNumber);
+      client2.on('registered', (roomId: string) => {
+        roomIds.push(roomId);
         checkCompletion();
       });
     });
   });
 
-  describe('2. Room Joining Flow', () => {
-    test('should allow client to join existing room', (done) => {
+  describe('2. Message Broadcasting', () => {
+    test('should broadcast message to all users in shared room', (done) => {
       const client1 = ioClient(`http://localhost:${serverPort}`);
       const client2 = ioClient(`http://localhost:${serverPort}`);
       clients.push(client1, client2);
 
-      let client1RoomNumber: number;
-
-      client1.on('registered', (roomNumber: number) => {
-        client1RoomNumber = roomNumber;
-      });
-
-      client2.on('registered', () => {
-        // Client2 tries to join client1's room
-        client2.emit('join', client1RoomNumber);
-      });
-
-      client2.on('subscribed', (roomNumber: number, userCount: number) => {
-        expect(roomNumber).toBe(client1RoomNumber);
-        expect(userCount).toBe(2);
-        done();
-      });
-    });
-
-    test('should notify when trying to join non-existent room', (done) => {
-      const client = ioClient(`http://localhost:${serverPort}`);
-      clients.push(client);
-
-      const nonExistentRoom = 999999;
-
-      client.on('registered', () => {
-        client.emit('join', nonExistentRoom);
-      });
-
-      client.on('room-not-found', () => {
-        expect(true).toBe(true);
-        done();
-      });
-    });
-  });
-
-  describe('3. Message Broadcasting', () => {
-    test('should broadcast message to all users in same room', (done) => {
-      const client1 = ioClient(`http://localhost:${serverPort}`);
-      const client2 = ioClient(`http://localhost:${serverPort}`);
-      clients.push(client1, client2);
-
-      let client1RoomNumber: number;
       const testMessage = { type: 'text', content: 'Hello!' };
       let messageCount = 0;
+      let registeredCount = 0;
 
       const messageHandler = (msg: any) => {
         expect(msg).toEqual(testMessage);
@@ -137,48 +94,46 @@ describe('Socket.IO Server - Room Management (TDD)', () => {
       client1.on('message', messageHandler);
       client2.on('message', messageHandler);
 
-      client1.on('registered', (roomNumber: number) => {
-        client1RoomNumber = roomNumber;
-      });
+      const checkRegistered = () => {
+        registeredCount++;
+        if (registeredCount === 2) {
+          // Both clients are in the shared room, publish a message
+          setTimeout(() => {
+            client1.emit('publish', testMessage);
+          }, 50);
+        }
+      };
 
-      client2.on('registered', () => {
-        client2.emit('join', client1RoomNumber);
-      });
-
-      client2.on('subscribed', () => {
-        // Add small delay to ensure both clients are ready
-        setTimeout(() => {
-          client1.emit('publish', testMessage);
-        }, 50);
-      });
+      client1.on('registered', checkRegistered);
+      client2.on('registered', checkRegistered);
     });
   });
 
-  describe('4. Disconnect Handling', () => {
+  describe('3. Disconnect Handling', () => {
     test('should notify remaining users when someone leaves', (done) => {
       const client1 = ioClient(`http://localhost:${serverPort}`);
       const client2 = ioClient(`http://localhost:${serverPort}`);
       clients.push(client1, client2);
 
-      let client1RoomNumber: number;
-
-      client1.on('registered', (roomNumber: number) => {
-        client1RoomNumber = roomNumber;
-      });
-
-      client2.on('registered', () => {
-        client2.emit('join', client1RoomNumber);
-      });
-
-      client2.on('subscribed', () => {
-        // Both in same room, now disconnect client2
-        client2.disconnect();
-      });
+      let registeredCount = 0;
 
       client1.on('user-left', (userCount: number) => {
         expect(userCount).toBe(1); // Only client1 remains
         done();
       });
+
+      const checkRegistered = () => {
+        registeredCount++;
+        if (registeredCount === 2) {
+          // Both in same room, now disconnect client2
+          setTimeout(() => {
+            client2.disconnect();
+          }, 50);
+        }
+      };
+
+      client1.on('registered', checkRegistered);
+      client2.on('registered', checkRegistered);
     });
   });
 });

@@ -45,20 +45,6 @@ export function parseRoute(hash) {
     }
   }
 
-  // 룸 입장: /#/{roomCode}
-  if (hash.startsWith('#/')) {
-    const roomCode = hash.substring(2)
-    // 쿼리 파라미터가 포함되어 있으면 '?' 이전까지만 추출
-    const cleanRoomCode = roomCode.split('?')[0]
-
-    if (cleanRoomCode && cleanRoomCode.length > 0) {
-      return {
-        type: 'room',
-        roomCode: cleanRoomCode
-      }
-    }
-  }
-
   return { type: 'home' }
 }
 

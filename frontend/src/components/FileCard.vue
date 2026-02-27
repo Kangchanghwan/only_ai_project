@@ -22,6 +22,9 @@ const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file'])
 // QR 모달 상태 관리
 const isQRModalOpen = ref(false)
 
+// Web Share API 지원 여부
+const canShare = ref(typeof navigator !== 'undefined' && !!navigator.share)
+
 // 파일 메타데이터 계산
 const fileMetadata = computed(() => {
   const type = getFileType(props.file.name)
@@ -46,6 +49,20 @@ function openQRModal(event) {
 
 function closeQRModal() {
   isQRModalOpen.value = false
+}
+
+async function handleShare(event) {
+  event.stopPropagation()
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: props.file.name,
+        url: props.file.url
+      })
+    } catch (e) {
+      // 사용자가 공유 취소 시 무시
+    }
+  }
 }
 </script>
 
@@ -110,28 +127,31 @@ function closeQRModal() {
       </div>
 
       <!-- 액션 버튼 -->
-      <div class="flex justify-between items-center">
-        <span class="text-xs font-medium text-white/80">{{ t('text.clickToCopy') }}</span>
-
-        <!-- 버튼 그룹 -->
+      <div class="flex justify-end items-center">
         <div class="flex gap-2">
+          <!-- 공유 버튼 (Web Share API 지원 시에만 표시) -->
+          <button
+            v-if="canShare"
+            class="bg-surface/80 border border-border text-primary p-2 rounded-full cursor-pointer transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110 flex items-center justify-center"
+            @click="handleShare"
+            :title="t('file.share')"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+          </button>
+
           <!-- QR 코드 버튼 -->
           <button
             class="bg-surface/80 border border-border text-primary p-2 rounded-full cursor-pointer transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110 flex items-center justify-center"
             @click="openQRModal"
             :title="t('room.qrShareTitle')"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="7" height="7" />
               <rect x="14" y="3" width="7" height="7" />
               <rect x="14" y="14" width="7" height="7" />
@@ -141,11 +161,15 @@ function closeQRModal() {
 
           <!-- 다운로드 버튼 -->
           <button
-            class="bg-primary/90 border-none text-white px-3 py-1.5 rounded cursor-pointer text-sm font-semibold transition-all duration-200 hover:bg-primary hover:scale-110"
+            class="bg-surface/80 border border-border text-primary p-2 rounded-full cursor-pointer transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110 flex items-center justify-center"
             @click="handleDownload"
             :title="t('file.download')"
           >
-            ⬇️ {{ t('file.download') }}
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
           </button>
         </div>
       </div>

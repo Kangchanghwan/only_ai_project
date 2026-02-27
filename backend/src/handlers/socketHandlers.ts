@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
-import { ExtendedSocket, ErrorResponse, JoinResponse, PublishResponse } from '../types';
-import { RoomManager } from '../managers/RoomManager';
+import { ExtendedSocket, ErrorResponse, PublishResponse } from '../types';
+import { RoomManager, SHARED_ROOM_ID } from '../managers/RoomManager';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -23,7 +23,7 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
     io.on('connection', (socket: ExtendedSocket) => {
         logger.log(`새 연결: ${socket.id}`);
 
-        // 연결 시 자동으로 룸 생성 및 할당
+        // 연결 시 자동으로 공유 룸에 입장
         handleConnection(socket, roomManager);
 
         // 연결 종료 처리
@@ -32,11 +32,6 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
         // 메시지 발행 처리
         socket.on('publish', (msg: any, ack?: (error: Error | null, response?: PublishResponse) => void) =>
             handlePublish(socket, io, msg, ack)
-        );
-
-        // 룸 입장 처리
-        socket.on('join', (roomNr: number, ack?: (error: Error | null, response?: JoinResponse) => void) =>
-            handleJoinRoom(socket, io, roomManager, roomNr, ack)
         );
 
         // 에러 로깅
@@ -48,42 +43,39 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
 
 // === 개별 이벤트 핸들러 ===
 
-/** 새 연결 처리: 자동으로 룸 생성 및 할당 */
+/** 새 연결 처리: 자동으로 공유 룸에 입장 */
 const handleConnection = (socket: ExtendedSocket, roomManager: RoomManager) => {
     try {
         // connectionStateRecovery로 복구된 연결
         if (socket.recovered && socket.data.roomId) {
             const restoredRoomId = socket.data.roomId;
-            socket.roomNr = socket.data.roomNr;
             socket.roomId = restoredRoomId;
             roomManager.addUserToRoom(restoredRoomId);
-            logger.log(`연결 복구 [${socket.id}] → ${restoredRoomId} (룸번호: ${socket.roomNr})`);
+            logger.log(`연결 복구 [${socket.id}] → ${restoredRoomId}`);
             return;
         }
 
-        // 신규 연결: 룸 번호 생성
-        const roomNr = roomManager.generateRoomNumber();
-        socket.roomNr = roomNr;
-        socket.roomId = roomManager.getRoomId(roomNr);
+        // 신규 연결: 고정 공유 룸에 입장
+        const roomId = SHARED_ROOM_ID;
+        socket.roomId = roomId;
 
         // socket.data에 저장 (connectionStateRecovery 복원용)
-        socket.data.roomNr = roomNr;
-        socket.data.roomId = socket.roomId;
+        socket.data.roomId = roomId;
 
         // Socket.IO 룸에 입장 & 사용자 수 증가
-        socket.join(socket.roomId);
-        roomManager.addUserToRoom(socket.roomId);
+        socket.join(roomId);
+        roomManager.addUserToRoom(roomId);
 
-        // 클라이언트에게 룸 번호 알림
-        socket.emit('registered', roomNr);
+        // 클라이언트에게 룸 ID 알림
+        socket.emit('registered', roomId);
 
-        logger.log(`사용자 등록 [${socket.id}] → ${socket.roomId} (룸번호: ${roomNr})`);
+        logger.log(`사용자 등록 [${socket.id}] → ${roomId}`);
 
     } catch (error) {
         const errMsg = error instanceof Error ? error.message : '알 수 없는 에러';
         logger.error(`연결 에러 [${socket.id}]: ${errMsg}`);
 
-        socket.emit('error', createError('룸 생성 실패', 'ROOM_CREATION_ERROR'));
+        socket.emit('error', createError('룸 입장 실패', 'ROOM_JOIN_ERROR'));
         socket.disconnect();
     }
 };
@@ -148,99 +140,6 @@ const handlePublish = (
             ack(error instanceof Error ? error : new Error(errMsg));
         } else {
             socket.emit('error', createError('메시지 발행 실패', 'PUBLISH_ERROR'));
-        }
-    }
-};
-
-/** 기존 룸 입장 처리 */
-const handleJoinRoom = async (
-    socket: ExtendedSocket,
-    io: Server,
-    roomManager: RoomManager,
-    roomNr: number,
-    ack?: (error: Error | null, response?: JoinResponse) => void
-) => {
-    // 소켓이 초기화되지 않은 경우
-    if (!socket.roomId) {
-        const error = new Error('소켓이 초기화되지 않음');
-        if (ack) ack(error);
-        return;
-    }
-
-    try {
-        // 룸 번호 유효성 검사 (100000 ~ 999999)
-        if (typeof roomNr !== 'number' || !Number.isInteger(roomNr) || roomNr < 100000 || roomNr > 999999) {
-            const error = new Error('잘못된 룸 번호 형식');
-            if (ack) {
-                ack(error);
-            } else {
-                socket.emit('error', createError('잘못된 룸 번호 형식', 'INVALID_ROOM_NUMBER'));
-            }
-            logger.log(`잘못된 룸 번호 [${socket.id}]: ${roomNr}`);
-            return;
-        }
-
-        // 룸 존재 여부 확인
-        if (!roomManager.roomExists(roomNr)) {
-            socket.emit('room-not-found');
-            if (ack) {
-                ack(new Error('룸을 찾을 수 없음'));
-            }
-            logger.log(`존재하지 않는 룸 입장 시도 [${socket.id}]: ${roomNr}`);
-            return;
-        }
-
-        const oldRoomId = socket.roomId;
-        const newRoomId = roomManager.getRoomId(roomNr);
-
-        // 이미 해당 룸에 있는 경우
-        if (oldRoomId === newRoomId) {
-            if (ack) {
-                ack(null, {
-                    success: true,
-                    alreadyInRoom: true,
-                    roomNr,
-                    usersInRoom: roomManager.getRoomUserCount(newRoomId)
-                });
-            }
-            return;
-        }
-
-        // 기존 룸에서 나가기
-        socket.leave(oldRoomId);
-        const remainingInOldRoom = await roomManager.removeUserFromRoom(oldRoomId);
-        io.to(oldRoomId).emit('user-left', remainingInOldRoom);
-
-        // 새 룸에 입장
-        socket.roomId = newRoomId;
-        socket.roomNr = roomNr;
-        socket.data.roomId = newRoomId;
-        socket.data.roomNr = roomNr;
-        socket.join(newRoomId);
-
-        const usersInNewRoom = roomManager.addUserToRoom(newRoomId);
-
-        // 새 룸의 모든 사용자에게 알림
-        io.to(newRoomId).emit('subscribed', roomNr, usersInNewRoom);
-
-        // 성공 응답
-        if (ack) {
-            ack(null, {
-                success: true,
-                roomNr,
-                usersInRoom: usersInNewRoom
-            });
-        }
-
-        logger.log(`룸 이동 [${socket.id}]: ${oldRoomId} → ${newRoomId} (인원: ${usersInNewRoom})`);
-    } catch (error) {
-        const errMsg = error instanceof Error ? error.message : '알 수 없는 에러';
-        logger.error(`입장 에러 [${socket.id}]: ${errMsg}`);
-
-        if (ack) {
-            ack(error instanceof Error ? error : new Error(errMsg));
-        } else {
-            socket.emit('error', createError('룸 입장 실패', 'JOIN_ERROR'));
         }
     }
 };

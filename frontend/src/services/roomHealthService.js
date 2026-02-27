@@ -3,10 +3,10 @@ class RoomHealthService {
     this.apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
   }
 
-  async checkRoom(roomNr) {
+  async checkRoom(roomId) {
     try {
       const response = await fetch(
-        `${this.apiUrl}/api/room/${roomNr}/status`,
+        `${this.apiUrl}/api/room/${roomId}/status`,
         { signal: AbortSignal.timeout(5000) }
       )
       if (!response.ok) return { exists: false, userCount: 0 }
