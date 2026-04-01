@@ -22,7 +22,9 @@
     "copyToClipboard": "Kopiuj do schowka",
     "copied": "Skopiowano do schowka!",
     "copyFailed": "Kopiowanie nieudane",
-    "delete": "Usuń"
+    "delete": "Usuń",
+    "deleteSelected": "Usuń zaznaczone",
+    "clearStorage": "Wyczyść magazyn"
   },
   "text": {
     "share": "Udostępnij tekst",

@@ -22,7 +22,9 @@
     "copyToClipboard": "Sao chép vào Clipboard",
     "copied": "Đã sao chép vào clipboard!",
     "copyFailed": "Sao chép thất bại",
-    "delete": "Xóa"
+    "delete": "Xóa",
+    "deleteSelected": "Xóa đã chọn",
+    "clearStorage": "Xóa bộ nhớ"
   },
   "text": {
     "share": "Chia sẻ văn bản",

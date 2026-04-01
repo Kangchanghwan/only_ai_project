@@ -448,6 +448,45 @@ async function handleDeleteFile(file) {
   }
 }
 
+async function handleDeleteSelected(files) {
+  if (!roomManager.currentRoomId.value || !files || files.length === 0) return
+
+  if (!window.confirm(`선택한 ${files.length}개 파일을 삭제하시겠습니까?`)) return
+
+  let successCount = 0
+  let failCount = 0
+
+  for (const file of files) {
+    try {
+      await fileManager.deleteFile(roomManager.currentRoomId.value, file.name)
+      successCount++
+    } catch (error) {
+      failCount++
+      console.error(`[App] 파일 삭제 실패: ${file.name}`, error)
+    }
+  }
+
+  if (successCount > 0) {
+    notification.showSuccess(`${successCount}개 파일 삭제 완료`)
+  }
+  if (failCount > 0) {
+    notification.showError(`${failCount}개 파일 삭제 실패`)
+  }
+}
+
+async function handleClearStorage() {
+  if (!roomManager.currentRoomId.value) return
+
+  if (!window.confirm('저장소의 모든 파일을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return
+
+  try {
+    await fileManager.deleteAllFiles(roomManager.currentRoomId.value)
+    notification.showSuccess('저장소가 초기화되었습니다')
+  } catch (error) {
+    notification.showError(`초기화 실패: ${error.message}`)
+  }
+}
+
 async function handleLoadMore() {
   try {
     await fileManager.loadMore({ limit: 10 })
@@ -572,6 +611,8 @@ onUnmounted(() => {
       @download-parallel="handleDownloadParallel"
       @copy-selected-to-clipboard="handleCopySelectedToClipboard"
       @delete-file="handleDeleteFile"
+      @delete-selected="handleDeleteSelected"
+      @clear-storage="handleClearStorage"
       @remove-text="handleRemoveText"
       @clear-all-texts="handleClearAllTexts"
       @copy-text="handleCopyText"

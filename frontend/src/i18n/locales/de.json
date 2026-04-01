@@ -22,7 +22,9 @@
     "copyToClipboard": "In Zwischenablage kopieren",
     "copied": "In Zwischenablage kopiert!",
     "copyFailed": "Kopieren fehlgeschlagen",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "deleteSelected": "Auswahl löschen",
+    "clearStorage": "Speicher leeren"
   },
   "text": {
     "share": "Text teilen",

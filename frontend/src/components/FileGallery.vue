@@ -31,6 +31,8 @@ const emit = defineEmits([
   'download-parallel',
   'copy-selected-to-clipboard',
   'delete-file',
+  'delete-selected',
+  'clear-storage',
   'upload-files',
   'paste-content',
   'load-more'
@@ -118,6 +120,8 @@ onUnmounted(() => {
       @download-parallel="downloadParallel"
       @toggle-select-all="toggleSelectAll"
       @show-multi-qr="showQRModal"
+      @delete-selected="$emit('delete-selected', selectedFilesArray)"
+      @clear-storage="$emit('clear-storage')"
     />
 
     <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">

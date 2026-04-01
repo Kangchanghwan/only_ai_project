@@ -27,7 +27,9 @@
     "uploadHint": "クリックまたはドラッグ＆ドロップ",
     "uploadPasteHint": "（Ctrl+Vで貼り付け）",
     "uploadClickHint": "ここをクリックするか、ファイルをドロップしてください",
-    "delete": "削除"
+    "delete": "削除",
+    "deleteSelected": "選択削除",
+    "clearStorage": "ストレージ初期化"
   },
   "text": {
     "share": "テキストを共有",

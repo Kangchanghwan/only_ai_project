@@ -22,7 +22,9 @@
     "copyToClipboard": "Copier dans le presse-papiers",
     "copied": "Copié dans le presse-papiers!",
     "copyFailed": "Échec de la copie",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "deleteSelected": "Supprimer la sélection",
+    "clearStorage": "Vider le stockage"
   },
   "text": {
     "share": "Partager le texte",

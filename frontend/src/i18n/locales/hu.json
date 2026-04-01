@@ -22,7 +22,9 @@
     "copyToClipboard": "Másolás vágólapra",
     "copied": "Vágólapra másolva!",
     "copyFailed": "Másolás sikertelen",
-    "delete": "Törlés"
+    "delete": "Törlés",
+    "deleteSelected": "Kiválasztottak törlése",
+    "clearStorage": "Tároló törlése"
   },
   "text": {
     "share": "Szöveg megosztása",

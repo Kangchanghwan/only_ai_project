@@ -22,7 +22,9 @@
     "copyToClipboard": "Kopírovat do schránky",
     "copied": "Zkopírováno do schránky!",
     "copyFailed": "Kopírování selhalo",
-    "delete": "Smazat"
+    "delete": "Smazat",
+    "deleteSelected": "Smazat vybrané",
+    "clearStorage": "Vymazat úložiště"
   },
   "text": {
     "share": "Sdílet text",

@@ -22,7 +22,9 @@
     "copyToClipboard": "Kopiëren naar klembord",
     "copied": "Gekopieerd naar klembord!",
     "copyFailed": "Kopiëren mislukt",
-    "delete": "Verwijderen"
+    "delete": "Verwijderen",
+    "deleteSelected": "Geselecteerde verwijderen",
+    "clearStorage": "Opslag wissen"
   },
   "text": {
     "share": "Tekst delen",

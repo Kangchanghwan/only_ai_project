@@ -18,7 +18,7 @@ defineProps({
   }
 })
 
-const emit = defineEmits(['download-parallel', 'toggle-select-all', 'show-multi-qr'])
+const emit = defineEmits(['download-parallel', 'toggle-select-all', 'show-multi-qr', 'delete-selected', 'clear-storage'])
 </script>
 
 <template>
@@ -46,6 +46,20 @@ const emit = defineEmits(['download-parallel', 'toggle-select-all', 'show-multi-
       :title="t('download.qrCodeHint')"
     >
       📱 {{ t('download.qrCode') }} ({{ selectedCount }})
+    </button>
+    <button
+      class="bg-red-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-red-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-red-500/30"
+      :disabled="selectedCount === 0"
+      @click="$emit('delete-selected')"
+    >
+      🗑️ {{ t('file.deleteSelected') }} ({{ selectedCount }})
+    </button>
+    <button
+      class="bg-gray-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-gray-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-gray-500/30"
+      :disabled="totalCount === 0"
+      @click="$emit('clear-storage')"
+    >
+      ⚠️ {{ t('file.clearStorage') }}
     </button>
     <span v-if="selectedCount > 0" class="text-[0.85rem] text-text-secondary italic">
       💡 {{ t('download.tipSequential') }}

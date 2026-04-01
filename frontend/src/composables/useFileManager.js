@@ -217,6 +217,31 @@ export function useFileManager() {
   }
 
   /**
+   * 룸의 모든 파일을 삭제합니다.
+   *
+   * @param {string} roomId - 룸 ID
+   * @returns {Promise<Object>} 삭제 결과
+   */
+  async function deleteAllFiles(roomId) {
+    if (!roomId) {
+      throw new Error('roomId가 필요합니다')
+    }
+
+    try {
+      console.log('[useFileManager] 전체 파일 삭제 시작')
+      const result = await r2Service.deleteAllFiles(roomId)
+      files.value = []
+      totalSize.value = 0
+      nextToken.value = null
+      console.log('[useFileManager] 전체 파일 삭제 완료')
+      return result
+    } catch (err) {
+      console.error('[useFileManager] 전체 파일 삭제 오류:', err)
+      throw err
+    }
+  }
+
+  /**
    * 파일 목록을 초기화합니다.
    */
   function clearFiles() {
@@ -291,6 +316,7 @@ export function useFileManager() {
      * @returns {Promise<Object>} 삭제 결과
      */
     deleteFile,
+    deleteAllFiles,
     /**
      * 파일 목록을 초기화하는 함수.
      */

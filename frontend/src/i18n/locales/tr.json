@@ -22,7 +22,9 @@
     "copyToClipboard": "Panoya Kopyala",
     "copied": "Panoya kopyalandı!",
     "copyFailed": "Kopyalama başarısız",
-    "delete": "Sil"
+    "delete": "Sil",
+    "deleteSelected": "Seçilenleri Sil",
+    "clearStorage": "Depoyu Temizle"
   },
   "text": {
     "share": "Metin Paylaş",

@@ -22,7 +22,9 @@
     "copyToClipboard": "نسخ إلى الحافظة",
     "copied": "تم النسخ إلى الحافظة!",
     "copyFailed": "فشل النسخ",
-    "delete": "حذف"
+    "delete": "حذف",
+    "deleteSelected": "حذف المحدد",
+    "clearStorage": "مسح التخزين"
   },
   "text": {
     "share": "مشاركة النص",

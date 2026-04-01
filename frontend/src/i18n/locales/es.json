@@ -22,7 +22,9 @@
     "copyToClipboard": "Copiar al Portapapeles",
     "copied": "¡Copiado al portapapeles!",
     "copyFailed": "Copia fallida",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "deleteSelected": "Eliminar seleccionados",
+    "clearStorage": "Limpiar almacenamiento"
   },
   "text": {
     "share": "Compartir Texto",

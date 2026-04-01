@@ -22,7 +22,9 @@
     "copyToClipboard": "کپی به کلیپ‌بورد",
     "copied": "به کلیپ‌بورد کپی شد!",
     "copyFailed": "کپی ناموفق",
-    "delete": "حذف"
+    "delete": "حذف",
+    "deleteSelected": "حذف انتخاب‌شده‌ها",
+    "clearStorage": "پاک‌سازی ذخیره‌سازی"
   },
   "text": {
     "share": "اشتراک‌گذاری متن",

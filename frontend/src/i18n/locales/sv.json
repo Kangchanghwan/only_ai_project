@@ -22,7 +22,9 @@
     "copyToClipboard": "Kopiera till urklipp",
     "copied": "Kopierat till urklipp!",
     "copyFailed": "Kopiering misslyckades",
-    "delete": "Ta bort"
+    "delete": "Ta bort",
+    "deleteSelected": "Ta bort valda",
+    "clearStorage": "Rensa lagring"
   },
   "text": {
     "share": "Dela text",

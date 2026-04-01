@@ -22,7 +22,9 @@
     "copyToClipboard": "Salin ke Clipboard",
     "copied": "Disalin ke clipboard!",
     "copyFailed": "Gagal menyalin",
-    "delete": "Hapus"
+    "delete": "Hapus",
+    "deleteSelected": "Hapus Terpilih",
+    "clearStorage": "Hapus Semua"
   },
   "text": {
     "share": "Bagikan Teks",

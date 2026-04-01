@@ -27,7 +27,9 @@
     "uploadHint": "클릭 또는 드래그 & 드롭",
     "uploadPasteHint": "(Ctrl+V로 붙여넣기)",
     "uploadClickHint": "여기를 클릭하거나 파일을 드롭하세요",
-    "delete": "삭제"
+    "delete": "삭제",
+    "deleteSelected": "선택 삭제",
+    "clearStorage": "저장소 초기화"
   },
   "text": {
     "share": "텍스트 공유",

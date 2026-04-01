@@ -22,7 +22,9 @@
     "copyToClipboard": "Copiază în clipboard",
     "copied": "Copiat în clipboard!",
     "copyFailed": "Copiere eșuată",
-    "delete": "Șterge"
+    "delete": "Șterge",
+    "deleteSelected": "Șterge selecția",
+    "clearStorage": "Golire stocare"
   },
   "text": {
     "share": "Partajează text",

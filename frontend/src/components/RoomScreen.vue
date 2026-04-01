@@ -42,6 +42,8 @@ const emit = defineEmits([
   'download-parallel',
   'copy-selected-to-clipboard',
   'delete-file',
+  'delete-selected',
+  'clear-storage',
   'remove-text',
   'clear-all-texts',
   'copy-text',
@@ -68,6 +70,8 @@ const emit = defineEmits([
         @download-parallel="$emit('download-parallel', $event)"
         @copy-selected-to-clipboard="$emit('copy-selected-to-clipboard', $event)"
         @delete-file="$emit('delete-file', $event)"
+        @delete-selected="$emit('delete-selected', $event)"
+        @clear-storage="$emit('clear-storage')"
         @upload-files="$emit('upload-files', $event)"
         @paste-content="$emit('paste-content')"
         @load-more="$emit('load-more')"
