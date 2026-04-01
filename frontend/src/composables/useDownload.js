@@ -110,8 +110,10 @@ export function useDownload() {
       const { onProgress } = options
       const results = []
 
-      // 각 파일을 순차적으로 다운로드
-      for (const file of files) {
+      // 각 파일을 순차적으로 다운로드 (브라우저 누락 방지를 위해 파일 간 딜레이 추가)
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+
         if (onProgress) {
           onProgress(file, 'start')
         }
@@ -123,6 +125,11 @@ export function useDownload() {
         }
 
         results.push(result)
+
+        // 마지막 파일이 아닌 경우 브라우저 다운로드 큐 처리 대기
+        if (i < files.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 800))
+        }
       }
 
       // 결과 집계
