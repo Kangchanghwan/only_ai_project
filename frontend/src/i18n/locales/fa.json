@@ -21,7 +21,8 @@
     "uploaded": "فایل جدید آپلود شد!",
     "copyToClipboard": "کپی به کلیپ‌بورد",
     "copied": "به کلیپ‌بورد کپی شد!",
-    "copyFailed": "کپی ناموفق"
+    "copyFailed": "کپی ناموفق",
+    "delete": "حذف"
   },
   "text": {
     "share": "اشتراک‌گذاری متن",

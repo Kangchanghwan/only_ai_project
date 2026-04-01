@@ -93,7 +93,7 @@ export function useDownload() {
   /**
    * 여러 파일을 순차적으로 다운로드합니다.
    *
-   * ZIP으로 압축하지 않고 각 파일을 개별적으로 하나씩 다운로드합니다.
+   * ZIP으로 압축하지 않고 각 파일을 개별적으로 하나씩 순서대로 다운로드합니다.
    * 브라우저의 다운로드 제한을 피하고 안정적인 다운로드를 제공합니다.
    *
    * @param {Array<Object>} files - 다운로드할 파일 배열 [{ name, url }, ...]
@@ -108,25 +108,22 @@ export function useDownload() {
       }
 
       const { onProgress } = options
+      const results = []
 
-      // 각 파일을 병렬로 다운로드하면서 진행 상황 추적
-      const downloadPromises = files.map(async (file) => {
-        // 다운로드 시작 알림
+      // 각 파일을 순차적으로 다운로드
+      for (const file of files) {
         if (onProgress) {
           onProgress(file, 'start')
         }
 
         const result = await downloadFile(file)
 
-        // 다운로드 완료/실패 알림
         if (onProgress) {
           onProgress(file, result.success ? 'complete' : 'failed', result.error)
         }
 
-        return result
-      })
-
-      const results = await Promise.all(downloadPromises)
+        results.push(result)
+      }
 
       // 결과 집계
       const successCount = results.filter(r => r.success).length
@@ -134,14 +131,14 @@ export function useDownload() {
       const errors = results.filter(r => !r.success).map(r => r.error)
 
       return {
-        success: successCount > 0, // 하나라도 성공하면 true
+        success: successCount > 0,
         successCount,
         failCount,
         total: files.length,
         errors: errors.length > 0 ? errors : undefined
       }
     } catch (err) {
-      console.error('병렬 다운로드 실패:', err)
+      console.error('순차 다운로드 실패:', err)
       return { success: false, error: err }
     }
   }

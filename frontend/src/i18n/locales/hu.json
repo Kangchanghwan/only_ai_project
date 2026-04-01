@@ -21,7 +21,8 @@
     "uploaded": "Új fájl feltöltve!",
     "copyToClipboard": "Másolás vágólapra",
     "copied": "Vágólapra másolva!",
-    "copyFailed": "Másolás sikertelen"
+    "copyFailed": "Másolás sikertelen",
+    "delete": "Törlés"
   },
   "text": {
     "share": "Szöveg megosztása",

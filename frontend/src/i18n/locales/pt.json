@@ -21,7 +21,8 @@
     "uploaded": "Novo arquivo enviado!",
     "copyToClipboard": "Copiar para área de transferência",
     "copied": "Copiado para área de transferência!",
-    "copyFailed": "Falha ao copiar"
+    "copyFailed": "Falha ao copiar",
+    "delete": "Excluir"
   },
   "text": {
     "share": "Compartilhar texto",

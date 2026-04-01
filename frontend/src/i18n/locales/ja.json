@@ -26,7 +26,8 @@
     "uploadTitle": "ファイルをアップロード",
     "uploadHint": "クリックまたはドラッグ＆ドロップ",
     "uploadPasteHint": "（Ctrl+Vで貼り付け）",
-    "uploadClickHint": "ここをクリックするか、ファイルをドロップしてください"
+    "uploadClickHint": "ここをクリックするか、ファイルをドロップしてください",
+    "delete": "削除"
   },
   "text": {
     "share": "テキストを共有",

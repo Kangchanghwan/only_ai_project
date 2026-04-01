@@ -21,7 +21,8 @@
     "uploaded": "Nowy plik przesłany!",
     "copyToClipboard": "Kopiuj do schowka",
     "copied": "Skopiowano do schowka!",
-    "copyFailed": "Kopiowanie nieudane"
+    "copyFailed": "Kopiowanie nieudane",
+    "delete": "Usuń"
   },
   "text": {
     "share": "Udostępnij tekst",

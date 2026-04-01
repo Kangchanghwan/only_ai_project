@@ -21,7 +21,8 @@
     "uploaded": "¡Nuevo archivo subido!",
     "copyToClipboard": "Copiar al Portapapeles",
     "copied": "¡Copiado al portapapeles!",
-    "copyFailed": "Copia fallida"
+    "copyFailed": "Copia fallida",
+    "delete": "Eliminar"
   },
   "text": {
     "share": "Compartir Texto",

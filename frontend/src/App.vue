@@ -175,64 +175,58 @@ async function uploadFiles(files) {
   let successCount = 0
   let failCount = 0
 
-  const results = await Promise.allSettled(
-    files.map(async (file) => {
-      const uploadId = crypto.randomUUID()
+  // 파일을 순차적으로 업로드
+  for (const file of files) {
+    const uploadId = crypto.randomUUID()
+    notification.addUpload(uploadId, file.name)
 
-      notification.addUpload(uploadId, file.name)
-
-      try {
-        const result = await fileManager.uploadFile(
-          roomManager.currentRoomId.value,
-          file,
-          {
-            onProgress: (percent) => {
-              notification.updateUpload(uploadId, percent)
-            }
+    try {
+      const result = await fileManager.uploadFile(
+        roomManager.currentRoomId.value,
+        file,
+        {
+          onProgress: (percent) => {
+            notification.updateUpload(uploadId, percent)
           }
-        )
-
-        socket.publishMessage({
-          type: 'file-uploaded',
-          fileName: result.fileName,
-          url: result.url,
-          roomId: roomManager.currentRoomId.value
-        })
-        fileManager.addFile({
-          name: result.fileName,
-          url: result.url,
-          size: result.size,
-          created: result.created
-        })
-        successCount++
-
-        notification.completeUpload(uploadId)
-
-        setTimeout(() => {
-          notification.removeUpload(uploadId)
-        }, 1500)
-
-        return { file, result, uploadId }
-      } catch (error) {
-        failCount++
-        notification.failUpload(uploadId, error.message)
-
-        if (error.message.includes('MB를 초과할 수 없습니다')) {
-          notification.showError(error.message)
-        } else if (error.message.includes('비어있습니다')) {
-          notification.showError(error.message)
-        } else {
-          notification.showError(`업로드 실패: ${error.message}`)
         }
+      )
 
-        setTimeout(() => {
-          notification.removeUpload(uploadId)
-        }, 5000)
+      socket.publishMessage({
+        type: 'file-uploaded',
+        fileName: result.fileName,
+        url: result.url,
+        roomId: roomManager.currentRoomId.value
+      })
+      fileManager.addFile({
+        name: result.fileName,
+        url: result.url,
+        size: result.size,
+        created: result.created
+      })
+      successCount++
 
-        throw error
+      notification.completeUpload(uploadId)
+
+      setTimeout(() => {
+        notification.removeUpload(uploadId)
+      }, 1500)
+    } catch (error) {
+      failCount++
+      notification.failUpload(uploadId, error.message)
+
+      if (error.message.includes('MB를 초과할 수 없습니다')) {
+        notification.showError(error.message)
+      } else if (error.message.includes('비어있습니다')) {
+        notification.showError(error.message)
+      } else {
+        notification.showError(`업로드 실패: ${error.message}`)
       }
-    })
-  )
+
+      setTimeout(() => {
+        notification.removeUpload(uploadId)
+      }, 5000)
+    }
+  }
 
   if (successCount > 0) {
     notification.showSuccess(`${successCount}개 파일 업로드 완료!`)
@@ -443,6 +437,17 @@ async function handlePasteContent() {
   }
 }
 
+async function handleDeleteFile(file) {
+  if (!roomManager.currentRoomId.value) return
+
+  try {
+    await fileManager.deleteFile(roomManager.currentRoomId.value, file.name)
+    notification.showSuccess(`${file.name} 삭제됨`)
+  } catch (error) {
+    notification.showError(`삭제 실패: ${error.message}`)
+  }
+}
+
 async function handleLoadMore() {
   try {
     await fileManager.loadMore({ limit: 10 })
@@ -566,6 +571,7 @@ onUnmounted(() => {
       @download-file="handleDownloadFile"
       @download-parallel="handleDownloadParallel"
       @copy-selected-to-clipboard="handleCopySelectedToClipboard"
+      @delete-file="handleDeleteFile"
       @remove-text="handleRemoveText"
       @clear-all-texts="handleClearAllTexts"
       @copy-text="handleCopyText"

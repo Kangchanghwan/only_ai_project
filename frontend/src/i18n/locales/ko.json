@@ -26,7 +26,8 @@
     "uploadTitle": "파일 업로드",
     "uploadHint": "클릭 또는 드래그 & 드롭",
     "uploadPasteHint": "(Ctrl+V로 붙여넣기)",
-    "uploadClickHint": "여기를 클릭하거나 파일을 드롭하세요"
+    "uploadClickHint": "여기를 클릭하거나 파일을 드롭하세요",
+    "delete": "삭제"
   },
   "text": {
     "share": "텍스트 공유",
@@ -61,7 +62,7 @@
   },
   "download": {
     "title": "파일 다운로드 중...",
-    "parallel": "병렬로 다운로드하고 있습니다",
+    "parallel": "순차적으로 다운로드하고 있습니다",
     "progress": "진행률",
     "completed": "완료",
     "pending": "대기중",

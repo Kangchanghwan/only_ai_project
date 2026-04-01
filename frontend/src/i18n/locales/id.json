@@ -21,7 +21,8 @@
     "uploaded": "File baru diunggah!",
     "copyToClipboard": "Salin ke Clipboard",
     "copied": "Disalin ke clipboard!",
-    "copyFailed": "Gagal menyalin"
+    "copyFailed": "Gagal menyalin",
+    "delete": "Hapus"
   },
   "text": {
     "share": "Bagikan Teks",

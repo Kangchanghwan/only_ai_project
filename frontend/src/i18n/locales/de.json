@@ -21,7 +21,8 @@
     "uploaded": "Neue Datei hochgeladen!",
     "copyToClipboard": "In Zwischenablage kopieren",
     "copied": "In Zwischenablage kopiert!",
-    "copyFailed": "Kopieren fehlgeschlagen"
+    "copyFailed": "Kopieren fehlgeschlagen",
+    "delete": "Löschen"
   },
   "text": {
     "share": "Text teilen",

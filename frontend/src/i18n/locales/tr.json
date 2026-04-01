@@ -21,7 +21,8 @@
     "uploaded": "Yeni dosya yüklendi!",
     "copyToClipboard": "Panoya Kopyala",
     "copied": "Panoya kopyalandı!",
-    "copyFailed": "Kopyalama başarısız"
+    "copyFailed": "Kopyalama başarısız",
+    "delete": "Sil"
   },
   "text": {
     "share": "Metin Paylaş",

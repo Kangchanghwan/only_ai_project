@@ -21,7 +21,8 @@
     "uploaded": "Nový soubor nahrán!",
     "copyToClipboard": "Kopírovat do schránky",
     "copied": "Zkopírováno do schránky!",
-    "copyFailed": "Kopírování selhalo"
+    "copyFailed": "Kopírování selhalo",
+    "delete": "Smazat"
   },
   "text": {
     "share": "Sdílet text",

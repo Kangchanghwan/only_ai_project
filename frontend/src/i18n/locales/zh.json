@@ -21,7 +21,8 @@
     "uploaded": "新文件已上传！",
     "copyToClipboard": "复制到剪贴板",
     "copied": "已复制到剪贴板！",
-    "copyFailed": "复制失败"
+    "copyFailed": "复制失败",
+    "delete": "删除"
   },
   "text": {
     "share": "分享文本",

@@ -21,7 +21,8 @@
     "uploaded": "Tệp mới đã được tải lên!",
     "copyToClipboard": "Sao chép vào Clipboard",
     "copied": "Đã sao chép vào clipboard!",
-    "copyFailed": "Sao chép thất bại"
+    "copyFailed": "Sao chép thất bại",
+    "delete": "Xóa"
   },
   "text": {
     "share": "Chia sẻ văn bản",

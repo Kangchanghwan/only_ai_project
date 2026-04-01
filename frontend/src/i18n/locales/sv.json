@@ -21,7 +21,8 @@
     "uploaded": "Ny fil uppladdad!",
     "copyToClipboard": "Kopiera till urklipp",
     "copied": "Kopierat till urklipp!",
-    "copyFailed": "Kopiering misslyckades"
+    "copyFailed": "Kopiering misslyckades",
+    "delete": "Ta bort"
   },
   "text": {
     "share": "Dela text",

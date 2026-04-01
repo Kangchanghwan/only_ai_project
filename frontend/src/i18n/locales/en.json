@@ -26,7 +26,8 @@
     "uploadTitle": "Upload File",
     "uploadHint": "Click or Drag & Drop",
     "uploadPasteHint": "(Paste with Ctrl+V)",
-    "uploadClickHint": "Click here or drop files"
+    "uploadClickHint": "Click here or drop files",
+    "delete": "Delete"
   },
   "text": {
     "share": "Share Text",

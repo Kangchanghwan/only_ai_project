@@ -21,7 +21,8 @@
     "uploaded": "Nieuw bestand geüpload!",
     "copyToClipboard": "Kopiëren naar klembord",
     "copied": "Gekopieerd naar klembord!",
-    "copyFailed": "Kopiëren mislukt"
+    "copyFailed": "Kopiëren mislukt",
+    "delete": "Verwijderen"
   },
   "text": {
     "share": "Tekst delen",

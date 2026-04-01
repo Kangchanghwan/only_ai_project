@@ -30,6 +30,7 @@ const emit = defineEmits([
   'download-file',
   'download-parallel',
   'copy-selected-to-clipboard',
+  'delete-file',
   'upload-files',
   'paste-content',
   'load-more'
@@ -141,6 +142,7 @@ onUnmounted(() => {
           @copy-image="$emit('copy-image', file.url)"
           @toggle-selection="toggleFileSelection"
           @download-file="$emit('download-file', file)"
+          @delete-file="$emit('delete-file', file)"
         />
       </template>
     </div>

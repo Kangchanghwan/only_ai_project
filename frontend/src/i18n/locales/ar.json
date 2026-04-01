@@ -21,7 +21,8 @@
     "uploaded": "تم تحميل ملف جديد!",
     "copyToClipboard": "نسخ إلى الحافظة",
     "copied": "تم النسخ إلى الحافظة!",
-    "copyFailed": "فشل النسخ"
+    "copyFailed": "فشل النسخ",
+    "delete": "حذف"
   },
   "text": {
     "share": "مشاركة النص",

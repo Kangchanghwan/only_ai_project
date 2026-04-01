@@ -21,7 +21,8 @@
     "uploaded": "Nouveau fichier téléchargé!",
     "copyToClipboard": "Copier dans le presse-papiers",
     "copied": "Copié dans le presse-papiers!",
-    "copyFailed": "Échec de la copie"
+    "copyFailed": "Échec de la copie",
+    "delete": "Supprimer"
   },
   "text": {
     "share": "Partager le texte",
