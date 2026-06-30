@@ -1,11 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import HelpModal from './HelpModal.vue'
 import LanguageSelector from './LanguageSelector.vue'
 import ThemeToggleButton from './ThemeToggleButton.vue'
+import QRZoomModal from './QRZoomModal.vue'
+import { useQRCode } from '../composables/useQRCode'
 
 const { t } = useI18n()
+const { qrCodeDataUrl, generateQRCodeForUrl } = useQRCode()
 
 const props = defineProps({
   userCount: {
@@ -19,6 +22,7 @@ const props = defineProps({
 })
 
 const isHelpModalOpen = ref(false)
+const isQrZoomOpen = ref(false)
 
 function openHelpModal() {
   isHelpModalOpen.value = true
@@ -27,6 +31,19 @@ function openHelpModal() {
 function closeHelpModal() {
   isHelpModalOpen.value = false
 }
+
+function openQrZoom() {
+  isQrZoomOpen.value = true
+}
+
+function closeQrZoom() {
+  isQrZoomOpen.value = false
+}
+
+onMounted(async () => {
+  const homeUrl = window.location.origin + window.location.pathname
+  await generateQRCodeForUrl(homeUrl)
+})
 </script>
 
 <template>
@@ -46,6 +63,18 @@ function closeHelpModal() {
       >
         ?
       </button>
+      <button
+        v-if="qrCodeDataUrl"
+        type="button"
+        class="header-qr-button flex items-center gap-2 bg-white rounded-xl px-3 py-2 border border-border hover:opacity-90 transition-opacity"
+        :aria-label="t('qr.backgroundHint')"
+        @click="openQrZoom"
+      >
+        <img :src="qrCodeDataUrl" alt="" class="w-9 h-9 rounded" />
+        <span class="text-[11px] font-semibold text-gray-900 leading-tight text-left max-w-[64px]">
+          {{ t('qr.backgroundHint') }}
+        </span>
+      </button>
     </div>
   </header>
 
@@ -53,5 +82,12 @@ function closeHelpModal() {
   <HelpModal
     :is-open="isHelpModalOpen"
     @close="closeHelpModal"
+  />
+
+  <!-- QR 확대 모달 -->
+  <QRZoomModal
+    :qr-code-data-url="qrCodeDataUrl"
+    :is-open="isQrZoomOpen"
+    @close="closeQrZoom"
   />
 </template>
