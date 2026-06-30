@@ -48,6 +48,15 @@ describe('normalizeIp', () => {
   test('IPv4-mapped IPv6(::ffff:a.b.c.d)는 IPv4로 취급한다', () => {
     expect(normalizeIp('::ffff:203.0.113.7')).toBe('203.0.113.7');
   });
+
+  test('비압축 zero-padded IPv6와 ::압축 IPv6가 같은 /64면 같게 정규화된다', () => {
+    expect(normalizeIp('2001:0db8:0000:0012:0000:0000:0000:0001'))
+      .toBe(normalizeIp('2001:db8:0:12::1'));
+  });
+
+  test('IPv6 zone id(%eth0)는 제거하고 정규화한다', () => {
+    expect(normalizeIp('fe80::1%eth0')).toBe(normalizeIp('fe80::1'));
+  });
 });
 
 describe('deriveIpRoomId', () => {
@@ -70,5 +79,10 @@ describe('deriveIpRoomId', () => {
   test('같은 /64 IPv6는 같은 룸 ID로 묶인다', () => {
     expect(deriveIpRoomId('2001:db8:abcd:0012::1', secret))
       .toBe(deriveIpRoomId('2001:db8:abcd:0012::abcd', secret));
+  });
+
+  test('표기만 다른 같은 /64 IPv6는 같은 룸 ID로 묶인다', () => {
+    expect(deriveIpRoomId('2001:0db8:0000:0012:0000:0000:0000:0001', secret))
+      .toBe(deriveIpRoomId('2001:db8:0:12::1', secret));
   });
 });

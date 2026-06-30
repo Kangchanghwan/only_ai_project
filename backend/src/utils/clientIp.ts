@@ -35,6 +35,9 @@ export const extractClientIp = (handshake: HandshakeLike): string | null => {
  * - IPv6: /64 프리픽스(앞 4 hextet)로 묶음
  */
 export const normalizeIp = (ip: string): string => {
+    // IPv6 zone id 제거 (예: fe80::1%eth0 → fe80::1)
+    ip = ip.split('%')[0];
+
     // IPv4-mapped IPv6 (::ffff:a.b.c.d) → IPv4
     const mapped = ip.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
     if (mapped) return mapped[1];
@@ -51,14 +54,20 @@ export const normalizeIp = (ip: string): string => {
     return ip;
 };
 
-/** 압축된 IPv6(::)를 8개 hextet 배열로 확장 */
+/**
+ * IPv6를 8개 hextet 배열로 확장하고 각 hextet의 선행 0을 정규화한다.
+ * 압축(::)·비압축 표기가 동일한 정규형으로 수렴하도록 hextet을 숫자로 파싱해 다시 렌더링한다.
+ */
 const expandIpv6 = (ip: string): string[] => {
     const [head, tail = ''] = ip.split('::');
     const headParts = head ? head.split(':') : [];
     const tailParts = tail ? tail.split(':') : [];
     const missing = 8 - headParts.length - tailParts.length;
     const middle = missing > 0 ? new Array(missing).fill('0') : [];
-    return [...headParts, ...middle, ...tailParts].map(h => (h || '0').toLowerCase());
+    return [...headParts, ...middle, ...tailParts].map(h => {
+        const parsed = parseInt(h || '0', 16);
+        return (Number.isNaN(parsed) ? 0 : parsed).toString(16);
+    });
 };
 
 /**
