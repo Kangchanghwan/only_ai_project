@@ -496,13 +496,19 @@ async function handleClearStorage() {
 
   if (!window.confirm('저장소의 모든 파일을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return
 
-  try {
-    await Promise.all(
-      roomManager.roomIds.value.map(roomId => fileManager.deleteAllFiles(roomId))
-    )
+  const results = await Promise.allSettled(
+    roomManager.roomIds.value.map(roomId => fileManager.deleteAllFiles(roomId))
+  )
+
+  const successCount = results.filter(r => r.status === 'fulfilled').length
+  const failCount = results.filter(r => r.status === 'rejected').length
+
+  if (failCount === 0) {
     notification.showSuccess('저장소가 초기화되었습니다')
-  } catch (error) {
-    notification.showError(`초기화 실패: ${error.message}`)
+  } else if (successCount > 0) {
+    notification.showError(`일부 룸 초기화 실패 (${successCount}개 성공, ${failCount}개 실패). 다시 시도해주세요.`)
+  } else {
+    notification.showError('초기화 실패')
   }
 }
 

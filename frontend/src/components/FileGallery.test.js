@@ -19,13 +19,15 @@ const stubs = {
     name: 'FileCard',
     props: ['file', 'isSelected'],
     emits: ['copy-image', 'toggle-selection', 'download-file', 'delete-file'],
+    // 실제 FileCard.vue와 동일하게 file 객체 전체를 emit한다 (file.name만 emit하면
+    // roomId 정보가 유실되어 복합 키 충돌 버그가 재발할 수 있다).
     template: `
       <div class="file-card-stub" :data-name="file.name" :data-room="file.roomId" :data-selected="isSelected">
         <input
           type="checkbox"
           class="select-checkbox"
           :checked="isSelected"
-          @change="$emit('toggle-selection', file.name)"
+          @change="$emit('toggle-selection', file)"
         />
       </div>
     `
