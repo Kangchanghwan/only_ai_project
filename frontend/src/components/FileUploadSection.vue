@@ -110,7 +110,6 @@ function handleDrop(event) {
         class="mt-2 flex items-center gap-2 text-xs"
         role="group"
         :aria-label="t('shareScope.label')"
-        @click.stop
       >
         <button
           type="button"
