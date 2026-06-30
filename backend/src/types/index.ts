@@ -18,7 +18,8 @@ export interface Rooms {
 
 /** Socket.IO 소켓에 룸 정보 추가 */
 export interface ExtendedSocket extends Socket {
-    roomId?: string;   // 내부용 룸 ID (room-shared)
+    globalRoomId?: string;   // 전체 공유 룸 (room-shared)
+    ipRoomId?: string;       // 같은 공인 IP 격리 룸 (room-<iphash>)
 }
 
 // === 응답 타입 ===
@@ -37,14 +38,27 @@ export interface PublishResponse {
 
 // === Socket.IO 이벤트 타입 정의 ===
 
+/** registered 이벤트 페이로드 (두 룸 ID) */
+export interface RegisteredPayload {
+    globalRoomId: string;
+    ipRoomId: string;
+}
+
+/** publish 메시지 공유 대상 */
+export type PublishTarget = 'global' | 'ip';
+
 /** 클라이언트 → 서버 이벤트 */
 export interface ClientToServerEvents {
-    publish: (message: any, callback?: (error: Error | null, response?: PublishResponse) => void) => void;
+    publish: (
+        message: any,
+        target: PublishTarget,
+        callback?: (error: Error | null, response?: PublishResponse) => void
+    ) => void;
 }
 
 /** 서버 → 클라이언트 이벤트 */
 export interface ServerToClientEvents {
-    registered: (roomId: string) => void;
+    registered: (payload: RegisteredPayload) => void;
     message: (msg: any) => void;
     'user-left': (userCount: number) => void;
     error: (error: ErrorResponse) => void;
@@ -57,6 +71,7 @@ export interface InterServerEvents {
 
 /** 소켓에 저장되는 데이터 */
 export interface SocketData {
-    roomId?: string;
+    globalRoomId?: string;
+    ipRoomId?: string;
     userId?: string;
 }

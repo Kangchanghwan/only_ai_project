@@ -105,7 +105,7 @@ async function handleShare(event) {
           class="w-5 h-5 cursor-pointer accent-primary flex-shrink-0"
           :checked="isSelected"
           @click.stop
-          @change="$emit('toggle-selection', file.name)"
+          @change="$emit('toggle-selection', file)"
         />
 
         <!-- 파일 아이콘 (작은 버전) -->

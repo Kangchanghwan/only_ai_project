@@ -96,7 +96,7 @@ app.get('/health', (_req, res) => {
         status: 'ok',
         timestamp: new Date().toISOString(),
         totalRooms: roomManager.getTotalRooms(),
-        totalUsers: roomManager.getTotalUsers()
+        totalUsers: roomManager.getConnectedUserCount()
     });
 });
 
@@ -104,7 +104,7 @@ app.get('/health', (_req, res) => {
 app.get('/stats', (_req, res) => {
     res.json({
         totalRooms: roomManager.getTotalRooms(),
-        totalUsers: roomManager.getTotalUsers(),
+        totalUsers: roomManager.getConnectedUserCount(),
         timestamp: new Date().toISOString()
     });
 });
@@ -240,6 +240,10 @@ app.delete('/api/r2/files/:roomId', async (req, res) => {
 });
 
 // === 서버 시작 ===
+
+if (!process.env.ROOM_ID_SECRET) {
+    logger.error('[보안] ROOM_ID_SECRET 미설정 — 안전하지 않은 기본 시크릿 사용 중. IP 격리 룸 ID가 추측 가능해집니다. 운영에서는 반드시 설정하세요.');
+}
 
 if (process.env.NODE_ENV !== 'test') {
     httpServer.listen(PORT, () => {

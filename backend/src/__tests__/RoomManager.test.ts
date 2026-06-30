@@ -29,6 +29,20 @@ describe('RoomManager - Storage Integration', () => {
         });
     });
 
+    describe('getConnectedUserCount', () => {
+        it('IP 룸 인원과 무관하게 공유 룸 인원만 실제 접속자 수로 반환해야 함', () => {
+            // 소켓 2개가 각각 공유 룸 + 자기 IP 룸에 입장한 상황을 모사
+            roomManager.addUserToRoom(SHARED_ROOM_ID);
+            roomManager.addUserToRoom(SHARED_ROOM_ID);
+            roomManager.addUserToRoom('room-ipA');
+            roomManager.addUserToRoom('room-ipB');
+
+            // 전체 합산은 4(공유 2 + IP 2)지만 실제 접속자는 2
+            expect(roomManager.getTotalUsers()).toBe(4);
+            expect(roomManager.getConnectedUserCount()).toBe(2);
+        });
+    });
+
     describe('removeUserFromRoom - Delayed Cleanup', () => {
         it('마지막 사용자가 나가면 grace period 후 스토리지 파일을 삭제해야 함', async () => {
             const roomId = SHARED_ROOM_ID;

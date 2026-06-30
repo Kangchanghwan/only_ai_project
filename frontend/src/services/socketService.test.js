@@ -27,7 +27,8 @@ describe('SocketService', () => {
   describe('초기화', () => {
     it('초기 상태는 연결되지 않은 상태여야 한다', () => {
       expect(socketService.isConnected.value).toBe(false)
-      expect(socketService.currentRoomNr.value).toBeNull()
+      expect(socketService.globalRoomId.value).toBeNull()
+      expect(socketService.ipRoomId.value).toBeNull()
       expect(socketService.usersInRoom.value).toBe(0)
     })
 
@@ -43,7 +44,8 @@ describe('SocketService', () => {
 
       // 초기 상태 검증
       expect(socketService.isConnected.value).toBe(false)
-      expect(socketService.currentRoomNr.value).toBeNull()
+      expect(socketService.globalRoomId.value).toBeNull()
+      expect(socketService.ipRoomId.value).toBeNull()
       expect(socketService.usersInRoom.value).toBe(0)
     })
 

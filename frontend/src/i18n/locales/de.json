@@ -11,6 +11,13 @@
     "copyCode": "Raumcode kopieren",
     "copied": "Raumcode kopiert!"
   },
+  "shareScope": {
+    "label": "Teilen mit",
+    "ip": "Gleiches Netzwerk",
+    "ipDescription": "Wird nur mit Personen mit derselben öffentlichen IP-Adresse geteilt",
+    "global": "Alle",
+    "globalDescription": "Wird mit allen Nutzern geteilt"
+  },
   "file": {
     "upload": "Datei hochladen",
     "download": "Herunterladen",

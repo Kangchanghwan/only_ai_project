@@ -11,6 +11,13 @@
     "copyCode": "Sao chép mã phòng",
     "copied": "Đã sao chép mã phòng!"
   },
+  "shareScope": {
+    "label": "Chia sẻ với",
+    "ip": "Cùng mạng",
+    "ipDescription": "Chỉ chia sẻ với người dùng cùng địa chỉ IP công cộng",
+    "global": "Mọi người",
+    "globalDescription": "Chia sẻ với tất cả người dùng"
+  },
   "file": {
     "upload": "Tải lên tệp",
     "download": "Tải xuống",

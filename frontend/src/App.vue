@@ -2,7 +2,8 @@
 /**
  * App.vue - 메인 애플리케이션 컴포넌트
  *
- * 단일 공유 룸(room-shared)에 자동 입장합니다.
+ * 전체 공유 룸(room-shared)과 IP 격리 룸에 동시 입장합니다.
+ * 업로드 시 공유 대상을 선택할 수 있습니다.
  */
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoomManager } from './composables/useRoomManager'
@@ -12,6 +13,7 @@ import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
+import { useShareScope } from './composables/useShareScope'
 import { parseRoute } from './utils/router'
 
 import RoomScreen from './components/RoomScreen.vue'
@@ -29,6 +31,7 @@ const socket = useSocket()
 const notification = useNotification()
 const download = useDownload()
 const textShare = useTextShare()
+const shareScope = useShareScope()
 const isConnecting = ref(false)
 const currentRoute = ref({ type: 'home' })
 
@@ -42,7 +45,10 @@ let cleanupOnMessage = null
 
 socket.onReconnected(() => {
   console.log('[App] 재연결 완료')
-  roomManager.enterSharedRoom()
+  roomManager.setRooms({
+    globalRoomId: socket.globalRoomId.value,
+    ipRoomId: socket.ipRoomId.value
+  })
 
   // 기존 이벤트 리스너 정리 후 재설정
   if (cleanupUserLeft) cleanupUserLeft()
@@ -52,7 +58,7 @@ socket.onReconnected(() => {
   // 파일 목록 다시 로드
   fileManager.clearFiles()
   textShare.clearAllTexts()
-  fileManager.loadFiles(roomManager.currentRoomId.value, { limit: 10 })
+  fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: 10 })
 
   notification.showSuccess('재연결 완료')
 })
@@ -77,12 +83,12 @@ async function connectToRoom() {
     fileManager.clearFiles()
     textShare.clearAllTexts()
 
-    // 소켓 연결 (자동으로 room-shared에 입장)
-    await socket.connect()
+    // 소켓 연결 (자동으로 전체 공유 룸 + IP 격리 룸에 입장)
+    const { globalRoomId, ipRoomId } = await socket.connect()
 
-    roomManager.enterSharedRoom()
+    roomManager.setRooms({ globalRoomId, ipRoomId })
     // 파일 로딩을 백그라운드에서 실행 (초기 10개만)
-    fileManager.loadFiles(roomManager.currentRoomId.value, { limit: 10 })
+    fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: 10 })
     notification.showSuccess('연결되었습니다.')
 
     // 새 이벤트 리스너 설정
@@ -103,8 +109,8 @@ function setupSocketListeners() {
   cleanupOnMessage = socket.onMessage((message) => {
     if (message.type === 'file-uploaded') {
       notification.showInfo('새 파일이 업로드되었습니다!')
-      if (roomManager.currentRoomId.value) {
-        fileManager.loadFiles(roomManager.currentRoomId.value)
+      if (roomManager.roomIds.value.length > 0) {
+        fileManager.loadFilesFromRooms(roomManager.roomIds.value)
       }
     } else if (message.type === 'text-shared') {
       const exists = textShare.sharedTexts.value.some(t => t.id === message.textId)
@@ -135,7 +141,7 @@ function setupSocketListeners() {
 // ========================================
 
 async function handlePaste(event) {
-  if (!roomManager.currentRoomId.value) return
+  if (roomManager.roomIds.value.length === 0) return
 
   const files = clipboard.extractFilesFromPaste(event)
 
@@ -150,21 +156,30 @@ async function handlePaste(event) {
 }
 
 async function handleUploadFiles(files) {
-  if (!roomManager.currentRoomId.value) return
+  if (roomManager.roomIds.value.length === 0) return
   if (!files || files.length === 0) return
 
   await uploadFiles(files)
 }
 
 async function uploadFiles(files) {
-  if (!roomManager.currentRoomId.value) return
+  if (roomManager.roomIds.value.length === 0) return
+
+  const targetScope = shareScope.getScope()
+  const targetRoomId = roomManager.roomIdForScope(targetScope)
+
+  if (!targetRoomId) {
+    notification.showError('공유 대상 룸을 찾을 수 없습니다.')
+    return
+  }
 
   const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 500
   const MAX_ROOM_SIZE = maxRoomSizeMB * 1024 * 1024
   const totalUploadSize = files.reduce((sum, f) => sum + f.size, 0)
+  const currentRoomSize = fileManager.roomSize(targetRoomId)
 
-  if (fileManager.totalSize.value + totalUploadSize > MAX_ROOM_SIZE) {
-    const currentSizeMB = (fileManager.totalSize.value / 1024 / 1024).toFixed(2)
+  if (currentRoomSize + totalUploadSize > MAX_ROOM_SIZE) {
+    const currentSizeMB = (currentRoomSize / 1024 / 1024).toFixed(2)
     const uploadSizeMB = (totalUploadSize / 1024 / 1024).toFixed(2)
     notification.showError(
       `총 업로드 용량이 제한(${maxRoomSizeMB}MB)을 초과합니다. 현재: ${currentSizeMB}MB, 업로드: ${uploadSizeMB}MB`
@@ -182,7 +197,7 @@ async function uploadFiles(files) {
 
     try {
       const result = await fileManager.uploadFile(
-        roomManager.currentRoomId.value,
+        targetRoomId,
         file,
         {
           onProgress: (percent) => {
@@ -195,13 +210,15 @@ async function uploadFiles(files) {
         type: 'file-uploaded',
         fileName: result.fileName,
         url: result.url,
-        roomId: roomManager.currentRoomId.value
-      })
+        roomId: targetRoomId
+      }, targetScope)
+
       fileManager.addFile({
         name: result.fileName,
         url: result.url,
         size: result.size,
-        created: result.created
+        created: result.created,
+        roomId: targetRoomId
       })
       successCount++
 
@@ -345,7 +362,7 @@ async function handleCopySelectedToClipboard(files) {
 // ========================================
 
 async function handleAddText(content) {
-  if (!roomManager.currentRoomId.value) return
+  if (!roomManager.globalRoomId.value) return
 
   const newText = textShare.addText(content)
   if (!newText) return
@@ -355,14 +372,14 @@ async function handleAddText(content) {
     textId: newText.id,
     content: newText.content,
     timestamp: newText.timestamp,
-    roomId: roomManager.currentRoomId.value
-  })
+    roomId: roomManager.globalRoomId.value
+  }, 'global')
 
   notification.showSuccess('텍스트가 공유되었습니다!')
 }
 
 async function handleRemoveText(textId) {
-  if (!roomManager.currentRoomId.value) return
+  if (!roomManager.globalRoomId.value) return
 
   const removed = textShare.removeText(textId)
   if (!removed) return
@@ -370,19 +387,19 @@ async function handleRemoveText(textId) {
   socket.publishMessage({
     type: 'text-removed',
     textId,
-    roomId: roomManager.currentRoomId.value
-  })
+    roomId: roomManager.globalRoomId.value
+  }, 'global')
 }
 
 async function handleClearAllTexts() {
-  if (!roomManager.currentRoomId.value) return
+  if (!roomManager.globalRoomId.value) return
 
   textShare.clearAllTexts()
 
   socket.publishMessage({
     type: 'texts-cleared',
-    roomId: roomManager.currentRoomId.value
-  })
+    roomId: roomManager.globalRoomId.value
+  }, 'global')
 
   notification.showInfo('모든 텍스트가 삭제되었습니다.')
 }
@@ -397,7 +414,7 @@ async function handleCopyText(textId) {
 }
 
 async function handlePasteContent() {
-  if (!roomManager.currentRoomId.value) return
+  if (roomManager.roomIds.value.length === 0) return
 
   try {
     const clipboardItems = await navigator.clipboard.read()
@@ -438,10 +455,10 @@ async function handlePasteContent() {
 }
 
 async function handleDeleteFile(file) {
-  if (!roomManager.currentRoomId.value) return
+  if (!file?.roomId) return
 
   try {
-    await fileManager.deleteFile(roomManager.currentRoomId.value, file.name)
+    await fileManager.deleteFile(file.roomId, file.name)
     notification.showSuccess(`${file.name} 삭제됨`)
   } catch (error) {
     notification.showError(`삭제 실패: ${error.message}`)
@@ -449,7 +466,7 @@ async function handleDeleteFile(file) {
 }
 
 async function handleDeleteSelected(files) {
-  if (!roomManager.currentRoomId.value || !files || files.length === 0) return
+  if (!files || files.length === 0) return
 
   if (!window.confirm(`선택한 ${files.length}개 파일을 삭제하시겠습니까?`)) return
 
@@ -458,7 +475,7 @@ async function handleDeleteSelected(files) {
 
   for (const file of files) {
     try {
-      await fileManager.deleteFile(roomManager.currentRoomId.value, file.name)
+      await fileManager.deleteFile(file.roomId, file.name)
       successCount++
     } catch (error) {
       failCount++
@@ -475,15 +492,23 @@ async function handleDeleteSelected(files) {
 }
 
 async function handleClearStorage() {
-  if (!roomManager.currentRoomId.value) return
+  if (roomManager.roomIds.value.length === 0) return
 
   if (!window.confirm('저장소의 모든 파일을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return
 
-  try {
-    await fileManager.deleteAllFiles(roomManager.currentRoomId.value)
+  const results = await Promise.allSettled(
+    roomManager.roomIds.value.map(roomId => fileManager.deleteAllFiles(roomId))
+  )
+
+  const successCount = results.filter(r => r.status === 'fulfilled').length
+  const failCount = results.filter(r => r.status === 'rejected').length
+
+  if (failCount === 0) {
     notification.showSuccess('저장소가 초기화되었습니다')
-  } catch (error) {
-    notification.showError(`초기화 실패: ${error.message}`)
+  } else if (successCount > 0) {
+    notification.showError(`일부 룸 초기화 실패 (${successCount}개 성공, ${failCount}개 실패). 다시 시도해주세요.`)
+  } else {
+    notification.showError('초기화 실패')
   }
 }
 
@@ -599,7 +624,7 @@ onUnmounted(() => {
     <RoomScreen
       v-else
       :is-connecting="isConnecting"
-      :room-id="roomManager.currentRoomId.value"
+      :room-id="roomManager.globalRoomId.value"
       :files="fileManager.files.value"
       :texts="textShare.sharedTexts.value"
       :is-loading="fileManager.isLoading.value || isConnecting"

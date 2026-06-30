@@ -37,6 +37,8 @@ export function useSocket() {
     isConnected: readonly(socketService.isConnected),
     isOnline: readonly(socketService.isOnline),
     usersInRoom: readonly(socketService.usersInRoom),
+    globalRoomId: readonly(socketService.globalRoomId),
+    ipRoomId: readonly(socketService.ipRoomId),
 
     connect: socketService.connect.bind(socketService),
     disconnect: socketService.disconnect.bind(socketService),

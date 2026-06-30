@@ -11,6 +11,13 @@
     "copyCode": "Copy Room Code",
     "copied": "Room code copied!"
   },
+  "shareScope": {
+    "label": "Share with",
+    "ip": "Same network",
+    "ipDescription": "Only shared with people on the same public IP",
+    "global": "Everyone",
+    "globalDescription": "Shared with all users"
+  },
   "file": {
     "upload": "Upload File",
     "download": "Download",

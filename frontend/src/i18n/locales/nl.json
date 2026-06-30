@@ -11,6 +11,13 @@
     "copyCode": "Kamercode kopiëren",
     "copied": "Kamercode gekopieerd!"
   },
+  "shareScope": {
+    "label": "Delen met",
+    "ip": "Zelfde netwerk",
+    "ipDescription": "Wordt alleen gedeeld met mensen op hetzelfde publieke IP-adres",
+    "global": "Iedereen",
+    "globalDescription": "Wordt gedeeld met alle gebruikers"
+  },
   "file": {
     "upload": "Bestand uploaden",
     "download": "Downloaden",

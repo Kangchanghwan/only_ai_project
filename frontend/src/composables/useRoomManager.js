@@ -1,34 +1,47 @@
-import { ref, readonly } from 'vue'
-
-const SHARED_ROOM_ID = 'room-shared'
+import { ref, computed, readonly } from 'vue'
 
 /**
  * @composable useRoomManager
- * @description 단일 공유 룸 관리 기능을 제공하는 컴포저블.
+ * @description 이중 룸(전체 공유 + IP 격리) ID를 보관한다.
  */
 export function useRoomManager() {
-  const currentRoomId = ref(null)
+  const globalRoomId = ref(null)
+  const ipRoomId = ref(null)
+
+  /** 조회/병합에 사용할 룸 ID 목록 (값이 있는 것만) */
+  const roomIds = computed(() =>
+    [globalRoomId.value, ipRoomId.value].filter(Boolean)
+  )
 
   /**
-   * 공유 룸에 입장합니다.
-   * currentRoomId를 'room-shared'로 설정합니다.
+   * 서버가 내려준 두 룸 ID를 설정한다.
+   * @param {{globalRoomId: string, ipRoomId: string}} payload
    */
-  function enterSharedRoom() {
-    currentRoomId.value = SHARED_ROOM_ID
-    console.log('[useRoomManager] 공유 룸 입장:', SHARED_ROOM_ID)
+  function setRooms(payload) {
+    globalRoomId.value = payload.globalRoomId
+    ipRoomId.value = payload.ipRoomId
+    console.log('[useRoomManager] 룸 설정:', payload)
   }
 
-  /**
-   * 현재 룸에서 나갑니다.
-   */
+  /** 스코프('global'|'ip')에 해당하는 룸 ID 반환. 유효하지 않은 스코프는 null. */
+  function roomIdForScope(scope) {
+    if (scope === 'global') return globalRoomId.value
+    if (scope === 'ip') return ipRoomId.value
+    console.warn('[useRoomManager] 유효하지 않은 스코프:', scope)
+    return null
+  }
+
   function leaveRoom() {
-    console.log('[useRoomManager] 룸 퇴장:', currentRoomId.value)
-    currentRoomId.value = null
+    globalRoomId.value = null
+    ipRoomId.value = null
   }
 
   return {
-    currentRoomId: readonly(currentRoomId),
-    enterSharedRoom,
+    globalRoomId: readonly(globalRoomId),
+    ipRoomId: readonly(ipRoomId),
+    roomIds,
+    setRooms,
+    roomIdForScope,
     leaveRoom
   }
 }

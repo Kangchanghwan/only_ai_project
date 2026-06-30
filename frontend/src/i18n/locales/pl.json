@@ -11,6 +11,13 @@
     "copyCode": "Kopiuj kod pokoju",
     "copied": "Kod pokoju skopiowany!"
   },
+  "shareScope": {
+    "label": "Udostępnij dla",
+    "ip": "Ta sama sieć",
+    "ipDescription": "Udostępniane tylko osobom z tym samym publicznym adresem IP",
+    "global": "Wszyscy",
+    "globalDescription": "Udostępniane wszystkim użytkownikom"
+  },
   "file": {
     "upload": "Prześlij plik",
     "download": "Pobierz",

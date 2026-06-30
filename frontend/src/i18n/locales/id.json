@@ -11,6 +11,13 @@
     "copyCode": "Salin kode ruangan",
     "copied": "Kode ruangan disalin!"
   },
+  "shareScope": {
+    "label": "Bagikan dengan",
+    "ip": "Jaringan yang sama",
+    "ipDescription": "Hanya dibagikan dengan orang yang menggunakan IP publik yang sama",
+    "global": "Semua orang",
+    "globalDescription": "Dibagikan dengan semua pengguna"
+  },
   "file": {
     "upload": "Unggah File",
     "download": "Unduh",
