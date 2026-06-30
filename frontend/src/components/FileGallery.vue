@@ -41,12 +41,18 @@ const emit = defineEmits([
 const selectedFiles = ref(new Set())
 const showMultiQRModal = ref(false)
 
+// 같은 파일명이 다른 룸에 동시에 존재할 수 있으므로 roomId+name 복합 키로 선택을 추적한다
+// (useFileManager.js의 mergeAndSort와 동일한 dedup 키 규칙).
+function fileKey(file) {
+  return `${file.roomId}::${file.name}`
+}
+
 // 선택된 파일 개수
 const selectedCount = computed(() => selectedFiles.value.size)
 
 // 선택된 파일 배열
 const selectedFilesArray = computed(() => {
-  return props.files.filter(file => selectedFiles.value.has(file.name))
+  return props.files.filter(file => selectedFiles.value.has(fileKey(file)))
 })
 
 // 모든 파일이 선택되었는지 확인
@@ -55,11 +61,12 @@ const allFilesSelected = computed(() => {
 })
 
 // 파일 선택/해제
-function toggleFileSelection(fileName) {
-  if (selectedFiles.value.has(fileName)) {
-    selectedFiles.value.delete(fileName)
+function toggleFileSelection(file) {
+  const key = fileKey(file)
+  if (selectedFiles.value.has(key)) {
+    selectedFiles.value.delete(key)
   } else {
-    selectedFiles.value.add(fileName)
+    selectedFiles.value.add(key)
   }
   // Set은 반응성을 위해 새 객체로 교체
   selectedFiles.value = new Set(selectedFiles.value)
@@ -72,9 +79,16 @@ function toggleSelectAll() {
     selectedFiles.value = new Set()
   } else {
     // 전체 선택
-    selectedFiles.value = new Set(props.files.map(file => file.name))
+    selectedFiles.value = new Set(props.files.map(fileKey))
   }
 }
+
+// 다중 QR 공유는 한 룸의 파일만 포함할 수 있다 (?r={roomId} 단일 룸 기준 다운로드 링크이므로).
+// 선택이 여러 룸에 걸쳐 있으면 첫 번째 선택 파일의 룸으로 좁혀서 깨진 링크를 방지한다.
+const multiQRRoomId = computed(() => selectedFilesArray.value[0]?.roomId || props.roomId)
+const multiQRFiles = computed(() =>
+  selectedFilesArray.value.filter(file => file.roomId === multiQRRoomId.value)
+)
 
 // 병렬 다운로드
 function downloadParallel() {
@@ -140,11 +154,11 @@ onUnmounted(() => {
       <template v-else>
         <FileCard
           v-for="file in files"
-          :key="file.name"
+          :key="fileKey(file)"
           :file="file"
-          :is-selected="selectedFiles.has(file.name)"
+          :is-selected="selectedFiles.has(fileKey(file))"
           @copy-image="$emit('copy-image', file.url)"
-          @toggle-selection="toggleFileSelection"
+          @toggle-selection="toggleFileSelection(file)"
           @download-file="$emit('download-file', file)"
           @delete-file="$emit('delete-file', file)"
         />
@@ -163,8 +177,8 @@ onUnmounted(() => {
 
     <!-- 다중 파일 QR 코드 모달 -->
     <MultiFileQRCodeModal
-      :files="selectedFilesArray"
-      :room-id="roomId"
+      :files="multiQRFiles"
+      :room-id="multiQRRoomId"
       :is-open="showMultiQRModal"
       @close="showMultiQRModal = false"
     />
