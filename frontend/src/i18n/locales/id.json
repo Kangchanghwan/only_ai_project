@@ -49,5 +49,8 @@
     "privacyPolicy": "Kebijakan Privasi",
     "sourceOnGitHub": "Kode di GitHub",
     "createdBy": "Dibuat oleh"
+  },
+  "qr": {
+    "backgroundHint": "Pindai untuk membuka ruang yang sama"
   }
 }

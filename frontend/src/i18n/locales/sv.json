@@ -49,5 +49,8 @@
     "privacyPolicy": "Integritetspolicy",
     "sourceOnGitHub": "Källkod på GitHub",
     "createdBy": "Skapad av"
+  },
+  "qr": {
+    "backgroundHint": "Skanna för att öppna samma utrymme"
   }
 }

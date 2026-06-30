@@ -145,5 +145,8 @@
     "privacyPolicy": "개인정보 처리방침",
     "sourceOnGitHub": "GitHub 소스 코드",
     "createdBy": "제작:"
+  },
+  "qr": {
+    "backgroundHint": "스캔해서 같은 공간 열기"
   }
 }

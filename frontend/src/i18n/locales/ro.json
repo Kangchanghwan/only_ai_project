@@ -49,5 +49,8 @@
     "privacyPolicy": "Politica de Confidențialitate",
     "sourceOnGitHub": "Cod sursă pe GitHub",
     "createdBy": "Creat de"
+  },
+  "qr": {
+    "backgroundHint": "Scanează pentru a deschide același spațiu"
   }
 }

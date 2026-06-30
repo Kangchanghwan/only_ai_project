@@ -49,5 +49,8 @@
     "privacyPolicy": "Adatvédelmi Irányelvek",
     "sourceOnGitHub": "Forráskód a GitHubon",
     "createdBy": "Készítette"
+  },
+  "qr": {
+    "backgroundHint": "Olvassa be ugyanennek a térnek a megnyitásához"
   }
 }

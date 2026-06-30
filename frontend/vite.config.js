@@ -11,6 +11,7 @@ export default defineConfig(({ command, mode }) => {
     test: {
       globals: true,
       environment: 'happy-dom',
+      setupFiles: ['./src/test/setup.js'],
     },
     build: {
       // 프로덕션 빌드 최적화 - terser로 console 완전 제거

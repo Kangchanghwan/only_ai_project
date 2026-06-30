@@ -49,5 +49,8 @@
     "privacyPolicy": "سیاست حریم خصوصی",
     "sourceOnGitHub": "کد منبع در GitHub",
     "createdBy": "ایجاد شده توسط"
+  },
+  "qr": {
+    "backgroundHint": "برای باز کردن همین فضا اسکن کنید"
   }
 }

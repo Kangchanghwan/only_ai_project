@@ -117,6 +117,46 @@ export function useQRCode() {
   }
 
   /**
+   * 임의의 URL을 QR 코드 Data URL로 생성합니다. (배경 QR 등 룸 코드가 아닌 전체 URL용)
+   *
+   * @param {string} url - 인코딩할 전체 URL
+   * @returns {Promise<{success: boolean, dataUrl?: string, error?: string}>}
+   */
+  async function generateQRCodeForUrl(url) {
+    if (!url || url.trim().length === 0) {
+      error.value = '유효하지 않은 URL입니다.'
+      return { success: false, error: error.value }
+    }
+
+    isGenerating.value = true
+    error.value = null
+
+    try {
+      const options = {
+        errorCorrectionLevel: 'H',
+        type: 'image/png',
+        quality: 0.95,
+        margin: 2,
+        width: 512,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      }
+
+      const dataUrl = await QRCode.toDataURL(url, options)
+      qrCodeDataUrl.value = dataUrl
+      return { success: true, dataUrl }
+    } catch (err) {
+      error.value = 'QR 코드 생성에 실패했습니다.'
+      console.error('[useQRCode] URL QR 코드 생성 오류:', err)
+      return { success: false, error: error.value }
+    } finally {
+      isGenerating.value = false
+    }
+  }
+
+  /**
    * 생성된 QR 코드를 다운로드합니다.
    *
    * @param {string} roomCode - 룸 코드 (파일명에 사용)
@@ -179,6 +219,12 @@ export function useQRCode() {
      * @returns {Promise<{success: boolean, error?: string}>}
      */
     generateQRCodeToCanvas,
+
+    /**
+     * 임의 URL로 QR 코드를 생성하는 함수
+     * @param {string} url - 인코딩할 전체 URL
+     */
+    generateQRCodeForUrl,
 
     /**
      * QR 코드를 다운로드하는 함수

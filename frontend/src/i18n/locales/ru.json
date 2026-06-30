@@ -49,5 +49,8 @@
     "privacyPolicy": "Политика Конфиденциальности",
     "sourceOnGitHub": "Исходный код на GitHub",
     "createdBy": "Создано"
+  },
+  "qr": {
+    "backgroundHint": "Отсканируйте, чтобы открыть это пространство"
   }
 }
