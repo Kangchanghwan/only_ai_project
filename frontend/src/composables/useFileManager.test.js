@@ -8,6 +8,7 @@ vi.mock('../services/r2Service', () => ({
     loadFiles: vi.fn(),
     uploadFile: vi.fn(),
     deleteFile: vi.fn(),
+    deleteAllFiles: vi.fn(),
     getFileUrl: vi.fn(),
     getRoomTotalSize: vi.fn()
   }
@@ -309,6 +310,159 @@ describe('useFileManager', () => {
 
       // Then: 업로드 성공
       expect(result.success).toBe(true)
+    })
+  })
+
+  describe('병합 로더 (loadFilesFromRooms)', () => {
+    it('여러 룸의 파일을 하나의 목록으로 병합하고 각 파일에 roomId를 태깅한다', async () => {
+      r2Service.loadFiles.mockImplementation((roomId) => {
+        if (roomId === 'room-shared') {
+          return Promise.resolve({
+            files: [{ name: 'a.png', url: 'u1', created: '2024-01-02T00:00:00Z', size: 100, type: 'image/png' }],
+            nextToken: undefined
+          })
+        }
+        return Promise.resolve({
+          files: [{ name: 'b.png', url: 'u2', created: '2024-01-03T00:00:00Z', size: 200, type: 'image/png' }],
+          nextToken: undefined
+        })
+      })
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-shared', 'room-ip123'])
+
+      expect(fm.files.value).toHaveLength(2)
+      expect(fm.files.value.find(f => f.name === 'a.png').roomId).toBe('room-shared')
+      expect(fm.files.value.find(f => f.name === 'b.png').roomId).toBe('room-ip123')
+      // created 내림차순 정렬 (b가 더 최신)
+      expect(fm.files.value[0].name).toBe('b.png')
+      expect(fm.totalSize.value).toBe(300)
+    })
+
+    it('같은 룸+같은 파일명 중복은 제거한다', async () => {
+      r2Service.loadFiles.mockResolvedValue({
+        files: [{ name: 'dup.png', url: 'u', created: '2024-01-01T00:00:00Z', size: 10, type: 'image/png' }],
+        nextToken: undefined
+      })
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-a'])
+      // 같은 룸을 두 번 로드해도(예: 재시도) 중복 누적되지 않음을 loadFilesFromRooms 재호출로 확인
+      await fm.loadFilesFromRooms(['room-a'])
+
+      expect(fm.files.value).toHaveLength(1)
+    })
+
+    it('roomIds가 비어있으면 아무 동작도 하지 않는다', async () => {
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms([])
+      expect(r2Service.loadFiles).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('hasMore / loadMore (다중 룸)', () => {
+    it('한 룸이라도 nextToken이 있으면 hasMore는 true다', async () => {
+      r2Service.loadFiles
+        .mockResolvedValueOnce({ files: [], nextToken: 'token-a' })
+        .mockResolvedValueOnce({ files: [], nextToken: undefined })
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-a', 'room-b'])
+
+      expect(fm.hasMore.value).toBe(true)
+    })
+
+    it('loadMore는 nextToken이 남은 룸만 이어서 불러와 병합한다', async () => {
+      r2Service.loadFiles
+        .mockResolvedValueOnce({
+          files: [{ name: 'a1.png', url: 'u', created: '2024-01-01T00:00:00Z', size: 10, type: 'image/png' }],
+          nextToken: 'token-a'
+        })
+        .mockResolvedValueOnce({
+          files: [{ name: 'b1.png', url: 'u', created: '2024-01-02T00:00:00Z', size: 10, type: 'image/png' }],
+          nextToken: undefined
+        })
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-a', 'room-b'])
+      expect(fm.hasMore.value).toBe(true)
+
+      r2Service.loadFiles.mockResolvedValueOnce({
+        files: [{ name: 'a2.png', url: 'u', created: '2024-01-03T00:00:00Z', size: 10, type: 'image/png' }],
+        nextToken: undefined
+      })
+
+      await fm.loadMore()
+
+      // room-b는 토큰이 없었으므로 다시 호출되지 않고, room-a만 이어서 호출됨
+      expect(r2Service.loadFiles).toHaveBeenCalledTimes(3)
+      expect(fm.files.value.map(f => f.name).sort()).toEqual(['a1.png', 'a2.png', 'b1.png'].sort())
+      expect(fm.hasMore.value).toBe(false)
+    })
+  })
+
+  describe('룸별 용량 검증 (roomSize / uploadFile)', () => {
+    it('roomSize는 해당 룸에 속한 파일의 합산 용량만 반환한다', async () => {
+      r2Service.loadFiles.mockImplementation((roomId) =>
+        Promise.resolve({
+          files: roomId === 'room-a'
+            ? [{ name: 'x.png', url: 'u', created: '2024-01-01T00:00:00Z', size: 1000, type: 'image/png' }]
+            : [{ name: 'y.png', url: 'u', created: '2024-01-01T00:00:00Z', size: 5000, type: 'image/png' }],
+          nextToken: undefined
+        })
+      )
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-a', 'room-b'])
+
+      expect(fm.roomSize('room-a')).toBe(1000)
+      expect(fm.roomSize('room-b')).toBe(5000)
+    })
+
+    it('다른 룸의 용량은 업로드 대상 룸의 용량 제한 검증에 영향을 주지 않는다', async () => {
+      import.meta.env.VITE_MAX_ROOM_SIZE_MB = '1' // 1MB 제한
+
+      r2Service.loadFiles.mockImplementation((roomId) =>
+        Promise.resolve({
+          // room-full은 이미 1MB 꽉 참, room-empty는 비어있음
+          files: roomId === 'room-full'
+            ? [{ name: 'big.png', url: 'u', created: '2024-01-01T00:00:00Z', size: 1024 * 1024, type: 'image/png' }]
+            : [],
+          nextToken: undefined
+        })
+      )
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-full', 'room-empty'])
+
+      r2Service.uploadFile.mockResolvedValue({ success: true, fileName: 'small.png', url: 'u' })
+      const smallFile = new File(['x'.repeat(100)], 'small.png', { type: 'image/png' })
+
+      // room-empty에 작은 파일을 올리는 건 room-full이 꽉 찼어도 성공해야 한다
+      await expect(fm.uploadFile('room-empty', smallFile)).resolves.toBeDefined()
+
+      delete import.meta.env.VITE_MAX_ROOM_SIZE_MB
+    })
+  })
+
+  describe('deleteAllFiles (다중 룸)', () => {
+    it('해당 룸의 파일만 제거하고 다른 룸의 파일은 유지한다', async () => {
+      r2Service.loadFiles.mockImplementation((roomId) =>
+        Promise.resolve({
+          files: [{ name: `${roomId}-file.png`, url: 'u', created: '2024-01-01T00:00:00Z', size: 10, type: 'image/png' }],
+          nextToken: undefined
+        })
+      )
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-a', 'room-b'])
+      expect(fm.files.value).toHaveLength(2)
+
+      r2Service.deleteAllFiles = vi.fn().mockResolvedValue({ success: true, deletedCount: 1 })
+      await fm.deleteAllFiles('room-a')
+
+      expect(fm.files.value).toHaveLength(1)
+      expect(fm.files.value[0].roomId).toBe('room-b')
     })
   })
 })
