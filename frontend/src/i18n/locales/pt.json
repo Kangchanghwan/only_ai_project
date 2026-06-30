@@ -49,5 +49,8 @@
     "privacyPolicy": "Política de Privacidade",
     "sourceOnGitHub": "Código no GitHub",
     "createdBy": "Criado por"
+  },
+  "qr": {
+    "backgroundHint": "Escaneie para abrir o mesmo espaço"
   }
 }

@@ -145,5 +145,8 @@
     "privacyPolicy": "プライバシーポリシー",
     "sourceOnGitHub": "GitHubのソースコード",
     "createdBy": "作成者"
+  },
+  "qr": {
+    "backgroundHint": "スキャンして同じスペースを開く"
   }
 }

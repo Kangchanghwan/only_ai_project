@@ -49,5 +49,8 @@
     "privacyPolicy": "Chính Sách Bảo Mật",
     "sourceOnGitHub": "Mã Nguồn trên GitHub",
     "createdBy": "Được tạo bởi"
+  },
+  "qr": {
+    "backgroundHint": "Quét để mở cùng không gian"
   }
 }

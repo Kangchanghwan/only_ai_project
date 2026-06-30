@@ -145,5 +145,8 @@
     "privacyPolicy": "Privacy Policy",
     "sourceOnGitHub": "Source on GitHub",
     "createdBy": "Created by"
+  },
+  "qr": {
+    "backgroundHint": "Scan to join this space"
   }
 }

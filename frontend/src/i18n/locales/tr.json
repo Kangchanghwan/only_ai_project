@@ -49,5 +49,8 @@
     "privacyPolicy": "Gizlilik Politikası",
     "sourceOnGitHub": "GitHub'da Kaynak Kod",
     "createdBy": "Oluşturan"
+  },
+  "qr": {
+    "backgroundHint": "Aynı alanı açmak için tarayın"
   }
 }

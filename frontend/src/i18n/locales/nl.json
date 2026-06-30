@@ -49,5 +49,8 @@
     "privacyPolicy": "Privacybeleid",
     "sourceOnGitHub": "Broncode op GitHub",
     "createdBy": "Gemaakt door"
+  },
+  "qr": {
+    "backgroundHint": "Scan om dezelfde ruimte te openen"
   }
 }
