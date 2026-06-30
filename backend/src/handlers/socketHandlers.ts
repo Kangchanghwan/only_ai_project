@@ -13,16 +13,14 @@ const createError = (message: string, code?: string): ErrorResponse => ({
     timestamp: new Date().toISOString()
 });
 
-/** IP 추출 실패 시 사용할 폴백 IP 룸 */
-const FALLBACK_IP_ROOM_ID = 'room-unknown';
-
-/** 소켓 핸드셰이크로부터 격리 IP 룸 ID 도출 (실패 시 폴백) */
+/** 소켓 핸드셰이크로부터 격리 IP 룸 ID 도출 (실패 시 소켓별 단독 격리 룸) */
 const resolveIpRoomId = (socket: ExtendedSocket): string => {
     const secret = process.env.ROOM_ID_SECRET || 'dev-insecure-secret';
     const ip = extractClientIp(socket.handshake);
     if (!ip) {
-        logger.error(`IP 추출 실패 [${socket.id}] → ${FALLBACK_IP_ROOM_ID}`);
-        return FALLBACK_IP_ROOM_ID;
+        const soloRoom = `room-unknown-${socket.id}`;
+        logger.error(`IP 추출 실패 [${socket.id}] → ${soloRoom} (단독 격리)`);
+        return soloRoom;
     }
     return deriveIpRoomId(ip, secret);
 };

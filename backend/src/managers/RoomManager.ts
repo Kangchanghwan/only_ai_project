@@ -124,6 +124,11 @@ export class RoomManager {
         return Object.values(this.rooms).reduce((sum, room) => sum + room.userCount, 0);
     }
 
+    /** 실제 접속자 수 (모든 소켓이 공유 룸에 1회 입장하므로 공유 룸 인원 = 접속자 수) */
+    getConnectedUserCount(): number {
+        return this.getRoomUserCount(SHARED_ROOM_ID);
+    }
+
     /** 특정 룸 데이터 조회 */
     getRoomData(roomId: string): RoomData | undefined {
         return this.rooms[roomId];
