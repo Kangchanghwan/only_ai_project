@@ -11,6 +11,13 @@
     "copyCode": "Szobakód másolása",
     "copied": "Szobakód másolva!"
   },
+  "shareScope": {
+    "label": "Megosztás ezzel",
+    "ip": "Azonos hálózat",
+    "ipDescription": "Csak az azonos nyilvános IP-t használókkal van megosztva",
+    "global": "Mindenki",
+    "globalDescription": "Minden felhasználóval megosztva"
+  },
   "file": {
     "upload": "Fájl feltöltése",
     "download": "Letöltés",

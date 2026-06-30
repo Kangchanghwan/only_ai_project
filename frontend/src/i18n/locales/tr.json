@@ -11,6 +11,13 @@
     "copyCode": "Oda Kodunu Kopyala",
     "copied": "Oda kodu kopyalandı!"
   },
+  "shareScope": {
+    "label": "Paylaşılacak kişiler",
+    "ip": "Aynı ağ",
+    "ipDescription": "Yalnızca aynı genel IP'yi kullanan kişilerle paylaşılır",
+    "global": "Herkes",
+    "globalDescription": "Tüm kullanıcılarla paylaşılır"
+  },
   "file": {
     "upload": "Dosya Yükle",
     "download": "İndir",

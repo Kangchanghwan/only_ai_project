@@ -11,6 +11,13 @@
     "copyCode": "Copiar código da sala",
     "copied": "Código da sala copiado!"
   },
+  "shareScope": {
+    "label": "Compartilhar com",
+    "ip": "Mesma rede",
+    "ipDescription": "Compartilhado apenas com pessoas no mesmo IP público",
+    "global": "Todos",
+    "globalDescription": "Compartilhado com todos os usuários"
+  },
   "file": {
     "upload": "Enviar arquivo",
     "download": "Baixar",

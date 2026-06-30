@@ -11,6 +11,13 @@
     "copyCode": "ルームコードをコピー",
     "copied": "ルームコードをコピーしました！"
   },
+  "shareScope": {
+    "label": "共有先",
+    "ip": "同じネットワーク",
+    "ipDescription": "同じグローバルIPを使う人にのみ共有されます",
+    "global": "全員",
+    "globalDescription": "すべてのユーザーに共有されます"
+  },
   "file": {
     "upload": "ファイルをアップロード",
     "download": "ダウンロード",

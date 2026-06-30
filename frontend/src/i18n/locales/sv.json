@@ -11,6 +11,13 @@
     "copyCode": "Kopiera rumskod",
     "copied": "Rumskod kopierad!"
   },
+  "shareScope": {
+    "label": "Dela med",
+    "ip": "Samma nätverk",
+    "ipDescription": "Delas endast med personer som har samma publika IP-adress",
+    "global": "Alla",
+    "globalDescription": "Delas med alla användare"
+  },
   "file": {
     "upload": "Ladda upp fil",
     "download": "Ladda ner",

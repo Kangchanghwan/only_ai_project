@@ -11,6 +11,13 @@
     "copyCode": "Copiază codul camerei",
     "copied": "Cod cameră copiat!"
   },
+  "shareScope": {
+    "label": "Distribuie cu",
+    "ip": "Aceeași rețea",
+    "ipDescription": "Se distribuie doar persoanelor cu aceeași adresă IP publică",
+    "global": "Toată lumea",
+    "globalDescription": "Se distribuie tuturor utilizatorilor"
+  },
   "file": {
     "upload": "Încarcă fișier",
     "download": "Descarcă",

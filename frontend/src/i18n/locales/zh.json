@@ -11,6 +11,13 @@
     "copyCode": "复制房间代码",
     "copied": "房间代码已复制！"
   },
+  "shareScope": {
+    "label": "共享对象",
+    "ip": "同一网络",
+    "ipDescription": "仅与使用相同公网IP的人共享",
+    "global": "所有人",
+    "globalDescription": "与所有用户共享"
+  },
   "file": {
     "upload": "上传文件",
     "download": "下载",

@@ -11,6 +11,13 @@
     "copyCode": "Kopírovat kód místnosti",
     "copied": "Kód místnosti zkopírován!"
   },
+  "shareScope": {
+    "label": "Sdílet s",
+    "ip": "Stejná síť",
+    "ipDescription": "Sdíleno pouze s lidmi se stejnou veřejnou IP adresou",
+    "global": "Všichni",
+    "globalDescription": "Sdíleno se všemi uživateli"
+  },
   "file": {
     "upload": "Nahrát soubor",
     "download": "Stáhnout",
