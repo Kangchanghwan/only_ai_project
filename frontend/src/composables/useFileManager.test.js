@@ -465,4 +465,49 @@ describe('useFileManager', () => {
       expect(fm.files.value[0].roomId).toBe('room-b')
     })
   })
+
+  describe('부분 실패 처리', () => {
+    it('한 룸이 실패해도 성공한 다른 룸의 파일은 유지된다', async () => {
+      r2Service.loadFiles.mockImplementation((roomId) => {
+        if (roomId === 'room-ok') {
+          return Promise.resolve({
+            files: [{ name: 'ok.png', url: 'u', created: '2024-01-01T00:00:00Z', size: 10, type: 'image/png' }],
+            nextToken: undefined
+          })
+        }
+        return Promise.reject(new Error('네트워크 오류'))
+      })
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-ok', 'room-fail'])
+
+      expect(fm.files.value).toHaveLength(1)
+      expect(fm.files.value[0].roomId).toBe('room-ok')
+    })
+
+    it('loadMore에서 실패한 룸의 토큰은 전진하지 않아 다음 호출에서 재시도된다', async () => {
+      r2Service.loadFiles
+        .mockResolvedValueOnce({ files: [], nextToken: 'token-a' })
+        .mockResolvedValueOnce({ files: [], nextToken: 'token-b' })
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-a', 'room-b'])
+
+      // room-a는 성공, room-b는 실패
+      r2Service.loadFiles
+        .mockImplementationOnce(() => Promise.resolve({ files: [], nextToken: undefined }))
+        .mockImplementationOnce(() => Promise.reject(new Error('일시 오류')))
+
+      await fm.loadMore()
+
+      // room-a 토큰은 전진(undefined), room-b는 'token-b' 그대로 유지
+      r2Service.loadFiles.mockClear()
+      r2Service.loadFiles.mockResolvedValue({ files: [], nextToken: undefined })
+      await fm.loadMore()
+
+      // room-a는 더 이상 토큰이 없으니 호출 안 되고, room-b만 재시도되어야 함
+      expect(r2Service.loadFiles).toHaveBeenCalledTimes(1)
+      expect(r2Service.loadFiles).toHaveBeenCalledWith('room-b', expect.objectContaining({ continuationToken: 'token-b' }))
+    })
+  })
 })

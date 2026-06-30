@@ -23,6 +23,7 @@ export function useFileManager() {
   const roomTokens = ref(new Map()) // roomId -> nextToken (Vue 3는 ref(Map)도 반응형 추적)
 
   let activeRoomIds = [] // 마지막으로 로드한 룸 ID 목록 (loadMore 대상 추적용, 비반응형 내부 상태)
+  let loadGeneration = 0 // 동시 호출 시 stale 결과 커밋 방지용 세대 카운터
 
   // 더 불러올 파일이 있는지 여부 (하나라도 nextToken을 가진 룸이 있으면 true)
   const hasMore = computed(() => {
@@ -56,6 +57,9 @@ export function useFileManager() {
    * 여러 룸의 파일 목록을 불러와 출처 구분 없이 하나로 병합한다.
    * 각 파일 객체는 내부적으로 자신의 roomId를 보유한다(삭제/용량 검증용).
    *
+   * 룸별로 성공/실패를 분리 처리한다(Promise.allSettled): 일부 룸이 실패해도
+   * 성공한 다른 룸의 데이터는 보존되며, 전부 실패한 경우에만 에러가 노출된다.
+   *
    * @param {string[]} roomIds - 조회할 룸 ID 목록
    * @param {Object} options - 로드 옵션 (limit)
    * @returns {Promise<void>}
@@ -71,30 +75,48 @@ export function useFileManager() {
     error.value = null
     activeRoomIds = ids
     roomTokens.value = new Map()
+    const myGeneration = ++loadGeneration
 
-    try {
-      console.log('[useFileManager] 병합 파일 로딩 시작:', ids)
+    console.log('[useFileManager] 병합 파일 로딩 시작:', ids)
 
-      const results = await Promise.all(
-        ids.map(async (roomId) => {
-          const result = await r2Service.loadFiles(roomId, options)
-          roomTokens.value.set(roomId, result.nextToken || null)
-          return result.files.map(file => ({ ...file, roomId }))
-        })
-      )
+    const settled = await Promise.allSettled(
+      ids.map(async (roomId) => {
+        const result = await r2Service.loadFiles(roomId, options)
+        return { roomId, result }
+      })
+    )
 
-      files.value = mergeAndSort(results.flat())
-      totalSize.value = files.value.reduce((sum, file) => sum + (file.size || 0), 0)
-
-      console.log(`[useFileManager] 병합 파일 로드 완료: ${files.value.length}개, hasMore: ${hasMore.value}`)
-    } catch (err) {
-      console.error('[useFileManager] 병합 파일 로드 오류:', err)
-      error.value = err
-      files.value = []
-      roomTokens.value = new Map()
-    } finally {
+    if (myGeneration !== loadGeneration) {
+      // 그 사이 새로운 loadFilesFromRooms가 호출됨 — 이 결과는 폐기
       isLoading.value = false
+      return
     }
+
+    const succeeded = []
+    let lastError = null
+    for (const outcome of settled) {
+      if (outcome.status === 'fulfilled') {
+        try {
+          const { roomId, result } = outcome.value
+          roomTokens.value.set(roomId, result.nextToken || null)
+          succeeded.push(...result.files.map(file => ({ ...file, roomId })))
+        } catch (parseErr) {
+          lastError = parseErr
+          console.error('[useFileManager] 룸 응답 처리 실패(부분):', parseErr)
+        }
+      } else {
+        lastError = outcome.reason
+        console.error('[useFileManager] 룸 로드 실패(부분):', outcome.reason)
+      }
+    }
+
+    files.value = mergeAndSort(succeeded)
+    totalSize.value = files.value.reduce((sum, file) => sum + (file.size || 0), 0)
+    error.value = succeeded.length === 0 ? lastError : null
+
+    isLoading.value = false
+
+    console.log(`[useFileManager] 병합 파일 로드 완료: ${files.value.length}개, hasMore: ${hasMore.value}`)
   }
 
   /**
@@ -221,6 +243,10 @@ export function useFileManager() {
    * 추가 파일 목록을 불러옵니다 (페이지네이션).
    * 아직 nextToken이 남아있는 룸들만 대상으로 이어서 불러온 뒤 병합한다.
    *
+   * 룸별로 성공/실패를 분리 처리한다(Promise.allSettled): 토큰은 성공한
+   * 룸만 전진시키고, 실패한 룸은 같은 토큰을 유지해 다음 호출에서 같은
+   * 페이지를 재시도한다(영구 스킵 방지).
+   *
    * @param {Object} options - 로드 옵션 (limit)
    * @returns {Promise<void>}
    */
@@ -237,32 +263,53 @@ export function useFileManager() {
 
     isLoading.value = true
     error.value = null
+    const myGeneration = loadGeneration
 
-    try {
-      const targets = activeRoomIds.filter(roomId => roomTokens.value.get(roomId))
-      console.log('[useFileManager] 추가 파일 로딩 시작:', targets)
+    const targets = activeRoomIds.filter(roomId => roomTokens.value.get(roomId))
+    console.log('[useFileManager] 추가 파일 로딩 시작:', targets)
 
-      const results = await Promise.all(
-        targets.map(async (roomId) => {
-          const result = await r2Service.loadFiles(roomId, {
-            ...options,
-            continuationToken: roomTokens.value.get(roomId)
-          })
-          roomTokens.value.set(roomId, result.nextToken || null)
-          return result.files.map(file => ({ ...file, roomId }))
+    const settled = await Promise.allSettled(
+      targets.map(async (roomId) => {
+        const result = await r2Service.loadFiles(roomId, {
+          ...options,
+          continuationToken: roomTokens.value.get(roomId)
         })
-      )
+        return { roomId, result }
+      })
+    )
 
-      files.value = mergeAndSort([...files.value, ...results.flat()])
-      totalSize.value = files.value.reduce((sum, file) => sum + (file.size || 0), 0)
-
-      console.log(`[useFileManager] 추가 파일 로드 완료: 총 ${files.value.length}개, hasMore: ${hasMore.value}`)
-    } catch (err) {
-      console.error('[useFileManager] 추가 파일 로드 오류:', err)
-      error.value = err
-    } finally {
+    if (myGeneration !== loadGeneration) {
+      // 그 사이 새로운 loadFilesFromRooms가 호출됨 — 이 결과는 폐기
       isLoading.value = false
+      return
     }
+
+    const newFiles = []
+    let lastError = null
+    for (const outcome of settled) {
+      if (outcome.status === 'fulfilled') {
+        try {
+          const { roomId, result } = outcome.value
+          // 성공한 룸만 토큰을 전진시킨다 — 실패한 룸은 같은 토큰으로 다음에 재시도됨
+          roomTokens.value.set(roomId, result.nextToken || null)
+          newFiles.push(...result.files.map(file => ({ ...file, roomId })))
+        } catch (parseErr) {
+          lastError = parseErr
+          console.error('[useFileManager] 추가 룸 응답 처리 실패(부분):', parseErr)
+        }
+      } else {
+        lastError = outcome.reason
+        console.error('[useFileManager] 추가 룸 로드 실패(부분):', outcome.reason)
+      }
+    }
+
+    files.value = mergeAndSort([...files.value, ...newFiles])
+    totalSize.value = files.value.reduce((sum, file) => sum + (file.size || 0), 0)
+    if (newFiles.length === 0 && lastError) error.value = lastError
+
+    isLoading.value = false
+
+    console.log(`[useFileManager] 추가 파일 로드 완료: 총 ${files.value.length}개, hasMore: ${hasMore.value}`)
   }
 
   /**
