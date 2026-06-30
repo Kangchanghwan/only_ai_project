@@ -23,9 +23,12 @@ export function useRoomManager() {
     console.log('[useRoomManager] 룸 설정:', payload)
   }
 
-  /** 스코프('global'|'ip')에 해당하는 룸 ID 반환 */
+  /** 스코프('global'|'ip')에 해당하는 룸 ID 반환. 유효하지 않은 스코프는 null. */
   function roomIdForScope(scope) {
-    return scope === 'global' ? globalRoomId.value : ipRoomId.value
+    if (scope === 'global') return globalRoomId.value
+    if (scope === 'ip') return ipRoomId.value
+    console.warn('[useRoomManager] 유효하지 않은 스코프:', scope)
+    return null
   }
 
   function leaveRoom() {

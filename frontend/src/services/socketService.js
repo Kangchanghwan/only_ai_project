@@ -5,7 +5,7 @@ import { io } from 'socket.io-client'
  * Socket.IO 서비스
  *
  * Socket.IO 클라이언트 연결 및 이벤트 관리를 담당하는 싱글톤 서비스입니다.
- * 단일 공유 룸(room-shared)에 자동 입장합니다.
+ * 전체 공유 룸(room-shared)과 IP 격리 룸에 동시 자동 입장합니다.
  */
 class SocketService {
   constructor() {
@@ -126,7 +126,7 @@ class SocketService {
   /**
    * 서버에 연결하고 자동으로 공유 룸에 입장합니다
    *
-   * @returns {Promise<{roomId: string, users: number}>} 룸 정보
+   * @returns {Promise<{globalRoomId: string, ipRoomId: string, users: number}>} 룸 정보
    */
   connect() {
     // 이미 연결되어 있는 경우
