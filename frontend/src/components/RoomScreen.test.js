@@ -24,6 +24,10 @@ const stubs = {
   BackgroundQR: {
     name: 'BackgroundQR',
     template: '<div class="background-qr-stub"></div>'
+  },
+  AppFooter: {
+    name: 'AppFooter',
+    template: '<div class="app-footer-stub"></div>'
   }
 }
 
