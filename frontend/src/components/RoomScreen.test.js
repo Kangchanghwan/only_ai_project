@@ -20,6 +20,10 @@ const stubs = {
     template: '<div class="text-share-box-stub"></div>',
     props: ['texts'],
     emits: ['remove-text', 'clear-all', 'copy-text']
+  },
+  BackgroundQR: {
+    name: 'BackgroundQR',
+    template: '<div class="background-qr-stub"></div>'
   }
 }
 
@@ -61,6 +65,15 @@ describe('RoomScreen.vue', () => {
       expect(appHeader.props('userCount')).toBe(5)
       expect(appHeader.props('isConnecting')).toBe(true)
       expect(fileGallery.props('isLoading')).toBe(false)
+    })
+
+    it('배경 QR 레이어가 렌더링되어야 한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { stubs }
+      })
+
+      expect(wrapper.find('.background-qr-stub').exists()).toBe(true)
     })
   })
 

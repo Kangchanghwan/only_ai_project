@@ -3,6 +3,7 @@ import AppHeader from './AppHeader.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import AppFooter from './AppFooter.vue'
+import BackgroundQR from './BackgroundQR.vue'
 
 const props = defineProps({
   roomId: {
@@ -54,6 +55,8 @@ const emit = defineEmits([
 
 <template>
   <div class="max-w-[1600px] mx-auto p-6 text-text-primary">
+    <BackgroundQR />
+
     <AppHeader
       :user-count="userCount"
       :is-connecting="isConnecting"
