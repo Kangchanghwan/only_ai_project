@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useShareScope } from '../composables/useShareScope.js'
 
 const { t } = useI18n()
 
@@ -8,6 +9,12 @@ const emit = defineEmits(['upload-files'])
 
 const fileInputRef = ref(null)
 const isDragging = ref(false)
+
+const { scope, setScope } = useShareScope()
+
+function selectScope(next) {
+  setScope(next)
+}
 
 // 환경 변수에서 최대 파일 크기 가져오기 (기본값: 10MB)
 const maxFileSizeMB = computed(() => import.meta.env.VITE_MAX_FILE_SIZE_MB || 10)
@@ -98,6 +105,33 @@ function handleDrop(event) {
         <div class="flex items-center gap-2 text-xs text-white/90">
           <span>{{ t('file.maxSize', { size: maxFileSizeMB }) }}</span>
         </div>
+      </div>
+      <div
+        class="mt-2 flex items-center gap-2 text-xs"
+        role="group"
+        :aria-label="t('shareScope.label')"
+        @click.stop
+      >
+        <button
+          type="button"
+          class="px-2 py-1 rounded-full transition-colors"
+          :class="scope === 'ip' ? 'bg-primary text-white' : 'bg-white/20 text-white/80 hover:bg-white/30'"
+          :aria-pressed="scope === 'ip'"
+          :title="t('shareScope.ipDescription')"
+          @click.stop="selectScope('ip')"
+        >
+          {{ t('shareScope.ip') }}
+        </button>
+        <button
+          type="button"
+          class="px-2 py-1 rounded-full transition-colors"
+          :class="scope === 'global' ? 'bg-primary text-white' : 'bg-white/20 text-white/80 hover:bg-white/30'"
+          :aria-pressed="scope === 'global'"
+          :title="t('shareScope.globalDescription')"
+          @click.stop="selectScope('global')"
+        >
+          {{ t('shareScope.global') }}
+        </button>
       </div>
     </div>
 
