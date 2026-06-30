@@ -20,5 +20,11 @@ export function useShareScope() {
     localStorage.setItem(STORAGE_KEY, next)
   }
 
-  return { scope, setScope }
+  /** localStorage에서 현재 스코프를 즉시 읽는다(업로드 시점의 최신값 보장). */
+  function getScope() {
+    const v = localStorage.getItem(STORAGE_KEY)
+    return VALID.includes(v) ? v : DEFAULT_SCOPE
+  }
+
+  return { scope, setScope, getScope }
 }

@@ -29,4 +29,17 @@ describe('useShareScope', () => {
     setScope('nonsense')
     expect(scope.value).toBe('ip')
   })
+
+  it('getScope는 localStorage의 현재값을 반환한다', () => {
+    const { setScope, getScope } = useShareScope()
+    setScope('global')
+    expect(getScope()).toBe('global')
+  })
+
+  it('getScope는 다른 인스턴스가 바꾼 값도 반영한다(localStorage 단일 출처)', () => {
+    const a = useShareScope()
+    const b = useShareScope()
+    a.setScope('global')
+    expect(b.getScope()).toBe('global')
+  })
 })
