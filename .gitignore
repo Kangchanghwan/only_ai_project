@@ -39,3 +39,4 @@ yarn-error.log*
 # Other
 .npm
 .yarn-integrity
+.superpowers/
