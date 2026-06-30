@@ -1,8 +1,6 @@
 import { ref } from 'vue'
 import { io } from 'socket.io-client'
 
-const SHARED_ROOM_ID = 'room-shared'
-
 /**
  * Socket.IO 서비스
  *
@@ -19,6 +17,10 @@ class SocketService {
     this.isOnline = ref(navigator.onLine)
     this.usersInRoom = ref(0)
     this.connectionError = ref(null)
+
+    // 룸 ID 상태 (전체 공유 / IP 격리)
+    this.globalRoomId = ref(null)
+    this.ipRoomId = ref(null)
 
     // 재연결 관련 상태
     this._isIntentionalDisconnect = false
@@ -131,7 +133,8 @@ class SocketService {
     if (this.socket?.connected) {
       console.warn('[SocketService] 이미 소켓에 연결되어 있습니다')
       return Promise.resolve({
-        roomId: SHARED_ROOM_ID,
+        globalRoomId: this.globalRoomId.value,
+        ipRoomId: this.ipRoomId.value,
         users: this.usersInRoom.value
       })
     }
@@ -156,16 +159,19 @@ class SocketService {
        * 'registered' 이벤트 핸들러
        * 서버가 공유 룸에 클라이언트를 등록했을 때 발생
        */
-      const handleRegistered = (roomId) => {
-        console.log('[SocketService] 공유 룸 입장 완료:', roomId)
+      const handleRegistered = (payload) => {
+        console.log('[SocketService] 룸 입장 완료:', payload)
         clearTimeout(connectionTimeout)
+
+        this.globalRoomId.value = payload.globalRoomId
+        this.ipRoomId.value = payload.ipRoomId
 
         this.usersInRoom.value = 1
         this.connectionError.value = null
         this._wasConnected = true
 
         this.socket.off('registered', handleRegistered)
-        resolve({ roomId, users: 1 })
+        resolve({ globalRoomId: payload.globalRoomId, ipRoomId: payload.ipRoomId, users: 1 })
       }
 
       // 연결 성공 이벤트
@@ -232,16 +238,17 @@ class SocketService {
   }
 
   /**
-   * 메시지를 서버로 전송합니다
+   * 메시지를 서버로 전송합니다.
+   * @param {Object} message - 전송할 메시지
+   * @param {'global'|'ip'} target - 공유 대상 룸
    */
-  publishMessage(message) {
+  publishMessage(message, target) {
     if (!this.socket?.connected) {
       console.error('[SocketService] 소켓이 연결되지 않았습니다')
       throw new Error('Socket not connected')
     }
-
-    console.log('[SocketService] 메시지 전송:', message)
-    this.socket.emit('publish', message)
+    console.log('[SocketService] 메시지 전송:', message, 'target:', target)
+    this.socket.emit('publish', message, target)
   }
 
   on(event, callback) {
@@ -273,6 +280,8 @@ class SocketService {
       this.isConnected.value = false
       this.usersInRoom.value = 0
       this.connectionError.value = null
+      this.globalRoomId.value = null
+      this.ipRoomId.value = null
       this._wasConnected = false
 
       console.log('[SocketService] 소켓 연결 해제 완료')
