@@ -47,7 +47,7 @@ describe('useFileManager', () => {
       ]
 
       // r2Service.loadFiles를 모킹
-      r2Service.loadFiles.mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue({ files: mockFiles, nextToken: null })
 
       await fileManager.loadFiles('ROOM01')
 
@@ -80,7 +80,7 @@ describe('useFileManager', () => {
         }
       ]
 
-      r2Service.loadFiles.mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue({ files: mockFiles, nextToken: null })
 
       await fileManager.loadFiles('ROOM01')
 
@@ -206,7 +206,7 @@ describe('useFileManager', () => {
 
       // loadFiles를 통해 totalSize 설정
       const mockFiles = [{ name: 'existing.png', size: currentRoomSize, url: 'http://test.com', created: new Date().toISOString(), type: 'image/png' }]
-      r2Service.loadFiles.mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue({ files: mockFiles, nextToken: null })
       await fileManager.loadFiles('ROOM01')
 
       // 환경 변수 모킹
@@ -228,7 +228,7 @@ describe('useFileManager', () => {
 
       // loadFiles를 통해 totalSize 설정
       const mockFiles = [{ name: 'existing.png', size: currentRoomSize, url: 'http://test.com', created: new Date().toISOString(), type: 'image/png' }]
-      r2Service.loadFiles.mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue({ files: mockFiles, nextToken: null })
       await fileManager.loadFiles('ROOM01')
 
       import.meta.env.VITE_MAX_ROOM_SIZE_MB = maxRoomSize
@@ -262,7 +262,7 @@ describe('useFileManager', () => {
 
       // loadFiles를 통해 totalSize 설정
       const mockFiles = [{ name: 'existing.png', size: currentRoomSize, url: 'http://test.com', created: new Date().toISOString(), type: 'image/png' }]
-      r2Service.loadFiles.mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue({ files: mockFiles, nextToken: null })
       await fileManager.loadFiles('ROOM01')
 
       r2Service.uploadFile.mockResolvedValue({
@@ -290,7 +290,7 @@ describe('useFileManager', () => {
 
       // loadFiles를 통해 totalSize 설정
       const mockFiles = [{ name: 'existing.png', size: currentRoomSize, url: 'http://test.com', created: new Date().toISOString(), type: 'image/png' }]
-      r2Service.loadFiles.mockResolvedValue(mockFiles)
+      r2Service.loadFiles.mockResolvedValue({ files: mockFiles, nextToken: null })
       await fileManager.loadFiles('ROOM01')
 
       import.meta.env.VITE_MAX_ROOM_SIZE_MB = maxRoomSize
