@@ -105,6 +105,7 @@ Components (UI) → Composables (Logic) → Services (API)
 PORT=3001
 ALLOWED_ORIGINS=https://www.clipboardapp.org
 ROOM_GRACE_PERIOD_SEC=300
+ROOM_ID_SECRET=<long-random-string>   # IP 격리 룸 ID 생성용 HMAC 시크릿. 운영 필수(미설정 시 추측 가능한 기본값으로 강등 + 시작 경고)
 R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL
 ```
 
