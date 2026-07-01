@@ -133,13 +133,21 @@ export class RoomManager {
         return this.getRoomUserCount(SHARED_ROOM_ID);
     }
 
-    /** 특정 룸 데이터 조회 */
+    /** 특정 룸 데이터 조회 (스냅샷 복사본 — users Map은 내부 상태와 분리된 복사본이며, 반환값을 변경해도 실제 룸 상태에는 영향이 없음) */
     getRoomData(roomId: string): RoomData | undefined {
-        return this.rooms[roomId];
+        const room = this.rooms[roomId];
+        if (!room) {
+            return undefined;
+        }
+        return { ...room, users: new Map(room.users) };
     }
 
-    /** 전체 룸 데이터 조회 (디버깅/모니터링용) */
+    /** 전체 룸 데이터 조회 (디버깅/모니터링용 스냅샷 복사본 — 각 룸의 users Map도 복사되어 내부 상태와 분리됨) */
     getAllRooms(): Rooms {
-        return { ...this.rooms };
+        const copy: Rooms = {};
+        for (const [roomId, room] of Object.entries(this.rooms)) {
+            copy[roomId] = { ...room, users: new Map(room.users) };
+        }
+        return copy;
     }
 }

@@ -72,6 +72,14 @@ describe('RoomManager - Storage Integration', () => {
         it('존재하지 않는 룸은 빈 배열을 반환해야 함', () => {
             expect(roomManager.getRoomUsers('room-nonexistent')).toEqual([]);
         });
+
+        it('같은 socketId로 재입장해도 인원수가 중복 카운트되지 않아야 함', () => {
+            const roomId = 'room-ipA';
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
+
+            expect(roomManager.getRoomUserCount(roomId)).toBe(1);
+        });
     });
 
     describe('removeUserFromRoom - Delayed Cleanup', () => {
