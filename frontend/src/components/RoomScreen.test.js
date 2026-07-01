@@ -7,7 +7,7 @@ const stubs = {
   AppHeader: {
     name: 'AppHeader',
     template: '<div class="app-header-stub"><slot /></div>',
-    props: ['userCount', 'isConnecting']
+    props: ['userCount', 'isConnecting', 'devices']
   },
   FileGallery: {
     name: 'FileGallery',
@@ -34,7 +34,8 @@ describe('RoomScreen.vue', () => {
     texts: [],
     isLoading: false,
     userCount: 1,
-    isConnecting: false
+    isConnecting: false,
+    devices: []
   }
 
   describe('컴포넌트 렌더링', () => {
@@ -212,6 +213,19 @@ describe('RoomScreen.vue', () => {
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
       expect(fileGallery.props('isLoading')).toBe(true)
+    })
+
+    it('devices props가 AppHeader에 전달되어야 한다', () => {
+      const devices = [
+        { socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }
+      ]
+      const wrapper = mount(RoomScreen, {
+        props: { ...defaultProps, devices },
+        global: { stubs }
+      })
+
+      const appHeader = wrapper.findComponent({ name: 'AppHeader' })
+      expect(appHeader.props('devices')).toEqual(devices)
     })
   })
 })

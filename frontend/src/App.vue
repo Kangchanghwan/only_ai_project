@@ -629,6 +629,7 @@ onUnmounted(() => {
       :texts="textShare.sharedTexts.value"
       :is-loading="fileManager.isLoading.value || isConnecting"
       :user-count="socket.usersInRoom.value"
+      :devices="socket.ipRoomDevices.value"
       :has-more="fileManager.hasMore.value"
       @copy-image="handleCopyImage"
       @upload-files="handleUploadFiles"
