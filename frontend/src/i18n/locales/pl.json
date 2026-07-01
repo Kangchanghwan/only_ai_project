@@ -8,6 +8,7 @@
     "connecting": "Łączenie...",
     "connected": "Połączono z pokojem {roomId}.",
     "userCount": "{count} użytkownik(ów) w pokoju.",
+    "connectedDevices": "Połączone urządzenia",
     "copyCode": "Kopiuj kod pokoju",
     "copied": "Kod pokoju skopiowany!"
   },

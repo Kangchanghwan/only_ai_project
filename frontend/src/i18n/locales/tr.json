@@ -8,6 +8,7 @@
     "connecting": "Bağlanıyor...",
     "connected": "Oda {roomId}'ye bağlandı.",
     "userCount": "Odada {count} kullanıcı.",
+    "connectedDevices": "Bağlı cihazlar",
     "copyCode": "Oda Kodunu Kopyala",
     "copied": "Oda kodu kopyalandı!"
   },

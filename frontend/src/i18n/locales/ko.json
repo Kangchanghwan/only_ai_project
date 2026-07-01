@@ -8,6 +8,7 @@
     "connecting": "연결 중...",
     "connected": "룸 {roomId}에 연결되었습니다.",
     "userCount": "현재 {count}명이 룸에 있습니다.",
+    "connectedDevices": "연결된 기기",
     "copyCode": "룸 코드 복사",
     "copied": "룸 코드 복사됨!"
   },

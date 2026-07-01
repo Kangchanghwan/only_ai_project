@@ -8,6 +8,7 @@
     "connecting": "接続中...",
     "connected": "ルーム {roomId} に接続しました。",
     "userCount": "現在 {count} 人がルームにいます。",
+    "connectedDevices": "接続中のデバイス",
     "copyCode": "ルームコードをコピー",
     "copied": "ルームコードをコピーしました！"
   },

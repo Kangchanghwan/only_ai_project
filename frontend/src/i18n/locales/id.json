@@ -8,6 +8,7 @@
     "connecting": "Menghubungkan...",
     "connected": "Terhubung ke ruangan {roomId}.",
     "userCount": "{count} pengguna di ruangan.",
+    "connectedDevices": "Perangkat yang terhubung",
     "copyCode": "Salin kode ruangan",
     "copied": "Kode ruangan disalin!"
   },

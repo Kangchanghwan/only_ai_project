@@ -8,6 +8,7 @@
     "connecting": "جاري الاتصال...",
     "connected": "متصل بالغرفة {roomId}.",
     "userCount": "{count} مستخدم في الغرفة.",
+    "connectedDevices": "الأجهزة المتصلة",
     "copyCode": "نسخ رمز الغرفة",
     "copied": "تم نسخ رمز الغرفة!"
   },
