@@ -33,6 +33,11 @@ export function useFileManager() {
     return false
   })
 
+  /** 특정 룸에 한해 더 불러올 페이지가 있는지 여부 (활성 탭 기준 "더 보기" 버튼 노출용) */
+  function hasMoreForRoom(roomId) {
+    return !!roomTokens.value.get(roomId)
+  }
+
   /** roomId+name 기준 중복 제거 후 created 내림차순 정렬 */
   function mergeAndSort(fileList) {
     const seen = new Set()
@@ -390,6 +395,7 @@ export function useFileManager() {
      * 더 불러올 파일이 있는지 여부 (룸 중 하나라도 다음 페이지가 있으면 true).
      */
     hasMore,
+    hasMoreForRoom,
 
     /**
      * 단일 룸의 파일 목록을 불러오는 함수 (loadFilesFromRooms 래퍼).

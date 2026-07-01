@@ -399,6 +399,19 @@ describe('useFileManager', () => {
       expect(fm.files.value.map(f => f.name).sort()).toEqual(['a1.png', 'a2.png', 'b1.png'].sort())
       expect(fm.hasMore.value).toBe(false)
     })
+
+    it('hasMoreForRoom은 룸별로 독립적으로 nextToken 존재 여부를 반환한다', async () => {
+      r2Service.loadFiles
+        .mockResolvedValueOnce({ files: [], nextToken: 'token-a' })
+        .mockResolvedValueOnce({ files: [], nextToken: undefined })
+
+      const fm = useFileManager()
+      await fm.loadFilesFromRooms(['room-a', 'room-b'])
+
+      expect(fm.hasMoreForRoom('room-a')).toBe(true)
+      expect(fm.hasMoreForRoom('room-b')).toBe(false)
+      expect(fm.hasMoreForRoom('room-unknown')).toBe(false)
+    })
   })
 
   describe('룸별 용량 검증 (roomSize / uploadFile)', () => {
