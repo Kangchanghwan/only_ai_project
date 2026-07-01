@@ -149,7 +149,7 @@ Requirements detail (already implemented and reviewed):
 - Modify: `frontend/src/components/RoomScreen.vue`
 - Test: `frontend/src/components/RoomScreen.test.js`
 
-- [ ] **Step 1: 실패하는 테스트 작성**
+- [x] **Step 1: 실패하는 테스트 작성**
 
 `frontend/src/components/RoomScreen.test.js`의 `stubs` 객체에 `ShareScopeTabs` 항목 추가:
 
@@ -249,12 +249,12 @@ const stubs = {
     })
 ```
 
-- [ ] **Step 2: 테스트 실패 확인**
+- [x] **Step 2: 테스트 실패 확인**
 
 Run (frontend 디렉토리에서): `npx vitest run src/components/RoomScreen.test.js`
 Expected: FAIL — `RoomScreen`이 아직 `ShareScopeTabs`를 렌더링하지 않고, `scope`/`ipRoomDevices`/`globalRoomDevices` prop과 `select-scope` emit이 없음
 
-- [ ] **Step 3: `RoomScreen.vue` 수정**
+- [x] **Step 3: `RoomScreen.vue` 수정**
 
 `import` 구문에 추가:
 
@@ -391,12 +391,12 @@ import AppFooter from './AppFooter.vue'
       />
 ```
 
-- [ ] **Step 4: 테스트 통과 확인**
+- [x] **Step 4: 테스트 통과 확인**
 
 Run: `npx vitest run src/components/RoomScreen.test.js`
 Expected: PASS
 
-- [ ] **Step 5: 커밋**
+- [x] **Step 5: 커밋**
 
 ```bash
 cd frontend
@@ -413,7 +413,7 @@ git commit -m "feat(frontend): render ShareScopeTabs in RoomScreen and wire sele
 
 이 태스크는 기존 자동 테스트 커버리지가 없는 최상위 컴포넌트(App.test.js 없음)를 다룬다. 자동화된 테스트 대신, 이전 태스크들에서 이미 검증된 하위 유닛(`useTextShare`, `useFileManager`, `ShareScopeTabs` 등)을 배선만 하고, 아래 "수동 검증" 단계에서 실제 동작을 확인한다.
 
-- [ ] **Step 1: `computed` import 추가**
+- [x] **Step 1: `computed` import 추가**
 
 ```js
 import { onMounted, onUnmounted, ref } from 'vue'
@@ -425,7 +425,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { onMounted, onUnmounted, ref, computed } from 'vue'
 ```
 
-- [ ] **Step 2: `activeRoomId`/`visibleFiles`/`visibleTexts` computed 추가**
+- [x] **Step 2: `activeRoomId`/`visibleFiles`/`visibleTexts` computed 추가**
 
 `const shareScope = useShareScope()` 다음 줄(`const isConnecting = ref(false)` 이전)에 추가:
 
@@ -456,7 +456,7 @@ const visibleTexts = computed(() =>
 )
 ```
 
-- [ ] **Step 3: 소켓 메시지 수신 핸들러에서 텍스트에 `roomId` 태깅 + `texts-cleared`를 룸 스코프로 처리**
+- [x] **Step 3: 소켓 메시지 수신 핸들러에서 텍스트에 `roomId` 태깅 + `texts-cleared`를 룸 스코프로 처리**
 
 `setupSocketListeners()` 내부의 아래 부분을:
 
@@ -503,7 +503,7 @@ const visibleTexts = computed(() =>
     }
 ```
 
-- [ ] **Step 4: 텍스트 공유 핸들러 3개를 scope-aware로 수정**
+- [x] **Step 4: 텍스트 공유 핸들러 3개를 scope-aware로 수정**
 
 `handleAddText`를:
 
@@ -625,7 +625,7 @@ async function handleClearAllTexts() {
 }
 ```
 
-- [ ] **Step 5: 템플릿에서 `RoomScreen`에 새 props/emit 배선**
+- [x] **Step 5: 템플릿에서 `RoomScreen`에 새 props/emit 배선**
 
 ```html
     <RoomScreen
@@ -687,12 +687,12 @@ async function handleClearAllTexts() {
     />
 ```
 
-- [ ] **Step 6: 프론트엔드 전체 테스트 스위트 통과 확인 (회귀 확인)**
+- [x] **Step 6: 프론트엔드 전체 테스트 스위트 통과 확인 (회귀 확인)**
 
 Run (frontend 디렉토리에서): `npx vitest run`
 Expected: PASS — 전체 스위트(이 계획의 이전 태스크에서 수정한 모든 파일 포함) 회귀 없이 통과.
 
-- [ ] **Step 7: 커밋**
+- [x] **Step 7: 커밋**
 
 ```bash
 cd frontend
@@ -706,17 +706,17 @@ git commit -m "feat(frontend): filter visible feed by active scope and fix text-
 
 **Files:** 없음(검증 전용 태스크)
 
-- [ ] **Step 1: 백엔드 전체 테스트 스위트 실행**
+- [x] **Step 1: 백엔드 전체 테스트 스위트 실행**
 
 Run (backend 디렉토리에서): `npm test`
 Expected: PASS — 전체 Jest 스위트 (RoomManager, deviceInfo, clientIp, r2Service, StorageService, server 포함)
 
-- [ ] **Step 2: 프론트엔드 전체 테스트 스위트 실행**
+- [x] **Step 2: 프론트엔드 전체 테스트 스위트 실행**
 
 Run (frontend 디렉토리에서): `npx vitest run`
 Expected: PASS — 전체 Vitest 스위트
 
-- [ ] **Step 3: 수동 스모크 테스트 (로컬 dev 서버)**
+- [x] **Step 3: 수동 스모크 테스트 (로컬 dev 서버)**
 
 ```bash
 # 터미널 1
@@ -735,6 +735,6 @@ cd frontend && npm run dev
 6. "전체 공유" 탭에서 "모두 지우기"를 눌러도 "같은 네트워크" 탭의 텍스트는 남아있는지 확인(탭 전환으로 검증).
 7. 브라우저 콘솔에 에러가 없는지 확인.
 
-- [ ] **Step 4: 개발 서버 종료**
+- [x] **Step 4: 개발 서버 종료**
 
 각 터미널에서 `Ctrl+C`로 종료한다.

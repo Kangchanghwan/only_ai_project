@@ -13,7 +13,7 @@ import { ref, computed } from 'vue'
 export function useTextShare() {
   /**
    * 공유된 텍스트 목록
-   * @type {import('vue').Ref<Array<{id: string, content: string, timestamp: number}>>}
+   * @type {import('vue').Ref<Array<{id: string, content: string, timestamp: number, roomId: string}>>}
    */
   const sharedTexts = ref([])
 
