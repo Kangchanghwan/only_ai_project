@@ -1,10 +1,13 @@
 import { Socket } from 'socket.io';
+import { DeviceInfo, DeviceType } from '../utils/deviceInfo';
+
+export type { DeviceInfo, DeviceType };
 
 // === 룸 관련 타입 ===
 
-/** 룸 데이터 (사용자 수, 생성 시간 저장) */
+/** 룸 데이터 (기기별 접속 정보, 생성 시간 저장) */
 export interface RoomData {
-    userCount: number;
+    users: Map<string, DeviceInfo>;
     createdAt: Date;
     cleanupTimer?: ReturnType<typeof setTimeout>;
 }

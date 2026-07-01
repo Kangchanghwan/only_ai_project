@@ -1,4 +1,5 @@
 import { Rooms, RoomData } from '../types';
+import { DeviceInfo } from '../utils/deviceInfo';
 import { StorageService } from '../services/StorageService';
 import logger from '../utils/logger';
 
@@ -11,7 +12,7 @@ const DEFAULT_GRACE_PERIOD_MS = 10 * 60 * 1000;
 /**
  * 룸 관리 클래스
  * - 단일 공유 룸 관리
- * - 사용자 입장/퇴장 추적
+ * - 사용자 입장/퇴장 및 기기 정보 추적 (socketId → DeviceInfo)
  * - 빈 룸은 grace period 후 자동 삭제
  * - 통계 조회
  */
@@ -34,14 +35,14 @@ export class RoomManager {
     createRoom(roomId: string): void {
         if (!this.rooms[roomId]) {
             this.rooms[roomId] = {
-                userCount: 0,
+                users: new Map(),
                 createdAt: new Date()
             };
         }
     }
 
     /** 룸에 사용자 추가 (룸이 없으면 자동 생성, 삭제 타이머 취소) */
-    addUserToRoom(roomId: string): number {
+    addUserToRoom(roomId: string, socketId: string, deviceInfo: DeviceInfo): number {
         if (!this.rooms[roomId]) {
             this.createRoom(roomId);
         }
@@ -53,22 +54,20 @@ export class RoomManager {
             logger.info(`Cancelled cleanup timer for room ${roomId} (user rejoined)`);
         }
 
-        this.rooms[roomId].userCount++;
-        return this.rooms[roomId].userCount;
+        this.rooms[roomId].users.set(socketId, deviceInfo);
+        return this.rooms[roomId].users.size;
     }
 
     /** 룸에서 사용자 제거 (빈 룸은 grace period 후 자동 삭제) */
-    async removeUserFromRoom(roomId: string): Promise<number> {
+    async removeUserFromRoom(roomId: string, socketId: string): Promise<number> {
         if (!this.rooms[roomId]) {
             return 0;
         }
 
-        this.rooms[roomId].userCount--;
+        this.rooms[roomId].users.delete(socketId);
 
         // 빈 룸: grace period 후 삭제 스케줄링
-        if (this.rooms[roomId].userCount <= 0) {
-            this.rooms[roomId].userCount = 0;
-
+        if (this.rooms[roomId].users.size <= 0) {
             logger.info(`Room ${roomId} is empty. Scheduling cleanup in ${this.gracePeriodMs / 1000}s`);
 
             this.rooms[roomId].cleanupTimer = setTimeout(() => {
@@ -78,13 +77,13 @@ export class RoomManager {
             return 0;
         }
 
-        return this.rooms[roomId].userCount;
+        return this.rooms[roomId].users.size;
     }
 
     /** 실제 룸 삭제 로직 (타이머 만료 후 실행) */
     private async _cleanupRoom(roomId: string): Promise<void> {
         // 타이머 만료 시점에 사용자가 재입장했으면 삭제하지 않음
-        if (this.rooms[roomId] && this.rooms[roomId].userCount > 0) {
+        if (this.rooms[roomId] && this.rooms[roomId].users.size > 0) {
             return;
         }
 
@@ -111,7 +110,12 @@ export class RoomManager {
 
     /** 룸의 현재 사용자 수 조회 */
     getRoomUserCount(roomId: string): number {
-        return this.rooms[roomId]?.userCount || 0;
+        return this.rooms[roomId]?.users.size || 0;
+    }
+
+    /** 룸에 입장한 기기 정보 목록 조회 (입장 순서) */
+    getRoomUsers(roomId: string): DeviceInfo[] {
+        return this.rooms[roomId] ? Array.from(this.rooms[roomId].users.values()) : [];
     }
 
     /** 전체 룸 개수 조회 */
@@ -121,7 +125,7 @@ export class RoomManager {
 
     /** 전체 사용자 수 조회 */
     getTotalUsers(): number {
-        return Object.values(this.rooms).reduce((sum, room) => sum + room.userCount, 0);
+        return Object.values(this.rooms).reduce((sum, room) => sum + room.users.size, 0);
     }
 
     /** 실제 접속자 수 (모든 소켓이 공유 룸에 1회 입장하므로 공유 룸 인원 = 접속자 수) */
