@@ -194,16 +194,16 @@ async function handleShare(event) {
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- QR 코드 모달 (Teleport로 body로 이동) -->
-  <Teleport to="body">
-    <FileQRCodeModal
-      :file="file"
-      :is-open="isQRModalOpen"
-      @close="closeQRModal"
-    />
-  </Teleport>
+    <!-- QR 코드 모달 (Teleport로 body로 이동) -->
+    <Teleport to="body">
+      <FileQRCodeModal
+        :file="file"
+        :is-open="isQRModalOpen"
+        @close="closeQRModal"
+      />
+    </Teleport>
+  </div>
 </template>
 
 <style scoped>

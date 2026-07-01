@@ -40,3 +40,5 @@ yarn-error.log*
 .npm
 .yarn-integrity
 .superpowers/
+.gstack/
+.worktrees/

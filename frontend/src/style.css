@@ -36,6 +36,7 @@ body.dark {
   --color-border: #3A3430;
   --color-scope-global: #6FAE8A;
   --color-scope-global-tint: #223026;
+  --font-display: 'Cabinet Grotesk', 'Plus Jakarta Sans', sans-serif;
 }
 
 @layer base {
