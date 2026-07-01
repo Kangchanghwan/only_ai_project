@@ -64,6 +64,8 @@ export interface ServerToClientEvents {
     registered: (payload: RegisteredPayload) => void;
     message: (msg: any) => void;
     'user-left': (userCount: number) => void;
+    /** IP 격리 룸("우리 네트워크")의 접속 기기 목록이 바뀔 때마다 전체 목록을 브로드캐스트 */
+    'room-users': (devices: DeviceInfo[]) => void;
     error: (error: ErrorResponse) => void;
 }
 
