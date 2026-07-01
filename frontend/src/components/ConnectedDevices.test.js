@@ -71,4 +71,23 @@ describe('ConnectedDevices.vue', () => {
 
     expect(wrapper.text()).toContain('📱')
   })
+
+  it('아바타의 aria-label은 title과 동일하다 (터치/스크린리더 접근성)', () => {
+    const devices = [makeDevice('a', { browser: 'Firefox', os: 'macOS' })]
+    const wrapper = mount(ConnectedDevices, { props: { devices } })
+
+    const avatar = wrapper.find('[title]')
+    expect(avatar.attributes('aria-label')).toBe(avatar.attributes('title'))
+  })
+
+  it('오버플로우 배지의 aria-label은 title과 동일하다 (터치/스크린리더 접근성)', () => {
+    const devices = [
+      makeDevice('a'), makeDevice('b'), makeDevice('c'), makeDevice('d'),
+      makeDevice('e', { browser: 'Safari', os: 'iOS' })
+    ]
+    const wrapper = mount(ConnectedDevices, { props: { devices } })
+
+    const badge = wrapper.findAll('[title]').at(-1)
+    expect(badge.attributes('aria-label')).toBe(badge.attributes('title'))
+  })
 })

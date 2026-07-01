@@ -51,6 +51,7 @@ function avatarStyle(index) {
         v-for="(device, index) in visibleDevices"
         :key="device.socketId"
         :title="getDeviceLabel(device)"
+        :aria-label="getDeviceLabel(device)"
         :style="avatarStyle(index)"
         :class="{ '-ml-2': index > 0 }"
         class="relative inline-flex items-center justify-center w-8 h-8 rounded-full ring-2 ring-background bg-primary/10 text-base cursor-default hover:z-20! hover:-translate-y-0.5 hover:scale-105 transition-transform duration-150"
@@ -61,6 +62,7 @@ function avatarStyle(index) {
         v-if="overflowCount > 0"
         key="overflow"
         :title="overflowLabel"
+        :aria-label="overflowLabel"
         class="relative -ml-2 inline-flex items-center justify-center w-8 h-8 rounded-full ring-2 ring-background bg-border text-text-secondary text-xs font-semibold cursor-default hover:z-20! hover:-translate-y-0.5 hover:scale-105 transition-transform duration-150"
       >
         +{{ overflowCount }}
