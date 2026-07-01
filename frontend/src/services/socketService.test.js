@@ -30,6 +30,7 @@ describe('SocketService', () => {
       expect(socketService.globalRoomId.value).toBeNull()
       expect(socketService.ipRoomId.value).toBeNull()
       expect(socketService.usersInRoom.value).toBe(0)
+      expect(socketService.ipRoomDevices.value).toEqual([])
     })
 
     it('서버 URL이 올바르게 설정되어야 한다', () => {
@@ -47,6 +48,7 @@ describe('SocketService', () => {
       expect(socketService.globalRoomId.value).toBeNull()
       expect(socketService.ipRoomId.value).toBeNull()
       expect(socketService.usersInRoom.value).toBe(0)
+      expect(socketService.ipRoomDevices.value).toEqual([])
     })
 
     it('connect 호출 시 1초의 재연결 딜레이 옵션을 포함해야 한다', () => {

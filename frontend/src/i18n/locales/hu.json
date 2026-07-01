@@ -8,6 +8,7 @@
     "connecting": "Csatlakozás...",
     "connected": "Csatlakozva a(z) {roomId} szobához.",
     "userCount": "{count} felhasználó a szobában.",
+    "connectedDevices": "Csatlakoztatott eszközök",
     "copyCode": "Szobakód másolása",
     "copied": "Szobakód másolva!"
   },

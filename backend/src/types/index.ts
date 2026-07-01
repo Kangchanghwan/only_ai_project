@@ -1,10 +1,13 @@
 import { Socket } from 'socket.io';
+import { DeviceInfo, DeviceType } from '../utils/deviceInfo';
+
+export type { DeviceInfo, DeviceType };
 
 // === 룸 관련 타입 ===
 
-/** 룸 데이터 (사용자 수, 생성 시간 저장) */
+/** 룸 데이터 (기기별 접속 정보, 생성 시간 저장) */
 export interface RoomData {
-    userCount: number;
+    users: Map<string, DeviceInfo>;
     createdAt: Date;
     cleanupTimer?: ReturnType<typeof setTimeout>;
 }
@@ -61,6 +64,8 @@ export interface ServerToClientEvents {
     registered: (payload: RegisteredPayload) => void;
     message: (msg: any) => void;
     'user-left': (userCount: number) => void;
+    /** IP 격리 룸("우리 네트워크")의 접속 기기 목록이 바뀔 때마다 전체 목록을 브로드캐스트 */
+    'room-users': (devices: DeviceInfo[]) => void;
     error: (error: ErrorResponse) => void;
 }
 

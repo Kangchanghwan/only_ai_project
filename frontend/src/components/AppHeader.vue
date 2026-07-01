@@ -5,6 +5,7 @@ import HelpModal from './HelpModal.vue'
 import LanguageSelector from './LanguageSelector.vue'
 import ThemeToggleButton from './ThemeToggleButton.vue'
 import QRZoomModal from './QRZoomModal.vue'
+import ConnectedDevices from './ConnectedDevices.vue'
 import { useQRCode } from '../composables/useQRCode'
 
 const { t } = useI18n()
@@ -18,6 +19,10 @@ const props = defineProps({
   isConnecting: {
     type: Boolean,
     default: false
+  },
+  devices: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -51,6 +56,7 @@ onMounted(async () => {
     <div class="flex items-center gap-3 text-2xl">
       <span class="text-4xl" aria-hidden="true">📋</span>
       <h1 class="font-display font-bold text-2xl m-0">{{ t('app.title') }}</h1>
+      <ConnectedDevices :devices="devices" />
     </div>
     <div class="flex items-center gap-4">
       <LanguageSelector />

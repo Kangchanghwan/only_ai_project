@@ -1,5 +1,13 @@
 import { RoomManager, SHARED_ROOM_ID } from '../managers/RoomManager';
 import { StorageService } from '../services/StorageService';
+import { DeviceInfo } from '../utils/deviceInfo';
+
+const device = (socketId: string): DeviceInfo => ({
+    socketId,
+    deviceType: 'desktop',
+    browser: 'Chrome',
+    os: 'Windows'
+});
 
 describe('RoomManager - Storage Integration', () => {
     let roomManager: RoomManager;
@@ -8,12 +16,10 @@ describe('RoomManager - Storage Integration', () => {
     beforeEach(() => {
         jest.useFakeTimers();
 
-        // StorageService 모킹
         mockStorageService = {
             deleteRoomFiles: jest.fn()
         } as any;
 
-        // grace period를 5초로 설정 (테스트용)
         roomManager = new RoomManager(mockStorageService, 5000);
     });
 
@@ -31,15 +37,48 @@ describe('RoomManager - Storage Integration', () => {
 
     describe('getConnectedUserCount', () => {
         it('IP 룸 인원과 무관하게 공유 룸 인원만 실제 접속자 수로 반환해야 함', () => {
-            // 소켓 2개가 각각 공유 룸 + 자기 IP 룸에 입장한 상황을 모사
-            roomManager.addUserToRoom(SHARED_ROOM_ID);
-            roomManager.addUserToRoom(SHARED_ROOM_ID);
-            roomManager.addUserToRoom('room-ipA');
-            roomManager.addUserToRoom('room-ipB');
+            roomManager.addUserToRoom(SHARED_ROOM_ID, 'sock-1', device('sock-1'));
+            roomManager.addUserToRoom(SHARED_ROOM_ID, 'sock-2', device('sock-2'));
+            roomManager.addUserToRoom('room-ipA', 'sock-1', device('sock-1'));
+            roomManager.addUserToRoom('room-ipB', 'sock-2', device('sock-2'));
 
-            // 전체 합산은 4(공유 2 + IP 2)지만 실제 접속자는 2
             expect(roomManager.getTotalUsers()).toBe(4);
             expect(roomManager.getConnectedUserCount()).toBe(2);
+        });
+    });
+
+    describe('getRoomUsers', () => {
+        it('룸에 입장한 기기 정보 목록을 반환해야 함', () => {
+            const roomId = 'room-ipA';
+            const d1 = device('sock-1');
+            const d2: DeviceInfo = { socketId: 'sock-2', deviceType: 'mobile', browser: 'Safari', os: 'iOS' };
+
+            roomManager.addUserToRoom(roomId, 'sock-1', d1);
+            roomManager.addUserToRoom(roomId, 'sock-2', d2);
+
+            expect(roomManager.getRoomUsers(roomId)).toEqual([d1, d2]);
+        });
+
+        it('사용자가 나가면 목록에서 제거되어야 함', async () => {
+            const roomId = 'room-ipA';
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
+            roomManager.addUserToRoom(roomId, 'sock-2', device('sock-2'));
+
+            await roomManager.removeUserFromRoom(roomId, 'sock-1');
+
+            expect(roomManager.getRoomUsers(roomId)).toEqual([device('sock-2')]);
+        });
+
+        it('존재하지 않는 룸은 빈 배열을 반환해야 함', () => {
+            expect(roomManager.getRoomUsers('room-nonexistent')).toEqual([]);
+        });
+
+        it('같은 socketId로 재입장해도 인원수가 중복 카운트되지 않아야 함', () => {
+            const roomId = 'room-ipA';
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
+
+            expect(roomManager.getRoomUserCount(roomId)).toBe(1);
         });
     });
 
@@ -47,32 +86,25 @@ describe('RoomManager - Storage Integration', () => {
         it('마지막 사용자가 나가면 grace period 후 스토리지 파일을 삭제해야 함', async () => {
             const roomId = SHARED_ROOM_ID;
 
-            roomManager.addUserToRoom(roomId);
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
 
             mockStorageService.deleteRoomFiles.mockResolvedValue({
                 success: true,
                 deletedCount: 5
             });
 
-            // 사용자 제거 (마지막 사용자)
-            const remainingUsers = await roomManager.removeUserFromRoom(roomId);
+            const remainingUsers = await roomManager.removeUserFromRoom(roomId, 'sock-1');
             expect(remainingUsers).toBe(0);
 
-            // 아직 삭제되지 않아야 함
             expect(mockStorageService.deleteRoomFiles).not.toHaveBeenCalled();
-            // 방이 아직 메모리에 있어야 함 (타이머 대기 중)
             expect(roomManager.getRoomData(roomId)).toBeDefined();
 
-            // grace period 경과
             jest.advanceTimersByTime(5000);
-            // 비동기 작업 완료 대기
             await Promise.resolve();
 
-            // 이제 삭제되어야 함
             expect(mockStorageService.deleteRoomFiles).toHaveBeenCalledWith(roomId);
             expect(mockStorageService.deleteRoomFiles).toHaveBeenCalledTimes(1);
 
-            // 방이 삭제되었는지 확인
             expect(roomManager.getRoomUserCount(roomId)).toBe(0);
             expect(roomManager.getRoomData(roomId)).toBeUndefined();
         });
@@ -80,15 +112,14 @@ describe('RoomManager - Storage Integration', () => {
         it('사용자가 남아있을 때는 삭제를 스케줄링하지 않아야 함', async () => {
             const roomId = SHARED_ROOM_ID;
 
-            roomManager.addUserToRoom(roomId);
-            roomManager.addUserToRoom(roomId);
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
+            roomManager.addUserToRoom(roomId, 'sock-2', device('sock-2'));
 
-            const remainingUsers = await roomManager.removeUserFromRoom(roomId);
+            const remainingUsers = await roomManager.removeUserFromRoom(roomId, 'sock-1');
 
             expect(mockStorageService.deleteRoomFiles).not.toHaveBeenCalled();
             expect(remainingUsers).toBe(1);
 
-            // grace period 경과해도 삭제되지 않아야 함
             jest.advanceTimersByTime(5000);
             await Promise.resolve();
 
@@ -98,7 +129,7 @@ describe('RoomManager - Storage Integration', () => {
         it('스토리지 삭제가 실패해도 방은 삭제되어야 함', async () => {
             const roomId = SHARED_ROOM_ID;
 
-            roomManager.addUserToRoom(roomId);
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
 
             mockStorageService.deleteRoomFiles.mockResolvedValue({
                 success: false,
@@ -106,9 +137,8 @@ describe('RoomManager - Storage Integration', () => {
                 error: 'Storage error'
             });
 
-            await roomManager.removeUserFromRoom(roomId);
+            await roomManager.removeUserFromRoom(roomId, 'sock-1');
 
-            // grace period 경과
             jest.advanceTimersByTime(5000);
             await Promise.resolve();
 
@@ -119,7 +149,7 @@ describe('RoomManager - Storage Integration', () => {
         it('존재하지 않는 방의 사용자를 제거하려고 하면 0을 반환해야 함', async () => {
             const roomId = 'room-nonexistent';
 
-            const remainingUsers = await roomManager.removeUserFromRoom(roomId);
+            const remainingUsers = await roomManager.removeUserFromRoom(roomId, 'sock-1');
 
             expect(mockStorageService.deleteRoomFiles).not.toHaveBeenCalled();
             expect(remainingUsers).toBe(0);
@@ -128,25 +158,21 @@ describe('RoomManager - Storage Integration', () => {
         it('재입장 시 삭제 타이머가 취소되어야 함', async () => {
             const roomId = SHARED_ROOM_ID;
 
-            roomManager.addUserToRoom(roomId);
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
 
             mockStorageService.deleteRoomFiles.mockResolvedValue({
                 success: true,
                 deletedCount: 5
             });
 
-            // 마지막 사용자 퇴장 → 삭제 타이머 시작
-            await roomManager.removeUserFromRoom(roomId);
+            await roomManager.removeUserFromRoom(roomId, 'sock-1');
 
-            // 3초 후 재입장 (grace period 5초 미만)
             jest.advanceTimersByTime(3000);
-            roomManager.addUserToRoom(roomId);
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
 
-            // grace period 나머지 시간 경과
             jest.advanceTimersByTime(3000);
             await Promise.resolve();
 
-            // 삭제되지 않아야 함 (타이머가 취소되었으므로)
             expect(mockStorageService.deleteRoomFiles).not.toHaveBeenCalled();
             expect(roomManager.getRoomUserCount(roomId)).toBe(1);
         });
@@ -156,23 +182,20 @@ describe('RoomManager - Storage Integration', () => {
         it('모든 방의 삭제 타이머를 취소해야 함', async () => {
             const roomId = SHARED_ROOM_ID;
 
-            roomManager.addUserToRoom(roomId);
+            roomManager.addUserToRoom(roomId, 'sock-1', device('sock-1'));
 
             mockStorageService.deleteRoomFiles.mockResolvedValue({
                 success: true,
                 deletedCount: 0
             });
 
-            await roomManager.removeUserFromRoom(roomId);
+            await roomManager.removeUserFromRoom(roomId, 'sock-1');
 
-            // cancelAllTimers 호출
             roomManager.cancelAllTimers();
 
-            // grace period 경과
             jest.advanceTimersByTime(5000);
             await Promise.resolve();
 
-            // 타이머가 취소되었으므로 삭제되지 않아야 함
             expect(mockStorageService.deleteRoomFiles).not.toHaveBeenCalled();
         });
     });

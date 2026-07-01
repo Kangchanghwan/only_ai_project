@@ -8,6 +8,7 @@
     "connecting": "Connexion...",
     "connected": "Connecté à la salle {roomId}.",
     "userCount": "{count} utilisateur(s) dans la salle.",
+    "connectedDevices": "Appareils connectés",
     "copyCode": "Copier le code de la salle",
     "copied": "Code de la salle copié!"
   },

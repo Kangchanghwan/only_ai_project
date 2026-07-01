@@ -8,6 +8,7 @@
     "connecting": "Verbinden...",
     "connected": "Verbunden mit Raum {roomId}.",
     "userCount": "{count} Benutzer im Raum.",
+    "connectedDevices": "Verbundene Geräte",
     "copyCode": "Raumcode kopieren",
     "copied": "Raumcode kopiert!"
   },

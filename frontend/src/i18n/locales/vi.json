@@ -8,6 +8,7 @@
     "connecting": "Đang kết nối...",
     "connected": "Đã kết nối vào phòng {roomId}.",
     "userCount": "{count} người dùng trong phòng.",
+    "connectedDevices": "Thiết bị đã kết nối",
     "copyCode": "Sao chép mã phòng",
     "copied": "Đã sao chép mã phòng!"
   },

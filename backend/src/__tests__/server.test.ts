@@ -216,4 +216,82 @@ describe('Socket.IO Server - Single Shared Room', () => {
       client2.on('registered', checkRegistered);
     });
   });
+
+  describe('4. Device Roster (room-users)', () => {
+    test('같은 IP로 접속한 두 소켓은 room-users로 서로를 포함한 목록을 받는다', (done) => {
+      const a = connect(`http://localhost:${serverPort}`, {
+        transports: ['polling'],
+        extraHeaders: {
+          'x-forwarded-for': '198.51.100.77',
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
+        },
+      });
+      const b = connect(`http://localhost:${serverPort}`, {
+        transports: ['polling'],
+        extraHeaders: {
+          'x-forwarded-for': '198.51.100.77',
+          'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) Mobile/15E148 Safari/604.1',
+        },
+      });
+      clients.push(a, b);
+
+      let finished = false;
+      const finish = () => { if (!finished) { finished = true; done(); } };
+
+      let aLen = 0;
+      let bLen = 0;
+
+      a.on('room-users', (devices: unknown[]) => {
+        aLen = devices.length;
+        if (aLen === 2 && bLen === 2) finish();
+      });
+      b.on('room-users', (devices: unknown[]) => {
+        bLen = devices.length;
+        if (aLen === 2 && bLen === 2) finish();
+      });
+    });
+
+    test('한 명이 disconnect하면 남은 클라이언트는 room-users로 길이 1인 목록을 받는다', (done) => {
+      const a = connect(`http://localhost:${serverPort}`, {
+        transports: ['polling'],
+        extraHeaders: {
+          'x-forwarded-for': '198.51.100.88',
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
+        },
+      });
+      const b = connect(`http://localhost:${serverPort}`, {
+        transports: ['polling'],
+        extraHeaders: {
+          'x-forwarded-for': '198.51.100.88',
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
+        },
+      });
+      clients.push(a, b);
+
+      let finished = false;
+      const finish = () => { if (!finished) { finished = true; done(); } };
+
+      let registered = 0;
+      let sawInitialPair = false;
+
+      const onReg = () => {
+        registered++;
+        if (registered === 2) {
+          setTimeout(() => b.disconnect(), 50);
+        }
+      };
+      a.on('registered', onReg);
+      b.on('registered', onReg);
+
+      a.on('room-users', (devices: unknown[]) => {
+        if (devices.length === 2) {
+          sawInitialPair = true;
+          return;
+        }
+        if (sawInitialPair && devices.length === 1) {
+          finish();
+        }
+      });
+    });
+  });
 });

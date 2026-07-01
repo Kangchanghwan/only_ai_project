@@ -25,6 +25,10 @@ const props = defineProps({
     type: Number,
     default: 1
   },
+  devices: {
+    type: Array,
+    default: () => []
+  },
   isConnecting: {
     type: Boolean,
     default: false
@@ -57,6 +61,7 @@ const emit = defineEmits([
     <AppHeader
       :user-count="userCount"
       :is-connecting="isConnecting"
+      :devices="devices"
     />
 
     <main class="bg-surface rounded-xl p-8 border border-border">

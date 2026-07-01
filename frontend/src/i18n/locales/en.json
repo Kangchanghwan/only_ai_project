@@ -8,6 +8,7 @@
     "connecting": "Connecting...",
     "connected": "Connected to room {roomId}.",
     "userCount": "{count} user(s) in the room.",
+    "connectedDevices": "Connected devices",
     "copyCode": "Copy Room Code",
     "copied": "Room code copied!"
   },
