@@ -37,6 +37,18 @@ describe('FileUploadSection', () => {
 
       expect(buttons[1].attributes('aria-pressed')).toBe('true')
     })
+
+    it('전체 공유 버튼은 우리 네트워크 버튼과 다른 색상 클래스를 사용한다', async () => {
+      const wrapper = mount(FileUploadSection, mountOptions)
+      const buttons = wrapper.findAll('[role="group"] button')
+
+      expect(buttons[0].classes()).toContain('bg-primary')
+
+      await buttons[1].trigger('click')
+
+      expect(buttons[1].classes()).toContain('bg-scope-global')
+      expect(buttons[1].classes()).not.toContain('bg-primary')
+    })
   })
 
   describe('스코프 토글과 파일 선택 영역 분리', () => {
