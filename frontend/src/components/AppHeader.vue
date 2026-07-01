@@ -48,9 +48,9 @@ onMounted(async () => {
 
 <template>
   <header class="flex justify-between items-center mb-8 flex-wrap gap-4">
-    <div class="flex items-center gap-3 text-2xl font-semibold">
-      <span class="text-4xl">📋</span>
-      <span>{{ t('app.title') }}</span>
+    <div class="flex items-center gap-3 text-2xl">
+      <span class="text-4xl" aria-hidden="true">📋</span>
+      <h1 class="font-display font-bold text-2xl m-0">{{ t('app.title') }}</h1>
     </div>
     <div class="flex items-center gap-4">
       <LanguageSelector />

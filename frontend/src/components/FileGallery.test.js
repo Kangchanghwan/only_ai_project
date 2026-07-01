@@ -56,7 +56,15 @@ const stubs = {
     name: 'MultiFileQRCodeModal',
     props: ['files', 'roomId', 'isOpen'],
     template: '<div class="multi-qr-modal-stub"></div>'
-  }
+  },
+  // @vue/test-utils는 기본적으로 transition-group을 자동 stub 처리하여 실제 TransitionGroup을
+  // 렌더링하지 않는다 (config.global.stubs['transition-group'] === true가 기본값). 이 기본 stub은
+  // before-enter 등 트랜지션 훅을 전혀 호출하지 않으므로, land 애니메이션 지연 테스트를 위해
+  // 실제 TransitionGroup이 렌더링되도록 명시적으로 false로 재정의한다.
+  // (키는 반드시 kebab-case 'transition-group'이어야 한다 — @vue/test-utils의 기본 stub 매칭은
+  // pascalTag('TransitionGroup') 또는 kebabTag('transition-group') 키만 인식하며,
+  // camelCase 'transitionGroup'은 매칭되지 않아 무시된다.)
+  'transition-group': false
 }
 
 const mountOptions = { global: { plugins: [i18n], stubs } }
@@ -105,5 +113,39 @@ describe('FileGallery.vue - 선택 충돌(다른 룸, 동일 파일명) 수정',
     expect(selected).toHaveLength(2)
     const roomIds = selected.map(f => f.roomId).sort()
     expect(roomIds).toEqual(['room-a', 'room-b'])
+  })
+})
+
+describe('FileGallery.vue - 파일 카드 land 애니메이션', () => {
+  it('초기 마운트 시 이미 존재하는 파일 카드에는 진입 지연이 적용되지 않는다', () => {
+    const wrapper = mount(FileGallery, {
+      props: { files: dupFiles, roomId: 'room-a', isLoading: false },
+      ...mountOptions
+    })
+
+    const cards = wrapper.findAll('.file-card-stub')
+    expect(cards).toHaveLength(2)
+    cards.forEach(card => {
+      expect(card.element.style.transitionDelay).toBe('')
+    })
+  })
+
+  it('마운트 이후 한 번에 여러 파일이 추가되면 순서대로 진입 지연이 커진다', async () => {
+    const wrapper = mount(FileGallery, {
+      props: { files: [], roomId: 'room-a', isLoading: false },
+      ...mountOptions
+    })
+
+    await wrapper.setProps({
+      files: [
+        { name: 'first.png', roomId: 'room-a', url: 'https://example.com/first.png', size: 10, created: '2026-01-01T00:00:00.000Z' },
+        { name: 'second.png', roomId: 'room-a', url: 'https://example.com/second.png', size: 20, created: '2026-01-01T00:00:01.000Z' }
+      ]
+    })
+
+    const cards = wrapper.findAll('.file-card-stub')
+    expect(cards).toHaveLength(2)
+    expect(cards[0].element.style.transitionDelay).toBe('0ms')
+    expect(cards[1].element.style.transitionDelay).toBe('80ms')
   })
 })
