@@ -5,7 +5,7 @@
  * 전체 공유 룸(room-shared)과 IP 격리 룸에 동시 입장합니다.
  * 업로드 시 공유 대상을 선택할 수 있습니다.
  */
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useRoomManager } from './composables/useRoomManager'
 import { useFileManager } from './composables/useFileManager'
 import { useClipboard } from './composables/useClipboard'
@@ -34,6 +34,19 @@ const textShare = useTextShare()
 const shareScope = useShareScope()
 const isConnecting = ref(false)
 const currentRoute = ref({ type: 'home' })
+
+// 현재 선택된 scope('ip'|'global')에 대응하는 룸 ID — 피드 필터링/업로드 대상 공통 기준
+const activeRoomId = computed(() => roomManager.roomIdForScope(shareScope.scope.value))
+
+// 화면에 표시할 파일/텍스트를 활성 scope로 필터링한다.
+// 실제 데이터 로딩(loadFilesFromRooms, 소켓 수신)은 두 룸 모두 백그라운드로 계속 진행되며,
+// 필터링은 표시 시점에만 적용되므로 탭 전환은 네트워크 요청 없이 즉시 반영된다.
+const visibleFiles = computed(() =>
+  fileManager.files.value.filter(f => f.roomId === activeRoomId.value)
+)
+const visibleTexts = computed(() =>
+  textShare.sharedTexts.value.filter(t => t.roomId === activeRoomId.value)
+)
 
 // 이벤트 리스너 cleanup 함수들을 저장
 let cleanupUserLeft = null
@@ -118,7 +131,8 @@ function setupSocketListeners() {
         const newText = {
           id: message.textId,
           content: message.content,
-          timestamp: message.timestamp
+          timestamp: message.timestamp,
+          roomId: message.roomId
         }
         textShare.sharedTexts.value.push(newText)
         notification.showInfo('새 텍스트가 공유되었습니다!')
@@ -126,7 +140,7 @@ function setupSocketListeners() {
     } else if (message.type === 'text-removed') {
       textShare.removeText(message.textId)
     } else if (message.type === 'texts-cleared') {
-      textShare.clearAllTexts()
+      textShare.clearTextsForRoom(message.roomId)
       notification.showInfo('모든 텍스트가 삭제되었습니다.')
     }
   })
@@ -362,9 +376,13 @@ async function handleCopySelectedToClipboard(files) {
 // ========================================
 
 async function handleAddText(content) {
-  if (!roomManager.globalRoomId.value) return
+  if (roomManager.roomIds.value.length === 0) return
 
-  const newText = textShare.addText(content)
+  const targetScope = shareScope.scope.value
+  const targetRoomId = activeRoomId.value
+  if (!targetRoomId) return
+
+  const newText = textShare.addText(content, targetRoomId)
   if (!newText) return
 
   socket.publishMessage({
@@ -372,34 +390,40 @@ async function handleAddText(content) {
     textId: newText.id,
     content: newText.content,
     timestamp: newText.timestamp,
-    roomId: roomManager.globalRoomId.value
-  }, 'global')
+    roomId: targetRoomId
+  }, targetScope)
 
   notification.showSuccess('텍스트가 공유되었습니다!')
 }
 
 async function handleRemoveText(textId) {
-  if (!roomManager.globalRoomId.value) return
+  if (roomManager.roomIds.value.length === 0) return
 
   const removed = textShare.removeText(textId)
   if (!removed) return
 
+  const targetScope = removed.roomId === roomManager.globalRoomId.value ? 'global' : 'ip'
+
   socket.publishMessage({
     type: 'text-removed',
     textId,
-    roomId: roomManager.globalRoomId.value
-  }, 'global')
+    roomId: removed.roomId
+  }, targetScope)
 }
 
 async function handleClearAllTexts() {
-  if (!roomManager.globalRoomId.value) return
+  if (roomManager.roomIds.value.length === 0) return
 
-  textShare.clearAllTexts()
+  const targetScope = shareScope.scope.value
+  const targetRoomId = activeRoomId.value
+  if (!targetRoomId) return
+
+  textShare.clearTextsForRoom(targetRoomId)
 
   socket.publishMessage({
     type: 'texts-cleared',
-    roomId: roomManager.globalRoomId.value
-  }, 'global')
+    roomId: targetRoomId
+  }, targetScope)
 
   notification.showInfo('모든 텍스트가 삭제되었습니다.')
 }
@@ -624,15 +648,19 @@ onUnmounted(() => {
     <RoomScreen
       v-else
       :is-connecting="isConnecting"
-      :room-id="roomManager.globalRoomId.value"
-      :files="fileManager.files.value"
-      :texts="textShare.sharedTexts.value"
+      :room-id="activeRoomId"
+      :files="visibleFiles"
+      :texts="visibleTexts"
       :is-loading="fileManager.isLoading.value || isConnecting"
       :user-count="socket.usersInRoom.value"
       :devices="socket.ipRoomDevices.value"
-      :has-more="fileManager.hasMore.value"
+      :scope="shareScope.scope.value"
+      :ip-room-devices="socket.ipRoomDevices.value"
+      :global-room-devices="socket.globalRoomDevices.value"
+      :has-more="fileManager.hasMoreForRoom(activeRoomId)"
       @copy-image="handleCopyImage"
       @upload-files="handleUploadFiles"
+      @select-scope="shareScope.setScope"
       @download-file="handleDownloadFile"
       @download-parallel="handleDownloadParallel"
       @copy-selected-to-clipboard="handleCopySelectedToClipboard"

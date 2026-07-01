@@ -34,6 +34,8 @@ const stubs = {
   },
   FileUploadSection: {
     name: 'FileUploadSection',
+    props: ['scope'],
+    emits: ['upload-files', 'select-scope'],
     template: '<div class="file-upload-section-stub"></div>'
   },
   PasteSection: {
@@ -147,5 +149,30 @@ describe('FileGallery.vue - 파일 카드 land 애니메이션', () => {
     expect(cards).toHaveLength(2)
     expect(cards[0].element.style.transitionDelay).toBe('0ms')
     expect(cards[1].element.style.transitionDelay).toBe('80ms')
+  })
+})
+
+describe('FileGallery.vue - scope 전달/전파', () => {
+  it('scope prop이 FileUploadSection에 전달되어야 한다', () => {
+    const wrapper = mount(FileGallery, {
+      props: { files: [], roomId: 'room-shared', isLoading: false, scope: 'global' },
+      ...mountOptions
+    })
+
+    const uploadSection = wrapper.findComponent({ name: 'FileUploadSection' })
+    expect(uploadSection.props('scope')).toBe('global')
+  })
+
+  it('FileUploadSection의 select-scope 이벤트가 전파되어야 한다', async () => {
+    const wrapper = mount(FileGallery, {
+      props: { files: [], roomId: 'room-shared', isLoading: false },
+      ...mountOptions
+    })
+
+    const uploadSection = wrapper.findComponent({ name: 'FileUploadSection' })
+    await uploadSection.vm.$emit('select-scope', 'global')
+
+    expect(wrapper.emitted('select-scope')).toBeTruthy()
+    expect(wrapper.emitted('select-scope')[0]).toEqual(['global'])
   })
 })

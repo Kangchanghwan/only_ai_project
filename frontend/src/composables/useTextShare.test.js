@@ -45,6 +45,13 @@ describe('useTextShare', () => {
 
       expect(uniqueIds.size).toBe(2)
     })
+
+    it('roomId 인자를 넘기면 텍스트 객체에 roomId가 포함된다', () => {
+      const text = textShare.addText('Hello', 'room-ip-abc')
+
+      expect(text.roomId).toBe('room-ip-abc')
+      expect(textShare.sharedTexts.value[0].roomId).toBe('room-ip-abc')
+    })
   })
 
   describe('텍스트 삭제', () => {
@@ -78,6 +85,21 @@ describe('useTextShare', () => {
       expect(textShare.sharedTexts.value[0].content).toBe('Text 1')
       expect(textShare.sharedTexts.value[1].content).toBe('Text 3')
     })
+
+    it('removeText는 삭제된 텍스트 객체를 반환한다', () => {
+      textShare.addText('Text 1', 'room-shared')
+      const textId = textShare.sharedTexts.value[0].id
+
+      const removed = textShare.removeText(textId)
+
+      expect(removed).toMatchObject({ id: textId, content: 'Text 1', roomId: 'room-shared' })
+    })
+
+    it('존재하지 않는 ID로 삭제하면 null을 반환한다', () => {
+      const removed = textShare.removeText('non-existent-id')
+
+      expect(removed).toBeNull()
+    })
   })
 
   describe('모든 텍스트 삭제', () => {
@@ -94,6 +116,25 @@ describe('useTextShare', () => {
     it('빈 상태에서 모든 텍스트 삭제를 호출해도 에러가 발생하지 않아야 한다', () => {
       expect(() => textShare.clearAllTexts()).not.toThrow()
       expect(textShare.sharedTexts.value).toHaveLength(0)
+    })
+  })
+
+  describe('룸별 텍스트 삭제 (clearTextsForRoom)', () => {
+    it('지정한 roomId의 텍스트만 삭제하고 다른 룸의 텍스트는 남긴다', () => {
+      textShare.addText('ip 텍스트', 'room-ip-abc')
+      textShare.addText('global 텍스트', 'room-shared')
+
+      textShare.clearTextsForRoom('room-ip-abc')
+
+      expect(textShare.sharedTexts.value).toHaveLength(1)
+      expect(textShare.sharedTexts.value[0].content).toBe('global 텍스트')
+    })
+
+    it('해당 룸에 텍스트가 없어도 에러 없이 동작한다', () => {
+      textShare.addText('global 텍스트', 'room-shared')
+
+      expect(() => textShare.clearTextsForRoom('room-ip-abc')).not.toThrow()
+      expect(textShare.sharedTexts.value).toHaveLength(1)
     })
   })
 

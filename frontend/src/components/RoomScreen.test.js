@@ -9,11 +9,17 @@ const stubs = {
     template: '<div class="app-header-stub"><slot /></div>',
     props: ['userCount', 'isConnecting', 'devices']
   },
+  ShareScopeTabs: {
+    name: 'ShareScopeTabs',
+    template: '<div class="share-scope-tabs-stub"></div>',
+    props: ['scope', 'ipDevices', 'globalDevices'],
+    emits: ['select']
+  },
   FileGallery: {
     name: 'FileGallery',
     template: '<div class="file-gallery-stub"></div>',
-    props: ['files', 'isLoading'],
-    emits: ['copy-image', 'download-file', 'download-selected', 'download-parallel', 'download-all', 'copy-selected-to-clipboard', 'upload-files']
+    props: ['files', 'isLoading', 'scope'],
+    emits: ['copy-image', 'download-file', 'download-selected', 'download-parallel', 'download-all', 'copy-selected-to-clipboard', 'upload-files', 'select-scope']
   },
   TextShareBox: {
     name: 'TextShareBox',
@@ -35,7 +41,10 @@ describe('RoomScreen.vue', () => {
     isLoading: false,
     userCount: 1,
     isConnecting: false,
-    devices: []
+    devices: [],
+    scope: 'ip',
+    ipRoomDevices: [],
+    globalRoomDevices: []
   }
 
   describe('컴포넌트 렌더링', () => {
@@ -66,6 +75,19 @@ describe('RoomScreen.vue', () => {
       expect(appHeader.props('userCount')).toBe(5)
       expect(appHeader.props('isConnecting')).toBe(true)
       expect(fileGallery.props('isLoading')).toBe(false)
+    })
+
+    it('ShareScopeTabs가 렌더링되고 scope/기기 목록 props를 전달받는다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: { ...defaultProps, scope: 'global', ipRoomDevices: [{ socketId: 'a' }], globalRoomDevices: [{ socketId: 'b' }] },
+        global: { stubs }
+      })
+
+      const tabs = wrapper.findComponent({ name: 'ShareScopeTabs' })
+      expect(tabs.exists()).toBe(true)
+      expect(tabs.props('scope')).toBe('global')
+      expect(tabs.props('ipDevices')).toEqual([{ socketId: 'a' }])
+      expect(tabs.props('globalDevices')).toEqual([{ socketId: 'b' }])
     })
   })
 
@@ -175,6 +197,32 @@ describe('RoomScreen.vue', () => {
 
       expect(wrapper.emitted()).toHaveProperty('copy-text')
       expect(wrapper.emitted('copy-text')[0][0]).toBe('text-id-456')
+    })
+
+    it('ShareScopeTabs에서 select 이벤트가 select-scope로 전파되어야 한다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { stubs }
+      })
+
+      const tabs = wrapper.findComponent({ name: 'ShareScopeTabs' })
+      await tabs.vm.$emit('select', 'global')
+
+      expect(wrapper.emitted('select-scope')).toBeTruthy()
+      expect(wrapper.emitted('select-scope')[0]).toEqual(['global'])
+    })
+
+    it('FileGallery에서 select-scope 이벤트가 전파되어야 한다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { stubs }
+      })
+
+      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
+      await fileGallery.vm.$emit('select-scope', 'global')
+
+      expect(wrapper.emitted('select-scope')).toBeTruthy()
+      expect(wrapper.emitted('select-scope')[0]).toEqual(['global'])
     })
   })
 

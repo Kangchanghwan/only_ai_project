@@ -13,7 +13,7 @@ import { ref, computed } from 'vue'
 export function useTextShare() {
   /**
    * 공유된 텍스트 목록
-   * @type {import('vue').Ref<Array<{id: string, content: string, timestamp: number}>>}
+   * @type {import('vue').Ref<Array<{id: string, content: string, timestamp: number, roomId: string}>>}
    */
   const sharedTexts = ref([])
 
@@ -35,9 +35,10 @@ export function useTextShare() {
    * 새로운 텍스트를 추가합니다.
    *
    * @param {string} content - 추가할 텍스트 내용
+   * @param {string} [roomId] - 텍스트가 속한 룸 ID
    * @returns {object|null} 추가된 텍스트 객체 또는 null (빈 텍스트인 경우)
    */
-  function addText(content) {
+  function addText(content, roomId) {
     // 빈 텍스트는 추가하지 않음
     if (!content || content.trim().length === 0) {
       return null
@@ -46,7 +47,8 @@ export function useTextShare() {
     const newText = {
       id: generateId(),
       content: content.trim(),
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      roomId
     }
 
     sharedTexts.value.push(newText)
@@ -57,15 +59,15 @@ export function useTextShare() {
    * ID로 텍스트를 삭제합니다.
    *
    * @param {string} id - 삭제할 텍스트의 ID
-   * @returns {boolean} 삭제 성공 여부
+   * @returns {object|null} 삭제된 텍스트 객체 또는 null (찾지 못한 경우)
    */
   function removeText(id) {
     const index = sharedTexts.value.findIndex(text => text.id === id)
-    if (index !== -1) {
-      sharedTexts.value.splice(index, 1)
-      return true
+    if (index === -1) {
+      return null
     }
-    return false
+    const [removed] = sharedTexts.value.splice(index, 1)
+    return removed
   }
 
   /**
@@ -73,6 +75,15 @@ export function useTextShare() {
    */
   function clearAllTexts() {
     sharedTexts.value = []
+  }
+
+  /**
+   * 특정 룸에 속한 텍스트만 삭제합니다(다른 룸의 텍스트는 유지).
+   *
+   * @param {string} roomId - 삭제할 텍스트들이 속한 룸 ID
+   */
+  function clearTextsForRoom(roomId) {
+    sharedTexts.value = sharedTexts.value.filter(text => text.roomId !== roomId)
   }
 
   /**
@@ -102,6 +113,7 @@ export function useTextShare() {
     addText,
     removeText,
     clearAllTexts,
+    clearTextsForRoom,
     copyTextToClipboard
   }
 }

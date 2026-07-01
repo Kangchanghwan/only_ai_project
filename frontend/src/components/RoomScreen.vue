@@ -1,5 +1,6 @@
 <script setup>
 import AppHeader from './AppHeader.vue'
+import ShareScopeTabs from './ShareScopeTabs.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import AppFooter from './AppFooter.vue'
@@ -36,6 +37,18 @@ const props = defineProps({
   hasMore: {
     type: Boolean,
     default: false
+  },
+  scope: {
+    type: String,
+    default: 'ip'
+  },
+  ipRoomDevices: {
+    type: Array,
+    default: () => []
+  },
+  globalRoomDevices: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -52,7 +65,8 @@ const emit = defineEmits([
   'clear-all-texts',
   'copy-text',
   'paste-content',
-  'load-more'
+  'load-more',
+  'select-scope'
 ])
 </script>
 
@@ -64,12 +78,20 @@ const emit = defineEmits([
       :devices="devices"
     />
 
+    <ShareScopeTabs
+      :scope="scope"
+      :ip-devices="ipRoomDevices"
+      :global-devices="globalRoomDevices"
+      @select="$emit('select-scope', $event)"
+    />
+
     <main class="bg-surface rounded-xl p-8 border border-border">
       <FileGallery
         :files="files"
         :room-id="roomId"
         :is-loading="isLoading"
         :has-more="hasMore"
+        :scope="scope"
         @copy-image="$emit('copy-image', $event)"
         @download-file="$emit('download-file', $event)"
         @download-parallel="$emit('download-parallel', $event)"
@@ -78,6 +100,7 @@ const emit = defineEmits([
         @delete-selected="$emit('delete-selected', $event)"
         @clear-storage="$emit('clear-storage')"
         @upload-files="$emit('upload-files', $event)"
+        @select-scope="$emit('select-scope', $event)"
         @paste-content="$emit('paste-content')"
         @load-more="$emit('load-more')"
       />
