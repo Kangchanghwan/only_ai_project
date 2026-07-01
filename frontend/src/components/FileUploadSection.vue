@@ -124,7 +124,7 @@ function handleDrop(event) {
         <button
           type="button"
           class="px-2 py-1 rounded-full transition-colors"
-          :class="scope === 'global' ? 'bg-primary text-white' : 'bg-white/20 text-white/80 hover:bg-white/30'"
+          :class="scope === 'global' ? 'bg-scope-global text-white' : 'bg-white/20 text-white/80 hover:bg-white/30'"
           :aria-pressed="scope === 'global'"
           :title="t('shareScope.globalDescription')"
           @click.stop="selectScope('global')"

@@ -93,6 +93,12 @@ Components (UI) → Composables (Logic) → Services (API)
 ### Internationalization
 21 languages in `frontend/src/i18n/locales/`. Browser language auto-detected, persisted to localStorage. Fallback language: Korean (`ko`). When adding UI text, add keys to all locale files.
 
+## Design System
+Always read `DESIGN.md` before making any visual or UI decisions.
+All font choices, colors, spacing, and aesthetic direction are defined there.
+Do not deviate without explicit user approval.
+In QA mode, flag any code that doesn't match `DESIGN.md`.
+
 ## Testing
 
 - **Backend**: Jest + ts-jest. Tests use real Socket.IO server instances. Test files in `src/__tests__/`. Setup in `src/__tests__/setup.ts`. Custom Jest environment mocks `localStorage` for socket.io-client. Timeout: 10s.
