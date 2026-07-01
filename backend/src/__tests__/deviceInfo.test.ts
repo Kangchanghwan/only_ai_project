@@ -79,4 +79,25 @@ describe('parseDeviceInfo', () => {
             os: 'Unknown'
         });
     });
+
+    it('매우 긴 비정상 User-Agent도 512자로 잘라 빠르게 처리해야 함 (ReDoS 방지)', () => {
+        // "Android " 반복 + "Mobile" 토큰 없음: 절단 없이 정규식을 그대로 돌리면
+        // MOBILE_UA의 Android.*Mobile 백트래킹으로 대량 입력에서 매칭이 느려질 수 있음.
+        // 512자로 잘라내면 잘린 부분에도 여전히 "Android"만 있고 "Mobile"이 없으므로,
+        // 잘려도 안 잘려도 판정 결과 자체는 동일(tablet/Unknown/Android) — 이 테스트는 그 결과가
+        // 여전히 정확하면서도 빠르게(수 ms 내) 나오는지를 검증한다.
+        const pathologicalUa = 'Android '.repeat(40000); // 약 320,000자
+
+        const start = Date.now();
+        const result = parseDeviceInfo(pathologicalUa, 'sock-9');
+        const elapsedMs = Date.now() - start;
+
+        expect(result).toEqual({
+            socketId: 'sock-9',
+            deviceType: 'tablet',
+            browser: 'Unknown',
+            os: 'Android'
+        });
+        expect(elapsedMs).toBeLessThan(100);
+    });
 });

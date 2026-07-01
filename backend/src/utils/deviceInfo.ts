@@ -35,11 +35,15 @@ function detectOs(ua: string): string {
     return 'Unknown';
 }
 
+/** 실제 User-Agent는 길어야 수백 자이므로, 비정상적으로 긴 입력에서 정규식이 느려지는 것을 막기 위해 앞부분만 사용한다 */
+const MAX_UA_LENGTH = 512;
+
 /** 소켓 핸드셰이크의 User-Agent를 가볍게 파싱해 기기 정보를 만든다 (외부 의존성 없음) */
 export function parseDeviceInfo(userAgent: string | undefined, socketId: string): DeviceInfo {
     if (!userAgent) {
         return { socketId, deviceType: 'desktop', browser: 'Unknown', os: 'Unknown' };
     }
+    userAgent = userAgent.slice(0, MAX_UA_LENGTH);
     return {
         socketId,
         deviceType: detectDeviceType(userAgent),
