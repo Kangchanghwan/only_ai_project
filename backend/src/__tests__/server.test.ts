@@ -218,7 +218,7 @@ describe('Socket.IO Server - Single Shared Room', () => {
   });
 
   describe('4. Device Roster (room-users)', () => {
-    test('같은 IP로 접속한 두 소켓은 room-users로 서로를 포함한 목록을 받는다', (done) => {
+    test('같은 IP로 접속한 두 소켓은 room-users로 서로를 포함한 ip 룸 목록을 받는다', (done) => {
       const a = connect(`http://localhost:${serverPort}`, {
         transports: ['polling'],
         extraHeaders: {
@@ -241,17 +241,54 @@ describe('Socket.IO Server - Single Shared Room', () => {
       let aLen = 0;
       let bLen = 0;
 
-      a.on('room-users', (devices: unknown[]) => {
-        aLen = devices.length;
+      a.on('room-users', (payload: { roomId: string; devices: unknown[] }) => {
+        if (payload.roomId === 'room-shared') return; // global 룸 emit은 이 테스트에서 무시
+        aLen = payload.devices.length;
         if (aLen === 2 && bLen === 2) finish();
       });
-      b.on('room-users', (devices: unknown[]) => {
-        bLen = devices.length;
+      b.on('room-users', (payload: { roomId: string; devices: unknown[] }) => {
+        if (payload.roomId === 'room-shared') return;
+        bLen = payload.devices.length;
         if (aLen === 2 && bLen === 2) finish();
       });
     });
 
-    test('한 명이 disconnect하면 남은 클라이언트는 room-users로 길이 1인 목록을 받는다', (done) => {
+    test('IP가 달라도 두 소켓 모두 전체 공유(room-shared) room-users로 서로를 포함한 목록을 받는다', (done) => {
+      const a = connect(`http://localhost:${serverPort}`, {
+        transports: ['polling'],
+        extraHeaders: {
+          'x-forwarded-for': '198.51.100.10',
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
+        },
+      });
+      const b = connect(`http://localhost:${serverPort}`, {
+        transports: ['polling'],
+        extraHeaders: {
+          'x-forwarded-for': '198.51.100.20',
+          'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) Mobile/15E148 Safari/604.1',
+        },
+      });
+      clients.push(a, b);
+
+      let finished = false;
+      const finish = () => { if (!finished) { finished = true; done(); } };
+
+      let aLen = 0;
+      let bLen = 0;
+
+      a.on('room-users', (payload: { roomId: string; devices: unknown[] }) => {
+        if (payload.roomId !== 'room-shared') return;
+        aLen = payload.devices.length;
+        if (aLen === 2 && bLen === 2) finish();
+      });
+      b.on('room-users', (payload: { roomId: string; devices: unknown[] }) => {
+        if (payload.roomId !== 'room-shared') return;
+        bLen = payload.devices.length;
+        if (aLen === 2 && bLen === 2) finish();
+      });
+    });
+
+    test('한 명이 disconnect하면 남은 클라이언트는 room-users로 길이 1인 ip 룸 목록을 받는다', (done) => {
       const a = connect(`http://localhost:${serverPort}`, {
         transports: ['polling'],
         extraHeaders: {
@@ -283,12 +320,13 @@ describe('Socket.IO Server - Single Shared Room', () => {
       a.on('registered', onReg);
       b.on('registered', onReg);
 
-      a.on('room-users', (devices: unknown[]) => {
-        if (devices.length === 2) {
+      a.on('room-users', (payload: { roomId: string; devices: unknown[] }) => {
+        if (payload.roomId === 'room-shared') return;
+        if (payload.devices.length === 2) {
           sawInitialPair = true;
           return;
         }
-        if (sawInitialPair && devices.length === 1) {
+        if (sawInitialPair && payload.devices.length === 1) {
           finish();
         }
       });

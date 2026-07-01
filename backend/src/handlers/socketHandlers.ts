@@ -61,7 +61,8 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
             socket.ipRoomId = recoveredIpRoomId;
             roomManager.addUserToRoom(recoveredGlobalRoomId, socket.id, deviceInfo);
             roomManager.addUserToRoom(recoveredIpRoomId, socket.id, deviceInfo);
-            io.to(recoveredIpRoomId).emit('room-users', roomManager.getRoomUsers(recoveredIpRoomId));
+            io.to(recoveredIpRoomId).emit('room-users', { roomId: recoveredIpRoomId, devices: roomManager.getRoomUsers(recoveredIpRoomId) });
+            io.to(recoveredGlobalRoomId).emit('room-users', { roomId: recoveredGlobalRoomId, devices: roomManager.getRoomUsers(recoveredGlobalRoomId) });
             logger.log(`연결 복구 [${socket.id}] → ${recoveredGlobalRoomId} / ${recoveredIpRoomId}`);
             return;
         }
@@ -80,7 +81,8 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
         roomManager.addUserToRoom(ipRoomId, socket.id, deviceInfo);
 
         socket.emit('registered', { globalRoomId, ipRoomId });
-        io.to(ipRoomId).emit('room-users', roomManager.getRoomUsers(ipRoomId));
+        io.to(ipRoomId).emit('room-users', { roomId: ipRoomId, devices: roomManager.getRoomUsers(ipRoomId) });
+        io.to(globalRoomId).emit('room-users', { roomId: globalRoomId, devices: roomManager.getRoomUsers(globalRoomId) });
 
         logger.log(`사용자 등록 [${socket.id}] → ${globalRoomId} / ${ipRoomId}`);
     } catch (error) {
@@ -101,10 +103,7 @@ const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager:
         try {
             const remainingUsers = await roomManager.removeUserFromRoom(roomId, socket.id);
             io.to(roomId).emit('user-left', remainingUsers);
-
-            if (roomId === socket.ipRoomId) {
-                io.to(roomId).emit('room-users', roomManager.getRoomUsers(roomId));
-            }
+            io.to(roomId).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
 
             logger.log(`사용자 퇴장 [${socket.id}] ← ${roomId} (남은 인원: ${remainingUsers})`);
         } catch (error) {
