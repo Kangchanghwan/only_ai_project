@@ -1,19 +1,23 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useShareScope } from '../composables/useShareScope.js'
 
 const { t } = useI18n()
 
-const emit = defineEmits(['upload-files'])
+const props = defineProps({
+  scope: {
+    type: String,
+    default: 'ip'
+  }
+})
+
+const emit = defineEmits(['upload-files', 'select-scope'])
 
 const fileInputRef = ref(null)
 const isDragging = ref(false)
 
-const { scope, setScope } = useShareScope()
-
 function selectScope(next) {
-  setScope(next)
+  emit('select-scope', next)
 }
 
 // 환경 변수에서 최대 파일 크기 가져오기 (기본값: 10MB)
