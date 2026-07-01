@@ -2,6 +2,7 @@ import { Server } from 'socket.io';
 import { ExtendedSocket, ErrorResponse, PublishResponse, PublishTarget } from '../types';
 import { RoomManager, SHARED_ROOM_ID } from '../managers/RoomManager';
 import { extractClientIp, deriveIpRoomId } from '../utils/clientIp';
+import { parseDeviceInfo } from '../utils/deviceInfo';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -31,7 +32,7 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
     io.on('connection', (socket: ExtendedSocket) => {
         logger.log(`새 연결: ${socket.id}`);
 
-        handleConnection(socket, roomManager);
+        handleConnection(socket, io, roomManager);
 
         socket.on('disconnect', () => handleDisconnect(socket, io, roomManager));
 
@@ -48,16 +49,19 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
 // === 개별 이벤트 핸들러 ===
 
 /** 새 연결 처리: 전체 공유 룸 + IP 격리 룸 양쪽에 입장 */
-const handleConnection = (socket: ExtendedSocket, roomManager: RoomManager) => {
+const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomManager) => {
     try {
+        const deviceInfo = parseDeviceInfo(socket.handshake.headers['user-agent'], socket.id);
+
         // connectionStateRecovery로 복구된 연결
         if (socket.recovered && socket.data.globalRoomId && socket.data.ipRoomId) {
             const recoveredGlobalRoomId = socket.data.globalRoomId;
             const recoveredIpRoomId = socket.data.ipRoomId;
             socket.globalRoomId = recoveredGlobalRoomId;
             socket.ipRoomId = recoveredIpRoomId;
-            roomManager.addUserToRoom(recoveredGlobalRoomId);
-            roomManager.addUserToRoom(recoveredIpRoomId);
+            roomManager.addUserToRoom(recoveredGlobalRoomId, socket.id, deviceInfo);
+            roomManager.addUserToRoom(recoveredIpRoomId, socket.id, deviceInfo);
+            io.to(recoveredIpRoomId).emit('room-users', roomManager.getRoomUsers(recoveredIpRoomId));
             logger.log(`연결 복구 [${socket.id}] → ${recoveredGlobalRoomId} / ${recoveredIpRoomId}`);
             return;
         }
@@ -72,10 +76,11 @@ const handleConnection = (socket: ExtendedSocket, roomManager: RoomManager) => {
 
         socket.join(globalRoomId);
         socket.join(ipRoomId);
-        roomManager.addUserToRoom(globalRoomId);
-        roomManager.addUserToRoom(ipRoomId);
+        roomManager.addUserToRoom(globalRoomId, socket.id, deviceInfo);
+        roomManager.addUserToRoom(ipRoomId, socket.id, deviceInfo);
 
         socket.emit('registered', { globalRoomId, ipRoomId });
+        io.to(ipRoomId).emit('room-users', roomManager.getRoomUsers(ipRoomId));
 
         logger.log(`사용자 등록 [${socket.id}] → ${globalRoomId} / ${ipRoomId}`);
     } catch (error) {
@@ -94,8 +99,13 @@ const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager:
 
     for (const roomId of rooms) {
         try {
-            const remainingUsers = await roomManager.removeUserFromRoom(roomId);
+            const remainingUsers = await roomManager.removeUserFromRoom(roomId, socket.id);
             io.to(roomId).emit('user-left', remainingUsers);
+
+            if (roomId === socket.ipRoomId) {
+                io.to(roomId).emit('room-users', roomManager.getRoomUsers(roomId));
+            }
+
             logger.log(`사용자 퇴장 [${socket.id}] ← ${roomId} (남은 인원: ${remainingUsers})`);
         } catch (error) {
             logger.error(`퇴장 처리 에러 [${socket.id}] @ ${roomId}:`, error);
