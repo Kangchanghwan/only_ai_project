@@ -23,6 +23,10 @@ const props = defineProps({
   hasMore: {
     type: Boolean,
     default: false
+  },
+  scope: {
+    type: String,
+    default: 'ip'
   }
 })
 
@@ -35,6 +39,7 @@ const emit = defineEmits([
   'delete-selected',
   'clear-storage',
   'upload-files',
+  'select-scope',
   'paste-content',
   'load-more'
 ])
@@ -147,7 +152,11 @@ onUnmounted(() => {
 
     <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
       <!-- 파일 업로드 카드 (항상 표시) -->
-      <FileUploadSection @upload-files="$emit('upload-files', $event)" />
+      <FileUploadSection
+        :scope="scope"
+        @upload-files="$emit('upload-files', $event)"
+        @select-scope="$emit('select-scope', $event)"
+      />
 
       <!-- 붙여넣기 카드 (항상 표시) -->
       <PasteSection @paste-content="$emit('paste-content')" />
