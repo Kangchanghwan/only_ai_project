@@ -17,6 +17,7 @@ class SocketService {
     this.isOnline = ref(navigator.onLine)
     this.usersInRoom = ref(0)
     this.ipRoomDevices = ref([])
+    this.globalRoomDevices = ref([])
     this.connectionError = ref(null)
 
     // 룸 ID 상태 (전체 공유 / IP 격리)
@@ -236,9 +237,13 @@ class SocketService {
       // 자동 룸 입장 이벤트 리스너 등록
       this.socket.on('registered', handleRegistered)
 
-      // IP 격리 룸("우리 네트워크")의 접속 기기 목록 갱신
-      this.socket.on('room-users', (devices) => {
-        this.ipRoomDevices.value = devices
+      // 룸(ip/global)의 접속 기기 목록 갱신 — payload.roomId로 어느 룸인지 분기한다
+      this.socket.on('room-users', ({ roomId, devices }) => {
+        if (roomId === this.ipRoomId.value) {
+          this.ipRoomDevices.value = devices
+        } else if (roomId === this.globalRoomId.value) {
+          this.globalRoomDevices.value = devices
+        }
       })
     })
   }
@@ -286,6 +291,7 @@ class SocketService {
       this.isConnected.value = false
       this.usersInRoom.value = 0
       this.ipRoomDevices.value = []
+      this.globalRoomDevices.value = []
       this.connectionError.value = null
       this.globalRoomId.value = null
       this.ipRoomId.value = null
