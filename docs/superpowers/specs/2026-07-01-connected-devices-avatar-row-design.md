@@ -90,9 +90,12 @@ export interface RoomData {
 
 - 반환 객체에 `ipRoomDevices: readonly(socketService.ipRoomDevices)` 추가.
 
-### 3. App.vue → AppHeader.vue → ConnectedDevices.vue 배선
+### 3. App.vue → RoomScreen.vue → AppHeader.vue → ConnectedDevices.vue 배선
 
-- `App.vue`: `<AppHeader :devices="socket.ipRoomDevices.value" ... />` (기존 `:user-count` 전달 지점 근처).
+실제 컴포넌트 계층은 `App.vue`가 `RoomScreen.vue`에 `user-count`를 넘기고, `RoomScreen.vue`가 다시 `AppHeader.vue`에 전달하는 구조다. `devices`도 동일한 경로로 한 단계씩 통과시킨다.
+
+- `App.vue`: `<RoomScreen :devices="socket.ipRoomDevices.value" ... />` (기존 `:user-count="socket.usersInRoom.value"` 옆).
+- `RoomScreen.vue`: `devices` prop(Array, default `[]`) 추가, `<AppHeader :devices="devices" ... />`로 전달.
 - `AppHeader.vue`: `devices` prop(Array, default `[]`) 추가. 템플릿에서 로고(📋 + 타이틀) 바로 옆에 `<ConnectedDevices :devices="devices" />` 배치.
 
 ### 4. ConnectedDevices.vue — 겹친 아바타 행 스타일
@@ -102,7 +105,7 @@ export interface RoomData {
 - 컨테이너: 텍스트 라벨(`room.connectedDevices`) 스팬은 시각적으로 제거하고, 대신 컨테이너에 `:aria-label="t('room.connectedDevices')"`, `role="group"`을 부여(새 i18n 키 추가 없음).
 - 아바타: `w-8 h-8 rounded-full ring-2 ring-background bg-primary/10 flex items-center justify-center text-base` — 기존 `rounded-md`(사각형 배지)를 `rounded-full`로, 사이즈를 7→8(28px→32px)로 소폭 확대.
 - 겹침: 첫 번째를 제외한 모든 아바타에 `-ml-2`(-8px) 음수 마진. 먼저 접속한 사람이 위로 오도록 `style="z-index: {{ devices.length - index }}"` (또는 동등한 계산된 바인딩)로 명시적 z-index 부여.
-- hover 인터랙션: `hover:!z-20 hover:-translate-y-0.5 hover:scale-105 transition-transform duration-150` — 인라인 `style="z-index: ..."`는 일반 클래스보다 우선순위가 높으므로, hover 시 이를 덮어쓰려면 Tailwind의 important 수식자(`!z-20`, `!important` 생성)가 반드시 필요함. `hover:z-20`(non-important)로는 인라인 z-index를 덮어쓰지 못해 hover 시 앞으로 나오지 않는 버그가 생기므로 주의.
+- hover 인터랙션: `hover:z-20! hover:-translate-y-0.5 hover:scale-105 transition-transform duration-150` — 인라인 `style="z-index: ..."`는 일반 클래스보다 우선순위가 높으므로, hover 시 이를 덮어쓰려면 Tailwind의 important 수식자가 반드시 필요함. 이 프로젝트는 **Tailwind CSS v4**(`hover:z-20!`, trailing `!`)를 사용하므로 v3 문법(`!z-20`, leading `!`)을 쓰지 않도록 주의. non-important `hover:z-20`로는 인라인 z-index를 덮어쓰지 못해 hover 시 앞으로 나오지 않는 버그가 생긴다.
 - **오버플로우**: `devices`가 5개 초과일 때 앞 4개만 아바타로 표시 + 마지막 슬롯에 `+N` 원형 배지(`bg-border text-text-secondary text-xs font-semibold`, 나머지 인원 수 `N = devices.length - 4`). 배지의 `title`은 초과분 기기 라벨을 줄바꿈/쉼표로 나열.
   - (4+1=5개 슬롯 고정: 아바타 최대 4개 + 배지 1개 = 화면에 보이는 원은 항상 5개 이하)
 - **entrance/exit 애니메이션**: `<TransitionGroup>`으로 감싸고 CSS 트랜지션(opacity 0→1, scale .8→1, ~200ms ease-out)만 적용. 카드 랜딩용 `createEnterStagger`/spring-bounce는 재사용하지 않음(프레즌스 인디케이터는 "스캐닝 없음" 원칙 — DESIGN.md 그대로).
