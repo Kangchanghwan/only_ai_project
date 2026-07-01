@@ -5,6 +5,7 @@ import FileUploadSection from './FileUploadSection.vue'
 import PasteSection from './PasteSection.vue'
 import DownloadControls from './DownloadControls.vue'
 import MultiFileQRCodeModal from './MultiFileQRCodeModal.vue'
+import { createEnterStagger } from '../utils/enterStagger'
 
 const props = defineProps({
   files: {
@@ -40,6 +41,12 @@ const emit = defineEmits([
 
 const selectedFiles = ref(new Set())
 const showMultiQRModal = ref(false)
+
+const nextEnterDelay = createEnterStagger()
+
+function onCardBeforeEnter(el) {
+  el.style.transitionDelay = `${nextEnterDelay()}ms`
+}
 
 // 같은 파일명이 다른 룸에 동시에 존재할 수 있으므로 roomId+name 복합 키로 선택을 추적한다
 // (useFileManager.js의 mergeAndSort와 동일한 dedup 키 규칙).
@@ -152,16 +159,18 @@ onUnmounted(() => {
 
       <!-- 업로드된 파일 카드들 (로딩 중이 아닐 때) -->
       <template v-else>
-        <FileCard
-          v-for="file in files"
-          :key="fileKey(file)"
-          :file="file"
-          :is-selected="selectedFiles.has(fileKey(file))"
-          @copy-image="$emit('copy-image', file.url)"
-          @toggle-selection="toggleFileSelection(file)"
-          @download-file="$emit('download-file', file)"
-          @delete-file="$emit('delete-file', file)"
-        />
+        <TransitionGroup name="card-land" @before-enter="onCardBeforeEnter">
+          <FileCard
+            v-for="file in files"
+            :key="fileKey(file)"
+            :file="file"
+            :is-selected="selectedFiles.has(fileKey(file))"
+            @copy-image="$emit('copy-image', file.url)"
+            @toggle-selection="toggleFileSelection(file)"
+            @download-file="$emit('download-file', file)"
+            @delete-file="$emit('delete-file', file)"
+          />
+        </TransitionGroup>
       </template>
     </div>
 
@@ -184,3 +193,20 @@ onUnmounted(() => {
     />
   </div>
 </template>
+
+<style scoped>
+.card-land-enter-active {
+  transition: transform 350ms cubic-bezier(.34, 1.56, .64, 1), opacity 350ms cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.card-land-enter-from {
+  opacity: 0;
+  transform: translateY(24px) scale(0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-land-enter-active {
+    transition: none;
+  }
+}
+</style>
