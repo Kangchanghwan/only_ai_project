@@ -331,5 +331,54 @@ describe('Socket.IO Server - Single Shared Room', () => {
         }
       });
     });
+
+    test('connectionStateRecovery로 복구된 연결도 ip/global 룸 각각에 room-users를 브로드캐스트한다', (done) => {
+      const a = connect(`http://localhost:${serverPort}`, {
+        transports: ['polling'],
+        extraHeaders: {
+          'x-forwarded-for': '198.51.100.99',
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
+        },
+      });
+      clients.push(a);
+
+      let finished = false;
+      const finish = (err?: Error) => {
+        if (finished) return;
+        finished = true;
+        done(err);
+      };
+
+      let ipUsersAfterRecovery = false;
+      let globalUsersAfterRecovery = false;
+
+      a.on('connect', () => {
+        // 두 번째 connect(복구 후 재연결)에서만 recovered 여부를 검사한다
+        // 구버전 @types/socket.io-client(v1) 스텁에는 recovered가 없어 any로 우회한다
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (!(a as any).recovered) return;
+
+        a.on('room-users', (payload: { roomId: string; devices: unknown[] }) => {
+          if (payload.roomId === 'room-shared') {
+            globalUsersAfterRecovery = true;
+          } else {
+            ipUsersAfterRecovery = true;
+          }
+          if (ipUsersAfterRecovery && globalUsersAfterRecovery) {
+            finish();
+          }
+        });
+      });
+
+      a.on('registered', () => {
+        // 최초 등록 후, 클라이언트 측 정상 disconnect(io client disconnect)가 아니라
+        // 트랜스포트 레벨 연결 종료를 발생시켜야 서버가 복구 가능한 연결 종료로 간주하고
+        // connectionStateRecovery 세션을 저장한다. 엔진 소켓을 직접 close하여 이를 흉내낸다.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (a as any).io.engine.close();
+      });
+
+      setTimeout(() => finish(new Error('recovered room-users를 받지 못함 (타임아웃)')), 9000);
+    });
   });
 });
