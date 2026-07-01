@@ -69,4 +69,11 @@ describe('AppHeader.vue', () => {
     await flushPromises()
     expect(wrapper.find('.header-qr-button').exists()).toBe(false)
   })
+
+  it('앱 타이틀은 접근성을 위해 실제 h1 엘리먼트로 렌더링된다', async () => {
+    const wrapper = await mountReady()
+    const heading = wrapper.find('h1')
+    expect(heading.exists()).toBe(true)
+    expect(heading.text()).toBe('app.title')
+  })
 })
