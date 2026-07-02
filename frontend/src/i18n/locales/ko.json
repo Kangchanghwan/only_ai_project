@@ -10,7 +10,10 @@
     "userCount": "현재 {count}명이 룸에 있습니다.",
     "connectedDevices": "연결된 기기",
     "copyCode": "룸 코드 복사",
-    "copied": "룸 코드 복사됨!"
+    "copied": "룸 코드 복사됨!",
+    "filesTab": "파일",
+    "textTab": "텍스트",
+    "mobilePanelLabel": "파일·텍스트 전환"
   },
   "shareScope": {
     "label": "공유 대상",

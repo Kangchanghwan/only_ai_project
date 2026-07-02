@@ -10,7 +10,10 @@
     "userCount": "{count} مستخدم في الغرفة.",
     "connectedDevices": "الأجهزة المتصلة",
     "copyCode": "نسخ رمز الغرفة",
-    "copied": "تم نسخ رمز الغرفة!"
+    "copied": "تم نسخ رمز الغرفة!",
+    "filesTab": "الملفات",
+    "textTab": "النص",
+    "mobilePanelLabel": "التبديل بين الملفات والنص"
   },
   "shareScope": {
     "label": "مشاركة مع",

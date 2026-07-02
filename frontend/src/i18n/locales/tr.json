@@ -10,7 +10,10 @@
     "userCount": "Odada {count} kullanıcı.",
     "connectedDevices": "Bağlı cihazlar",
     "copyCode": "Oda Kodunu Kopyala",
-    "copied": "Oda kodu kopyalandı!"
+    "copied": "Oda kodu kopyalandı!",
+    "filesTab": "Dosyalar",
+    "textTab": "Metin",
+    "mobilePanelLabel": "Dosya ve metin arasında geçiş"
   },
   "shareScope": {
     "label": "Paylaşılacak kişiler",

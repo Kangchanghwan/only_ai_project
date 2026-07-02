@@ -10,7 +10,10 @@
     "userCount": "房间内有 {count} 位用户。",
     "connectedDevices": "已连接的设备",
     "copyCode": "复制房间代码",
-    "copied": "房间代码已复制！"
+    "copied": "房间代码已复制！",
+    "filesTab": "文件",
+    "textTab": "文本",
+    "mobilePanelLabel": "在文件和文本之间切换"
   },
   "shareScope": {
     "label": "共享对象",

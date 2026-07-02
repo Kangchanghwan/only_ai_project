@@ -10,7 +10,10 @@
     "userCount": "現在 {count} 人がルームにいます。",
     "connectedDevices": "接続中のデバイス",
     "copyCode": "ルームコードをコピー",
-    "copied": "ルームコードをコピーしました！"
+    "copied": "ルームコードをコピーしました！",
+    "filesTab": "ファイル",
+    "textTab": "テキスト",
+    "mobilePanelLabel": "ファイルとテキストの切り替え"
   },
   "shareScope": {
     "label": "共有先",

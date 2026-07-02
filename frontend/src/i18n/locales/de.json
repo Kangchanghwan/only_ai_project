@@ -10,7 +10,10 @@
     "userCount": "{count} Benutzer im Raum.",
     "connectedDevices": "Verbundene Geräte",
     "copyCode": "Raumcode kopieren",
-    "copied": "Raumcode kopiert!"
+    "copied": "Raumcode kopiert!",
+    "filesTab": "Dateien",
+    "textTab": "Text",
+    "mobilePanelLabel": "Zwischen Dateien und Text wechseln"
   },
   "shareScope": {
     "label": "Teilen mit",

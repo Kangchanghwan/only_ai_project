@@ -10,7 +10,10 @@
     "userCount": "{count} usuário(s) na sala.",
     "connectedDevices": "Dispositivos conectados",
     "copyCode": "Copiar código da sala",
-    "copied": "Código da sala copiado!"
+    "copied": "Código da sala copiado!",
+    "filesTab": "Arquivos",
+    "textTab": "Texto",
+    "mobilePanelLabel": "Alternar entre arquivos e texto"
   },
   "shareScope": {
     "label": "Compartilhar com",
