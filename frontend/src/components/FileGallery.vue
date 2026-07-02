@@ -150,37 +150,39 @@ onUnmounted(() => {
       @clear-storage="$emit('clear-storage')"
     />
 
-    <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
-      <!-- 파일 업로드 카드 (항상 표시) -->
-      <FileUploadSection
-        :scope="scope"
-        @upload-files="$emit('upload-files', $event)"
-        @select-scope="$emit('select-scope', $event)"
-      />
-
-      <!-- 붙여넣기 카드 (항상 표시) -->
-      <PasteSection @paste-content="$emit('paste-content')" />
-
-      <!-- 로딩 중일 때 스피너 표시 -->
-      <div v-if="isLoading" class="col-span-full flex justify-center py-16">
-        <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+    <!-- 업로드/붙여넣기 드롭존 (리스트 밖 상단, 항상 표시) -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+      <div class="flex-1">
+        <FileUploadSection
+          :scope="scope"
+          @upload-files="$emit('upload-files', $event)"
+          @select-scope="$emit('select-scope', $event)"
+        />
       </div>
+      <div class="flex-1">
+        <PasteSection @paste-content="$emit('paste-content')" />
+      </div>
+    </div>
 
-      <!-- 업로드된 파일 카드들 (로딩 중이 아닐 때) -->
-      <template v-else>
-        <TransitionGroup name="card-land" @before-enter="onCardBeforeEnter">
-          <FileCard
-            v-for="file in files"
-            :key="fileKey(file)"
-            :file="file"
-            :is-selected="selectedFiles.has(fileKey(file))"
-            @copy-image="$emit('copy-image', file.url)"
-            @toggle-selection="toggleFileSelection(file)"
-            @download-file="$emit('download-file', file)"
-            @delete-file="$emit('delete-file', file)"
-          />
-        </TransitionGroup>
-      </template>
+    <!-- 로딩 중일 때 스피너 표시 -->
+    <div v-if="isLoading" class="flex justify-center py-16">
+      <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+    </div>
+
+    <!-- 파일 리스트 (로딩 중이 아닐 때) -->
+    <div v-else class="flex flex-col gap-2">
+      <TransitionGroup name="card-land" @before-enter="onCardBeforeEnter">
+        <FileCard
+          v-for="file in files"
+          :key="fileKey(file)"
+          :file="file"
+          :is-selected="selectedFiles.has(fileKey(file))"
+          @copy-image="$emit('copy-image', file.url)"
+          @toggle-selection="toggleFileSelection(file)"
+          @download-file="$emit('download-file', file)"
+          @delete-file="$emit('delete-file', file)"
+        />
+      </TransitionGroup>
     </div>
 
     <!-- 더 보기 버튼 -->
