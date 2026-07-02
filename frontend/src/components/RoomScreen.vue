@@ -5,7 +5,6 @@ import AppHeader from './AppHeader.vue'
 import ShareScopeTabs from './ShareScopeTabs.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
-import AppFooter from './AppFooter.vue'
 import ConnectedDevices from './ConnectedDevices.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
 
@@ -169,8 +168,6 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
           </div>
         </main>
       </div>
-
-      <AppFooter />
     </div>
   </div>
 </template>
