@@ -13,7 +13,7 @@ const stubs = {
   ShareScopeTabs: {
     name: 'ShareScopeTabs',
     template: '<div class="share-scope-tabs-stub"></div>',
-    props: ['scope', 'ipDevices', 'globalDevices'],
+    props: ['scope'],
     emits: ['select']
   },
   FileGallery: {
@@ -77,17 +77,58 @@ describe('RoomScreen.vue', () => {
       expect(fileGallery.props('isLoading')).toBe(false)
     })
 
-    it('ShareScopeTabs가 렌더링되고 scope/기기 목록 props를 전달받는다', () => {
+    it('ShareScopeTabs가 렌더링되고 scope props를 전달받는다', () => {
       const wrapper = mount(RoomScreen, {
-        props: { ...defaultProps, scope: 'global', ipRoomDevices: [{ socketId: 'a' }], globalRoomDevices: [{ socketId: 'b' }] },
+        props: { ...defaultProps, scope: 'global' },
         global: { plugins: [i18n], stubs }
       })
 
       const tabs = wrapper.findComponent({ name: 'ShareScopeTabs' })
       expect(tabs.exists()).toBe(true)
       expect(tabs.props('scope')).toBe('global')
-      expect(tabs.props('ipDevices')).toEqual([{ socketId: 'a' }])
-      expect(tabs.props('globalDevices')).toEqual([{ socketId: 'b' }])
+    })
+  })
+
+  describe('연결된 기기 배지', () => {
+    it('현재 scope가 ip이면 ipRoomDevices가 배지의 ConnectedDevices에 전달된다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: {
+          ...defaultProps,
+          scope: 'ip',
+          ipRoomDevices: [{ socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }],
+          globalRoomDevices: [{ socketId: 'b', deviceType: 'mobile', browser: 'Safari', os: 'iOS' }]
+        },
+        global: { plugins: [i18n], stubs }
+      })
+
+      const badge = wrapper.findComponent({ name: 'ConnectedDevices' })
+      expect(badge.exists()).toBe(true)
+      expect(badge.props('devices')).toEqual([{ socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }])
+    })
+
+    it('현재 scope가 global이면 globalRoomDevices가 배지의 ConnectedDevices에 전달된다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: {
+          ...defaultProps,
+          scope: 'global',
+          ipRoomDevices: [{ socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }],
+          globalRoomDevices: [{ socketId: 'b', deviceType: 'mobile', browser: 'Safari', os: 'iOS' }]
+        },
+        global: { plugins: [i18n], stubs }
+      })
+
+      const badge = wrapper.findComponent({ name: 'ConnectedDevices' })
+      expect(badge.exists()).toBe(true)
+      expect(badge.props('devices')).toEqual([{ socketId: 'b', deviceType: 'mobile', browser: 'Safari', os: 'iOS' }])
+    })
+
+    it('현재 scope의 기기 목록이 비어있으면 배지가 렌더링되지 않는다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: { ...defaultProps, scope: 'ip', ipRoomDevices: [], globalRoomDevices: [{ socketId: 'b' }] },
+        global: { plugins: [i18n], stubs }
+      })
+
+      expect(wrapper.findComponent({ name: 'ConnectedDevices' }).exists()).toBe(false)
     })
   })
 

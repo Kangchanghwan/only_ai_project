@@ -1,6 +1,5 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
-import ConnectedDevices from './ConnectedDevices.vue'
 
 const { t } = useI18n()
 
@@ -8,14 +7,6 @@ defineProps({
   scope: {
     type: String,
     default: 'ip'
-  },
-  ipDevices: {
-    type: Array,
-    default: () => []
-  },
-  globalDevices: {
-    type: Array,
-    default: () => []
   }
 })
 
@@ -38,7 +29,6 @@ const emit = defineEmits(['select'])
       @click="emit('select', 'ip')"
     >
       {{ t('shareScope.ip') }}
-      <span class="scale-75 origin-left"><ConnectedDevices :devices="ipDevices" /></span>
     </button>
     <button
       type="button"
@@ -50,7 +40,6 @@ const emit = defineEmits(['select'])
       @click="emit('select', 'global')"
     >
       {{ t('shareScope.global') }}
-      <span class="scale-75 origin-left"><ConnectedDevices :devices="globalDevices" /></span>
     </button>
   </div>
 </template>
