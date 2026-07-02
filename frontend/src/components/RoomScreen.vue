@@ -7,6 +7,7 @@ import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import AppFooter from './AppFooter.vue'
 import ConnectedDevices from './ConnectedDevices.vue'
+import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
 
@@ -75,6 +76,8 @@ const mobilePanel = ref('files')
 const activeDevices = computed(() =>
   props.scope === 'global' ? props.globalRoomDevices : props.ipRoomDevices
 )
+
+const { bg: accentBg } = useScopeAccent(() => props.scope)
 </script>
 
 <template>
@@ -114,7 +117,7 @@ const activeDevices = computed(() =>
               role="tab"
               :aria-selected="mobilePanel === 'files'"
               class="px-4 py-1.5 rounded-full text-sm font-semibold transition-colors"
-              :class="mobilePanel === 'files' ? 'bg-primary text-white' : 'text-text-secondary'"
+              :class="mobilePanel === 'files' ? [accentBg, 'text-white'] : 'text-text-secondary'"
               @click="mobilePanel = 'files'"
             >
               {{ t('room.filesTab') }} ({{ files.length }})
@@ -124,7 +127,7 @@ const activeDevices = computed(() =>
               role="tab"
               :aria-selected="mobilePanel === 'text'"
               class="px-4 py-1.5 rounded-full text-sm font-semibold transition-colors"
-              :class="mobilePanel === 'text' ? 'bg-primary text-white' : 'text-text-secondary'"
+              :class="mobilePanel === 'text' ? [accentBg, 'text-white'] : 'text-text-secondary'"
               @click="mobilePanel = 'text'"
             >
               {{ t('room.textTab') }} ({{ texts.length }})

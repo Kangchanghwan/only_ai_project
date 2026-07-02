@@ -11,6 +11,7 @@ export function useScopeAccent(scopeGetter) {
 
   return {
     isGlobal,
+    bg: computed(() => (isGlobal.value ? 'bg-scope-global' : 'bg-primary')),
     text: computed(() => (isGlobal.value ? 'text-scope-global' : 'text-primary')),
     border: computed(() => (isGlobal.value ? 'border-scope-global' : 'border-primary')),
     borderL: computed(() => (isGlobal.value ? 'border-l-scope-global' : 'border-l-primary')),

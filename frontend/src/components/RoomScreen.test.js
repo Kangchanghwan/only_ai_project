@@ -364,6 +364,17 @@ describe('RoomScreen.vue', () => {
       expect(tabs[0].text()).toContain('1')
       expect(tabs[1].text()).toContain('2')
     })
+
+    it('scope가 global이면 선택된 탭이 coral(bg-primary) 대신 sage(bg-scope-global) 액센트를 사용한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: { ...defaultProps, scope: 'global' },
+        global: { plugins: [i18n], stubs }
+      })
+
+      const tabs = wrapper.findAll('[role="tab"]')
+      expect(tabs[0].classes()).toContain('bg-scope-global')
+      expect(tabs[0].classes()).not.toContain('bg-primary')
+    })
   })
 
   describe('하단 고정 액션바 여백', () => {
