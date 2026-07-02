@@ -43,3 +43,19 @@ describe('i18n file.moreActions', () => {
     }
   })
 })
+
+describe('i18n shareTargetConfirm', () => {
+  it('모든 로케일 파일에 shareTargetConfirm의 5개 키가 모두 있어야 한다', () => {
+    const entries = Object.entries(locales)
+    expect(entries.length).toBeGreaterThanOrEqual(21)
+    const requiredKeys = ['titleFiles', 'titleText', 'titleFilesAndText', 'cancel', 'confirm']
+    for (const [path, mod] of entries) {
+      const json = mod.default || mod
+      expect(json.shareTargetConfirm, `${path}에 shareTargetConfirm 섹션 없음`).toBeTruthy()
+      for (const key of requiredKeys) {
+        expect(typeof json.shareTargetConfirm[key], `${path}의 shareTargetConfirm.${key} 없음`).toBe('string')
+        expect(json.shareTargetConfirm[key].length, `${path}의 shareTargetConfirm.${key} 비어있음`).toBeGreaterThan(0)
+      }
+    }
+  })
+})

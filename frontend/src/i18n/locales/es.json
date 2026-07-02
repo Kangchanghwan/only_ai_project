@@ -22,6 +22,13 @@
     "global": "Todos",
     "globalDescription": "Se comparte con todos los usuarios"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "Compartir {count} archivo(s)",
+    "titleText": "Compartir texto",
+    "titleFilesAndText": "Compartir {count} archivo(s) y texto",
+    "cancel": "Cancelar",
+    "confirm": "Compartir"
+  },
   "file": {
     "upload": "Subir Archivo",
     "download": "Descargar",

@@ -61,9 +61,6 @@
 - **Duration:** micro 50-100ms, short 150-250ms, medium 250-400ms (card land), long 400-700ms.
 - **Presence indicator:** replaces the "radar ping" convention with a simple overlapping avatar row (who's currently connected) — no scanning/searching animation, since there is no peer discovery step in this app.
 
-## Open Design Question (deferred)
-The mobile OS "share to app" flow (Web Share Target API, see `frontend/public/manifest.json` share_target + `frontend/public/sw.js` + `frontend/src/composables/useShareScope.js`) currently auto-publishes to whatever scope (`ip`/`global`) was last selected in-app, with zero confirmation. Because `global` is sticky in localStorage, a stale preference could silently broadcast content shared from another app to everyone using ClipboardApp. A confirmation-sheet design (using the scope colors above, sage-emphasized when resolved scope is `global`) was proposed but deferred — to be designed in a follow-up session before implementation.
-
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
@@ -80,3 +77,4 @@ The mobile OS "share to app" flow (Web Share Target API, see `frontend/public/ma
 | 2026-07-02 | 폰 프레임 바깥 레터박스 배경을 테마 무관 고정값(`#F7F7F7`)에서 다시 `var(--color-background)`로 되돌림 (`frontend/index.html`, `frontend/src/style.css` `body` 규칙 동시 수정) | 사용자가 고정 중립 배경 대신 테마별 배경을 다시 쓰도록 요청 |
 | 2026-07-02 | 룸 화면/다운로드 화면 하단의 `AppFooter`(개인정보 처리방침·GitHub 링크·제작자 크레딧)를 제거하고, 그 내용을 헤더의 도움말 모달(`HelpModal.vue`) 하단 "정보" 섹션으로 이전 | 사용자가 푸터 없이 화면이 더 깔끔하다고 판단, 항상 노출되는 하단 바 대신 필요할 때 여는 도움말 안에 링크를 보존하도록 요청 |
 | 2026-07-03 | `AppHeader.vue`의 헤더 배경을 `bg-background`에서 `bg-surface`로 변경. 룸 화면/다운로드 화면 하단에 `AppFooter`를 다시 추가 (도움말 모달의 "정보" 섹션은 유지, 내용 중복) | 다크테마에서 헤더(`--color-background`)와 프레임 바깥 레터박스(동일하게 `--color-background`)가 같은 색이라 헤더가 프레임에 속한 서피스가 아니라 레터박스의 연장처럼 보이는 문제를 사용자가 지적 — 헤더는 프레임 내부 서피스(`--color-surface`)를 써야 레터박스와 항상 구분됨. 동시에 사용자가 하단 푸터를 본문에도 다시 노출해 달라고 요청 |
+| 2026-07-03 | 모바일 Share Sheet(Web Share Target) 진입 시 매번 "같은 네트워크"/"전체 공유" 확인 시트를 강제 노출, 취소 시 공유 데이터 전체 폐기 | 마지막 선택 scope가 `localStorage`에 sticky하게 남아 있어 다른 앱에서 공유한 콘텐츠가 인지 없이 `global`로 broadcast될 위험 — 매번 명시적 선택을 요구해 제거. 선택은 이번 공유 1회에만 적용하고 앱의 저장된 기본값은 건드리지 않음 |

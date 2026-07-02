@@ -22,6 +22,13 @@
     "global": "Mọi người",
     "globalDescription": "Chia sẻ với tất cả người dùng"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "Chia sẻ {count} tệp",
+    "titleText": "Chia sẻ văn bản",
+    "titleFilesAndText": "Chia sẻ {count} tệp và văn bản",
+    "cancel": "Hủy",
+    "confirm": "Chia sẻ"
+  },
   "file": {
     "upload": "Tải lên tệp",
     "download": "Tải xuống",

@@ -22,6 +22,13 @@
     "global": "전체 공유",
     "globalDescription": "모든 사용자에게 공유돼요"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "파일 {count}개를 공유합니다",
+    "titleText": "텍스트를 공유합니다",
+    "titleFilesAndText": "파일 {count}개와 텍스트를 공유합니다",
+    "cancel": "취소",
+    "confirm": "공유하기"
+  },
   "file": {
     "upload": "파일 업로드",
     "download": "다운로드",
