@@ -19,6 +19,7 @@ import { parseRoute } from './utils/router'
 import RoomScreen from './components/RoomScreen.vue'
 import DownloadPage from './components/DownloadPage.vue'
 import NotificationToast from './components/NotificationToast.vue'
+import ShareConfirmSheet from './components/ShareConfirmSheet.vue'
 
 // ========================================
 // Composables 초기화
@@ -176,10 +177,10 @@ async function handleUploadFiles(files) {
   await uploadFiles(files)
 }
 
-async function uploadFiles(files) {
+async function uploadFiles(files, scopeOverride) {
   if (roomManager.roomIds.value.length === 0) return
 
-  const targetScope = shareScope.getScope()
+  const targetScope = scopeOverride || shareScope.getScope()
   const targetRoomId = roomManager.roomIdForScope(targetScope)
 
   if (!targetRoomId) {
@@ -375,11 +376,11 @@ async function handleCopySelectedToClipboard(files) {
 // 텍스트 공유 핸들러
 // ========================================
 
-async function handleAddText(content) {
+async function handleAddText(content, scopeOverride) {
   if (roomManager.roomIds.value.length === 0) return
 
-  const targetScope = shareScope.scope.value
-  const targetRoomId = activeRoomId.value
+  const targetScope = scopeOverride || shareScope.scope.value
+  const targetRoomId = roomManager.roomIdForScope(targetScope)
   if (!targetRoomId) return
 
   const newText = textShare.addText(content, targetRoomId)
@@ -550,8 +551,37 @@ async function handleLoadMore() {
 // 라이프사이클 훅
 // ========================================
 
+// 모바일 Share Sheet 확인 시트 상태
+const isShareConfirmOpen = ref(false)
+const shareConfirmSummary = ref({ fileCount: 0, hasText: false })
+let shareConfirmResolve = null
+
 /**
- * Service Worker에서 공유 데이터를 가져와 업로드/텍스트 공유 처리
+ * 확인 시트를 열고 사용자가 scope를 고르거나 취소할 때까지 대기한다.
+ * 취소 시 null을 resolve한다.
+ */
+function requestShareConfirmation(fileCount, hasText) {
+  shareConfirmSummary.value = { fileCount, hasText }
+  isShareConfirmOpen.value = true
+  return new Promise((resolve) => {
+    shareConfirmResolve = resolve
+  })
+}
+
+function handleShareConfirm(scope) {
+  isShareConfirmOpen.value = false
+  shareConfirmResolve?.(scope)
+  shareConfirmResolve = null
+}
+
+function handleShareCancel() {
+  isShareConfirmOpen.value = false
+  shareConfirmResolve?.(null)
+  shareConfirmResolve = null
+}
+
+/**
+ * Service Worker에서 공유 데이터를 가져와 확인 시트를 거쳐 업로드/텍스트 공유 처리
  */
 async function handleShareTargetData() {
   if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
@@ -580,17 +610,27 @@ async function handleShareTargetData() {
       return
     }
 
-    // 파일이 있으면 업로드
-    if (data.files && data.files.length > 0) {
-      const fileList = Array.from(data.files)
-      await uploadFiles(fileList)
-    }
-
-    // 텍스트가 있으면 공유 (text, url, title 조합)
+    const fileList = data.files && data.files.length > 0 ? Array.from(data.files) : []
     const textParts = [data.title, data.text, data.url].filter(Boolean)
     const combinedText = textParts.join('\n').trim()
+
+    if (fileList.length === 0 && !combinedText) {
+      console.log('[App] Share target 데이터에 파일/텍스트가 없어 확인 시트를 생략')
+      return
+    }
+
+    const scope = await requestShareConfirmation(fileList.length, Boolean(combinedText))
+    if (!scope) {
+      console.log('[App] 사용자가 공유를 취소함')
+      return
+    }
+
+    if (fileList.length > 0) {
+      await uploadFiles(fileList, scope)
+    }
+
     if (combinedText) {
-      await handleAddText(combinedText)
+      await handleAddText(combinedText, scope)
     }
   } catch (error) {
     console.error('[App] Share target 처리 실패:', error)
@@ -678,6 +718,15 @@ onUnmounted(() => {
       <NotificationToast
         :message="notification.notification.value"
         :uploads="notification.uploads.value"
+      />
+
+      <!-- 모바일 Share Sheet 공유 확인 시트 -->
+      <ShareConfirmSheet
+        :is-open="isShareConfirmOpen"
+        :file-count="shareConfirmSummary.fileCount"
+        :has-text="shareConfirmSummary.hasText"
+        @confirm="handleShareConfirm"
+        @cancel="handleShareCancel"
       />
     </div>
   </div>
