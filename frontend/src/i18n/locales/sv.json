@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Integritetspolicy",
     "sourceOnGitHub": "Källkod på GitHub",
-    "createdBy": "Skapad av"
+    "createdBy": "Skapad av",
+    "installPrompt": "Installera appen för att skicka filer direkt via delningsfunktionen",
+    "installButton": "Installera appen"
   },
   "qr": {
     "backgroundHint": "Skanna för att öppna samma utrymme"
+  },
+  "help": {
+    "pwaTitle": "Installera som app",
+    "pwaIntro": "Efter installationen kan du öppna appen direkt från hemskärmen, och om du delar en fil från en annan app till den här appen laddas den upp automatiskt.",
+    "pwaAndroidTitle": "Android / dator (Chrome, Edge)",
+    "pwaAndroidDesc": "Tryck på installationsikonen i adressfältet eller installationsbannern längst ner på skärmen.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Tryck på delningsknappen och välj sedan \"Lägg till på hemskärmen\"."
   }
 }

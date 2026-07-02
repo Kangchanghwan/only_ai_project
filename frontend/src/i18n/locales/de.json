@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Datenschutzrichtlinie",
     "sourceOnGitHub": "Quellcode auf GitHub",
-    "createdBy": "Erstellt von"
+    "createdBy": "Erstellt von",
+    "installPrompt": "App installieren, um Dateien direkt über die Teilen-Funktion zu senden",
+    "installButton": "App installieren"
   },
   "qr": {
     "backgroundHint": "Scannen, um denselben Raum zu öffnen"
+  },
+  "help": {
+    "pwaTitle": "Als App installieren",
+    "pwaIntro": "Nach der Installation startest du direkt vom Startbildschirm, und wenn du eine Datei aus einer anderen App mit dieser App teilst, wird sie automatisch hochgeladen.",
+    "pwaAndroidTitle": "Android / Desktop (Chrome, Edge)",
+    "pwaAndroidDesc": "Tippe auf das Installationssymbol in der Adressleiste oder auf das Installationsbanner am unteren Bildschirmrand.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Tippe auf die Teilen-Schaltfläche und wähle „Zum Home-Bildschirm“."
   }
 }

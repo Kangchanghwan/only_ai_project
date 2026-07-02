@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Chính Sách Bảo Mật",
     "sourceOnGitHub": "Mã Nguồn trên GitHub",
-    "createdBy": "Được tạo bởi"
+    "createdBy": "Được tạo bởi",
+    "installPrompt": "Cài đặt ứng dụng để gửi tệp ngay qua tính năng chia sẻ",
+    "installButton": "Cài đặt ứng dụng"
   },
   "qr": {
     "backgroundHint": "Quét để mở cùng không gian"
+  },
+  "help": {
+    "pwaTitle": "Cài đặt như ứng dụng",
+    "pwaIntro": "Sau khi cài đặt, bạn có thể mở trực tiếp từ màn hình chính, và khi chia sẻ tệp từ ứng dụng khác đến ứng dụng này, tệp sẽ tự động được tải lên.",
+    "pwaAndroidTitle": "Android / Máy tính (Chrome, Edge)",
+    "pwaAndroidDesc": "Chạm vào biểu tượng cài đặt trên thanh địa chỉ hoặc biểu ngữ cài đặt ở cuối màn hình.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Chạm vào nút Chia sẻ, sau đó chọn \"Thêm vào Màn hình chính\"."
   }
 }

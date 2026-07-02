@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Politique de Confidentialité",
     "sourceOnGitHub": "Source sur GitHub",
-    "createdBy": "Créé par"
+    "createdBy": "Créé par",
+    "installPrompt": "Installez l'application pour envoyer des fichiers directement via le partage",
+    "installButton": "Installer l'application"
   },
   "qr": {
     "backgroundHint": "Scannez pour ouvrir le même espace"
+  },
+  "help": {
+    "pwaTitle": "Installer comme application",
+    "pwaIntro": "Une fois installée, elle se lance directement depuis l'écran d'accueil, et partager un fichier depuis une autre application vers celle-ci l'envoie automatiquement.",
+    "pwaAndroidTitle": "Android / Bureau (Chrome, Edge)",
+    "pwaAndroidDesc": "Appuyez sur l'icône d'installation dans la barre d'adresse ou sur la bannière d'installation en bas de l'écran.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Appuyez sur le bouton Partager, puis choisissez « Sur l'écran d'accueil »."
   }
 }

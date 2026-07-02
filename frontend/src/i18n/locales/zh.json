@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "隐私政策",
     "sourceOnGitHub": "GitHub 源代码",
-    "createdBy": "创建者"
+    "createdBy": "创建者",
+    "installPrompt": "安装应用后，即可通过分享功能直接发送文件",
+    "installButton": "安装应用"
   },
   "qr": {
     "backgroundHint": "扫描以进入同一空间"
+  },
+  "help": {
+    "pwaTitle": "安装为应用",
+    "pwaIntro": "安装后可从主屏幕直接启动，在其他应用中选择分享到本应用即可自动上传文件。",
+    "pwaAndroidTitle": "Android / 桌面版 (Chrome, Edge)",
+    "pwaAndroidDesc": "点击地址栏中的安装图标，或屏幕底部弹出的安装横幅。",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "点击分享按钮，然后选择\"添加到主屏幕\"。"
   }
 }

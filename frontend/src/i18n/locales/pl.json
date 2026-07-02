@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Polityka Prywatności",
     "sourceOnGitHub": "Kod na GitHub",
-    "createdBy": "Stworzone przez"
+    "createdBy": "Stworzone przez",
+    "installPrompt": "Zainstaluj aplikację, aby wysyłać pliki od razu przez funkcję udostępniania",
+    "installButton": "Zainstaluj aplikację"
   },
   "qr": {
     "backgroundHint": "Zeskanuj, aby otworzyć tę samą przestrzeń"
+  },
+  "help": {
+    "pwaTitle": "Zainstaluj jako aplikację",
+    "pwaIntro": "Po instalacji uruchomisz ją bezpośrednio z ekranu głównego, a udostępnienie pliku z innej aplikacji do tej aplikacji automatycznie go prześle.",
+    "pwaAndroidTitle": "Android / komputer (Chrome, Edge)",
+    "pwaAndroidDesc": "Dotknij ikony instalacji na pasku adresu lub baner instalacji u dołu ekranu.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Dotknij przycisku Udostępnij, a następnie wybierz „Dodaj do ekranu głównego”."
   }
 }

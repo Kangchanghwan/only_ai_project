@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Adatvédelmi Irányelvek",
     "sourceOnGitHub": "Forráskód a GitHubon",
-    "createdBy": "Készítette"
+    "createdBy": "Készítette",
+    "installPrompt": "Telepítsd az alkalmazást, hogy a megosztás funkcióval azonnal küldhess fájlokat",
+    "installButton": "Alkalmazás telepítése"
   },
   "qr": {
     "backgroundHint": "Olvassa be ugyanennek a térnek a megnyitásához"
+  },
+  "help": {
+    "pwaTitle": "Telepítés alkalmazásként",
+    "pwaIntro": "Telepítés után közvetlenül a kezdőképernyőről indíthatod, és ha egy másik alkalmazásból megosztasz egy fájlt ide, az automatikusan feltöltődik.",
+    "pwaAndroidTitle": "Android / asztali (Chrome, Edge)",
+    "pwaAndroidDesc": "Koppints a címsorban lévő telepítési ikonra vagy a képernyő alján megjelenő telepítési sávra.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Koppints a Megosztás gombra, majd válaszd a „Főképernyőhöz adás” lehetőséget."
   }
 }

@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Politica de Confidențialitate",
     "sourceOnGitHub": "Cod sursă pe GitHub",
-    "createdBy": "Creat de"
+    "createdBy": "Creat de",
+    "installPrompt": "Instalează aplicația pentru a trimite fișiere direct prin funcția de distribuire",
+    "installButton": "Instalează aplicația"
   },
   "qr": {
     "backgroundHint": "Scanează pentru a deschide același spațiu"
+  },
+  "help": {
+    "pwaTitle": "Instalare ca aplicație",
+    "pwaIntro": "După instalare, o poți deschide direct de pe ecranul de start, iar distribuirea unui fișier din altă aplicație către aceasta îl încarcă automat.",
+    "pwaAndroidTitle": "Android / desktop (Chrome, Edge)",
+    "pwaAndroidDesc": "Atinge pictograma de instalare din bara de adrese sau bannerul de instalare din partea de jos a ecranului.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Atinge butonul de distribuire, apoi alege „Adaugă la ecranul de start”."
   }
 }

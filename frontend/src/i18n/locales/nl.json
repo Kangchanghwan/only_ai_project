@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Privacybeleid",
     "sourceOnGitHub": "Broncode op GitHub",
-    "createdBy": "Gemaakt door"
+    "createdBy": "Gemaakt door",
+    "installPrompt": "Installeer de app om bestanden direct te verzenden via de deelfunctie",
+    "installButton": "App installeren"
   },
   "qr": {
     "backgroundHint": "Scan om dezelfde ruimte te openen"
+  },
+  "help": {
+    "pwaTitle": "Installeren als app",
+    "pwaIntro": "Na installatie start je direct vanaf het startscherm, en als je een bestand vanuit een andere app naar deze app deelt, wordt het automatisch geüpload.",
+    "pwaAndroidTitle": "Android / desktop (Chrome, Edge)",
+    "pwaAndroidDesc": "Tik op het installatiepictogram in de adresbalk of de installatiebanner onderaan het scherm.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Tik op de deelknop en kies vervolgens \"Zet op beginscherm\"."
   }
 }

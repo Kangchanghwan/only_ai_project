@@ -164,12 +164,20 @@
     "tip3": "All files and text are synchronized in real-time",
     "tip4": "On mobile, tap the \"⋯\" button on a file card to open the share/QR/download/delete menu",
     "aboutTitle": "About",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "pwaTitle": "Install as an App",
+    "pwaIntro": "Installing lets you launch from your home screen instantly, and sharing a file to this app from another app uploads it automatically.",
+    "pwaAndroidTitle": "Android / Desktop (Chrome, Edge)",
+    "pwaAndroidDesc": "Tap the install icon in the address bar or the install banner at the bottom of the screen.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Tap the Share button, then choose \"Add to Home Screen\"."
   },
   "footer": {
     "privacyPolicy": "Privacy Policy",
     "sourceOnGitHub": "Source on GitHub",
-    "createdBy": "Created by"
+    "createdBy": "Created by",
+    "installPrompt": "Install the app to send files instantly using your device's share feature",
+    "installButton": "Install App"
   },
   "qr": {
     "backgroundHint": "Scan to join this space"

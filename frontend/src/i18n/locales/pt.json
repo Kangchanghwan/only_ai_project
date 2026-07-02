@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Política de Privacidade",
     "sourceOnGitHub": "Código no GitHub",
-    "createdBy": "Criado por"
+    "createdBy": "Criado por",
+    "installPrompt": "Instale o app para enviar arquivos direto pela função de compartilhar",
+    "installButton": "Instalar app"
   },
   "qr": {
     "backgroundHint": "Escaneie para abrir o mesmo espaço"
+  },
+  "help": {
+    "pwaTitle": "Instalar como app",
+    "pwaIntro": "Depois de instalado, você abre direto da tela inicial, e compartilhar um arquivo de outro app para este app faz o upload automaticamente.",
+    "pwaAndroidTitle": "Android / desktop (Chrome, Edge)",
+    "pwaAndroidDesc": "Toque no ícone de instalação na barra de endereço ou no banner de instalação na parte inferior da tela.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Toque no botão Compartilhar e escolha \"Adicionar à Tela de Início\"."
   }
 }
