@@ -350,4 +350,27 @@ describe('RoomScreen.vue', () => {
       expect(tabs[1].text()).toContain('2')
     })
   })
+
+  describe('하단 고정 액션바 여백', () => {
+    it('파일이 있으면 루트 컨테이너에 pb-24가 적용된다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: {
+          ...defaultProps,
+          files: [{ name: 'a.png', roomId: 'room-shared', url: 'https://example.com/a.png', size: 1, created: '2026-01-01T00:00:00.000Z' }]
+        },
+        global: { plugins: [i18n], stubs }
+      })
+      expect(wrapper.element.className).toContain('pb-24')
+      expect(wrapper.element.className).not.toContain('pb-6')
+    })
+
+    it('파일이 없으면 pb-6을 유지하고 pb-24는 적용하지 않는다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { plugins: [i18n], stubs }
+      })
+      expect(wrapper.element.className).toContain('pb-6')
+      expect(wrapper.element.className).not.toContain('pb-24')
+    })
+  })
 })
