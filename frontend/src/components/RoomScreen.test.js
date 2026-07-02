@@ -372,5 +372,18 @@ describe('RoomScreen.vue', () => {
       expect(wrapper.element.className).toContain('pb-6')
       expect(wrapper.element.className).not.toContain('pb-24')
     })
+
+    it('파일이 있어도 로딩 중이면 액션바가 렌더링되지 않으므로 pb-6을 유지한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: {
+          ...defaultProps,
+          files: [{ name: 'a.png', roomId: 'room-shared', url: 'https://example.com/a.png', size: 1, created: '2026-01-01T00:00:00.000Z' }],
+          isLoading: true
+        },
+        global: { plugins: [i18n], stubs }
+      })
+      expect(wrapper.element.className).toContain('pb-6')
+      expect(wrapper.element.className).not.toContain('pb-24')
+    })
   })
 })

@@ -77,7 +77,7 @@ const mobilePanel = ref('files')
 </script>
 
 <template>
-  <div :class="['max-w-[1600px] mx-auto pt-6 px-6 text-text-primary', files.length > 0 ? 'pb-24' : 'pb-6']">
+  <div :class="['max-w-[1600px] mx-auto pt-6 px-6 text-text-primary', files.length > 0 && !isLoading ? 'pb-24' : 'pb-6']">
     <AppHeader
       :user-count="userCount"
       :is-connecting="isConnecting"
