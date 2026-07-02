@@ -108,10 +108,10 @@ function handleDrop(event) {
     </div>
 
     <!-- 상단 정보 오버레이 -->
-    <div class="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-black/80 via-black/50 to-transparent">
+    <div class="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-surface/90 via-surface/60 to-transparent">
       <div class="flex items-center gap-3">
         <span class="text-2xl">📁</span>
-        <div class="flex items-center gap-2 text-xs text-white/90">
+        <div class="flex items-center gap-2 text-xs text-text-primary/90">
           <span>{{ t('file.maxSize', { size: maxFileSizeMB }) }}</span>
         </div>
       </div>
@@ -119,9 +119,9 @@ function handleDrop(event) {
 
     <!-- 하단 액션 오버레이 (호버시 표시) -->
     <div
-      class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex justify-center items-end opacity-0 transition-opacity duration-200 hover:opacity-100"
+      class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-surface/90 to-transparent flex justify-center items-end opacity-0 transition-opacity duration-200 hover:opacity-100"
     >
-      <span class="text-xs font-medium text-white">{{ t('file.uploadClickHint') }}</span>
+      <span class="text-xs font-medium text-text-primary">{{ t('file.uploadClickHint') }}</span>
     </div>
   </div>
 </template>
