@@ -47,7 +47,9 @@ body.dark {
   }
 
   body {
-    background-color: var(--color-background);
+    /* 폰 프레임 바깥 여백(레터박스)은 테마와 무관하게 항상 흰색으로 고정 —
+       프레임 안쪽 컴포넌트들의 --color-background(테마별)와는 별개다. */
+    background-color: #FFFFFF;
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
