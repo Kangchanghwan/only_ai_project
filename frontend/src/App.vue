@@ -701,7 +701,7 @@ onUnmounted(() => {
   max-width: 30rem;
   min-height: 100dvh;
   background-color: var(--color-surface);
-  box-shadow: 0 0 3rem rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 3.125rem rgba(22, 28, 1, 0.1);
 }
 
 .loading-screen {
