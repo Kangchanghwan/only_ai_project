@@ -41,17 +41,9 @@ describe('ShareScopeTabs', () => {
     expect(wrapper.emitted('select')[0]).toEqual(['global'])
   })
 
-  it('ipDevices/globalDevices가 각 탭의 ConnectedDevices에 전달된다', () => {
-    const ipDevices = [{ socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }]
-    const globalDevices = [{ socketId: 'b', deviceType: 'mobile', browser: 'Safari', os: 'iOS' }]
-    const wrapper = mount(ShareScopeTabs, {
-      ...mountOptions,
-      props: { scope: 'ip', ipDevices, globalDevices }
-    })
+  it('탭 버튼 안에는 ConnectedDevices가 더 이상 렌더링되지 않는다', () => {
+    const wrapper = mount(ShareScopeTabs, mountOptions)
 
-    const connectedDevicesList = wrapper.findAllComponents({ name: 'ConnectedDevices' })
-    expect(connectedDevicesList).toHaveLength(2)
-    expect(connectedDevicesList[0].props('devices')).toEqual(ipDevices)
-    expect(connectedDevicesList[1].props('devices')).toEqual(globalDevices)
+    expect(wrapper.findAllComponents({ name: 'ConnectedDevices' })).toHaveLength(0)
   })
 })
