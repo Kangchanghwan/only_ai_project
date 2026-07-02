@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppHeader from './AppHeader.vue'
+import AppFooter from './AppFooter.vue'
 import ShareScopeTabs from './ShareScopeTabs.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
@@ -168,6 +169,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
           </div>
         </main>
       </div>
+
+      <AppFooter />
     </div>
   </div>
 </template>

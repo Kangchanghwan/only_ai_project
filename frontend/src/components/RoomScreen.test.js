@@ -27,6 +27,10 @@ const stubs = {
     template: '<div class="text-share-box-stub"></div>',
     props: ['texts'],
     emits: ['remove-text', 'clear-all', 'copy-text']
+  },
+  AppFooter: {
+    name: 'AppFooter',
+    template: '<div class="app-footer-stub"></div>'
   }
 }
 
