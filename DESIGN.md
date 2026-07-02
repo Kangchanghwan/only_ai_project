@@ -49,6 +49,7 @@
 - **Max content width:** ~1040px for the main room screen.
 - **Border radius:** sm 8px (chips, small controls), md 14px (cards), lg 22px (frames, dropzone), full 999px (pills, tabs, primary buttons).
 - **Scope tabs:** a segmented pill control (`우리 네트워크` / `전체 공유`) sits above the feed; active tab fills with the scope color (coral for ip, sage for global). Default active tab is always `ip`.
+- **Sticky/fixed chrome:** the header (`AppHeader`) sticks to the top of the viewport on scroll (`sticky top-0`); the file-list action bar (select-all/download/QR/delete/reset) sticks to the bottom of the viewport as an evenly-spaced 5-column bar, always visible whenever the file list is showing. On mobile (`<sm`), per-file row actions collapse behind a single "⋯" trigger that opens a bottom action sheet, instead of the row's inline icon buttons (which remain inline at `sm` and above).
 
 ## Motion
 - **Approach:** Intentional — feed items animate in with a soft spring-bounce ("land" animation: translateY + scale with slight overshoot, ~500ms, staggered ~80ms per card) so new shares feel tossed onto the tray rather than silently appearing.
@@ -67,3 +68,4 @@ The mobile OS "share to app" flow (Web Share Target API, see `frontend/public/ma
 | 2026-07-01 | Dedicated sage-green color reserved for `global` scope only | `ip` and `global` scopes carry very different privacy blast radii; color must make the switch impossible to miss, and `global` must never be visually or behaviorally default |
 | 2026-07-01 | Share Sheet confirmation UX deferred | Needs its own product discussion on default behavior/friction tradeoffs before a design commitment |
 | 2026-07-02 | 파일 피드를 카드 그리드에서 리스트로, 파일/텍스트를 상하에서 좌우 분할(모바일은 탭)로 변경 | 참고 이미지(리스트형 파일 관리 UI) 기반 사용자 요청 — 리스트가 스캔성이 높고, 좌우 분할이 텍스트 공유를 파일과 동등한 1차 콘텐츠로 격상시킴 |
+| 2026-07-02 | 모바일 파일 행 액션을 아이콘 버튼 4개 상시 노출 대신 "⋯" 트리거 + 하단 시트로 전환 | 28px 아이콘 버튼이 좁은 화면에서 터치하기 부담스럽다는 사용자 피드백 — `sm` 이상에서는 기존 상시 노출 버튼을 그대로 유지하고, 모바일에서만 예외적으로 축소 |
