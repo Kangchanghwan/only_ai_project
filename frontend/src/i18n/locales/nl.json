@@ -35,7 +35,8 @@
     "copyFailed": "Kopiëren mislukt",
     "delete": "Verwijderen",
     "deleteSelected": "Geselecteerde verwijderen",
-    "clearStorage": "Opslag wissen"
+    "clearStorage": "Opslag wissen",
+    "moreActions": "Meer"
   },
   "text": {
     "share": "Tekst delen",

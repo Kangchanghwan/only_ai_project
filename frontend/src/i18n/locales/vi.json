@@ -35,7 +35,8 @@
     "copyFailed": "Sao chép thất bại",
     "delete": "Xóa",
     "deleteSelected": "Xóa đã chọn",
-    "clearStorage": "Xóa bộ nhớ"
+    "clearStorage": "Xóa bộ nhớ",
+    "moreActions": "Thêm"
   },
   "text": {
     "share": "Chia sẻ văn bản",

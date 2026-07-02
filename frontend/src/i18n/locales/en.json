@@ -40,7 +40,8 @@
     "uploadClickHint": "Click here or drop files",
     "delete": "Delete",
     "deleteSelected": "Delete Selected",
-    "clearStorage": "Clear Storage"
+    "clearStorage": "Clear Storage",
+    "moreActions": "More"
   },
   "text": {
     "share": "Share Text",

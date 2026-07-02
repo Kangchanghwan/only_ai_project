@@ -30,3 +30,16 @@ describe('i18n shareScope', () => {
     }
   })
 })
+
+describe('i18n file.moreActions', () => {
+  it('모든 로케일 파일에 file.moreActions 문자열이 있어야 한다', () => {
+    const entries = Object.entries(locales)
+    expect(entries.length).toBeGreaterThanOrEqual(21)
+    for (const [path, mod] of entries) {
+      const json = mod.default || mod
+      expect(json.file, `${path}에 file 섹션 없음`).toBeTruthy()
+      expect(typeof json.file.moreActions, `${path}에 file.moreActions 없음`).toBe('string')
+      expect(json.file.moreActions.length, `${path} file.moreActions 비어있음`).toBeGreaterThan(0)
+    }
+  })
+})

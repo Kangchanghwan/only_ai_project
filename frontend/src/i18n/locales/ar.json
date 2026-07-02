@@ -35,7 +35,8 @@
     "copyFailed": "فشل النسخ",
     "delete": "حذف",
     "deleteSelected": "حذف المحدد",
-    "clearStorage": "مسح التخزين"
+    "clearStorage": "مسح التخزين",
+    "moreActions": "المزيد"
   },
   "text": {
     "share": "مشاركة النص",

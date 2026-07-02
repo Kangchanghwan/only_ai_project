@@ -35,7 +35,8 @@
     "copyFailed": "Kopieren fehlgeschlagen",
     "delete": "Löschen",
     "deleteSelected": "Auswahl löschen",
-    "clearStorage": "Speicher leeren"
+    "clearStorage": "Speicher leeren",
+    "moreActions": "Mehr"
   },
   "text": {
     "share": "Text teilen",

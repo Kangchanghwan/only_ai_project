@@ -35,7 +35,8 @@
     "copyFailed": "Kopiering misslyckades",
     "delete": "Ta bort",
     "deleteSelected": "Ta bort valda",
-    "clearStorage": "Rensa lagring"
+    "clearStorage": "Rensa lagring",
+    "moreActions": "Mer"
   },
   "text": {
     "share": "Dela text",

@@ -40,7 +40,8 @@
     "uploadClickHint": "여기를 클릭하거나 파일을 드롭하세요",
     "delete": "삭제",
     "deleteSelected": "선택 삭제",
-    "clearStorage": "저장소 초기화"
+    "clearStorage": "저장소 초기화",
+    "moreActions": "더 보기"
   },
   "text": {
     "share": "텍스트 공유",

@@ -35,7 +35,8 @@
     "copyFailed": "Copia fallida",
     "delete": "Eliminar",
     "deleteSelected": "Eliminar seleccionados",
-    "clearStorage": "Limpiar almacenamiento"
+    "clearStorage": "Limpiar almacenamiento",
+    "moreActions": "Más"
   },
   "text": {
     "share": "Compartir Texto",

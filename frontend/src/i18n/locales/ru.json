@@ -35,7 +35,8 @@
     "copyFailed": "Ошибка копирования",
     "delete": "Удалить",
     "deleteSelected": "Удалить выбранное",
-    "clearStorage": "Очистить хранилище"
+    "clearStorage": "Очистить хранилище",
+    "moreActions": "Ещё"
   },
   "text": {
     "share": "Поделиться текстом",
