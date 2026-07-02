@@ -8,6 +8,9 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [vue()],
+    server: {
+      port: Number(process.env.PORT) || 5173,
+    },
     test: {
       globals: true,
       environment: 'happy-dom',
