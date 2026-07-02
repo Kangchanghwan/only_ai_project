@@ -228,6 +228,24 @@ onUnmounted(() => {
               </div>
             </section>
 
+            <!-- 앱 설치 -->
+            <section>
+              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
+                📲 {{ t('help.pwaTitle') }}
+              </h3>
+              <div class="space-y-3">
+                <p class="text-sm text-text-secondary">{{ t('help.pwaIntro') }}</p>
+                <div class="bg-background border border-border rounded-lg p-4">
+                  <h4 class="font-semibold text-text-primary mb-1">{{ t('help.pwaAndroidTitle') }}</h4>
+                  <p class="text-sm text-text-secondary">{{ t('help.pwaAndroidDesc') }}</p>
+                </div>
+                <div class="bg-background border border-border rounded-lg p-4">
+                  <h4 class="font-semibold text-text-primary mb-1">{{ t('help.pwaIOSTitle') }}</h4>
+                  <p class="text-sm text-text-secondary">{{ t('help.pwaIOSDesc') }}</p>
+                </div>
+              </div>
+            </section>
+
             <!-- 팁 -->
             <section class="bg-primary/10 border border-primary/30 rounded-lg p-4">
               <h3 class="text-lg font-semibold text-primary mb-2 flex items-center gap-2">
