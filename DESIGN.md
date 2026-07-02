@@ -44,8 +44,8 @@
 - **Scale:** 2xs(2) xs(4) sm(8) md(16) lg(24) xl(32) 2xl(48) 3xl(64)
 
 ## Layout
-- **Approach:** Hybrid — the file/text feed is grid-disciplined (predictable, scannable columns), while the upload entry point is allowed to break the grid with an oversized, playful drop-zone/pill.
-- **Grid:** feed cards in a 3-column grid on desktop, collapsing to 1-2 columns on mobile.
+- **Approach:** The file feed is a single-column row list (not a card grid); the upload entry point is allowed to break the list with an oversized, playful drop-zone/pill above it.
+- **Feed layout:** file list rows: icon/thumbnail + two-line name/meta + always-visible action buttons (no hover-only reveal — must work on touch). On desktop (`md`+), the file list and text feed sit side-by-side (60% file / 40% text). Below `md`, a two-tab switcher ("Files" / "Text") replaces the split, defaulting to the file tab.
 - **Max content width:** ~1040px for the main room screen.
 - **Border radius:** sm 8px (chips, small controls), md 14px (cards), lg 22px (frames, dropzone), full 999px (pills, tabs, primary buttons).
 - **Scope tabs:** a segmented pill control (`우리 네트워크` / `전체 공유`) sits above the feed; active tab fills with the scope color (coral for ip, sage for global). Default active tab is always `ip`.
@@ -66,3 +66,4 @@ The mobile OS "share to app" flow (Web Share Target API, see `frontend/public/ma
 | 2026-07-01 | Coral accent instead of category-standard blue | Differentiates from Snapdrop/ShareDrop/AirDroid/Dropbox; reinforces warm/playful/physical mood over "secure vault" mood |
 | 2026-07-01 | Dedicated sage-green color reserved for `global` scope only | `ip` and `global` scopes carry very different privacy blast radii; color must make the switch impossible to miss, and `global` must never be visually or behaviorally default |
 | 2026-07-01 | Share Sheet confirmation UX deferred | Needs its own product discussion on default behavior/friction tradeoffs before a design commitment |
+| 2026-07-02 | 파일 피드를 카드 그리드에서 리스트로, 파일/텍스트를 상하에서 좌우 분할(모바일은 탭)로 변경 | 참고 이미지(리스트형 파일 관리 UI) 기반 사용자 요청 — 리스트가 스캔성이 높고, 좌우 분할이 텍스트 공유를 파일과 동등한 1차 콘텐츠로 격상시킴 |
