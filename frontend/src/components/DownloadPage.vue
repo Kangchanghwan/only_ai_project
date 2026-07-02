@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import { decodeFileNames } from '../utils/router'
 import { r2Service } from '../services/r2Service'
 import { useDownload } from '../composables/useDownload'
-import AppFooter from './AppFooter.vue'
 
 const { t } = useI18n()
 
@@ -294,8 +293,6 @@ function getStatusText(status) {
       </div>
       </div>
     </div>
-
-    <AppFooter />
   </div>
 </template>
 

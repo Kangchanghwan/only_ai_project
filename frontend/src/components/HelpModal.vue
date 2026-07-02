@@ -18,6 +18,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
+const currentYear = new Date().getFullYear()
+
 /**
  * ESC 키로 모달 닫기
  */
@@ -103,7 +105,33 @@ onUnmounted(() => {
                   <span class="text-primary mt-0.5">•</span>
                   <span><strong class="text-text-primary">{{ t('help.feature4') }}</strong> {{ t('help.feature4Desc') }}</span>
                 </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary mt-0.5">•</span>
+                  <span><strong class="text-text-primary">{{ t('help.feature5') }}</strong> {{ t('help.feature5Desc') }}</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary mt-0.5">•</span>
+                  <span><strong class="text-text-primary">{{ t('help.feature6') }}</strong> {{ t('help.feature6Desc') }}</span>
+                </li>
               </ul>
+            </section>
+
+            <!-- 공유 범위 -->
+            <section>
+              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
+                🔀 {{ t('help.scopeTitle') }}
+              </h3>
+              <div class="space-y-3">
+                <div class="bg-background border border-border rounded-lg p-4">
+                  <h4 class="font-semibold text-text-primary mb-1">{{ t('shareScope.ip') }}</h4>
+                  <p class="text-sm text-text-secondary">{{ t('shareScope.ipDescription') }}</p>
+                </div>
+                <div class="bg-background border border-border rounded-lg p-4">
+                  <h4 class="font-semibold text-text-primary mb-1">{{ t('shareScope.global') }}</h4>
+                  <p class="text-sm text-text-secondary">{{ t('shareScope.globalDescription') }}</p>
+                </div>
+              </div>
+              <p class="text-sm text-text-secondary mt-3">{{ t('help.scopeDevicesDesc') }}</p>
             </section>
 
             <!-- 파일 공유 -->
@@ -164,10 +192,6 @@ onUnmounted(() => {
                     <li>• {{ t('help.downloadMultiStep3') }}</li>
                   </ul>
                 </div>
-                <div class="bg-background border border-border rounded-lg p-4">
-                  <h4 class="font-semibold text-text-primary mb-2">{{ t('help.downloadAll') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('help.downloadAllDesc') }}</p>
-                </div>
               </div>
             </section>
 
@@ -213,7 +237,42 @@ onUnmounted(() => {
                 <li>• {{ t('help.tip1') }}</li>
                 <li>• {{ t('help.tip2') }}</li>
                 <li>• {{ t('help.tip3') }}</li>
+                <li>• {{ t('help.tip4') }}</li>
               </ul>
+            </section>
+
+            <!-- 정보 -->
+            <section class="border-t border-border pt-6">
+              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
+                ℹ️ {{ t('help.aboutTitle') }}
+              </h3>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-secondary">
+                <a
+                  href="https://github.com/Kangchanghwan/only_ai_project/blob/master/PRIVACY.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary hover:underline"
+                >{{ t('footer.privacyPolicy') }}</a>
+                <span class="text-text-secondary/50">·</span>
+                <a
+                  href="https://github.com/Kangchanghwan/only_ai_project"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary hover:underline"
+                >{{ t('footer.sourceOnGitHub') }}</a>
+                <span class="text-text-secondary/50">·</span>
+                <span>
+                  {{ t('footer.createdBy') }}
+                  <a
+                    href="https://github.com/Kangchanghwan"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-primary hover:underline"
+                  >Kang Chang Hwan</a>
+                </span>
+                <span class="text-text-secondary/50">·</span>
+                <span>&copy; {{ currentYear }}</span>
+              </div>
             </section>
           </div>
 
