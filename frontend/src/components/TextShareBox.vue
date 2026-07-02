@@ -11,6 +11,7 @@
  * - Tailwind CSS for styling
  */
 import { useI18n } from 'vue-i18n'
+import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
 
@@ -23,6 +24,10 @@ const props = defineProps({
     type: Array,
     required: true,
     default: () => []
+  },
+  scope: {
+    type: String,
+    default: 'ip'
   }
 })
 
@@ -31,6 +36,8 @@ const emit = defineEmits([
   'clear-all',
   'copy-text'
 ])
+
+const { hoverText: accentHoverText, hoverBorder50: accentHoverBorder50 } = useScopeAccent(() => props.scope)
 
 /**
  * 시간 포맷팅 함수
@@ -53,7 +60,8 @@ function formatTime(timestamp) {
         </h2>
         <button
           v-if="texts.length > 0"
-          class="text-xs text-text-secondary hover:text-primary transition-colors duration-200"
+          class="text-xs text-text-secondary transition-colors duration-200"
+          :class="accentHoverText"
           @click="$emit('clear-all')"
           :title="t('text.clearAll')"
         >
@@ -79,7 +87,8 @@ function formatTime(timestamp) {
         <div
           v-for="text in texts"
           :key="text.id"
-          class="bg-background border border-border rounded-lg p-3 hover:border-primary/50 transition-all duration-200 group"
+          class="bg-background border border-border rounded-lg p-3 transition-all duration-200 group"
+          :class="accentHoverBorder50"
         >
           <div class="flex items-start justify-between gap-3">
             <!-- 텍스트 내용 (클릭 시 복사) -->

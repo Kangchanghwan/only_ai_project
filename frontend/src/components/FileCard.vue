@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../utils/fileUtils'
 import FileQRCodeModal from './FileQRCodeModal.vue'
+import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
 
@@ -14,10 +15,24 @@ const props = defineProps({
   isSelected: {
     type: Boolean,
     default: false
+  },
+  scope: {
+    type: String,
+    default: 'ip'
   }
 })
 
 const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file', 'delete-file'])
+
+const {
+  text: accentText,
+  borderL: accentBorderL,
+  bgSoft10: accentBgSoft10,
+  bgSoft5: accentBgSoft5,
+  hoverBorder50: accentHoverBorder50,
+  hoverBg: accentHoverBg,
+  accentColor
+} = useScopeAccent(() => props.scope)
 
 // QR 모달 상태 관리
 const isQRModalOpen = ref(false)
@@ -111,16 +126,15 @@ async function handleShare(event) {
 
 <template>
   <div
-    class="file-row flex items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface cursor-pointer transition-colors duration-200 hover:border-primary/50"
-    :class="{
-      'bg-primary/5 border-l-4 border-l-primary': isSelected
-    }"
+    class="file-row flex items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface cursor-pointer transition-colors duration-200"
+    :class="[accentHoverBorder50, isSelected ? ['border-l-4', accentBgSoft5, accentBorderL] : '']"
     @click="$emit('copy-image', file.url)"
   >
     <!-- 체크박스 -->
     <input
       type="checkbox"
-      class="w-5 h-5 cursor-pointer accent-primary flex-shrink-0"
+      class="w-5 h-5 cursor-pointer flex-shrink-0"
+      :class="accentColor"
       :checked="isSelected"
       @click.stop
       @change="$emit('toggle-selection', file)"
@@ -138,7 +152,8 @@ async function handleShare(event) {
     <!-- 비이미지 타입: 컬러 아이콘 -->
     <div
       v-else
-      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0"
+      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center flex-shrink-0"
+      :class="accentBgSoft10"
     >
       <span class="text-xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
     </div>
@@ -162,7 +177,8 @@ async function handleShare(event) {
       <!-- 공유 버튼 (Web Share API 지원 시에만 표시) -->
       <button
         v-if="canShare"
-        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
+        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background transition-all duration-200 hover:text-white hover:scale-110"
+        :class="[accentText, accentHoverBg]"
         @click="handleShare"
         :title="t('file.share')"
       >
@@ -177,7 +193,8 @@ async function handleShare(event) {
 
       <!-- QR 코드 버튼 -->
       <button
-        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
+        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background transition-all duration-200 hover:text-white hover:scale-110"
+        :class="[accentText, accentHoverBg]"
         @click="openQRModal"
         :title="t('room.qrShareTitle')"
       >
@@ -191,7 +208,8 @@ async function handleShare(event) {
 
       <!-- 다운로드 버튼 -->
       <button
-        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
+        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background transition-all duration-200 hover:text-white hover:scale-110"
+        :class="[accentText, accentHoverBg]"
         @click="handleDownload"
         :title="t('file.download')"
       >

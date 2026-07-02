@@ -1,10 +1,25 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
 
+const props = defineProps({
+  scope: {
+    type: String,
+    default: 'ip'
+  }
+})
+
 const emit = defineEmits(['upload-files'])
+
+const {
+  text: accentText,
+  border: accentBorder,
+  bgSoft10: accentBgSoft10,
+  hoverShadow30: accentHoverShadow30
+} = useScopeAccent(() => props.scope)
 
 const fileInputRef = ref(null)
 const isDragging = ref(false)
@@ -49,11 +64,11 @@ function handleDrop(event) {
 <template>
   <!-- 파일 카드 형태의 업로드 섹션 -->
   <div
-    class="relative rounded-lg overflow-hidden cursor-pointer border-2 border-dashed transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30"
-    :class="{
-      'border-primary bg-primary/10': isDragging,
-      'border-border bg-background': !isDragging
-    }"
+    class="relative rounded-lg overflow-hidden cursor-pointer border-2 border-dashed transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+    :class="[
+      accentHoverShadow30,
+      isDragging ? [accentBorder, accentBgSoft10] : 'border-border bg-background'
+    ]"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
     @drop="handleDrop"
@@ -72,7 +87,8 @@ function handleDrop(event) {
     <div class="w-full h-[200px] flex flex-col items-center justify-center gap-3 bg-surface/50">
       <!-- SVG 아이콘으로 대체하여 LCP 성능 개선 -->
       <svg
-        class="w-20 h-20 text-primary"
+        class="w-20 h-20"
+        :class="accentText"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
