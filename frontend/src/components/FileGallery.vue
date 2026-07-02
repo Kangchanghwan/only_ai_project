@@ -23,6 +23,10 @@ const props = defineProps({
   hasMore: {
     type: Boolean,
     default: false
+  },
+  scope: {
+    type: String,
+    default: 'ip'
   }
 })
 
@@ -138,6 +142,7 @@ onUnmounted(() => {
       :selected-count="selectedCount"
       :total-count="files.length"
       :all-selected="allFilesSelected"
+      :scope="scope"
       @download-parallel="downloadParallel"
       @toggle-select-all="toggleSelectAll"
       @show-multi-qr="showQRModal"
@@ -149,10 +154,10 @@ onUnmounted(() => {
     <!-- 붙여넣기는 모바일에서만 노출되고, 데스크톱에서는 업로드 칸이 전체 너비를 차지한다 -->
     <div class="flex flex-col md:flex-row gap-4 mb-6">
       <div class="flex-1">
-        <FileUploadSection @upload-files="$emit('upload-files', $event)" />
+        <FileUploadSection :scope="scope" @upload-files="$emit('upload-files', $event)" />
       </div>
       <div class="flex-1 md:hidden">
-        <PasteSection @paste-content="$emit('paste-content')" />
+        <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
       </div>
     </div>
 
@@ -169,6 +174,7 @@ onUnmounted(() => {
           :key="fileKey(file)"
           :file="file"
           :is-selected="selectedFiles.has(fileKey(file))"
+          :scope="scope"
           @copy-image="$emit('copy-image', file.url)"
           @toggle-selection="toggleFileSelection(file)"
           @download-file="$emit('download-file', file)"

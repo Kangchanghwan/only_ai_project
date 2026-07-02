@@ -36,6 +36,7 @@
   - `ip` scope uses the primary coral accent (`#FF6B4A`) — close, local, low-risk, and it's the default.
   - `global` scope uses a dedicated sage-green (`#4F8767` light / `#6FAE8A` dark, tint `#E4EEE7` light / `#223026` dark) — deliberately different from coral so switching scope is visually unmissable, not just a label change.
   - `global` is never the default selection in any UI; the user must explicitly switch to it.
+  - The scope accent is not limited to the tab pill — every accent touch below it (upload dropzone border/icon, paste box hover, file card selection highlight/icon/action buttons, sticky bottom action bar icons, text-share hover accents) must switch between coral and sage together with the active scope, so the screen never shows a mismatched mix of the two accents at once. Destructive actions (delete) stay red regardless of scope — that's semantic, not scope color.
 - **Dark mode:** redesign surfaces (not just invert), warm near-black background, slightly desaturate accent by ~5-10%.
 
 ## Spacing
@@ -69,3 +70,4 @@ The mobile OS "share to app" flow (Web Share Target API, see `frontend/public/ma
 | 2026-07-01 | Share Sheet confirmation UX deferred | Needs its own product discussion on default behavior/friction tradeoffs before a design commitment |
 | 2026-07-02 | 파일 피드를 카드 그리드에서 리스트로, 파일/텍스트를 상하에서 좌우 분할(모바일은 탭)로 변경 | 참고 이미지(리스트형 파일 관리 UI) 기반 사용자 요청 — 리스트가 스캔성이 높고, 좌우 분할이 텍스트 공유를 파일과 동등한 1차 콘텐츠로 격상시킴 |
 | 2026-07-02 | 모바일 파일 행 액션을 아이콘 버튼 4개 상시 노출 대신 "⋯" 트리거 + 하단 시트로 전환 | 28px 아이콘 버튼이 좁은 화면에서 터치하기 부담스럽다는 사용자 피드백 — `sm` 이상에서는 기존 상시 노출 버튼을 그대로 유지하고, 모바일에서만 예외적으로 축소 |
+| 2026-07-02 | 스코프 색상(coral/sage)을 탭 이외의 하위 컴포넌트(업로드 드롭존, 파일 카드, 하단 액션바, 붙여넣기 박스, 텍스트 공유)까지 전체 전파 | 사용자가 "전체공유 탭의 색상 프로파일이 하단 컴포넌트들과 통일이 안됨"을 지적 — 탭만 sage로 바뀌고 나머지가 coral로 고정돼 있던 것이 원인. `useScopeAccent` composable로 스코프별 Tailwind 클래스를 중앙화 |

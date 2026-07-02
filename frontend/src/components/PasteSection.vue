@@ -1,9 +1,23 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
 
+const props = defineProps({
+  scope: {
+    type: String,
+    default: 'ip'
+  }
+})
+
 const emit = defineEmits(['paste-content'])
+
+const {
+  text: accentText,
+  hoverBorder: accentHoverBorder,
+  hoverShadow30: accentHoverShadow30
+} = useScopeAccent(() => props.scope)
 
 function handlePasteClick() {
   emit('paste-content')
@@ -13,14 +27,16 @@ function handlePasteClick() {
 <template>
   <!-- 붙여넣기 카드 -->
   <div
-    class="relative rounded-lg overflow-hidden cursor-pointer border-2 border-dashed border-border bg-background transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 hover:border-primary"
+    class="relative rounded-lg overflow-hidden cursor-pointer border-2 border-dashed border-border bg-background transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+    :class="[accentHoverShadow30, accentHoverBorder]"
     @click="handlePasteClick"
   >
     <!-- 메인 컨텐츠 영역 -->
     <div class="w-full h-[200px] flex flex-col items-center justify-center gap-3 bg-surface/50">
       <!-- SVG 아이콘으로 대체하여 LCP 성능 개선 -->
       <svg
-        class="w-20 h-20 text-primary"
+        class="w-20 h-20"
+        :class="accentText"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

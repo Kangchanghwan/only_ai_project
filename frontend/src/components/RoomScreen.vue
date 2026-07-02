@@ -123,6 +123,7 @@ const mobilePanel = ref('files')
             :room-id="roomId"
             :is-loading="isLoading"
             :has-more="hasMore"
+            :scope="scope"
             @copy-image="$emit('copy-image', $event)"
             @download-file="$emit('download-file', $event)"
             @download-parallel="$emit('download-parallel', $event)"
@@ -140,6 +141,7 @@ const mobilePanel = ref('files')
         <section :class="['md:w-[40%] md:block', { hidden: mobilePanel !== 'text' }]">
           <TextShareBox
             :texts="texts"
+            :scope="scope"
             @remove-text="$emit('remove-text', $event)"
             @clear-all="$emit('clear-all-texts')"
             @copy-text="$emit('copy-text', $event)"

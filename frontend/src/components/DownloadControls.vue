@@ -1,9 +1,10 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
 
-defineProps({
+const props = defineProps({
   selectedCount: {
     type: Number,
     default: 0
@@ -15,16 +16,23 @@ defineProps({
   allSelected: {
     type: Boolean,
     default: false
+  },
+  scope: {
+    type: String,
+    default: 'ip'
   }
 })
 
 const emit = defineEmits(['download-parallel', 'toggle-select-all', 'show-multi-qr', 'delete-selected', 'clear-storage'])
+
+const { text: accentText } = useScopeAccent(() => props.scope)
 </script>
 
 <template>
   <div class="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-border grid grid-cols-5 pb-[env(safe-area-inset-bottom)]">
     <button
-      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-blue-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      :class="accentText"
       :disabled="totalCount === 0"
       @click="$emit('toggle-select-all')"
       :title="allSelected ? t('download.deselectAllHint') : t('download.selectAllHint')"
@@ -35,7 +43,8 @@ const emit = defineEmits(['download-parallel', 'toggle-select-all', 'show-multi-
       </span>
     </button>
     <button
-      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-green-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      :class="accentText"
       :disabled="selectedCount === 0"
       @click="$emit('download-parallel')"
       :title="t('download.downloadHint')"
@@ -44,7 +53,8 @@ const emit = defineEmits(['download-parallel', 'toggle-select-all', 'show-multi-
       <span class="text-[11px] leading-tight text-center">{{ t('download.downloadSelected') }} ({{ selectedCount }})</span>
     </button>
     <button
-      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-purple-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      :class="accentText"
       :disabled="selectedCount === 0"
       @click="$emit('show-multi-qr')"
       :title="t('download.qrCodeHint')"
