@@ -637,54 +637,71 @@ onUnmounted(() => {
 
 <template>
   <div id="app">
-    <!-- 다운로드 페이지 -->
-    <DownloadPage
-      v-if="currentRoute.type === 'download'"
-      :room-id="currentRoute.roomId"
-      :file-names-base64="currentRoute.fileNamesBase64"
-    />
+    <div class="app-frame">
+      <!-- 다운로드 페이지 -->
+      <DownloadPage
+        v-if="currentRoute.type === 'download'"
+        :room-id="currentRoute.roomId"
+        :file-names-base64="currentRoute.fileNamesBase64"
+      />
 
-    <!-- 일반 룸 화면 -->
-    <RoomScreen
-      v-else
-      :is-connecting="isConnecting"
-      :room-id="activeRoomId"
-      :files="visibleFiles"
-      :texts="visibleTexts"
-      :is-loading="fileManager.isLoading.value || isConnecting"
-      :user-count="socket.usersInRoom.value"
-      :scope="shareScope.scope.value"
-      :ip-room-devices="socket.ipRoomDevices.value"
-      :global-room-devices="socket.globalRoomDevices.value"
-      :has-more="fileManager.hasMoreForRoom(activeRoomId)"
-      @copy-image="handleCopyImage"
-      @upload-files="handleUploadFiles"
-      @select-scope="shareScope.setScope"
-      @download-file="handleDownloadFile"
-      @download-parallel="handleDownloadParallel"
-      @copy-selected-to-clipboard="handleCopySelectedToClipboard"
-      @delete-file="handleDeleteFile"
-      @delete-selected="handleDeleteSelected"
-      @clear-storage="handleClearStorage"
-      @remove-text="handleRemoveText"
-      @clear-all-texts="handleClearAllTexts"
-      @copy-text="handleCopyText"
-      @paste-content="handlePasteContent"
-      @load-more="handleLoadMore"
-    />
+      <!-- 일반 룸 화면 -->
+      <RoomScreen
+        v-else
+        :is-connecting="isConnecting"
+        :room-id="activeRoomId"
+        :files="visibleFiles"
+        :texts="visibleTexts"
+        :is-loading="fileManager.isLoading.value || isConnecting"
+        :user-count="socket.usersInRoom.value"
+        :scope="shareScope.scope.value"
+        :ip-room-devices="socket.ipRoomDevices.value"
+        :global-room-devices="socket.globalRoomDevices.value"
+        :has-more="fileManager.hasMoreForRoom(activeRoomId)"
+        @copy-image="handleCopyImage"
+        @upload-files="handleUploadFiles"
+        @select-scope="shareScope.setScope"
+        @download-file="handleDownloadFile"
+        @download-parallel="handleDownloadParallel"
+        @copy-selected-to-clipboard="handleCopySelectedToClipboard"
+        @delete-file="handleDeleteFile"
+        @delete-selected="handleDeleteSelected"
+        @clear-storage="handleClearStorage"
+        @remove-text="handleRemoveText"
+        @clear-all-texts="handleClearAllTexts"
+        @copy-text="handleCopyText"
+        @paste-content="handlePasteContent"
+        @load-more="handleLoadMore"
+      />
 
-    <!-- 알림 토스트 -->
-    <NotificationToast
-      :message="notification.notification.value"
-      :uploads="notification.uploads.value"
-    />
+      <!-- 알림 토스트 -->
+      <NotificationToast
+        :message="notification.notification.value"
+        :uploads="notification.uploads.value"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
 #app {
+  display: flex;
+  justify-content: center;
   width: 100%;
   min-height: 100vh;
+}
+
+/* 데스크톱에서도 모바일 폭(480px)의 "폰 프레임"으로 렌더링한다.
+   position:fixed 요소(하단 액션바 등)는 실제 뷰포트에 고정된 채로 두고,
+   각 요소 쪽에서 프레임 폭에 맞춰 스스로 중앙 정렬한다 (contain으로 containing
+   block을 바꾸면 fixed 요소가 스크롤에 따라 같이 움직여버리기 때문에 사용하지 않음). */
+.app-frame {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  min-height: 100dvh;
+  background-color: var(--color-surface);
+  box-shadow: 0 0 3rem rgba(0, 0, 0, 0.12);
 }
 
 .loading-screen {

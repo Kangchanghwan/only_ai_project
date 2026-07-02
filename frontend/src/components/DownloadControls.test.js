@@ -13,11 +13,11 @@ function mountControls(props = {}) {
 }
 
 describe('DownloadControls.vue - 하단 고정 5열 레이아웃', () => {
-  it('루트 엘리먼트는 화면 하단에 고정된 5열 그리드다', () => {
+  it('루트 엘리먼트는 화면 하단에 떠 있는 5열 카드형 그리드다', () => {
     const wrapper = mountControls()
     const root = wrapper.element
     expect(root.className).toContain('fixed')
-    expect(root.className).toContain('bottom-0')
+    expect(root.className).toContain('rounded-2xl')
     expect(root.className).toContain('z-40')
     expect(root.className).toContain('grid-cols-5')
   })

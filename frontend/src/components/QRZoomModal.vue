@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   qrCodeDataUrl: {
     type: String,
@@ -42,6 +46,7 @@ function handleOverlayClick(event) {
           class="qr-zoom-image block"
           style="width: min(80vw, 420px); height: min(80vw, 420px);"
         />
+        <p class="text-center text-sm font-semibold text-gray-900 mt-4">{{ t('qr.backgroundHint') }}</p>
       </div>
     </div>
   </Transition>

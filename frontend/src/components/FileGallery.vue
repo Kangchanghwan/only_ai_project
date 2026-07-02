@@ -151,12 +151,11 @@ onUnmounted(() => {
     />
 
     <!-- 업로드/붙여넣기 드롭존 (리스트 밖 상단, 항상 표시) -->
-    <!-- 붙여넣기는 모바일에서만 노출되고, 데스크톱에서는 업로드 칸이 전체 너비를 차지한다 -->
-    <div class="flex flex-col md:flex-row gap-4 mb-6">
+    <div class="flex flex-col gap-4 mb-6">
       <div class="flex-1">
         <FileUploadSection :scope="scope" @upload-files="$emit('upload-files', $event)" />
       </div>
-      <div class="flex-1 md:hidden">
+      <div class="flex-1">
         <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
       </div>
     </div>
