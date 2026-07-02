@@ -22,6 +22,13 @@
     "global": "Toată lumea",
     "globalDescription": "Se distribuie tuturor utilizatorilor"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "Distribuie {count} fișier(e)",
+    "titleText": "Distribuie text",
+    "titleFilesAndText": "Distribuie {count} fișier(e) și text",
+    "cancel": "Anulează",
+    "confirm": "Distribuie"
+  },
   "file": {
     "upload": "Încarcă fișier",
     "download": "Descarcă",

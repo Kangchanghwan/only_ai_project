@@ -22,6 +22,13 @@
     "global": "Mindenki",
     "globalDescription": "Minden felhasználóval megosztva"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "{count} fájl megosztása",
+    "titleText": "Szöveg megosztása",
+    "titleFilesAndText": "{count} fájl és szöveg megosztása",
+    "cancel": "Mégse",
+    "confirm": "Megosztás"
+  },
   "file": {
     "upload": "Fájl feltöltése",
     "download": "Letöltés",

@@ -22,6 +22,13 @@
     "global": "الجميع",
     "globalDescription": "تتم المشاركة مع جميع المستخدمين"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "مشاركة {count} ملف",
+    "titleText": "مشاركة النص",
+    "titleFilesAndText": "مشاركة {count} ملف ونص",
+    "cancel": "إلغاء",
+    "confirm": "مشاركة"
+  },
   "file": {
     "upload": "تحميل ملف",
     "download": "تنزيل",

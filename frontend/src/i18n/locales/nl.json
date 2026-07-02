@@ -22,6 +22,13 @@
     "global": "Iedereen",
     "globalDescription": "Wordt gedeeld met alle gebruikers"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "{count} bestand(en) delen",
+    "titleText": "Tekst delen",
+    "titleFilesAndText": "{count} bestand(en) en tekst delen",
+    "cancel": "Annuleren",
+    "confirm": "Delen"
+  },
   "file": {
     "upload": "Bestand uploaden",
     "download": "Downloaden",

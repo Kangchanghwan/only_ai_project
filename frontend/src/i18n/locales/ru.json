@@ -22,6 +22,13 @@
     "global": "Все",
     "globalDescription": "Доступно всем пользователям"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "Поделиться {count} файлом(ами)",
+    "titleText": "Поделиться текстом",
+    "titleFilesAndText": "Поделиться {count} файлом(ами) и текстом",
+    "cancel": "Отмена",
+    "confirm": "Поделиться"
+  },
   "file": {
     "upload": "Загрузить файл",
     "download": "Скачать",

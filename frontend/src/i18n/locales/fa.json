@@ -22,6 +22,13 @@
     "global": "همه",
     "globalDescription": "با همه کاربران به اشتراک گذاشته می‌شود"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "اشتراک‌گذاری {count} فایل",
+    "titleText": "اشتراک‌گذاری متن",
+    "titleFilesAndText": "اشتراک‌گذاری {count} فایل و متن",
+    "cancel": "لغو",
+    "confirm": "اشتراک‌گذاری"
+  },
   "file": {
     "upload": "آپلود فایل",
     "download": "دانلود",

@@ -22,6 +22,13 @@
     "global": "Alle",
     "globalDescription": "Wird mit allen Nutzern geteilt"
   },
+  "shareTargetConfirm": {
+    "titleFiles": "{count} Datei(en) teilen",
+    "titleText": "Text teilen",
+    "titleFilesAndText": "{count} Datei(en) und Text teilen",
+    "cancel": "Abbrechen",
+    "confirm": "Teilen"
+  },
   "file": {
     "upload": "Datei hochladen",
     "download": "Herunterladen",
