@@ -56,6 +56,7 @@ onUnmounted(() => {
         @click="handleBackdropClick"
       >
         <div
+          data-testid="help-modal"
           class="bg-surface rounded-2xl border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
           @click.stop
         >
