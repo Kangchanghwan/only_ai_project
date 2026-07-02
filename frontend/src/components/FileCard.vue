@@ -73,7 +73,7 @@ async function handleShare(event) {
 
 <template>
   <div
-    class="file-row flex items-center gap-3 p-3 rounded-lg border border-border bg-surface cursor-pointer transition-colors duration-200 hover:border-primary/50"
+    class="file-row flex items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface cursor-pointer transition-colors duration-200 hover:border-primary/50"
     :class="{
       'bg-primary/5 border-l-4 border-l-primary': isSelected
     }"
@@ -94,13 +94,13 @@ async function handleShare(event) {
       :src="file.url"
       :alt="file.name"
       loading="lazy"
-      class="w-10 h-10 rounded-md object-cover flex-shrink-0"
+      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md object-cover flex-shrink-0"
     />
 
     <!-- 비이미지 타입: 컬러 아이콘 -->
     <div
       v-else
-      class="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0"
+      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0"
     >
       <span class="text-xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
     </div>
@@ -120,11 +120,11 @@ async function handleShare(event) {
     </div>
 
     <!-- 액션 버튼 (항상 노출, 호버 의존 없음) -->
-    <div class="flex gap-2 flex-shrink-0">
+    <div class="flex gap-1 sm:gap-2 flex-shrink-0">
       <!-- 공유 버튼 (Web Share API 지원 시에만 표시) -->
       <button
         v-if="canShare"
-        class="w-8 h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
+        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
         @click="handleShare"
         :title="t('file.share')"
       >
@@ -139,7 +139,7 @@ async function handleShare(event) {
 
       <!-- QR 코드 버튼 -->
       <button
-        class="w-8 h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
+        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
         @click="openQRModal"
         :title="t('room.qrShareTitle')"
       >
@@ -153,7 +153,7 @@ async function handleShare(event) {
 
       <!-- 다운로드 버튼 -->
       <button
-        class="w-8 h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
+        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:scale-110"
         @click="handleDownload"
         :title="t('file.download')"
       >
@@ -166,7 +166,7 @@ async function handleShare(event) {
 
       <!-- 삭제 버튼 -->
       <button
-        class="w-8 h-8 flex items-center justify-center rounded-full border border-border bg-background text-red-400 transition-all duration-200 hover:bg-red-500 hover:text-white hover:scale-110"
+        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background text-red-400 transition-all duration-200 hover:bg-red-500 hover:text-white hover:scale-110"
         @click="handleDelete"
         :title="t('file.delete')"
       >
@@ -196,27 +196,34 @@ async function handleShare(event) {
 .file-name-container {
   position: relative;
   width: 100%;
+  overflow: hidden;
 }
 
 .file-name-wrapper {
-  display: inline-block;
+  display: block;
   position: relative;
-  max-width: 100%;
+  width: 100%;
 }
 
 .file-name {
-  display: inline-block;
+  display: block;
+  width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 100%;
 }
 
-/* 호버 시 마퀴 애니메이션 */
+/* 호버 시 마퀴 애니메이션: 슬라이드하려면 래퍼가 콘텐츠 크기만큼 늘어나야 하므로
+   호버 시에만 inline-block/auto-width로 전환한다 (기본 상태는 ellipsis를 위해 block/100% 고정). */
 .file-row:hover .file-name-wrapper {
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
   animation: marquee 5s linear infinite;
 }
 
 .file-row:hover .file-name {
+  display: inline-block;
+  width: auto;
   text-overflow: unset;
   overflow: visible;
   max-width: none;
