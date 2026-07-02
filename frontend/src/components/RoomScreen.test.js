@@ -8,7 +8,7 @@ const stubs = {
   AppHeader: {
     name: 'AppHeader',
     template: '<div class="app-header-stub"><slot /></div>',
-    props: ['userCount', 'isConnecting', 'devices']
+    props: ['userCount', 'isConnecting']
   },
   ShareScopeTabs: {
     name: 'ShareScopeTabs',
@@ -19,8 +19,8 @@ const stubs = {
   FileGallery: {
     name: 'FileGallery',
     template: '<div class="file-gallery-stub"></div>',
-    props: ['files', 'isLoading', 'scope'],
-    emits: ['copy-image', 'download-file', 'download-selected', 'download-parallel', 'download-all', 'copy-selected-to-clipboard', 'upload-files', 'select-scope']
+    props: ['files', 'isLoading'],
+    emits: ['copy-image', 'download-file', 'download-selected', 'download-parallel', 'download-all', 'copy-selected-to-clipboard', 'upload-files']
   },
   TextShareBox: {
     name: 'TextShareBox',
@@ -42,7 +42,6 @@ describe('RoomScreen.vue', () => {
     isLoading: false,
     userCount: 1,
     isConnecting: false,
-    devices: [],
     scope: 'ip',
     ipRoomDevices: [],
     globalRoomDevices: []
@@ -213,18 +212,6 @@ describe('RoomScreen.vue', () => {
       expect(wrapper.emitted('select-scope')[0]).toEqual(['global'])
     })
 
-    it('FileGallery에서 select-scope 이벤트가 전파되어야 한다', async () => {
-      const wrapper = mount(RoomScreen, {
-        props: defaultProps,
-        global: { plugins: [i18n], stubs }
-      })
-
-      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
-      await fileGallery.vm.$emit('select-scope', 'global')
-
-      expect(wrapper.emitted('select-scope')).toBeTruthy()
-      expect(wrapper.emitted('select-scope')[0]).toEqual(['global'])
-    })
   })
 
   describe('Props 변경', () => {
@@ -262,19 +249,6 @@ describe('RoomScreen.vue', () => {
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
       expect(fileGallery.props('isLoading')).toBe(true)
-    })
-
-    it('devices props가 AppHeader에 전달되어야 한다', () => {
-      const devices = [
-        { socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }
-      ]
-      const wrapper = mount(RoomScreen, {
-        props: { ...defaultProps, devices },
-        global: { plugins: [i18n], stubs }
-      })
-
-      const appHeader = wrapper.findComponent({ name: 'AppHeader' })
-      expect(appHeader.props('devices')).toEqual(devices)
     })
   })
 
