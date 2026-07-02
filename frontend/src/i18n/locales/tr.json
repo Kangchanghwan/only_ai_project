@@ -35,7 +35,8 @@
     "copyFailed": "Kopyalama başarısız",
     "delete": "Sil",
     "deleteSelected": "Seçilenleri Sil",
-    "clearStorage": "Depoyu Temizle"
+    "clearStorage": "Depoyu Temizle",
+    "moreActions": "Diğer"
   },
   "text": {
     "share": "Metin Paylaş",

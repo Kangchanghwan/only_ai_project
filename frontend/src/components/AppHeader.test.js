@@ -76,4 +76,13 @@ describe('AppHeader.vue', () => {
     expect(heading.exists()).toBe(true)
     expect(heading.text()).toBe('app.title')
   })
+
+  it('헤더는 스크롤 시 상단에 고정되도록 sticky 클래스를 갖는다', async () => {
+    const wrapper = await mountReady()
+    const header = wrapper.find('header')
+    expect(header.classes()).toContain('sticky')
+    expect(header.classes()).toContain('top-0')
+    expect(header.classes()).toContain('z-40')
+    expect(header.classes()).toContain('bg-background')
+  })
 })

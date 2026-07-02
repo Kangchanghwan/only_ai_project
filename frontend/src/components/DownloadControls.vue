@@ -22,47 +22,51 @@ const emit = defineEmits(['download-parallel', 'toggle-select-all', 'show-multi-
 </script>
 
 <template>
-  <div class="flex items-center gap-4 mb-6 p-4 bg-black/20 rounded-lg flex-wrap">
+  <div class="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-border grid grid-cols-5 pb-[env(safe-area-inset-bottom)]">
     <button
-      class="bg-blue-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-blue-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-blue-500/30"
+      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-blue-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="totalCount === 0"
       @click="$emit('toggle-select-all')"
       :title="allSelected ? t('download.deselectAllHint') : t('download.selectAllHint')"
     >
-      {{ allSelected ? '✓ ' + t('download.deselectAll') : '☐ ' + t('download.selectAll') }} ({{ selectedCount }}/{{ totalCount }})
+      <span class="text-base leading-none">{{ allSelected ? '✓' : '☐' }}</span>
+      <span class="text-[11px] leading-tight text-center">
+        {{ allSelected ? t('download.deselectAll') : t('download.selectAll') }} ({{ selectedCount }}/{{ totalCount }})
+      </span>
     </button>
     <button
-      class="bg-green-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-green-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-green-500/30"
+      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-green-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="selectedCount === 0"
       @click="$emit('download-parallel')"
       :title="t('download.downloadHint')"
     >
-      📥 {{ t('download.downloadSelected') }} ({{ selectedCount }})
+      <span class="text-base leading-none">📥</span>
+      <span class="text-[11px] leading-tight text-center">{{ t('download.downloadSelected') }} ({{ selectedCount }})</span>
     </button>
     <button
-      class="bg-purple-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-purple-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-purple-500/30"
+      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-purple-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="selectedCount === 0"
       @click="$emit('show-multi-qr')"
       :title="t('download.qrCodeHint')"
     >
-      📱 {{ t('download.qrCode') }} ({{ selectedCount }})
+      <span class="text-base leading-none">📱</span>
+      <span class="text-[11px] leading-tight text-center">{{ t('download.qrCode') }} ({{ selectedCount }})</span>
     </button>
     <button
-      class="bg-red-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-red-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-red-500/30"
+      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-red-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="selectedCount === 0"
       @click="$emit('delete-selected')"
     >
-      🗑️ {{ t('file.deleteSelected') }} ({{ selectedCount }})
+      <span class="text-base leading-none">🗑️</span>
+      <span class="text-[11px] leading-tight text-center">{{ t('file.deleteSelected') }} ({{ selectedCount }})</span>
     </button>
     <button
-      class="bg-gray-600 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-semibold transition-all duration-200 disabled:bg-border disabled:text-text-secondary disabled:cursor-not-allowed disabled:opacity-50 hover:not-disabled:bg-gray-700 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-lg hover:not-disabled:shadow-gray-500/30"
+      class="flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="totalCount === 0"
       @click="$emit('clear-storage')"
     >
-      ⚠️ {{ t('file.clearStorage') }}
+      <span class="text-base leading-none">⚠️</span>
+      <span class="text-[11px] leading-tight text-center">{{ t('file.clearStorage') }}</span>
     </button>
-    <span v-if="selectedCount > 0" class="text-[0.85rem] text-text-secondary italic">
-      💡 {{ t('download.tipSequential') }}
-    </span>
   </div>
 </template>

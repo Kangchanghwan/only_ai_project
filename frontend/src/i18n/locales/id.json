@@ -35,7 +35,8 @@
     "copyFailed": "Gagal menyalin",
     "delete": "Hapus",
     "deleteSelected": "Hapus Terpilih",
-    "clearStorage": "Hapus Semua"
+    "clearStorage": "Hapus Semua",
+    "moreActions": "Lainnya"
   },
   "text": {
     "share": "Bagikan Teks",

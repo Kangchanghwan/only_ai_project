@@ -35,7 +35,8 @@
     "copyFailed": "Kopírování selhalo",
     "delete": "Smazat",
     "deleteSelected": "Smazat vybrané",
-    "clearStorage": "Vymazat úložiště"
+    "clearStorage": "Vymazat úložiště",
+    "moreActions": "Více"
   },
   "text": {
     "share": "Sdílet text",

@@ -35,7 +35,8 @@
     "copyFailed": "کپی ناموفق",
     "delete": "حذف",
     "deleteSelected": "حذف انتخاب‌شده‌ها",
-    "clearStorage": "پاک‌سازی ذخیره‌سازی"
+    "clearStorage": "پاک‌سازی ذخیره‌سازی",
+    "moreActions": "بیشتر"
   },
   "text": {
     "share": "اشتراک‌گذاری متن",

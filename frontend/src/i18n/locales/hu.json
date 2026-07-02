@@ -35,7 +35,8 @@
     "copyFailed": "Másolás sikertelen",
     "delete": "Törlés",
     "deleteSelected": "Kiválasztottak törlése",
-    "clearStorage": "Tároló törlése"
+    "clearStorage": "Tároló törlése",
+    "moreActions": "Több"
   },
   "text": {
     "share": "Szöveg megosztása",

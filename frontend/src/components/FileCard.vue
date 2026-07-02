@@ -56,6 +56,44 @@ function closeQRModal() {
   isQRModalOpen.value = false
 }
 
+// 모바일 더보기 액션 시트 상태 관리
+const isActionsSheetOpen = ref(false)
+
+function openActionsSheet(event) {
+  event.stopPropagation()
+  isActionsSheetOpen.value = true
+}
+
+function closeActionsSheet() {
+  isActionsSheetOpen.value = false
+}
+
+function handleActionsSheetBackdropClick(event) {
+  if (event.target === event.currentTarget) {
+    closeActionsSheet()
+  }
+}
+
+function handleSheetShare(event) {
+  handleShare(event)
+  closeActionsSheet()
+}
+
+function handleSheetQR(event) {
+  openQRModal(event)
+  closeActionsSheet()
+}
+
+function handleSheetDownload(event) {
+  handleDownload(event)
+  closeActionsSheet()
+}
+
+function handleSheetDelete(event) {
+  handleDelete(event)
+  closeActionsSheet()
+}
+
 async function handleShare(event) {
   event.stopPropagation()
   if (navigator.share) {
@@ -119,8 +157,8 @@ async function handleShare(event) {
       </p>
     </div>
 
-    <!-- 액션 버튼 (항상 노출, 호버 의존 없음) -->
-    <div class="flex gap-1 sm:gap-2 flex-shrink-0">
+    <!-- 액션 버튼: sm 이상에서는 아이콘 행 그대로, sm 미만에서는 더보기 트리거로 대체 -->
+    <div class="hidden sm:flex gap-1 sm:gap-2 flex-shrink-0">
       <!-- 공유 버튼 (Web Share API 지원 시에만 표시) -->
       <button
         v-if="canShare"
@@ -180,6 +218,20 @@ async function handleShare(event) {
       </button>
     </div>
 
+    <!-- 모바일 더보기 버튼 (sm 미만에서만 노출) -->
+    <button
+      class="flex sm:hidden w-9 h-9 items-center justify-center rounded-full border border-border bg-background text-text-primary flex-shrink-0"
+      @click="openActionsSheet"
+      :title="t('file.moreActions')"
+      :aria-label="t('file.moreActions')"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="5" cy="12" r="2" />
+        <circle cx="12" cy="12" r="2" />
+        <circle cx="19" cy="12" r="2" />
+      </svg>
+    </button>
+
     <!-- QR 코드 모달 (Teleport로 body로 이동) -->
     <Teleport to="body">
       <FileQRCodeModal
@@ -187,6 +239,70 @@ async function handleShare(event) {
         :is-open="isQRModalOpen"
         @close="closeQRModal"
       />
+    </Teleport>
+
+    <!-- 모바일 더보기 액션 시트 (Teleport로 body로 이동) -->
+    <Teleport to="body">
+      <Transition name="sheet">
+        <div
+          v-if="isActionsSheetOpen"
+          class="file-actions-sheet fixed inset-0 bg-black/70 z-50 flex items-end"
+          @click="handleActionsSheetBackdropClick"
+        >
+          <div class="w-full bg-surface rounded-t-2xl p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
+            <button
+              v-if="canShare"
+              class="sheet-share w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
+              @click="handleSheetShare"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+              </svg>
+              <span class="text-sm font-medium">{{ t('file.share') }}</span>
+            </button>
+            <button
+              class="sheet-qr w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
+              @click="handleSheetQR"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+              </svg>
+              <span class="text-sm font-medium">{{ t('room.qrShareTitle') }}</span>
+            </button>
+            <button
+              class="sheet-download w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
+              @click="handleSheetDownload"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span class="text-sm font-medium">{{ t('file.download') }}</span>
+            </button>
+            <button
+              class="sheet-delete w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-red-500/10 text-red-500"
+              @click="handleSheetDelete"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+              </svg>
+              <span class="text-sm font-medium">{{ t('file.delete') }}</span>
+            </button>
+          </div>
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -242,5 +358,25 @@ async function handleShare(event) {
   100% {
     transform: translateX(calc(-100% + 180px));
   }
+}
+
+.sheet-enter-active,
+.sheet-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.sheet-enter-from,
+.sheet-leave-to {
+  opacity: 0;
+}
+
+.sheet-enter-active > div,
+.sheet-leave-active > div {
+  transition: transform 0.2s ease;
+}
+
+.sheet-enter-from > div,
+.sheet-leave-to > div {
+  transform: translateY(100%);
 }
 </style>

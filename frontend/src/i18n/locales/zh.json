@@ -35,7 +35,8 @@
     "copyFailed": "复制失败",
     "delete": "删除",
     "deleteSelected": "删除所选",
-    "clearStorage": "清空存储"
+    "clearStorage": "清空存储",
+    "moreActions": "更多"
   },
   "text": {
     "share": "分享文本",

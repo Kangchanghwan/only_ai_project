@@ -35,7 +35,8 @@
     "copyFailed": "Copiere eșuată",
     "delete": "Șterge",
     "deleteSelected": "Șterge selecția",
-    "clearStorage": "Golire stocare"
+    "clearStorage": "Golire stocare",
+    "moreActions": "Mai multe"
   },
   "text": {
     "share": "Partajează text",
