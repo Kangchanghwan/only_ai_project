@@ -76,16 +76,4 @@ describe('AppHeader.vue', () => {
     expect(heading.exists()).toBe(true)
     expect(heading.text()).toBe('app.title')
   })
-
-  it('devices prop이 전달되면 ConnectedDevices가 렌더링된다', async () => {
-    const devices = [
-      { socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }
-    ]
-    const wrapper = mount(AppHeader, { props: { devices }, global: { stubs } })
-    await flushPromises()
-
-    const connectedDevices = wrapper.findComponent({ name: 'ConnectedDevices' })
-    expect(connectedDevices.exists()).toBe(true)
-    expect(connectedDevices.props('devices')).toEqual(devices)
-  })
 })

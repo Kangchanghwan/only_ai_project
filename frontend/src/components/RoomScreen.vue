@@ -30,10 +30,6 @@ const props = defineProps({
     type: Number,
     default: 1
   },
-  devices: {
-    type: Array,
-    default: () => []
-  },
   isConnecting: {
     type: Boolean,
     default: false
@@ -81,7 +77,6 @@ const mobilePanel = ref('files')
     <AppHeader
       :user-count="userCount"
       :is-connecting="isConnecting"
-      :devices="devices"
     />
 
     <ShareScopeTabs
@@ -128,7 +123,6 @@ const mobilePanel = ref('files')
             :room-id="roomId"
             :is-loading="isLoading"
             :has-more="hasMore"
-            :scope="scope"
             @copy-image="$emit('copy-image', $event)"
             @download-file="$emit('download-file', $event)"
             @download-parallel="$emit('download-parallel', $event)"
@@ -137,7 +131,6 @@ const mobilePanel = ref('files')
             @delete-selected="$emit('delete-selected', $event)"
             @clear-storage="$emit('clear-storage')"
             @upload-files="$emit('upload-files', $event)"
-            @select-scope="$emit('select-scope', $event)"
             @paste-content="$emit('paste-content')"
             @load-more="$emit('load-more')"
           />
