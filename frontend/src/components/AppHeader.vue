@@ -47,7 +47,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 bg-background border-b border-border px-6 py-3 flex justify-between items-center mb-8 flex-wrap gap-4">
+  <header class="sticky top-0 z-40 bg-surface border-b border-border px-6 py-3 flex justify-between items-center mb-8 flex-wrap gap-4">
     <div class="flex items-center gap-3 text-2xl">
       <span class="text-4xl" aria-hidden="true">📋</span>
       <h1 class="font-display font-bold text-2xl m-0">{{ t('app.title') }}</h1>
