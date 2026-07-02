@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import RoomScreen from './RoomScreen.vue'
+import i18n from '../i18n/index.js'
 
 // 하위 컴포넌트 스텁
 const stubs = {
@@ -51,7 +52,7 @@ describe('RoomScreen.vue', () => {
     it('모든 하위 컴포넌트가 렌더링되어야 한다', () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       expect(wrapper.find('.app-header-stub').exists()).toBe(true)
@@ -66,7 +67,7 @@ describe('RoomScreen.vue', () => {
           userCount: 5,
           isConnecting: true
         },
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const appHeader = wrapper.findComponent({ name: 'AppHeader' })
@@ -80,7 +81,7 @@ describe('RoomScreen.vue', () => {
     it('ShareScopeTabs가 렌더링되고 scope/기기 목록 props를 전달받는다', () => {
       const wrapper = mount(RoomScreen, {
         props: { ...defaultProps, scope: 'global', ipRoomDevices: [{ socketId: 'a' }], globalRoomDevices: [{ socketId: 'b' }] },
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const tabs = wrapper.findComponent({ name: 'ShareScopeTabs' })
@@ -95,7 +96,7 @@ describe('RoomScreen.vue', () => {
     it('FileGallery에서 copy-image 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
@@ -109,7 +110,7 @@ describe('RoomScreen.vue', () => {
       const file = { name: 'test.png', url: 'https://example.com/test.png' }
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
@@ -123,7 +124,7 @@ describe('RoomScreen.vue', () => {
       const files = [{ name: 'test.png', url: 'https://example.com/test.png' }]
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
@@ -137,7 +138,7 @@ describe('RoomScreen.vue', () => {
       const files = [{ name: 'test.png', url: 'https://example.com/test.png' }]
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
@@ -151,7 +152,7 @@ describe('RoomScreen.vue', () => {
       const files = [new File(['test'], 'test.png', { type: 'image/png' })]
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
@@ -164,7 +165,7 @@ describe('RoomScreen.vue', () => {
     it('TextShareBox에서 remove-text 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
@@ -177,7 +178,7 @@ describe('RoomScreen.vue', () => {
     it('TextShareBox에서 clear-all 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
@@ -189,7 +190,7 @@ describe('RoomScreen.vue', () => {
     it('TextShareBox에서 copy-text 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
@@ -202,7 +203,7 @@ describe('RoomScreen.vue', () => {
     it('ShareScopeTabs에서 select 이벤트가 select-scope로 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const tabs = wrapper.findComponent({ name: 'ShareScopeTabs' })
@@ -215,7 +216,7 @@ describe('RoomScreen.vue', () => {
     it('FileGallery에서 select-scope 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
@@ -233,7 +234,7 @@ describe('RoomScreen.vue', () => {
       ]
       const wrapper = mount(RoomScreen, {
         props: { ...defaultProps, files },
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
@@ -246,7 +247,7 @@ describe('RoomScreen.vue', () => {
       ]
       const wrapper = mount(RoomScreen, {
         props: { ...defaultProps, texts },
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
@@ -256,7 +257,7 @@ describe('RoomScreen.vue', () => {
     it('isLoading props가 FileGallery에 전달되어야 한다', () => {
       const wrapper = mount(RoomScreen, {
         props: { ...defaultProps, isLoading: true },
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
@@ -269,11 +270,84 @@ describe('RoomScreen.vue', () => {
       ]
       const wrapper = mount(RoomScreen, {
         props: { ...defaultProps, devices },
-        global: { stubs }
+        global: { plugins: [i18n], stubs }
       })
 
       const appHeader = wrapper.findComponent({ name: 'AppHeader' })
       expect(appHeader.props('devices')).toEqual(devices)
+    })
+  })
+
+  describe('모바일 파일/텍스트 탭 전환', () => {
+    it('기본값은 파일 탭이며 파일 섹션만 보이고 텍스트 섹션은 숨겨진다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { plugins: [i18n], stubs }
+      })
+
+      const sections = wrapper.findAll('section')
+      expect(sections).toHaveLength(2)
+      expect(sections[0].classes()).not.toContain('hidden')
+      expect(sections[1].classes()).toContain('hidden')
+    })
+
+    it('role=tablist와 role=tab 버튼 2개를 렌더링한다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { plugins: [i18n], stubs }
+      })
+
+      expect(wrapper.find('[role="tablist"]').exists()).toBe(true)
+      expect(wrapper.findAll('[role="tab"]')).toHaveLength(2)
+    })
+
+    it('텍스트 탭 클릭 시 텍스트 섹션이 보이고 파일 섹션은 숨겨진다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { plugins: [i18n], stubs }
+      })
+
+      const tabs = wrapper.findAll('[role="tab"]')
+      await tabs[1].trigger('click')
+
+      const sections = wrapper.findAll('section')
+      expect(sections[0].classes()).toContain('hidden')
+      expect(sections[1].classes()).not.toContain('hidden')
+      expect(tabs[1].attributes('aria-selected')).toBe('true')
+      expect(tabs[0].attributes('aria-selected')).toBe('false')
+    })
+
+    it('텍스트 탭으로 전환 후 파일 탭을 다시 클릭하면 파일 섹션이 다시 보인다', async () => {
+      const wrapper = mount(RoomScreen, {
+        props: defaultProps,
+        global: { plugins: [i18n], stubs }
+      })
+
+      const tabs = wrapper.findAll('[role="tab"]')
+      await tabs[1].trigger('click')
+      await tabs[0].trigger('click')
+
+      const sections = wrapper.findAll('section')
+      expect(sections[0].classes()).not.toContain('hidden')
+      expect(sections[1].classes()).toContain('hidden')
+    })
+
+    it('탭 라벨에 파일/텍스트 개수가 표시된다', () => {
+      const wrapper = mount(RoomScreen, {
+        props: {
+          ...defaultProps,
+          files: [{ name: 'a.png', roomId: 'room-shared', url: 'https://example.com/a.png' }],
+          texts: [
+            { id: '1', content: 'hi', timestamp: Date.now() },
+            { id: '2', content: 'yo', timestamp: Date.now() }
+          ]
+        },
+        global: { plugins: [i18n], stubs }
+      })
+
+      const tabs = wrapper.findAll('[role="tab"]')
+      expect(tabs[0].text()).toContain('1')
+      expect(tabs[1].text()).toContain('2')
     })
   })
 })
