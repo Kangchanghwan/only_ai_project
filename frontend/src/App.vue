@@ -653,7 +653,6 @@ onUnmounted(() => {
       :texts="visibleTexts"
       :is-loading="fileManager.isLoading.value || isConnecting"
       :user-count="socket.usersInRoom.value"
-      :devices="socket.ipRoomDevices.value"
       :scope="shareScope.scope.value"
       :ip-room-devices="socket.ipRoomDevices.value"
       :global-room-devices="socket.globalRoomDevices.value"

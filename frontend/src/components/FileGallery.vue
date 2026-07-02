@@ -23,10 +23,6 @@ const props = defineProps({
   hasMore: {
     type: Boolean,
     default: false
-  },
-  scope: {
-    type: String,
-    default: 'ip'
   }
 })
 
@@ -39,7 +35,6 @@ const emit = defineEmits([
   'delete-selected',
   'clear-storage',
   'upload-files',
-  'select-scope',
   'paste-content',
   'load-more'
 ])
@@ -151,15 +146,12 @@ onUnmounted(() => {
     />
 
     <!-- 업로드/붙여넣기 드롭존 (리스트 밖 상단, 항상 표시) -->
-    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+    <!-- 붙여넣기는 모바일에서만 노출되고, 데스크톱에서는 업로드 칸이 전체 너비를 차지한다 -->
+    <div class="flex flex-col md:flex-row gap-4 mb-6">
       <div class="flex-1">
-        <FileUploadSection
-          :scope="scope"
-          @upload-files="$emit('upload-files', $event)"
-          @select-scope="$emit('select-scope', $event)"
-        />
+        <FileUploadSection @upload-files="$emit('upload-files', $event)" />
       </div>
-      <div class="flex-1">
+      <div class="flex-1 md:hidden">
         <PasteSection @paste-content="$emit('paste-content')" />
       </div>
     </div>

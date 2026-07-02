@@ -77,18 +77,6 @@ describe('AppHeader.vue', () => {
     expect(heading.text()).toBe('app.title')
   })
 
-  it('devices prop이 전달되면 ConnectedDevices가 렌더링된다', async () => {
-    const devices = [
-      { socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }
-    ]
-    const wrapper = mount(AppHeader, { props: { devices }, global: { stubs } })
-    await flushPromises()
-
-    const connectedDevices = wrapper.findComponent({ name: 'ConnectedDevices' })
-    expect(connectedDevices.exists()).toBe(true)
-    expect(connectedDevices.props('devices')).toEqual(devices)
-  })
-
   it('헤더는 스크롤 시 상단에 고정되도록 sticky 클래스를 갖는다', async () => {
     const wrapper = await mountReady()
     const header = wrapper.find('header')
