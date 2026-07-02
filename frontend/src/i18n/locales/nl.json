@@ -10,7 +10,10 @@
     "userCount": "{count} gebruiker(s) in de kamer.",
     "connectedDevices": "Verbonden apparaten",
     "copyCode": "Kamercode kopiëren",
-    "copied": "Kamercode gekopieerd!"
+    "copied": "Kamercode gekopieerd!",
+    "filesTab": "Bestanden",
+    "textTab": "Tekst",
+    "mobilePanelLabel": "Wisselen tussen bestanden en tekst"
   },
   "shareScope": {
     "label": "Delen met",

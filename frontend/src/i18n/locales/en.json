@@ -10,7 +10,10 @@
     "userCount": "{count} user(s) in the room.",
     "connectedDevices": "Connected devices",
     "copyCode": "Copy Room Code",
-    "copied": "Room code copied!"
+    "copied": "Room code copied!",
+    "filesTab": "Files",
+    "textTab": "Text",
+    "mobilePanelLabel": "Switch between files and text"
   },
   "shareScope": {
     "label": "Share with",

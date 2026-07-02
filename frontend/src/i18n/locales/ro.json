@@ -10,7 +10,10 @@
     "userCount": "{count} utilizator(i) în cameră.",
     "connectedDevices": "Dispozitive conectate",
     "copyCode": "Copiază codul camerei",
-    "copied": "Cod cameră copiat!"
+    "copied": "Cod cameră copiat!",
+    "filesTab": "Fișiere",
+    "textTab": "Text",
+    "mobilePanelLabel": "Comutare între fișiere și text"
   },
   "shareScope": {
     "label": "Distribuie cu",

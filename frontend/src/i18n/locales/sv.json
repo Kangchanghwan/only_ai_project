@@ -10,7 +10,10 @@
     "userCount": "{count} användare i rummet.",
     "connectedDevices": "Anslutna enheter",
     "copyCode": "Kopiera rumskod",
-    "copied": "Rumskod kopierad!"
+    "copied": "Rumskod kopierad!",
+    "filesTab": "Filer",
+    "textTab": "Text",
+    "mobilePanelLabel": "Växla mellan filer och text"
   },
   "shareScope": {
     "label": "Dela med",

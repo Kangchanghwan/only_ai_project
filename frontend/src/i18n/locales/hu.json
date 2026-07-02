@@ -10,7 +10,10 @@
     "userCount": "{count} felhasználó a szobában.",
     "connectedDevices": "Csatlakoztatott eszközök",
     "copyCode": "Szobakód másolása",
-    "copied": "Szobakód másolva!"
+    "copied": "Szobakód másolva!",
+    "filesTab": "Fájlok",
+    "textTab": "Szöveg",
+    "mobilePanelLabel": "Váltás fájlok és szöveg között"
   },
   "shareScope": {
     "label": "Megosztás ezzel",

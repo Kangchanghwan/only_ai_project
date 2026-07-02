@@ -10,7 +10,10 @@
     "userCount": "{count} uživatel(ů) v místnosti.",
     "connectedDevices": "Připojená zařízení",
     "copyCode": "Kopírovat kód místnosti",
-    "copied": "Kód místnosti zkopírován!"
+    "copied": "Kód místnosti zkopírován!",
+    "filesTab": "Soubory",
+    "textTab": "Text",
+    "mobilePanelLabel": "Přepínání souborů a textu"
   },
   "shareScope": {
     "label": "Sdílet s",

@@ -10,7 +10,10 @@
     "userCount": "{count} użytkownik(ów) w pokoju.",
     "connectedDevices": "Połączone urządzenia",
     "copyCode": "Kopiuj kod pokoju",
-    "copied": "Kod pokoju skopiowany!"
+    "copied": "Kod pokoju skopiowany!",
+    "filesTab": "Pliki",
+    "textTab": "Tekst",
+    "mobilePanelLabel": "Przełączanie między plikami a tekstem"
   },
   "shareScope": {
     "label": "Udostępnij dla",

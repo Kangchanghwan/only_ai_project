@@ -10,7 +10,10 @@
     "userCount": "{count} کاربر در اتاق.",
     "connectedDevices": "دستگاه‌های متصل",
     "copyCode": "کپی کد اتاق",
-    "copied": "کد اتاق کپی شد!"
+    "copied": "کد اتاق کپی شد!",
+    "filesTab": "فایل‌ها",
+    "textTab": "متن",
+    "mobilePanelLabel": "تعویض بین فایل و متن"
   },
   "shareScope": {
     "label": "اشتراک‌گذاری با",
