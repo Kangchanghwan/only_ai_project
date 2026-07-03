@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Gizlilik Politikası",
     "sourceOnGitHub": "GitHub'da Kaynak Kod",
-    "createdBy": "Oluşturan"
+    "createdBy": "Oluşturan",
+    "installPrompt": "Uygulamayı yükleyerek paylaşım özelliğiyle dosyaları doğrudan gönderebilirsiniz",
+    "installButton": "Uygulamayı Yükle"
   },
   "qr": {
     "backgroundHint": "Aynı alanı açmak için tarayın"
+  },
+  "help": {
+    "pwaTitle": "Uygulama Olarak Yükle",
+    "pwaIntro": "Yükledikten sonra doğrudan ana ekrandan açabilir, başka bir uygulamadan bu uygulamaya dosya paylaştığınızda otomatik olarak yüklenir.",
+    "pwaAndroidTitle": "Android / Masaüstü (Chrome, Edge)",
+    "pwaAndroidDesc": "Adres çubuğundaki yükleme simgesine veya ekranın altındaki yükleme bannerına dokunun.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Paylaş düğmesine dokunun, ardından \"Ana Ekrana Ekle\" seçeneğini seçin."
   }
 }

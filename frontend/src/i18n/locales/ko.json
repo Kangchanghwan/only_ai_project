@@ -164,12 +164,20 @@
     "tip3": "모든 파일과 텍스트는 실시간으로 동기화됩니다",
     "tip4": "모바일에서는 파일 카드의 \"⋯\" 버튼으로 공유·QR·다운로드·삭제 메뉴를 열 수 있습니다",
     "aboutTitle": "정보",
-    "confirm": "확인"
+    "confirm": "확인",
+    "pwaTitle": "앱으로 설치하기",
+    "pwaIntro": "설치하면 홈 화면 아이콘으로 바로 실행하고, 다른 앱에서 공유 버튼을 눌러 이 앱을 선택하면 파일이 자동으로 업로드돼요.",
+    "pwaAndroidTitle": "Android / 데스크톱 (Chrome, Edge)",
+    "pwaAndroidDesc": "주소창의 설치 아이콘이나 하단에 뜨는 설치 배너를 눌러주세요.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "공유 버튼을 누른 뒤 '홈 화면에 추가'를 선택해주세요."
   },
   "footer": {
     "privacyPolicy": "개인정보 처리방침",
     "sourceOnGitHub": "GitHub 소스 코드",
-    "createdBy": "제작:"
+    "createdBy": "제작:",
+    "installPrompt": "앱으로 설치하면 공유하기 기능으로 파일을 바로 보낼 수 있어요",
+    "installButton": "앱 설치"
   },
   "qr": {
     "backgroundHint": "스캔해서 같은 공간 열기"

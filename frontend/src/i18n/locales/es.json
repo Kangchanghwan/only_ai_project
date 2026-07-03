@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Política de Privacidad",
     "sourceOnGitHub": "Código en GitHub",
-    "createdBy": "Creado por"
+    "createdBy": "Creado por",
+    "installPrompt": "Instala la app para enviar archivos al instante con la función de compartir",
+    "installButton": "Instalar app"
   },
   "qr": {
     "backgroundHint": "Escanea para abrir el mismo espacio"
+  },
+  "help": {
+    "pwaTitle": "Instalar como app",
+    "pwaIntro": "Al instalarla podrás abrirla directamente desde la pantalla de inicio, y si compartes un archivo desde otra app hacia esta, se subirá automáticamente.",
+    "pwaAndroidTitle": "Android / escritorio (Chrome, Edge)",
+    "pwaAndroidDesc": "Toca el icono de instalación en la barra de direcciones o el banner de instalación en la parte inferior.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Toca el botón de compartir y luego elige \"Añadir a pantalla de inicio\"."
   }
 }

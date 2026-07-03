@@ -164,12 +164,20 @@
     "tip3": "すべてのファイルとテキストはリアルタイムで同期されます",
     "tip4": "モバイルではファイルカードの「⋯」ボタンから共有・QR・ダウンロード・削除メニューを開けます",
     "aboutTitle": "サイト情報",
-    "confirm": "確認"
+    "confirm": "確認",
+    "pwaTitle": "アプリとしてインストール",
+    "pwaIntro": "インストールするとホーム画面からすぐに起動でき、他のアプリでこのアプリを共有先に選ぶとファイルが自動でアップロードされます。",
+    "pwaAndroidTitle": "Android / デスクトップ (Chrome, Edge)",
+    "pwaAndroidDesc": "アドレスバーのインストールアイコン、または画面下部のインストールバナーをタップしてください。",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "共有ボタンをタップし、「ホーム画面に追加」を選択してください。"
   },
   "footer": {
     "privacyPolicy": "プライバシーポリシー",
     "sourceOnGitHub": "GitHubのソースコード",
-    "createdBy": "作成者"
+    "createdBy": "作成者",
+    "installPrompt": "アプリをインストールすると、共有機能からすぐにファイルを送信できます",
+    "installButton": "アプリをインストール"
   },
   "qr": {
     "backgroundHint": "スキャンして同じスペースを開く"

@@ -56,6 +56,7 @@ onUnmounted(() => {
         @click="handleBackdropClick"
       >
         <div
+          data-testid="help-modal"
           class="bg-surface rounded-2xl border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
           @click.stop
         >
@@ -225,6 +226,24 @@ onUnmounted(() => {
                   <li>• {{ t('help.limit2') }}</li>
                   <li>• {{ t('help.limit3') }}</li>
                 </ul>
+              </div>
+            </section>
+
+            <!-- 앱 설치 -->
+            <section>
+              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
+                📲 {{ t('help.pwaTitle') }}
+              </h3>
+              <div class="space-y-3">
+                <p class="text-sm text-text-secondary">{{ t('help.pwaIntro') }}</p>
+                <div class="bg-background border border-border rounded-lg p-4">
+                  <h4 class="font-semibold text-text-primary mb-1">{{ t('help.pwaAndroidTitle') }}</h4>
+                  <p class="text-sm text-text-secondary">{{ t('help.pwaAndroidDesc') }}</p>
+                </div>
+                <div class="bg-background border border-border rounded-lg p-4">
+                  <h4 class="font-semibold text-text-primary mb-1">{{ t('help.pwaIOSTitle') }}</h4>
+                  <p class="text-sm text-text-secondary">{{ t('help.pwaIOSDesc') }}</p>
+                </div>
               </div>
             </section>
 

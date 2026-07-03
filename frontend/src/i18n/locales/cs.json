@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Zásady Ochrany Osobních Údajů",
     "sourceOnGitHub": "Zdrojový kód na GitHub",
-    "createdBy": "Vytvořil"
+    "createdBy": "Vytvořil",
+    "installPrompt": "Nainstalujte aplikaci a odesílejte soubory rovnou přes sdílení",
+    "installButton": "Instalovat aplikaci"
   },
   "qr": {
     "backgroundHint": "Naskenujte pro otevření stejného prostoru"
+  },
+  "help": {
+    "pwaTitle": "Instalace jako aplikace",
+    "pwaIntro": "Po instalaci ji spustíte přímo z domovské obrazovky a sdílením souboru z jiné aplikace do této aplikace se soubor automaticky nahraje.",
+    "pwaAndroidTitle": "Android / počítač (Chrome, Edge)",
+    "pwaAndroidDesc": "Klepněte na ikonu instalace v adresním řádku nebo na banner instalace ve spodní části obrazovky.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Klepněte na tlačítko sdílení a poté vyberte „Přidat na plochu“."
   }
 }

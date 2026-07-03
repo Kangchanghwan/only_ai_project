@@ -67,9 +67,19 @@
   "footer": {
     "privacyPolicy": "Kebijakan Privasi",
     "sourceOnGitHub": "Kode di GitHub",
-    "createdBy": "Dibuat oleh"
+    "createdBy": "Dibuat oleh",
+    "installPrompt": "Instal aplikasinya agar bisa langsung mengirim file lewat fitur berbagi",
+    "installButton": "Instal Aplikasi"
   },
   "qr": {
     "backgroundHint": "Pindai untuk membuka ruang yang sama"
+  },
+  "help": {
+    "pwaTitle": "Instal sebagai Aplikasi",
+    "pwaIntro": "Setelah diinstal, kamu bisa langsung membukanya dari layar utama, dan membagikan file dari aplikasi lain ke aplikasi ini akan mengunggahnya secara otomatis.",
+    "pwaAndroidTitle": "Android / Desktop (Chrome, Edge)",
+    "pwaAndroidDesc": "Ketuk ikon instal di address bar atau banner instal di bagian bawah layar.",
+    "pwaIOSTitle": "iOS (Safari)",
+    "pwaIOSDesc": "Ketuk tombol Bagikan, lalu pilih \"Tambah ke Layar Utama\"."
   }
 }
