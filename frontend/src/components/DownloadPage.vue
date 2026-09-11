@@ -110,6 +110,7 @@ onMounted(async () => {
     // 파일 객체 생성
     files.value = fileNames.value.map(name => ({
       name,
+      roomId: props.roomId,
       url: r2Service.getFileUrl(props.roomId, name)
     }))
 

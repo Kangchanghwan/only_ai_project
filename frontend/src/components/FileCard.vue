@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../utils/fileUtils'
+import { r2Service } from '../services/r2Service'
 import FileQRCodeModal from './FileQRCodeModal.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
 
@@ -51,6 +52,27 @@ const fileMetadata = computed(() => {
     uploadTime: formatUploadTime(props.file.created)
   }
 })
+
+// 이미지 미리보기: 원본(최대 수십 MB) 대신 업로드 시 생성된 썸네일(thumbs/…jpg)을 쓰고,
+// 썸네일이 없으면(구버전 업로드·생성 실패) 원본으로 한 번만 폴백한다.
+const thumbFailed = ref(false)
+
+watch(() => `${props.file.roomId}::${props.file.name}`, () => {
+  thumbFailed.value = false
+})
+
+const previewSrc = computed(() => {
+  if (thumbFailed.value) return props.file.url
+  if (props.file.thumbUrl) return props.file.thumbUrl
+  if (props.file.roomId) return r2Service.getThumbUrl(props.file.roomId, props.file.name)
+  return props.file.url
+})
+
+function handleThumbError() {
+  if (!thumbFailed.value && previewSrc.value !== props.file.url) {
+    thumbFailed.value = true
+  }
+}
 
 function handleDownload(event) {
   event.stopPropagation()
@@ -143,10 +165,14 @@ async function handleShare(event) {
     <!-- 이미지 타입: 썸네일 -->
     <img
       v-if="fileMetadata.isImage"
-      :src="file.url"
+      :src="previewSrc"
       :alt="file.name"
       loading="lazy"
+      decoding="async"
+      width="40"
+      height="40"
       class="w-8 h-8 sm:w-10 sm:h-10 rounded-md object-cover flex-shrink-0"
+      @error="handleThumbError"
     />
 
     <!-- 비이미지 타입: 컬러 아이콘 -->

@@ -15,6 +15,7 @@ import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
 import { useShareScope } from './composables/useShareScope'
 import { parseRoute } from './utils/router'
+import { applyFileMessage } from './utils/applyFileMessage'
 
 import RoomScreen from './components/RoomScreen.vue'
 import DownloadPage from './components/DownloadPage.vue'
@@ -121,9 +122,14 @@ async function connectToRoom() {
  */
 function setupSocketListeners() {
   cleanupOnMessage = socket.onMessage((message) => {
-    if (message.type === 'file-uploaded') {
-      notification.showInfo('새 파일이 업로드되었습니다!')
-      if (roomManager.roomIds.value.length > 0) {
+    if (message.type === 'file-uploaded' || message.type === 'file-deleted' || message.type === 'files-cleared') {
+      // 메시지에 담긴 정보만으로 로컬 목록을 갱신한다 — 업로드마다 전체 목록을 재조회하지 않는다.
+      // 정보가 부족한 구버전 메시지('reload')일 때만 기존처럼 재조회한다.
+      const action = applyFileMessage(message, fileManager)
+      if (action === 'added') {
+        notification.showInfo('새 파일이 업로드되었습니다!')
+      } else if (action === 'reload' && roomManager.roomIds.value.length > 0) {
+        notification.showInfo('새 파일이 업로드되었습니다!')
         fileManager.loadFilesFromRooms(roomManager.roomIds.value)
       }
     } else if (message.type === 'text-shared') {
@@ -202,48 +208,48 @@ async function uploadFiles(files, scopeOverride) {
     return
   }
 
-  let successCount = 0
-  let failCount = 0
+  // 배치 presign 1회 + 제한 병렬 업로드. 성공한 파일은 useFileManager가 목록에 바로 반영한다.
+  const uploadIds = new Map()
 
-  // 파일을 순차적으로 업로드
-  for (const file of files) {
-    const uploadId = crypto.randomUUID()
-    notification.addUpload(uploadId, file.name)
+  const summary = await fileManager.uploadFiles(targetRoomId, files, {
+    onStart: (file) => {
+      const uploadId = crypto.randomUUID()
+      uploadIds.set(file, uploadId)
+      notification.addUpload(uploadId, file.name)
+    },
+    onProgress: (file, percent) => {
+      const uploadId = uploadIds.get(file)
+      if (uploadId) notification.updateUpload(uploadId, percent)
+    },
+    onComplete: (file, result) => {
+      // size/created를 함께 보내 수신 측이 목록을 재조회하지 않고 바로 추가할 수 있게 한다
+      try {
+        socket.publishMessage({
+          type: 'file-uploaded',
+          fileName: result.fileName,
+          url: result.url,
+          size: result.size,
+          created: result.created,
+          roomId: targetRoomId
+        }, targetScope)
+      } catch (error) {
+        console.warn('[App] 업로드 알림 전송 실패 (파일은 업로드됨):', error)
+      }
 
-    try {
-      const result = await fileManager.uploadFile(
-        targetRoomId,
-        file,
-        {
-          onProgress: (percent) => {
-            notification.updateUpload(uploadId, percent)
-          }
-        }
-      )
-
-      socket.publishMessage({
-        type: 'file-uploaded',
-        fileName: result.fileName,
-        url: result.url,
-        roomId: targetRoomId
-      }, targetScope)
-
-      fileManager.addFile({
-        name: result.fileName,
-        url: result.url,
-        size: result.size,
-        created: result.created,
-        roomId: targetRoomId
-      })
-      successCount++
-
-      notification.completeUpload(uploadId)
-
-      setTimeout(() => {
-        notification.removeUpload(uploadId)
-      }, 1500)
-    } catch (error) {
-      failCount++
+      const uploadId = uploadIds.get(file)
+      if (uploadId) {
+        notification.completeUpload(uploadId)
+        setTimeout(() => notification.removeUpload(uploadId), 1500)
+      }
+    },
+    onError: (file, error) => {
+      // 검증에서 걸린 파일은 onStart를 거치지 않으므로 여기서 항목을 만든다
+      let uploadId = uploadIds.get(file)
+      if (!uploadId) {
+        uploadId = crypto.randomUUID()
+        uploadIds.set(file, uploadId)
+        notification.addUpload(uploadId, file.name)
+      }
       notification.failUpload(uploadId, error.message)
 
       if (error.message.includes('MB를 초과할 수 없습니다')) {
@@ -254,14 +260,26 @@ async function uploadFiles(files, scopeOverride) {
         notification.showError(`업로드 실패: ${error.message}`)
       }
 
-      setTimeout(() => {
-        notification.removeUpload(uploadId)
-      }, 5000)
+      setTimeout(() => notification.removeUpload(uploadId), 5000)
     }
-  }
+  })
 
-  if (successCount > 0) {
-    notification.showSuccess(`${successCount}개 파일 업로드 완료!`)
+  if (summary.successCount > 0) {
+    notification.showSuccess(`${summary.successCount}개 파일 업로드 완료!`)
+  }
+}
+
+/** 룸 ID에 해당하는 공유 scope ('global' | 'ip') */
+function scopeForRoom(roomId) {
+  return roomId === roomManager.globalRoomId.value ? 'global' : 'ip'
+}
+
+/** 같은 룸의 다른 클라이언트가 목록을 재조회하지 않고 삭제를 반영하도록 알린다 */
+function publishFileDeleted(file) {
+  try {
+    socket.publishMessage({ type: 'file-deleted', fileName: file.name, roomId: file.roomId }, scopeForRoom(file.roomId))
+  } catch (error) {
+    console.warn('[App] 삭제 알림 전송 실패 (파일은 삭제됨):', error)
   }
 }
 
@@ -484,6 +502,7 @@ async function handleDeleteFile(file) {
 
   try {
     await fileManager.deleteFile(file.roomId, file.name)
+    publishFileDeleted(file)
     notification.showSuccess(`${file.name} 삭제됨`)
   } catch (error) {
     notification.showError(`삭제 실패: ${error.message}`)
@@ -501,6 +520,7 @@ async function handleDeleteSelected(files) {
   for (const file of files) {
     try {
       await fileManager.deleteFile(file.roomId, file.name)
+      publishFileDeleted(file)
       successCount++
     } catch (error) {
       failCount++
@@ -524,6 +544,11 @@ async function handleClearStorage() {
 
   try {
     await fileManager.deleteAllFiles(targetRoomId)
+    try {
+      socket.publishMessage({ type: 'files-cleared', roomId: targetRoomId }, scopeForRoom(targetRoomId))
+    } catch (publishError) {
+      console.warn('[App] 초기화 알림 전송 실패 (파일은 삭제됨):', publishError)
+    }
     notification.showSuccess('저장소가 초기화되었습니다')
   } catch (error) {
     console.error('[App] 저장소 초기화 실패:', error)

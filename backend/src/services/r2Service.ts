@@ -1,12 +1,34 @@
 import {
   S3Client,
   PutObjectCommand,
-  DeleteObjectCommand,
+  GetObjectCommand,
   DeleteObjectsCommand,
   ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import logger from '../utils/logger';
+
+/** 썸네일 객체 프리픽스 (룸 프리픽스 밖에 두어 목록 API에 노출되지 않게 한다) */
+const THUMB_PREFIX = 'thumbs';
+/** 썸네일 MIME 타입 (JPEG: 모든 브라우저 canvas가 인코딩 가능) */
+const THUMB_CONTENT_TYPE = 'image/jpeg';
+/** S3 DeleteObjects 한 번에 삭제 가능한 최대 키 수 */
+const DELETE_BATCH_SIZE = 1000;
+
+/** 배치 presign 요청 항목 */
+export interface UploadRequest {
+  fileName: string;
+  contentType: string;
+}
+
+/** 배치 presign 응답 항목 */
+export interface UploadTarget {
+  uploadUrl: string;
+  fileUrl: string;
+  fileName: string;
+  thumbUploadUrl?: string;
+  thumbUrl?: string;
+}
 
 /**
  * Cloudflare R2 서비스
@@ -99,6 +121,100 @@ class R2Service {
    */
   getFileUrl(roomId: string, fileName: string): string {
     return `${this.publicUrl}/${roomId}/${fileName}`;
+  }
+
+  /** 썸네일 객체 키 (thumbs/{roomId}/{fileName}.jpg) */
+  getThumbKey(roomId: string, fileName: string): string {
+    return `${THUMB_PREFIX}/${roomId}/${fileName}.jpg`;
+  }
+
+  /** 썸네일 공개 URL */
+  getThumbUrl(roomId: string, fileName: string): string {
+    return `${this.publicUrl}/${this.getThumbKey(roomId, fileName)}`;
+  }
+
+  /**
+   * 여러 파일의 업로드 Presigned URL을 한 번에 생성합니다.
+   * 이미지(image/*)에는 썸네일 업로드 URL(image/jpeg)을 함께 돌려줍니다.
+   */
+  async getUploadPresignedUrls(
+    roomId: string,
+    files: UploadRequest[],
+    expiresIn: number = 3600
+  ): Promise<UploadTarget[]> {
+    return Promise.all(
+      files.map(async ({ fileName, contentType }) => {
+        const safeName = this.sanitizeFileName(fileName);
+        const target: UploadTarget = await this.getUploadPresignedUrl(roomId, safeName, contentType, expiresIn);
+
+        if (contentType.startsWith('image/')) {
+          const thumbCommand = new PutObjectCommand({
+            Bucket: this.bucketName,
+            Key: this.getThumbKey(roomId, safeName),
+            ContentType: THUMB_CONTENT_TYPE,
+          });
+          target.thumbUploadUrl = await getSignedUrl(this.client, thumbCommand, { expiresIn });
+          target.thumbUrl = this.getThumbUrl(roomId, safeName);
+        }
+
+        return target;
+      })
+    );
+  }
+
+  /**
+   * 브라우저가 네이티브로 다운로드하도록 Content-Disposition: attachment가 서명된
+   * 다운로드용 Presigned URL을 생성합니다 (기존 객체에도 동작).
+   */
+  async getDownloadPresignedUrl(
+    roomId: string,
+    fileName: string,
+    expiresIn: number = 600
+  ): Promise<string> {
+    const command = new GetObjectCommand({
+      Bucket: this.bucketName,
+      Key: `${roomId}/${fileName}`,
+      ResponseContentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+    });
+
+    return getSignedUrl(this.client, command, { expiresIn });
+  }
+
+  /** 프리픽스 아래 모든 객체 키를 페이지네이션을 따라 전부 수집합니다 */
+  private async listAllKeys(prefix: string): Promise<string[]> {
+    const keys: string[] = [];
+    let continuationToken: string | undefined;
+
+    do {
+      const response = await this.client.send(
+        new ListObjectsV2Command({
+          Bucket: this.bucketName,
+          Prefix: prefix,
+          ContinuationToken: continuationToken,
+        })
+      );
+      for (const obj of response.Contents || []) {
+        if (obj.Key && !obj.Key.endsWith('/')) {
+          keys.push(obj.Key);
+        }
+      }
+      continuationToken = response.NextContinuationToken;
+    } while (continuationToken);
+
+    return keys;
+  }
+
+  /** 키 목록을 DeleteObjects 최대 크기 단위로 나눠 삭제합니다 */
+  private async deleteKeys(keys: string[]): Promise<void> {
+    for (let i = 0; i < keys.length; i += DELETE_BATCH_SIZE) {
+      const chunk = keys.slice(i, i + DELETE_BATCH_SIZE);
+      await this.client.send(
+        new DeleteObjectsCommand({
+          Bucket: this.bucketName,
+          Delete: { Objects: chunk.map((Key) => ({ Key })), Quiet: true },
+        })
+      );
+    }
   }
 
   /**
@@ -208,55 +324,39 @@ class R2Service {
   }
 
   /**
-   * 파일을 삭제합니다
+   * 파일을 삭제합니다 (원본과 썸네일을 한 번의 요청으로 함께 삭제)
    */
   async deleteFile(roomId: string, fileName: string): Promise<void> {
     const key = `${roomId}/${fileName}`;
 
     logger.info(`[R2Service] 파일 삭제 시작: ${key}`);
 
-    const command = new DeleteObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-    });
-
-    await this.client.send(command);
+    await this.deleteKeys([key, this.getThumbKey(roomId, fileName)]);
 
     logger.info(`[R2Service] 파일 삭제 완료: ${key}`);
   }
 
   /**
-   * 룸의 모든 파일을 삭제합니다
+   * 룸의 모든 파일(과 썸네일)을 삭제합니다. 반환값은 삭제된 원본 파일 수입니다.
    */
   async deleteAllFiles(roomId: string): Promise<number> {
     logger.info(`[R2Service] 룸 전체 파일 삭제 시작: ${roomId}`);
 
-    // 먼저 파일 목록을 가져옴
-    const { files } = await this.loadFiles(roomId, { limit: 1000 });
+    const [fileKeys, thumbKeys] = await Promise.all([
+      this.listAllKeys(`${roomId}/`),
+      this.listAllKeys(`${THUMB_PREFIX}/${roomId}/`),
+    ]);
 
-    if (files.length === 0) {
+    if (fileKeys.length === 0 && thumbKeys.length === 0) {
       logger.info(`[R2Service] 삭제할 파일이 없습니다`);
       return 0;
     }
 
-    // 파일 키 목록 생성
-    const objects = files.map((file) => ({
-      Key: `${roomId}/${file.name}`,
-    }));
+    await this.deleteKeys([...fileKeys, ...thumbKeys]);
 
-    const command = new DeleteObjectsCommand({
-      Bucket: this.bucketName,
-      Delete: {
-        Objects: objects,
-        Quiet: true,
-      },
-    });
+    logger.info(`[R2Service] 전체 삭제 완료: ${fileKeys.length}개 파일, ${thumbKeys.length}개 썸네일`);
 
-    await this.client.send(command);
-
-    logger.info(`[R2Service] 전체 삭제 완료: ${files.length}개 파일`);
-
-    return files.length;
+    return fileKeys.length;
   }
 
   /**
