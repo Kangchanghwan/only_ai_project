@@ -42,6 +42,11 @@ class R2Service {
   /**
    * 여러 파일의 업로드 Presigned URL을 한 번의 요청으로 받습니다.
    *
+   * 배치 엔드포인트(/api/r2/presigned-urls)가 404를 돌려주면 아직 구버전 백엔드가
+   * 배포된 상태이므로, 파일별 단일 엔드포인트(/api/r2/presigned-url)로 폴백한다.
+   * 프론트(Vercel 자동 배포)와 백엔드(수동 배포)는 따로 배포되기 때문에 새 엔드포인트가
+   * 잠시 없을 수 있다. 폴백 결과에는 썸네일 URL이 없어 썸네일 업로드만 생략된다.
+   *
    * @param {string} roomId - 룸 ID
    * @param {Array<{fileName: string, contentType: string}>} files - 파일 메타데이터
    * @returns {Promise<Array<{uploadUrl: string, fileUrl: string, fileName: string, thumbUploadUrl?: string, thumbUrl?: string}>>}
@@ -53,12 +58,40 @@ class R2Service {
       body: JSON.stringify({ roomId, files }),
     })
 
+    if (response.status === 404) {
+      console.warn('[R2Service] 배치 presign 엔드포인트 없음(404) - 파일별 단일 presign으로 폴백')
+      return Promise.all(files.map(file => this.getUploadUrl(roomId, file.fileName, file.contentType)))
+    }
+
     if (!response.ok) {
       throw new Error(`배치 Presigned URL 생성 실패: ${response.status}`)
     }
 
     const { files: targets } = await response.json()
     return targets
+  }
+
+  /**
+   * 단일 파일의 업로드 Presigned URL을 받습니다 (레거시 엔드포인트, 썸네일 URL 없음).
+   *
+   * @param {string} roomId - 룸 ID
+   * @param {string} fileName - 원본 파일명
+   * @param {string} contentType - Content-Type
+   * @returns {Promise<{uploadUrl: string, fileUrl: string, fileName: string}>}
+   */
+  async getUploadUrl(roomId, fileName, contentType) {
+    const response = await fetch(`${this.apiUrl}/api/r2/presigned-url`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId, fileName, contentType }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Presigned URL 생성 실패: ${response.status}`)
+    }
+
+    const { uploadUrl, fileUrl, fileName: storedName } = await response.json()
+    return { uploadUrl, fileUrl, fileName: storedName }
   }
 
   /**

@@ -54,11 +54,46 @@ describe('R2Service - 배치 presign / 네이티브 다운로드 URL / 썸네일
     })
   })
 
-  it('getUploadUrls는 응답이 실패하면 상태 코드를 담은 에러를 던진다', async () => {
+  it('getUploadUrls는 응답이 실패하면 상태 코드를 담은 에러를 던진다 (404 외에는 폴백하지 않는다)', async () => {
     mockFetch.mockResolvedValueOnce({ ok: false, status: 500 })
 
     await expect(r2Service.getUploadUrls('room-x', [{ fileName: 'a.png', contentType: 'image/png' }]))
       .rejects.toThrow('500')
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('getUploadUrls는 배치 엔드포인트가 404면 파일별 단일 presign 엔드포인트로 폴백한다 (구버전 백엔드 호환)', async () => {
+    mockFetch
+      .mockResolvedValueOnce({ ok: false, status: 404 })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ uploadUrl: 'https://r2/up/a', fileUrl: 'https://store/room-x/a.png', fileName: 'a.png' }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ uploadUrl: 'https://r2/up/b', fileUrl: 'https://store/room-x/b.pdf', fileName: 'b.pdf' }) })
+
+    const result = await r2Service.getUploadUrls('room-x', [
+      { fileName: 'a.png', contentType: 'image/png' },
+      { fileName: 'b.pdf', contentType: 'application/pdf' }
+    ])
+
+    // 입력 순서 유지, 단일 엔드포인트는 썸네일 URL을 주지 않으므로 thumb 필드 없음
+    expect(result).toEqual([
+      { uploadUrl: 'https://r2/up/a', fileUrl: 'https://store/room-x/a.png', fileName: 'a.png' },
+      { uploadUrl: 'https://r2/up/b', fileUrl: 'https://store/room-x/b.pdf', fileName: 'b.pdf' }
+    ])
+
+    expect(mockFetch).toHaveBeenCalledTimes(3)
+    expect(mockFetch.mock.calls[0][0]).toBe(`${r2Service.apiUrl}/api/r2/presigned-urls`)
+    expect(mockFetch.mock.calls[1][0]).toBe(`${r2Service.apiUrl}/api/r2/presigned-url`)
+    expect(JSON.parse(mockFetch.mock.calls[1][1].body)).toEqual({ roomId: 'room-x', fileName: 'a.png', contentType: 'image/png' })
+    expect(mockFetch.mock.calls[2][0]).toBe(`${r2Service.apiUrl}/api/r2/presigned-url`)
+    expect(JSON.parse(mockFetch.mock.calls[2][1].body)).toEqual({ roomId: 'room-x', fileName: 'b.pdf', contentType: 'application/pdf' })
+  })
+
+  it('getUploadUrls 폴백 중 단일 presign이 실패하면 그 상태 코드를 담은 에러를 던진다', async () => {
+    mockFetch
+      .mockResolvedValueOnce({ ok: false, status: 404 })
+      .mockResolvedValueOnce({ ok: false, status: 500 })
+
+    await expect(r2Service.getUploadUrls('room-x', [{ fileName: 'a.png', contentType: 'image/png' }]))
+      .rejects.toThrow('Presigned URL 생성 실패: 500')
   })
 
   it('putToPresignedUrl은 XHR PUT으로 본문을 보내고 진행률을 보고한다', async () => {
