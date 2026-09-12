@@ -1,5 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { useDownload } from './useDownload'
+import { r2Service } from '../services/r2Service'
+
+vi.mock('../services/r2Service', () => ({
+  r2Service: {
+    getDownloadUrl: vi.fn(),
+    getDownloadUrls: vi.fn()
+  }
+}))
 
 describe('useDownload', () => {
   let download
@@ -34,6 +42,12 @@ describe('useDownload', () => {
     // Mock URL.createObjectURL
     global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
     global.URL.revokeObjectURL = vi.fn()
+
+    // presigned URL 발급 mock 초기화 (기본: 실패 → Blob 폴백 경로)
+    r2Service.getDownloadUrl.mockReset()
+    r2Service.getDownloadUrls.mockReset()
+    r2Service.getDownloadUrl.mockRejectedValue(new Error('no backend'))
+    r2Service.getDownloadUrls.mockRejectedValue(new Error('no backend'))
   })
 
   afterEach(() => {
@@ -261,33 +275,105 @@ describe('useDownload', () => {
       expect(result2.success).toBe(false)
     })
 
-    it('다운로드가 병렬로 실행되어야 한다', async () => {
-      const files = [
-        { name: 'test1.png', url: 'https://example.com/test1.png' },
-        { name: 'test2.pdf', url: 'https://example.com/test2.pdf' }
-      ]
+    it('여러 파일은 브라우저가 놓치지 않도록 짧은 간격(250ms)으로 순차 트리거된다', async () => {
+      vi.useFakeTimers()
+      try {
+        const files = [
+          { name: 'test1.png', url: 'https://example.com/test1.png', roomId: 'room-x' },
+          { name: 'test2.pdf', url: 'https://example.com/test2.pdf', roomId: 'room-x' }
+        ]
+        r2Service.getDownloadUrls.mockResolvedValue({
+          'test1.png': 'https://r2/get/1',
+          'test2.pdf': 'https://r2/get/2'
+        })
 
-      // fetch mock 설정
+        const run = download.downloadParallel(files)
+
+        await vi.advanceTimersByTimeAsync(0)
+        expect(mockLink.click).toHaveBeenCalledTimes(1)
+
+        await vi.advanceTimersByTimeAsync(249)
+        expect(mockLink.click).toHaveBeenCalledTimes(1)
+
+        await vi.advanceTimersByTimeAsync(1)
+        expect(mockLink.click).toHaveBeenCalledTimes(2)
+
+        const result = await run
+        expect(result.successCount).toBe(2)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+  })
+
+  describe('네이티브 다운로드 (presigned URL)', () => {
+    it('roomId가 있는 파일은 presigned URL로 <a> 클릭만 하고 파일 본문을 fetch하지 않는다', async () => {
+      const file = { name: '사진.png', url: 'https://store/room-x/사진.png', roomId: 'room-x' }
+      r2Service.getDownloadUrl.mockResolvedValue('https://r2/get/signed?response-content-disposition=attachment')
+
+      const result = await download.downloadFile(file)
+
+      expect(result.success).toBe(true)
+      expect(r2Service.getDownloadUrl).toHaveBeenCalledWith('room-x', '사진.png')
+      expect(mockLink.href).toBe('https://r2/get/signed?response-content-disposition=attachment')
+      expect(mockLink.download).toBe('사진.png')
+      expect(mockLink.click).toHaveBeenCalledTimes(1)
+      expect(global.fetch).not.toHaveBeenCalled()
+      expect(global.URL.createObjectURL).not.toHaveBeenCalled()
+    })
+
+    it('presigned URL 발급에 실패하면 기존 Blob 방식으로 폴백한다', async () => {
+      const file = { name: 'test.png', url: 'https://example.com/test.png', roomId: 'room-x' }
+      r2Service.getDownloadUrl.mockRejectedValue(new Error('404'))
       global.fetch.mockResolvedValue({
         ok: true,
         blob: () => Promise.resolve(new Blob(['test'], { type: 'image/png' }))
       })
 
-      const startTime = Date.now()
-      const clickTimes = []
+      const result = await download.downloadFile(file)
 
-      mockLink.click = vi.fn(() => {
-        clickTimes.push(Date.now() - startTime)
+      expect(result.success).toBe(true)
+      expect(global.fetch).toHaveBeenCalledWith(file.url)
+      expect(mockLink.href).toBe('blob:mock-url')
+      expect(mockLink.click).toHaveBeenCalledTimes(1)
+    })
+
+    it('여러 파일은 룸별로 URL을 한 번에 발급받고 각각 네이티브로 트리거한다', async () => {
+      const files = [
+        { name: 'a.png', url: 'https://store/room-x/a.png', roomId: 'room-x' },
+        { name: 'b.pdf', url: 'https://store/room-x/b.pdf', roomId: 'room-x' },
+        { name: 'c.txt', url: 'https://store/room-y/c.txt', roomId: 'room-y' }
+      ]
+      r2Service.getDownloadUrls.mockImplementation(async (roomId, names) =>
+        Object.fromEntries(names.map(n => [n, `https://r2/get/${roomId}/${n}`]))
+      )
+
+      const result = await download.downloadParallel(files)
+
+      expect(result.successCount).toBe(3)
+      expect(r2Service.getDownloadUrls).toHaveBeenCalledTimes(2)
+      expect(r2Service.getDownloadUrls).toHaveBeenCalledWith('room-x', ['a.png', 'b.pdf'])
+      expect(r2Service.getDownloadUrls).toHaveBeenCalledWith('room-y', ['c.txt'])
+      expect(mockLink.click).toHaveBeenCalledTimes(3)
+      expect(global.fetch).not.toHaveBeenCalled()
+    })
+
+    it('배치 발급에 빠진 파일은 Blob 방식으로 폴백한다', async () => {
+      const files = [
+        { name: 'a.png', url: 'https://store/room-x/a.png', roomId: 'room-x' },
+        { name: 'b.pdf', url: 'https://store/room-x/b.pdf', roomId: 'room-x' }
+      ]
+      r2Service.getDownloadUrls.mockResolvedValue({ 'a.png': 'https://r2/get/a' })
+      global.fetch.mockResolvedValue({
+        ok: true,
+        blob: () => Promise.resolve(new Blob(['test'], { type: 'application/pdf' }))
       })
 
-      await download.downloadParallel(files)
+      const result = await download.downloadParallel(files)
 
-      // 병렬 실행이므로 모든 click이 거의 동시에 발생해야 함
-      // (순차 실행이라면 시간 차이가 있을 것)
-      expect(clickTimes.length).toBe(2)
-      const timeDiff = Math.abs(clickTimes[1] - clickTimes[0])
-      // 병렬이므로 시간 차이가 작아야 함 (100ms 이내)
-      expect(timeDiff).toBeLessThan(100)
+      expect(result.successCount).toBe(2)
+      expect(global.fetch).toHaveBeenCalledTimes(1)
+      expect(global.fetch).toHaveBeenCalledWith('https://store/room-x/b.pdf')
     })
   })
 })

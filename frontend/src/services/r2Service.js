@@ -29,6 +29,120 @@ class R2Service {
   }
 
   /**
+   * 파일의 썸네일 공개 URL을 생성합니다 (thumbs/{roomId}/{fileName}.jpg)
+   *
+   * @param {string} roomId - 룸 ID
+   * @param {string} fileName - 파일명
+   * @returns {string} 썸네일 URL
+   */
+  getThumbUrl(roomId, fileName) {
+    return `${this.publicUrl}/thumbs/${roomId}/${fileName}.jpg`
+  }
+
+  /**
+   * 여러 파일의 업로드 Presigned URL을 한 번의 요청으로 받습니다.
+   *
+   * @param {string} roomId - 룸 ID
+   * @param {Array<{fileName: string, contentType: string}>} files - 파일 메타데이터
+   * @returns {Promise<Array<{uploadUrl: string, fileUrl: string, fileName: string, thumbUploadUrl?: string, thumbUrl?: string}>>}
+   */
+  async getUploadUrls(roomId, files) {
+    const response = await fetch(`${this.apiUrl}/api/r2/presigned-urls`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId, files }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`배치 Presigned URL 생성 실패: ${response.status}`)
+    }
+
+    const { files: targets } = await response.json()
+    return targets
+  }
+
+  /**
+   * Presigned URL로 본문을 PUT 합니다 (XHR: 진행률 추적).
+   *
+   * @param {string} uploadUrl - Presigned PUT URL
+   * @param {Blob|File} body - 업로드할 본문
+   * @param {string} contentType - 서명된 Content-Type
+   * @param {{onProgress?: (percent: number) => void, timeoutMs?: number}} [options]
+   * @returns {Promise<void>}
+   */
+  putToPresignedUrl(uploadUrl, body, contentType, options = {}) {
+    const { onProgress, timeoutMs = 300000 } = options
+
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable && onProgress) {
+          onProgress(Math.round((e.loaded / e.total) * 100))
+        }
+      })
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve()
+        } else {
+          reject(new Error(`R2 업로드 실패: ${xhr.status}`))
+        }
+      })
+
+      xhr.addEventListener('error', () => reject(new Error('네트워크 오류로 업로드 실패')))
+      xhr.addEventListener('timeout', () => reject(new Error('업로드 시간 초과')))
+
+      xhr.open('PUT', uploadUrl)
+      xhr.setRequestHeader('Content-Type', contentType)
+      xhr.timeout = timeoutMs
+      xhr.send(body)
+    })
+  }
+
+  /**
+   * 브라우저 네이티브 다운로드용 Presigned URL(Content-Disposition: attachment)을 받습니다.
+   *
+   * @param {string} roomId - 룸 ID
+   * @param {string} fileName - 파일명
+   * @returns {Promise<string>} Presigned GET URL
+   */
+  async getDownloadUrl(roomId, fileName) {
+    const response = await fetch(
+      `${this.apiUrl}/api/r2/download-url/${roomId}/${encodeURIComponent(fileName)}`
+    )
+
+    if (!response.ok) {
+      throw new Error(`다운로드 URL 생성 실패: ${response.status}`)
+    }
+
+    const { url } = await response.json()
+    return url
+  }
+
+  /**
+   * 여러 파일의 네이티브 다운로드 URL을 한 번에 받습니다.
+   *
+   * @param {string} roomId - 룸 ID
+   * @param {string[]} fileNames - 파일명 목록
+   * @returns {Promise<Record<string, string>>} 파일명 → Presigned GET URL
+   */
+  async getDownloadUrls(roomId, fileNames) {
+    const response = await fetch(`${this.apiUrl}/api/r2/download-urls`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId, fileNames }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`다운로드 URL 생성 실패: ${response.status}`)
+    }
+
+    const { urls } = await response.json()
+    return Object.fromEntries(urls.map(({ fileName, url }) => [fileName, url]))
+  }
+
+  /**
    * 특정 룸의 파일 목록을 불러옵니다
    *
    * @param {string} roomId - 룸 ID
@@ -190,53 +304,18 @@ class R2Service {
 
       const { uploadUrl, fileUrl, fileName } = await presignedResponse.json()
 
-      // 2. XMLHttpRequest를 사용하여 R2에 직접 업로드 (진행률 추적)
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
+      // 2. R2에 직접 PUT (진행률 추적)
+      await this.putToPresignedUrl(uploadUrl, file, file.type || 'application/octet-stream', { onProgress })
 
-        // 진행률 이벤트
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable && onProgress) {
-            const percent = Math.round((e.loaded / e.total) * 100)
-            onProgress(percent)
-          }
-        })
-
-        // 완료 이벤트
-        xhr.addEventListener('load', () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            console.log('[R2Service] Presigned URL 업로드 성공:', fileName)
-            resolve({
-              success: true,
-              path: `${roomId}/${fileName}`,
-              fileName,
-              url: fileUrl,
-              size: file.size,
-              created: new Date().toISOString()
-            })
-          } else {
-            reject(new Error(`R2 업로드 실패: ${xhr.status}`))
-          }
-        })
-
-        // 에러 이벤트
-        xhr.addEventListener('error', () => {
-          reject(new Error('네트워크 오류로 업로드 실패'))
-        })
-
-        // 타임아웃 이벤트
-        xhr.addEventListener('timeout', () => {
-          reject(new Error('업로드 시간 초과'))
-        })
-
-        // 요청 설정
-        xhr.open('PUT', uploadUrl)
-        xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream')
-        xhr.timeout = 300000 // 5분 타임아웃
-
-        // 요청 전송
-        xhr.send(file)
-      })
+      console.log('[R2Service] Presigned URL 업로드 성공:', fileName)
+      return {
+        success: true,
+        path: `${roomId}/${fileName}`,
+        fileName,
+        url: fileUrl,
+        size: file.size,
+        created: new Date().toISOString()
+      }
     } catch (error) {
       console.error('[R2Service] Presigned URL 업로드 예외:', error)
       throw error

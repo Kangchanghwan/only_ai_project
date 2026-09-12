@@ -1,5 +1,31 @@
 import { ref, readonly, computed } from 'vue'
 import { r2Service } from '../services/r2Service.js'
+import { runWithConcurrency } from '../utils/concurrency.js'
+import { createImageThumbnail, THUMBNAIL_CONTENT_TYPE } from '../utils/thumbnail.js'
+
+/** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
+const DEFAULT_UPLOAD_CONCURRENCY = 3
+
+/**
+ * 단일 파일 검증. 실패 사유를 Error로 반환하고 통과하면 null을 반환한다.
+ * 환경 변수는 호출 시점에 읽는다 (테스트에서 값을 바꿀 수 있도록).
+ */
+function validateFile(file) {
+  const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 10
+  const MAX_FILE_SIZE = maxFileSizeMB * 1024 * 1024
+
+  if (file.size === 0) {
+    return new Error('파일이 비어있습니다')
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    return new Error(`파일 크기는 ${maxFileSizeMB}MB를 초과할 수 없습니다`)
+  }
+  return null
+}
+
+function fileKey(roomId, name) {
+  return `${roomId}::${name}`
+}
 
 /**
  * @composable useFileManager
@@ -154,17 +180,10 @@ export function useFileManager() {
       throw new Error('roomId와 file이 필요합니다')
     }
 
-    // 파일 크기 검증
-    // 환경 변수에서 최대 파일 크기를 가져오거나 기본값 10MB 사용
-    const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 10
-    const MAX_FILE_SIZE = maxFileSizeMB * 1024 * 1024
-
-    if (file.size === 0) {
-      throw new Error('파일이 비어있습니다')
-    }
-
-    if (file.size > MAX_FILE_SIZE) {
-      throw new Error(`파일 크기는 ${maxFileSizeMB}MB를 초과할 수 없습니다`)
+    // 파일 크기 검증 (환경 변수 VITE_MAX_FILE_SIZE_MB, 기본 10MB)
+    const validationError = validateFile(file)
+    if (validationError) {
+      throw validationError
     }
 
     // 룸 총 용량 제한 검증
@@ -206,6 +225,150 @@ export function useFileManager() {
   }
 
   /**
+   * 여러 파일을 업로드합니다.
+   * - 검증(빈 파일/최대 크기)을 통과한 파일만 배치 presign 1회로 URL을 받는다.
+   * - 최대 concurrency개까지 동시에 PUT 한다.
+   * - 이미지는 브라우저에서 만든 JPEG 썸네일을 원본과 병렬로 올리고, 둘 다 끝난 뒤 완료 처리한다
+   *   (수신 측이 썸네일 404를 먼저 보지 않도록). 썸네일 실패는 무시한다.
+   * - 성공한 파일은 즉시 로컬 목록(files)에 추가한다.
+   *
+   * @param {string} roomId - 업로드 대상 룸 ID
+   * @param {File[]} files - 업로드할 파일들
+   * @param {Object} options
+   * @param {number} [options.concurrency=3]
+   * @param {(file: File) => void} [options.onStart]
+   * @param {(file: File, percent: number) => void} [options.onProgress]
+   * @param {(file: File, result: Object) => void} [options.onComplete]
+   * @param {(file: File, error: Error) => void} [options.onError]
+   * @returns {Promise<{successCount: number, failCount: number, results: Array<{file: File, result?: Object, error?: Error}>}>}
+   */
+  async function uploadFiles(roomId, files, options = {}) {
+    if (!roomId || !files || files.length === 0) {
+      throw new Error('roomId와 files가 필요합니다')
+    }
+
+    const {
+      concurrency = DEFAULT_UPLOAD_CONCURRENCY,
+      onStart,
+      onProgress,
+      onComplete,
+      onError
+    } = options
+
+    const outcomes = new Map() // file -> { result } | { error }
+    const fail = (file, error) => {
+      outcomes.set(file, { error })
+      onError?.(file, error)
+    }
+
+    // 1. 검증 — 실패한 파일은 presign 대상에서 제외
+    const pending = []
+    for (const file of files) {
+      const validationError = validateFile(file)
+      if (validationError) {
+        fail(file, validationError)
+      } else {
+        pending.push(file)
+      }
+    }
+
+    // 2. 배치 presign (N파일 = 1왕복)
+    let targets = []
+    if (pending.length > 0) {
+      try {
+        targets = await r2Service.getUploadUrls(
+          roomId,
+          pending.map(file => ({ fileName: file.name, contentType: file.type || 'application/octet-stream' }))
+        )
+      } catch (err) {
+        console.error('[useFileManager] 배치 presign 실패:', err)
+        for (const file of pending) fail(file, err)
+        return summarize(files, outcomes)
+      }
+    }
+
+    // 3. 제한 병렬 PUT
+    await runWithConcurrency(pending, concurrency, async (file, index) => {
+      const target = targets[index]
+      if (!target) {
+        throw new Error('Presigned URL이 없습니다')
+      }
+
+      onStart?.(file)
+      const contentType = file.type || 'application/octet-stream'
+
+      // 썸네일은 원본 PUT과 병렬로 진행하되 어떤 실패도 원본 업로드를 막지 않는다
+      const thumbUpload = target.thumbUploadUrl
+        ? createImageThumbnail(file)
+            .then(blob => (blob ? r2Service.putToPresignedUrl(target.thumbUploadUrl, blob, THUMBNAIL_CONTENT_TYPE) : null))
+            .catch(err => { console.warn('[useFileManager] 썸네일 업로드 실패(무시):', err); return null })
+        : Promise.resolve(null)
+
+      await r2Service.putToPresignedUrl(target.uploadUrl, file, contentType, {
+        onProgress: percent => onProgress?.(file, percent)
+      })
+      await thumbUpload
+
+      const result = {
+        success: true,
+        path: `${roomId}/${target.fileName}`,
+        fileName: target.fileName,
+        url: target.fileUrl,
+        size: file.size,
+        created: new Date().toISOString()
+      }
+
+      addFile({ name: result.fileName, url: result.url, size: result.size, created: result.created, roomId })
+      outcomes.set(file, { result })
+      onComplete?.(file, result)
+      return result
+    }).then(settled => {
+      settled.forEach((outcome, index) => {
+        if (outcome.status === 'rejected') {
+          console.error('[useFileManager] 업로드 실패:', pending[index].name, outcome.reason)
+          fail(pending[index], outcome.reason)
+        }
+      })
+    })
+
+    return summarize(files, outcomes)
+  }
+
+  /** uploadFiles 결과 집계 (입력 순서 유지) */
+  function summarize(files, outcomes) {
+    const results = files.map(file => ({ file, ...(outcomes.get(file) || {}) }))
+    const successCount = results.filter(r => r.result).length
+    return { successCount, failCount: results.length - successCount, results }
+  }
+
+  /**
+   * 로컬 목록에서 파일 하나를 제거합니다 (API 호출 없음, 소켓 동기화·삭제 후 정리용).
+   * @returns {boolean} 실제로 제거됐는지
+   */
+  function removeFile(roomId, fileName) {
+    const key = fileKey(roomId, fileName)
+    const index = files.value.findIndex(f => fileKey(f.roomId, f.name) === key)
+    if (index === -1) return false
+
+    const [removed] = files.value.splice(index, 1)
+    totalSize.value -= removed.size || 0
+    return true
+  }
+
+  /**
+   * 로컬 목록에서 특정 룸의 파일을 모두 비웁니다 (API 호출 없음).
+   */
+  function clearRoomFiles(roomId) {
+    const removedSize = files.value
+      .filter(f => f.roomId === roomId)
+      .reduce((sum, f) => sum + (f.size || 0), 0)
+
+    files.value = files.value.filter(f => f.roomId !== roomId)
+    totalSize.value -= removedSize
+    roomTokens.value.delete(roomId)
+  }
+
+  /**
    * 파일을 삭제합니다. roomId + fileName 조합으로 정확히 식별한다
    * (같은 파일명이 다른 룸에 동시에 존재할 수 있으므로).
    *
@@ -221,20 +384,11 @@ export function useFileManager() {
     try {
       console.log('[useFileManager] 파일 삭제 시작:', fileName)
 
-      // 삭제할 파일 찾기
-      const fileToDelete = files.value.find(f => f.name === fileName && f.roomId === roomId)
-
       // 서비스 레이어를 통해 파일 삭제
       const result = await r2Service.deleteFile(roomId, fileName)
 
-      // 로컬 상태에서도 제거
-      files.value = files.value.filter(f => !(f.name === fileName && f.roomId === roomId))
-
-      // totalSize 업데이트
-      if (fileToDelete && fileToDelete.size) {
-        totalSize.value -= fileToDelete.size
-        console.log(`[useFileManager] 삭제 후 총 용량: ${totalSize.value} bytes`)
-      }
+      // 로컬 상태에서도 제거 (totalSize 포함)
+      removeFile(roomId, fileName)
 
       console.log('[useFileManager] 삭제 성공:', result)
       return result
@@ -333,13 +487,7 @@ export function useFileManager() {
       console.log('[useFileManager] 전체 파일 삭제 시작:', roomId)
       const result = await r2Service.deleteAllFiles(roomId)
 
-      const removedSize = files.value
-        .filter(f => f.roomId === roomId)
-        .reduce((sum, f) => sum + (f.size || 0), 0)
-
-      files.value = files.value.filter(f => f.roomId !== roomId)
-      totalSize.value -= removedSize
-      roomTokens.value.delete(roomId)
+      clearRoomFiles(roomId)
 
       console.log('[useFileManager] 전체 파일 삭제 완료:', roomId)
       return result
@@ -362,11 +510,27 @@ export function useFileManager() {
   }
 
   /**
-   * 파일 목록에 새 파일을 추가합니다 (UX 개선용, 업로드 직후 즉시 반영).
-   * @param {Object} file - 추가할 파일 객체. roomId를 포함해야 정확한 삭제/용량 검증이 가능하다.
+   * 파일 목록에 파일을 추가합니다 (업로드 직후·소켓 수신 시 즉시 반영).
+   * roomId+name이 같은 파일이 이미 있으면 새 정보로 교체한다 — 내가 올린 파일의
+   * 브로드캐스트를 다시 받아도 중복되지 않는다. totalSize도 함께 유지한다.
+   *
+   * @param {Object} file - 추가할 파일 객체 (name, url, size, created, roomId)
+   * @returns {boolean} 새로 추가됐으면 true, 기존 항목을 교체했으면 false
    */
   function addFile(file) {
+    const key = fileKey(file.roomId, file.name)
+    const index = files.value.findIndex(f => fileKey(f.roomId, f.name) === key)
+
+    if (index !== -1) {
+      const previous = files.value[index]
+      files.value.splice(index, 1, { ...previous, ...file })
+      totalSize.value += (file.size || 0) - (previous.size || 0)
+      return false
+    }
+
     files.value.unshift(file)
+    totalSize.value += file.size || 0
+    return true
   }
 
   return {
@@ -426,6 +590,14 @@ export function useFileManager() {
      */
     uploadFile,
     /**
+     * 여러 파일을 배치 presign + 제한 병렬로 업로드하고 로컬 목록에 반영하는 함수.
+     * @param {string} roomId - 룸 ID
+     * @param {File[]} files - 업로드할 파일들
+     * @param {Object} options - concurrency, onStart, onProgress, onComplete, onError
+     * @returns {Promise<{successCount: number, failCount: number, results: Array}>}
+     */
+    uploadFiles,
+    /**
      * 파일을 삭제하는 함수.
      * @param {string} roomId - 룸 ID
      * @param {string} fileName - 삭제할 파일명
@@ -433,6 +605,14 @@ export function useFileManager() {
      */
     deleteFile,
     deleteAllFiles,
+    /**
+     * 로컬 목록에서만 파일을 제거하는 함수 (소켓 동기화용).
+     */
+    removeFile,
+    /**
+     * 로컬 목록에서만 특정 룸의 파일을 비우는 함수 (소켓 동기화용).
+     */
+    clearRoomFiles,
     /**
      * 파일 목록을 초기화하는 함수.
      */

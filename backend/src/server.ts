@@ -47,6 +47,8 @@ app.use((_req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+    // preflight 결과를 브라우저가 캐시하게 해 업로드마다 OPTIONS 왕복이 반복되지 않도록 한다 (Chrome 상한 2시간)
+    res.setHeader('Access-Control-Max-Age', '7200');
     if (_req.method === 'OPTIONS') {
         res.sendStatus(200);
         return;
@@ -134,6 +136,94 @@ app.post('/api/r2/presigned-url', async (req, res) => {
     } catch (error) {
         logger.error('[API] Presigned URL 생성 오류:', error);
         res.status(500).json({ error: 'Presigned URL 생성 실패' });
+    }
+});
+
+/** 배치 presign 최대 파일 수 */
+const MAX_PRESIGN_BATCH = 50;
+/** 배치 다운로드 URL 최대 파일 수 */
+const MAX_DOWNLOAD_BATCH = 100;
+
+/** 업로드용 Presigned URL 배치 생성 (여러 파일 = 1왕복, 이미지는 썸네일 URL 동봉) */
+app.post('/api/r2/presigned-urls', async (req, res) => {
+    try {
+        const { roomId, files } = req.body ?? {};
+
+        if (!roomId || !Array.isArray(files) || files.length === 0) {
+            res.status(400).json({ error: 'roomId와 files(1개 이상)는 필수입니다' });
+            return;
+        }
+
+        if (files.length > MAX_PRESIGN_BATCH) {
+            res.status(400).json({ error: `files는 최대 ${MAX_PRESIGN_BATCH}개까지 가능합니다` });
+            return;
+        }
+
+        const invalid = files.some(
+            (f: unknown) =>
+                !f || typeof f !== 'object' ||
+                typeof (f as { fileName?: unknown }).fileName !== 'string' ||
+                typeof (f as { contentType?: unknown }).contentType !== 'string'
+        );
+        if (invalid) {
+            res.status(400).json({ error: '각 파일에는 fileName과 contentType이 필요합니다' });
+            return;
+        }
+
+        const r2Service = getR2Service();
+        const targets = await r2Service.getUploadPresignedUrls(roomId, files);
+
+        logger.info(`[API] 배치 Presigned URL 생성: ${roomId}, ${targets.length}개`);
+
+        res.json({ files: targets });
+    } catch (error) {
+        logger.error('[API] 배치 Presigned URL 생성 오류:', error);
+        res.status(500).json({ error: 'Presigned URL 생성 실패' });
+    }
+});
+
+/** 네이티브 다운로드용 Presigned URL (Content-Disposition: attachment 서명) */
+app.get('/api/r2/download-url/:roomId/:fileName', async (req, res) => {
+    try {
+        const { roomId, fileName } = req.params;
+
+        const r2Service = getR2Service();
+        const url = await r2Service.getDownloadPresignedUrl(roomId, fileName);
+
+        res.json({ fileName, url });
+    } catch (error) {
+        logger.error('[API] 다운로드 URL 생성 오류:', error);
+        res.status(500).json({ error: '다운로드 URL 생성 실패' });
+    }
+});
+
+/** 네이티브 다운로드용 Presigned URL 배치 생성 */
+app.post('/api/r2/download-urls', async (req, res) => {
+    try {
+        const { roomId, fileNames } = req.body ?? {};
+
+        if (!roomId || !Array.isArray(fileNames) || fileNames.length === 0) {
+            res.status(400).json({ error: 'roomId와 fileNames(1개 이상)는 필수입니다' });
+            return;
+        }
+
+        if (fileNames.length > MAX_DOWNLOAD_BATCH || fileNames.some((n: unknown) => typeof n !== 'string')) {
+            res.status(400).json({ error: `fileNames는 문자열 최대 ${MAX_DOWNLOAD_BATCH}개까지 가능합니다` });
+            return;
+        }
+
+        const r2Service = getR2Service();
+        const urls = await Promise.all(
+            fileNames.map(async (fileName: string) => ({
+                fileName,
+                url: await r2Service.getDownloadPresignedUrl(roomId, fileName),
+            }))
+        );
+
+        res.json({ urls });
+    } catch (error) {
+        logger.error('[API] 배치 다운로드 URL 생성 오류:', error);
+        res.status(500).json({ error: '다운로드 URL 생성 실패' });
     }
 });
 
