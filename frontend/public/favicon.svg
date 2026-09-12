@@ -1,16 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Background -->
-  <rect width="100" height="100" fill="#42b883" rx="15"/>
-
-  <!-- Clipboard icon -->
-  <g transform="translate(25, 20)">
-    <!-- Clipboard board -->
-    <rect x="5" y="10" width="40" height="50" fill="white" rx="3"/>
-
-    <!-- Clipboard clip -->
-    <rect x="15" y="5" width="20" height="8" fill="#35495e" rx="2"/>
-    <rect x="17" y="3" width="16" height="4" fill="#35495e" rx="2"/>
-
-
-  </g>
+  <!--
+    Clipboard Share brand mark. Palette from DESIGN.md: coral #FF6B4A (primary), white surface, #2A2622 text.
+    Every raster icon (favicon-*.png, favicon.ico, apple-touch-icon.png, icon-*.png) is generated from this
+    file by scripts/generate-brand-assets.mjs — edit here, then run `npm run assets:brand`.
+  -->
+  <!-- Coral tile, radius = DESIGN.md "lg" (22/100) -->
+  <rect width="100" height="100" rx="22" fill="#FF6B4A"/>
+  <!-- Clipboard board -->
+  <rect x="23" y="22" width="54" height="61" rx="9" fill="#FFFFFF"/>
+  <!-- Clip -->
+  <rect x="35" y="15" width="30" height="15" rx="5.5" fill="#2A2622"/>
+  <rect x="42" y="10" width="16" height="9" rx="4.5" fill="#2A2622"/>
+  <!-- Shared snippet lines -->
+  <rect x="34" y="45" width="32" height="8" rx="4" fill="#FF6B4A"/>
+  <rect x="34" y="60" width="22" height="8" rx="4" fill="#FF6B4A"/>
 </svg>

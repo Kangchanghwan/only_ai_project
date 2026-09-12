@@ -1,51 +1,107 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
-  <!-- Background gradient -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!--
+    Open Graph / Twitter card source (1200x630). Palette and type from DESIGN.md:
+    background #FAF8F5, surface #FFFFFF, border #E9E3DA, text #2A2622, muted #8A8178, coral #FF6B4A.
+    og-image.png is rendered from this file by scripts/generate-brand-assets.mjs, which loads the
+    webfonts (Cabinet Grotesk, Plus Jakarta Sans, Noto Sans KR for Hangul) before taking the screenshot.
+    Viewed on its own the text falls back to system fonts.
+  -->
   <defs>
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#42b883;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#34A87C;stop-opacity:1" />
-    </linearGradient>
+    <style>
+      .display { font-family: 'Cabinet Grotesk', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+      .body { font-family: 'Plus Jakarta Sans', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+    </style>
+    <filter id="lift" x="-20%" y="-40%" width="140%" height="200%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#2A2622" flood-opacity="0.16"/>
+    </filter>
   </defs>
 
-  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  <rect width="1200" height="630" fill="#FAF8F5"/>
 
-  <!-- Clipboard icon -->
-  <g transform="translate(120, 180)">
-    <!-- Clipboard board -->
-    <rect x="0" y="30" width="120" height="150" fill="white" rx="8" opacity="0.9"/>
-    <!-- Clipboard clip -->
-    <rect x="35" y="15" width="50" height="25" fill="#35495e" rx="5"/>
-    <rect x="40" y="8" width="40" height="12" fill="#35495e" rx="4"/>
-    <!-- Document lines -->
-    <line x1="20" y1="70" x2="100" y2="70" stroke="#42b883" stroke-width="3"/>
-    <line x1="20" y1="95" x2="100" y2="95" stroke="#42b883" stroke-width="3"/>
-    <line x1="20" y1="120" x2="80" y2="120" stroke="#42b883" stroke-width="3"/>
+  <!-- Brand row: mark (same shapes as favicon.svg) + wordmark -->
+  <g transform="translate(80 72) scale(0.56)">
+    <rect width="100" height="100" rx="22" fill="#FF6B4A"/>
+    <rect x="23" y="22" width="54" height="61" rx="9" fill="#FFFFFF"/>
+    <rect x="35" y="15" width="30" height="15" rx="5.5" fill="#2A2622"/>
+    <rect x="42" y="10" width="16" height="9" rx="4.5" fill="#2A2622"/>
+    <rect x="34" y="45" width="32" height="8" rx="4" fill="#FF6B4A"/>
+    <rect x="34" y="60" width="22" height="8" rx="4" fill="#FF6B4A"/>
   </g>
+  <text x="152" y="112" class="display" font-size="34" font-weight="700" fill="#2A2622">Clipboard Share</text>
 
-  <!-- Share/Upload arrow -->
-  <g transform="translate(270, 240)">
-    <path d="M 0 40 L 0 0 L 30 15 Z" fill="white" opacity="0.8"/>
-    <circle cx="50" cy="15" r="12" fill="white" opacity="0.8"/>
-  </g>
+  <!-- Headline -->
+  <text x="80" y="268" class="display" font-size="62" font-weight="800" fill="#2A2622">PC와 스마트폰 사이,</text>
+  <text x="80" y="344" class="display" font-size="62" font-weight="800" fill="#2A2622">파일·텍스트 <tspan fill="#FF6B4A">바로 전송</tspan></text>
 
-  <!-- Text content -->
-  <text x="380" y="240" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="700" fill="white">
-    Clipboard Share
-  </text>
-
-  <text x="380" y="310" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="400" fill="white" opacity="0.95">
-    실시간 파일 공유의 새로운 기준
-  </text>
-
-  <text x="380" y="370" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="400" fill="white" opacity="0.85">
-    QR 코드로 빠르게 공유
-  </text>
-  <text x="380" y="410" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="400" fill="white" opacity="0.85">
-    룸 기반으로 안전하게 전송
-  </text>
+  <!-- Supporting copy -->
+  <text x="80" y="412" class="body" font-size="26" font-weight="500" fill="#2A2622">회원가입·앱 설치 없이, 같은 와이파이면 자동 연결</text>
+  <text x="80" y="452" class="body" font-size="26" font-weight="500" fill="#2A2622">모두 나가면 자동 삭제되는 무료 온라인 클립보드</text>
 
   <!-- Domain -->
-  <text x="1050" y="590" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="400" fill="white" opacity="0.7" text-anchor="end">
-    clipboardapp.org
-  </text>
+  <circle cx="87" cy="558" r="5" fill="#FF6B4A"/>
+  <text x="104" y="566" class="body" font-size="22" font-weight="600" fill="#8A8178">clipboardapp.org</text>
+
+  <!-- Illustration: the phone-frame feed, with a shared file card landing in the tray -->
+  <rect x="780" y="120" width="340" height="560" rx="40" fill="#FFFFFF" stroke="#E9E3DA" stroke-width="2"/>
+
+  <!-- Scope tabs (segmented pill, coral = active local scope) -->
+  <rect x="808" y="152" width="284" height="44" rx="22" fill="#FAF8F5" stroke="#E9E3DA" stroke-width="1.5"/>
+  <rect x="812" y="156" width="138" height="36" rx="18" fill="#FF6B4A"/>
+  <rect x="849" y="170" width="64" height="8" rx="4" fill="#FFFFFF"/>
+  <rect x="989" y="170" width="64" height="8" rx="4" fill="#E9E3DA"/>
+
+  <!-- Empty slot the card is landing in -->
+  <rect x="808" y="228" width="284" height="64" rx="18" fill="none" stroke="#E9E3DA" stroke-width="2" stroke-dasharray="8 8"/>
+
+  <!-- File rows: icon + name/meta bars -->
+  <g fill="#FFEDE8">
+    <rect x="808" y="318" width="52" height="52" rx="14"/>
+    <rect x="808" y="402" width="52" height="52" rx="14"/>
+    <rect x="808" y="486" width="52" height="52" rx="14"/>
+    <rect x="808" y="570" width="52" height="52" rx="14"/>
+  </g>
+  <g fill="#FF6B4A">
+    <rect x="826" y="333" width="16" height="22" rx="3"/>
+    <rect x="826" y="417" width="16" height="22" rx="3"/>
+    <rect x="826" y="501" width="16" height="22" rx="3"/>
+    <rect x="826" y="585" width="16" height="22" rx="3"/>
+  </g>
+  <g fill="#FFFFFF">
+    <rect x="830" y="340" width="8" height="2" rx="1"/><rect x="830" y="345" width="6" height="2" rx="1"/>
+    <rect x="830" y="424" width="8" height="2" rx="1"/><rect x="830" y="429" width="6" height="2" rx="1"/>
+    <rect x="830" y="508" width="8" height="2" rx="1"/><rect x="830" y="513" width="6" height="2" rx="1"/>
+    <rect x="830" y="592" width="8" height="2" rx="1"/><rect x="830" y="597" width="6" height="2" rx="1"/>
+  </g>
+  <g fill="#2A2622">
+    <rect x="876" y="326" width="170" height="14" rx="7"/>
+    <rect x="876" y="410" width="132" height="14" rx="7"/>
+    <rect x="876" y="494" width="190" height="14" rx="7"/>
+    <rect x="876" y="578" width="150" height="14" rx="7"/>
+  </g>
+  <g fill="#E9E3DA">
+    <rect x="876" y="350" width="104" height="10" rx="5"/>
+    <rect x="876" y="434" width="88" height="10" rx="5"/>
+    <rect x="876" y="518" width="120" height="10" rx="5"/>
+    <rect x="876" y="602" width="96" height="10" rx="5"/>
+  </g>
+  <g stroke="#E9E3DA" stroke-width="1.5">
+    <line x1="808" y1="388" x2="1092" y2="388"/>
+    <line x1="808" y1="472" x2="1092" y2="472"/>
+    <line x1="808" y1="556" x2="1092" y2="556"/>
+  </g>
+
+  <!-- Landing card: tossed in from the left, slightly rotated, lifted by a soft shadow -->
+  <g stroke="#FF6B4A" stroke-width="4" stroke-linecap="round" opacity="0.45">
+    <path d="M742 208 l-18 -9"/>
+    <path d="M734 236 l-20 0"/>
+  </g>
+  <g transform="translate(890 238) rotate(-7)" filter="url(#lift)">
+    <rect x="-118" y="-38" width="236" height="76" rx="20" fill="#FF6B4A"/>
+    <rect x="-100" y="-22" width="44" height="44" rx="12" fill="#FFFFFF"/>
+    <rect x="-86" y="-10" width="16" height="20" rx="3" fill="#FF6B4A"/>
+    <rect x="-82" y="-4" width="8" height="2" rx="1" fill="#FFFFFF"/>
+    <rect x="-82" y="1" width="6" height="2" rx="1" fill="#FFFFFF"/>
+    <rect x="-42" y="-16" width="124" height="12" rx="6" fill="#FFFFFF"/>
+    <rect x="-42" y="4" width="84" height="10" rx="5" fill="#FFFFFF" opacity="0.6"/>
+  </g>
 </svg>

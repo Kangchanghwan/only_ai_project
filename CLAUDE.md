@@ -41,6 +41,7 @@ npm run dev              # Vite dev server (port 5173)
 npm run build            # Production build
 npm run build:prod       # Optimized production build (mode=production)
 npm run build:seo        # Production build + Puppeteer prerendering
+npm run assets:brand     # Regenerate favicon/OG/PWA icons from public/favicon.svg + og-image.svg (Puppeteer)
 npm test                 # Run Vitest tests
 npm run test:ui          # Vitest with browser UI
 ```
