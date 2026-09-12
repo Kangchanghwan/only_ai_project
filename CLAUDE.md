@@ -135,7 +135,7 @@ VITE_MAX_ROOM_SIZE_MB=500
 ## Deployment
 
 - **Frontend**: Vercel (`vercel.json`) — SPA fallback, security headers, immutable caching for static assets
-- **Backend**: Docker multi-stage build (`Dockerfile`) — node:18-alpine, health check on `/health`. Note: Dockerfile uses node:18 but project requires Node >= 22.9.0; update Dockerfile base image if rebuilding.
+- **Backend**: Docker multi-stage build (`Dockerfile`) — node:22-alpine, health check on `/health`. Deployed manually (no CI/CD); the API host lags the Vercel-auto-deployed frontend until the image is rebuilt and restarted, so new frontend API calls should ship with a fallback to the previous endpoint.
 - **Production URLs**: frontend `https://www.clipboardapp.org`, API `https://api.clipboardapp.org`, R2 storage `https://store.clipboardapp.org`
 - **SEO**: Puppeteer prerendering via `frontend/scripts/prerender.mjs` (used in `build:seo`)
 - **Frontend build optimizations**: Terser with `drop_console`, CSS code splitting, manual chunks (vendor, socket.io-client, vue-i18n), source maps disabled in production
