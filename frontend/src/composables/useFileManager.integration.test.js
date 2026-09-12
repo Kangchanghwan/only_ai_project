@@ -2,12 +2,19 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { useFileManager } from './useFileManager'
 
 /**
- * 통합 테스트 - 실제 Supabase API 호출
+ * 통합 테스트 - 실제 백엔드 API 호출
  *
- * 이 테스트는 실제 Supabase 인스턴스에 연결하여 테스트합니다.
- * npm test 시 건너뛰려면: npm test -- --exclude integration
+ * 이 테스트는 실제로 떠 있는 백엔드(기본 http://localhost:3001, VITE_API_URL로 변경 가능)에
+ * HTTP 요청을 보내며, 업로드는 백엔드에 설정된 R2 버킷으로 실제 전송된다.
+ * 백엔드가 없으면 NetworkError로 실패하므로 기본 `npm test`에서는 건너뛰고,
+ * RUN_INTEGRATION 환경 변수가 설정된 경우에만 실행된다.
+ *
+ *   (backend/ 에서 `npm run dev`로 백엔드를 띄운 뒤, frontend/ 에서)
+ *   RUN_INTEGRATION=1 npx vitest run src/composables/useFileManager.integration.test.js
+ *
+ * 자세한 내용은 README.md의 "통합 테스트" 항목 참고.
  */
-describe('useFileManager Integration Tests', () => {
+describe.skipIf(!process.env.RUN_INTEGRATION)('useFileManager Integration Tests', () => {
   let fileManager
 
   beforeEach(() => {

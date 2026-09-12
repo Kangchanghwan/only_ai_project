@@ -102,7 +102,7 @@ In QA mode, flag any code that doesn't match `DESIGN.md`.
 ## Testing
 
 - **Backend**: Jest + ts-jest. Tests use real Socket.IO server instances. Test files in `src/__tests__/`. Setup in `src/__tests__/setup.ts`. Custom Jest environment mocks `localStorage` for socket.io-client. Timeout: 10s.
-- **Frontend**: Vitest + Vue Test Utils with happy-dom. Test files colocated with source (`*.test.js`). Configured in `vite.config.js`.
+- **Frontend**: Vitest + Vue Test Utils with happy-dom. Test files colocated with source (`*.test.js`). Configured in `vite.config.js`. `useFileManager.integration.test.js` hits a real backend and is skipped unless `RUN_INTEGRATION=1` is set (see `frontend/README.md`).
 
 ## Environment Variables
 
@@ -142,7 +142,7 @@ VITE_MAX_ROOM_SIZE_MB=500
 
 ## Known Legacy Code
 
-- `backend/src/config/supabase.ts` and `frontend/src/services/supabaseService.js` are legacy Supabase references — R2 is the current storage.
+- `backend/src/config/supabase.ts` is a legacy Supabase reference — R2 is the current storage.
 - `frontend/ARCHITECTURE.md` is outdated (still references Supabase).
 - **`backend/CLAUDE.md` is significantly outdated**: describes 6-digit room numbers (100000-999999) and `room-${roomNumber}` format, but the current architecture uses a single shared room (`room-shared`). Trust the root CLAUDE.md over `backend/CLAUDE.md` when they conflict.
 - Root `README.md` is also outdated (describes the old 6-digit room model in Korean).
