@@ -1,15 +1,18 @@
 {
-  "name": "Clipboard Share - 실시간 파일 공유 플랫폼",
+  "name": "Clipboard Share - 온라인 클립보드",
   "short_name": "Clipboard Share",
-  "description": "간편한 실시간 파일 공유 서비스. QR 코드로 빠르게 공유하고, 룸 기반으로 안전하게 파일을 전송하세요.",
+  "description": "회원가입·앱 설치 없이 같은 와이파이의 PC와 스마트폰 사이에서 텍스트, 스크린샷, 파일을 바로 주고받는 무료 온라인 클립보드",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#42b883",
+  "background_color": "#1C1917",
+  "theme_color": "#FF6B4A",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "ko-KR",
-  "categories": ["utilities", "productivity"],
+  "categories": [
+    "utilities",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/favicon-16x16.png",
@@ -41,15 +44,6 @@
       "label": "Clipboard Share 메인 화면"
     }
   ],
-  "shortcuts": [
-    {
-      "name": "새 룸 만들기",
-      "short_name": "새 룸",
-      "description": "새로운 파일 공유 룸을 생성합니다",
-      "url": "/#/new",
-      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
-    }
-  ],
   "share_target": {
     "action": "/share-target",
     "method": "POST",
@@ -61,7 +55,14 @@
       "files": [
         {
           "name": "files",
-          "accept": ["image/*", "video/*", "audio/*", "application/pdf", "text/*", "*/*"]
+          "accept": [
+            "image/*",
+            "video/*",
+            "audio/*",
+            "application/pdf",
+            "text/*",
+            "*/*"
+          ]
         }
       ]
     }

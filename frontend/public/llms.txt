@@ -1,0 +1,20 @@
+# Clipboard Share
+
+> Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves.
+
+## Pages
+
+- [Home (Korean)](https://www.clipboardapp.org/): The app itself — open it on two devices on the same Wi-Fi and they connect automatically.
+- [Home (English)](https://www.clipboardapp.org/en/): English version of the app and its landing page.
+- [How to use](https://www.clipboardapp.org/how-to-use.html): Step-by-step walkthrough of sharing text, screenshots and files (Korean).
+- [FAQ](https://www.clipboardapp.org/faq.html): Common questions about price, file size limits, retention and privacy (Korean).
+- [iPhone to Windows photo transfer](https://www.clipboardapp.org/guide/iphone-to-windows-photo-transfer.html): Moving photos from an iPhone to a Windows PC without a cable or iCloud (Korean).
+- [PC bang file transfer](https://www.clipboardapp.org/guide/pc-bang-file-transfer.html): Getting files onto a shared or public PC without logging into anything (Korean).
+- [AirDrop alternative for Android and Mac](https://www.clipboardapp.org/guide/android-mac-airdrop-alternative.html): Sending files between Android and macOS, which AirDrop does not support (Korean).
+- [Copy text from phone to PC](https://www.clipboardapp.org/guide/copy-text-phone-to-pc.html): Moving copied text and links between a phone and a computer (Korean).
+- [Share your clipboard between phone and PC](https://www.clipboardapp.org/en/guide/share-clipboard-between-phone-and-pc.html): How to sync clipboard text and images across devices in the browser (English).
+- [AirDrop alternative for Android, Windows and Mac](https://www.clipboardapp.org/en/guide/airdrop-alternative-android-windows-mac.html): Cross-platform file sending for devices AirDrop leaves out (English).
+
+## Source
+
+- [GitHub repository](https://github.com/Kangchanghwan/only_ai_project): Source code for the Socket.IO server and the Vue 3 frontend.
