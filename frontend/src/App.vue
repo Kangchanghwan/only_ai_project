@@ -14,8 +14,10 @@ import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
 import { useShareScope } from './composables/useShareScope'
+import { useSeoMeta } from './composables/useSeoMeta'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
+import { trackEvent } from './utils/analytics'
 
 import RoomScreen from './components/RoomScreen.vue'
 import DownloadPage from './components/DownloadPage.vue'
@@ -34,6 +36,8 @@ const notification = useNotification()
 const download = useDownload()
 const textShare = useTextShare()
 const shareScope = useShareScope()
+// 로케일에 맞춰 title/description/og/canonical/lang을 갱신 (언어 전환 시 자동 반영)
+useSeoMeta()
 const isConnecting = ref(false)
 const currentRoute = ref({ type: 'home' })
 
@@ -269,6 +273,8 @@ async function uploadFiles(files, scopeOverride) {
   })
 
   if (summary.successCount > 0) {
+    // GA4 주요 이벤트: 실제로 업로드에 성공한 파일 수만 집계한다
+    trackEvent('file_upload', { file_count: summary.successCount, scope: targetScope })
     notification.showSuccess(`${summary.successCount}개 파일 업로드 완료!`)
   }
 }
@@ -313,6 +319,7 @@ async function handleDownloadFile(file) {
     setTimeout(() => {
       notification.removeUpload(downloadId)
     }, 1500)
+    trackEvent('file_download', { file_count: 1 })
     notification.showSuccess('다운로드 완료!')
   } else {
     notification.failUpload(downloadId, result.error?.message || '다운로드 실패')
@@ -355,6 +362,11 @@ async function handleDownloadParallel(files) {
       }
     }
   })
+
+  // GA4 주요 이벤트: 실제로 받아진 파일 수만 집계한다 (실패분 제외)
+  if (result.success && result.successCount > 0) {
+    trackEvent('file_download', { file_count: result.successCount })
+  }
 
   if (result.success) {
     if (result.failCount > 0) {
@@ -415,6 +427,8 @@ async function handleAddText(content, scopeOverride) {
     timestamp: newText.timestamp,
     roomId: targetRoomId
   }, targetScope)
+
+  trackEvent('text_share', { scope: targetScope })
 
   notification.showSuccess('텍스트가 공유되었습니다!')
 }
@@ -674,6 +688,9 @@ onMounted(async () => {
 
   // share-target 파라미터 감지
   const isShareTarget = new URLSearchParams(window.location.search).has('share-target')
+
+  // 프리렌더 중에는 소켓에 연결하지 않아 정적 HTML에 접속 상태·토스트·룸 파일 목록이 구워지지 않게 한다
+  if (window.__PRERENDER__) return
 
   // 공유 룸에 연결
   await connectToRoom()
