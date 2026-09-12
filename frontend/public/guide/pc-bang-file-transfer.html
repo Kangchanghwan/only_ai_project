@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PC방·공용 PC에서 로그인 없이 파일 옮기는 방법</title>
+  <meta name="description" content="PC방이나 회사 공용 PC에 내 계정을 로그인하지 않고 폰과 파일을 주고받는 방법. 브라우저만 열면 되고, 나가면 자동 삭제됩니다." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.clipboardapp.org/guide/pc-bang-file-transfer.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.clipboardapp.org/guide/pc-bang-file-transfer.html" />
+  <meta property="og:title" content="PC방·공용 PC에서 로그인 없이 파일 옮기는 방법" />
+  <meta property="og:description" content="PC방이나 회사 공용 PC에 내 계정을 로그인하지 않고 폰과 파일을 주고받는 방법. 브라우저만 열면 되고, 나가면 자동 삭제됩니다." />
+  <meta property="og:image" content="https://www.clipboardapp.org/og-image.png" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:site_name" content="Clipboard Share" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "PC방·공용 PC에서 로그인 없이 파일 옮기는 방법",
+    "description": "PC방이나 회사 공용 PC에 내 계정을 로그인하지 않고 폰과 파일을 주고받는 방법. 브라우저만 열면 되고, 나가면 자동 삭제됩니다.",
+    "inLanguage": "ko-KR",
+    "datePublished": "2026-09-12",
+    "dateModified": "2026-09-12",
+    "author": {
+      "@type": "Organization",
+      "name": "Clipboard Share",
+      "url": "https://www.clipboardapp.org"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Clipboard Share",
+      "url": "https://www.clipboardapp.org"
+    },
+    "mainEntityOfPage": "https://www.clipboardapp.org/guide/pc-bang-file-transfer.html",
+    "image": "https://www.clipboardapp.org/og-image.png"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "홈",
+        "item": "https://www.clipboardapp.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "PC방·공용 PC에서 로그인 없이 파일 주고받기",
+        "item": "https://www.clipboardapp.org/guide/pc-bang-file-transfer.html"
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #FAF8F5;
+      --surface: #FFFFFF;
+      --border: #E9E3DA;
+      --text: #2A2622;
+      --muted: #8A8178;
+      --accent: #FF6B4A;
+      --accent-text: #C8432A;
+      --cta-text: #2A2622;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1C1917;
+        --surface: #262220;
+        --border: #3A3430;
+        --text: #F2EDE7;
+        --muted: #A69A8D;
+        --accent: #FF7A5C;
+        --accent-text: #FF7A5C;
+        --cta-text: #1C1917;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .wrap { max-width: 40rem; margin: 0 auto; padding: 8px 16px 64px; }
+
+    header.site { display: flex; align-items: center; gap: 16px; padding: 16px 0 32px; }
+    .brand { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-decoration: none; }
+    .brand em { font-style: normal; color: var(--accent-text); }
+
+    h1 { font-size: 28px; font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; margin: 0 0 16px; }
+    h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin: 40px 0 12px; }
+    h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+    p { margin: 0 0 16px; }
+    .lead { color: var(--text); }
+
+    a { color: var(--accent-text); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    ol, ul { margin: 0 0 16px; padding-left: 24px; }
+    li { margin: 0 0 8px; }
+    li:last-child { margin-bottom: 0; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .card > :last-child { margin-bottom: 0; }
+    .card h3:first-child { margin-top: 0; }
+
+    kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px 6px;
+    }
+
+    .cta {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--cta-text);
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 600;
+      text-decoration: none;
+      margin: 8px 0 0;
+    }
+    .cta:hover { opacity: 0.88; text-decoration: none; }
+    .cta-secondary { background: transparent; color: var(--accent-text); border: 1px solid var(--accent-text); margin-left: 8px; }
+
+    .related ul { list-style: none; padding: 0; }
+
+    footer.site {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+      font-size: 14px;
+    }
+    footer.site nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 12px; }
+    footer.site p { margin: 0; }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 24px; }
+      h2 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site">
+      <a class="brand" href="/">Clipboard <em>Share</em></a>
+    </header>
+
+    <main>
+      <article>
+        <h1>PC방·공용 PC에서 로그인 없이 파일 주고받기</h1>
+        <p class="lead">PC방이나 회사 공용 PC에서 사진 한 장, 문서 하나를 꺼내려고 메신저나 메일에 로그인하는 일이 많습니다. 로그아웃을 깜빡하면 대화 내용과 받은 편지함이 남의 자리에 그대로 남습니다.</p>
+        <p>잠깐 파일 하나 옮기자고 계정을 맡길 이유는 없습니다. 브라우저 탭 하나만 열면 폰과 공용 PC 사이에서 파일이 오가고, 자리에서 일어나면 흔적도 함께 사라집니다.</p>
+
+        <h2>옮기는 방법</h2>
+        <ol>
+          <li>폰을 그 자리의 와이파이에 연결합니다. PC와 같은 네트워크에 있어야 서로를 찾습니다.</li>
+          <li>폰과 PC의 브라우저에서 <a href="/">https://www.clipboardapp.org/</a> 를 엽니다. 같은 네트워크의 기기는 <strong>같은 네트워크</strong> 탭에 자동으로 모입니다. 가입도, 입력할 코드도 없습니다.</li>
+          <li>폰에서 보낼 파일은 화면의 <strong>파일 업로드</strong> 카드를 눌러 고르고, PC에서는 파일을 페이지 위로 끌어다 놓습니다.</li>
+          <li>캡처나 복사로 끝나는 내용이라면 파일로 저장할 필요도 없습니다. 폰에서는 화면의 '붙여넣기' 카드를 한 번 탭하고 클립보드 접근을 허용하면 복사해 둔 텍스트나 이미지가 바로 공유됩니다. PC에서는 페이지 어디서나 Ctrl+V / Cmd+V를 누르면 됩니다.</li>
+          <li>반대편 기기에 항목이 바로 나타납니다. 눌러서 복사하거나 다운로드하세요.</li>
+          <li>다 옮겼으면 탭을 닫습니다. 모든 기기가 나가면 올려 둔 파일은 잠시 뒤 삭제됩니다.</li>
+        </ol>
+
+        <h2>공용 PC에서 특히 신경 쓸 것</h2>
+        <div class="card">
+          <ul>
+            <li>PC방이나 카페처럼 여러 사람이 같은 와이파이를 쓰는 곳에서는, 같은 네트워크 탭에 올린 항목이 옆자리에서도 보일 수 있습니다. 민감한 파일은 이런 자리에서 아예 올리지 않는 편이 안전합니다.</li>
+            <li><strong>전체 공유</strong> 탭은 네트워크와 관계없이 서비스를 열어 둔 모든 사람에게 보입니다. 기본값이 아니고 직접 눌러야 켜지니, 공용 PC에서는 특히 잘못 눌리지 않았는지 확인하세요.</li>
+            <li>PC에 받은 파일은 다운로드 폴더에 남습니다. 자리를 뜨기 전에 직접 지우고, 브라우저 탭도 닫아 주세요.</li>
+            <li>파일을 다른 사람 폰에 건네야 한다면 QR 코드를 띄워 카메라로 찍게 하면 됩니다. 상대가 주소를 입력할 필요가 없습니다.</li>
+          </ul>
+        </div>
+
+        <h2>자주 묻는 질문</h2>
+        <h3>공용 PC에 로그인 기록이 남나요?</h3>
+        <p>로그인 자체가 없습니다. 아이디도 비밀번호도 입력하지 않으니 저장될 계정 정보가 없고, 브라우저에 남는 것은 방문 기록 정도입니다. 받은 파일만 지우고 탭을 닫으면 됩니다.</p>
+        <h3>폰이 데이터(LTE)로 연결돼 있어도 되나요?</h3>
+        <p>그러면 PC와 다른 네트워크로 잡혀 같은 네트워크 탭에서 서로 보이지 않습니다. 폰을 그 자리의 와이파이에 연결하는 것이 가장 확실하고, 여의치 않으면 전체 공유 탭을 쓰되 남에게 보여도 괜찮은 파일만 올리세요.</p>
+
+        <p><a class="cta" href="/">지금 바로 써보기</a></p>
+
+        <section class="related">
+          <h2>관련 글</h2>
+          <ul>
+            <li><a href="/guide/iphone-to-windows-photo-transfer.html">아이폰 사진을 윈도우 PC로 옮기기</a></li>
+            <li><a href="/guide/android-mac-airdrop-alternative.html">안드로이드와 맥 사이 AirDrop 대안</a></li>
+            <li><a href="/guide/copy-text-phone-to-pc.html">폰에서 복사한 텍스트를 PC로</a></li>
+            <li><a href="/how-to-use.html">사용법: 처음부터 끝까지</a></li>
+            <li><a href="/faq.html">자주 묻는 질문</a></li>
+          </ul>
+        </section>
+      </article>
+    </main>
+
+    <footer class="site">
+      <nav>
+      <a href="/">홈</a>
+      <a href="/how-to-use.html">사용법</a>
+      <a href="/faq.html">자주 묻는 질문</a>
+      <a href="https://github.com/Kangchanghwan/only_ai_project" rel="noopener">GitHub</a>
+      </nav>
+      <p>설치도 가입도 없이, 브라우저만 열면 되는 클립보드.</p>
+    </footer>
+  </div>
+</body>
+</html>
