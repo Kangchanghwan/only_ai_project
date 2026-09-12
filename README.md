@@ -1,6 +1,8 @@
-# Image Share - 실시간 이미지 공유 애플리케이션
+# Clipboard Share — 온라인 클립보드 (https://www.clipboardapp.org)
 
-Socket.IO를 활용한 실시간 이미지 공유 애플리케이션입니다.
+회원가입·앱 설치 없이 같은 와이파이의 PC와 스마트폰이 브라우저에서 자동 연결돼 복사한 텍스트, 스크린샷, 파일을 바로 주고받는 무료 온라인 클립보드입니다. 영어 페이지: https://www.clipboardapp.org/en/
+
+Socket.IO 기반 실시간 공유 서버와 Vue 3 프론트엔드로 구성됩니다. (아래 기능 설명 일부는 초기 6자리 룸 모델 기준의 옛 내용입니다.)
 
 ## 📋 기능
 

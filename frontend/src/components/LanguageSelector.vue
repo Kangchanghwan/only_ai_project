@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { languages } from '../i18n'
+import { languages, setSavedLocale } from '../i18n'
 
 const { locale } = useI18n()
 const isOpen = ref(false)
@@ -16,8 +16,8 @@ function toggleDropdown() {
 
 function selectLanguage(langCode) {
   console.log('Selecting language:', langCode)
+  setSavedLocale(langCode)
   locale.value = langCode
-  localStorage.setItem('user-locale', langCode)
   isOpen.value = false
 }
 
@@ -59,6 +59,7 @@ onUnmounted(() => {
       </svg>
       <nav class="magictool-langselector-dropdown">
         <button
+          type="button"
           class="dropdown-toggle"
           @click.stop="toggleDropdown"
           :aria-expanded="isOpen"
@@ -73,14 +74,15 @@ onUnmounted(() => {
             v-for="lang in languages"
             :key="lang.code"
             class="dropdown-item"
-            :class="{ active: lang.code === locale.value }"
+            :class="{ active: lang.code === locale }"
           >
-            <a
-              href="#"
-              @click.prevent="selectLanguage(lang.code)"
+            <button
+              type="button"
+              :aria-current="lang.code === locale ? 'true' : undefined"
+              @click="selectLanguage(lang.code)"
             >
               {{ lang.name }}
-            </a>
+            </button>
           </li>
         </ul>
       </nav>
@@ -150,8 +152,14 @@ onUnmounted(() => {
   padding: 0;
 }
 
-.dropdown-item a {
+.dropdown-item button {
   display: block;
+  width: 100%;
+  background: none;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
   padding: 0.5rem 1rem;
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
@@ -159,12 +167,12 @@ onUnmounted(() => {
   font-size: 0.875rem;
 }
 
-.dropdown-item a:hover {
+.dropdown-item button:hover {
   background: rgba(255, 255, 255, 0.1);
   color: white;
 }
 
-.dropdown-item.active a {
+.dropdown-item.active button {
   background: rgba(59, 130, 246, 0.2);
   color: #60a5fa;
   font-weight: 500;
