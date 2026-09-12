@@ -36,7 +36,8 @@ body.dark {
   --color-border: #3A3430;
   --color-scope-global: #6FAE8A;
   --color-scope-global-tint: #223026;
-  --font-display: 'Cabinet Grotesk', 'Plus Jakarta Sans', sans-serif;
+  /* 'Cabinet Grotesk Fallback*' / 'Plus Jakarta Sans Fallback*'는 index.html critical CSS의 메트릭 보정 @font-face(로컬 폴백). 스택 순서는 index.html과 동일하게 유지할 것. */
+  --font-display: 'Cabinet Grotesk', 'Cabinet Grotesk Fallback', 'Cabinet Grotesk Fallback Android', 'Plus Jakarta Sans', sans-serif;
 }
 
 @layer base {
@@ -52,7 +53,7 @@ body.dark {
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Plus Jakarta Sans Fallback', 'Plus Jakarta Sans Fallback Android', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
