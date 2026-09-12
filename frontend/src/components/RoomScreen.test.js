@@ -31,6 +31,10 @@ const stubs = {
   AppFooter: {
     name: 'AppFooter',
     template: '<div class="app-footer-stub"></div>'
+  },
+  LandingContent: {
+    name: 'LandingContent',
+    template: '<div class="landing-content-stub"></div>'
   }
 }
 
@@ -86,6 +90,11 @@ describe('RoomScreen.vue', () => {
       const tabs = wrapper.findComponent({ name: 'ShareScopeTabs' })
       expect(tabs.exists()).toBe(true)
       expect(tabs.props('scope')).toBe('global')
+    })
+
+    it('LandingContent가 렌더링되어야 한다', () => {
+      const wrapper = mount(RoomScreen, { props: defaultProps, global: { plugins: [i18n], stubs } })
+      expect(wrapper.find('.landing-content-stub').exists()).toBe(true)
     })
   })
 
