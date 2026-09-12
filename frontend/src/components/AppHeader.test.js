@@ -83,6 +83,6 @@ describe('AppHeader.vue', () => {
     expect(header.classes()).toContain('sticky')
     expect(header.classes()).toContain('top-0')
     expect(header.classes()).toContain('z-40')
-    expect(header.classes()).toContain('bg-background')
+    expect(header.classes()).toContain('bg-surface')
   })
 })
