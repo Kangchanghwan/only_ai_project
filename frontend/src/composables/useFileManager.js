@@ -51,6 +51,50 @@ export function useFileManager() {
   let activeRoomIds = [] // 마지막으로 로드한 룸 ID 목록 (loadMore 대상 추적용, 비반응형 내부 상태)
   let loadGeneration = 0 // 동시 호출 시 stale 결과 커밋 방지용 세대 카운터
 
+  // === 조회 중 변경 기록 ===
+  // 목록 조회(loadFilesFromRooms/loadMore)가 진행되는 동안 소켓 메시지나 로컬 조작으로
+  // 일어난 변경(addFile/removeFile/clearRoomFiles)은 조회 응답에 들어 있지 않다
+  // (응답은 요청 시점의 스냅샷). 응답을 그대로 커밋하면 그 사이에 추가된 파일이
+  // 사라지거나 삭제된 파일이 되살아난다. 그래서 조회 중의 변경을 순서대로 기록해 두고
+  // 커밋 시 조회 결과 위에 다시 적용한다. 조회가 하나도 진행 중이 아닐 때는 기록하지 않는다.
+  let inFlightLoads = 0
+  let pendingMutations = [] // { type: 'add'|'remove'|'clear', roomId, name?, file? }
+
+  function recordMutation(mutation) {
+    if (inFlightLoads > 0) pendingMutations.push(mutation)
+  }
+
+  function beginLoad() {
+    inFlightLoads++
+  }
+
+  function endLoad() {
+    inFlightLoads--
+    if (inFlightLoads === 0) pendingMutations = []
+  }
+
+  /** 조회 중 기록된 변경을 fileList 위에 순서대로 적용한 새 배열을 반환 (fileList는 변경하지 않음) */
+  function applyPendingMutations(fileList) {
+    let result = [...fileList]
+    for (const mutation of pendingMutations) {
+      if (mutation.type === 'clear') {
+        result = result.filter(f => f.roomId !== mutation.roomId)
+      } else if (mutation.type === 'remove') {
+        const key = fileKey(mutation.roomId, mutation.name)
+        result = result.filter(f => fileKey(f.roomId, f.name) !== key)
+      } else if (mutation.type === 'add') {
+        const key = fileKey(mutation.file.roomId, mutation.file.name)
+        const index = result.findIndex(f => fileKey(f.roomId, f.name) === key)
+        if (index === -1) {
+          result.push(mutation.file)
+        } else {
+          result[index] = { ...result[index], ...mutation.file }
+        }
+      }
+    }
+    return result
+  }
+
   // 더 불러올 파일이 있는지 여부 (하나라도 nextToken을 가진 룸이 있으면 true)
   const hasMore = computed(() => {
     for (const token of roomTokens.value.values()) {
@@ -107,18 +151,28 @@ export function useFileManager() {
     activeRoomIds = ids
     roomTokens.value = new Map()
     const myGeneration = ++loadGeneration
+    beginLoad()
 
     console.log('[useFileManager] 병합 파일 로딩 시작:', ids)
 
-    const settled = await Promise.allSettled(
-      ids.map(async (roomId) => {
-        const result = await r2Service.loadFiles(roomId, options)
-        return { roomId, result }
-      })
-    )
+    let settled
+    try {
+      settled = await Promise.allSettled(
+        ids.map(async (roomId) => {
+          const result = await r2Service.loadFiles(roomId, options)
+          return { roomId, result }
+        })
+      )
+    } catch (err) {
+      endLoad()
+      isLoading.value = false
+      throw err
+    }
 
     if (myGeneration !== loadGeneration) {
       // 그 사이 새로운 loadFilesFromRooms가 호출됨 — 이 결과는 폐기
+      // (조회 중 기록된 변경은 최신 조회가 커밋할 때 함께 적용된다)
+      endLoad()
       isLoading.value = false
       return
     }
@@ -141,7 +195,9 @@ export function useFileManager() {
       }
     }
 
-    files.value = mergeAndSort(succeeded)
+    // 조회 중(소켓 수신 등) 일어난 변경을 스냅샷 위에 덧씌운 뒤 커밋한다
+    files.value = mergeAndSort(applyPendingMutations(succeeded))
+    endLoad()
     totalSize.value = files.value.reduce((sum, file) => sum + (file.size || 0), 0)
     error.value = succeeded.length === 0 ? lastError : null
 
@@ -346,6 +402,9 @@ export function useFileManager() {
    * @returns {boolean} 실제로 제거됐는지
    */
   function removeFile(roomId, fileName) {
+    // 아직 목록에 없더라도(조회 중) 삭제 사실은 기록해야 조회 결과에서 되살아나지 않는다
+    recordMutation({ type: 'remove', roomId, name: fileName })
+
     const key = fileKey(roomId, fileName)
     const index = files.value.findIndex(f => fileKey(f.roomId, f.name) === key)
     if (index === -1) return false
@@ -359,6 +418,8 @@ export function useFileManager() {
    * 로컬 목록에서 특정 룸의 파일을 모두 비웁니다 (API 호출 없음).
    */
   function clearRoomFiles(roomId) {
+    recordMutation({ type: 'clear', roomId })
+
     const removedSize = files.value
       .filter(f => f.roomId === roomId)
       .reduce((sum, f) => sum + (f.size || 0), 0)
@@ -423,22 +484,31 @@ export function useFileManager() {
     isLoading.value = true
     error.value = null
     const myGeneration = loadGeneration
+    beginLoad()
 
     const targets = activeRoomIds.filter(roomId => roomTokens.value.get(roomId))
     console.log('[useFileManager] 추가 파일 로딩 시작:', targets)
 
-    const settled = await Promise.allSettled(
-      targets.map(async (roomId) => {
-        const result = await r2Service.loadFiles(roomId, {
-          ...options,
-          continuationToken: roomTokens.value.get(roomId)
+    let settled
+    try {
+      settled = await Promise.allSettled(
+        targets.map(async (roomId) => {
+          const result = await r2Service.loadFiles(roomId, {
+            ...options,
+            continuationToken: roomTokens.value.get(roomId)
+          })
+          return { roomId, result }
         })
-        return { roomId, result }
-      })
-    )
+      )
+    } catch (err) {
+      endLoad()
+      isLoading.value = false
+      throw err
+    }
 
     if (myGeneration !== loadGeneration) {
       // 그 사이 새로운 loadFilesFromRooms가 호출됨 — 이 결과는 폐기
+      endLoad()
       isLoading.value = false
       return
     }
@@ -462,7 +532,9 @@ export function useFileManager() {
       }
     }
 
-    files.value = mergeAndSort([...files.value, ...newFiles])
+    // 다음 페이지(요청 시점 스냅샷)에 조회 중 삭제된 파일이 섞여 있을 수 있으므로 변경 기록을 덧씌운다
+    files.value = mergeAndSort(applyPendingMutations([...files.value, ...newFiles]))
+    endLoad()
     totalSize.value = files.value.reduce((sum, file) => sum + (file.size || 0), 0)
     if (newFiles.length === 0 && lastError) error.value = lastError
 
@@ -506,6 +578,7 @@ export function useFileManager() {
     error.value = null
     roomTokens.value = new Map()
     activeRoomIds = []
+    pendingMutations = [] // 전체 초기화이므로 조회 중 기록된 변경도 버린다
     console.log('[useFileManager] 파일 목록 초기화')
   }
 
@@ -518,6 +591,8 @@ export function useFileManager() {
    * @returns {boolean} 새로 추가됐으면 true, 기존 항목을 교체했으면 false
    */
   function addFile(file) {
+    recordMutation({ type: 'add', file })
+
     const key = fileKey(file.roomId, file.name)
     const index = files.value.findIndex(f => fileKey(f.roomId, f.name) === key)
 
