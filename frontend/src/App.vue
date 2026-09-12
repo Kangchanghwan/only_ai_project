@@ -37,6 +37,10 @@ const shareScope = useShareScope()
 const isConnecting = ref(false)
 const currentRoute = ref({ type: 'home' })
 
+// 룸별 목록 페이지 크기. 백엔드가 최신순으로 정렬해 주므로 첫 페이지가 곧 최신 파일들이다.
+// 10개였을 때는 R2 이름순 첫 10개만 보여 방금 올린 파일이 "더 보기" 뒤에 숨는 문제가 있었다.
+const FILE_PAGE_SIZE = 50
+
 // 현재 선택된 scope('ip'|'global')에 대응하는 룸 ID — 피드 필터링/업로드 대상 공통 기준
 const activeRoomId = computed(() => roomManager.roomIdForScope(shareScope.scope.value))
 
@@ -73,7 +77,7 @@ socket.onReconnected(() => {
   // 파일 목록 다시 로드
   fileManager.clearFiles()
   textShare.clearAllTexts()
-  fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: 10 })
+  fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
 
   notification.showSuccess('재연결 완료')
 })
@@ -102,8 +106,8 @@ async function connectToRoom() {
     const { globalRoomId, ipRoomId } = await socket.connect()
 
     roomManager.setRooms({ globalRoomId, ipRoomId })
-    // 파일 로딩을 백그라운드에서 실행 (초기 10개만)
-    fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: 10 })
+    // 파일 로딩을 백그라운드에서 실행 (룸별 최신 FILE_PAGE_SIZE개, 나머지는 "더 보기")
+    fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
     notification.showSuccess('연결되었습니다.')
 
     // 새 이벤트 리스너 설정
@@ -558,7 +562,7 @@ async function handleClearStorage() {
 
 async function handleLoadMore() {
   try {
-    await fileManager.loadMore({ limit: 10 })
+    await fileManager.loadMore({ limit: FILE_PAGE_SIZE })
     console.log('[App] 추가 파일 로드 완료')
   } catch (error) {
     console.error('[App] 추가 파일 로드 실패:', error)

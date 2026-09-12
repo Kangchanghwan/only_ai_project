@@ -4,6 +4,7 @@ import {
   GetObjectCommand,
   DeleteObjectsCommand,
   ListObjectsV2Command,
+  _Object,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import logger from '../utils/logger';
@@ -261,19 +262,17 @@ class R2Service {
     nextToken?: string;
   }> {
     const { limit = 100, continuationToken } = options;
+    // 토큰은 정렬된 목록에서의 offset(문자열). 숫자가 아니면 첫 페이지로 취급한다.
+    const parsedOffset = Number.parseInt(continuationToken ?? '', 10);
+    const offset = Number.isFinite(parsedOffset) && parsedOffset > 0 ? parsedOffset : 0;
 
-    logger.info(`[R2Service] 파일 로드 시작: ${roomId}`);
+    logger.info(`[R2Service] 파일 로드 시작: ${roomId} (offset=${offset}, limit=${limit})`);
 
-    const command = new ListObjectsV2Command({
-      Bucket: this.bucketName,
-      Prefix: `${roomId}/`,
-      MaxKeys: limit,
-      ContinuationToken: continuationToken,
-    });
+    // R2의 ListObjectsV2는 키(이름)순이라 MaxKeys로 자르면 최신 파일이 뒤 페이지에 숨는다.
+    // 룸 크기는 제한돼 있으므로 프리픽스의 객체를 전부 모은 뒤 최신순으로 정렬해 페이지를 자른다.
+    const objects = await this.listAllObjects(`${roomId}/`);
 
-    const response = await this.client.send(command);
-
-    const files = (response.Contents || [])
+    const sorted = objects
       .filter((obj) => obj.Key && !obj.Key.endsWith('/'))
       .map((obj) => {
         const fileName = obj.Key!.split('/').pop()!;
@@ -283,14 +282,38 @@ class R2Service {
           size: obj.Size || 0,
           lastModified: obj.LastModified?.toISOString() || new Date().toISOString(),
         };
-      });
+      })
+      .sort((a, b) => b.lastModified.localeCompare(a.lastModified));
 
-    logger.info(`[R2Service] 파일 로드 완료: ${files.length}개`);
+    const files = sorted.slice(offset, offset + limit);
+    const nextOffset = offset + limit;
+
+    logger.info(`[R2Service] 파일 로드 완료: ${files.length}개 / 전체 ${sorted.length}개`);
 
     return {
       files,
-      nextToken: response.NextContinuationToken,
+      nextToken: nextOffset < sorted.length ? String(nextOffset) : undefined,
     };
+  }
+
+  /** 프리픽스 아래 모든 객체(키·크기·수정시각)를 페이지네이션을 따라 전부 수집합니다 */
+  private async listAllObjects(prefix: string): Promise<_Object[]> {
+    const objects: _Object[] = [];
+    let continuationToken: string | undefined;
+
+    do {
+      const response = await this.client.send(
+        new ListObjectsV2Command({
+          Bucket: this.bucketName,
+          Prefix: prefix,
+          ContinuationToken: continuationToken,
+        })
+      );
+      objects.push(...(response.Contents || []));
+      continuationToken = response.NextContinuationToken;
+    } while (continuationToken);
+
+    return objects;
   }
 
   /**
