@@ -51,6 +51,21 @@ npm test
 npm run test:ui
 ```
 
+### 통합 테스트 (백엔드 필요)
+
+`src/composables/useFileManager.integration.test.js`는 실제 백엔드 API(기본 `http://localhost:3001`, `VITE_API_URL`로 변경 가능)에 요청을 보내고 R2에 파일을 업로드하는 통합 테스트입니다. 백엔드가 없으면 실패하므로 기본 `npm test`에서는 건너뛰며, `RUN_INTEGRATION` 환경 변수를 설정했을 때만 실행됩니다.
+
+```bash
+# 1. 백엔드 실행 (backend/ 에서. R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY,
+#    R2_BUCKET_NAME, R2_PUBLIC_URL 환경 변수가 설정되어 있어야 합니다)
+cd ../backend && npm run dev
+
+# 2. 통합 테스트만 실행 (frontend/ 에서)
+RUN_INTEGRATION=1 npx vitest run src/composables/useFileManager.integration.test.js
+```
+
+업로드된 테스트 파일은 `TEST*`, `UPLOAD*`, `MULTI*`, `PROPS*` 이름의 룸으로 실제 R2 버킷에 남습니다.
+
 ### 빌드
 
 ```bash

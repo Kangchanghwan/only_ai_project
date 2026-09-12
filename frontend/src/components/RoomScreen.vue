@@ -7,6 +7,7 @@ import ShareScopeTabs from './ShareScopeTabs.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import ConnectedDevices from './ConnectedDevices.vue'
+import LandingContent from './LandingContent.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
@@ -169,6 +170,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
           </div>
         </main>
       </div>
+
+      <LandingContent />
 
       <AppFooter />
     </div>

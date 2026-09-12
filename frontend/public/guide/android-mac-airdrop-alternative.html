@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>안드로이드와 맥 사이 AirDrop 대안: 설치 없이 브라우저로 전송</title>
+  <meta name="description" content="갤럭시 같은 안드로이드 폰과 맥 사이에는 AirDrop이 없습니다. 같은 와이파이에서 브라우저로 사진·파일·텍스트를 바로 보내는 방법을 설명합니다." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.clipboardapp.org/guide/android-mac-airdrop-alternative.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.clipboardapp.org/guide/android-mac-airdrop-alternative.html" />
+  <meta property="og:title" content="안드로이드와 맥 사이 AirDrop 대안: 설치 없이 브라우저로 전송" />
+  <meta property="og:description" content="갤럭시 같은 안드로이드 폰과 맥 사이에는 AirDrop이 없습니다. 같은 와이파이에서 브라우저로 사진·파일·텍스트를 바로 보내는 방법을 설명합니다." />
+  <meta property="og:image" content="https://www.clipboardapp.org/og-image.png" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:site_name" content="Clipboard Share" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "안드로이드와 맥 사이 AirDrop 대안: 설치 없이 브라우저로 전송",
+    "description": "갤럭시 같은 안드로이드 폰과 맥 사이에는 AirDrop이 없습니다. 같은 와이파이에서 브라우저로 사진·파일·텍스트를 바로 보내는 방법을 설명합니다.",
+    "inLanguage": "ko-KR",
+    "datePublished": "2026-09-12",
+    "dateModified": "2026-09-12",
+    "author": {
+      "@type": "Organization",
+      "name": "Clipboard Share",
+      "url": "https://www.clipboardapp.org"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Clipboard Share",
+      "url": "https://www.clipboardapp.org"
+    },
+    "mainEntityOfPage": "https://www.clipboardapp.org/guide/android-mac-airdrop-alternative.html",
+    "image": "https://www.clipboardapp.org/og-image.png"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "홈",
+        "item": "https://www.clipboardapp.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "안드로이드와 맥 사이 AirDrop 대안",
+        "item": "https://www.clipboardapp.org/guide/android-mac-airdrop-alternative.html"
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #FAF8F5;
+      --surface: #FFFFFF;
+      --border: #E9E3DA;
+      --text: #2A2622;
+      --muted: #8A8178;
+      --accent: #FF6B4A;
+      --accent-text: #C8432A;
+      --cta-text: #2A2622;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1C1917;
+        --surface: #262220;
+        --border: #3A3430;
+        --text: #F2EDE7;
+        --muted: #A69A8D;
+        --accent: #FF7A5C;
+        --accent-text: #FF7A5C;
+        --cta-text: #1C1917;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .wrap { max-width: 40rem; margin: 0 auto; padding: 8px 16px 64px; }
+
+    header.site { display: flex; align-items: center; gap: 16px; padding: 16px 0 32px; }
+    .brand { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-decoration: none; }
+    .brand em { font-style: normal; color: var(--accent-text); }
+
+    h1 { font-size: 28px; font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; margin: 0 0 16px; }
+    h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin: 40px 0 12px; }
+    h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+    p { margin: 0 0 16px; }
+    .lead { color: var(--text); }
+
+    a { color: var(--accent-text); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    ol, ul { margin: 0 0 16px; padding-left: 24px; }
+    li { margin: 0 0 8px; }
+    li:last-child { margin-bottom: 0; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .card > :last-child { margin-bottom: 0; }
+    .card h3:first-child { margin-top: 0; }
+
+    kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px 6px;
+    }
+
+    .cta {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--cta-text);
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 600;
+      text-decoration: none;
+      margin: 8px 0 0;
+    }
+    .cta:hover { opacity: 0.88; text-decoration: none; }
+    .cta-secondary { background: transparent; color: var(--accent-text); border: 1px solid var(--accent-text); margin-left: 8px; }
+
+    .related ul { list-style: none; padding: 0; }
+
+    footer.site {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+      font-size: 14px;
+    }
+    footer.site nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 12px; }
+    footer.site p { margin: 0; }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 24px; }
+      h2 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site">
+      <a class="brand" href="/">Clipboard <em>Share</em></a>
+    </header>
+
+    <main>
+      <article>
+        <h1>안드로이드와 맥 사이 AirDrop 대안</h1>
+        <p class="lead">AirDrop은 애플 기기끼리만 동작하고, 퀵 공유는 안드로이드와 윈도우까지입니다. 갤럭시로 찍은 사진을 맥북으로 옮기려는 순간, 두 진영 사이에 아무것도 없다는 걸 알게 됩니다.</p>
+        <p>그래서 보통은 케이블을 찾거나 전송 프로그램을 설치하거나 스스로에게 메일을 보냅니다. 브라우저를 쓰면 그 셋 다 필요 없습니다. 안드로이드든 맥이든 윈도우든, 같은 와이파이에 있으면 같은 자리에 모입니다.</p>
+
+        <h2>보내는 방법</h2>
+        <ol>
+          <li>안드로이드 폰과 맥을 같은 와이파이에 연결합니다.</li>
+          <li>양쪽에서 브라우저로 <a href="/">https://www.clipboardapp.org/</a> 를 엽니다. 같은 네트워크의 기기는 <strong>같은 네트워크</strong> 탭에 자동으로 묶입니다.</li>
+          <li>폰에서는 화면의 <strong>파일 업로드</strong> 카드를 눌러 사진이나 파일을 고릅니다.</li>
+          <li>갤러리를 거치지 않고 바로 넘길 수도 있습니다. 폰에서는 화면의 '붙여넣기' 카드를 한 번 탭하고 클립보드 접근을 허용하면 복사해 둔 텍스트나 이미지가 바로 공유됩니다. PC에서는 페이지 어디서나 Ctrl+V / Cmd+V를 누르면 됩니다.</li>
+          <li>맥에서는 파일을 페이지 위로 끌어다 놓아도 됩니다. 스크린샷을 찍고 곧바로 붙여넣어도 그대로 올라갑니다.</li>
+          <li>반대편 기기에 항목이 나타나면 눌러서 복사하거나 다운로드하세요. 여러 개를 골라 한 번에 받을 수도 있습니다.</li>
+        </ol>
+
+        <h2>알아두면 좋은 것</h2>
+        <div class="card">
+          <ul>
+            <li>서로 다른 네트워크에 있을 때는 <strong>전체 공유</strong> 탭으로 바꾸면 되지만, 이 탭의 항목은 서비스를 열어 둔 모든 사람에게 보입니다. 개인적인 파일은 같은 네트워크에서만 주고받으세요.</li>
+            <li>모든 기기가 페이지를 떠나면 올려 둔 항목은 곧 사라집니다. 보관이 아니라 전달을 위한 자리라고 생각하면 됩니다.</li>
+            <li>안드로이드 크롬에서 홈 화면에 추가해 두면 앱처럼 열리고, 갤러리의 공유 버튼에서 바로 보낼 수 있습니다.</li>
+            <li>옆 사람 폰에 파일을 건넬 때는 QR 코드를 띄워 카메라로 찍게 하면 주소를 불러 줄 필요가 없습니다.</li>
+          </ul>
+        </div>
+
+        <h2>자주 묻는 질문</h2>
+        <h3>퀵 공유나 AirDrop과 뭐가 다른가요?</h3>
+        <p>둘은 같은 생태계 안에서만 동작하고 기기끼리 직접 연결합니다. 이 방법은 브라우저와 인터넷만 있으면 되니 안드로이드와 맥, 아이폰과 윈도우처럼 섞인 조합에서도 똑같이 씁니다. 대신 파일이 서버를 한 번 거치므로, 모든 기기가 나가면 자동으로 지워지도록 되어 있습니다.</p>
+        <h3>맥에 프로그램을 설치해야 하나요?</h3>
+        <p>아닙니다. 사파리나 크롬 같은 브라우저에서 페이지를 열기만 하면 되고, 안드로이드 쪽에도 설치할 앱이 없습니다. 계정을 만들 필요도 없습니다.</p>
+
+        <p><a class="cta" href="/">지금 바로 써보기</a></p>
+
+        <section class="related">
+          <h2>관련 글</h2>
+          <ul>
+            <li><a href="/guide/iphone-to-windows-photo-transfer.html">아이폰 사진을 윈도우 PC로 옮기기</a></li>
+            <li><a href="/guide/pc-bang-file-transfer.html">PC방·공용 PC에서 파일 주고받기</a></li>
+            <li><a href="/guide/copy-text-phone-to-pc.html">폰에서 복사한 텍스트를 PC로</a></li>
+            <li><a href="/how-to-use.html">사용법: 처음부터 끝까지</a></li>
+            <li><a href="/faq.html">자주 묻는 질문</a></li>
+          </ul>
+        </section>
+      </article>
+    </main>
+
+    <footer class="site">
+      <nav>
+      <a href="/">홈</a>
+      <a href="/how-to-use.html">사용법</a>
+      <a href="/faq.html">자주 묻는 질문</a>
+      <a href="https://github.com/Kangchanghwan/only_ai_project" rel="noopener">GitHub</a>
+      </nav>
+      <p>설치도 가입도 없이, 브라우저만 열면 되는 클립보드.</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -181,5 +181,44 @@
   },
   "qr": {
     "backgroundHint": "Scan to join this space"
+  },
+  "seo": {
+    "title": "Online Clipboard – Share Text, Images & Files Between Phone and PC",
+    "description": "Free online clipboard, no sign-up, no app. Devices on the same Wi-Fi connect automatically in the browser to share copied text, screenshots and files instantly. Deleted when you leave."
+  },
+  "landing": {
+    "headline": "The online clipboard between your phone and PC",
+    "intro": "Clipboard Share is a free online clipboard with no sign-up and no app. Devices on the same Wi-Fi connect automatically in the browser, so copied text, screenshots and files show up on your other device right away.",
+    "howTitle": "How it works",
+    "how1": "Open this page on both devices while they are on the same Wi-Fi. Devices on the same network are grouped automatically.",
+    "how2": "Paste what you want to move (Ctrl+V / Cmd+V) or drop a file.",
+    "how3": "It appears on the other device instantly. Tap once to copy or download.",
+    "useCasesTitle": "Good for",
+    "useCase1": "Moving iPhone photos to a Windows PC without a cable",
+    "useCase2": "Grabbing a file on a shared or office PC without logging into your accounts",
+    "useCase3": "Sending between Android and Mac when AirDrop is not an option",
+    "useCase4": "Pasting a long link, one-time code or snippet from your phone into your PC",
+    "safetyTitle": "Is it safe?",
+    "safety1": "The default scope is \"Same network\", so only devices behind the same public IP can see your items. Sharing with everyone requires switching to the \"Everyone\" tab yourself.",
+    "safety2": "When every device leaves, files and text are deleted shortly after. No account, no history.",
+    "safety3": "Transfers are encrypted with HTTPS and the source code is public on GitHub.",
+    "faqTitle": "Frequently asked questions",
+    "faq1q": "Is it really free?",
+    "faq1a": "Yes. Every feature is free and there is no account.",
+    "faq2q": "Do I need to install an app?",
+    "faq2a": "No. Any modern browser works: Chrome, Safari, Edge, Firefox. You can add it to your home screen if you like.",
+    "faq3q": "Does it work when devices are on different networks?",
+    "faq3a": "Switch to the \"Everyone\" tab to share with anyone who has the service open, regardless of network. Keep sensitive files on \"Same network\".",
+    "faq4q": "Is there a file size limit?",
+    "faq4a": "Each file can be as large as the limit shown on the upload card, and you can upload several files at once.",
+    "faq5q": "How long are files kept?",
+    "faq5a": "Only while someone is looking. Once every device leaves, everything is deleted shortly after, so download what you need right away.",
+    "moreTitle": "Learn more",
+    "moreHowToUse": "How to use (Korean)",
+    "moreFaq": "Full FAQ (Korean)",
+    "guide1": "Share your clipboard between phone and PC (no app)",
+    "guide2": "AirDrop alternative for Android, Windows and Mac",
+    "guide3": "",
+    "guide4": ""
   }
 }

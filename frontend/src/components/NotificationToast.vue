@@ -16,14 +16,14 @@ const props = defineProps({
 <template>
   <!-- 기존 메시지 알림 -->
   <transition name="fade">
-    <div v-if="message" class="notification">
+    <div v-if="message" class="notification" role="status" data-prerender-strip>
       {{ message }}
     </div>
   </transition>
 
   <!-- 업로드/다운로드 프로그레스 패널 -->
   <transition name="fade">
-    <div v-if="uploads && uploads.size > 0" class="upload-panel">
+    <div v-if="uploads && uploads.size > 0" class="upload-panel" data-prerender-strip>
       <div class="upload-header">
         진행 중 ({{ uploads.size }}개)
       </div>
