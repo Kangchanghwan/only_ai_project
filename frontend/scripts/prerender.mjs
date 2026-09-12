@@ -105,6 +105,43 @@ async function launchBrowser() {
   }
 }
 
+// index.html의 폰트 CSS <link> (preload + onload 패턴). 프리렌더 결과물에서도 이 패턴이 유지되어야 한다.
+const ASYNC_FONT_CSS = [
+  'https://fonts.googleapis.com/css2?',
+  'https://api.fontshare.com/v2/css?'
+]
+
+/**
+ * 프리렌더된 HTML의 폰트 CSS 링크가 여전히 렌더 비차단(preload + onload) 패턴인지 검증합니다.
+ * - <noscript> 밖: rel="preload" as="style" onload="...rel='stylesheet'" 링크가 정확히 1개, rel="stylesheet" 링크는 0개
+ * - <noscript> 안: rel="stylesheet" 폴백 링크 존재
+ * - 두 링크 모두 display=swap 유지
+ */
+function assertAsyncFontLinks(html) {
+  // HTML 주석 안의 태그 텍스트가 검사에 섞이지 않도록 주석부터 제거한다.
+  const withoutComments = html.replace(/<!--[\s\S]*?-->/g, '')
+  const noscriptBlocks = withoutComments.match(/<noscript>[\s\S]*?<\/noscript>/gi) ?? []
+  const outsideNoscript = withoutComments.replace(/<noscript>[\s\S]*?<\/noscript>/gi, '')
+  const links = outsideNoscript.match(/<link\b[^>]*>/gi) ?? []
+
+  for (const cssUrlPrefix of ASYNC_FONT_CSS) {
+    const fontLinks = links.filter((tag) => tag.includes(cssUrlPrefix))
+    const preloads = fontLinks.filter((tag) =>
+      /\brel="preload"/.test(tag) && /\bas="style"/.test(tag) && /\bonload="[^"]*rel='stylesheet'[^"]*"/.test(tag)
+    )
+    const blocking = fontLinks.filter((tag) => /\brel="stylesheet"/.test(tag))
+    const noscriptFallback = noscriptBlocks.some((block) => block.includes(cssUrlPrefix) && /\brel="stylesheet"/.test(block))
+    const keepsSwap = fontLinks.every((tag) => tag.includes('display=swap'))
+
+    if (preloads.length !== 1 || blocking.length !== 0 || !noscriptFallback || !keepsSwap) {
+      throw new Error(
+        `폰트 CSS 링크 검증 실패 (${cssUrlPrefix}): preload=${preloads.length} (기대 1), 렌더 차단 stylesheet=${blocking.length} (기대 0), ` +
+        `noscript 폴백=${noscriptFallback}, display=swap 유지=${keepsSwap}`
+      )
+    }
+  }
+}
+
 async function prerender() {
   console.log('Prerender 시작...\n')
   console.log(`환경: ${isVercel ? 'Vercel' : isCI ? 'CI' : '로컬'}`)
@@ -139,6 +176,14 @@ async function prerender() {
       // 추가 대기 (동적 콘텐츠 로딩)
       await new Promise(resolve => setTimeout(resolve, 1000))
 
+      // 폰트 CSS는 preload + onload 패턴(index.html 참고)이라 이 시점엔 onload가 rel을 stylesheet로 바꿔 놓은 상태다.
+      // 그대로 직렬화하면 결과물이 다시 렌더 차단 스타일시트가 되므로 직렬화 전에 preload로 되돌린다.
+      await page.evaluate(() => {
+        document.querySelectorAll('link[as="style"]').forEach((link) => {
+          link.rel = 'preload'
+        })
+      })
+
       // HTML 추출
       const html = await page.content()
 
@@ -159,6 +204,7 @@ async function prerender() {
         '  <!-- Prerendered for SEO -->\n  </head>'
       )
 
+      assertAsyncFontLinks(finalHtml)
       writeFileSync(filePath, finalHtml)
       console.log(`  Saved: ${filePath}`)
 
