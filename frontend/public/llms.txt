@@ -14,6 +14,21 @@
 - [Copy text from phone to PC](https://www.clipboardapp.org/guide/copy-text-phone-to-pc.html): Moving copied text and links between a phone and a computer (Korean).
 - [Share your clipboard between phone and PC](https://www.clipboardapp.org/en/guide/share-clipboard-between-phone-and-pc.html): How to sync clipboard text and images across devices in the browser (English).
 - [AirDrop alternative for Android, Windows and Mac](https://www.clipboardapp.org/en/guide/airdrop-alternative-android-windows-mac.html): Cross-platform file sending for devices AirDrop leaves out (English).
+- [iPad to Windows photo transfer](https://www.clipboardapp.org/guide/ipad-to-windows-photo-transfer.html): Moving photos, screenshots and PDF notes from an iPad to a Windows PC without a cable or iCloud (Korean).
+- [Mac to Windows file transfer](https://www.clipboardapp.org/guide/mac-to-windows-file-transfer.html): Sending files between macOS and Windows where AirDrop is unavailable (Korean).
+- [Send a link from PC to phone](https://www.clipboardapp.org/guide/send-link-from-pc-to-phone.html): Passing URLs and long text from a computer to a phone without a messenger (Korean).
+- [Copy a verification code from phone to PC](https://www.clipboardapp.org/guide/copy-verification-code-phone-to-pc.html): Getting SMS verification codes onto a computer before they expire (Korean).
+- [Galaxy to MacBook photo transfer](https://www.clipboardapp.org/guide/galaxy-to-macbook-photo-transfer.html): Moving photos from a Samsung Galaxy to a Mac, where Quick Share is not available (Korean).
+- [Windows to iPhone file transfer](https://www.clipboardapp.org/guide/windows-to-iphone-file-transfer.html): Sending PDFs, images and documents from Windows to an iPhone without iTunes (Korean).
+- [Office PC file transfer without a messenger](https://www.clipboardapp.org/guide/office-pc-file-transfer-without-messenger.html): Getting phone files onto a work PC where messengers and USB are blocked (Korean).
+- [Phone video to PC transfer](https://www.clipboardapp.org/guide/phone-video-to-pc-transfer.html): Moving videos to a computer at original quality, including how to handle files over 100MB (Korean).
+- [Online clipboard: copy on one device, paste on another](https://www.clipboardapp.org/en/guide/online-clipboard-copy-paste-between-devices.html): Using the service as a no-login online clipboard across devices (English).
+- [Snapdrop / PairDrop alternative](https://www.clipboardapp.org/en/guide/snapdrop-pairdrop-alternative.html): How the service compares to Snapdrop and PairDrop, and when to use which (English).
+- [Send text from phone to PC](https://www.clipboardapp.org/en/guide/send-text-from-phone-to-pc.html): Moving copied text, links and codes from a phone to a computer without email (English).
+- [Transfer photos from iPhone to Windows without a cable](https://www.clipboardapp.org/en/guide/transfer-photos-iphone-to-windows-without-cable.html): Moving iPhone photos and videos to a Windows PC using only a browser (English).
+
+- [Guide index (Korean)](https://www.clipboardapp.org/guide/): All Korean guides grouped by device combination and task.
+- [Guide index (English)](https://www.clipboardapp.org/en/guide/): All English guides grouped by task.
 
 ## Source
 
