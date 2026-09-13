@@ -119,6 +119,17 @@
     "guide1": "Chia sẻ clipboard giữa điện thoại và PC (không cần ứng dụng)",
     "guide2": "Giải pháp thay thế AirDrop cho Android, Windows và Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Xem tất cả hướng dẫn theo thiết bị"
+  },
+  "nudge": {
+    "title": "Lần sau cũng muốn xong trong 3 giây?",
+    "install": "Thêm vào màn hình chính",
+    "installIosHint": "Nhấn nút Chia sẻ ở cuối Safari rồi chọn 'Thêm vào MH chính'. Từ lần sau sẽ mở như một ứng dụng.",
+    "bookmarkHint": "Nhấn {shortcut} để đánh dấu trang này, khỏi phải gõ lại địa chỉ.",
+    "share": "Giới thiệu cho bạn bè",
+    "shareText": "Cùng Wi-Fi là tệp và văn bản chuyển ngay giữa điện thoại và PC. Không đăng ký, không cài app.",
+    "copied": "Đã sao chép liên kết. Dán vào ứng dụng nhắn tin bất kỳ.",
+    "dismiss": "Đóng"
   }
 }

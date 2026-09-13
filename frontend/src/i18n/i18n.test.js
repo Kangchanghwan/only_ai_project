@@ -138,3 +138,21 @@ describe('i18n seo/landing (검색엔진용 카피)', () => {
     }
   })
 })
+
+describe('i18n nudge (첫 공유 후 계속 쓰기 유도 카드)', () => {
+  it('모든 로케일 파일에 nudge의 8개 키가 비어있지 않게 있어야 한다', () => {
+    const entries = Object.entries(locales)
+    expect(entries.length).toBeGreaterThanOrEqual(21)
+    const requiredKeys = ['title', 'install', 'installIosHint', 'bookmarkHint', 'share', 'shareText', 'copied', 'dismiss']
+    for (const [path, mod] of entries) {
+      const json = mod.default || mod
+      expect(json.nudge, `${path}에 nudge 섹션 없음`).toBeTruthy()
+      for (const key of requiredKeys) {
+        expect(typeof json.nudge[key], `${path}의 nudge.${key} 없음`).toBe('string')
+        expect(json.nudge[key].length, `${path}의 nudge.${key} 비어있음`).toBeGreaterThan(0)
+      }
+      // 단축키 자리표시자는 모든 언어에서 유지되어야 한다
+      expect(json.nudge.bookmarkHint.includes('{shortcut}'), `${path}의 nudge.bookmarkHint에 {shortcut} 없음`).toBe(true)
+    }
+  })
+})

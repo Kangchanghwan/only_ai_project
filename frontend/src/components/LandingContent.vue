@@ -20,11 +20,13 @@ const KO_LINKS = [
   { key: 'landing.guide1', href: '/guide/iphone-to-windows-photo-transfer.html' },
   { key: 'landing.guide2', href: '/guide/pc-bang-file-transfer.html' },
   { key: 'landing.guide3', href: '/guide/android-mac-airdrop-alternative.html' },
-  { key: 'landing.guide4', href: '/guide/copy-text-phone-to-pc.html' }
+  { key: 'landing.guide4', href: '/guide/copy-text-phone-to-pc.html' },
+  { key: 'landing.moreGuides', href: '/guide/' }
 ]
 const EN_LINKS = [
   { key: 'landing.guide1', href: '/en/guide/share-clipboard-between-phone-and-pc.html' },
-  { key: 'landing.guide2', href: '/en/guide/airdrop-alternative-android-windows-mac.html' }
+  { key: 'landing.guide2', href: '/en/guide/airdrop-alternative-android-windows-mac.html' },
+  { key: 'landing.moreGuides', href: '/en/guide/' }
 ]
 
 // locale과 savedLocale 모두 반응형이라, 언어를 고르면 새로고침 없이 카피가 따라온다.

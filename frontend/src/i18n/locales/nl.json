@@ -119,6 +119,17 @@
     "guide1": "Je klembord delen tussen telefoon en pc (zonder app)",
     "guide2": "AirDrop-alternatief voor Android, Windows en Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Alle handleidingen per apparaat"
+  },
+  "nudge": {
+    "title": "Volgende keer weer in 3 seconden?",
+    "install": "Zet op beginscherm",
+    "installIosHint": "Tik onderin Safari op Delen en kies 'Zet op beginscherm'. Daarna opent het als een app.",
+    "bookmarkHint": "Druk op {shortcut} om deze pagina als bladwijzer op te slaan, dan hoef je het adres nooit meer te typen.",
+    "share": "Vertel het een vriend",
+    "shareText": "Op dezelfde wifi gaan bestanden en tekst meteen tussen telefoon en pc. Geen account, geen app.",
+    "copied": "Link gekopieerd. Plak hem in een willekeurige messenger.",
+    "dismiss": "Sluiten"
   }
 }

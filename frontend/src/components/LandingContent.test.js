@@ -13,11 +13,13 @@ const KO_HREFS = [
   '/guide/iphone-to-windows-photo-transfer.html',
   '/guide/pc-bang-file-transfer.html',
   '/guide/android-mac-airdrop-alternative.html',
-  '/guide/copy-text-phone-to-pc.html'
+  '/guide/copy-text-phone-to-pc.html',
+  '/guide/'
 ]
 const EN_HREFS = [
   '/en/guide/share-clipboard-between-phone-and-pc.html',
-  '/en/guide/airdrop-alternative-android-windows-mac.html'
+  '/en/guide/airdrop-alternative-android-windows-mac.html',
+  '/en/guide/'
 ]
 
 // landing 번역이 아예 없는 로케일 / guide2만 빈 문자열인 로케일
@@ -118,7 +120,7 @@ describe('LandingContent.vue', () => {
   it('번역이 빈 문자열인 링크만 걸러낸다 (키 존재 + 내용 있음)', () => {
     const { w } = mountWith('yy', { saved: 'yy', messages: { ko, en, yy: YY } })
     expect(w.find('[data-testid="landing-content"]').exists()).toBe(true)
-    expect(hrefs(w)).toEqual([EN_HREFS[0]])
+    expect(hrefs(w)).toEqual([EN_HREFS[0], EN_HREFS[2]])
   })
 
   describe('UI 언어와 카피 언어가 다를 때의 안내 링크', () => {

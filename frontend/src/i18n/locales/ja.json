@@ -219,6 +219,17 @@
     "guide1": "スマホとPCの間でクリップボードを共有する方法（アプリ不要）",
     "guide2": "Android・Windows・Mac向けAirDropの代替手段",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "デバイス別ガイド一覧"
+  },
+  "nudge": {
+    "title": "次も3秒で使うには",
+    "install": "ホーム画面に追加",
+    "installIosHint": "Safari下部の共有ボタンを押し、「ホーム画面に追加」を選んでください。次回からアプリのように開けます。",
+    "bookmarkHint": "{shortcut} でブックマークしておくと、アドレスを入力し直す必要がなくなります。",
+    "share": "友だちに教える",
+    "shareText": "同じWi-FiならスマホとPCの間でファイルやテキストをすぐ送れます。登録もアプリも不要。",
+    "copied": "リンクをコピーしました。メッセンジャーに貼り付けてください。",
+    "dismiss": "閉じる"
   }
 }

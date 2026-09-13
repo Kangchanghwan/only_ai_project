@@ -119,6 +119,17 @@
     "guide1": "Compartilhe sua área de transferência entre celular e PC (sem app)",
     "guide2": "Alternativa ao AirDrop para Android, Windows e Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Todos os guias por dispositivo"
+  },
+  "nudge": {
+    "title": "Quer usar em 3 segundos da próxima vez?",
+    "install": "Adicionar à tela inicial",
+    "installIosHint": "Toque no botão Compartilhar na parte inferior do Safari e escolha 'Adicionar à Tela de Início'. Depois disso abre como um app.",
+    "bookmarkHint": "Pressione {shortcut} para salvar esta página nos favoritos e nunca mais digitar o endereço.",
+    "share": "Contar a um amigo",
+    "shareText": "No mesmo Wi-Fi, arquivos e texto passam entre celular e PC na hora. Sem cadastro, sem app.",
+    "copied": "Link copiado. Cole em qualquer mensageiro.",
+    "dismiss": "Fechar"
   }
 }

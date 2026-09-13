@@ -23,6 +23,8 @@ import RoomScreen from './components/RoomScreen.vue'
 import DownloadPage from './components/DownloadPage.vue'
 import NotificationToast from './components/NotificationToast.vue'
 import ShareConfirmSheet from './components/ShareConfirmSheet.vue'
+import KeepUsingCard from './components/KeepUsingCard.vue'
+import { useKeepUsingNudge } from './composables/useKeepUsingNudge'
 
 // ========================================
 // Composables 초기화
@@ -36,6 +38,8 @@ const notification = useNotification()
 const download = useDownload()
 const textShare = useTextShare()
 const shareScope = useShareScope()
+// 첫 공유 성공 직후 "다음에도 쓰려면" 카드 (설치/친구에게 알리기)
+const keepUsingNudge = useKeepUsingNudge()
 // 로케일에 맞춰 title/description/og/canonical/lang을 갱신 (언어 전환 시 자동 반영)
 useSeoMeta()
 const isConnecting = ref(false)
@@ -276,6 +280,7 @@ async function uploadFiles(files, scopeOverride) {
     // GA4 주요 이벤트: 실제로 업로드에 성공한 파일 수만 집계한다
     trackEvent('file_upload', { file_count: summary.successCount, scope: targetScope })
     notification.showSuccess(`${summary.successCount}개 파일 업로드 완료!`)
+    keepUsingNudge.maybeShow('file_upload')
   }
 }
 
@@ -431,6 +436,7 @@ async function handleAddText(content, scopeOverride) {
   trackEvent('text_share', { scope: targetScope })
 
   notification.showSuccess('텍스트가 공유되었습니다!')
+  keepUsingNudge.maybeShow('text_share')
 }
 
 async function handleRemoveText(textId) {
@@ -758,6 +764,14 @@ onUnmounted(() => {
       <NotificationToast
         :message="notification.notification.value"
         :uploads="notification.uploads.value"
+      />
+
+      <!-- 첫 공유 성공 후 계속 쓰기 유도 카드 -->
+      <KeepUsingCard
+        :is-open="keepUsingNudge.isVisible.value"
+        @done="keepUsingNudge.markDone"
+        @dismiss="keepUsingNudge.dismiss"
+        @copied="notification.showSuccess"
       />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->

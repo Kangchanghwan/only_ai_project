@@ -119,6 +119,17 @@
     "guide1": "Berbagi clipboard antara HP dan PC (tanpa aplikasi)",
     "guide2": "Alternatif AirDrop untuk Android, Windows, dan Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Semua panduan per perangkat"
+  },
+  "nudge": {
+    "title": "Mau 3 detik lagi lain kali?",
+    "install": "Tambahkan ke layar utama",
+    "installIosHint": "Ketuk tombol Bagikan di bagian bawah Safari, lalu pilih 'Tambah ke Layar Utama'. Setelah itu terbuka seperti aplikasi.",
+    "bookmarkHint": "Tekan {shortcut} untuk menandai halaman ini agar tidak perlu mengetik alamat lagi.",
+    "share": "Beri tahu teman",
+    "shareText": "Di Wi-Fi yang sama, file dan teks langsung berpindah antara ponsel dan PC. Tanpa daftar, tanpa aplikasi.",
+    "copied": "Tautan disalin. Tempel di aplikasi pesan mana saja.",
+    "dismiss": "Tutup"
   }
 }

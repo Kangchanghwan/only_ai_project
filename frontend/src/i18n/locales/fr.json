@@ -119,6 +119,17 @@
     "guide1": "Partagez votre presse-papiers entre mobile et PC (sans application)",
     "guide2": "Alternative à AirDrop pour Android, Windows et Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Tous les guides par appareil"
+  },
+  "nudge": {
+    "title": "Envie de le refaire en 3 secondes ?",
+    "install": "Ajouter à l'écran d'accueil",
+    "installIosHint": "Touchez le bouton Partager en bas de Safari, puis choisissez « Sur l'écran d'accueil ». Ensuite, ça s'ouvre comme une app.",
+    "bookmarkHint": "Appuyez sur {shortcut} pour mettre cette page en favori et ne plus jamais retaper l'adresse.",
+    "share": "En parler à un ami",
+    "shareText": "Sur le même Wi-Fi, fichiers et texte passent instantanément entre téléphone et PC. Sans compte, sans appli.",
+    "copied": "Lien copié. Collez-le dans votre messagerie.",
+    "dismiss": "Fermer"
   }
 }

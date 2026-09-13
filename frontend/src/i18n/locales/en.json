@@ -219,6 +219,17 @@
     "guide1": "Share your clipboard between phone and PC (no app)",
     "guide2": "AirDrop alternative for Android, Windows and Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "All guides by device"
+  },
+  "nudge": {
+    "title": "Want it in 3 seconds next time too?",
+    "install": "Add to home screen",
+    "installIosHint": "Tap the Share button at the bottom of Safari, then choose 'Add to Home Screen'. It opens like an app from then on.",
+    "bookmarkHint": "Press {shortcut} to bookmark this page so you never have to type the address again.",
+    "share": "Tell a friend",
+    "shareText": "On the same Wi-Fi, files and text move between phone and PC instantly. No sign-up, no app.",
+    "copied": "Link copied. Paste it into any messenger.",
+    "dismiss": "Close"
   }
 }
