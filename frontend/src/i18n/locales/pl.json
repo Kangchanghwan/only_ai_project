@@ -119,6 +119,17 @@
     "guide1": "Udostępnianie schowka między telefonem a PC (bez aplikacji)",
     "guide2": "Alternatywa dla AirDrop na Android, Windows i Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Wszystkie poradniki według urządzenia"
+  },
+  "nudge": {
+    "title": "Następnym razem znów w 3 sekundy?",
+    "install": "Dodaj do ekranu głównego",
+    "installIosHint": "Stuknij przycisk Udostępnij na dole Safari i wybierz 'Do ekranu początkowego'. Potem otwiera się jak aplikacja.",
+    "bookmarkHint": "Naciśnij {shortcut}, aby dodać zakładkę i nie wpisywać już adresu.",
+    "share": "Powiedz znajomemu",
+    "shareText": "W tej samej sieci Wi-Fi pliki i tekst przechodzą między telefonem a PC natychmiast. Bez rejestracji, bez aplikacji.",
+    "copied": "Link skopiowany. Wklej go w dowolnym komunikatorze.",
+    "dismiss": "Zamknij"
   }
 }

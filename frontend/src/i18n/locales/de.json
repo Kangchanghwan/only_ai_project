@@ -119,6 +119,17 @@
     "guide1": "Teile deine Zwischenablage zwischen Handy und PC (ohne App)",
     "guide2": "AirDrop-Alternative für Android, Windows und Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Alle Anleitungen nach Gerät"
+  },
+  "nudge": {
+    "title": "Beim nächsten Mal wieder in 3 Sekunden?",
+    "install": "Zum Startbildschirm hinzufügen",
+    "installIosHint": "Tippe unten in Safari auf Teilen und wähle 'Zum Home-Bildschirm'. Danach öffnet es sich wie eine App.",
+    "bookmarkHint": "Drücke {shortcut}, um diese Seite als Lesezeichen zu speichern. Dann musst du die Adresse nie wieder eintippen.",
+    "share": "Freunden erzählen",
+    "shareText": "Im selben WLAN wandern Dateien und Text sofort zwischen Handy und PC. Keine Anmeldung, keine App.",
+    "copied": "Link kopiert. Füge ihn in einen beliebigen Messenger ein.",
+    "dismiss": "Schließen"
   }
 }

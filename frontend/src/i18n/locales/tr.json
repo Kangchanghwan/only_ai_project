@@ -119,6 +119,17 @@
     "guide1": "Telefon ve PC arasında pano paylaşımı (uygulamasız)",
     "guide2": "Android, Windows ve Mac için AirDrop alternatifi",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Cihaza göre tüm kılavuzlar"
+  },
+  "nudge": {
+    "title": "Bir dahaki sefere de 3 saniyede?",
+    "install": "Ana ekrana ekle",
+    "installIosHint": "Safari'nin altındaki Paylaş düğmesine dokunup 'Ana Ekrana Ekle'yi seçin. Sonrasında uygulama gibi açılır.",
+    "bookmarkHint": "Adresi tekrar yazmamak için {shortcut} ile bu sayfayı yer imlerine ekleyin.",
+    "share": "Bir arkadaşına söyle",
+    "shareText": "Aynı Wi-Fi ağında dosya ve metin telefonla PC arasında anında geçer. Kayıt yok, uygulama yok.",
+    "copied": "Bağlantı kopyalandı. Herhangi bir mesajlaşma uygulamasına yapıştırın.",
+    "dismiss": "Kapat"
   }
 }

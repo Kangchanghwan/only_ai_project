@@ -119,6 +119,17 @@
     "guide1": "Comparte tu portapapeles entre el móvil y el PC (sin apps)",
     "guide2": "Alternativa a AirDrop para Android, Windows y Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Todas las guías por dispositivo"
+  },
+  "nudge": {
+    "title": "¿Quieres usarlo en 3 segundos la próxima vez?",
+    "install": "Añadir a la pantalla de inicio",
+    "installIosHint": "Toca el botón Compartir en la parte inferior de Safari y elige 'Añadir a pantalla de inicio'. Desde entonces se abre como una app.",
+    "bookmarkHint": "Pulsa {shortcut} para guardar esta página en favoritos y no volver a escribir la dirección.",
+    "share": "Contárselo a un amigo",
+    "shareText": "En la misma Wi-Fi, archivos y texto pasan entre móvil y PC al instante. Sin registro, sin app.",
+    "copied": "Enlace copiado. Pégalo en cualquier mensajería.",
+    "dismiss": "Cerrar"
   }
 }

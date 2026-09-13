@@ -119,6 +119,17 @@
     "guide1": "Distribuie clipboard-ul între telefon și PC (fără aplicație)",
     "guide2": "Alternativă la AirDrop pentru Android, Windows și Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Toate ghidurile după dispozitiv"
+  },
+  "nudge": {
+    "title": "Data viitoare tot în 3 secunde?",
+    "install": "Adaugă pe ecranul principal",
+    "installIosHint": "Atinge butonul Partajare din partea de jos a Safari și alege 'Adaugă la ecranul principal'. Apoi se deschide ca o aplicație.",
+    "bookmarkHint": "Apasă {shortcut} pentru a salva pagina la favorite și a nu mai tasta adresa.",
+    "share": "Spune unui prieten",
+    "shareText": "Pe același Wi-Fi, fișierele și textul trec instant între telefon și PC. Fără cont, fără aplicație.",
+    "copied": "Link copiat. Lipește-l în orice aplicație de mesagerie.",
+    "dismiss": "Închide"
   }
 }

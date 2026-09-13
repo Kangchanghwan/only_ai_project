@@ -119,6 +119,17 @@
     "guide1": "Vágólap megosztása telefon és PC között (alkalmazás nélkül)",
     "guide2": "AirDrop-alternatíva Androidhoz, Windowshoz és Machez",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Összes útmutató eszközök szerint"
+  },
+  "nudge": {
+    "title": "Legközelebb is 3 másodperc alatt?",
+    "install": "Hozzáadás a kezdőképernyőhöz",
+    "installIosHint": "Koppints a Safari alján a Megosztás gombra, majd válaszd a 'Főképernyőhöz adás' lehetőséget. Ezután appként nyílik meg.",
+    "bookmarkHint": "Nyomd meg a {shortcut} billentyűkombinációt a könyvjelzőzéshez, így nem kell többé beírni a címet.",
+    "share": "Ajánld egy barátodnak",
+    "shareText": "Azonos Wi-Fi-n a fájlok és szövegek azonnal átjutnak telefon és PC között. Regisztráció és app nélkül.",
+    "copied": "Link kimásolva. Illeszd be bármelyik üzenetküldőbe.",
+    "dismiss": "Bezárás"
   }
 }

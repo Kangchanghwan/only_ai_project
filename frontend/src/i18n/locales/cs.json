@@ -119,6 +119,17 @@
     "guide1": "Sdílejte schránku mezi telefonem a PC (bez aplikace)",
     "guide2": "Alternativa k AirDropu pro Android, Windows a Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Všechny návody podle zařízení"
+  },
+  "nudge": {
+    "title": "Příště zase za 3 sekundy?",
+    "install": "Přidat na plochu",
+    "installIosHint": "Klepněte na tlačítko Sdílet dole v Safari a zvolte 'Přidat na plochu'. Pak se otevře jako aplikace.",
+    "bookmarkHint": "Stiskněte {shortcut} a uložte si stránku do záložek, ať už adresu nemusíte psát.",
+    "share": "Říct kamarádovi",
+    "shareText": "Na stejné Wi-Fi se soubory a text přenesou mezi telefonem a PC okamžitě. Bez registrace, bez aplikace.",
+    "copied": "Odkaz zkopírován. Vložte ho do libovolného messengeru.",
+    "dismiss": "Zavřít"
   }
 }

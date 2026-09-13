@@ -119,6 +119,17 @@
     "guide1": "在手机和PC之间共享剪贴板（无需应用）",
     "guide2": "适用于Android、Windows和Mac的AirDrop替代方案",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "按设备查看全部指南"
+  },
+  "nudge": {
+    "title": "下次也想3秒搞定?",
+    "install": "添加到主屏幕",
+    "installIosHint": "点击 Safari 底部的分享按钮,然后选择“添加到主屏幕”。之后就能像应用一样直接打开。",
+    "bookmarkHint": "按 {shortcut} 收藏此页面,以后不用再输入网址。",
+    "share": "告诉朋友",
+    "shareText": "同一 Wi-Fi 下,手机和电脑之间的文件和文本即刻互传。无需注册,无需安装。",
+    "copied": "链接已复制,粘贴到任意聊天工具即可。",
+    "dismiss": "关闭"
   }
 }

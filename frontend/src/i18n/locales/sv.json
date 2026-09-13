@@ -119,6 +119,17 @@
     "guide1": "Dela ditt urklipp mellan mobil och dator (utan app)",
     "guide2": "AirDrop-alternativ för Android, Windows och Mac",
     "guide3": "",
-    "guide4": ""
+    "guide4": "",
+    "moreGuides": "Alla guider per enhet"
+  },
+  "nudge": {
+    "title": "Vill du ha det på 3 sekunder nästa gång också?",
+    "install": "Lägg till på hemskärmen",
+    "installIosHint": "Tryck på Dela-knappen längst ner i Safari och välj 'Lägg till på hemskärmen'. Sedan öppnas det som en app.",
+    "bookmarkHint": "Tryck {shortcut} för att bokmärka sidan så slipper du skriva adressen igen.",
+    "share": "Tipsa en vän",
+    "shareText": "På samma wifi flyttas filer och text direkt mellan mobil och dator. Ingen registrering, ingen app.",
+    "copied": "Länk kopierad. Klistra in den i valfri messenger.",
+    "dismiss": "Stäng"
   }
 }
