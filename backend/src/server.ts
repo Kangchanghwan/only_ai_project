@@ -9,6 +9,7 @@ import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketDa
 import logger from './utils/logger';
 import requestLogger from './middleware/requestLogger';
 import { getR2Service } from './services/r2Service';
+import { requireRoomToken } from './middleware/roomAuth';
 
 // === Multer 설정 (직접 업로드용) ===
 
@@ -45,7 +46,8 @@ app.use((_req, res, next) => {
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // X-Room-Token: 룸 토큰 인증 헤더 (middleware/roomAuth.ts)
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Room-Token');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     // preflight 결과를 브라우저가 캐시하게 해 업로드마다 OPTIONS 왕복이 반복되지 않도록 한다 (Chrome 상한 2시간)
     res.setHeader('Access-Control-Max-Age', '7200');
@@ -113,8 +115,14 @@ app.get('/stats', (_req, res) => {
 
 // === R2 Storage API 엔드포인트 ===
 
+// 룸 토큰 요구: 소켓으로 그 룸에 등록된 클라이언트만 조회·업로드·삭제 가능.
+// 다운로드 URL 발급(download-url(s))은 공유 링크 수신자가 써야 하므로 열어 둔다
+// (파일명을 정확히 알아야 하므로 공개 URL과 같은 수준의 권한).
+const roomIdFromParams = requireRoomToken((req) => req.params.roomId);
+const roomIdFromBody = requireRoomToken((req) => req.body?.roomId);
+
 /** 업로드용 Presigned URL 생성 */
-app.post('/api/r2/presigned-url', async (req, res) => {
+app.post('/api/r2/presigned-url', roomIdFromBody, async (req, res) => {
     try {
         const { roomId, fileName, contentType } = req.body;
 
@@ -145,7 +153,7 @@ const MAX_PRESIGN_BATCH = 50;
 const MAX_DOWNLOAD_BATCH = 100;
 
 /** 업로드용 Presigned URL 배치 생성 (여러 파일 = 1왕복, 이미지는 썸네일 URL 동봉) */
-app.post('/api/r2/presigned-urls', async (req, res) => {
+app.post('/api/r2/presigned-urls', roomIdFromBody, async (req, res) => {
     try {
         const { roomId, files } = req.body ?? {};
 
@@ -228,7 +236,7 @@ app.post('/api/r2/download-urls', async (req, res) => {
 });
 
 /** 직접 업로드 (작은 파일용, 1MB 이하) */
-app.post('/api/r2/upload', upload.single('file'), async (req, res) => {
+app.post('/api/r2/upload', upload.single('file'), roomIdFromBody, async (req, res) => {
     try {
         const { roomId } = req.body;
         const file = req.file;
@@ -268,7 +276,7 @@ app.post('/api/r2/upload', upload.single('file'), async (req, res) => {
 });
 
 /** 파일 목록 조회 */
-app.get('/api/r2/files/:roomId', async (req, res) => {
+app.get('/api/r2/files/:roomId', roomIdFromParams, async (req, res) => {
     try {
         const { roomId } = req.params;
         const limit = parseInt(req.query.limit as string) || 100;
@@ -285,7 +293,7 @@ app.get('/api/r2/files/:roomId', async (req, res) => {
 });
 
 /** 룸 총 용량 조회 */
-app.get('/api/r2/size/:roomId', async (req, res) => {
+app.get('/api/r2/size/:roomId', roomIdFromParams, async (req, res) => {
     try {
         const { roomId } = req.params;
 
@@ -300,7 +308,7 @@ app.get('/api/r2/size/:roomId', async (req, res) => {
 });
 
 /** 파일 삭제 */
-app.delete('/api/r2/files/:roomId/:fileName', async (req, res) => {
+app.delete('/api/r2/files/:roomId/:fileName', roomIdFromParams, async (req, res) => {
     try {
         const { roomId, fileName } = req.params;
 
@@ -315,7 +323,7 @@ app.delete('/api/r2/files/:roomId/:fileName', async (req, res) => {
 });
 
 /** 룸의 모든 파일 삭제 */
-app.delete('/api/r2/files/:roomId', async (req, res) => {
+app.delete('/api/r2/files/:roomId', roomIdFromParams, async (req, res) => {
     try {
         const { roomId } = req.params;
 
