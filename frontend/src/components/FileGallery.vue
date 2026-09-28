@@ -6,6 +6,7 @@ import PasteSection from './PasteSection.vue'
 import DownloadControls from './DownloadControls.vue'
 import MultiFileQRCodeModal from './MultiFileQRCodeModal.vue'
 import { createEnterStagger } from '../utils/enterStagger'
+import { trackEvent } from '../utils/analytics'
 
 const props = defineProps({
   files: {
@@ -112,6 +113,7 @@ function downloadParallel() {
 function showQRModal() {
   if (selectedCount.value > 0) {
     showMultiQRModal.value = true
+    trackEvent('qr_open', { qr_type: 'multi_file', file_count: selectedCount.value })
   }
 }
 

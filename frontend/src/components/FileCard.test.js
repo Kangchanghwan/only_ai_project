@@ -99,6 +99,14 @@ describe('FileCard.vue - 모바일 더보기 버튼 (sm 미만)', () => {
     expect(findSheet()).toBe(null)
   })
 
+  it('파일 QR을 열 때 qr_open(file) 이벤트를 보낸다', async () => {
+    window.gtag = vi.fn()
+    await wrapper.find('[aria-label="file.moreActions"]').trigger('click')
+    await findSheet().find('.sheet-qr').trigger('click')
+    expect(window.gtag).toHaveBeenCalledWith('event', 'qr_open', { qr_type: 'file' })
+    delete window.gtag
+  })
+
   it('배경 클릭 시 아무 이벤트도 emit하지 않고 시트만 닫힌다', async () => {
     await wrapper.find('[aria-label="file.moreActions"]').trigger('click')
     await findSheet().trigger('click')

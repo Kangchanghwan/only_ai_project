@@ -1,5 +1,9 @@
 import { ref } from 'vue'
 import { io } from 'socket.io-client'
+import { setRoomTokens, setRoomTokenRefresher, clearRoomTokens } from './roomTokenStore'
+
+/** 룸 토큰 재발급 ack 대기 시간 */
+const ROOM_TOKEN_REQUEST_TIMEOUT_MS = 5000
 
 /**
  * Socket.IO 서비스
@@ -48,6 +52,9 @@ class SocketService {
     this._boundHandleOnline = () => this._handleOnline()
     this._boundHandleOffline = () => this._handleOffline()
     this._setupNetworkListeners()
+
+    // REST API 룸 토큰이 만료 임박하면 소켓으로 재발급받는다
+    setRoomTokenRefresher(() => this.requestRoomTokens())
   }
 
   _setupNetworkListeners() {
@@ -167,6 +174,8 @@ class SocketService {
 
         this.globalRoomId.value = payload.globalRoomId
         this.ipRoomId.value = payload.ipRoomId
+        // REST API용 룸 토큰 (구버전 백엔드는 토큰이 없어 무시된다)
+        setRoomTokens(payload)
 
         this.usersInRoom.value = 1
         this.connectionError.value = null
@@ -190,7 +199,9 @@ class SocketService {
             this._emitReconnected()
           } else {
             console.log('[SocketService] 자동 재연결 성공 (recovery 없음)')
-            this.socket.once('registered', () => {
+            this.socket.once('registered', (payload) => {
+              // 복구 없이 새로 등록되면 서버가 토큰을 새로 준다
+              setRoomTokens(payload)
               this._stopReconnectPolling()
               this._emitReconnected()
             })
@@ -262,6 +273,24 @@ class SocketService {
     this.socket.emit('publish', message, target)
   }
 
+  /**
+   * 소켓으로 룸 토큰 재발급을 요청합니다.
+   * @returns {Promise<{roomTokens: Record<string,string>, roomTokenTtlSec: number}>}
+   */
+  requestRoomTokens() {
+    return new Promise((resolve, reject) => {
+      if (!this.socket?.connected) {
+        reject(new Error('Socket not connected'))
+        return
+      }
+      const timer = setTimeout(() => reject(new Error('룸 토큰 재발급 시간 초과')), ROOM_TOKEN_REQUEST_TIMEOUT_MS)
+      this.socket.emit('room-tokens', (payload) => {
+        clearTimeout(timer)
+        resolve(payload)
+      })
+    })
+  }
+
   on(event, callback) {
     if (!this.socket) {
       console.error('[SocketService] 소켓이 초기화되지 않았습니다')
@@ -296,6 +325,7 @@ class SocketService {
       this.globalRoomId.value = null
       this.ipRoomId.value = null
       this._wasConnected = false
+      clearRoomTokens()
 
       console.log('[SocketService] 소켓 연결 해제 완료')
     }
