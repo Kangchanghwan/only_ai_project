@@ -1,5 +1,9 @@
 import { httpServer } from '../server';
 import { AddressInfo } from 'net';
+import { issueRoomToken } from '../utils/roomToken';
+
+/** presign 엔드포인트는 룸 토큰이 필요하다 (roomAuth.api.test.ts에서 인증 자체를 검증) */
+const ROOM_X_AUTH = { 'X-Room-Token': issueRoomToken('room-x') };
 
 /** fetch 응답 JSON을 느슨한 타입으로 읽는다 (테스트 전용) */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,7 +52,7 @@ describe('REST API - upload/download presign', () => {
     test('여러 파일의 업로드 URL을 한 번에 발급하고 이미지에는 썸네일 URL을 동봉한다', async () => {
       const res = await fetch(`${baseUrl}/api/r2/presigned-urls`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...ROOM_X_AUTH },
         body: JSON.stringify({
           roomId: 'room-x',
           files: [
@@ -79,7 +83,7 @@ describe('REST API - upload/download presign', () => {
     test('파일명은 단일 presign과 같은 규칙으로 정리된다', async () => {
       const res = await fetch(`${baseUrl}/api/r2/presigned-urls`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...ROOM_X_AUTH },
         body: JSON.stringify({
           roomId: 'room-x',
           files: [{ fileName: 'my photo (1).png', contentType: 'image/png' }],
@@ -93,21 +97,21 @@ describe('REST API - upload/download presign', () => {
     test('roomId나 files가 없으면 400을 반환한다', async () => {
       const noRoom = await fetch(`${baseUrl}/api/r2/presigned-urls`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...ROOM_X_AUTH },
         body: JSON.stringify({ files: [{ fileName: 'a.png', contentType: 'image/png' }] }),
       });
       expect(noRoom.status).toBe(400);
 
       const emptyFiles = await fetch(`${baseUrl}/api/r2/presigned-urls`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...ROOM_X_AUTH },
         body: JSON.stringify({ roomId: 'room-x', files: [] }),
       });
       expect(emptyFiles.status).toBe(400);
 
       const badEntry = await fetch(`${baseUrl}/api/r2/presigned-urls`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...ROOM_X_AUTH },
         body: JSON.stringify({ roomId: 'room-x', files: [{ fileName: 'a.png' }] }),
       });
       expect(badEntry.status).toBe(400);
@@ -117,7 +121,7 @@ describe('REST API - upload/download presign', () => {
       const files = Array.from({ length: 51 }, (_, i) => ({ fileName: `f${i}.txt`, contentType: 'text/plain' }));
       const res = await fetch(`${baseUrl}/api/r2/presigned-urls`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...ROOM_X_AUTH },
         body: JSON.stringify({ roomId: 'room-x', files }),
       });
       expect(res.status).toBe(400);
