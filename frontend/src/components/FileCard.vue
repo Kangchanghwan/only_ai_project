@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../utils/fileUtils'
 import { r2Service } from '../services/r2Service'
 import FileQRCodeModal from './FileQRCodeModal.vue'
+import { trackEvent } from '../utils/analytics'
 import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
@@ -87,6 +88,7 @@ function handleDelete(event) {
 function openQRModal(event) {
   event.stopPropagation()
   isQRModalOpen.value = true
+  trackEvent('qr_open', { qr_type: 'file' })
 }
 
 function closeQRModal() {
@@ -139,6 +141,7 @@ async function handleShare(event) {
         title: props.file.name,
         url: props.file.url
       })
+      trackEvent('file_native_share')
     } catch (e) {
       // 사용자가 공유 취소 시 무시
     }

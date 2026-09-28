@@ -6,6 +6,7 @@ import LanguageSelector from './LanguageSelector.vue'
 import ThemeToggleButton from './ThemeToggleButton.vue'
 import QRZoomModal from './QRZoomModal.vue'
 import { useQRCode } from '../composables/useQRCode'
+import { trackEvent } from '../utils/analytics'
 
 const { t } = useI18n()
 const { qrCodeDataUrl, generateQRCodeForUrl } = useQRCode()
@@ -34,6 +35,7 @@ function closeHelpModal() {
 
 function openQrZoom() {
   isQrZoomOpen.value = true
+  trackEvent('qr_open', { qr_type: 'site' })
 }
 
 function closeQrZoom() {

@@ -2,6 +2,7 @@
 import { ref, watch, computed, onMounted } from 'vue'
 import QRCode from 'qrcode'
 import { generateDownloadUrl, validateUrlLength } from '../utils/router'
+import { trackEvent } from '../utils/analytics'
 
 const props = defineProps({
   files: {
@@ -128,6 +129,7 @@ async function handleCopyUrl() {
   try {
     await navigator.clipboard.writeText(downloadUrl.value)
     copySuccess.value = true
+    trackEvent('link_copy', { link_type: 'multi_file' })
     setTimeout(() => {
       copySuccess.value = false
     }, 2000)

@@ -51,6 +51,17 @@ describe('AppHeader.vue', () => {
     expect(modal.props('qrCodeDataUrl')).toBe('data:image/png;base64,FAKEQR')
   })
 
+  it('마운트만으로는 이벤트를 보내지 않고, 헤더 QR을 열 때 qr_open(site)을 보낸다', async () => {
+    window.gtag = vi.fn()
+    const wrapper = await mountReady()
+    expect(window.gtag).not.toHaveBeenCalled()
+
+    await wrapper.find('.header-qr-button').trigger('click')
+
+    expect(window.gtag).toHaveBeenCalledWith('event', 'qr_open', { qr_type: 'site' })
+    delete window.gtag
+  })
+
   it('확대 모달의 close 이벤트를 받으면 닫힌다', async () => {
     const wrapper = await mountReady()
     await wrapper.find('.header-qr-button').trigger('click')
