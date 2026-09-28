@@ -41,8 +41,14 @@ export interface PublishResponse {
 
 // === Socket.IO 이벤트 타입 정의 ===
 
-/** registered 이벤트 페이로드 (두 룸 ID) */
-export interface RegisteredPayload {
+/** REST API 룸 인증용 토큰 묶음 (roomId → token, 유효 시간 초) */
+export interface RoomTokensPayload {
+    roomTokens: Record<string, string>;
+    roomTokenTtlSec: number;
+}
+
+/** registered 이벤트 페이로드 (두 룸 ID + 룸 토큰) */
+export interface RegisteredPayload extends RoomTokensPayload {
     globalRoomId: string;
     ipRoomId: string;
 }
@@ -57,6 +63,8 @@ export interface ClientToServerEvents {
         target: PublishTarget,
         callback?: (error: Error | null, response?: PublishResponse) => void
     ) => void;
+    /** 룸 토큰 재발급 요청 */
+    'room-tokens': (callback: (payload: RoomTokensPayload) => void) => void;
 }
 
 /** 서버 → 클라이언트 이벤트 */
