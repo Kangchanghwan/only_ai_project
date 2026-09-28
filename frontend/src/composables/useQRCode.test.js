@@ -28,6 +28,17 @@ describe('useQRCode.generateQRCodeForUrl', () => {
     )
   })
 
+  it('컴포저블을 만들거나 QR을 그리는 것만으로는 분석 이벤트를 보내지 않는다 (페이지 뷰마다 쌓이던 버그)', async () => {
+    window.gtag = vi.fn()
+    const { useQRCode } = await import('./useQRCode')
+    const qr = useQRCode()
+    await qr.generateQRCodeForUrl('https://example.com/')
+
+    expect(window.gtag).not.toHaveBeenCalled()
+    expect(global.gtag).not.toHaveBeenCalled()
+    delete window.gtag
+  })
+
   it('빈 URL이면 실패를 반환한다', async () => {
     const { useQRCode } = await import('./useQRCode')
     const qr = useQRCode()

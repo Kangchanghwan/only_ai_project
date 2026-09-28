@@ -16,10 +16,9 @@ export function useQRCode() {
   const isGenerating = ref(false)
   const error = ref(null)
 
-  gtag('event', 'qr_generated', {
-    'event_category': 'engagement',
-    'event_label': 'QR Code Generated'
-  });
+  // 참고: 예전에는 여기서 'qr_generated' 이벤트를 보냈는데, 컴포저블이 만들어질 때마다
+  // (= 헤더가 그려지는 모든 페이지 뷰마다) 실행돼 실제 QR 사용량과 무관한 값이 쌓였다.
+  // 이제 사용자가 QR을 실제로 여는 시점에 각 컴포넌트가 'qr_open'을 보낸다.
 
   /**
    * 룸 코드를 포함한 URL로 QR 코드를 생성합니다.
