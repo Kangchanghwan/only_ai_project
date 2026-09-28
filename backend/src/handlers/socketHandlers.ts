@@ -1,8 +1,9 @@
 import { Server } from 'socket.io';
-import { ExtendedSocket, ErrorResponse, PublishResponse, PublishTarget } from '../types';
+import { ExtendedSocket, ErrorResponse, PublishResponse, PublishTarget, RoomTokensPayload } from '../types';
 import { RoomManager, SHARED_ROOM_ID } from '../managers/RoomManager';
 import { extractClientIp, deriveIpRoomId } from '../utils/clientIp';
 import { parseDeviceInfo } from '../utils/deviceInfo';
+import { issueRoomTokens, getRoomTokenTtlSec } from '../utils/roomToken';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -26,6 +27,12 @@ const resolveIpRoomId = (socket: ExtendedSocket): string => {
     return deriveIpRoomId(ip, secret);
 };
 
+/** 소켓이 속한 룸들(전체 + IP)의 REST API용 룸 토큰 묶음 */
+const buildRoomTokenPayload = (socket: ExtendedSocket): RoomTokensPayload => ({
+    roomTokens: issueRoomTokens([socket.globalRoomId, socket.ipRoomId]),
+    roomTokenTtlSec: getRoomTokenTtlSec(),
+});
+
 // === 메인 핸들러 설정 ===
 
 export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
@@ -39,6 +46,13 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
         socket.on('publish', (msg: any, target: PublishTarget, ack?: (error: Error | null, response?: PublishResponse) => void) =>
             handlePublish(socket, io, msg, target, ack)
         );
+
+        // 룸 토큰 재발급: 만료 전에 클라이언트가 요청한다. 연결 시 정해진 룸에 대해서만 발급하므로
+        // 네트워크를 옮겨 재연결되면 이전 IP 룸 토큰은 더 이상 받을 수 없다.
+        socket.on('room-tokens', (ack?: (payload: RoomTokensPayload) => void) => {
+            if (typeof ack !== 'function') return;
+            ack(buildRoomTokenPayload(socket));
+        });
 
         socket.on('error', (error) => {
             logger.error(`Socket 에러 [${socket.id}]:`, error);
@@ -80,7 +94,7 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
         roomManager.addUserToRoom(globalRoomId, socket.id, deviceInfo);
         roomManager.addUserToRoom(ipRoomId, socket.id, deviceInfo);
 
-        socket.emit('registered', { globalRoomId, ipRoomId });
+        socket.emit('registered', { globalRoomId, ipRoomId, ...buildRoomTokenPayload(socket) });
         io.to(ipRoomId).emit('room-users', { roomId: ipRoomId, devices: roomManager.getRoomUsers(ipRoomId) });
         io.to(globalRoomId).emit('room-users', { roomId: globalRoomId, devices: roomManager.getRoomUsers(globalRoomId) });
 
