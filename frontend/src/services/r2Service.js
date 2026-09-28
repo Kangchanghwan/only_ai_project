@@ -5,6 +5,8 @@
  * 백엔드 API를 통해 Presigned URL을 받아 직접 R2에 업로드합니다.
  * 다운로드는 퍼블릭 URL을 통해 직접 접근합니다.
  */
+import { roomAuthHeaders, invalidateRoomToken } from './roomTokenStore'
+
 class R2Service {
   constructor() {
     // 백엔드 API URL
@@ -15,6 +17,36 @@ class R2Service {
 
     // 직접 업로드 임계값 (1MB) - 이 크기 이하는 서버를 통해 직접 업로드
     this.directUploadThreshold = 1 * 1024 * 1024
+  }
+
+  /**
+   * 룸 토큰이 필요한 API 호출 (목록·업로드·삭제).
+   * 토큰이 있으면 X-Room-Token 헤더를 붙이고, 401이면 토큰을 버리고 한 번만 재시도한다.
+   * 토큰이 없으면(구버전 백엔드) 헤더 없이 기존과 똑같이 호출한다.
+   *
+   * @param {string} roomId - 룸 ID
+   * @param {string} url - 요청 URL
+   * @param {RequestInit} [init] - fetch 옵션
+   * @returns {Promise<Response>}
+   */
+  async fetchWithRoomAuth(roomId, url, init) {
+    const send = async () => {
+      const auth = await roomAuthHeaders(roomId)
+      const hadToken = Object.keys(auth).length > 0
+      if (!hadToken) {
+        // 토큰이 없으면 기존 호출과 완전히 같게 (불필요한 preflight도 생기지 않음)
+        return { response: await (init ? fetch(url, init) : fetch(url)), hadToken }
+      }
+      const headers = { ...(init?.headers || {}), ...auth }
+      return { response: await fetch(url, { ...(init || {}), headers }), hadToken }
+    }
+
+    const first = await send()
+    if (first.response.status !== 401 || !first.hadToken) return first.response
+
+    console.warn('[R2Service] 룸 토큰 거부(401) - 재발급 후 1회 재시도')
+    invalidateRoomToken(roomId)
+    return (await send()).response
   }
 
   /**
@@ -52,7 +84,7 @@ class R2Service {
    * @returns {Promise<Array<{uploadUrl: string, fileUrl: string, fileName: string, thumbUploadUrl?: string, thumbUrl?: string}>>}
    */
   async getUploadUrls(roomId, files) {
-    const response = await fetch(`${this.apiUrl}/api/r2/presigned-urls`, {
+    const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/presigned-urls`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ roomId, files }),
@@ -80,7 +112,7 @@ class R2Service {
    * @returns {Promise<{uploadUrl: string, fileUrl: string, fileName: string}>}
    */
   async getUploadUrl(roomId, fileName, contentType) {
-    const response = await fetch(`${this.apiUrl}/api/r2/presigned-url`, {
+    const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/presigned-url`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ roomId, fileName, contentType }),
@@ -200,7 +232,8 @@ class R2Service {
         params.append('continuationToken', continuationToken)
       }
 
-      const response = await fetch(
+      const response = await this.fetchWithRoomAuth(
+        roomId,
         `${this.apiUrl}/api/r2/files/${roomId}?${params.toString()}`
       )
 
@@ -275,7 +308,7 @@ class R2Service {
       formData.append('roomId', roomId)
       formData.append('file', file)
 
-      const response = await fetch(`${this.apiUrl}/api/r2/upload`, {
+      const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/upload`, {
         method: 'POST',
         body: formData,
       })
@@ -319,7 +352,7 @@ class R2Service {
 
     try {
       // 1. 백엔드에서 Presigned URL 받기
-      const presignedResponse = await fetch(`${this.apiUrl}/api/r2/presigned-url`, {
+      const presignedResponse = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/presigned-url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -370,7 +403,8 @@ class R2Service {
     console.log('[R2Service] 파일 삭제 시작:', `${roomId}/${fileName}`)
 
     try {
-      const response = await fetch(
+      const response = await this.fetchWithRoomAuth(
+        roomId,
         `${this.apiUrl}/api/r2/files/${roomId}/${encodeURIComponent(fileName)}`,
         {
           method: 'DELETE',
@@ -409,7 +443,8 @@ class R2Service {
     console.log('[R2Service] 룸 전체 파일 삭제 시작:', roomId)
 
     try {
-      const response = await fetch(
+      const response = await this.fetchWithRoomAuth(
+        roomId,
         `${this.apiUrl}/api/r2/files/${roomId}`,
         {
           method: 'DELETE',
@@ -448,7 +483,7 @@ class R2Service {
     console.log('[R2Service] 룸 총 용량 조회 시작:', roomId)
 
     try {
-      const response = await fetch(`${this.apiUrl}/api/r2/size/${roomId}`)
+      const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/size/${roomId}`)
 
       if (!response.ok) {
         throw new Error(`룸 용량 조회 실패: ${response.status}`)
