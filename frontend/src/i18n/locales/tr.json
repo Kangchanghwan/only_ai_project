@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Gizlilik Politikası",
     "sourceOnGitHub": "GitHub'da Kaynak Kod",
+    "feedback": "Geri bildirim gönder",
     "createdBy": "Oluşturan",
     "installPrompt": "Uygulamayı yükleyerek paylaşım özelliğiyle dosyaları doğrudan gönderebilirsiniz",
     "installButton": "Uygulamayı Yükle"

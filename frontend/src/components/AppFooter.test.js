@@ -15,6 +15,7 @@ vi.mock('../composables/usePWAInstall.js', () => ({
 }))
 
 import AppFooter from './AppFooter.vue'
+import { FEEDBACK_FORM_URL } from '../constants/feedback.js'
 
 describe('AppFooter.vue', () => {
   beforeEach(() => {
@@ -49,5 +50,15 @@ describe('AppFooter.vue', () => {
     const wrapper = mount(AppFooter)
     await wrapper.find('[data-testid="pwa-install-button"]').trigger('click')
     expect(promptInstall).toHaveBeenCalledTimes(1)
+  })
+
+  it('건의하기 링크를 상수 URL로 새 탭에서 열도록 렌더링한다', () => {
+    const wrapper = mount(AppFooter)
+    const link = wrapper.find('[data-testid="feedback-link"]')
+    expect(link.exists()).toBe(true)
+    expect(link.attributes('href')).toBe(FEEDBACK_FORM_URL)
+    expect(link.attributes('target')).toBe('_blank')
+    expect(link.attributes('rel')).toBe('noopener noreferrer')
+    expect(link.text()).toBe('footer.feedback')
   })
 })

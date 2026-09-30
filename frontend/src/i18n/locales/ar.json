@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "سياسة الخصوصية",
     "sourceOnGitHub": "الكود على GitHub",
+    "feedback": "إرسال ملاحظات",
     "createdBy": "تم الإنشاء بواسطة",
     "installPrompt": "ثبّت التطبيق لترسل الملفات فورًا عبر ميزة المشاركة",
     "installButton": "تثبيت التطبيق"

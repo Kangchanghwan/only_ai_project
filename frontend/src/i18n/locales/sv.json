@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Integritetspolicy",
     "sourceOnGitHub": "Källkod på GitHub",
+    "feedback": "Skicka feedback",
     "createdBy": "Skapad av",
     "installPrompt": "Installera appen för att skicka filer direkt via delningsfunktionen",
     "installButton": "Installera appen"

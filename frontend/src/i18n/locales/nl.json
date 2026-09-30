@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Privacybeleid",
     "sourceOnGitHub": "Broncode op GitHub",
+    "feedback": "Feedback sturen",
     "createdBy": "Gemaakt door",
     "installPrompt": "Installeer de app om bestanden direct te verzenden via de deelfunctie",
     "installButton": "App installeren"

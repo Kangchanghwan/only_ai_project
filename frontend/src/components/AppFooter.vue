@@ -1,6 +1,8 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { usePWAInstall } from '../composables/usePWAInstall.js'
+import { FEEDBACK_FORM_URL } from '../constants/feedback.js'
+import { trackEvent } from '../utils/analytics.js'
 
 const { t } = useI18n()
 const { canInstall, isInstalled, promptInstall } = usePWAInstall()
@@ -32,6 +34,15 @@ const currentYear = new Date().getFullYear()
         rel="noopener noreferrer"
         class="text-primary hover:underline"
       >{{ t('footer.privacyPolicy') }}</a>
+      <span class="text-text-secondary/50">·</span>
+      <a
+        :href="FEEDBACK_FORM_URL"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid="feedback-link"
+        class="text-primary hover:underline"
+        @click="trackEvent('feedback_click')"
+      >{{ t('footer.feedback') }}</a>
       <span class="text-text-secondary/50">·</span>
       <a
         href="https://github.com/Kangchanghwan/only_ai_project"

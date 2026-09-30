@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Adatvédelmi Irányelvek",
     "sourceOnGitHub": "Forráskód a GitHubon",
+    "feedback": "Visszajelzés küldése",
     "createdBy": "Készítette",
     "installPrompt": "Telepítsd az alkalmazást, hogy a megosztás funkcióval azonnal küldhess fájlokat",
     "installButton": "Alkalmazás telepítése"

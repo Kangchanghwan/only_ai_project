@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "隐私政策",
     "sourceOnGitHub": "GitHub 源代码",
+    "feedback": "提交反馈",
     "createdBy": "创建者",
     "installPrompt": "安装应用后，即可通过分享功能直接发送文件",
     "installButton": "安装应用"

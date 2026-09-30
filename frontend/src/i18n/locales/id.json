@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Kebijakan Privasi",
     "sourceOnGitHub": "Kode di GitHub",
+    "feedback": "Kirim masukan",
     "createdBy": "Dibuat oleh",
     "installPrompt": "Instal aplikasinya agar bisa langsung mengirim file lewat fitur berbagi",
     "installButton": "Instal Aplikasi"

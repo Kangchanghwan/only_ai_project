@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "سیاست حریم خصوصی",
     "sourceOnGitHub": "کد منبع در GitHub",
+    "feedback": "ارسال بازخورد",
     "createdBy": "ایجاد شده توسط",
     "installPrompt": "برنامه را نصب کنید تا بتوانید فایل‌ها را مستقیم از طریق اشتراک‌گذاری ارسال کنید",
     "installButton": "نصب برنامه"

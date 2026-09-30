@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Politique de Confidentialité",
     "sourceOnGitHub": "Source sur GitHub",
+    "feedback": "Envoyer un commentaire",
     "createdBy": "Créé par",
     "installPrompt": "Installez l'application pour envoyer des fichiers directement via le partage",
     "installButton": "Installer l'application"

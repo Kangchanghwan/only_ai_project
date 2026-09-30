@@ -175,6 +175,7 @@
   "footer": {
     "privacyPolicy": "Privacy Policy",
     "sourceOnGitHub": "Source on GitHub",
+    "feedback": "Send feedback",
     "createdBy": "Created by",
     "installPrompt": "Install the app to send files instantly using your device's share feature",
     "installButton": "Install App"

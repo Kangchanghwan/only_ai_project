@@ -175,6 +175,7 @@
   "footer": {
     "privacyPolicy": "개인정보 처리방침",
     "sourceOnGitHub": "GitHub 소스 코드",
+    "feedback": "건의하기",
     "createdBy": "제작:",
     "installPrompt": "앱으로 설치하면 공유하기 기능으로 파일을 바로 보낼 수 있어요",
     "installButton": "앱 설치"
