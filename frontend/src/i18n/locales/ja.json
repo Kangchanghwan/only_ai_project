@@ -175,6 +175,7 @@
   "footer": {
     "privacyPolicy": "プライバシーポリシー",
     "sourceOnGitHub": "GitHubのソースコード",
+    "feedback": "ご意見・ご要望",
     "createdBy": "作成者",
     "installPrompt": "アプリをインストールすると、共有機能からすぐにファイルを送信できます",
     "installButton": "アプリをインストール"

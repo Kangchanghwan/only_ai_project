@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Chính Sách Bảo Mật",
     "sourceOnGitHub": "Mã Nguồn trên GitHub",
+    "feedback": "Gửi phản hồi",
     "createdBy": "Được tạo bởi",
     "installPrompt": "Cài đặt ứng dụng để gửi tệp ngay qua tính năng chia sẻ",
     "installButton": "Cài đặt ứng dụng"

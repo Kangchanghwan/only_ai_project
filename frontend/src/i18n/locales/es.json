@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Política de Privacidad",
     "sourceOnGitHub": "Código en GitHub",
+    "feedback": "Enviar comentarios",
     "createdBy": "Creado por",
     "installPrompt": "Instala la app para enviar archivos al instante con la función de compartir",
     "installButton": "Instalar app"

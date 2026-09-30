@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Zásady Ochrany Osobních Údajů",
     "sourceOnGitHub": "Zdrojový kód na GitHub",
+    "feedback": "Poslat zpětnou vazbu",
     "createdBy": "Vytvořil",
     "installPrompt": "Nainstalujte aplikaci a odesílejte soubory rovnou přes sdílení",
     "installButton": "Instalovat aplikaci"

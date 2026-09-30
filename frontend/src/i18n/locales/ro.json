@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Politica de Confidențialitate",
     "sourceOnGitHub": "Cod sursă pe GitHub",
+    "feedback": "Trimite feedback",
     "createdBy": "Creat de",
     "installPrompt": "Instalează aplicația pentru a trimite fișiere direct prin funcția de distribuire",
     "installButton": "Instalează aplicația"

@@ -67,6 +67,7 @@
   "footer": {
     "privacyPolicy": "Datenschutzrichtlinie",
     "sourceOnGitHub": "Quellcode auf GitHub",
+    "feedback": "Feedback senden",
     "createdBy": "Erstellt von",
     "installPrompt": "App installieren, um Dateien direkt über die Teilen-Funktion zu senden",
     "installButton": "App installieren"
