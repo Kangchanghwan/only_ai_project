@@ -1,3 +1,4 @@
+import { t } from '../i18n/translate.js'
 /**
  * @composable useDownload
  * @description 파일 다운로드 관련 기능을 제공하는 컴포저블.
@@ -90,7 +91,7 @@ export function useDownload() {
   async function copyFilesToClipboard(files) {
     try {
       if (!files || files.length === 0) {
-        throw new Error('클립보드에 저장할 파일이 없습니다')
+        throw new Error(t('errors.noFilesToCopy'))
       }
 
       // 브라우저는 대부분 단일 ClipboardItem만 지원
@@ -154,7 +155,7 @@ export function useDownload() {
   async function downloadParallel(files, options = {}) {
     try {
       if (!files || files.length === 0) {
-        throw new Error('다운로드할 파일이 없습니다')
+        throw new Error(t('errors.noFilesToDownload'))
       }
 
       const { onProgress } = options

@@ -2,7 +2,8 @@ import { describe, it, expect, afterEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { r2Service } from '../services/r2Service'
 
-vi.mock('vue-i18n', () => ({
+vi.mock('vue-i18n', async (importOriginal) => ({
+  ...(await importOriginal()),
   useI18n: () => ({ t: (key) => key })
 }))
 

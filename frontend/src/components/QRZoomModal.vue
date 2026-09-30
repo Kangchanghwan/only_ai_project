@@ -34,7 +34,7 @@ function handleOverlayClick(event) {
         <button
           type="button"
           class="qr-zoom-close absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 text-2xl leading-none"
-          aria-label="닫기"
+          :aria-label="t('help.close')"
           @click="emit('close')"
         >
           ×

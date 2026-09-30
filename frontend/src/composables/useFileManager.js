@@ -2,6 +2,7 @@ import { ref, readonly, computed } from 'vue'
 import { r2Service } from '../services/r2Service.js'
 import { runWithConcurrency } from '../utils/concurrency.js'
 import { trackEvent } from '../utils/analytics.js'
+import { t } from '../i18n/translate.js'
 import { createImageThumbnail, THUMBNAIL_CONTENT_TYPE } from '../utils/thumbnail.js'
 
 /** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
@@ -16,14 +17,14 @@ function validateFile(file) {
   const MAX_FILE_SIZE = maxFileSizeMB * 1024 * 1024
 
   if (file.size === 0) {
-    return new Error('파일이 비어있습니다')
+    return Object.assign(new Error(t('notification.fileEmpty')), { code: 'FILE_EMPTY' })
   }
   if (file.size > MAX_FILE_SIZE) {
     trackEvent('file_too_large', {
       file_size_mb: Math.round(file.size / 1024 / 1024),
       limit_mb: Number(maxFileSizeMB),
     })
-    return new Error(`파일 크기는 ${maxFileSizeMB}MB를 초과할 수 없습니다`)
+    return Object.assign(new Error(t('notification.fileTooLarge', { limit: maxFileSizeMB })), { code: 'FILE_TOO_LARGE' })
   }
   return null
 }
@@ -264,7 +265,7 @@ export function useFileManager() {
       const currentSizeMB = (currentRoomSize / 1024 / 1024).toFixed(2)
       const fileSizeMB = (file.size / 1024 / 1024).toFixed(2)
       throw new Error(
-        `룸 용량 제한(${maxRoomSizeMB}MB)을 초과합니다. 현재 사용량: ${currentSizeMB}MB, 업로드 파일: ${fileSizeMB}MB`
+        t('notification.sizeLimitExceeded', { limit: maxRoomSizeMB, current: currentSizeMB, upload: fileSizeMB })
       )
     }
 
@@ -352,7 +353,7 @@ export function useFileManager() {
     await runWithConcurrency(pending, concurrency, async (file, index) => {
       const target = targets[index]
       if (!target) {
-        throw new Error('Presigned URL이 없습니다')
+        throw new Error(t('errors.noPresignedUrl'))
       }
 
       onStart?.(file)

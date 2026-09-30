@@ -4,7 +4,8 @@ import { mount, DOMWrapper } from '@vue/test-utils'
 // t()가 키를 그대로 반환하도록 mock — room.qrShareTitle처럼 로케일 파일에
 // 실제 값이 없는(사전 존재하는 gap, 이번 작업 범위 밖) 키가 섞여 있어도
 // 테스트가 실제 번역 문자열에 의존하지 않도록 한다 (AppHeader.test.js와 동일한 패턴).
-vi.mock('vue-i18n', () => ({
+vi.mock('vue-i18n', async (importOriginal) => ({
+  ...(await importOriginal()),
   useI18n: () => ({ t: (key) => key })
 }))
 

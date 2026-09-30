@@ -217,7 +217,7 @@ describe('useFileManager', () => {
 
       // When/Then: 업로드가 거부되어야 함 (API 호출 없이 totalSize만 사용)
       await expect(fileManager.uploadFile('ROOM01', mockFile)).rejects.toThrow(
-        /룸 용량 제한.*초과/
+        /용량이 제한.*초과/
       )
     })
 

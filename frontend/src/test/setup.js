@@ -14,3 +14,7 @@ if (typeof globalThis.localStorage === 'undefined') {
     get length() { return store.size }
   }
 }
+
+// 기존 테스트는 한국어 문구를 기준으로 작성되어 있으므로 기본 UI 언어를 ko로 고정한다.
+// (i18n/index.js가 저장된 'user-locale'을 최우선으로 사용한다. 다른 언어 검증은 각 테스트에서 locale을 바꾼다.)
+globalThis.localStorage.setItem('user-locale', 'ko')

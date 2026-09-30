@@ -108,7 +108,8 @@ const defaultLocale = resolveLocale({
 const i18n = createI18n({
   legacy: false,
   locale: defaultLocale,
-  fallbackLocale: 'ko',
+  // 번역이 빠진 키는 한국어 대신 영어로 대체한다 (비한국어 UI에 한국어가 섞이지 않도록)
+  fallbackLocale: 'en',
   messages: {
     ko,
     en,

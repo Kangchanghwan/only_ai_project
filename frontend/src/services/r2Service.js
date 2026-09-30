@@ -1,3 +1,4 @@
+import { t } from '../i18n/translate.js'
 /**
  * R2 Storage 서비스
  *
@@ -96,7 +97,7 @@ class R2Service {
     }
 
     if (!response.ok) {
-      throw new Error(`배치 Presigned URL 생성 실패: ${response.status}`)
+      throw new Error(t('errors.batchPresignFailed', { status: response.status }))
     }
 
     const { files: targets } = await response.json()
@@ -120,7 +121,7 @@ class R2Service {
     })
 
     if (!response.ok) {
-      throw new Error(`Presigned URL 생성 실패: ${response.status}`)
+      throw new Error(t('errors.presignFailed', { status: response.status }))
     }
 
     const { uploadUrl, fileUrl, fileName: storedName } = await response.json()
@@ -152,12 +153,12 @@ class R2Service {
         if (xhr.status >= 200 && xhr.status < 300) {
           resolve()
         } else {
-          reject(new Error(`R2 업로드 실패: ${xhr.status}`))
+          reject(new Error(t('errors.r2UploadFailed', { status: xhr.status })))
         }
       })
 
-      xhr.addEventListener('error', () => reject(new Error('네트워크 오류로 업로드 실패')))
-      xhr.addEventListener('timeout', () => reject(new Error('업로드 시간 초과')))
+      xhr.addEventListener('error', () => reject(new Error(t('errors.networkUploadFailed'))))
+      xhr.addEventListener('timeout', () => reject(new Error(t('errors.uploadTimeout'))))
 
       xhr.open('PUT', uploadUrl)
       xhr.setRequestHeader('Content-Type', contentType)
@@ -179,7 +180,7 @@ class R2Service {
     )
 
     if (!response.ok) {
-      throw new Error(`다운로드 URL 생성 실패: ${response.status}`)
+      throw new Error(t('errors.downloadUrlFailed', { status: response.status }))
     }
 
     const { url } = await response.json()
@@ -201,7 +202,7 @@ class R2Service {
     })
 
     if (!response.ok) {
-      throw new Error(`다운로드 URL 생성 실패: ${response.status}`)
+      throw new Error(t('errors.downloadUrlFailed', { status: response.status }))
     }
 
     const { urls } = await response.json()
@@ -239,7 +240,7 @@ class R2Service {
       )
 
       if (!response.ok) {
-        throw new Error(`파일 목록 조회 실패: ${response.status}`)
+        throw new Error(t('errors.listFailed', { status: response.status }))
       }
 
       const { files, nextToken } = await response.json()
@@ -316,7 +317,7 @@ class R2Service {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `직접 업로드 실패: ${response.status}`)
+        throw new Error(errorData.error || t('errors.directUploadFailed', { status: response.status }))
       }
 
       const { fileName, fileUrl, size } = await response.json()
@@ -367,7 +368,7 @@ class R2Service {
       })
 
       if (!presignedResponse.ok) {
-        throw new Error(`Presigned URL 생성 실패: ${presignedResponse.status}`)
+        throw new Error(t('errors.presignFailed', { status: presignedResponse.status }))
       }
 
       const { uploadUrl, fileUrl, fileName } = await presignedResponse.json()
@@ -414,7 +415,7 @@ class R2Service {
       )
 
       if (!response.ok) {
-        throw new Error(`파일 삭제 실패: ${response.status}`)
+        throw new Error(t('errors.deleteFailed', { status: response.status }))
       }
 
       const data = await response.json()
@@ -454,7 +455,7 @@ class R2Service {
       )
 
       if (!response.ok) {
-        throw new Error(`전체 파일 삭제 실패: ${response.status}`)
+        throw new Error(t('errors.deleteAllFailed', { status: response.status }))
       }
 
       const { deletedCount } = await response.json()
@@ -488,7 +489,7 @@ class R2Service {
       const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/size/${roomId}`)
 
       if (!response.ok) {
-        throw new Error(`룸 용량 조회 실패: ${response.status}`)
+        throw new Error(t('errors.quotaFailed', { status: response.status }))
       }
 
       const { totalSize } = await response.json()

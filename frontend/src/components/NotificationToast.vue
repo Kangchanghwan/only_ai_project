@@ -1,5 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
 import UploadProgressItem from './UploadProgressItem.vue'
+
+const { t } = useI18n()
 
 const props = defineProps({
   message: {
@@ -25,7 +28,7 @@ const props = defineProps({
   <transition name="fade">
     <div v-if="uploads && uploads.size > 0" class="upload-panel" data-prerender-strip>
       <div class="upload-header">
-        진행 중 ({{ uploads.size }}개)
+        {{ t('notification.activeHeader', { count: uploads.size }) }}
       </div>
       <div class="upload-list">
         <UploadProgressItem
