@@ -201,5 +201,8 @@
   },
   "fileGallery": {
     "loadMore": "加载更多"
+  },
+  "time": {
+    "justNow": "刚刚"
   }
 }

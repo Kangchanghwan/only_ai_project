@@ -376,4 +376,42 @@ describe('useDownload', () => {
       expect(global.fetch).toHaveBeenCalledWith('https://store/room-x/b.pdf')
     })
   })
+
+  describe('presigned 우선 / store 최후 폴백 (#3)', () => {
+    const file = { name: 'a.zip', url: 'https://store.example/r/a.zip', roomId: 'r' }
+
+    it('첫 presigned 발급이 실패해도 재시도에 성공하면 store를 호출하지 않는다', async () => {
+      r2Service.getDownloadUrl
+        .mockReset()
+        .mockRejectedValueOnce(new Error('temp'))
+        .mockResolvedValueOnce('https://presigned.example/a.zip')
+
+      const result = await download.downloadFile(file)
+
+      expect(result.success).toBe(true)
+      expect(r2Service.getDownloadUrl).toHaveBeenCalledTimes(2)
+      expect(global.fetch).not.toHaveBeenCalled()
+      expect(mockLink.href).toBe('https://presigned.example/a.zip')
+    })
+
+    it('재시도까지 실패하면 최후 수단으로만 store를 fetch한다', async () => {
+      global.fetch.mockResolvedValue({ ok: true, blob: () => Promise.resolve(new Blob(['x'])) })
+
+      const result = await download.downloadFile(file)
+
+      expect(result.success).toBe(true)
+      expect(r2Service.getDownloadUrl).toHaveBeenCalledTimes(2)
+      expect(global.fetch).toHaveBeenCalledWith(file.url)
+    })
+
+    it('공유 링크 페이지(downloadParallel): 배치 presign이 실패해도 파일별 재시도 presigned를 먼저 쓴다', async () => {
+      r2Service.getDownloadUrls.mockRejectedValue(new Error('batch down'))
+      r2Service.getDownloadUrl.mockReset().mockResolvedValue('https://presigned.example/a.zip')
+
+      const result = await download.downloadParallel([file])
+
+      expect(result.successCount).toBe(1)
+      expect(global.fetch).not.toHaveBeenCalled()
+    })
+  })
 })

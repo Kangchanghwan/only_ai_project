@@ -62,6 +62,16 @@ watch(() => `${props.file.roomId}::${props.file.name}`, () => {
   thumbFailed.value = false
 })
 
+// 원본이 이 크기보다 크면 썸네일 실패 시 원본으로 폴백하지 않고 아이콘을 보여준다
+// (큰 원본을 미리보기로 내려받거나 presigned를 남발하지 않기 위함).
+const MAX_ORIGINAL_PREVIEW_BYTES = 5 * 1024 * 1024
+
+const showImagePreview = computed(() => {
+  if (!fileMetadata.value.isImage) return false
+  if (!thumbFailed.value) return true
+  return (props.file.size || 0) <= MAX_ORIGINAL_PREVIEW_BYTES
+})
+
 const previewSrc = computed(() => {
   if (thumbFailed.value) return props.file.url
   if (props.file.thumbUrl) return props.file.thumbUrl
@@ -167,7 +177,7 @@ async function handleShare(event) {
 
     <!-- 이미지 타입: 썸네일 -->
     <img
-      v-if="fileMetadata.isImage"
+      v-if="showImagePreview"
       :src="previewSrc"
       :alt="file.name"
       loading="lazy"

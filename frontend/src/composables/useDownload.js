@@ -47,16 +47,19 @@ export function useDownload() {
     try {
       return await r2Service.getDownloadUrl(file.roomId, file.name)
     } catch (err) {
-      console.warn('[useDownload] presigned URL 발급 실패, Blob 방식으로 폴백:', err)
+      console.warn('[useDownload] presigned URL 발급 실패:', err)
       return null
     }
   }
 
-  /** URL이 있으면 네이티브, 없으면 Blob 폴백으로 한 파일을 내려받는다 */
+  /** presigned URL이 있으면 네이티브, 없으면 재발급 1회 후 최후 수단으로 Blob(store)으로 내려받는다 */
   async function downloadWithUrl(file, presignedUrl) {
     try {
-      if (presignedUrl) {
-        triggerDownload(presignedUrl, file.name)
+      // 공개 store 도메인은 presigned보다 느리므로, presigned 발급에 실패했으면 한 번 더 시도하고
+      // 그래도 안 될 때만 store(Blob) 방식을 최후 폴백으로 쓴다.
+      const url = presignedUrl || await resolveDownloadUrl(file)
+      if (url) {
+        triggerDownload(url, file.name)
       } else {
         await downloadViaBlob(file)
       }

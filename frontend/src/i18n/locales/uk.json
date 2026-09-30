@@ -201,5 +201,8 @@
   },
   "fileGallery": {
     "loadMore": "Показати ще"
+  },
+  "time": {
+    "justNow": "щойно"
   }
 }

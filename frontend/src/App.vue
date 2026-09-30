@@ -18,6 +18,7 @@ import { useSeoMeta } from './composables/useSeoMeta'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
+import { openFileInNewTab } from './utils/openFile'
 import { createUploadProgress } from './utils/uploadProgress'
 import { t } from './i18n/translate'
 
@@ -272,7 +273,8 @@ async function handleCopyImage(imageUrl) {
   if (result.success) {
     notification.showSuccess(t('file.copied'))
   } else {
-    window.open(imageUrl, '_blank')
+    const file = fileManager.files.value.find(f => f.url === imageUrl) || { name: '', url: imageUrl }
+    await openFileInNewTab(file)
     notification.showInfo(t('notification.openedNewTab'))
   }
 }

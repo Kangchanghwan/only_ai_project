@@ -301,5 +301,8 @@
   },
   "fileGallery": {
     "loadMore": "もっと見る"
+  },
+  "time": {
+    "justNow": "たった今"
   }
 }

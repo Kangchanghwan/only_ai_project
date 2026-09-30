@@ -201,5 +201,8 @@
   },
   "fileGallery": {
     "loadMore": "Tải thêm"
+  },
+  "time": {
+    "justNow": "vừa xong"
   }
 }

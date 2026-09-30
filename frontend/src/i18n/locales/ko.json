@@ -301,5 +301,8 @@
   },
   "fileGallery": {
     "loadMore": "더 보기"
+  },
+  "time": {
+    "justNow": "방금 전"
   }
 }

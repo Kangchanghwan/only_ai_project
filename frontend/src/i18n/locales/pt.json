@@ -201,5 +201,8 @@
   },
   "fileGallery": {
     "loadMore": "Carregar mais"
+  },
+  "time": {
+    "justNow": "agora mesmo"
   }
 }

@@ -1,4 +1,4 @@
-import { currentLocale } from '../i18n/translate.js'
+import { t, currentLocale } from '../i18n/translate.js'
 /**
  * @file fileUtils.js
  * @description 파일 관련 유틸리티 함수 모음
@@ -135,21 +135,20 @@ export function getFileIcon(fileName) {
  */
 export function formatUploadTime(timestamp) {
   const locale = currentLocale()
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
+  const justNow = () => t('time.justNow')
 
-  // 유효성 검사 (값이 없거나 잘못된 날짜면 "지금"으로 표시)
-  if (!timestamp) return rtf.format(0, 'second')
+  // 값이 없거나 잘못된 날짜면 "방금 전"
+  if (!timestamp) return justNow()
 
   const past = new Date(timestamp)
-  if (isNaN(past.getTime())) return rtf.format(0, 'second')
+  if (isNaN(past.getTime())) return justNow()
 
   const diffInSeconds = Math.floor((new Date() - past) / 1000)
 
-  // 10초 미만
-  if (diffInSeconds < 10) return rtf.format(0, 'second')
+  // 1분 미만은 초 단위 대신 i18n 문구("방금 전" 등)로 표시
+  if (diffInSeconds < 60) return justNow()
 
-  // 1분 미만
-  if (diffInSeconds < 60) return rtf.format(-diffInSeconds, 'second')
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
 
   // 1시간 미만
   if (diffInSeconds < 3600) return rtf.format(-Math.floor(diffInSeconds / 60), 'minute')

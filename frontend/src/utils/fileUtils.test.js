@@ -159,14 +159,14 @@ describe('fileUtils', () => {
   })
 
   describe('업로드 시간 포맷팅', () => {
-    it('10초 미만은 지금으로 표시해야 한다', () => {
+    it('방금 전을 표시해야 한다', () => {
       const now = new Date()
-      expect(formatUploadTime(now.toISOString())).toBe('지금')
+      expect(formatUploadTime(now.toISOString())).toBe('방금 전')
     })
 
-    it('초 단위를 표시해야 한다', () => {
+    it('1분 미만은 초 단위 대신 방금 전으로 표시해야 한다', () => {
       const past = new Date(Date.now() - 30 * 1000) // 30초 전
-      expect(formatUploadTime(past.toISOString())).toBe('30초 전')
+      expect(formatUploadTime(past.toISOString())).toBe('방금 전')
     })
 
     it('분 단위를 표시해야 한다', () => {
@@ -186,12 +186,12 @@ describe('fileUtils', () => {
     })
 
     it('null이나 undefined를 처리해야 한다', () => {
-      expect(formatUploadTime(null)).toBe('지금')
-      expect(formatUploadTime(undefined)).toBe('지금')
+      expect(formatUploadTime(null)).toBe('방금 전')
+      expect(formatUploadTime(undefined)).toBe('방금 전')
     })
 
     it('잘못된 날짜 형식을 처리해야 한다', () => {
-      expect(formatUploadTime('invalid-date')).toBe('지금')
+      expect(formatUploadTime('invalid-date')).toBe('방금 전')
     })
   })
 })
@@ -202,7 +202,8 @@ describe('formatUploadTime 로케일', () => {
     i18n.global.locale.value = 'en'
     try {
       expect(formatUploadTime(new Date(Date.now() - 5 * 60 * 1000).toISOString())).toBe('5 minutes ago')
-      expect(formatUploadTime(new Date().toISOString())).toBe('now')
+      expect(formatUploadTime(new Date().toISOString())).toBe('just now')
+      expect(formatUploadTime(new Date(Date.now() - 30 * 1000).toISOString())).toBe('just now')
       expect(formatUploadTime(new Date(Date.now() - 3 * 3600 * 1000).toISOString())).toMatch(/hours ago/)
     } finally {
       i18n.global.locale.value = 'ko'

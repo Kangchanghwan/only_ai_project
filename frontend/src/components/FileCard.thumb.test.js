@@ -83,4 +83,14 @@ describe('FileCard.vue - 이미지 썸네일', () => {
 
     expect(card.find('img').exists()).toBe(false)
   })
+
+  it('원본이 5MB를 넘는 이미지는 썸네일 실패 시 원본으로 폴백하지 않고 아이콘을 보인다', async () => {
+    const big = { ...imageFile, size: 6 * 1024 * 1024 }
+    const card = mountCard(big)
+
+    await card.find('img').trigger('error')
+
+    expect(card.find('img').exists()).toBe(false)
+    expect(card.html()).not.toContain(big.url)
+  })
 })

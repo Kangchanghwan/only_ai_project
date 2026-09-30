@@ -201,5 +201,8 @@
   },
   "fileGallery": {
     "loadMore": "Načíst další"
+  },
+  "time": {
+    "justNow": "právě teď"
   }
 }
