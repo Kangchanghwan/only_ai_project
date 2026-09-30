@@ -24,8 +24,8 @@ const {
 const fileInputRef = ref(null)
 const isDragging = ref(false)
 
-// 환경 변수에서 최대 파일 크기 가져오기 (기본값: 10MB)
-const maxFileSizeMB = computed(() => import.meta.env.VITE_MAX_FILE_SIZE_MB || 10)
+// 환경 변수에서 최대 파일 크기 가져오기 (기본값: 500MB)
+const maxFileSizeMB = computed(() => import.meta.env.VITE_MAX_FILE_SIZE_MB || 500)
 
 function openFileDialog() {
   fileInputRef.value?.click()

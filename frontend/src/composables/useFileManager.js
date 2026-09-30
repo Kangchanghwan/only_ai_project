@@ -1,6 +1,7 @@
 import { ref, readonly, computed } from 'vue'
 import { r2Service } from '../services/r2Service.js'
 import { runWithConcurrency } from '../utils/concurrency.js'
+import { trackEvent } from '../utils/analytics.js'
 import { createImageThumbnail, THUMBNAIL_CONTENT_TYPE } from '../utils/thumbnail.js'
 
 /** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
@@ -11,13 +12,17 @@ const DEFAULT_UPLOAD_CONCURRENCY = 3
  * 환경 변수는 호출 시점에 읽는다 (테스트에서 값을 바꿀 수 있도록).
  */
 function validateFile(file) {
-  const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 10
+  const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 500
   const MAX_FILE_SIZE = maxFileSizeMB * 1024 * 1024
 
   if (file.size === 0) {
     return new Error('파일이 비어있습니다')
   }
   if (file.size > MAX_FILE_SIZE) {
+    trackEvent('file_too_large', {
+      file_size_mb: Math.round(file.size / 1024 / 1024),
+      limit_mb: Number(maxFileSizeMB),
+    })
     return new Error(`파일 크기는 ${maxFileSizeMB}MB를 초과할 수 없습니다`)
   }
   return null
@@ -236,15 +241,15 @@ export function useFileManager() {
       throw new Error('roomId와 file이 필요합니다')
     }
 
-    // 파일 크기 검증 (환경 변수 VITE_MAX_FILE_SIZE_MB, 기본 10MB)
+    // 파일 크기 검증 (환경 변수 VITE_MAX_FILE_SIZE_MB, 기본 500MB)
     const validationError = validateFile(file)
     if (validationError) {
       throw validationError
     }
 
     // 룸 총 용량 제한 검증
-    // 환경 변수에서 룸 최대 용량을 가져오거나 기본값 500MB 사용
-    const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 500
+    // 환경 변수에서 룸 최대 용량을 가져오거나 기본값 2048MB 사용
+    const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 2048
     const MAX_ROOM_SIZE = maxRoomSizeMB * 1024 * 1024
 
     // 병합된 totalSize가 아니라, 업로드 대상 룸만의 현재 용량을 사용한다
@@ -334,7 +339,7 @@ export function useFileManager() {
       try {
         targets = await r2Service.getUploadUrls(
           roomId,
-          pending.map(file => ({ fileName: file.name, contentType: file.type || 'application/octet-stream' }))
+          pending.map(file => ({ fileName: file.name, contentType: file.type || 'application/octet-stream', size: file.size }))
         )
       } catch (err) {
         console.error('[useFileManager] 배치 presign 실패:', err)

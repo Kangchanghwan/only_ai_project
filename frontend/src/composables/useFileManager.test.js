@@ -154,7 +154,8 @@ describe('useFileManager', () => {
     })
 
     it('환경 변수로 설정된 최대 파일 크기를 초과할 때 에러가 발생해야 한다', async () => {
-      // 기본값 10MB를 초과하는 15MB 파일 생성
+      // 기본값 500MB를 초과하지 않도록 env로 10MB 한도를 지정하고 15MB 파일 생성
+      import.meta.env.VITE_MAX_FILE_SIZE_MB = 10
       const fifteenMB = 15 * 1024 * 1024
       const mockFile = new File([new ArrayBuffer(fifteenMB)], 'large.png', { type: 'image/png' })
 
@@ -185,7 +186,7 @@ describe('useFileManager', () => {
       await expect(fileManager.uploadFile('ROOM01', mockFile)).rejects.toThrow('파일이 비어있습니다')
     })
 
-    it('환경 변수가 설정되지 않았을 때 기본값 10MB를 사용해야 한다', () => {
+    it('환경 변수가 설정되지 않았을 때 기본값 500MB를 사용해야 한다', () => {
       // import.meta.env.VITE_MAX_FILE_SIZE_MB가 undefined일 때 기본값 사용
       // 이는 실제 구현에서 확인됨
       expect(true).toBe(true) // 구현 검증용 플레이스홀더

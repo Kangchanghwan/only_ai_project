@@ -80,7 +80,7 @@ class R2Service {
    * 잠시 없을 수 있다. 폴백 결과에는 썸네일 URL이 없어 썸네일 업로드만 생략된다.
    *
    * @param {string} roomId - 룸 ID
-   * @param {Array<{fileName: string, contentType: string}>} files - 파일 메타데이터
+   * @param {Array<{fileName: string, contentType: string, size?: number}>} files - 파일 메타데이터
    * @returns {Promise<Array<{uploadUrl: string, fileUrl: string, fileName: string, thumbUploadUrl?: string, thumbUrl?: string}>>}
    */
   async getUploadUrls(roomId, files) {
@@ -92,7 +92,7 @@ class R2Service {
 
     if (response.status === 404) {
       console.warn('[R2Service] 배치 presign 엔드포인트 없음(404) - 파일별 단일 presign으로 폴백')
-      return Promise.all(files.map(file => this.getUploadUrl(roomId, file.fileName, file.contentType)))
+      return Promise.all(files.map(file => this.getUploadUrl(roomId, file.fileName, file.contentType, file.size)))
     }
 
     if (!response.ok) {
@@ -109,13 +109,14 @@ class R2Service {
    * @param {string} roomId - 룸 ID
    * @param {string} fileName - 원본 파일명
    * @param {string} contentType - Content-Type
+   * @param {number} [size] - 파일 크기(바이트). 서버가 용량 검증과 Content-Length 서명에 사용
    * @returns {Promise<{uploadUrl: string, fileUrl: string, fileName: string}>}
    */
-  async getUploadUrl(roomId, fileName, contentType) {
+  async getUploadUrl(roomId, fileName, contentType, size) {
     const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/presigned-url`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ roomId, fileName, contentType }),
+      body: JSON.stringify({ roomId, fileName, contentType, size }),
     })
 
     if (!response.ok) {
@@ -361,6 +362,7 @@ class R2Service {
           roomId,
           fileName: file.name,
           contentType: file.type || 'application/octet-stream',
+          size: file.size,
         }),
       })
 
