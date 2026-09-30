@@ -18,6 +18,8 @@ import { useSeoMeta } from './composables/useSeoMeta'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
+import { socketService } from './services/socketService'
+import { startP2pProbe } from './services/p2pProbe'
 import { openFileInNewTab } from './utils/openFile'
 import { createUploadProgress } from './utils/uploadProgress'
 import { t } from './i18n/translate'
@@ -119,6 +121,9 @@ async function connectToRoom() {
 
     // 새 이벤트 리스너 설정
     setupSocketListeners()
+
+    // P2P 연결 사전 점검 (화면 변화 없음, 실패해도 무영향, 내부에서 예외를 모두 처리)
+    startP2pProbe(socketService)
   } catch (error) {
     console.error('[App] 연결 실패:', error)
     notification.showError(error.message || t('notification.connectFailed'))
