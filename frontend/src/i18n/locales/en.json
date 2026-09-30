@@ -155,7 +155,7 @@
     "shortcutShare": "Share File/Text",
     "shortcutCopy": "Copy Selected Files to Clipboard",
     "limitTitle": "Limitations",
-    "limit1": "File size limit: Maximum 10MB per file",
+    "limit1": "File size limit: Maximum 500MB per file",
     "limit2": "Rooms are automatically deleted a while after the last user leaves",
     "limit3": "Browser clipboard copy supports single files only",
     "tipsTitle": "Tips",

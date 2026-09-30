@@ -9,6 +9,7 @@ import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketDa
 import logger from './utils/logger';
 import requestLogger from './middleware/requestLogger';
 import { getR2Service } from './services/r2Service';
+import { checkFileSize, checkRoomSize, SizeCheckFailure } from './utils/uploadLimits';
 import { requireRoomToken } from './middleware/roomAuth';
 
 // === Multer 설정 (직접 업로드용) ===
@@ -121,13 +122,46 @@ app.get('/stats', (_req, res) => {
 const roomIdFromParams = requireRoomToken((req) => req.params.roomId);
 const roomIdFromBody = requireRoomToken((req) => req.body?.roomId);
 
+/**
+ * presign 요청 파일들의 크기를 검증한다 (파일당 한도 + 룸 총량 한도).
+ * size를 보내지 않는 구버전 프론트는 호환을 위해 허용하되 경고 로그를 남긴다
+ * (이 경우 서명에 크기가 묶이지 않는다). 통과하면 null을 반환한다.
+ */
+async function validateUploadSizes(roomId: string, sizes: unknown[]): Promise<SizeCheckFailure | null> {
+    let requested = 0;
+    let hasLegacy = false;
+    for (const size of sizes) {
+        const result = checkFileSize(size);
+        if (result === 'legacy') {
+            hasLegacy = true;
+        } else if (result) {
+            return result;
+        } else {
+            requested += size as number;
+        }
+    }
+    if (hasLegacy) {
+        logger.warn(`[API] size 없이 presign 요청 (구버전 클라이언트, 크기 미강제): ${roomId}`);
+    }
+    if (requested === 0) return null;
+
+    const current = await getR2Service().getRoomTotalSize(roomId);
+    return checkRoomSize(current, requested);
+}
+
 /** 업로드용 Presigned URL 생성 */
 app.post('/api/r2/presigned-url', roomIdFromBody, async (req, res) => {
     try {
-        const { roomId, fileName, contentType } = req.body;
+        const { roomId, fileName, contentType, size } = req.body;
 
         if (!roomId || !fileName || !contentType) {
             res.status(400).json({ error: 'roomId, fileName, contentType은 필수입니다' });
+            return;
+        }
+
+        const sizeFailure = await validateUploadSizes(roomId, [size]);
+        if (sizeFailure) {
+            res.status(sizeFailure.status).json({ error: sizeFailure.error });
             return;
         }
 
@@ -138,7 +172,7 @@ app.post('/api/r2/presigned-url', roomIdFromBody, async (req, res) => {
 
         logger.info(`[API] Presigned URL 요청 - 변환된 파일명: ${generatedFileName}`);
 
-        const result = await r2Service.getUploadPresignedUrl(roomId, generatedFileName, contentType);
+        const result = await r2Service.getUploadPresignedUrl(roomId, generatedFileName, contentType, undefined, size ?? undefined);
 
         res.json(result);
     } catch (error) {
@@ -175,6 +209,15 @@ app.post('/api/r2/presigned-urls', roomIdFromBody, async (req, res) => {
         );
         if (invalid) {
             res.status(400).json({ error: '각 파일에는 fileName과 contentType이 필요합니다' });
+            return;
+        }
+
+        const sizeFailure = await validateUploadSizes(
+            roomId,
+            files.map((f: { size?: unknown }) => f.size)
+        );
+        if (sizeFailure) {
+            res.status(sizeFailure.status).json({ error: sizeFailure.error });
             return;
         }
 

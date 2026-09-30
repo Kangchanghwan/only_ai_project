@@ -20,6 +20,8 @@ const DELETE_BATCH_SIZE = 1000;
 export interface UploadRequest {
   fileName: string;
   contentType: string;
+  /** 바이트 단위 파일 크기. 있으면 presigned URL 서명에 Content-Length로 묶는다 */
+  size?: number;
 }
 
 /** 배치 presign 응답 항목 */
@@ -144,9 +146,9 @@ class R2Service {
     expiresIn: number = 3600
   ): Promise<UploadTarget[]> {
     return Promise.all(
-      files.map(async ({ fileName, contentType }) => {
+      files.map(async ({ fileName, contentType, size }) => {
         const safeName = this.sanitizeFileName(fileName);
-        const target: UploadTarget = await this.getUploadPresignedUrl(roomId, safeName, contentType, expiresIn);
+        const target: UploadTarget = await this.getUploadPresignedUrl(roomId, safeName, contentType, expiresIn, size);
 
         if (contentType.startsWith('image/')) {
           const thumbCommand = new PutObjectCommand({
@@ -225,7 +227,8 @@ class R2Service {
     roomId: string,
     fileName: string,
     contentType: string,
-    expiresIn: number = 3600
+    expiresIn: number = 3600,
+    size?: number
   ): Promise<{ uploadUrl: string; fileUrl: string; fileName: string }> {
     const key = `${roomId}/${fileName}`;
 
@@ -233,6 +236,8 @@ class R2Service {
       Bucket: this.bucketName,
       Key: key,
       ContentType: contentType,
+      // size가 있으면 Content-Length를 서명에 포함시켜, 다른 크기의 PUT은 R2가 거절한다
+      ...(size !== undefined ? { ContentLength: size } : {}),
     });
 
     const uploadUrl = await getSignedUrl(this.client, command, { expiresIn });

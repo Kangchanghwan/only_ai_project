@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useFileManager } from './useFileManager'
 import { r2Service } from '../services/r2Service'
 import { createImageThumbnail } from '../utils/thumbnail'
+import { trackEvent } from '../utils/analytics'
 
 vi.mock('../services/r2Service', () => ({
   r2Service: {
@@ -16,6 +17,8 @@ vi.mock('../services/r2Service', () => ({
     getThumbUrl: vi.fn((roomId, name) => `https://store/thumbs/${roomId}/${name}.jpg`)
   }
 }))
+
+vi.mock('../utils/analytics', () => ({ trackEvent: vi.fn() }))
 
 vi.mock('../utils/thumbnail', () => ({
   THUMBNAIL_CONTENT_TYPE: 'image/jpeg',
@@ -120,8 +123,8 @@ describe('useFileManager - uploadFiles (배치 presign + 제한 병렬 + 썸네�
 
     expect(r2Service.getUploadUrls).toHaveBeenCalledTimes(1)
     expect(r2Service.getUploadUrls).toHaveBeenCalledWith('room-x', [
-      { fileName: 'a.pdf', contentType: 'application/pdf' },
-      { fileName: 'b.txt', contentType: 'text/plain' }
+      { fileName: 'a.pdf', contentType: 'application/pdf', size: files[0].size },
+      { fileName: 'b.txt', contentType: 'text/plain', size: files[1].size }
     ])
     expect(r2Service.putToPresignedUrl).toHaveBeenCalledTimes(2)
     expect(r2Service.putToPresignedUrl).toHaveBeenCalledWith(
@@ -189,12 +192,14 @@ describe('useFileManager - uploadFiles (배치 presign + 제한 병렬 + 썸네�
 
     const summary = await fm.uploadFiles('room-x', [empty, huge, ok], { onError })
 
-    expect(r2Service.getUploadUrls).toHaveBeenCalledWith('room-x', [{ fileName: 'ok.txt', contentType: 'text/plain' }])
+    expect(r2Service.getUploadUrls).toHaveBeenCalledWith('room-x', [{ fileName: 'ok.txt', contentType: 'text/plain', size: 10 }])
     expect(onError).toHaveBeenCalledTimes(2)
     expect(onError.mock.calls[0][0]).toBe(empty)
     expect(onError.mock.calls[0][1].message).toContain('비어있습니다')
     expect(onError.mock.calls[1][0]).toBe(huge)
     expect(onError.mock.calls[1][1].message).toContain('MB를 초과할 수 없습니다')
+    expect(trackEvent).toHaveBeenCalledTimes(1)
+    expect(trackEvent).toHaveBeenCalledWith('file_too_large', { file_size_mb: 1, limit_mb: 1 })
     expect(summary.successCount).toBe(1)
     expect(summary.failCount).toBe(2)
     expect(fm.files.value.map(f => f.name)).toEqual(['ok.txt'])
