@@ -1,3 +1,4 @@
+import { t } from '../i18n/translate.js'
 /**
  * @composable useTextShare
  * @description 룸 내에서 텍스트를 공유하는 기능을 제공하는 컴포저블.
@@ -96,7 +97,7 @@ export function useTextShare() {
     try {
       const text = sharedTexts.value.find(t => t.id === id)
       if (!text) {
-        throw new Error('텍스트를 찾을 수 없습니다')
+        throw new Error(t('errors.textNotFound'))
       }
 
       await navigator.clipboard.writeText(text.content)

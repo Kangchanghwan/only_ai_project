@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import NotificationToast from './NotificationToast.vue'
+import i18n from '../i18n/index.js'
 
 describe('NotificationToast', () => {
   describe('메시지 알림', () => {
     it('메시지가 있으면 표시해야 한다', () => {
       const wrapper = mount(NotificationToast, {
+        global: { plugins: [i18n] },
         props: {
           message: '테스트 메시지'
         }
@@ -16,6 +18,7 @@ describe('NotificationToast', () => {
 
     it('메시지가 없으면 표시하지 않아야 한다', () => {
       const wrapper = mount(NotificationToast, {
+        global: { plugins: [i18n] },
         props: {
           message: null
         }
@@ -32,6 +35,7 @@ describe('NotificationToast', () => {
       ])
 
       const wrapper = mount(NotificationToast, {
+        global: { plugins: [i18n] },
         props: {
           message: null,
           uploads
@@ -43,6 +47,7 @@ describe('NotificationToast', () => {
 
     it('uploads가 비어있으면 업로드 패널을 표시하지 않아야 한다', () => {
       const wrapper = mount(NotificationToast, {
+        global: { plugins: [i18n] },
         props: {
           message: null,
           uploads: new Map()
@@ -60,6 +65,7 @@ describe('NotificationToast', () => {
       ])
 
       const wrapper = mount(NotificationToast, {
+        global: { plugins: [i18n] },
         props: {
           message: null,
           uploads
@@ -76,6 +82,7 @@ describe('NotificationToast', () => {
       ])
 
       const wrapper = mount(NotificationToast, {
+        global: { plugins: [i18n] },
         props: {
           message: null,
           uploads
@@ -94,6 +101,7 @@ describe('NotificationToast', () => {
       ])
 
       const wrapper = mount(NotificationToast, {
+        global: { plugins: [i18n] },
         props: {
           message: '새 알림',
           uploads

@@ -1,3 +1,4 @@
+import { t } from '../i18n/translate.js'
 import { ref } from 'vue'
 import QRCode from 'qrcode'
 
@@ -28,7 +29,7 @@ export function useQRCode() {
    */
   async function generateQRCode(roomCode) {
     if (!roomCode || roomCode.trim().length === 0) {
-      error.value = '유효하지 않은 룸 코드입니다.'
+      error.value = t('errors.invalidRoomCode')
       return { success: false, error: error.value }
     }
 
@@ -60,7 +61,7 @@ export function useQRCode() {
       console.log('[useQRCode] QR 코드 생성 완료:', roomUrl)
       return { success: true, dataUrl }
     } catch (err) {
-      error.value = 'QR 코드 생성에 실패했습니다.'
+      error.value = t('errors.qrFailed')
       console.error('[useQRCode] QR 코드 생성 오류:', err)
       return { success: false, error: error.value }
     } finally {
@@ -77,12 +78,12 @@ export function useQRCode() {
    */
   async function generateQRCodeToCanvas(roomCode, canvas) {
     if (!roomCode || roomCode.trim().length === 0) {
-      error.value = '유효하지 않은 룸 코드입니다.'
+      error.value = t('errors.invalidRoomCode')
       return { success: false, error: error.value }
     }
 
     if (!canvas) {
-      error.value = '캔버스 엘리먼트가 필요합니다.'
+      error.value = t('errors.canvasRequired')
       return { success: false, error: error.value }
     }
 
@@ -107,7 +108,7 @@ export function useQRCode() {
       console.log('[useQRCode] QR 코드 캔버스 생성 완료:', roomUrl)
       return { success: true }
     } catch (err) {
-      error.value = 'QR 코드 생성에 실패했습니다.'
+      error.value = t('errors.qrFailed')
       console.error('[useQRCode] QR 코드 캔버스 생성 오류:', err)
       return { success: false, error: error.value }
     } finally {
@@ -123,7 +124,7 @@ export function useQRCode() {
    */
   async function generateQRCodeForUrl(url) {
     if (!url || url.trim().length === 0) {
-      error.value = '유효하지 않은 URL입니다.'
+      error.value = t('errors.invalidUrl')
       return { success: false, error: error.value }
     }
 
@@ -147,7 +148,7 @@ export function useQRCode() {
       qrCodeDataUrl.value = dataUrl
       return { success: true, dataUrl }
     } catch (err) {
-      error.value = 'QR 코드 생성에 실패했습니다.'
+      error.value = t('errors.qrFailed')
       console.error('[useQRCode] URL QR 코드 생성 오류:', err)
       return { success: false, error: error.value }
     } finally {

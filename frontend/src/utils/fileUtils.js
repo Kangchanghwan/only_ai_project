@@ -1,3 +1,4 @@
+import { t, currentLocale } from '../i18n/translate.js'
 /**
  * @file fileUtils.js
  * @description 파일 관련 유틸리티 함수 모음
@@ -127,49 +128,34 @@ export function getFileIcon(fileName) {
  * 업로드 시간을 상대적인 시간으로 포맷팅합니다.
  *
  * @param {string|Date} timestamp - ISO 형식의 타임스탬프 또는 Date 객체
- * @returns {string} 포맷된 시간 (예: "3분 전", "2시간 전", "2024. 1. 15.")
+ * @returns {string} 현재 UI 언어로 포맷된 시간 (Intl.RelativeTimeFormat, 예: "3 minutes ago", "3분 전")
  *
  * @example
  * formatUploadTime('2024-01-15T10:30:00Z') // "5분 전" (현재 시각에 따라 다름)
  */
 export function formatUploadTime(timestamp) {
-  // 유효성 검사
-  if (!timestamp) {
-    return '방금 전'
-  }
+  const locale = currentLocale()
+  const justNow = () => t('time.justNow')
+
+  // 값이 없거나 잘못된 날짜면 "방금 전"
+  if (!timestamp) return justNow()
 
   const past = new Date(timestamp)
+  if (isNaN(past.getTime())) return justNow()
 
-  // 잘못된 날짜 처리
-  if (isNaN(past.getTime())) {
-    return '방금 전'
-  }
+  const diffInSeconds = Math.floor((new Date() - past) / 1000)
 
-  const now = new Date()
-  const diffInSeconds = Math.floor((now - past) / 1000)
+  // 1분 미만은 초 단위 대신 i18n 문구("방금 전" 등)로 표시
+  if (diffInSeconds < 60) return justNow()
 
-  // 10초 미만
-  if (diffInSeconds < 10) {
-    return '방금 전'
-  }
-
-  // 1분 미만
-  if (diffInSeconds < 60) {
-    return `${diffInSeconds}초 전`
-  }
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
 
   // 1시간 미만
-  if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60)
-    return `${minutes}분 전`
-  }
+  if (diffInSeconds < 3600) return rtf.format(-Math.floor(diffInSeconds / 60), 'minute')
 
   // 24시간 미만
-  if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600)
-    return `${hours}시간 전`
-  }
+  if (diffInSeconds < 86400) return rtf.format(-Math.floor(diffInSeconds / 3600), 'hour')
 
   // 24시간 이상은 날짜로 표시
-  return past.toLocaleDateString('ko-KR')
+  return past.toLocaleDateString(locale)
 }

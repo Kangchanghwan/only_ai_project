@@ -138,3 +138,38 @@ describe('i18n seo/landing (검색엔진용 카피)', () => {
     }
   })
 })
+
+describe('i18n 키 커버리지', () => {
+  const flatten = (obj, prefix = '') =>
+    Object.entries(obj).flatMap(([k, v]) =>
+      v && typeof v === 'object' ? flatten(v, `${prefix}${k}.`) : [`${prefix}${k}`]
+    )
+
+  it('알림/에러/QR/룸 섹션은 모든 로케일이 en.json과 같은 키를 가져야 한다', () => {
+    // 이 테스트가 보장하는 섹션. 그 외 섹션(help/download 등)은 일부 로케일이 아직 en으로 폴백한다.
+    const guarded = /^(notification|errors|qrModal)\.|^room\.|^fileGallery\./
+    const en = flatten((locales['./locales/en.json'].default || locales['./locales/en.json'])).filter((k) => guarded.test(k))
+    for (const [path, mod] of Object.entries(locales)) {
+      const keys = new Set(flatten(mod.default || mod))
+      const missing = en.filter((k) => !keys.has(k))
+      expect(missing, `${path} 누락 키`).toEqual([])
+    }
+  })
+
+  it('코드에서 사용하는 t(\'...\') 키가 en.json에 모두 존재해야 한다', () => {
+    const sources = import.meta.glob(['../**/*.vue', '../**/*.js', '!../**/*.test.js', '!../i18n/locales/**'], {
+      eager: true,
+      query: '?raw',
+      import: 'default'
+    })
+    const en = new Set(flatten(locales['./locales/en.json'].default || locales['./locales/en.json']))
+    const used = new Map()
+    const re = /(?<![\w.])\$?t\(\s*['"]([A-Za-z][\w]*(?:\.[\w]+)+)['"]/g
+    for (const [file, src] of Object.entries(sources)) {
+      for (const m of src.matchAll(re)) used.set(m[1], file)
+    }
+    expect(used.size).toBeGreaterThan(50)
+    const missing = [...used].filter(([k]) => !en.has(k) && !en.has(`${k}_plural`)).map(([k, f]) => `${k} (${f})`)
+    expect(missing).toEqual([])
+  })
+})

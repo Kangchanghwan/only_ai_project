@@ -1,8 +1,11 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { ref, watch, computed, onMounted } from 'vue'
 import QRCode from 'qrcode'
 import { generateDownloadUrl, validateUrlLength } from '../utils/router'
 import { trackEvent } from '../utils/analytics'
+
+const { t } = useI18n()
 
 const props = defineProps({
   files: {
@@ -135,7 +138,7 @@ async function handleCopyUrl() {
     }, 2000)
   } catch (error) {
     console.error('URL 복사 실패:', error)
-    alert('URL 복사에 실패했습니다.')
+    alert(t('qrModal.copyUrlFailed'))
   }
 }
 </script>
@@ -154,12 +157,12 @@ async function handleCopyUrl() {
         <!-- 헤더 -->
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-bold text-text-primary">
-            다중 파일 다운로드 QR
+            {{ t('qrModal.multiTitle') }}
           </h2>
           <button
             class="text-text-secondary hover:text-text-primary transition-colors text-2xl leading-none w-8 h-8 flex items-center justify-center"
             @click="handleClose"
-            aria-label="닫기"
+            :aria-label="t('help.close')"
           >
             ×
           </button>
@@ -175,12 +178,12 @@ async function handleCopyUrl() {
           <!-- 파일 개수 정보 -->
           <div class="mt-4 text-center w-full">
             <p class="text-gray-600 text-sm mb-3">
-              모바일에서 QR 코드를 스캔하면 {{ files.length }}개 파일이 다운로드됩니다
+              {{ t('qrModal.multiScan', { count: files.length }) }}
             </p>
             <div class="flex items-center justify-center gap-2 mb-1">
               <span class="text-2xl">📦</span>
               <p class="text-gray-800 font-bold text-lg">
-                {{ files.length }}개 파일
+                {{ t('qrModal.filesCount', { count: files.length }) }}
               </p>
             </div>
           </div>
@@ -188,7 +191,7 @@ async function handleCopyUrl() {
 
         <!-- 파일 목록 -->
         <div class="bg-black/10 rounded-lg p-4 mb-4 max-h-48 overflow-y-auto">
-          <p class="text-sm font-semibold text-text-secondary mb-2">포함된 파일:</p>
+          <p class="text-sm font-semibold text-text-secondary mb-2">{{ t('qrModal.included') }}</p>
           <ul class="space-y-1">
             <li
               v-for="file in displayFiles"
@@ -199,23 +202,20 @@ async function handleCopyUrl() {
             </li>
           </ul>
           <p v-if="remainingCount > 0" class="text-sm text-text-secondary mt-2 italic">
-            외 {{ remainingCount }}개 파일...
+            {{ t('qrModal.moreFiles', { count: remainingCount }) }}
           </p>
         </div>
 
         <!-- URL 길이 경고 -->
         <div v-if="urlValidation.isTooLong" class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
           <p class="text-yellow-400 text-sm leading-relaxed">
-            ⚠️ 선택한 파일이 너무 많아 QR 코드가 복잡할 수 있습니다.
-            (URL: {{ urlValidation.length }}자)
-            <br>
-            파일을 나누어 생성하는 것을 권장합니다.
+            ⚠️ {{ t('qrModal.tooLong', { length: urlValidation.length }) }}
           </p>
         </div>
 
         <!-- URL 복사 영역 -->
         <div class="bg-black/10 rounded-lg p-4 mb-4">
-          <p class="text-text-secondary text-sm mb-2">주소 (PC에서 복사하여 공유):</p>
+          <p class="text-text-secondary text-sm mb-2">{{ t('qrModal.address') }}</p>
           <div class="flex gap-2">
             <input
               type="text"
@@ -227,7 +227,7 @@ async function handleCopyUrl() {
               class="bg-primary text-white px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors text-sm whitespace-nowrap"
               @click="handleCopyUrl"
             >
-              {{ copySuccess ? '✓ 복사됨' : '복사' }}
+              {{ copySuccess ? '✓ ' + t('qrModal.copied') : t('qrModal.copy') }}
             </button>
           </div>
         </div>
@@ -238,14 +238,14 @@ async function handleCopyUrl() {
             class="text-sm text-text-secondary hover:text-text-primary transition-colors mb-2"
             @click="toggleUrlPreview"
           >
-            {{ showUrlPreview ? '▼' : '▶' }} URL 상세 정보
+            {{ showUrlPreview ? '▼' : '▶' }} {{ t('qrModal.urlDetail') }}
           </button>
           <div v-if="showUrlPreview" class="bg-black/20 rounded-lg p-3">
             <p class="text-xs text-text-secondary break-all font-mono">
               {{ downloadUrl }}
             </p>
             <p class="text-xs text-text-secondary mt-2">
-              길이: {{ urlValidation.length }}자 / {{ urlValidation.maxLength }}자
+              {{ t('qrModal.lengthDetail', { length: urlValidation.length, max: urlValidation.maxLength }) }}
             </p>
           </div>
         </div>
@@ -253,8 +253,7 @@ async function handleCopyUrl() {
         <!-- 안내 메시지 -->
         <div class="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6">
           <p class="text-text-primary text-sm leading-relaxed">
-            💡 모바일 기기에서 QR 코드를 스캔하면<br>
-            선택한 파일들이 자동으로 순차 다운로드됩니다.
+            💡 {{ t('qrModal.multiHint') }}
           </p>
         </div>
 
@@ -264,13 +263,13 @@ async function handleCopyUrl() {
             class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
             @click="handleDownload"
           >
-            QR 코드 다운로드
+            {{ t('qrModal.download') }}
           </button>
           <button
             class="flex-1 bg-transparent border border-border text-text-primary px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-border transition-colors"
             @click="handleClose"
           >
-            닫기
+            {{ t('help.close') }}
           </button>
         </div>
       </div>

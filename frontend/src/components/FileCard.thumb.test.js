@@ -2,7 +2,8 @@ import { describe, it, expect, afterEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { r2Service } from '../services/r2Service'
 
-vi.mock('vue-i18n', () => ({
+vi.mock('vue-i18n', async (importOriginal) => ({
+  ...(await importOriginal()),
   useI18n: () => ({ t: (key) => key })
 }))
 
@@ -81,5 +82,15 @@ describe('FileCard.vue - 이미지 썸네일', () => {
     const card = mountCard({ ...imageFile, name: 'notes.pdf' })
 
     expect(card.find('img').exists()).toBe(false)
+  })
+
+  it('원본이 5MB를 넘는 이미지는 썸네일 실패 시 원본으로 폴백하지 않고 아이콘을 보인다', async () => {
+    const big = { ...imageFile, size: 6 * 1024 * 1024 }
+    const card = mountCard(big)
+
+    await card.find('img').trigger('error')
+
+    expect(card.find('img').exists()).toBe(false)
+    expect(card.html()).not.toContain(big.url)
   })
 })

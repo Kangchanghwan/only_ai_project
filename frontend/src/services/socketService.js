@@ -1,3 +1,4 @@
+import { t } from '../i18n/translate.js'
 import { ref } from 'vue'
 import { io } from 'socket.io-client'
 import { setRoomTokens, setRoomTokenRefresher, clearRoomTokens } from './roomTokenStore'
@@ -161,7 +162,7 @@ class SocketService {
       const connectionTimeout = setTimeout(() => {
         this.socket?.off('registered', handleRegistered)
         this.connectionError.value = 'Connection timeout'
-        reject(new Error('연결 시간 초과'))
+        reject(new Error(t('errors.connectTimeout')))
       }, this.reconnectionConfig.timeout)
 
       /**
@@ -237,7 +238,7 @@ class SocketService {
       // 재연결 실패 이벤트
       this.socket.on('reconnect_failed', () => {
         console.error('[SocketService] 재연결 실패: 최대 시도 횟수 초과')
-        this.connectionError.value = '서버 연결 실패'
+        this.connectionError.value = t('errors.serverConnectFailed')
 
         if (this._wasConnected) {
           console.log('[SocketService] 네트워크 복구 대기 시작')
@@ -283,7 +284,7 @@ class SocketService {
         reject(new Error('Socket not connected'))
         return
       }
-      const timer = setTimeout(() => reject(new Error('룸 토큰 재발급 시간 초과')), ROOM_TOKEN_REQUEST_TIMEOUT_MS)
+      const timer = setTimeout(() => reject(new Error(t('errors.tokenTimeout'))), ROOM_TOKEN_REQUEST_TIMEOUT_MS)
       this.socket.emit('room-tokens', (payload) => {
         clearTimeout(timer)
         resolve(payload)

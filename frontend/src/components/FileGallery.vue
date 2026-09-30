@@ -190,7 +190,7 @@ onUnmounted(() => {
         @click="$emit('load-more')"
         class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
       >
-        {{ $t('fileGallery.loadMore') || '더 보기' }}
+        {{ $t('fileGallery.loadMore') }}
       </button>
     </div>
 

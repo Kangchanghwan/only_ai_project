@@ -18,6 +18,9 @@ import { useSeoMeta } from './composables/useSeoMeta'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
+import { openFileInNewTab } from './utils/openFile'
+import { createUploadProgress } from './utils/uploadProgress'
+import { t } from './i18n/translate'
 
 import RoomScreen from './components/RoomScreen.vue'
 import DownloadPage from './components/DownloadPage.vue'
@@ -83,7 +86,7 @@ socket.onReconnected(() => {
   textShare.clearAllTexts()
   fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
 
-  notification.showSuccess('재연결 완료')
+  notification.showSuccess(t('notification.reconnected'))
 })
 
 // ========================================
@@ -112,13 +115,13 @@ async function connectToRoom() {
     roomManager.setRooms({ globalRoomId, ipRoomId })
     // 파일 로딩을 백그라운드에서 실행 (룸별 최신 FILE_PAGE_SIZE개, 나머지는 "더 보기")
     fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
-    notification.showSuccess('연결되었습니다.')
+    notification.showSuccess(t('notification.connected'))
 
     // 새 이벤트 리스너 설정
     setupSocketListeners()
   } catch (error) {
     console.error('[App] 연결 실패:', error)
-    notification.showError(error.message || '연결에 실패했습니다.')
+    notification.showError(error.message || t('notification.connectFailed'))
     roomManager.leaveRoom()
   } finally {
     isConnecting.value = false
@@ -135,9 +138,9 @@ function setupSocketListeners() {
       // 정보가 부족한 구버전 메시지('reload')일 때만 기존처럼 재조회한다.
       const action = applyFileMessage(message, fileManager)
       if (action === 'added') {
-        notification.showInfo('새 파일이 업로드되었습니다!')
+        notification.showInfo(t('file.uploaded'))
       } else if (action === 'reload' && roomManager.roomIds.value.length > 0) {
-        notification.showInfo('새 파일이 업로드되었습니다!')
+        notification.showInfo(t('file.uploaded'))
         fileManager.loadFilesFromRooms(roomManager.roomIds.value)
       }
     } else if (message.type === 'text-shared') {
@@ -150,18 +153,18 @@ function setupSocketListeners() {
           roomId: message.roomId
         }
         textShare.sharedTexts.value.push(newText)
-        notification.showInfo('새 텍스트가 공유되었습니다!')
+        notification.showInfo(t('text.newText'))
       }
     } else if (message.type === 'text-removed') {
       textShare.removeText(message.textId)
     } else if (message.type === 'texts-cleared') {
       textShare.clearTextsForRoom(message.roomId)
-      notification.showInfo('모든 텍스트가 삭제되었습니다.')
+      notification.showInfo(t('text.cleared'))
     }
   })
 
   cleanupUserLeft = socket.onUserLeft((userCount) => {
-    notification.showInfo(`현재 ${userCount}명이 룸에 있습니다.`)
+    notification.showInfo(t('room.userCount', { count: userCount }))
   })
 }
 
@@ -198,7 +201,7 @@ async function uploadFiles(files, scopeOverride) {
   const targetRoomId = roomManager.roomIdForScope(targetScope)
 
   if (!targetRoomId) {
-    notification.showError('공유 대상 룸을 찾을 수 없습니다.')
+    notification.showError(t('notification.shareRoomNotFound'))
     return
   }
 
@@ -211,24 +214,18 @@ async function uploadFiles(files, scopeOverride) {
     const currentSizeMB = (currentRoomSize / 1024 / 1024).toFixed(2)
     const uploadSizeMB = (totalUploadSize / 1024 / 1024).toFixed(2)
     notification.showError(
-      `총 업로드 용량이 제한(${maxRoomSizeMB}MB)을 초과합니다. 현재: ${currentSizeMB}MB, 업로드: ${uploadSizeMB}MB`
+      t('notification.sizeLimitExceeded', { limit: maxRoomSizeMB, current: currentSizeMB, upload: uploadSizeMB })
     )
     return
   }
 
   // 배치 presign 1회 + 제한 병렬 업로드. 성공한 파일은 useFileManager가 목록에 바로 반영한다.
-  const uploadIds = new Map()
+  // 진행 카드는 실제 전송이 시작된 파일에만 만든다 (거절/사전 실패 파일은 토스트만).
+  const progress = createUploadProgress(notification)
 
   const summary = await fileManager.uploadFiles(targetRoomId, files, {
-    onStart: (file) => {
-      const uploadId = crypto.randomUUID()
-      uploadIds.set(file, uploadId)
-      notification.addUpload(uploadId, file.name)
-    },
-    onProgress: (file, percent) => {
-      const uploadId = uploadIds.get(file)
-      if (uploadId) notification.updateUpload(uploadId, percent)
-    },
+    onStart: (file) => progress.start(file),
+    onProgress: (file, percent) => progress.progress(file, percent),
     onComplete: (file, result) => {
       // size/created를 함께 보내 수신 측이 목록을 재조회하지 않고 바로 추가할 수 있게 한다
       try {
@@ -244,38 +241,15 @@ async function uploadFiles(files, scopeOverride) {
         console.warn('[App] 업로드 알림 전송 실패 (파일은 업로드됨):', error)
       }
 
-      const uploadId = uploadIds.get(file)
-      if (uploadId) {
-        notification.completeUpload(uploadId)
-        setTimeout(() => notification.removeUpload(uploadId), 1500)
-      }
+      progress.complete(file)
     },
-    onError: (file, error) => {
-      // 검증에서 걸린 파일은 onStart를 거치지 않으므로 여기서 항목을 만든다
-      let uploadId = uploadIds.get(file)
-      if (!uploadId) {
-        uploadId = crypto.randomUUID()
-        uploadIds.set(file, uploadId)
-        notification.addUpload(uploadId, file.name)
-      }
-      notification.failUpload(uploadId, error.message)
-
-      if (error.message.includes('MB를 초과할 수 없습니다')) {
-        notification.showError(error.message)
-      } else if (error.message.includes('비어있습니다')) {
-        notification.showError(error.message)
-      } else {
-        notification.showError(`업로드 실패: ${error.message}`)
-      }
-
-      setTimeout(() => notification.removeUpload(uploadId), 5000)
-    }
+    onError: (file, error) => progress.fail(file, error)
   })
 
   if (summary.successCount > 0) {
     // GA4 주요 이벤트: 실제로 업로드에 성공한 파일 수만 집계한다
     trackEvent('file_upload', { file_count: summary.successCount, scope: targetScope })
-    notification.showSuccess(`${summary.successCount}개 파일 업로드 완료!`)
+    notification.showSuccess(t('notification.uploadComplete', { count: summary.successCount }))
   }
 }
 
@@ -294,13 +268,14 @@ function publishFileDeleted(file) {
 }
 
 async function handleCopyImage(imageUrl) {
-  notification.showInfo('복사 중...')
+  notification.showInfo(t('notification.copying'))
   const result = await clipboard.copyImage(imageUrl)
   if (result.success) {
-    notification.showSuccess('클립보드에 복사됨!')
+    notification.showSuccess(t('file.copied'))
   } else {
-    window.open(imageUrl, '_blank')
-    notification.showInfo('새 탭에서 열었습니다.')
+    const file = fileManager.files.value.find(f => f.url === imageUrl) || { name: '', url: imageUrl }
+    await openFileInNewTab(file)
+    notification.showInfo(t('notification.openedNewTab'))
   }
 }
 
@@ -320,20 +295,20 @@ async function handleDownloadFile(file) {
       notification.removeUpload(downloadId)
     }, 1500)
     trackEvent('file_download', { file_count: 1 })
-    notification.showSuccess('다운로드 완료!')
+    notification.showSuccess(t('file.downloadComplete'))
   } else {
-    notification.failUpload(downloadId, result.error?.message || '다운로드 실패')
+    notification.failUpload(downloadId, result.error?.message || t('file.downloadFailed'))
     setTimeout(() => {
       notification.removeUpload(downloadId)
     }, 5000)
-    notification.showError('다운로드 실패')
+    notification.showError(t('file.downloadFailed'))
   }
 }
 
 async function handleDownloadParallel(files) {
   if (!files || files.length === 0) return
 
-  notification.showInfo(`${files.length}개 파일을 다운로드 중...`)
+  notification.showInfo(t('notification.downloadingCount', { count: files.length }))
 
   const downloadIds = new Map()
 
@@ -354,7 +329,7 @@ async function handleDownloadParallel(files) {
       } else if (status === 'failed') {
         const downloadId = downloadIds.get(file.name)
         if (downloadId) {
-          notification.failUpload(downloadId, error?.message || '다운로드 실패')
+          notification.failUpload(downloadId, error?.message || t('file.downloadFailed'))
           setTimeout(() => {
             notification.removeUpload(downloadId)
           }, 5000)
@@ -371,13 +346,13 @@ async function handleDownloadParallel(files) {
   if (result.success) {
     if (result.failCount > 0) {
       notification.showInfo(
-        `${result.successCount}개 성공, ${result.failCount}개 실패`
+        t('notification.downloadPartial', { success: result.successCount, fail: result.failCount })
       )
     } else {
-      notification.showSuccess(`${result.successCount}개 파일 다운로드 완료!`)
+      notification.showSuccess(t('notification.downloadCountComplete', { count: result.successCount }))
     }
   } else {
-    notification.showError('다운로드 실패')
+    notification.showError(t('file.downloadFailed'))
   }
 }
 
@@ -385,9 +360,9 @@ async function handleCopySelectedToClipboard(files) {
   if (!files || files.length === 0) return
 
   if (files.length > 1) {
-    notification.showInfo('클립보드에 첫 번째 파일만 복사됩니다...')
+    notification.showInfo(t('notification.copyFirstOnly'))
   } else {
-    notification.showInfo('클립보드에 복사 중...')
+    notification.showInfo(t('notification.copyingToClipboard'))
   }
 
   const result = await download.copyFilesToClipboard(files)
@@ -395,14 +370,13 @@ async function handleCopySelectedToClipboard(files) {
   if (result.success) {
     if (result.totalCount > 1) {
       notification.showSuccess(
-        `${files[0].name}이 클립보드에 복사됨! (${result.totalCount}개 중 1개)\n` +
-        '여러 파일은 "선택 항목 다운로드"를 사용하세요.'
+        t('notification.copiedWithCount', { name: files[0].name, total: result.totalCount })
       )
     } else {
-      notification.showSuccess('클립보드에 복사됨!')
+      notification.showSuccess(t('file.copied'))
     }
   } else {
-    notification.showError('클립보드 복사 실패')
+    notification.showError(t('file.copyFailed'))
   }
 }
 
@@ -430,7 +404,7 @@ async function handleAddText(content, scopeOverride) {
 
   trackEvent('text_share', { scope: targetScope })
 
-  notification.showSuccess('텍스트가 공유되었습니다!')
+  notification.showSuccess(t('text.shared'))
 }
 
 async function handleRemoveText(textId) {
@@ -462,15 +436,15 @@ async function handleClearAllTexts() {
     roomId: targetRoomId
   }, targetScope)
 
-  notification.showInfo('모든 텍스트가 삭제되었습니다.')
+  notification.showInfo(t('text.cleared'))
 }
 
 async function handleCopyText(textId) {
   const result = await textShare.copyTextToClipboard(textId)
   if (result.success) {
-    notification.showSuccess('클립보드에 복사됨!')
+    notification.showSuccess(t('file.copied'))
   } else {
-    notification.showError('복사 실패')
+    notification.showError(t('file.copyFailed'))
   }
 }
 
@@ -499,18 +473,18 @@ async function handlePasteContent() {
       }
     }
 
-    notification.showInfo('클립보드가 비어있습니다.')
+    notification.showInfo(t('clipboard.empty'))
   } catch (error) {
     try {
       const text = await navigator.clipboard.readText()
       if (text && text.trim()) {
         await handleAddText(text.trim())
       } else {
-        notification.showInfo('클립보드가 비어있습니다.')
+        notification.showInfo(t('clipboard.empty'))
       }
     } catch (textError) {
       console.error('[App] 클립보드 읽기 실패:', textError)
-      notification.showError('클립보드 접근 권한이 필요합니다.')
+      notification.showError(t('clipboard.permissionDenied'))
     }
   }
 }
@@ -521,16 +495,16 @@ async function handleDeleteFile(file) {
   try {
     await fileManager.deleteFile(file.roomId, file.name)
     publishFileDeleted(file)
-    notification.showSuccess(`${file.name} 삭제됨`)
+    notification.showSuccess(t('notification.deleted', { name: file.name }))
   } catch (error) {
-    notification.showError(`삭제 실패: ${error.message}`)
+    notification.showError(t('notification.deleteFailed', { message: error.message }))
   }
 }
 
 async function handleDeleteSelected(files) {
   if (!files || files.length === 0) return
 
-  if (!window.confirm(`선택한 ${files.length}개 파일을 삭제하시겠습니까?`)) return
+  if (!window.confirm(t('notification.confirmDeleteSelected', { count: files.length }))) return
 
   let successCount = 0
   let failCount = 0
@@ -547,10 +521,10 @@ async function handleDeleteSelected(files) {
   }
 
   if (successCount > 0) {
-    notification.showSuccess(`${successCount}개 파일 삭제 완료`)
+    notification.showSuccess(t('notification.deleteCountDone', { count: successCount }))
   }
   if (failCount > 0) {
-    notification.showError(`${failCount}개 파일 삭제 실패`)
+    notification.showError(t('notification.deleteCountFailed', { count: failCount }))
   }
 }
 
@@ -558,7 +532,7 @@ async function handleClearStorage() {
   const targetRoomId = activeRoomId.value
   if (!targetRoomId) return
 
-  if (!window.confirm('저장소의 모든 파일을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return
+  if (!window.confirm(t('notification.confirmClearStorage'))) return
 
   try {
     await fileManager.deleteAllFiles(targetRoomId)
@@ -567,10 +541,10 @@ async function handleClearStorage() {
     } catch (publishError) {
       console.warn('[App] 초기화 알림 전송 실패 (파일은 삭제됨):', publishError)
     }
-    notification.showSuccess('저장소가 초기화되었습니다')
+    notification.showSuccess(t('notification.storageCleared'))
   } catch (error) {
     console.error('[App] 저장소 초기화 실패:', error)
-    notification.showError('초기화 실패')
+    notification.showError(t('notification.clearFailed'))
   }
 }
 
@@ -580,7 +554,7 @@ async function handleLoadMore() {
     console.log('[App] 추가 파일 로드 완료')
   } catch (error) {
     console.error('[App] 추가 파일 로드 실패:', error)
-    notification.showError('추가 파일 로드에 실패했습니다.')
+    notification.showError(t('notification.loadMoreFailed'))
   }
 }
 

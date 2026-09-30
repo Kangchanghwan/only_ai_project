@@ -164,9 +164,9 @@ describe('fileUtils', () => {
       expect(formatUploadTime(now.toISOString())).toBe('방금 전')
     })
 
-    it('초 단위를 표시해야 한다', () => {
+    it('1분 미만은 초 단위 대신 방금 전으로 표시해야 한다', () => {
       const past = new Date(Date.now() - 30 * 1000) // 30초 전
-      expect(formatUploadTime(past.toISOString())).toBe('30초 전')
+      expect(formatUploadTime(past.toISOString())).toBe('방금 전')
     })
 
     it('분 단위를 표시해야 한다', () => {
@@ -193,5 +193,20 @@ describe('fileUtils', () => {
     it('잘못된 날짜 형식을 처리해야 한다', () => {
       expect(formatUploadTime('invalid-date')).toBe('방금 전')
     })
+  })
+})
+
+describe('formatUploadTime 로케일', () => {
+  it('영어 UI에서는 영어 상대시간을 사용한다', async () => {
+    const { default: i18n } = await import('../i18n/index.js')
+    i18n.global.locale.value = 'en'
+    try {
+      expect(formatUploadTime(new Date(Date.now() - 5 * 60 * 1000).toISOString())).toBe('5 minutes ago')
+      expect(formatUploadTime(new Date().toISOString())).toBe('just now')
+      expect(formatUploadTime(new Date(Date.now() - 30 * 1000).toISOString())).toBe('just now')
+      expect(formatUploadTime(new Date(Date.now() - 3 * 3600 * 1000).toISOString())).toMatch(/hours ago/)
+    } finally {
+      i18n.global.locale.value = 'ko'
+    }
   })
 })
