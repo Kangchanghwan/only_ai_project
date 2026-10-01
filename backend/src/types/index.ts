@@ -65,6 +65,8 @@ export interface ClientToServerEvents {
     ) => void;
     /** 룸 토큰 재발급 요청 */
     'room-tokens': (callback: (payload: RoomTokensPayload) => void) => void;
+    /** P2P 연결 사전 점검 시그널링 (같은 IP 룸 소켓에게만 중계) */
+    'p2p:signal': (payload: { to: string; data: unknown }) => void;
 }
 
 /** 서버 → 클라이언트 이벤트 */
@@ -74,6 +76,7 @@ export interface ServerToClientEvents {
     'user-left': (userCount: number) => void;
     /** 룸(ip 또는 global)의 접속 기기 목록이 바뀔 때마다 해당 룸의 전체 목록을 브로드캐스트 */
     'room-users': (payload: { roomId: string; devices: DeviceInfo[] }) => void;
+    'p2p:signal': (payload: { from: string; data: unknown }) => void;
     error: (error: ErrorResponse) => void;
 }
 

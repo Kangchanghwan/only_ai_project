@@ -4,6 +4,7 @@ import { RoomManager, SHARED_ROOM_ID } from '../managers/RoomManager';
 import { extractClientIp, deriveIpRoomId } from '../utils/clientIp';
 import { parseDeviceInfo } from '../utils/deviceInfo';
 import { issueRoomTokens, getRoomTokenTtlSec } from '../utils/roomToken';
+import { TokenBucket } from '../utils/tokenBucket';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -33,6 +34,48 @@ const buildRoomTokenPayload = (socket: ExtendedSocket): RoomTokensPayload => ({
     roomTokenTtlSec: getRoomTokenTtlSec(),
 });
 
+// === P2P 시그널링 (연결 사전 점검 전용, 파일 데이터는 절대 중계하지 않음) ===
+
+/** p2p:signal data 최대 크기 (JSON 직렬화 기준, bytes) */
+export const P2P_SIGNAL_MAX_BYTES = 16 * 1024;
+/** 소켓당 버스트 허용량 / 초당 충전량 */
+export const P2P_SIGNAL_BUCKET_CAPACITY = 40;
+export const P2P_SIGNAL_REFILL_PER_SEC = 20;
+
+const p2pBuckets = new WeakMap<object, TokenBucket>();
+
+/**
+ * p2p:signal 중계. 보낸 소켓과 대상 소켓이 같은 IP 룸일 때만 {from, data}를 대상에게 전달한다.
+ * 조건 위반·과다 요청은 조용히 버린다 (앱 흐름에 영향 없음).
+ */
+export const handleP2pSignal = (socket: ExtendedSocket, io: Server, payload: unknown) => {
+    try {
+        if (!payload || typeof payload !== 'object') return;
+        const { to, data } = payload as { to?: unknown; data?: unknown };
+        if (typeof to !== 'string' || to.length === 0 || to.length > 64 || data === undefined) return;
+
+        let bucket = p2pBuckets.get(socket);
+        if (!bucket) {
+            bucket = new TokenBucket(P2P_SIGNAL_BUCKET_CAPACITY, P2P_SIGNAL_REFILL_PER_SEC);
+            p2pBuckets.set(socket, bucket);
+        }
+        if (!bucket.tryConsume()) return;
+
+        const serialized = JSON.stringify(data);
+        if (serialized === undefined || Buffer.byteLength(serialized, 'utf8') > P2P_SIGNAL_MAX_BYTES) return;
+
+        const ipRoomId = socket.ipRoomId;
+        if (!ipRoomId || to === socket.id) return;
+        const target = io.sockets.sockets.get(to) as ExtendedSocket | undefined;
+        // 전역 룸(room-shared) 대상은 금지: 같은 IP 룸에 실제로 속한 소켓에만 전달
+        if (!target || target.ipRoomId !== ipRoomId || !target.rooms.has(ipRoomId)) return;
+
+        target.emit('p2p:signal', { from: socket.id, data });
+    } catch (error) {
+        logger.error(`p2p:signal 처리 에러 [${socket.id}]:`, error);
+    }
+};
+
 // === 메인 핸들러 설정 ===
 
 export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
@@ -53,6 +96,9 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
             if (typeof ack !== 'function') return;
             ack(buildRoomTokenPayload(socket));
         });
+
+        // P2P 연결 사전 점검용 시그널링 중계 (구버전 클라이언트는 이 이벤트를 쓰지 않음)
+        socket.on('p2p:signal', (payload: unknown) => handleP2pSignal(socket, io, payload));
 
         socket.on('error', (error) => {
             logger.error(`Socket 에러 [${socket.id}]:`, error);
