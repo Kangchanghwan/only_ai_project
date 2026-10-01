@@ -5,6 +5,7 @@ import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../u
 import { r2Service } from '../services/r2Service'
 import FileQRCodeModal from './FileQRCodeModal.vue'
 import { trackEvent } from '../utils/analytics'
+import { trackStoreFallback } from '../utils/storeFallback'
 import { useScopeAccent } from '../composables/useScopeAccent'
 
 const { t } = useI18n()
@@ -82,6 +83,7 @@ const previewSrc = computed(() => {
 function handleThumbError() {
   if (!thumbFailed.value && previewSrc.value !== props.file.url) {
     thumbFailed.value = true
+    if (showImagePreview.value) trackStoreFallback('preview', props.file.size, 'thumb_failed')
   }
 }
 
