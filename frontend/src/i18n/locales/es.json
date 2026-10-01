@@ -156,7 +156,8 @@
     "limitResume": "Hasta {size} por archivo · se reanuda si se interrumpe",
     "receive": "Recibir",
     "copyImage": "Copiar imagen",
-    "selectFile": "Seleccionar {name}"
+    "selectFile": "Seleccionar {name}",
+    "uploadPasteHint": "(Pega con Ctrl+V)"
   },
   "text": {
     "share": "Compartir Texto",
@@ -166,7 +167,11 @@
     "clearAll": "Borrar Todos los Textos",
     "cleared": "Todos los textos borrados.",
     "composePlaceholder": "Escribe o pega aquí y pulsa Compartir",
-    "inputPasteHint": "Lo que pegues en este cuadro solo se envía al pulsar Compartir."
+    "inputPasteHint": "Lo que pegues en este cuadro solo se envía al pulsar Compartir.",
+    "receivedText": "Texto recibido",
+    "autoShareHint": "El texto se comparte automáticamente al pegar (Ctrl+V / Cmd+V)",
+    "noMessages": "Aún no hay mensajes",
+    "delete": "Eliminar"
   },
   "notification": {
     "uploading": "Subiendo...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Pegar",
     "empty": "El portapapeles está vacío.",
-    "permissionDenied": "Se requiere permiso de acceso al portapapeles."
+    "permissionDenied": "Se requiere permiso de acceso al portapapeles.",
+    "pasteTitle": "Pegar",
+    "pasteDescription": "Compartir texto/imágenes del portapapeles"
   },
   "footer": {
     "privacyPolicy": "Política de Privacidad",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Toca el icono de instalación en la barra de direcciones o el banner de instalación en la parte inferior.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Toca el botón de compartir y luego elige \"Añadir a pantalla de inicio\".",
-    "downloadSingleDesc": "Pulsa el botón Recibir junto al archivo para descargarlo.",
+    "downloadSingleDesc": "Pulsa el botón Recibir junto al archivo para descargarlo. El botón ⋯ (Más) permite compartir por código QR, descargar y eliminar (las imágenes también se pueden copiar). Funciona igual en ordenador y móvil.",
     "textShareCopyDesc": "Pulsa Copiar en un texto compartido para copiarlo al portapapeles. Lo que escribas o pegues en el cuadro se envía con el botón Compartir.",
     "textShareDeleteDesc": "Abre el botón ⋯ a la derecha del texto y elige Eliminar.",
-    "scopeDevicesDesc": "La tarjeta de conexión (el panel izquierdo en pantallas anchas) muestra los otros dispositivos conectados en el mismo ámbito."
+    "scopeDevicesDesc": "La tarjeta de conexión (el panel izquierdo en pantallas anchas) muestra los otros dispositivos conectados en el mismo ámbito.",
+    "limit4": "Aunque sigas conectado, los archivos se guardan como máximo cerca de 1 día (se eliminan poco después de que todos los dispositivos salgan)",
+    "tip4": "Usa el botón \"⋯\" de la tarjeta de un archivo para abrir el menú de código QR/descarga/eliminar (las imágenes también se pueden copiar)"
   },
   "seo": {
     "title": "Portapapeles online: comparte texto, imágenes y archivos",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Notas de almacenamiento y uso",
     "retention": "Aunque sigas conectado, los archivos se eliminan automáticamente como máximo tras 1 día. La limpieza se ejecuta periódicamente, así que no se garantiza la hora exacta (al segundo), y pueden borrarse antes cuando todos los dispositivos salen. Descarga lo que necesites enseguida."
+  },
+  "download": {
+    "title": "Descargando archivos...",
+    "selectAll": "Seleccionar todo",
+    "deselectAll": "Deseleccionar todo",
+    "downloadSelected": "Descargar",
+    "qrCode": "Código QR",
+    "selectAllHint": "Seleccionar todos los archivos",
+    "deselectAllHint": "Deseleccionar todos los archivos",
+    "downloadHint": "Descargar los archivos seleccionados uno tras otro",
+    "qrCodeHint": "Generar códigos QR de los archivos seleccionados"
   }
 }

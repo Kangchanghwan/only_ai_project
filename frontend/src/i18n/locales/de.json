@@ -156,7 +156,8 @@
     "limitResume": "Bis zu {size} pro Datei · Unterbrochene Uploads werden fortgesetzt",
     "receive": "Empfangen",
     "copyImage": "Bild kopieren",
-    "selectFile": "{name} auswählen"
+    "selectFile": "{name} auswählen",
+    "uploadPasteHint": "(Mit Strg+V einfügen)"
   },
   "text": {
     "share": "Text teilen",
@@ -166,7 +167,11 @@
     "clearAll": "Alle Texte löschen",
     "cleared": "Alle Texte gelöscht.",
     "composePlaceholder": "Hier eingeben oder einfügen, dann auf Teilen tippen",
-    "inputPasteHint": "Eingefügter Text in diesem Feld wird erst mit Teilen gesendet."
+    "inputPasteHint": "Eingefügter Text in diesem Feld wird erst mit Teilen gesendet.",
+    "receivedText": "Empfangener Text",
+    "autoShareHint": "Text wird beim Einfügen automatisch geteilt (Strg+V / Cmd+V)",
+    "noMessages": "Noch keine Nachrichten",
+    "delete": "Löschen"
   },
   "notification": {
     "uploading": "Hochladen...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Einfügen",
     "empty": "Zwischenablage ist leer.",
-    "permissionDenied": "Zugriffsberechtigung für Zwischenablage erforderlich."
+    "permissionDenied": "Zugriffsberechtigung für Zwischenablage erforderlich.",
+    "pasteTitle": "Einfügen",
+    "pasteDescription": "Text/Bilder aus der Zwischenablage teilen"
   },
   "footer": {
     "privacyPolicy": "Datenschutzrichtlinie",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Tippe auf das Installationssymbol in der Adressleiste oder auf das Installationsbanner am unteren Bildschirmrand.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Tippe auf die Teilen-Schaltfläche und wähle „Zum Home-Bildschirm“.",
-    "downloadSingleDesc": "Tippe neben einer Datei auf Empfangen, um sie herunterzuladen.",
+    "downloadSingleDesc": "Tippen Sie neben einer Datei auf „Empfangen“, um sie herunterzuladen. Über die Schaltfläche ⋯ (Mehr) können Sie per QR-Code teilen, herunterladen und löschen (Bilder lassen sich auch kopieren). Am Computer und auf dem Handy gleich.",
     "textShareCopyDesc": "Tippe bei einem geteilten Text auf Kopieren, um ihn in die Zwischenablage zu kopieren. Was du ins Feld tippst oder einfügst, sendest du mit Teilen.",
     "textShareDeleteDesc": "Öffne die Schaltfläche ⋯ rechts neben dem Text und wähle Löschen.",
-    "scopeDevicesDesc": "Die Verbindungskarte (auf breiten Bildschirmen das linke Panel) zeigt andere Geräte im selben Bereich."
+    "scopeDevicesDesc": "Die Verbindungskarte (auf breiten Bildschirmen das linke Panel) zeigt andere Geräte im selben Bereich.",
+    "limit4": "Auch während Sie verbunden bleiben, werden Dateien höchstens etwa 1 Tag gespeichert (kurz nachdem alle Geräte weg sind, werden sie gelöscht)",
+    "tip4": "Mit der Schaltfläche „⋯“ auf einer Dateikarte öffnen Sie das Menü für QR-Code/Download/Löschen (bei Bildern auch Kopieren)"
   },
   "seo": {
     "title": "Zwischenablage online: Text, Bilder & Dateien – Handy zu PC",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Hinweise zu Speicherung und Nutzung",
     "retention": "Auch während du verbunden bist, werden Dateien nach spätestens 1 Tag automatisch bereinigt. Die Bereinigung läuft periodisch, daher ist der genaue Zeitpunkt (auf die Sekunde) nicht garantiert; sobald alle Geräte weg sind, kann früher gelöscht werden. Lade Benötigtes gleich herunter."
+  },
+  "download": {
+    "title": "Dateien werden heruntergeladen...",
+    "selectAll": "Alle auswählen",
+    "deselectAll": "Auswahl aufheben",
+    "downloadSelected": "Herunterladen",
+    "qrCode": "QR-Code",
+    "selectAllHint": "Alle Dateien auswählen",
+    "deselectAllHint": "Auswahl aller Dateien aufheben",
+    "downloadHint": "Ausgewählte Dateien nacheinander herunterladen",
+    "qrCodeHint": "QR-Codes für ausgewählte Dateien erstellen"
   }
 }

@@ -156,7 +156,8 @@
     "limitResume": "Až {size} na soubor · přerušené nahrávání se obnoví",
     "receive": "Přijmout",
     "copyImage": "Kopírovat obrázek",
-    "selectFile": "Vybrat {name}"
+    "selectFile": "Vybrat {name}",
+    "uploadPasteHint": "(Vložte pomocí Ctrl+V)"
   },
   "text": {
     "share": "Sdílet text",
@@ -166,7 +167,11 @@
     "clearAll": "Vymazat všechny texty",
     "cleared": "Všechny texty vymazány.",
     "composePlaceholder": "Napište nebo vložte sem a stiskněte Sdílet",
-    "inputPasteHint": "Text vložený do tohoto pole se odešle až stisknutím Sdílet."
+    "inputPasteHint": "Text vložený do tohoto pole se odešle až stisknutím Sdílet.",
+    "receivedText": "Přijatý text",
+    "autoShareHint": "Text se po vložení (Ctrl+V / Cmd+V) sdílí automaticky",
+    "noMessages": "Zatím žádné zprávy",
+    "delete": "Smazat"
   },
   "notification": {
     "uploading": "Nahrávání...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Vložit",
     "empty": "Schránka je prázdná.",
-    "permissionDenied": "Vyžadováno oprávnění k přístupu ke schránce."
+    "permissionDenied": "Vyžadováno oprávnění k přístupu ke schránce.",
+    "pasteTitle": "Vložit",
+    "pasteDescription": "Sdílet text/obrázky ze schránky"
   },
   "footer": {
     "privacyPolicy": "Zásady Ochrany Osobních Údajů",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Klepněte na ikonu instalace v adresním řádku nebo na banner instalace ve spodní části obrazovky.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Klepněte na tlačítko sdílení a poté vyberte „Přidat na plochu“.",
-    "downloadSingleDesc": "Stiskněte tlačítko Přijmout vedle souboru a stáhne se.",
+    "downloadSingleDesc": "Stisknutím tlačítka Přijmout vedle souboru jej stáhnete. Tlačítko ⋯ (Více) nabízí sdílení QR kódem, stažení a smazání (obrázky lze i zkopírovat). Na počítači i mobilu stejně.",
     "textShareCopyDesc": "Stiskněte Kopírovat u sdíleného textu a zkopíruje se do schránky. Text napsaný nebo vložený do pole odešlete tlačítkem Sdílet.",
     "textShareDeleteDesc": "Otevřete tlačítko ⋯ vpravo od textu a zvolte Smazat.",
-    "scopeDevicesDesc": "Karta připojení (na širokých obrazovkách levý panel) ukazuje další zařízení ve stejném rozsahu."
+    "scopeDevicesDesc": "Karta připojení (na širokých obrazovkách levý panel) ukazuje další zařízení ve stejném rozsahu.",
+    "limit4": "I když zůstanete připojeni, soubory se uchovávají nejvýše asi 1 den (krátce poté, co odejdou všechna zařízení, se smažou)",
+    "tip4": "Tlačítko „⋯“ na kartě souboru otevře nabídku QR kód/stažení/smazání (u obrázků i kopírování)"
   },
   "seo": {
     "title": "Online schránka – sdílejte text a soubory mezi telefonem a PC",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Uložení a používání",
     "retention": "I když jste připojeni, soubory se automaticky mažou nejpozději po 1 dni. Úklid probíhá pravidelně, takže přesný čas (na sekundu) není zaručen a po odchodu všech zařízení může dojít ke smazání dříve. Potřebné soubory si stáhněte hned."
+  },
+  "download": {
+    "title": "Stahování souborů...",
+    "selectAll": "Vybrat vše",
+    "deselectAll": "Zrušit výběr",
+    "downloadSelected": "Stáhnout",
+    "qrCode": "QR kód",
+    "selectAllHint": "Vybrat všechny soubory",
+    "deselectAllHint": "Zrušit výběr všech souborů",
+    "downloadHint": "Stáhnout vybrané soubory postupně",
+    "qrCodeHint": "Vytvořit QR kódy pro vybrané soubory"
   }
 }

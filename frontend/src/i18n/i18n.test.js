@@ -304,3 +304,51 @@ describe('i18n 반응형 작업 영역 신규 문구', () => {
     }
   })
 })
+
+describe('i18n 도움말 보완/붙여넣기 번역', () => {
+  const en = locales['./locales/en.json'].default || locales['./locales/en.json']
+  const pasteKeys = [
+    ['file', 'uploadPasteHint'],
+    ['clipboard', 'pasteTitle'],
+    ['clipboard', 'pasteDescription'],
+    ['help', 'limit4'],
+    ['help', 'downloadSingleDesc'],
+    ['help', 'tip4']
+  ]
+
+  it('모든 로케일에 보관 1일/더보기/붙여넣기 키가 있고 en 이외 로케일은 영어 폴백이 아니다', () => {
+    for (const [path, mod] of Object.entries(locales)) {
+      const json = mod.default || mod
+      const isEn = path.endsWith('/en.json')
+      for (const [a, b] of pasteKeys) {
+        const v = json[a]?.[b]
+        expect(typeof v, `${path} ${a}.${b} 없음`).toBe('string')
+        expect(v.length).toBeGreaterThan(0)
+        if (!isEn) expect(v, `${path} ${a}.${b}가 영어와 동일`).not.toBe(en[a][b])
+      }
+    }
+  })
+
+  it('ar 붙여넣기 카드 문구가 아랍 문자로 있다', () => {
+    const ar = locales['./locales/ar.json'].default || locales['./locales/ar.json']
+    for (const v of [ar.clipboard.pasteTitle, ar.clipboard.pasteDescription, ar.file.uploadPasteHint]) {
+      expect(v).toMatch(/[\u0600-\u06FF]/)
+    }
+  })
+
+  it('ja 붙여넣기 문구는 어색한 전각 공백/괄호 없이 자연스럽다', () => {
+    const ja = locales['./locales/ja.json'].default || locales['./locales/ja.json']
+    expect(ja.clipboard.pasteDescription).toBe('クリップボードのテキスト・画像を共有')
+    expect(ja.file.uploadPasteHint).toBe('(Ctrl+Vで貼り付け)')
+    expect(ja.clipboard.pasteDescription.endsWith('を')).toBe(false)
+  })
+
+  it('영어 intro는 공백으로 시작한다 (strong 뒤 결합)', () => {
+    expect(en.help.intro.startsWith(' ')).toBe(true)
+  })
+
+  it('ko 이외 한글 비포함, 플레이스홀더 {size} 등 변수 유지(ja limitResume)', () => {
+    const ja = locales['./locales/ja.json'].default || locales['./locales/ja.json']
+    expect(ja.file.limitResume).toContain('{size}')
+  })
+})

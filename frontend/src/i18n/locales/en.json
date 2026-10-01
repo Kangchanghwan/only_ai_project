@@ -257,7 +257,7 @@
   "help": {
     "title": "Clipboard Share User Guide",
     "close": "Close",
-    "intro": "is a web application that allows you to share files and text in real-time. As soon as you open it, you're automatically connected to a shared space where you can instantly exchange clipboard content with others there.",
+    "intro": " is a web application that allows you to share files and text in real-time. As soon as you open it, you're automatically connected to a shared space where you can instantly exchange clipboard content with others there.",
     "features": "Key Features",
     "feature1": "Real-time File Sharing:",
     "feature1Desc": "Instantly share various files such as images and documents",
@@ -290,7 +290,7 @@
     "textShareDeleteDesc": "Open the ⋯ button on the right of a text and choose Delete.",
     "downloadTitle": "File Download",
     "downloadSingle": "Individual Download",
-    "downloadSingleDesc": "Press the Receive button next to a file to download it.",
+    "downloadSingleDesc": "Press the Receive button next to a file to download it. The ⋯ (More) button beside it offers QR code sharing, download and delete (images can also be copied). This works the same on desktop and mobile.",
     "downloadMulti": "Multiple Selection Download",
     "downloadMultiStep1": "Select files with \"Select All\" or the checkbox on each file card",
     "downloadMultiStep2": "Use the \"Download\" button to download the selected files one by one",
@@ -306,7 +306,7 @@
     "tip1": "You can take a screenshot and share it immediately with Ctrl+V",
     "tip2": "Share the URL to let others join the same room instantly",
     "tip3": "All files and text are synchronized in real-time",
-    "tip4": "On mobile, tap the \"⋯\" button on a file card to open the share/QR/download/delete menu",
+    "tip4": "Use the \"⋯\" button on a file card to open the QR share/download/delete menu (copy is included for images)",
     "aboutTitle": "About",
     "confirm": "Confirm",
     "pwaTitle": "Install as an App",
@@ -314,7 +314,8 @@
     "pwaAndroidTitle": "Android / Desktop (Chrome, Edge)",
     "pwaAndroidDesc": "Tap the install icon in the address bar or the install banner at the bottom of the screen.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Tap the Share button, then choose \"Add to Home Screen\"."
+    "pwaIOSDesc": "Tap the Share button, then choose \"Add to Home Screen\".",
+    "limit4": "Even while devices stay connected, files are kept for about 1 day at most (they are deleted shortly after every device leaves)"
   },
   "footer": {
     "privacyPolicy": "Privacy Policy",

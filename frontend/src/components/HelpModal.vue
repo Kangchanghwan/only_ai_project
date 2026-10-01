@@ -227,6 +227,7 @@ onUnmounted(() => {
                   <li>• {{ t('help.limit1') }}</li>
                   <li>• {{ t('help.limit2') }}</li>
                   <li>• {{ t('help.limit3') }}</li>
+                  <li>• {{ t('help.limit4') }}</li>
                 </ul>
               </div>
             </section>

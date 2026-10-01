@@ -156,7 +156,8 @@
     "limitResume": "Fájlonként legfeljebb {size} · a megszakadt feltöltés folytatódik",
     "receive": "Fogadás",
     "copyImage": "Kép másolása",
-    "selectFile": "{name} kijelölése"
+    "selectFile": "{name} kijelölése",
+    "uploadPasteHint": "(Illessze be Ctrl+V-vel)"
   },
   "text": {
     "share": "Szöveg megosztása",
@@ -166,7 +167,11 @@
     "clearAll": "Összes szöveg törlése",
     "cleared": "Összes szöveg törölve.",
     "composePlaceholder": "Írj vagy illessz be ide, majd nyomd meg a Megosztás gombot",
-    "inputPasteHint": "Az ebbe a mezőbe illesztett szöveg csak a Megosztás gombbal megy el."
+    "inputPasteHint": "Az ebbe a mezőbe illesztett szöveg csak a Megosztás gombbal megy el.",
+    "receivedText": "Kapott szöveg",
+    "autoShareHint": "A szöveg beillesztéskor (Ctrl+V / Cmd+V) automatikusan megosztásra kerül",
+    "noMessages": "Még nincs üzenet",
+    "delete": "Törlés"
   },
   "notification": {
     "uploading": "Feltöltés...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Beillesztés",
     "empty": "A vágólap üres.",
-    "permissionDenied": "Vágólap hozzáférési engedély szükséges."
+    "permissionDenied": "Vágólap hozzáférési engedély szükséges.",
+    "pasteTitle": "Beillesztés",
+    "pasteDescription": "A vágólap szövegének/képeinek megosztása"
   },
   "footer": {
     "privacyPolicy": "Adatvédelmi Irányelvek",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Koppints a címsorban lévő telepítési ikonra vagy a képernyő alján megjelenő telepítési sávra.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Koppints a Megosztás gombra, majd válaszd a „Főképernyőhöz adás” lehetőséget.",
-    "downloadSingleDesc": "Nyomd meg a fájl melletti Fogadás gombot a letöltéshez.",
+    "downloadSingleDesc": "A fájl melletti Fogadás gombbal letöltheti. A ⋯ (Több) gombbal QR-kódos megosztás, letöltés és törlés érhető el (a képek másolhatók is). Számítógépen és mobilon ugyanígy.",
     "textShareCopyDesc": "Nyomd meg a megosztott szövegnél a Másolás gombot a vágólapra másoláshoz. A mezőbe írt vagy beillesztett szöveget a Megosztás gombbal küldheted el.",
     "textShareDeleteDesc": "Nyisd meg a szöveg jobb oldalán lévő ⋯ gombot, és válaszd a Törlést.",
-    "scopeDevicesDesc": "A kapcsolat kártya (széles képernyőn a bal oldali panel) mutatja az azonos körben csatlakozó többi eszközt."
+    "scopeDevicesDesc": "A kapcsolat kártya (széles képernyőn a bal oldali panel) mutatja az azonos körben csatlakozó többi eszközt.",
+    "limit4": "Akkor is, ha csatlakozva marad, a fájlok legfeljebb kb. 1 napig maradnak meg (miután minden eszköz kilépett, hamarosan törlődnek)",
+    "tip4": "A fájlkártya „⋯” gombja megnyitja a QR-kód/letöltés/törlés menüt (képeknél másolással)"
   },
   "seo": {
     "title": "Online vágólap – szöveg, kép és fájl megosztása telefon és PC között",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Tárolás és használat",
     "retention": "Akkor is, ha csatlakozva vagy, a fájlok legfeljebb 1 nap után automatikusan törlődnek. A takarítás időszakosan fut, ezért a pontos idő (másodpercre) nem garantált, és ha minden eszköz kilép, korábban is törlődhet. A szükséges fájlokat azonnal töltsd le."
+  },
+  "download": {
+    "title": "Fájlok letöltése...",
+    "selectAll": "Összes kijelölése",
+    "deselectAll": "Kijelölés törlése",
+    "downloadSelected": "Letöltés",
+    "qrCode": "QR-kód",
+    "selectAllHint": "Összes fájl kijelölése",
+    "deselectAllHint": "Összes fájl kijelölésének törlése",
+    "downloadHint": "A kijelölt fájlok letöltése egymás után",
+    "qrCodeHint": "QR-kódok létrehozása a kijelölt fájlokhoz"
   }
 }

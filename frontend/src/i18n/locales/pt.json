@@ -156,7 +156,8 @@
     "limitResume": "Até {size} por arquivo · retoma se for interrompido",
     "receive": "Receber",
     "copyImage": "Copiar imagem",
-    "selectFile": "Selecionar {name}"
+    "selectFile": "Selecionar {name}",
+    "uploadPasteHint": "(Cole com Ctrl+V)"
   },
   "text": {
     "share": "Compartilhar texto",
@@ -166,7 +167,11 @@
     "clearAll": "Limpar todos os textos",
     "cleared": "Todos os textos limpos.",
     "composePlaceholder": "Digite ou cole aqui e toque em Compartilhar",
-    "inputPasteHint": "O texto colado nesta caixa só é enviado ao tocar em Compartilhar."
+    "inputPasteHint": "O texto colado nesta caixa só é enviado ao tocar em Compartilhar.",
+    "receivedText": "Texto recebido",
+    "autoShareHint": "O texto é compartilhado automaticamente ao colar (Ctrl+V / Cmd+V)",
+    "noMessages": "Ainda não há mensagens",
+    "delete": "Excluir"
   },
   "notification": {
     "uploading": "Enviando...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Colar",
     "empty": "A área de transferência está vazia.",
-    "permissionDenied": "Permissão de acesso à área de transferência necessária."
+    "permissionDenied": "Permissão de acesso à área de transferência necessária.",
+    "pasteTitle": "Colar",
+    "pasteDescription": "Compartilhar texto/imagens da área de transferência"
   },
   "footer": {
     "privacyPolicy": "Política de Privacidade",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Toque no ícone de instalação na barra de endereço ou no banner de instalação na parte inferior da tela.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Toque no botão Compartilhar e escolha \"Adicionar à Tela de Início\".",
-    "downloadSingleDesc": "Toque no botão Receber ao lado do arquivo para baixá-lo.",
+    "downloadSingleDesc": "Toque no botão Receber ao lado do arquivo para baixá-lo. O botão ⋯ (Mais) permite compartilhar por código QR, baixar e excluir (imagens também podem ser copiadas). Funciona igual no computador e no celular.",
     "textShareCopyDesc": "Toque em Copiar em um texto compartilhado para copiá-lo. O que você digitar ou colar na caixa é enviado com o botão Compartilhar.",
     "textShareDeleteDesc": "Abra o botão ⋯ à direita do texto e escolha Excluir.",
-    "scopeDevicesDesc": "O cartão de conexão (o painel esquerdo em telas largas) mostra os outros dispositivos conectados no mesmo escopo."
+    "scopeDevicesDesc": "O cartão de conexão (o painel esquerdo em telas largas) mostra os outros dispositivos conectados no mesmo escopo.",
+    "limit4": "Mesmo conectado, os arquivos ficam guardados por no máximo cerca de 1 dia (são excluídos pouco depois de todos os dispositivos saírem)",
+    "tip4": "Use o botão \"⋯\" no cartão do arquivo para abrir o menu de código QR/download/exclusão (imagens também podem ser copiadas)"
   },
   "seo": {
     "title": "Área de transferência online: texto, imagens e arquivos",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Armazenamento e uso",
     "retention": "Mesmo conectado, os arquivos são apagados automaticamente após no máximo 1 dia. A limpeza roda periodicamente, então o horário exato (ao segundo) não é garantido, e podem ser apagados antes quando todos os dispositivos saem. Baixe o que precisar logo."
+  },
+  "download": {
+    "title": "Baixando arquivos...",
+    "selectAll": "Selecionar tudo",
+    "deselectAll": "Desmarcar tudo",
+    "downloadSelected": "Baixar",
+    "qrCode": "Código QR",
+    "selectAllHint": "Selecionar todos os arquivos",
+    "deselectAllHint": "Desmarcar todos os arquivos",
+    "downloadHint": "Baixar os arquivos selecionados em sequência",
+    "qrCodeHint": "Gerar códigos QR dos arquivos selecionados"
   }
 }

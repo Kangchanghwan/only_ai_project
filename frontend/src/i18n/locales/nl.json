@@ -156,7 +156,8 @@
     "limitResume": "Tot {size} per bestand · onderbroken uploads worden hervat",
     "receive": "Ontvangen",
     "copyImage": "Afbeelding kopiëren",
-    "selectFile": "{name} selecteren"
+    "selectFile": "{name} selecteren",
+    "uploadPasteHint": "(Plak met Ctrl+V)"
   },
   "text": {
     "share": "Tekst delen",
@@ -166,7 +167,11 @@
     "clearAll": "Alle teksten wissen",
     "cleared": "Alle teksten gewist.",
     "composePlaceholder": "Typ of plak hier en druk op Delen",
-    "inputPasteHint": "Tekst die je in dit vak plakt, wordt pas verstuurd als je op Delen drukt."
+    "inputPasteHint": "Tekst die je in dit vak plakt, wordt pas verstuurd als je op Delen drukt.",
+    "receivedText": "Ontvangen tekst",
+    "autoShareHint": "Tekst wordt automatisch gedeeld bij plakken (Ctrl+V / Cmd+V)",
+    "noMessages": "Nog geen berichten",
+    "delete": "Verwijderen"
   },
   "notification": {
     "uploading": "Uploaden...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Plakken",
     "empty": "Klembord is leeg.",
-    "permissionDenied": "Toegangsrechten voor klembord vereist."
+    "permissionDenied": "Toegangsrechten voor klembord vereist.",
+    "pasteTitle": "Plakken",
+    "pasteDescription": "Tekst/afbeeldingen van het klembord delen"
   },
   "footer": {
     "privacyPolicy": "Privacybeleid",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Tik op het installatiepictogram in de adresbalk of de installatiebanner onderaan het scherm.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Tik op de deelknop en kies vervolgens \"Zet op beginscherm\".",
-    "downloadSingleDesc": "Druk naast een bestand op Ontvangen om het te downloaden.",
+    "downloadSingleDesc": "Tik naast een bestand op Ontvangen om het te downloaden. Met de knop ⋯ (Meer) kun je delen via QR-code, downloaden en verwijderen (afbeeldingen kun je ook kopiëren). Op computer en mobiel hetzelfde.",
     "textShareCopyDesc": "Druk bij een gedeelde tekst op Kopiëren om die naar het klembord te kopiëren. Tekst die je typt of plakt in het vak verstuur je met Delen.",
     "textShareDeleteDesc": "Open de knop ⋯ rechts van de tekst en kies Verwijderen.",
-    "scopeDevicesDesc": "De verbindingskaart (op brede schermen het linkerpaneel) toont andere apparaten in hetzelfde bereik."
+    "scopeDevicesDesc": "De verbindingskaart (op brede schermen het linkerpaneel) toont andere apparaten in hetzelfde bereik.",
+    "limit4": "Ook als je verbonden blijft, worden bestanden hooguit ongeveer 1 dag bewaard (kort nadat alle apparaten weg zijn, worden ze verwijderd)",
+    "tip4": "Met de knop \"⋯\" op een bestandskaart open je het menu voor QR-code/downloaden/verwijderen (bij afbeeldingen ook kopiëren)"
   },
   "seo": {
     "title": "Online Klembord – Tekst & Bestanden Delen tussen Telefoon en PC",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Opslag en gebruik",
     "retention": "Ook terwijl je verbonden bent, worden bestanden na uiterlijk 1 dag automatisch opgeruimd. Het opruimen draait periodiek, dus de exacte tijd (op de seconde) is niet gegarandeerd, en zodra alle apparaten weg zijn kan het eerder gebeuren. Download wat je nodig hebt meteen."
+  },
+  "download": {
+    "title": "Bestanden downloaden...",
+    "selectAll": "Alles selecteren",
+    "deselectAll": "Selectie opheffen",
+    "downloadSelected": "Downloaden",
+    "qrCode": "QR-code",
+    "selectAllHint": "Alle bestanden selecteren",
+    "deselectAllHint": "Selectie van alle bestanden opheffen",
+    "downloadHint": "Geselecteerde bestanden na elkaar downloaden",
+    "qrCodeHint": "QR-codes maken voor geselecteerde bestanden"
   }
 }

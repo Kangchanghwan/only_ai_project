@@ -150,7 +150,7 @@
     "maxSize": "最大 {size}",
     "uploadTitle": "ファイルをアップロード",
     "uploadHint": "クリックまたはドラッグ＆ドロップ",
-    "uploadPasteHint": "（Ctrl+Vで貼り付け）",
+    "uploadPasteHint": "(Ctrl+Vで貼り付け)",
     "uploadClickHint": "ここをクリックするか、ファイルをドロップしてください",
     "delete": "削除",
     "deleteSelected": "選択削除",
@@ -220,7 +220,7 @@
     "empty": "クリップボードが空です。",
     "permissionDenied": "クリップボードへのアクセス許可が必要です。",
     "pasteTitle": "貼り付け",
-    "pasteDescription": "クリップボードのテキスト/画像を",
+    "pasteDescription": "クリップボードのテキスト・画像を共有",
     "pasteDescription2": "共有",
     "pasteHint": "クリックしてクリップボードの内容を共有",
     "mobileSupport": "モバイル対応"
@@ -290,7 +290,7 @@
     "textShareDeleteDesc": "テキスト右側の「⋯」ボタンから削除を選んでください。",
     "downloadTitle": "ファイルダウンロード",
     "downloadSingle": "個別ダウンロード",
-    "downloadSingleDesc": "ファイルの横にある「受け取る」ボタンを押すとダウンロードされます。",
+    "downloadSingleDesc": "ファイルの横の「受け取る」ボタンを押すとダウンロードできます。その横の ⋯(その他)ボタンから、QRコード共有・ダウンロード・削除ができ、画像はコピーもできます。デスクトップでもモバイルでも同じです。",
     "downloadMulti": "複数選択ダウンロード",
     "downloadMultiStep1": "「すべて選択」ボタンまたはファイルカードのチェックボックスで選択",
     "downloadMultiStep2": "「ダウンロード」ボタンで選択したファイルを1つずつ順番にダウンロード",
@@ -306,7 +306,7 @@
     "tip1": "スクリーンショットを撮ってすぐにCtrl+Vで共有できます",
     "tip2": "URLを共有するだけで同じルームに参加できます",
     "tip3": "すべてのファイルとテキストはリアルタイムで同期されます",
-    "tip4": "モバイルではファイルカードの「⋯」ボタンから共有・QR・ダウンロード・削除メニューを開けます",
+    "tip4": "ファイルカードの「⋯」ボタンで、QR共有/ダウンロード/削除メニューを開けます(画像はコピーも可能)",
     "aboutTitle": "サイト情報",
     "confirm": "確認",
     "pwaTitle": "アプリとしてインストール",
@@ -314,7 +314,8 @@
     "pwaAndroidTitle": "Android / デスクトップ (Chrome, Edge)",
     "pwaAndroidDesc": "アドレスバーのインストールアイコン、または画面下部のインストールバナーをタップしてください。",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "共有ボタンをタップし、「ホーム画面に追加」を選択してください。"
+    "pwaIOSDesc": "共有ボタンをタップし、「ホーム画面に追加」を選択してください。",
+    "limit4": "接続中でもファイルは最大約1日間保存されます(すべての端末が退出すると、しばらくして削除されます)"
   },
   "footer": {
     "privacyPolicy": "プライバシーポリシー",

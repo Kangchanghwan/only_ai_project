@@ -156,7 +156,8 @@
     "limitResume": "Do {size} na plik · przerwane wysyłanie zostanie wznowione",
     "receive": "Odbierz",
     "copyImage": "Kopiuj obraz",
-    "selectFile": "Zaznacz {name}"
+    "selectFile": "Zaznacz {name}",
+    "uploadPasteHint": "(Wklej przez Ctrl+V)"
   },
   "text": {
     "share": "Udostępnij tekst",
@@ -166,7 +167,11 @@
     "clearAll": "Wyczyść wszystkie teksty",
     "cleared": "Wszystkie teksty wyczyszczone.",
     "composePlaceholder": "Wpisz lub wklej tutaj, a potem naciśnij Udostępnij",
-    "inputPasteHint": "Tekst wklejony w to pole jest wysyłany dopiero po naciśnięciu Udostępnij."
+    "inputPasteHint": "Tekst wklejony w to pole jest wysyłany dopiero po naciśnięciu Udostępnij.",
+    "receivedText": "Otrzymany tekst",
+    "autoShareHint": "Tekst jest udostępniany automatycznie po wklejeniu (Ctrl+V / Cmd+V)",
+    "noMessages": "Brak wiadomości",
+    "delete": "Usuń"
   },
   "notification": {
     "uploading": "Przesyłanie...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Wklej",
     "empty": "Schowek jest pusty.",
-    "permissionDenied": "Wymagane uprawnienie dostępu do schowka."
+    "permissionDenied": "Wymagane uprawnienie dostępu do schowka.",
+    "pasteTitle": "Wklej",
+    "pasteDescription": "Udostępnij tekst/obrazy ze schowka"
   },
   "footer": {
     "privacyPolicy": "Polityka Prywatności",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Dotknij ikony instalacji na pasku adresu lub baner instalacji u dołu ekranu.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Dotknij przycisku Udostępnij, a następnie wybierz „Dodaj do ekranu głównego”.",
-    "downloadSingleDesc": "Naciśnij przycisk Odbierz obok pliku, aby go pobrać.",
+    "downloadSingleDesc": "Naciśnij przycisk Odbierz obok pliku, aby go pobrać. Przycisk ⋯ (Więcej) pozwala udostępnić kod QR, pobrać i usunąć (obrazy można też skopiować). Na komputerze i telefonie działa tak samo.",
     "textShareCopyDesc": "Naciśnij Kopiuj przy udostępnionym tekście, aby skopiować go do schowka. Tekst wpisany lub wklejony w pole wysyłasz przyciskiem Udostępnij.",
     "textShareDeleteDesc": "Otwórz przycisk ⋯ po prawej stronie tekstu i wybierz Usuń.",
-    "scopeDevicesDesc": "Karta połączenia (na szerokich ekranach lewy panel) pokazuje inne urządzenia w tym samym zakresie."
+    "scopeDevicesDesc": "Karta połączenia (na szerokich ekranach lewy panel) pokazuje inne urządzenia w tym samym zakresie.",
+    "limit4": "Nawet gdy pozostajesz połączony, pliki są przechowywane maksymalnie około 1 dnia (wkrótce po wyjściu wszystkich urządzeń są usuwane)",
+    "tip4": "Przycisk „⋯” na karcie pliku otwiera menu kodu QR/pobierania/usuwania (dla obrazów także kopiowanie)"
   },
   "seo": {
     "title": "Schowek online między telefonem a PC",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Przechowywanie i użytkowanie",
     "retention": "Nawet podczas połączenia pliki są automatycznie usuwane najpóźniej po 1 dniu. Czyszczenie działa okresowo, więc dokładna godzina (co do sekundy) nie jest gwarantowana, a po wyjściu wszystkich urządzeń usunięcie może nastąpić wcześniej. Pobierz potrzebne pliki od razu."
+  },
+  "download": {
+    "title": "Pobieranie plików...",
+    "selectAll": "Zaznacz wszystko",
+    "deselectAll": "Odznacz wszystko",
+    "downloadSelected": "Pobierz",
+    "qrCode": "Kod QR",
+    "selectAllHint": "Zaznacz wszystkie pliki",
+    "deselectAllHint": "Odznacz wszystkie pliki",
+    "downloadHint": "Pobierz zaznaczone pliki po kolei",
+    "qrCodeHint": "Utwórz kody QR dla zaznaczonych plików"
   }
 }
