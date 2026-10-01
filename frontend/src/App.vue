@@ -15,6 +15,8 @@ import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
 import { useShareScope } from './composables/useShareScope'
 import { useSeoMeta } from './composables/useSeoMeta'
+import { usePublicShareGuard } from './composables/usePublicShareGuard'
+import { isEditableTarget } from './utils/editable'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
@@ -31,6 +33,7 @@ import RoomScreen from './components/RoomScreen.vue'
 import DownloadPage from './components/DownloadPage.vue'
 import NotificationToast from './components/NotificationToast.vue'
 import ShareConfirmSheet from './components/ShareConfirmSheet.vue'
+import PublicShareConfirm from './components/PublicShareConfirm.vue'
 
 // ========================================
 // Composables 초기화
@@ -44,6 +47,8 @@ const notification = useNotification()
 const download = useDownload()
 const textShare = useTextShare()
 const shareScope = useShareScope()
+// 전체 공유로 처음 보낼 때 한 번 확인 (파일 선택/드롭/전역 붙여넣기/텍스트 공유 공통)
+const publicGuard = usePublicShareGuard()
 // 로케일에 맞춰 title/description/og/canonical/lang을 갱신 (언어 전환 시 자동 반영)
 useSeoMeta()
 const isConnecting = ref(false)
@@ -206,6 +211,8 @@ function setupSocketListeners() {
 
 async function handlePaste(event) {
   if (roomManager.roomIds.value.length === 0) return
+  // textarea 등 입력 요소에 붙여넣을 때는 일반 입력으로 두고 자동 전송하지 않는다 (공유 버튼으로 전송)
+  if (isEditableTarget(event.target) || isEditableTarget(document.activeElement)) return
 
   const files = clipboard.extractFilesFromPaste(event)
 
@@ -229,7 +236,14 @@ async function handleUploadFiles(files) {
 async function uploadFiles(files, scopeOverride) {
   if (roomManager.roomIds.value.length === 0) return
 
+  // scope를 지금 시점으로 고정한다. 확인창을 기다리는 동안 탭이 바뀌어도 이 전송은 고정된 scope의 룸으로만 간다.
   const targetScope = scopeOverride || shareScope.getScope()
+  if (scopeOverride) {
+    // 공유 시트에서 사용자가 범위를 직접 고른 경우가 곧 공개 범위 확인이다
+    if (scopeOverride === 'global') publicGuard.markConfirmed()
+  } else if (!(await publicGuard.ensure(targetScope))) {
+    return
+  }
   const targetRoomId = roomManager.roomIdForScope(targetScope)
 
   if (!targetRoomId) {
@@ -425,31 +439,57 @@ async function handleCopySelectedToClipboard(files) {
 // 텍스트 공유 핸들러
 // ========================================
 
+/** @returns {Promise<boolean>} 실제로 공유했으면 true (취소/빈 입력/실패는 false) */
 async function handleAddText(content, scopeOverride) {
-  if (roomManager.roomIds.value.length === 0) return
+  if (roomManager.roomIds.value.length === 0) return false
+  if (!content || !String(content).trim()) return false
 
+  // scope 고정 (확인창 대기 중 scope 변경 방지)
   const targetScope = scopeOverride || shareScope.scope.value
+  if (scopeOverride) {
+    if (scopeOverride === 'global') publicGuard.markConfirmed()
+  } else if (!(await publicGuard.ensure(targetScope))) {
+    return false
+  }
   const targetRoomId = roomManager.roomIdForScope(targetScope)
-  if (!targetRoomId) return
+  if (!targetRoomId) return false
 
   const newText = textShare.addText(content, targetRoomId)
-  if (!newText) return
+  if (!newText) return false
 
   // 내가 보낸 텍스트에는 내 이름표를 붙인다 ("나"로 표시)
   const self = socket.getSelfSender()
   if (self) newText.sender = self
 
-  socket.publishMessage({
-    type: 'text-shared',
-    textId: newText.id,
-    content: newText.content,
-    timestamp: newText.timestamp,
-    roomId: targetRoomId
-  }, targetScope)
+  try {
+    socket.publishMessage({
+      type: 'text-shared',
+      textId: newText.id,
+      content: newText.content,
+      timestamp: newText.timestamp,
+      roomId: targetRoomId
+    }, targetScope)
+  } catch (error) {
+    console.warn('[App] 텍스트 전송 실패:', error)
+    textShare.removeText(newText.id)
+    notification.showError(t('notification.connectFailed'))
+    return false
+  }
 
   trackEvent('text_share', { scope: targetScope })
 
   notification.showSuccess(t('text.shared'))
+  return true
+}
+
+/** 텍스트 탭의 직접 입력 공유. 결과를 done(ok)으로 돌려줘 성공 시에만 입력을 비운다 */
+async function handleShareText({ content, done }) {
+  let ok = false
+  try {
+    ok = await handleAddText(content)
+  } finally {
+    done?.(ok)
+  }
 }
 
 async function handleRemoveText(textId) {
@@ -736,7 +776,7 @@ onUnmounted(() => {
 
 <template>
   <div id="app">
-    <div class="app-frame">
+    <div class="app-frame" :class="{ 'app-frame--narrow': currentRoute.type === 'download' }">
       <!-- 다운로드 페이지 -->
       <DownloadPage
         v-if="currentRoute.type === 'download'"
@@ -774,15 +814,20 @@ onUnmounted(() => {
         @clear-all-texts="handleClearAllTexts"
         @copy-text="handleCopyText"
         @paste-content="handlePasteContent"
+        @share-text="handleShareText"
+        :uploads="notification.uploads.value"
+        @cancel-upload="cancelUpload"
+        @cancel-all="cancelAllUploads"
         @load-more="handleLoadMore"
       />
 
       <!-- 알림 토스트 -->
-      <NotificationToast
-        :message="notification.notification.value"
-        :uploads="notification.uploads.value"
-        @cancel-upload="cancelUpload"
-        @cancel-all="cancelAllUploads"
+      <NotificationToast :message="notification.notification.value" />
+
+      <PublicShareConfirm
+        :is-open="publicGuard.isOpen.value"
+        @confirm="publicGuard.accept()"
+        @cancel="publicGuard.cancel()"
       />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->
@@ -812,10 +857,15 @@ onUnmounted(() => {
 .app-frame {
   position: relative;
   width: 100%;
-  max-width: 30rem;
+  /* 작업 영역 폭(760/1040px)은 RoomScreen이 정한다. 다운로드 페이지만 좁게 유지 */
+  max-width: 100%;
   min-height: 100dvh;
   background-color: var(--color-surface);
   box-shadow: 0 0 3.125rem rgba(22, 28, 1, 0.1);
+}
+
+.app-frame--narrow {
+  max-width: 30rem;
 }
 
 .loading-screen {
