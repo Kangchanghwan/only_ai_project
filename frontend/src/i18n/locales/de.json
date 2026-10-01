@@ -88,7 +88,11 @@
     "deleteCountFailed": "{count} Datei(en) konnten nicht gelöscht werden",
     "loadMoreFailed": "Weitere Dateien konnten nicht geladen werden.",
     "activeHeader": "In Bearbeitung ({count})",
-    "uploadResumed": "Upload wird fortgesetzt"
+    "uploadResumed": "Upload wird fortgesetzt",
+    "cancel": "Abbrechen",
+    "cancelAll": "Alle abbrechen",
+    "uploadCancelled": "Upload abgebrochen",
+    "uploadsCancelled": "{count} Uploads abgebrochen"
   },
   "clipboard": {
     "paste": "Einfügen",

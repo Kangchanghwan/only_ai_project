@@ -88,7 +88,11 @@
     "deleteCountFailed": "Nepodařilo se smazat souborů: {count}",
     "loadMoreFailed": "Načtení dalších souborů se nezdařilo.",
     "activeHeader": "Probíhá ({count})",
-    "uploadResumed": "Nahrávání pokračuje"
+    "uploadResumed": "Nahrávání pokračuje",
+    "cancel": "Zrušit",
+    "cancelAll": "Zrušit vše",
+    "uploadCancelled": "Nahrávání zrušeno",
+    "uploadsCancelled": "Zrušeno nahrávání: {count}"
   },
   "clipboard": {
     "paste": "Vložit",

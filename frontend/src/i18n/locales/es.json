@@ -88,7 +88,11 @@
     "deleteCountFailed": "No se pudieron eliminar {count} archivo(s)",
     "loadMoreFailed": "No se pudieron cargar más archivos.",
     "activeHeader": "En curso ({count})",
-    "uploadResumed": "Reanudando la subida"
+    "uploadResumed": "Reanudando la subida",
+    "cancel": "Cancelar",
+    "cancelAll": "Cancelar todo",
+    "uploadCancelled": "Subida cancelada",
+    "uploadsCancelled": "{count} subidas canceladas"
   },
   "clipboard": {
     "paste": "Pegar",

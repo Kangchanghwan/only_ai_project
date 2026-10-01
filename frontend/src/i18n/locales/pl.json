@@ -88,7 +88,11 @@
     "deleteCountFailed": "Nie udało się usunąć plików: {count}",
     "loadMoreFailed": "Nie udało się wczytać kolejnych plików.",
     "activeHeader": "W toku ({count})",
-    "uploadResumed": "Wznawianie przesyłania"
+    "uploadResumed": "Wznawianie przesyłania",
+    "cancel": "Anuluj",
+    "cancelAll": "Anuluj wszystko",
+    "uploadCancelled": "Anulowano przesyłanie",
+    "uploadsCancelled": "Anulowano przesyłanie plików: {count}"
   },
   "clipboard": {
     "paste": "Wklej",

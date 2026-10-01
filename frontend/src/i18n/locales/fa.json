@@ -88,7 +88,11 @@
     "deleteCountFailed": "حذف {count} فایل ناموفق بود",
     "loadMoreFailed": "بارگذاری فایل‌های بیشتر ناموفق بود.",
     "activeHeader": "در حال انجام ({count})",
-    "uploadResumed": "آپلود از سر گرفته می‌شود"
+    "uploadResumed": "آپلود از سر گرفته می‌شود",
+    "cancel": "لغو",
+    "cancelAll": "لغو همه",
+    "uploadCancelled": "آپلود لغو شد",
+    "uploadsCancelled": "{count} آپلود لغو شد"
   },
   "clipboard": {
     "paste": "چسباندن",

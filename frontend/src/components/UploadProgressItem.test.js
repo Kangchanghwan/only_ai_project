@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import UploadProgressItem from './UploadProgressItem.vue'
+import i18n from '../i18n/index.js'
 
 describe('UploadProgressItem', () => {
   describe('렌더링', () => {
     it('파일명을 표시해야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 50,
@@ -18,6 +20,7 @@ describe('UploadProgressItem', () => {
 
     it('진행률을 표시해야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 75,
@@ -30,6 +33,7 @@ describe('UploadProgressItem', () => {
 
     it('프로그레스 바가 있어야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 50,
@@ -43,6 +47,7 @@ describe('UploadProgressItem', () => {
 
     it('프로그레스 바 너비가 진행률에 맞아야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 60,
@@ -58,6 +63,7 @@ describe('UploadProgressItem', () => {
   describe('상태 표시', () => {
     it('uploading 상태일 때 진행률을 표시해야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 50,
@@ -72,6 +78,7 @@ describe('UploadProgressItem', () => {
 
     it('completed 상태일 때 체크 표시를 해야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 100,
@@ -84,6 +91,7 @@ describe('UploadProgressItem', () => {
 
     it('failed 상태일 때 X 표시를 해야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 50,
@@ -96,6 +104,7 @@ describe('UploadProgressItem', () => {
 
     it('상태에 따라 적절한 CSS 클래스가 적용되어야 한다', () => {
       const uploadingWrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 50,
@@ -105,6 +114,7 @@ describe('UploadProgressItem', () => {
       expect(uploadingWrapper.find('.progress-fill').classes()).toContain('uploading')
 
       const completedWrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 100,
@@ -114,6 +124,7 @@ describe('UploadProgressItem', () => {
       expect(completedWrapper.find('.progress-fill').classes()).toContain('completed')
 
       const failedWrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 50,
@@ -128,6 +139,7 @@ describe('UploadProgressItem', () => {
     it('긴 파일명도 렌더링되어야 한다', () => {
       const longFileName = 'very-long-file-name-that-might-overflow-the-container.png'
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: longFileName,
           percent: 50,
@@ -142,6 +154,7 @@ describe('UploadProgressItem', () => {
   describe('props 기본값', () => {
     it('percent가 0일 때도 정상적으로 렌더링되어야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 0,
@@ -156,6 +169,7 @@ describe('UploadProgressItem', () => {
 
     it('percent가 100일 때도 정상적으로 렌더링되어야 한다', () => {
       const wrapper = mount(UploadProgressItem, {
+        global: { plugins: [i18n] },
         props: {
           fileName: 'test.png',
           percent: 100,

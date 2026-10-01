@@ -88,7 +88,11 @@
     "deleteCountFailed": "{count} fájl törlése sikertelen",
     "loadMoreFailed": "További fájlok betöltése sikertelen.",
     "activeHeader": "Folyamatban ({count})",
-    "uploadResumed": "A feltöltés folytatódik"
+    "uploadResumed": "A feltöltés folytatódik",
+    "cancel": "Mégse",
+    "cancelAll": "Összes megszakítása",
+    "uploadCancelled": "Feltöltés megszakítva",
+    "uploadsCancelled": "{count} feltöltés megszakítva"
   },
   "clipboard": {
     "paste": "Beillesztés",

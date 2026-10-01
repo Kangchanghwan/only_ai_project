@@ -88,7 +88,11 @@
     "deleteCountFailed": "Xóa {count} tệp thất bại",
     "loadMoreFailed": "Không thể tải thêm tệp.",
     "activeHeader": "Đang xử lý ({count})",
-    "uploadResumed": "Đang tiếp tục tải lên"
+    "uploadResumed": "Đang tiếp tục tải lên",
+    "cancel": "Hủy",
+    "cancelAll": "Hủy tất cả",
+    "uploadCancelled": "Đã hủy tải lên",
+    "uploadsCancelled": "Đã hủy {count} lượt tải lên"
   },
   "clipboard": {
     "paste": "Dán",

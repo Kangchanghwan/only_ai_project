@@ -100,7 +100,11 @@
     "deleteCountFailed": "{count}個のファイルの削除に失敗しました",
     "loadMoreFailed": "追加のファイルを読み込めませんでした。",
     "activeHeader": "進行中（{count}件）",
-    "uploadResumed": "アップロードを再開します"
+    "uploadResumed": "アップロードを再開します",
+    "cancel": "キャンセル",
+    "cancelAll": "すべてキャンセル",
+    "uploadCancelled": "アップロードをキャンセルしました",
+    "uploadsCancelled": "{count}件のアップロードをキャンセルしました"
   },
   "clipboard": {
     "paste": "貼り付け",

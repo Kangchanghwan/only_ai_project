@@ -160,7 +160,7 @@ class R2Service {
    * @returns {Promise<void>}
    */
   putToPresignedUrl(uploadUrl, body, contentType, options = {}) {
-    const { onProgress, timeoutMs = 300000 } = options
+    const { onProgress, timeoutMs = 300000, signal } = options
 
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest()
@@ -181,6 +181,16 @@ class R2Service {
 
       xhr.addEventListener('error', () => reject(new Error(t('errors.networkUploadFailed'))))
       xhr.addEventListener('timeout', () => reject(new Error(t('errors.uploadTimeout'))))
+      xhr.addEventListener('abort', () => reject(Object.assign(new Error('Upload canceled'), { code: 'UPLOAD_CANCELED' })))
+
+      if (signal) {
+        if (signal.aborted) {
+          reject(Object.assign(new Error('Upload canceled'), { code: 'UPLOAD_CANCELED' }))
+          return
+        }
+        // 이미 응답을 받은(DONE) 요청은 abort가 no-op이므로 그대로 완료로 처리된다
+        signal.addEventListener('abort', () => xhr.abort(), { once: true })
+      }
 
       xhr.open('PUT', uploadUrl)
       xhr.setRequestHeader('Content-Type', contentType)

@@ -196,3 +196,18 @@ describe('i18n 멀티파트/일일 한도 메시지', () => {
     }
   })
 })
+
+describe('i18n notification 업로드 취소 키', () => {
+  it('모든 로케일에 cancel/cancelAll/uploadCancelled/uploadsCancelled가 있고 uploadsCancelled는 {count}를 쓴다', () => {
+    const entries = Object.entries(locales)
+    expect(entries.length).toBeGreaterThanOrEqual(21)
+    for (const [path, mod] of entries) {
+      const json = mod.default || mod
+      for (const key of ['cancel', 'cancelAll', 'uploadCancelled', 'uploadsCancelled']) {
+        expect(typeof json.notification[key], `${path}의 notification.${key} 없음`).toBe('string')
+        expect(json.notification[key].length).toBeGreaterThan(0)
+      }
+      expect(json.notification.uploadsCancelled, path).toContain('{count}')
+    }
+  })
+})

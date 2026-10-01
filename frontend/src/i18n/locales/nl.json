@@ -88,7 +88,11 @@
     "deleteCountFailed": "Verwijderen van {count} bestand(en) mislukt",
     "loadMoreFailed": "Meer bestanden laden mislukt.",
     "activeHeader": "Bezig ({count})",
-    "uploadResumed": "Upload wordt hervat"
+    "uploadResumed": "Upload wordt hervat",
+    "cancel": "Annuleren",
+    "cancelAll": "Alles annuleren",
+    "uploadCancelled": "Upload geannuleerd",
+    "uploadsCancelled": "{count} uploads geannuleerd"
   },
   "clipboard": {
     "paste": "Plakken",

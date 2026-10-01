@@ -22,7 +22,7 @@ import { formatSizeMB } from './utils/fileUtils'
 import { socketService } from './services/socketService'
 import { startP2pProbe } from './services/p2pProbe'
 import { openFileInNewTab } from './utils/openFile'
-import { createUploadProgress } from './utils/uploadProgress'
+import { createUploadProgress, cancelUpload, cancelAllUploads } from './utils/uploadProgress'
 import { t } from './i18n/translate'
 
 import RoomScreen from './components/RoomScreen.vue'
@@ -230,7 +230,9 @@ async function uploadFiles(files, scopeOverride) {
   const progress = createUploadProgress(notification)
 
   const summary = await fileManager.uploadFiles(targetRoomId, files, {
+    onQueue: (file, handle) => progress.queue(file, handle),
     onStart: (file) => progress.start(file),
+    onCancel: (file, info) => progress.cancelled(file, info),
     onProgress: (file, percent) => progress.progress(file, percent),
     onComplete: (file, result) => {
       // size/created를 함께 보내 수신 측이 목록을 재조회하지 않고 바로 추가할 수 있게 한다
@@ -739,6 +741,8 @@ onUnmounted(() => {
       <NotificationToast
         :message="notification.notification.value"
         :uploads="notification.uploads.value"
+        @cancel-upload="cancelUpload"
+        @cancel-all="cancelAllUploads"
       />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->

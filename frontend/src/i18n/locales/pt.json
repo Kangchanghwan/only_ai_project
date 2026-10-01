@@ -88,7 +88,11 @@
     "deleteCountFailed": "Falha ao excluir {count} arquivo(s)",
     "loadMoreFailed": "Falha ao carregar mais arquivos.",
     "activeHeader": "Em andamento ({count})",
-    "uploadResumed": "Retomando o envio"
+    "uploadResumed": "Retomando o envio",
+    "cancel": "Cancelar",
+    "cancelAll": "Cancelar tudo",
+    "uploadCancelled": "Envio cancelado",
+    "uploadsCancelled": "{count} envios cancelados"
   },
   "clipboard": {
     "paste": "Colar",
