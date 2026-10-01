@@ -73,20 +73,20 @@ function joinedText(d) {
           </div>
           <div v-if="isValidIdentity(device.identity)" class="text-xs text-text-secondary truncate">{{ deviceAndBrowser(device, t) }}</div>
           <div v-if="joinedText(device)" class="text-xs text-text-secondary">{{ joinedText(device) }}</div>
-          <button
-            v-if="isMe(device) && isValidIdentity(device.identity)"
-            type="button"
-            class="mt-1 inline-flex items-center justify-center gap-1 min-h-[44px] text-xs text-text-primary px-3 rounded-lg border border-border disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="cooling"
-            :title="t('identity.rerollTitle')"
-            :aria-label="t('identity.rerollTitle')"
-            data-testid="reroll-button"
-            @click="emit('reroll')"
-          >
-            <span aria-hidden="true">🎲</span>
-            {{ t('identity.reroll') }}
-          </button>
         </div>
+        <button
+          v-if="isMe(device) && isValidIdentity(device.identity)"
+          type="button"
+          class="shrink-0 -my-2 inline-flex items-center justify-center gap-1 min-h-[44px] whitespace-nowrap text-xs text-text-primary px-3 rounded-lg border border-border disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="cooling"
+          :title="t('identity.rerollTitle')"
+          :aria-label="t('identity.rerollTitle')"
+          data-testid="reroll-button"
+          @click="emit('reroll')"
+        >
+          <span aria-hidden="true">🎲</span>
+          {{ t('identity.reroll') }}
+        </button>
       </li>
     </ul>
     <!-- 동물+닉네임 함께 확인하라는 안내는 목록에만 둔다 -->
