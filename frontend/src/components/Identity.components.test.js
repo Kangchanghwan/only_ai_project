@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils'
 import { ref } from 'vue'
 import i18n from '../i18n/index.js'
 import ConnectedDevices from './ConnectedDevices.vue'
-import MyIdentity from './MyIdentity.vue'
 import SenderLabel from './SenderLabel.vue'
 import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 
@@ -73,26 +72,42 @@ describe('ConnectedDevices (정체성 표시)', () => {
   })
 })
 
-describe('MyIdentity (나 고정 표시)', () => {
-  it('"나: 졸린 판다 (이 기기)"와 다시 뽑기 버튼을 보여준다', async () => {
-    const wrapper = mount(MyIdentity, { props: { identity: panda }, global })
-    expect(wrapper.text()).toContain('나: 졸린 판다 (이 기기)')
-    // 항상 떠 있는 큰 버튼은 없고, 이름표를 눌러야 관리(다시 뽑기)가 열린다
+describe('내 정보는 펼친 목록에서만 보인다 (MyIdentity 제거)', () => {
+  const props = (extra = {}) => ({ devices: [dev('me', panda), dev('o', fox)], mySocketId: 'me', myIdentity: panda, ...extra })
+
+  it('접힌 상태에서는 "나: ... (이 기기)" 이름표와 다시 뽑기 버튼이 없다', () => {
+    const wrapper = mount(ConnectedDevices, { props: props(), global })
+    expect(wrapper.text()).not.toContain('이 기기')
+    expect(wrapper.find('[data-testid="my-identity"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="reroll-button"]').exists()).toBe(false)
-    await wrapper.find('[data-testid="my-identity-trigger"]').trigger('click')
+    expect(wrapper.findAll('[data-testid="animal-avatar"]').length).toBeGreaterThan(0)
+  })
+
+  it('펼치면 내 행에 "나" 배지와 다시 뽑기가 있다 (남의 행에는 없다)', async () => {
+    const wrapper = mount(ConnectedDevices, { props: props(), global, attachTo: document.body })
+    await wrapper.find('[data-testid="devices-trigger"]').trigger('click')
+    const rows = wrapper.findAll('[data-testid="device-row"]')
+    expect(rows).toHaveLength(2)
+    expect(rows[0].find('[data-testid="me-badge"]').text()).toBe('나')
+    expect(rows[0].find('[data-testid="reroll-button"]').exists()).toBe(true)
+    expect(rows[1].find('[data-testid="me-badge"]').exists()).toBe(false)
+    expect(rows[1].find('[data-testid="reroll-button"]').exists()).toBe(false)
+    wrapper.unmount()
+  })
+
+  it('다시 뽑기 클릭 시 reroll 이벤트가 올라온다', async () => {
+    const wrapper = mount(ConnectedDevices, { props: props(), global, attachTo: document.body })
+    await wrapper.find('[data-testid="devices-trigger"]').trigger('click')
     await wrapper.find('[data-testid="reroll-button"]').trigger('click')
     expect(wrapper.emitted('reroll')).toHaveLength(1)
+    wrapper.unmount()
   })
 
-  it('쿨다운 중에는 버튼이 비활성화된다', async () => {
-    const wrapper = mount(MyIdentity, { props: { identity: panda, rerollAvailableAt: Date.now() + 5000 }, global })
-    await wrapper.find('[data-testid="my-identity-trigger"]').trigger('click')
+  it('쿨다운 중에는 다시 뽑기 버튼이 비활성화된다', async () => {
+    const wrapper = mount(ConnectedDevices, { props: props({ rerollAvailableAt: Date.now() + 5000 }), global, attachTo: document.body })
+    await wrapper.find('[data-testid="devices-trigger"]').trigger('click')
     expect(wrapper.find('[data-testid="reroll-button"]').attributes('disabled')).toBeDefined()
-  })
-
-  it('identity가 없으면 렌더링하지 않는다 (구버전 백엔드)', () => {
-    const wrapper = mount(MyIdentity, { props: { identity: null }, global })
-    expect(wrapper.find('[data-testid="my-identity"]').exists()).toBe(false)
+    wrapper.unmount()
   })
 })
 
