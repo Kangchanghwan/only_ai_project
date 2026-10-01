@@ -152,7 +152,7 @@ npm run build
 - **구현 내용**:
   - 클라이언트: 업로드 전 파일 크기 사전 검증 (즉시 피드백)
   - 백엔드: Socket.IO `maxHttpBufferSize` 설정
-  - 제한: 파일당 500MB, 룸 전체 2GB (서버에서도 강제, 백엔드 env MAX_FILE_SIZE_MB / MAX_ROOM_SIZE_MB)
+  - 제한: 파일당 5GB, 룸 전체 10GB, IP당 하루 업로드 20GB (100MB 초과 파일은 64MiB 조각 멀티파트 업로드 + 이어올리기. 서버에서도 강제, 백엔드 env MAX_FILE_SIZE_MB / MAX_ROOM_SIZE_MB / DAILY_UPLOAD_QUOTA_GB / SINGLE_PUT_MAX_MB) (서버에서도 강제, 백엔드 env MAX_FILE_SIZE_MB / MAX_ROOM_SIZE_MB)
   - 사용자 친화적 에러 메시지 표시
 
 #### 2. 파일 업로드 UI 개선

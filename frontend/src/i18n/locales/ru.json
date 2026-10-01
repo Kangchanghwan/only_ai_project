@@ -87,7 +87,8 @@
     "deleteCountDone": "Удалено файлов: {count}",
     "deleteCountFailed": "Не удалось удалить файлов: {count}",
     "loadMoreFailed": "Не удалось загрузить другие файлы.",
-    "activeHeader": "В процессе ({count})"
+    "activeHeader": "В процессе ({count})",
+    "uploadResumed": "Загрузка возобновляется"
   },
   "clipboard": {
     "paste": "Вставить",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Прямая загрузка не удалась: {status}",
     "deleteFailed": "Не удалось удалить файл: {status}",
     "deleteAllFailed": "Не удалось удалить все файлы: {status}",
-    "quotaFailed": "Не удалось получить использование комнаты: {status}"
+    "quotaFailed": "Не удалось получить использование комнаты: {status}",
+    "dailyQuotaExceeded": "Достигнут дневной лимит загрузки. Попробуйте завтра.",
+    "singlePutTooLarge": "Файл превышает лимит обычной загрузки (100 МБ). Обновите страницу и повторите попытку.",
+    "sizeMismatch": "Размер загруженного файла не совпал, файл удалён. Загрузите его снова.",
+    "multipartFailed": "Не удалось загрузить большой файл: {status}",
+    "serverRoomSizeExceeded": "Это превысит лимит хранилища комнаты."
   },
   "qrModal": {
     "roomTitle": "Поделиться комнатой через QR-код",

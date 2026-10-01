@@ -87,7 +87,8 @@
     "deleteCountDone": "Usunięto plików: {count}",
     "deleteCountFailed": "Nie udało się usunąć plików: {count}",
     "loadMoreFailed": "Nie udało się wczytać kolejnych plików.",
-    "activeHeader": "W toku ({count})"
+    "activeHeader": "W toku ({count})",
+    "uploadResumed": "Wznawianie przesyłania"
   },
   "clipboard": {
     "paste": "Wklej",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Bezpośrednie przesyłanie nie powiodło się: {status}",
     "deleteFailed": "Nie udało się usunąć pliku: {status}",
     "deleteAllFailed": "Nie udało się usunąć wszystkich plików: {status}",
-    "quotaFailed": "Nie udało się pobrać zajętości pokoju: {status}"
+    "quotaFailed": "Nie udało się pobrać zajętości pokoju: {status}",
+    "dailyQuotaExceeded": "Osiągnięto dzienny limit przesyłania. Spróbuj ponownie jutro.",
+    "singlePutTooLarge": "Ten plik przekracza limit pojedynczego przesyłania (100 MB). Odśwież stronę i spróbuj ponownie.",
+    "sizeMismatch": "Rozmiar przesłanego pliku się nie zgadzał, więc go odrzucono. Prześlij go ponownie.",
+    "multipartFailed": "Nie udało się przesłać dużego pliku: {status}",
+    "serverRoomSizeExceeded": "Przekroczyłoby to limit miejsca w pokoju."
   },
   "qrModal": {
     "roomTitle": "Udostępnij pokój kodem QR",

@@ -6,7 +6,7 @@ import { useFileManager } from '../composables/useFileManager.js'
 import { r2Service } from '../services/r2Service.js'
 import i18n from '../i18n/index.js'
 
-const big = (name = 'big.bin') => ({ name, size: 501 * 1024 * 1024, type: 'application/octet-stream' })
+const big = (name = 'big.bin') => ({ name, size: 5121 * 1024 * 1024, type: 'application/octet-stream' })
 
 describe('업로드 진행 카드 (거절/실패 파일)', () => {
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe('업로드 진행 카드 (거절/실패 파일)', () => {
     expect(summary.failCount).toBe(1)
     expect(getUrls).not.toHaveBeenCalled()
     expect(notificationService.uploads.value.size).toBe(0)
-    expect(notificationService.notification.value).toBe('✗ File size cannot exceed 500MB')
+    expect(notificationService.notification.value).toBe('✗ File size cannot exceed 5120MB')
   })
 
   it('presign 실패(413 등)도 진행 카드가 남지 않는다', async () => {

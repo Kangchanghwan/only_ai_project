@@ -210,7 +210,7 @@ async function uploadFiles(files, scopeOverride) {
     return
   }
 
-  const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 2048
+  const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 10240
   const MAX_ROOM_SIZE = maxRoomSizeMB * 1024 * 1024
   const totalUploadSize = files.reduce((sum, f) => sum + f.size, 0)
   const currentRoomSize = fileManager.roomSize(targetRoomId)
@@ -248,7 +248,8 @@ async function uploadFiles(files, scopeOverride) {
 
       progress.complete(file)
     },
-    onError: (file, error) => progress.fail(file, error)
+    onError: (file, error) => progress.fail(file, error),
+    onResume: () => notification.showInfo(t('notification.uploadResumed'))
   })
 
   if (summary.successCount > 0) {

@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} file dihapus",
     "deleteCountFailed": "Gagal menghapus {count} file",
     "loadMoreFailed": "Gagal memuat file tambahan.",
-    "activeHeader": "Sedang berlangsung ({count})"
+    "activeHeader": "Sedang berlangsung ({count})",
+    "uploadResumed": "Melanjutkan unggahan"
   },
   "clipboard": {
     "paste": "Tempel",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Unggahan langsung gagal: {status}",
     "deleteFailed": "Gagal menghapus file: {status}",
     "deleteAllFailed": "Gagal menghapus semua file: {status}",
-    "quotaFailed": "Gagal memuat penggunaan ruang: {status}"
+    "quotaFailed": "Gagal memuat penggunaan ruang: {status}",
+    "dailyQuotaExceeded": "Anda telah mencapai batas unggahan hari ini. Coba lagi besok.",
+    "singlePutTooLarge": "File ini melebihi batas unggahan tunggal (100 MB). Muat ulang halaman lalu coba lagi.",
+    "sizeMismatch": "Ukuran file yang diunggah tidak cocok dan dibuang. Silakan unggah ulang.",
+    "multipartFailed": "Gagal mengunggah file besar: {status}",
+    "serverRoomSizeExceeded": "Ini akan melebihi batas penyimpanan ruangan."
   },
   "qrModal": {
     "roomTitle": "Bagikan ruang lewat kode QR",

@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} فایل حذف شد",
     "deleteCountFailed": "حذف {count} فایل ناموفق بود",
     "loadMoreFailed": "بارگذاری فایل‌های بیشتر ناموفق بود.",
-    "activeHeader": "در حال انجام ({count})"
+    "activeHeader": "در حال انجام ({count})",
+    "uploadResumed": "آپلود از سر گرفته می‌شود"
   },
   "clipboard": {
     "paste": "چسباندن",
@@ -174,7 +175,12 @@
     "directUploadFailed": "آپلود مستقیم ناموفق بود: {status}",
     "deleteFailed": "حذف فایل ناموفق بود: {status}",
     "deleteAllFailed": "حذف همه فایل‌ها ناموفق بود: {status}",
-    "quotaFailed": "دریافت میزان استفاده اتاق ناموفق بود: {status}"
+    "quotaFailed": "دریافت میزان استفاده اتاق ناموفق بود: {status}",
+    "dailyQuotaExceeded": "به سقف آپلود امروز رسیده‌اید. لطفاً فردا دوباره تلاش کنید.",
+    "singlePutTooLarge": "این فایل از حد آپلود تکی (۱۰۰ مگابایت) بزرگ‌تر است. صفحه را تازه کنید و دوباره تلاش کنید.",
+    "sizeMismatch": "اندازه فایل آپلودشده مطابقت نداشت و حذف شد. لطفاً دوباره آپلود کنید.",
+    "multipartFailed": "آپلود فایل حجیم ناموفق بود: {status}",
+    "serverRoomSizeExceeded": "این کار از سقف فضای اتاق فراتر می‌رود."
   },
   "qrModal": {
     "roomTitle": "اشتراک‌گذاری اتاق با کد QR",

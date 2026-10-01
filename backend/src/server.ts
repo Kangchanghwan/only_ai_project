@@ -11,6 +11,9 @@ import requestLogger from './middleware/requestLogger';
 import { getR2Service } from './services/r2Service';
 import { checkFileSize, checkRoomSize, SizeCheckFailure } from './utils/uploadLimits';
 import { requireRoomToken } from './middleware/roomAuth';
+import { registerMultipartRoutes } from './routes/multipart';
+import { reservedBytesForRoom } from './utils/multipartStore';
+import { quotaKeyFromRequest, reserveDailyQuota, releaseDailyQuota, dailyQuotaFailureBody } from './utils/dailyQuota';
 
 // === Multer 설정 (직접 업로드용) ===
 
@@ -122,6 +125,9 @@ app.get('/stats', (_req, res) => {
 const roomIdFromParams = requireRoomToken((req) => req.params.roomId);
 const roomIdFromBody = requireRoomToken((req) => req.body?.roomId);
 
+// 멀티파트(조각) 업로드: 100MB 초과 ~ 파일당 한도까지
+registerMultipartRoutes(app, roomIdFromBody);
+
 /**
  * presign 요청 파일들의 크기를 검증한다 (파일당 한도 + 룸 총량 한도).
  * size를 보내지 않는 구버전 프론트는 호환을 위해 허용하되 경고 로그를 남긴다
@@ -131,7 +137,7 @@ async function validateUploadSizes(roomId: string, sizes: unknown[]): Promise<Si
     let requested = 0;
     let hasLegacy = false;
     for (const size of sizes) {
-        const result = checkFileSize(size);
+        const result = checkFileSize(size, { singlePut: true });
         if (result === 'legacy') {
             hasLegacy = true;
         } else if (result) {
@@ -146,11 +152,30 @@ async function validateUploadSizes(roomId: string, sizes: unknown[]): Promise<Si
     if (requested === 0) return null;
 
     const current = await getR2Service().getRoomTotalSize(roomId);
-    return checkRoomSize(current, requested);
+    return checkRoomSize(current + reservedBytesForRoom(roomId), requested);
 }
+
+/** 크기 검증 실패 응답 (code 포함) */
+const sendSizeFailure = (res: express.Response, failure: SizeCheckFailure): void => {
+    res.status(failure.status).json({ error: failure.error, ...(failure.code ? { code: failure.code } : {}) });
+};
+
+/** 단일/배치 presign의 선언 크기 합계를 일일 한도에 예약한다. 실패 시 429를 보내고 null */
+const reserveQuotaOrReject = (req: express.Request, res: express.Response, sizes: unknown[]): { key: string; bytes: number } | null => {
+    const bytes = sizes.reduce<number>((sum, s) => sum + (typeof s === 'number' ? s : 0), 0);
+    const key = quotaKeyFromRequest(req);
+    if (bytes === 0) return { key, bytes: 0 };
+    const quota = reserveDailyQuota(key, bytes);
+    if (!quota.ok) {
+        res.status(429).json(dailyQuotaFailureBody(quota.remaining));
+        return null;
+    }
+    return { key, bytes };
+};
 
 /** 업로드용 Presigned URL 생성 */
 app.post('/api/r2/presigned-url', roomIdFromBody, async (req, res) => {
+    let quotaHold: { key: string; bytes: number } | null = null;
     try {
         const { roomId, fileName, contentType, size } = req.body;
 
@@ -161,9 +186,12 @@ app.post('/api/r2/presigned-url', roomIdFromBody, async (req, res) => {
 
         const sizeFailure = await validateUploadSizes(roomId, [size]);
         if (sizeFailure) {
-            res.status(sizeFailure.status).json({ error: sizeFailure.error });
+            sendSizeFailure(res, sizeFailure);
             return;
         }
+
+        quotaHold = reserveQuotaOrReject(req, res, [size]);
+        if (!quotaHold) return;
 
         logger.info(`[API] Presigned URL 요청 - 원본 파일명: ${fileName}`);
 
@@ -176,6 +204,7 @@ app.post('/api/r2/presigned-url', roomIdFromBody, async (req, res) => {
 
         res.json(result);
     } catch (error) {
+        if (quotaHold) releaseDailyQuota(quotaHold.key, quotaHold.bytes);
         logger.error('[API] Presigned URL 생성 오류:', error);
         res.status(500).json({ error: 'Presigned URL 생성 실패' });
     }
@@ -188,6 +217,7 @@ const MAX_DOWNLOAD_BATCH = 100;
 
 /** 업로드용 Presigned URL 배치 생성 (여러 파일 = 1왕복, 이미지는 썸네일 URL 동봉) */
 app.post('/api/r2/presigned-urls', roomIdFromBody, async (req, res) => {
+    let quotaHold: { key: string; bytes: number } | null = null;
     try {
         const { roomId, files } = req.body ?? {};
 
@@ -217,9 +247,12 @@ app.post('/api/r2/presigned-urls', roomIdFromBody, async (req, res) => {
             files.map((f: { size?: unknown }) => f.size)
         );
         if (sizeFailure) {
-            res.status(sizeFailure.status).json({ error: sizeFailure.error });
+            sendSizeFailure(res, sizeFailure);
             return;
         }
+
+        quotaHold = reserveQuotaOrReject(req, res, files.map((f: { size?: unknown }) => f.size));
+        if (!quotaHold) return;
 
         const r2Service = getR2Service();
         const targets = await r2Service.getUploadPresignedUrls(roomId, files);
@@ -228,6 +261,7 @@ app.post('/api/r2/presigned-urls', roomIdFromBody, async (req, res) => {
 
         res.json({ files: targets });
     } catch (error) {
+        if (quotaHold) releaseDailyQuota(quotaHold.key, quotaHold.bytes);
         logger.error('[API] 배치 Presigned URL 생성 오류:', error);
         res.status(500).json({ error: 'Presigned URL 생성 실패' });
     }
@@ -291,6 +325,12 @@ app.post('/api/r2/upload', upload.single('file'), roomIdFromBody, async (req, re
 
         if (!file) {
             res.status(400).json({ error: '파일이 필요합니다' });
+            return;
+        }
+
+        const quota = reserveDailyQuota(quotaKeyFromRequest(req), file.size);
+        if (!quota.ok) {
+            res.status(429).json(dailyQuotaFailureBody(quota.remaining));
             return;
         }
 

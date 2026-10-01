@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} arquivo(s) excluído(s)",
     "deleteCountFailed": "Falha ao excluir {count} arquivo(s)",
     "loadMoreFailed": "Falha ao carregar mais arquivos.",
-    "activeHeader": "Em andamento ({count})"
+    "activeHeader": "Em andamento ({count})",
+    "uploadResumed": "Retomando o envio"
   },
   "clipboard": {
     "paste": "Colar",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Falha no envio direto: {status}",
     "deleteFailed": "Falha ao excluir o arquivo: {status}",
     "deleteAllFailed": "Falha ao excluir todos os arquivos: {status}",
-    "quotaFailed": "Falha ao consultar o uso da sala: {status}"
+    "quotaFailed": "Falha ao consultar o uso da sala: {status}",
+    "dailyQuotaExceeded": "Você atingiu o limite de envio de hoje. Tente novamente amanhã.",
+    "singlePutTooLarge": "Este arquivo excede o limite de envio simples (100 MB). Atualize a página e tente novamente.",
+    "sizeMismatch": "O tamanho do arquivo enviado não confere e foi descartado. Envie novamente.",
+    "multipartFailed": "Falha ao enviar o arquivo grande: {status}",
+    "serverRoomSizeExceeded": "Isso excederia o limite de armazenamento da sala."
   },
   "qrModal": {
     "roomTitle": "Compartilhar sala por código QR",

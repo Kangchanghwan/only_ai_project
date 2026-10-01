@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} fájl törölve",
     "deleteCountFailed": "{count} fájl törlése sikertelen",
     "loadMoreFailed": "További fájlok betöltése sikertelen.",
-    "activeHeader": "Folyamatban ({count})"
+    "activeHeader": "Folyamatban ({count})",
+    "uploadResumed": "A feltöltés folytatódik"
   },
   "clipboard": {
     "paste": "Beillesztés",
@@ -174,7 +175,12 @@
     "directUploadFailed": "A közvetlen feltöltés sikertelen: {status}",
     "deleteFailed": "A fájl törlése sikertelen: {status}",
     "deleteAllFailed": "Az összes fájl törlése sikertelen: {status}",
-    "quotaFailed": "A szoba használatának lekérdezése sikertelen: {status}"
+    "quotaFailed": "A szoba használatának lekérdezése sikertelen: {status}",
+    "dailyQuotaExceeded": "Elérted a mai feltöltési korlátot. Próbáld újra holnap.",
+    "singlePutTooLarge": "Ez a fájl meghaladja az egyszeri feltöltési korlátot (100 MB). Frissítsd az oldalt, és próbáld újra.",
+    "sizeMismatch": "A feltöltött fájl mérete nem egyezett, ezért elvetettük. Töltsd fel újra.",
+    "multipartFailed": "A nagy fájl feltöltése sikertelen: {status}",
+    "serverRoomSizeExceeded": "Ez túllépné a szoba tárhelykorlátját."
   },
   "qrModal": {
     "roomTitle": "Szoba megosztása QR-kóddal",

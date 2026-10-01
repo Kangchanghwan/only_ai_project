@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} fil(er) raderade",
     "deleteCountFailed": "Det gick inte att radera {count} fil(er)",
     "loadMoreFailed": "Det gick inte att läsa in fler filer.",
-    "activeHeader": "Pågår ({count})"
+    "activeHeader": "Pågår ({count})",
+    "uploadResumed": "Uppladdningen återupptas"
   },
   "clipboard": {
     "paste": "Klistra in",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Direktuppladdningen misslyckades: {status}",
     "deleteFailed": "Det gick inte att radera filen: {status}",
     "deleteAllFailed": "Det gick inte att radera alla filer: {status}",
-    "quotaFailed": "Det gick inte att hämta rummets användning: {status}"
+    "quotaFailed": "Det gick inte att hämta rummets användning: {status}",
+    "dailyQuotaExceeded": "Du har nått dagens uppladdningsgräns. Försök igen i morgon.",
+    "singlePutTooLarge": "Filen överskrider gränsen för enkel uppladdning (100 MB). Uppdatera sidan och försök igen.",
+    "sizeMismatch": "Den uppladdade filens storlek stämde inte och togs bort. Ladda upp den igen.",
+    "multipartFailed": "Uppladdningen av den stora filen misslyckades: {status}",
+    "serverRoomSizeExceeded": "Det skulle överskrida rummets lagringsgräns."
   },
   "qrModal": {
     "roomTitle": "Dela rum med QR-kod",

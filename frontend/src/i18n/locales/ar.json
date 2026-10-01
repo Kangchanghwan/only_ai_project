@@ -87,7 +87,8 @@
     "deleteCountDone": "تم حذف {count} ملف",
     "deleteCountFailed": "فشل حذف {count} ملف",
     "loadMoreFailed": "فشل تحميل المزيد من الملفات.",
-    "activeHeader": "قيد التنفيذ ({count})"
+    "activeHeader": "قيد التنفيذ ({count})",
+    "uploadResumed": "جارٍ استئناف الرفع"
   },
   "clipboard": {
     "paste": "لصق",
@@ -174,7 +175,12 @@
     "directUploadFailed": "فشل الرفع المباشر: {status}",
     "deleteFailed": "فشل حذف الملف: {status}",
     "deleteAllFailed": "فشل حذف جميع الملفات: {status}",
-    "quotaFailed": "فشل جلب استخدام الغرفة: {status}"
+    "quotaFailed": "فشل جلب استخدام الغرفة: {status}",
+    "dailyQuotaExceeded": "لقد بلغت حد الرفع اليومي. حاول مرة أخرى غدًا.",
+    "singlePutTooLarge": "هذا الملف يتجاوز حد الرفع الواحد (100 ميغابايت). حدّث الصفحة وحاول مرة أخرى.",
+    "sizeMismatch": "حجم الملف المرفوع غير مطابق وتم تجاهله. يرجى رفعه مرة أخرى.",
+    "multipartFailed": "فشل رفع الملف الكبير: {status}",
+    "serverRoomSizeExceeded": "سيؤدي ذلك إلى تجاوز حد تخزين الغرفة."
   },
   "qrModal": {
     "roomTitle": "مشاركة الغرفة عبر رمز QR",

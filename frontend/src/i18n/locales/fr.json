@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} fichier(s) supprimé(s)",
     "deleteCountFailed": "Échec de la suppression de {count} fichier(s)",
     "loadMoreFailed": "Impossible de charger d'autres fichiers.",
-    "activeHeader": "En cours ({count})"
+    "activeHeader": "En cours ({count})",
+    "uploadResumed": "Reprise de l'envoi"
   },
   "clipboard": {
     "paste": "Coller",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Échec de l'envoi direct : {status}",
     "deleteFailed": "Échec de la suppression du fichier : {status}",
     "deleteAllFailed": "Échec de la suppression de tous les fichiers : {status}",
-    "quotaFailed": "Échec de la lecture de l'utilisation de la salle : {status}"
+    "quotaFailed": "Échec de la lecture de l'utilisation de la salle : {status}",
+    "dailyQuotaExceeded": "Vous avez atteint la limite d'envoi du jour. Réessayez demain.",
+    "singlePutTooLarge": "Ce fichier dépasse la limite d'envoi simple (100 Mo). Actualisez la page et réessayez.",
+    "sizeMismatch": "La taille du fichier envoyé ne correspond pas, il a été supprimé. Veuillez le renvoyer.",
+    "multipartFailed": "Échec de l'envoi du gros fichier : {status}",
+    "serverRoomSizeExceeded": "Cela dépasserait la limite de stockage de la salle."
   },
   "qrModal": {
     "roomTitle": "Partager la salle par code QR",

@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} archivo(s) eliminado(s)",
     "deleteCountFailed": "No se pudieron eliminar {count} archivo(s)",
     "loadMoreFailed": "No se pudieron cargar más archivos.",
-    "activeHeader": "En curso ({count})"
+    "activeHeader": "En curso ({count})",
+    "uploadResumed": "Reanudando la subida"
   },
   "clipboard": {
     "paste": "Pegar",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Error en la subida directa: {status}",
     "deleteFailed": "No se pudo eliminar el archivo: {status}",
     "deleteAllFailed": "No se pudieron eliminar todos los archivos: {status}",
-    "quotaFailed": "No se pudo consultar el uso de la sala: {status}"
+    "quotaFailed": "No se pudo consultar el uso de la sala: {status}",
+    "dailyQuotaExceeded": "Has alcanzado el límite de subida de hoy. Inténtalo de nuevo mañana.",
+    "singlePutTooLarge": "Este archivo supera el límite de subida simple (100 MB). Actualiza la página e inténtalo de nuevo.",
+    "sizeMismatch": "El tamaño del archivo subido no coincide y se descartó. Vuelve a subirlo.",
+    "multipartFailed": "Error al subir el archivo grande: {status}",
+    "serverRoomSizeExceeded": "Se superaría el límite de almacenamiento de la sala."
   },
   "qrModal": {
     "roomTitle": "Compartir sala con código QR",

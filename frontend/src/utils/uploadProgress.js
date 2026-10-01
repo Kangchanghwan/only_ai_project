@@ -1,4 +1,5 @@
 import { t } from '../i18n/translate.js'
+import { FRIENDLY_ERROR_CODES } from './apiErrors.js'
 
 /** 실패 항목을 목록에 남겨 두는 시간(ms) */
 export const FAILED_UPLOAD_REMOVE_DELAY_MS = 3000
@@ -21,7 +22,7 @@ export function createUploadProgress(notification) {
   }
 
   function errorMessage(error) {
-    if (error?.code === 'FILE_TOO_LARGE' || error?.code === 'FILE_EMPTY') return error.message
+    if (error?.code === 'FILE_EMPTY' || FRIENDLY_ERROR_CODES.has(error?.code)) return error.message
     return t('notification.uploadFailed', { message: error?.message ?? '' })
   }
 

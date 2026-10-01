@@ -7,6 +7,28 @@ import { t } from '../i18n/translate.js'
  * 다운로드는 퍼블릭 URL을 통해 직접 접근합니다.
  */
 import { roomAuthHeaders, invalidateRoomToken } from './roomTokenStore'
+import { trackEvent } from '../utils/analytics.js'
+import { SERVER_ERROR_MESSAGES } from '../utils/apiErrors.js'
+import { multipartUpload, isMultipartFile } from './multipartUploader.js'
+
+/**
+ * 실패한 응답을 Error로 바꾼다. 알려진 서버 code는 i18n 메시지와 code/status를 붙인다.
+ * @param {Response} response
+ * @param {string} fallbackKey - code가 없을 때 쓸 errors.* 키 (인자: {status})
+ */
+export async function buildApiError(response, fallbackKey) {
+  let body = {}
+  try { body = (await response.json()) || {} } catch { /* 본문 없음 */ }
+  const entry = SERVER_ERROR_MESSAGES[body?.code]
+  if (entry) {
+    if (body.code === 'DAILY_QUOTA_EXCEEDED') trackEvent('daily_quota_exceeded')
+    return Object.assign(new Error(t(entry.key, entry.params)), { code: body.code, status: response.status })
+  }
+  return Object.assign(new Error(t(fallbackKey, { status: response.status })), {
+    code: body?.code,
+    status: response.status,
+  })
+}
 
 class R2Service {
   constructor() {
@@ -97,7 +119,7 @@ class R2Service {
     }
 
     if (!response.ok) {
-      throw new Error(t('errors.batchPresignFailed', { status: response.status }))
+      throw await buildApiError(response, 'errors.batchPresignFailed')
     }
 
     const { files: targets } = await response.json()
@@ -121,7 +143,7 @@ class R2Service {
     })
 
     if (!response.ok) {
-      throw new Error(t('errors.presignFailed', { status: response.status }))
+      throw await buildApiError(response, 'errors.presignFailed')
     }
 
     const { uploadUrl, fileUrl, fileName: storedName } = await response.json()
@@ -165,6 +187,35 @@ class R2Service {
       xhr.timeout = timeoutMs
       xhr.send(body)
     })
+  }
+
+  /**
+   * 멀티파트 엔드포인트 호출 (JSON POST). 실패하면 code/status가 붙은 Error를 던진다.
+   * @param {string} roomId
+   * @param {'create'|'sign'|'parts'|'complete'|'abort'} action
+   * @param {object} payload
+   */
+  async multipartCall(roomId, action, payload) {
+    const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/multipart/${action}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId, ...payload }),
+    })
+    if (!response.ok) {
+      throw await buildApiError(response, 'errors.multipartFailed')
+    }
+    return response.json()
+  }
+
+  /** multipartUploader에 주입하는 API 어댑터 */
+  get multipartApi() {
+    return {
+      create: (roomId, p) => this.multipartCall(roomId, 'create', p),
+      sign: (roomId, p) => this.multipartCall(roomId, 'sign', p),
+      parts: (roomId, p) => this.multipartCall(roomId, 'parts', p),
+      complete: (roomId, p) => this.multipartCall(roomId, 'complete', p),
+      abort: (roomId, p) => this.multipartCall(roomId, 'abort', p),
+    }
   }
 
   /**
@@ -292,6 +343,18 @@ class R2Service {
     console.log('[R2Service] 파일 업로드 시작:', { roomId, fileName: file.name, size: file.size })
 
 
+    if (isMultipartFile(file.size)) {
+      const result = await multipartUpload(roomId, file, { api: this.multipartApi, ...options })
+      return {
+        success: true,
+        path: `${roomId}/${result.fileName}`,
+        fileName: result.fileName,
+        url: result.fileUrl,
+        size: result.size,
+        created: new Date().toISOString()
+      }
+    }
+
     return this.uploadWithPresignedUrl(roomId, file, options)
   }
 
@@ -316,8 +379,7 @@ class R2Service {
       })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || t('errors.directUploadFailed', { status: response.status }))
+        throw await buildApiError(response, 'errors.directUploadFailed')
       }
 
       const { fileName, fileUrl, size } = await response.json()
@@ -368,7 +430,7 @@ class R2Service {
       })
 
       if (!presignedResponse.ok) {
-        throw new Error(t('errors.presignFailed', { status: presignedResponse.status }))
+        throw await buildApiError(presignedResponse, 'errors.presignFailed')
       }
 
       const { uploadUrl, fileUrl, fileName } = await presignedResponse.json()

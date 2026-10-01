@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} fișier(e) șterse",
     "deleteCountFailed": "Ștergerea a {count} fișier(e) a eșuat",
     "loadMoreFailed": "Nu s-au putut încărca mai multe fișiere.",
-    "activeHeader": "În desfășurare ({count})"
+    "activeHeader": "În desfășurare ({count})",
+    "uploadResumed": "Încărcarea se reia"
   },
   "clipboard": {
     "paste": "Lipește",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Încărcarea directă a eșuat: {status}",
     "deleteFailed": "Ștergerea fișierului a eșuat: {status}",
     "deleteAllFailed": "Ștergerea tuturor fișierelor a eșuat: {status}",
-    "quotaFailed": "Aflarea utilizării camerei a eșuat: {status}"
+    "quotaFailed": "Aflarea utilizării camerei a eșuat: {status}",
+    "dailyQuotaExceeded": "Ai atins limita de încărcare de azi. Încearcă din nou mâine.",
+    "singlePutTooLarge": "Acest fișier depășește limita de încărcare simplă (100 MB). Reîncarcă pagina și încearcă din nou.",
+    "sizeMismatch": "Dimensiunea fișierului încărcat nu s-a potrivit și a fost eliminat. Încarcă-l din nou.",
+    "multipartFailed": "Încărcarea fișierului mare a eșuat: {status}",
+    "serverRoomSizeExceeded": "Aceasta ar depăși limita de stocare a camerei."
   },
   "qrModal": {
     "roomTitle": "Partajează camera prin cod QR",
