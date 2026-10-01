@@ -29,12 +29,11 @@ const props = defineProps({
 const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file', 'delete-file'])
 
 const {
-  text: accentText,
+  bg: accentBg,
   borderL: accentBorderL,
   bgSoft10: accentBgSoft10,
   bgSoft5: accentBgSoft5,
   hoverBorder50: accentHoverBorder50,
-  hoverBg: accentHoverBg,
   accentColor
 } = useScopeAccent(() => props.scope)
 
@@ -136,6 +135,11 @@ function handleSheetQR(event) {
   closeActionsSheet()
 }
 
+function handleSheetCopy() {
+  emit('copy-image', props.file.url)
+  closeActionsSheet()
+}
+
 function handleSheetDownload(event) {
   handleDownload(event)
   closeActionsSheet()
@@ -163,22 +167,23 @@ async function handleShare(event) {
 </script>
 
 <template>
+  <!-- 행 전체 클릭으로 복사하지 않는다. 받기(primary)와 더보기(복사/QR/공유/삭제)를 명시 버튼으로 둔다. -->
   <div
-    class="file-row flex items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface cursor-pointer transition-colors duration-200"
+    class="file-row flex items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
     :class="[accentHoverBorder50, isSelected ? ['border-l-4', accentBgSoft5, accentBorderL] : '']"
-    @click="$emit('copy-image', file.url)"
   >
-    <!-- 체크박스 -->
-    <input
-      type="checkbox"
-      class="w-5 h-5 cursor-pointer flex-shrink-0"
-      :class="accentColor"
-      :checked="isSelected"
-      @click.stop
-      @change="$emit('toggle-selection', file)"
-    />
+    <!-- 체크박스: 44px 터치 영역의 label로 감싸 접근 가능한 이름을 준다 -->
+    <label class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 cursor-pointer">
+      <input
+        type="checkbox"
+        class="select-checkbox w-5 h-5 cursor-pointer"
+        :class="accentColor"
+        :checked="isSelected"
+        :aria-label="t('file.selectFile', { name: file.name })"
+        @change="$emit('toggle-selection', file)"
+      />
+    </label>
 
-    <!-- 이미지 타입: 썸네일 -->
     <img
       v-if="showImagePreview"
       :src="previewSrc"
@@ -190,8 +195,6 @@ async function handleShare(event) {
       class="w-8 h-8 sm:w-10 sm:h-10 rounded-md object-cover flex-shrink-0"
       @error="handleThumbError"
     />
-
-    <!-- 비이미지 타입: 컬러 아이콘 -->
     <div
       v-else
       class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center flex-shrink-0"
@@ -200,166 +203,103 @@ async function handleShare(event) {
       <span class="text-xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
     </div>
 
-    <!-- 파일 정보: 1줄 파일명 + 2번째 줄 용량·시간 -->
+    <!-- 파일명(ellipsis, 전체는 title) + 2행 "보낸 사람 · 용량 · 시간" (시간은 한 번만) -->
     <div class="flex-1 min-w-0">
-      <div class="file-name-container overflow-hidden">
-        <div class="file-name-wrapper">
-          <span class="file-name text-sm font-medium text-text-primary whitespace-nowrap">
-            {{ file.name }}
-          </span>
-        </div>
-      </div>
-      <p class="text-xs text-text-secondary mt-0.5">
-        {{ fileMetadata.size }} · {{ fileMetadata.uploadTime }}
+      <p class="file-name text-sm font-medium text-text-primary truncate m-0" :title="file.name" data-testid="file-name">{{ file.name }}</p>
+      <p class="file-meta flex items-center gap-1 text-xs text-text-secondary mt-0.5 m-0 min-w-0" data-testid="file-meta">
+        <SenderLabel v-if="file.uploader" :sender="file.uploader" class="shrink min-w-0" />
+        <span v-if="file.uploader" aria-hidden="true">·</span>
+        <span class="whitespace-nowrap">{{ fileMetadata.size }}</span>
+        <span aria-hidden="true">·</span>
+        <span class="whitespace-nowrap">{{ fileMetadata.uploadTime }}</span>
       </p>
-      <!-- 보낸 사람 (서버가 기록한 업로더가 있을 때만) -->
-      <SenderLabel v-if="file.uploader" :sender="file.uploader" :time="file.created" class="mt-0.5" />
     </div>
 
-    <!-- 액션 버튼: sm 이상에서는 아이콘 행 그대로, sm 미만에서는 더보기 트리거로 대체 -->
-    <div class="hidden sm:flex gap-1 sm:gap-2 flex-shrink-0">
-      <!-- 공유 버튼 (Web Share API 지원 시에만 표시) -->
-      <button
-        v-if="canShare"
-        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background transition-all duration-200 hover:text-white hover:scale-110"
-        :class="[accentText, accentHoverBg]"
-        @click="handleShare"
-        :title="t('file.share')"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="18" cy="5" r="3" />
-          <circle cx="6" cy="12" r="3" />
-          <circle cx="18" cy="19" r="3" />
-          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-        </svg>
-      </button>
-
-      <!-- QR 코드 버튼 -->
-      <button
-        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background transition-all duration-200 hover:text-white hover:scale-110"
-        :class="[accentText, accentHoverBg]"
-        @click="openQRModal"
-        :title="t('room.qrShareTitle')"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-        </svg>
-      </button>
-
-      <!-- 다운로드 버튼 -->
-      <button
-        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background transition-all duration-200 hover:text-white hover:scale-110"
-        :class="[accentText, accentHoverBg]"
-        @click="handleDownload"
-        :title="t('file.download')"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
-        </svg>
-      </button>
-
-      <!-- 삭제 버튼 -->
-      <button
-        class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-border bg-background text-red-400 transition-all duration-200 hover:bg-red-500 hover:text-white hover:scale-110"
-        @click="handleDelete"
-        :title="t('file.delete')"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="3 6 5 6 21 6" />
-          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-          <path d="M10 11v6" />
-          <path d="M14 11v6" />
-          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- 모바일 더보기 버튼 (sm 미만에서만 노출) -->
+    <!-- 받기 (primary) -->
     <button
-      class="flex sm:hidden w-9 h-9 items-center justify-center rounded-full border border-border bg-background text-text-primary flex-shrink-0"
-      @click="openActionsSheet"
+      type="button"
+      class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-full text-white text-sm font-semibold inline-flex items-center justify-center gap-1"
+      :class="accentBg"
+      :aria-label="`${t('file.receive')}: ${file.name}`"
+      data-testid="file-receive"
+      @click="handleDownload"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
+      </svg>
+      <span class="hidden sm:inline">{{ t('file.receive') }}</span>
+    </button>
+
+    <!-- 더보기 (복사/QR/공유/삭제) -->
+    <button
+      type="button"
+      class="more-btn shrink-0 w-11 h-11 flex items-center justify-center rounded-full border border-border bg-background text-text-primary"
       :title="t('file.moreActions')"
       :aria-label="t('file.moreActions')"
+      aria-haspopup="dialog"
+      @click="openActionsSheet"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <circle cx="5" cy="12" r="2" />
         <circle cx="12" cy="12" r="2" />
         <circle cx="19" cy="12" r="2" />
       </svg>
     </button>
 
-    <!-- QR 코드 모달 (Teleport로 body로 이동) -->
     <Teleport to="body">
-      <FileQRCodeModal
-        :file="file"
-        :is-open="isQRModalOpen"
-        @close="closeQRModal"
-      />
+      <FileQRCodeModal :file="file" :is-open="isQRModalOpen" @close="closeQRModal" />
     </Teleport>
 
-    <!-- 모바일 더보기 액션 시트 (Teleport로 body로 이동) -->
     <Teleport to="body">
       <Transition name="sheet">
         <div
           v-if="isActionsSheetOpen"
-          class="file-actions-sheet fixed inset-0 bg-black/70 z-50 flex items-end"
+          class="file-actions-sheet fixed inset-0 bg-black/70 z-50 flex items-end sm:items-center sm:justify-center"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="file.name"
           @click="handleActionsSheetBackdropClick"
+          @keydown.esc="closeActionsSheet"
         >
-          <div class="w-full bg-surface rounded-t-2xl p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
+          <div class="w-full sm:w-80 bg-surface rounded-t-2xl sm:rounded-2xl p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
+            <p class="px-4 py-2 text-xs text-text-secondary truncate m-0">{{ file.name }}</p>
+            <button
+              v-if="fileMetadata.isImage"
+              class="sheet-copy w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
+              @click="handleSheetCopy"
+            >
+              <span aria-hidden="true">📋</span>
+              <span class="text-sm font-medium">{{ t('file.copyImage') }}</span>
+            </button>
             <button
               v-if="canShare"
               class="sheet-share w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
               @click="handleSheetShare"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-              </svg>
+              <span aria-hidden="true">↗</span>
               <span class="text-sm font-medium">{{ t('file.share') }}</span>
             </button>
             <button
               class="sheet-qr w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
               @click="handleSheetQR"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
-              </svg>
+              <span aria-hidden="true">▦</span>
               <span class="text-sm font-medium">{{ t('room.qrShareTitle') }}</span>
             </button>
             <button
               class="sheet-download w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
               @click="handleSheetDownload"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
+              <span aria-hidden="true">⬇</span>
               <span class="text-sm font-medium">{{ t('file.download') }}</span>
             </button>
             <button
               class="sheet-delete w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-red-500/10 text-red-500"
               @click="handleSheetDelete"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                <path d="M10 11v6" />
-                <path d="M14 11v6" />
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-              </svg>
+              <span aria-hidden="true">🗑</span>
               <span class="text-sm font-medium">{{ t('file.delete') }}</span>
             </button>
           </div>
@@ -370,73 +310,18 @@ async function handleShare(event) {
 </template>
 
 <style scoped>
-/* 파일명 마퀴 애니메이션 */
-.file-name-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-
-.file-name-wrapper {
-  display: block;
-  position: relative;
-  width: 100%;
-}
-
-.file-name {
-  display: block;
-  width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-/* 호버 시 마퀴 애니메이션: 슬라이드하려면 래퍼가 콘텐츠 크기만큼 늘어나야 하므로
-   호버 시에만 inline-block/auto-width로 전환한다 (기본 상태는 ellipsis를 위해 block/100% 고정). */
-.file-row:hover .file-name-wrapper {
-  display: inline-block;
-  width: auto;
-  max-width: 100%;
-  animation: marquee 5s linear infinite;
-}
-
-.file-row:hover .file-name {
-  display: inline-block;
-  width: auto;
-  text-overflow: unset;
-  overflow: visible;
-  max-width: none;
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-  10% {
-    transform: translateX(0%);
-  }
-  90% {
-    transform: translateX(calc(-100% + 180px));
-  }
-  100% {
-    transform: translateX(calc(-100% + 180px));
-  }
-}
-
 .sheet-enter-active,
 .sheet-leave-active {
   transition: opacity 0.2s ease;
 }
-
 .sheet-enter-from,
 .sheet-leave-to {
   opacity: 0;
 }
-
 .sheet-enter-active > div,
 .sheet-leave-active > div {
   transition: transform 0.2s ease;
 }
-
 .sheet-enter-from > div,
 .sheet-leave-to > div {
   transform: translateY(100%);

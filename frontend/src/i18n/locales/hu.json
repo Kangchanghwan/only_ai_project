@@ -19,7 +19,9 @@
     "copy": "Másolás",
     "qr": "QR",
     "joinOtherRoom": "Csatlakozás másik szobához",
-    "enterCode": "Add meg a szobakódot"
+    "enterCode": "Add meg a szobakódot",
+    "otherDevices": "Más eszközök: {count}",
+    "waiting": "Eszközökre várakozás"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Az ugyanazon a hálózaton lévő más személyek (iskola, iroda, kávézó) is láthatják.",
+    "manage": "Névcímke kezelése",
+    "notAuth": "A névcímke csak az eszközök megkülönböztetésére szolgál. Nem személyazonosság-ellenőrzés.",
+    "globalWarning": "Bárki, idegenek is, láthatja, amit küldesz, és az eszközöd adatait (állatos névcímke, eszköz és böngésző). Érzékeny tartalomhoz használd az „Ugyanaz a hálózat” lehetőséget."
   },
   "shareScope": {
     "label": "Megosztás ezzel",
@@ -144,7 +150,13 @@
     "delete": "Törlés",
     "deleteSelected": "Kiválasztottak törlése",
     "clearStorage": "Tároló törlése",
-    "moreActions": "Több"
+    "moreActions": "Több",
+    "chooseFiles": "Fájlok kiválasztása",
+    "dropHint": "vagy húzd ide a fájlokat",
+    "limitResume": "Fájlonként legfeljebb {size} · a megszakadt feltöltés folytatódik",
+    "receive": "Fogadás",
+    "copyImage": "Kép másolása",
+    "selectFile": "{name} kijelölése"
   },
   "text": {
     "share": "Szöveg megosztása",
@@ -152,7 +164,9 @@
     "newText": "Új szöveg megosztva!",
     "removed": "Szöveg eltávolítva.",
     "clearAll": "Összes szöveg törlése",
-    "cleared": "Összes szöveg törölve."
+    "cleared": "Összes szöveg törölve.",
+    "composePlaceholder": "Írj vagy illessz be ide, majd nyomd meg a Megosztás gombot",
+    "inputPasteHint": "Az ebbe a mezőbe illesztett szöveg csak a Megosztás gombbal megy el."
   },
   "notification": {
     "uploading": "Feltöltés...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / asztali (Chrome, Edge)",
     "pwaAndroidDesc": "Koppints a címsorban lévő telepítési ikonra vagy a képernyő alján megjelenő telepítési sávra.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Koppints a Megosztás gombra, majd válaszd a „Főképernyőhöz adás” lehetőséget."
+    "pwaIOSDesc": "Koppints a Megosztás gombra, majd válaszd a „Főképernyőhöz adás” lehetőséget.",
+    "downloadSingleDesc": "Nyomd meg a fájl melletti Fogadás gombot a letöltéshez.",
+    "textShareCopyDesc": "Nyomd meg a megosztott szövegnél a Másolás gombot a vágólapra másoláshoz. A mezőbe írt vagy beillesztett szöveget a Megosztás gombbal küldheted el.",
+    "textShareDeleteDesc": "Nyisd meg a szöveg jobb oldalán lévő ⋯ gombot, és válaszd a Törlést.",
+    "scopeDevicesDesc": "A kapcsolat kártya (széles képernyőn a bal oldali panel) mutatja az azonos körben csatlakozó többi eszközt."
   },
   "seo": {
     "title": "Online vágólap – szöveg, kép és fájl megosztása telefon és PC között",
@@ -231,7 +249,7 @@
     "useCase4": "Hosszú linket, egyszeri kódot vagy szövegrészletet illesztenél be a telefonodról a gépedre",
     "safetyTitle": "Biztonságos?",
     "safety1": "Az alapértelmezett hatókör \"Azonos hálózat\", így az elemeidet csak az azonos nyilvános IP-cím mögötti eszközök látják. A mindenkivel való megosztáshoz saját magadnak kell átváltanod a \"Mindenki\" fülre.",
-    "safety2": "Amint minden eszköz kilép, a fájlok és a szöveg röviddel utána törlődnek. Nincs fiók, nincs előzmény.",
+    "safety2": "Ha minden eszköz kilép, a fájlok és szövegek hamarosan törlődnek; csatlakozás közben is legfeljebb 1 nap után takarítódnak. Nincs fiók, nincs előzmény.",
     "safety3": "Az átvitel HTTPS-sel titkosított, a forráskód pedig nyilvánosan elérhető a GitHubon.",
     "faqTitle": "Gyakori kérdések",
     "faq1q": "Tényleg ingyenes?",
@@ -243,7 +261,7 @@
     "faq4q": "Van fájlméret-korlát?",
     "faq4a": "Minden fájl akkora lehet, amekkorát a feltöltőkártyán jelzett limit megenged, és egyszerre több fájlt is feltölthetsz.",
     "faq5q": "Meddig őrzi meg a fájlokat?",
-    "faq5a": "Csak amíg valaki figyeli. Amint minden eszköz kilép, röviddel utána minden törlődik, ezért amire szükséged van, azt azonnal töltsd le.",
+    "faq5a": "Alapértelmezés szerint minden hamarosan törlődik, miután minden eszköz kilépett, és csatlakozott eszközök mellett is 1 napon belül takarítódnak a fájlok (időszakos takarítás, a pontos idő nem garantált). A szükséges fájlokat azonnal töltsd le. Az „Ugyanaz a hálózat” is látható lehet az adott hálózat más tagjainak, például iskolában vagy irodában.",
     "moreTitle": "További információ",
     "moreHowToUse": "Használati útmutató",
     "moreFaq": "Teljes GYIK",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "épp most"
+  },
+  "publicConfirm": {
+    "title": "Mindenkinek elküldöd?",
+    "body": "Idegenek is láthatják ezt az elemet és az eszközöd adatait. Ha egyetértesz, ebben a látogatásban nem kérdezünk újra.",
+    "confirm": "Küldés nyilvánosan"
+  },
+  "guide": {
+    "title": "Tárolás és használat",
+    "retention": "Akkor is, ha csatlakozva vagy, a fájlok legfeljebb 1 nap után automatikusan törlődnek. A takarítás időszakosan fut, ezért a pontos idő (másodpercre) nem garantált, és ha minden eszköz kilép, korábban is törlődhet. A szükséges fájlokat azonnal töltsd le."
   }
 }

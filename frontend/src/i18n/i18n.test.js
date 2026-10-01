@@ -269,3 +269,38 @@ describe('i18n identity (기기 정체성)', () => {
     }
   })
 })
+
+describe('i18n 반응형 작업 영역 신규 문구', () => {
+  const required = [
+    'identity.ipNotice', 'identity.manage', 'identity.notAuth', 'identity.globalWarning',
+    'room.otherDevices', 'room.waiting',
+    'file.chooseFiles', 'file.dropHint', 'file.limitResume', 'file.receive', 'file.copyImage', 'file.selectFile',
+    'text.composePlaceholder', 'text.inputPasteHint',
+    'publicConfirm.title', 'publicConfirm.body', 'publicConfirm.confirm',
+    'guide.title', 'guide.retention'
+  ]
+  const get = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj)
+
+  it('21개 로케일 모두 신규 키가 있고, 영어 원문을 그대로 복사하지 않았다(ko/en 제외)', () => {
+    const entries = Object.entries(locales)
+    expect(entries.length).toBeGreaterThanOrEqual(21)
+    const en = locales['./locales/en.json'].default || locales['./locales/en.json']
+    for (const [path, mod] of entries) {
+      const json = mod.default || mod
+      for (const key of required) {
+        const v = get(json, key)
+        expect(typeof v, `${path}의 ${key} 없음`).toBe('string')
+        expect(v.length).toBeGreaterThan(0)
+        if (!path.endsWith('en.json')) expect(v, `${path}의 ${key}가 영어와 동일`).not.toBe(get(en, key))
+      }
+    }
+  })
+
+  it('치환 placeholder({count},{size},{name})가 모든 로케일에서 유지된다', () => {
+    const need = { 'room.otherDevices': '{count}', 'file.limitResume': '{size}', 'file.selectFile': '{name}' }
+    for (const [path, mod] of Object.entries(locales)) {
+      const json = mod.default || mod
+      for (const [key, ph] of Object.entries(need)) expect(get(json, key), `${path} ${key}`).toContain(ph)
+    }
+  })
+})

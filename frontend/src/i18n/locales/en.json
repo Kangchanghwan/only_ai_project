@@ -19,7 +19,9 @@
     "copy": "Copy",
     "qr": "QR",
     "joinOtherRoom": "Join another room",
-    "enterCode": "Enter room code"
+    "enterCode": "Enter room code",
+    "otherDevices": "Other devices: {count}",
+    "waiting": "Waiting for devices"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Other people on the same network, such as a school, office or cafe, can see it too.",
+    "manage": "Manage name tag",
+    "notAuth": "The name tag only tells devices apart. It is not identity verification.",
+    "globalWarning": "Everyone can see what you send and your device info (animal name tag, device and browser), including strangers. Use 'Same network' for sensitive files."
   },
   "shareScope": {
     "label": "Share with",
@@ -149,7 +155,13 @@
     "delete": "Delete",
     "deleteSelected": "Delete Selected",
     "clearStorage": "Clear Storage",
-    "moreActions": "More"
+    "moreActions": "More",
+    "chooseFiles": "Choose files",
+    "dropHint": "or drag and drop files here",
+    "limitResume": "Up to {size} per file · interrupted uploads resume",
+    "receive": "Receive",
+    "copyImage": "Copy image",
+    "selectFile": "Select {name}"
   },
   "text": {
     "share": "Share Text",
@@ -164,7 +176,9 @@
     "clickToCopy": "Click to copy",
     "delete": "Delete",
     "messageCount": "{count} message",
-    "messageCount_plural": "{count} messages"
+    "messageCount_plural": "{count} messages",
+    "composePlaceholder": "Type or paste here, then press Share",
+    "inputPasteHint": "Text pasted into this box is only sent when you press Share."
   },
   "notification": {
     "uploading": "Uploading...",
@@ -258,7 +272,7 @@
     "feature6": "QR Code Sharing:",
     "feature6Desc": "Use a QR code to quickly join the same space or share files",
     "scopeTitle": "Sharing Scope",
-    "scopeDevicesDesc": "The avatars next to the tabs show other devices currently connected in the same scope.",
+    "scopeDevicesDesc": "The connection card (the left panel on wide screens) shows other devices connected in the same scope.",
     "fileShareTitle": "How to Share Files",
     "fileShare1": "1. Clipboard Paste",
     "fileShare1Desc": "The fastest method:",
@@ -271,12 +285,12 @@
     "textShareAuto": "Auto Share:",
     "textShareAutoDesc": "After copying text, paste (Ctrl+V / Cmd+V) on the page to automatically share.",
     "textShareCopy": "Copy:",
-    "textShareCopyDesc": "Click on shared text to automatically copy to clipboard.",
+    "textShareCopyDesc": "Press Copy on a shared text to copy it to the clipboard. Text you type or paste into the box is sent with the Share button.",
     "textShareDelete": "Delete:",
-    "textShareDeleteDesc": "Click the trash icon that appears when you hover over the text.",
+    "textShareDeleteDesc": "Open the ⋯ button on the right of a text and choose Delete.",
     "downloadTitle": "File Download",
     "downloadSingle": "Individual Download",
-    "downloadSingleDesc": "Click on a file card to download that file.",
+    "downloadSingleDesc": "Press the Receive button next to a file to download it.",
     "downloadMulti": "Multiple Selection Download",
     "downloadMultiStep1": "Select files with \"Select All\" or the checkbox on each file card",
     "downloadMultiStep2": "Use the \"Download\" button to download the selected files one by one",
@@ -331,7 +345,7 @@
     "useCase4": "Pasting a long link, one-time code or snippet from your phone into your PC",
     "safetyTitle": "Is it safe?",
     "safety1": "The default scope is \"Same network\", so only devices behind the same public IP can see your items. Sharing with everyone requires switching to the \"Everyone\" tab yourself.",
-    "safety2": "When every device leaves, files and text are deleted shortly after. No account, no history.",
+    "safety2": "When every device leaves, files and text are deleted shortly after, and even while connected, files are cleaned up after at most 1 day. No account, no history.",
     "safety3": "Transfers are encrypted with HTTPS and the source code is public on GitHub.",
     "faqTitle": "Frequently asked questions",
     "faq1q": "Is it really free?",
@@ -343,7 +357,7 @@
     "faq4q": "Is there a file size limit?",
     "faq4a": "Each file can be as large as the limit shown on the upload card, and you can upload several files at once.",
     "faq5q": "How long are files kept?",
-    "faq5a": "Only while someone is looking. Once every device leaves, everything is deleted shortly after, so download what you need right away.",
+    "faq5a": "By default, everything is deleted shortly after every device leaves, and even while devices are connected, files are cleaned up within 1 day (cleanup runs periodically, so the exact time is not guaranteed). Download what you need right away. 'Same network' can also be seen by other people on that network, such as at a school or office.",
     "moreTitle": "Learn more",
     "moreHowToUse": "How to use (Korean)",
     "moreFaq": "Full FAQ (Korean)",
@@ -409,5 +423,14 @@
   },
   "time": {
     "justNow": "just now"
+  },
+  "publicConfirm": {
+    "title": "Send to everyone?",
+    "body": "Strangers can see this item and your device info. If you agree, we won't ask again during this visit.",
+    "confirm": "Send publicly"
+  },
+  "guide": {
+    "title": "Storage and usage notes",
+    "retention": "Even while you are connected, files are cleaned up automatically after at most 1 day. Cleanup runs periodically, so the exact time (to the second) is not guaranteed, and items may be deleted sooner once every device leaves. Download what you need right away."
   }
 }

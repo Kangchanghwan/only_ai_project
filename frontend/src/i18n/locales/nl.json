@@ -19,7 +19,9 @@
     "copy": "Kopiëren",
     "qr": "QR",
     "joinOtherRoom": "Deelnemen aan een andere ruimte",
-    "enterCode": "Voer ruimtecode in"
+    "enterCode": "Voer ruimtecode in",
+    "otherDevices": "Andere apparaten: {count}",
+    "waiting": "Wachten op apparaten"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Ook andere mensen op hetzelfde netwerk (school, kantoor, café) kunnen het zien.",
+    "manage": "Naamlabel beheren",
+    "notAuth": "Het naamlabel onderscheidt alleen apparaten. Het is geen identiteitscontrole.",
+    "globalWarning": "Iedereen, ook onbekenden, kan zien wat je verstuurt en de gegevens van je apparaat (dierlabel, apparaat en browser). Gebruik 'Zelfde netwerk' voor gevoelige bestanden."
   },
   "shareScope": {
     "label": "Delen met",
@@ -144,7 +150,13 @@
     "delete": "Verwijderen",
     "deleteSelected": "Geselecteerde verwijderen",
     "clearStorage": "Opslag wissen",
-    "moreActions": "Meer"
+    "moreActions": "Meer",
+    "chooseFiles": "Bestanden kiezen",
+    "dropHint": "of sleep bestanden hierheen",
+    "limitResume": "Tot {size} per bestand · onderbroken uploads worden hervat",
+    "receive": "Ontvangen",
+    "copyImage": "Afbeelding kopiëren",
+    "selectFile": "{name} selecteren"
   },
   "text": {
     "share": "Tekst delen",
@@ -152,7 +164,9 @@
     "newText": "Nieuwe tekst gedeeld!",
     "removed": "Tekst verwijderd.",
     "clearAll": "Alle teksten wissen",
-    "cleared": "Alle teksten gewist."
+    "cleared": "Alle teksten gewist.",
+    "composePlaceholder": "Typ of plak hier en druk op Delen",
+    "inputPasteHint": "Tekst die je in dit vak plakt, wordt pas verstuurd als je op Delen drukt."
   },
   "notification": {
     "uploading": "Uploaden...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / desktop (Chrome, Edge)",
     "pwaAndroidDesc": "Tik op het installatiepictogram in de adresbalk of de installatiebanner onderaan het scherm.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Tik op de deelknop en kies vervolgens \"Zet op beginscherm\"."
+    "pwaIOSDesc": "Tik op de deelknop en kies vervolgens \"Zet op beginscherm\".",
+    "downloadSingleDesc": "Druk naast een bestand op Ontvangen om het te downloaden.",
+    "textShareCopyDesc": "Druk bij een gedeelde tekst op Kopiëren om die naar het klembord te kopiëren. Tekst die je typt of plakt in het vak verstuur je met Delen.",
+    "textShareDeleteDesc": "Open de knop ⋯ rechts van de tekst en kies Verwijderen.",
+    "scopeDevicesDesc": "De verbindingskaart (op brede schermen het linkerpaneel) toont andere apparaten in hetzelfde bereik."
   },
   "seo": {
     "title": "Online Klembord – Tekst & Bestanden Delen tussen Telefoon en PC",
@@ -231,7 +249,7 @@
     "useCase4": "Een lange link, eenmalige code of stukje tekst vanaf je telefoon op je pc plakken",
     "safetyTitle": "Is het veilig?",
     "safety1": "De standaardinstelling is \"Zelfde netwerk\", dus alleen apparaten achter hetzelfde publieke IP-adres zien jouw items. Delen met iedereen kan alleen door zelf naar het tabblad \"Iedereen\" te schakelen.",
-    "safety2": "Zodra alle apparaten weg zijn, worden bestanden en tekst kort daarna verwijderd. Geen account, geen geschiedenis.",
+    "safety2": "Als alle apparaten weg zijn, worden bestanden en teksten kort daarna verwijderd; ook tijdens verbinding worden bestanden na uiterlijk 1 dag opgeruimd. Geen account, geen geschiedenis.",
     "safety3": "Overdrachten zijn versleuteld met HTTPS en de broncode is openbaar op GitHub.",
     "faqTitle": "Veelgestelde vragen",
     "faq1q": "Is het echt gratis?",
@@ -243,7 +261,7 @@
     "faq4q": "Is er een limiet voor bestandsgrootte?",
     "faq4a": "Elk bestand mag zo groot zijn als de limiet op de uploadkaart aangeeft, en je kunt meerdere bestanden tegelijk uploaden.",
     "faq5q": "Hoe lang worden bestanden bewaard?",
-    "faq5a": "Alleen zolang iemand aan het kijken is. Zodra alle apparaten weg zijn, wordt alles kort daarna verwijderd, dus download meteen wat je nodig hebt.",
+    "faq5a": "Standaard wordt alles kort nadat alle apparaten weg zijn verwijderd, en ook met verbonden apparaten worden bestanden binnen 1 dag opgeruimd (periodiek opruimen, exacte tijd niet gegarandeerd). Download wat je nodig hebt meteen. 'Zelfde netwerk' kan ook zichtbaar zijn voor andere mensen op dat netwerk, zoals op school of kantoor.",
     "moreTitle": "Meer weten",
     "moreHowToUse": "Gebruiksaanwijzing",
     "moreFaq": "Alle veelgestelde vragen",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "zojuist"
+  },
+  "publicConfirm": {
+    "title": "Naar iedereen sturen?",
+    "body": "Onbekenden kunnen dit item en de gegevens van je apparaat zien. Als je akkoord gaat, vragen we het tijdens dit bezoek niet opnieuw.",
+    "confirm": "Openbaar versturen"
+  },
+  "guide": {
+    "title": "Opslag en gebruik",
+    "retention": "Ook terwijl je verbonden bent, worden bestanden na uiterlijk 1 dag automatisch opgeruimd. Het opruimen draait periodiek, dus de exacte tijd (op de seconde) is niet gegarandeerd, en zodra alle apparaten weg zijn kan het eerder gebeuren. Download wat je nodig hebt meteen."
   }
 }

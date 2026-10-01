@@ -49,16 +49,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 bg-surface border-b border-border px-6 py-3 flex justify-between items-center mb-8 flex-wrap gap-4">
-    <div class="flex items-center gap-3 text-2xl">
-      <span class="text-4xl" aria-hidden="true">📋</span>
-      <h1 class="font-display font-bold text-2xl m-0">{{ t('app.title') }}</h1>
+  <header class="sticky top-0 z-40 bg-surface border-b border-border mb-4">
+   <div class="mx-auto w-full max-w-[1040px] box-border px-4 sm:px-6 py-2 flex justify-between items-center flex-wrap gap-x-4 gap-y-1">
+    <div class="flex items-center gap-3 text-2xl min-w-0">
+      <span class="text-3xl sm:text-4xl" aria-hidden="true">📋</span>
+      <h1 class="font-display font-bold text-xl sm:text-2xl m-0 truncate">{{ t('app.title') }}</h1>
     </div>
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2 sm:gap-4">
       <LanguageSelector />
       <ThemeToggleButton />
       <button
-        class="w-9 h-9 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-bold text-lg transition-all duration-200 flex items-center justify-center border-2 border-primary/30 hover:border-primary/50"
+        class="w-11 h-11 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-bold text-lg transition-all duration-200 flex items-center justify-center border-2 border-primary/30 hover:border-primary/50"
         @click="openHelpModal"
         :title="t('app.helpTitle')"
         :aria-label="t('app.help')"
@@ -68,7 +69,7 @@ onMounted(async () => {
       <button
         v-if="qrCodeDataUrl"
         type="button"
-        class="header-qr-button w-9 h-9 flex items-center justify-center bg-white rounded-lg border border-border hover:opacity-90 transition-opacity"
+        class="header-qr-button w-11 h-11 flex items-center justify-center bg-white rounded-lg border border-border hover:opacity-90 transition-opacity"
         :title="t('qr.backgroundHint')"
         :aria-label="t('qr.backgroundHint')"
         @click="openQrZoom"
@@ -76,6 +77,7 @@ onMounted(async () => {
         <img :src="qrCodeDataUrl" alt="" class="w-full h-full rounded-lg" />
       </button>
     </div>
+   </div>
   </header>
 
   <!-- 도움말 모달 -->

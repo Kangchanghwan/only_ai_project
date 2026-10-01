@@ -77,12 +77,16 @@ describe('MyIdentity (나 고정 표시)', () => {
   it('"나: 졸린 판다 (이 기기)"와 다시 뽑기 버튼을 보여준다', async () => {
     const wrapper = mount(MyIdentity, { props: { identity: panda }, global })
     expect(wrapper.text()).toContain('나: 졸린 판다 (이 기기)')
+    // 항상 떠 있는 큰 버튼은 없고, 이름표를 눌러야 관리(다시 뽑기)가 열린다
+    expect(wrapper.find('[data-testid="reroll-button"]').exists()).toBe(false)
+    await wrapper.find('[data-testid="my-identity-trigger"]').trigger('click')
     await wrapper.find('[data-testid="reroll-button"]').trigger('click')
     expect(wrapper.emitted('reroll')).toHaveLength(1)
   })
 
-  it('쿨다운 중에는 버튼이 비활성화된다', () => {
+  it('쿨다운 중에는 버튼이 비활성화된다', async () => {
     const wrapper = mount(MyIdentity, { props: { identity: panda, rerollAvailableAt: Date.now() + 5000 }, global })
+    await wrapper.find('[data-testid="my-identity-trigger"]').trigger('click')
     expect(wrapper.find('[data-testid="reroll-button"]').attributes('disabled')).toBeDefined()
   })
 

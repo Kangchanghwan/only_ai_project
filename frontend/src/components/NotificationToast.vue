@@ -1,153 +1,56 @@
 <script setup>
-import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
-import UploadProgressItem from './UploadProgressItem.vue'
+/**
+ * 하단 단일 위치의 알림 토스트. 진행 패널은 작업 영역 안의 TransferProgress가 맡는다.
+ * (uploads prop은 하위 호환용: 넘기면 토스트 위가 아니라 같은 TransferProgress 패널을 그대로 그린다.)
+ */
+import TransferProgress from './TransferProgress.vue'
 
-const { t } = useI18n()
-
-const props = defineProps({
-  message: {
-    type: String,
-    default: null
-  },
-  uploads: {
-    type: Map,
-    default: () => new Map()
-  }
+defineProps({
+  message: { type: String, default: null },
+  uploads: { type: Map, default: () => new Map() }
 })
-
 const emit = defineEmits(['cancel-upload', 'cancel-all'])
-
-/** 취소할 수 있는 진행 중 업로드 수 (다운로드·완료·실패 제외) */
-const cancellableCount = computed(() => {
-  let count = 0
-  for (const upload of props.uploads.values()) {
-    if (upload.cancellable && upload.status === 'uploading') count++
-  }
-  return count
-})
 </script>
 
 <template>
-  <!-- 기존 메시지 알림 -->
   <transition name="fade">
-    <div v-if="message" class="notification" role="status" data-prerender-strip>
+    <div v-if="message" class="notification" role="status" aria-live="polite" data-prerender-strip>
       {{ message }}
     </div>
   </transition>
 
-  <!-- 업로드/다운로드 프로그레스 패널 -->
-  <transition name="fade">
-    <div v-if="uploads && uploads.size > 0" class="upload-panel" data-prerender-strip>
-      <div class="upload-header">
-        <span>{{ t('notification.activeHeader', { count: uploads.size }) }}</span>
-        <button
-          v-if="cancellableCount >= 2"
-          type="button"
-          class="cancel-all-btn"
-          @click="emit('cancel-all')"
-        >{{ t('notification.cancelAll') }}</button>
-      </div>
-      <div class="upload-list">
-        <UploadProgressItem
-          v-for="[id, upload] in uploads"
-          :key="id"
-          :file-name="upload.fileName"
-          :percent="upload.percent"
-          :status="upload.status"
-          :cancellable="!!upload.cancellable"
-          @cancel="emit('cancel-upload', id)"
-        />
-      </div>
-    </div>
-  </transition>
+  <TransferProgress
+    :uploads="uploads"
+    @cancel-upload="emit('cancel-upload', $event)"
+    @cancel-all="emit('cancel-all')"
+  />
 </template>
 
 <style scoped>
+/* 하단 중앙 단일 위치. 안전 영역 + 하단 고정 액션바(약 4.5rem) 위에 띄운다.
+   넓은 화면(>=1100px)에서는 왼쪽 240px 패널을 뺀 작업 영역 중앙에 맞춘다. */
 .notification {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 15px 25px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(400px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-/* 업로드 패널 스타일 */
-.upload-panel {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  min-width: 280px;
-  max-width: 320px;
-  animation: slideIn 0.3s ease;
-}
-
-.upload-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.cancel-all-btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  left: 50%;
+  bottom: calc(6rem + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  background: rgba(20, 18, 16, 0.92);
   color: #fff;
-  border-radius: 6px;
-  font-size: 12px;
-  padding: 2px 8px;
-  cursor: pointer;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  overflow-wrap: anywhere;
+  text-align: center;
+  font-size: 0.875rem;
 }
-
-.cancel-all-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+@media (min-width: 1100px) {
+  .notification { left: calc(50% + 140px); }
 }
-
-.upload-list {
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-/* 업로드 패널이 있을 때 알림 위치 조정 */
-.notification + .upload-panel,
-.upload-panel ~ .notification {
-  top: 80px;
-}
+.fade-enter-active,
+.fade-leave-active { transition: opacity 0.3s ease; }
+.fade-enter-from,
+.fade-leave-to { opacity: 0; }
 </style>

@@ -123,6 +123,7 @@ onUnmounted(() => {
   font-size: 0.875rem;
   transition: all 0.2s;
   min-width: 100px;
+  min-height: 2.75rem;
   text-align: left;
 }
 

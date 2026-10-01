@@ -61,8 +61,8 @@ const { currentTheme, toggleTheme } = useTheme()
   font-size: 1.25rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 2.5rem;
-  min-height: 2.5rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 .theme-toggle-button:hover {

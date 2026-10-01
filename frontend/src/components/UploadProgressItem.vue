@@ -62,40 +62,45 @@ defineProps({
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.25rem;
   margin-bottom: 4px;
 }
 
 .file-name {
-  font-size: 12px;
-  color: #e0e0e0;
+  font-size: 0.8125rem;
+  color: var(--color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 180px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .cancel-btn {
   flex: none;
-  margin-left: 6px;
-  width: 22px;
-  height: 22px;
+  /* 실제 터치 영역 44px */
+  width: 44px;
+  height: 44px;
+  margin: -0.5rem -0.5rem -0.5rem 0;
   line-height: 1;
   padding: 0;
   background: transparent;
   border: none;
   border-radius: 50%;
-  color: #e0e0e0;
-  font-size: 12px;
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
   cursor: pointer;
 }
 
 .cancel-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 .status-indicator {
-  font-size: 12px;
+  flex: none;
+  font-size: 0.8125rem;
   font-weight: 500;
+  color: var(--color-text-secondary);
   min-width: 40px;
   text-align: right;
 }
@@ -103,7 +108,7 @@ defineProps({
 .progress-bar {
   width: 100%;
   height: 4px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-border);
   border-radius: 2px;
   overflow: hidden;
 }
