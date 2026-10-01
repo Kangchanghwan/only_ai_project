@@ -58,3 +58,19 @@ describe('DownloadControls.vue - 하단 고정 5열 레이아웃', () => {
     expect(wrapper.emitted('clear-storage')).toBeTruthy()
   })
 })
+
+describe('DownloadControls.vue - 좁은 폭 줄바꿈', () => {
+  it('루트는 좁은 폭에서 flex-wrap, md 이상에서 5열 grid다', () => {
+    const root = mountControls().element
+    expect(root.className).toContain('flex-wrap')
+    expect(root.className).toContain('md:grid')
+    expect(root.className).toContain('md:grid-cols-5')
+  })
+
+  it('모든 버튼은 dc-btn, 라벨은 dc-label(nowrap/keep-all 스타일 대상)이다', () => {
+    const wrapper = mountControls()
+    const btns = wrapper.findAll('button')
+    expect(btns.every((b) => b.classes().includes('dc-btn'))).toBe(true)
+    expect(wrapper.findAll('.dc-label')).toHaveLength(5)
+  })
+})
