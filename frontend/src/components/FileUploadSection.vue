@@ -16,10 +16,9 @@ const props = defineProps({
 const emit = defineEmits(['upload-files'])
 
 const {
-  text: accentText,
+  bg: accentBg,
   border: accentBorder,
-  bgSoft10: accentBgSoft10,
-  hoverShadow30: accentHoverShadow30
+  bgSoft10: accentBgSoft10
 } = useScopeAccent(() => props.scope)
 
 const fileInputRef = ref(null)
@@ -63,66 +62,35 @@ function handleDrop(event) {
 </script>
 
 <template>
-  <!-- 파일 카드 형태의 업로드 섹션 -->
+  <!-- 파일 선택이 primary. PC에서는 드래그 앤 드롭 영역, 모바일은 간결한 안내 -->
   <div
-    class="relative rounded-lg overflow-hidden cursor-pointer border-2 border-dashed transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-    :class="[
-      accentHoverShadow30,
-      isDragging ? [accentBorder, accentBgSoft10] : 'border-border bg-background'
-    ]"
+    class="upload-drop relative rounded-xl cursor-pointer border-2 border-dashed transition-colors duration-200 p-4 sm:p-6 flex flex-col items-center gap-3 text-center"
+    :class="isDragging ? [accentBorder, accentBgSoft10] : 'border-border bg-background'"
+    data-testid="upload-dropzone"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
     @drop="handleDrop"
     @click="openFileDialog"
   >
-    <!-- 숨겨진 파일 입력 -->
-    <input
-      ref="fileInputRef"
-      type="file"
-      multiple
-      class="hidden"
-      @change="handleFileSelect"
-    />
+    <input ref="fileInputRef" type="file" multiple class="hidden" tabindex="-1" @change="handleFileSelect" @click.stop />
 
-    <!-- 메인 컨텐츠 영역 -->
-    <div class="w-full h-[200px] flex flex-col items-center justify-center gap-3 bg-surface/50">
-      <!-- SVG 아이콘으로 대체하여 LCP 성능 개선 -->
-      <svg
-        class="w-20 h-20"
-        :class="accentText"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
+    <button
+      type="button"
+      class="w-full sm:w-auto min-h-[48px] px-6 rounded-full text-white font-semibold text-base inline-flex items-center justify-center gap-2"
+      :class="accentBg"
+      data-testid="choose-files"
+      @click.stop="openFileDialog"
+    >
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
         <polyline points="17 8 12 3 7 8" />
         <line x1="12" y1="3" x2="12" y2="15" />
       </svg>
-      <p class="text-sm font-semibold text-text-primary">{{ t('file.uploadTitle') }}</p>
-      <p class="text-xs text-text-secondary px-4 text-center">
-        {{ t('file.uploadHint') }}<br />
-        {{ t('file.uploadPasteHint') }}
-      </p>
-    </div>
-
-    <!-- 상단 정보 오버레이 -->
-    <div class="absolute top-0 left-0 right-0 p-3 bg-gradient-to-b from-surface/90 via-surface/60 to-transparent">
-      <div class="flex items-center gap-3">
-        <span class="text-2xl">📁</span>
-        <div class="flex items-center gap-2 text-xs text-text-primary/90">
-          <span>{{ t('file.maxSize', { size: formatSizeMB(maxFileSizeMB) }) }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 하단 액션 오버레이 (호버시 표시) -->
-    <div
-      class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-surface/90 to-transparent flex justify-center items-end opacity-0 transition-opacity duration-200 hover:opacity-100"
-    >
-      <span class="text-xs font-medium text-text-primary">{{ t('file.uploadClickHint') }}</span>
-    </div>
+      {{ t('file.chooseFiles') }}
+    </button>
+    <p class="hidden sm:block text-sm text-text-secondary m-0">{{ t('file.dropHint') }}</p>
+    <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
+      {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
+    </p>
   </div>
 </template>

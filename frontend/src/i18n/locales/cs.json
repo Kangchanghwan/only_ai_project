@@ -19,7 +19,9 @@
     "copy": "Kopírovat",
     "qr": "QR",
     "joinOtherRoom": "Připojit se do jiné místnosti",
-    "enterCode": "Zadejte kód místnosti"
+    "enterCode": "Zadejte kód místnosti",
+    "otherDevices": "Další zařízení: {count}",
+    "waiting": "Čekání na zařízení"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Vidět to mohou i další lidé ve stejné síti (škola, kancelář, kavárna).",
+    "manage": "Spravovat jmenovku",
+    "notAuth": "Jmenovka jen rozlišuje zařízení. Není to ověření totožnosti.",
+    "globalWarning": "Kdokoli, i cizí lidé, vidí, co posíláte, a údaje o vašem zařízení (zvířecí jmenovka, zařízení a prohlížeč). Citlivé věci posílejte přes „Stejná síť“."
   },
   "shareScope": {
     "label": "Sdílet s",
@@ -144,7 +150,13 @@
     "delete": "Smazat",
     "deleteSelected": "Smazat vybrané",
     "clearStorage": "Vymazat úložiště",
-    "moreActions": "Více"
+    "moreActions": "Více",
+    "chooseFiles": "Vybrat soubory",
+    "dropHint": "nebo sem přetáhněte soubory",
+    "limitResume": "Až {size} na soubor · přerušené nahrávání se obnoví",
+    "receive": "Přijmout",
+    "copyImage": "Kopírovat obrázek",
+    "selectFile": "Vybrat {name}"
   },
   "text": {
     "share": "Sdílet text",
@@ -152,7 +164,9 @@
     "newText": "Nový text sdílen!",
     "removed": "Text odstraněn.",
     "clearAll": "Vymazat všechny texty",
-    "cleared": "Všechny texty vymazány."
+    "cleared": "Všechny texty vymazány.",
+    "composePlaceholder": "Napište nebo vložte sem a stiskněte Sdílet",
+    "inputPasteHint": "Text vložený do tohoto pole se odešle až stisknutím Sdílet."
   },
   "notification": {
     "uploading": "Nahrávání...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / počítač (Chrome, Edge)",
     "pwaAndroidDesc": "Klepněte na ikonu instalace v adresním řádku nebo na banner instalace ve spodní části obrazovky.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Klepněte na tlačítko sdílení a poté vyberte „Přidat na plochu“."
+    "pwaIOSDesc": "Klepněte na tlačítko sdílení a poté vyberte „Přidat na plochu“.",
+    "downloadSingleDesc": "Stiskněte tlačítko Přijmout vedle souboru a stáhne se.",
+    "textShareCopyDesc": "Stiskněte Kopírovat u sdíleného textu a zkopíruje se do schránky. Text napsaný nebo vložený do pole odešlete tlačítkem Sdílet.",
+    "textShareDeleteDesc": "Otevřete tlačítko ⋯ vpravo od textu a zvolte Smazat.",
+    "scopeDevicesDesc": "Karta připojení (na širokých obrazovkách levý panel) ukazuje další zařízení ve stejném rozsahu."
   },
   "seo": {
     "title": "Online schránka – sdílejte text a soubory mezi telefonem a PC",
@@ -231,7 +249,7 @@
     "useCase4": "Vložení dlouhého odkazu, jednorázového kódu nebo úryvku textu z telefonu do PC",
     "safetyTitle": "Je to bezpečné?",
     "safety1": "Výchozí rozsah je \"Stejná síť\", takže vaše položky vidí jen zařízení za stejnou veřejnou IP adresou. Sdílení se všemi vyžaduje ruční přepnutí na kartu \"Všichni\".",
-    "safety2": "Jakmile odejdou všechna zařízení, soubory a text se krátce poté smažou. Žádný účet, žádná historie.",
+    "safety2": "Když odejdou všechna zařízení, soubory a texty se brzy smažou; i při připojení se soubory uklidí nejpozději po 1 dni. Bez účtu a historie.",
     "safety3": "Přenosy jsou šifrované přes HTTPS a zdrojový kód je veřejně dostupný na GitHubu.",
     "faqTitle": "Časté dotazy",
     "faq1q": "Je to opravdu zdarma?",
@@ -243,7 +261,7 @@
     "faq4q": "Je omezená velikost souboru?",
     "faq4a": "Každý soubor může mít velikost až do limitu uvedeného na kartě nahrávání a nahrát můžete i více souborů najednou.",
     "faq5q": "Jak dlouho se soubory uchovávají?",
-    "faq5a": "Jen dokud se na ně někdo dívá. Jakmile odejdou všechna zařízení, vše se krátce poté smaže, takže si potřebné soubory stáhněte hned.",
+    "faq5a": "Ve výchozím stavu se vše smaže brzy po odchodu všech zařízení a i při připojených zařízeních se soubory uklidí do 1 dne (úklid je pravidelný, přesný čas není zaručen). Potřebné soubory si stáhněte hned. „Stejná síť“ může být viditelná i pro další lidi v této síti, např. ve škole či kanceláři.",
     "moreTitle": "Zjistit více",
     "moreHowToUse": "Jak na to",
     "moreFaq": "Všechny časté dotazy",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "právě teď"
+  },
+  "publicConfirm": {
+    "title": "Odeslat všem?",
+    "body": "Cizí lidé uvidí tuto položku i údaje o vašem zařízení. Pokud souhlasíte, během této návštěvy se už nebudeme ptát.",
+    "confirm": "Odeslat veřejně"
+  },
+  "guide": {
+    "title": "Uložení a používání",
+    "retention": "I když jste připojeni, soubory se automaticky mažou nejpozději po 1 dni. Úklid probíhá pravidelně, takže přesný čas (na sekundu) není zaručen a po odchodu všech zařízení může dojít ke smazání dříve. Potřebné soubory si stáhněte hned."
   }
 }

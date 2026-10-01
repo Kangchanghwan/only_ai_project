@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import FileCard from './FileCard.vue'
 import FileUploadSection from './FileUploadSection.vue'
 import PasteSection from './PasteSection.vue'
+import TransferProgress from './TransferProgress.vue'
 import DownloadControls from './DownloadControls.vue'
 import MultiFileQRCodeModal from './MultiFileQRCodeModal.vue'
 import { createEnterStagger } from '../utils/enterStagger'
@@ -28,6 +29,11 @@ const props = defineProps({
   scope: {
     type: String,
     default: 'ip'
+  },
+  /** 진행 중인 업로드/다운로드 (App.vue가 관리). 보내기 영역 바로 아래에 inline으로 그린다 */
+  uploads: {
+    type: Map,
+    default: () => new Map()
   }
 })
 
@@ -41,7 +47,9 @@ const emit = defineEmits([
   'clear-storage',
   'upload-files',
   'paste-content',
-  'load-more'
+  'load-more',
+  'cancel-upload',
+  'cancel-all'
 ])
 
 const selectedFiles = ref(new Set())
@@ -152,23 +160,26 @@ onUnmounted(() => {
       @clear-storage="$emit('clear-storage')"
     />
 
-    <!-- 업로드/붙여넣기 드롭존 (리스트 밖 상단, 항상 표시) -->
-    <div class="flex flex-col gap-4 mb-6">
-      <div class="flex-1">
-        <FileUploadSection :scope="scope" @upload-files="$emit('upload-files', $event)" />
-      </div>
-      <div class="flex-1">
-        <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
-      </div>
+    <!-- 보내기: 파일 선택(primary) + 붙여넣기(secondary, compact) -->
+    <div class="flex flex-col gap-3 mb-2" data-testid="send-area">
+      <FileUploadSection :scope="scope" @upload-files="$emit('upload-files', $event)" />
+      <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
     </div>
+
+    <!-- 진행 상황: 보내기 영역 바로 아래 inline (업로드·다운로드 공통) -->
+    <TransferProgress
+      :uploads="uploads"
+      @cancel-upload="$emit('cancel-upload', $event)"
+      @cancel-all="$emit('cancel-all')"
+    />
 
     <!-- 로딩 중일 때 스피너 표시 -->
     <div v-if="isLoading" class="flex justify-center py-16">
-      <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+      <div class="w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin"></div>
     </div>
 
     <!-- 파일 리스트 (로딩 중이 아닐 때) -->
-    <div v-else class="flex flex-col gap-2">
+    <div v-else class="flex flex-col gap-2 mt-4">
       <TransitionGroup name="card-land" @before-enter="onCardBeforeEnter">
         <FileCard
           v-for="file in files"
@@ -188,7 +199,7 @@ onUnmounted(() => {
     <div v-if="hasMore && !isLoading" class="flex justify-center mt-8">
       <button
         @click="$emit('load-more')"
-        class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+        class="min-h-[44px] px-6 py-3 bg-primary text-white font-medium rounded-lg transition-opacity duration-200 hover:opacity-90"
       >
         {{ $t('fileGallery.loadMore') }}
       </button>

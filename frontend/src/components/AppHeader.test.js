@@ -3,7 +3,8 @@ import { mount, flushPromises } from '@vue/test-utils'
 
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({ t: (key) => key }),
-  createI18n: () => ({ global: { locale: { value: 'ko' } } })
+  // translate.js(utils/useQRCode)가 i18n.global.t를 호출하므로 fixture에도 t를 둔다
+  createI18n: () => ({ global: { locale: { value: 'ko' }, t: (key) => key } })
 }))
 
 vi.mock('qrcode', () => ({

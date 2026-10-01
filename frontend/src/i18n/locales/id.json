@@ -19,7 +19,9 @@
     "copy": "Salin",
     "qr": "QR",
     "joinOtherRoom": "Gabung ke ruang lain",
-    "enterCode": "Masukkan kode ruang"
+    "enterCode": "Masukkan kode ruang",
+    "otherDevices": "Perangkat lain: {count}",
+    "waiting": "Menunggu perangkat"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Orang lain di jaringan yang sama (sekolah, kantor, kafe) juga bisa melihatnya.",
+    "manage": "Kelola label nama",
+    "notAuth": "Label nama hanya membedakan perangkat. Ini bukan verifikasi identitas.",
+    "globalWarning": "Siapa pun, termasuk orang asing, bisa melihat yang Anda kirim dan info perangkat Anda (label hewan, perangkat, dan browser). Untuk hal sensitif, gunakan 'Jaringan yang sama'."
   },
   "shareScope": {
     "label": "Bagikan dengan",
@@ -144,7 +150,13 @@
     "delete": "Hapus",
     "deleteSelected": "Hapus Terpilih",
     "clearStorage": "Hapus Semua",
-    "moreActions": "Lainnya"
+    "moreActions": "Lainnya",
+    "chooseFiles": "Pilih file",
+    "dropHint": "atau seret dan lepas file ke sini",
+    "limitResume": "Hingga {size} per file · unggahan terputus dilanjutkan",
+    "receive": "Terima",
+    "copyImage": "Salin gambar",
+    "selectFile": "Pilih {name}"
   },
   "text": {
     "share": "Bagikan Teks",
@@ -152,7 +164,9 @@
     "newText": "Teks baru dibagikan!",
     "removed": "Teks dihapus.",
     "clearAll": "Hapus Semua Teks",
-    "cleared": "Semua teks dihapus."
+    "cleared": "Semua teks dihapus.",
+    "composePlaceholder": "Ketik atau tempel di sini, lalu tekan Bagikan",
+    "inputPasteHint": "Teks yang ditempel di kotak ini hanya dikirim saat Anda menekan Bagikan."
   },
   "notification": {
     "uploading": "Mengunggah...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / Desktop (Chrome, Edge)",
     "pwaAndroidDesc": "Ketuk ikon instal di address bar atau banner instal di bagian bawah layar.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Ketuk tombol Bagikan, lalu pilih \"Tambah ke Layar Utama\"."
+    "pwaIOSDesc": "Ketuk tombol Bagikan, lalu pilih \"Tambah ke Layar Utama\".",
+    "downloadSingleDesc": "Tekan tombol Terima di samping file untuk mengunduhnya.",
+    "textShareCopyDesc": "Tekan Salin pada teks yang dibagikan untuk menyalinnya ke papan klip. Teks yang Anda ketik atau tempel di kotak dikirim dengan tombol Bagikan.",
+    "textShareDeleteDesc": "Buka tombol ⋯ di sebelah kanan teks lalu pilih Hapus.",
+    "scopeDevicesDesc": "Kartu koneksi (panel kiri pada layar lebar) menampilkan perangkat lain yang terhubung dalam cakupan yang sama."
   },
   "seo": {
     "title": "Clipboard Online – Bagikan Teks, Gambar & File di HP dan PC",
@@ -231,7 +249,7 @@
     "useCase4": "Menempelkan tautan panjang, kode sekali pakai, atau cuplikan teks dari HP ke PC",
     "safetyTitle": "Apakah ini aman?",
     "safety1": "Cakupan default adalah \"Jaringan yang sama\", jadi hanya perangkat di balik IP publik yang sama yang bisa melihat item kamu. Berbagi dengan semua orang perlu beralih sendiri ke tab \"Semua orang\".",
-    "safety2": "Saat semua perangkat keluar, file dan teks akan terhapus tak lama kemudian. Tidak ada akun, tidak ada riwayat.",
+    "safety2": "Saat semua perangkat keluar, file dan teks segera dihapus; meski masih terhubung, file dibersihkan paling lama setelah 1 hari. Tanpa akun, tanpa riwayat.",
     "safety3": "Transfer dienkripsi dengan HTTPS dan kode sumbernya terbuka di GitHub.",
     "faqTitle": "Pertanyaan yang sering diajukan",
     "faq1q": "Apakah benar-benar gratis?",
@@ -243,7 +261,7 @@
     "faq4q": "Apakah ada batas ukuran file?",
     "faq4a": "Setiap file bisa sebesar batas yang ditampilkan di kartu unggah, dan kamu bisa mengunggah beberapa file sekaligus.",
     "faq5q": "Berapa lama file disimpan?",
-    "faq5a": "Hanya selama ada yang membukanya. Setelah semua perangkat keluar, semuanya terhapus tak lama kemudian, jadi unduh yang kamu perlukan segera.",
+    "faq5a": "Secara default, semuanya dihapus tak lama setelah semua perangkat keluar, dan meski perangkat masih terhubung, file dibersihkan dalam 1 hari (pembersihan berkala, waktu persis tidak dijamin). Unduh yang Anda perlukan segera. 'Jaringan yang sama' juga bisa terlihat oleh orang lain di jaringan itu, misalnya di sekolah atau kantor.",
     "moreTitle": "Pelajari lebih lanjut",
     "moreHowToUse": "Cara menggunakan",
     "moreFaq": "FAQ lengkap",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "baru saja"
+  },
+  "publicConfirm": {
+    "title": "Kirim ke semua orang?",
+    "body": "Orang asing bisa melihat item ini dan info perangkat Anda. Jika setuju, kami tidak akan bertanya lagi selama kunjungan ini.",
+    "confirm": "Kirim secara publik"
+  },
+  "guide": {
+    "title": "Penyimpanan dan penggunaan",
+    "retention": "Meski Anda masih terhubung, file dibersihkan otomatis paling lama setelah 1 hari. Pembersihan berjalan berkala sehingga waktu persisnya (hingga detik) tidak dijamin, dan bisa lebih cepat setelah semua perangkat keluar. Unduh yang Anda perlukan segera."
   }
 }

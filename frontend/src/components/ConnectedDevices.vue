@@ -2,14 +2,10 @@
 import { computed, ref, watch, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AnimalAvatar from './AnimalAvatar.vue'
+import DeviceList from './DeviceList.vue'
 import { trackEvent } from '../utils/analytics'
-import {
-  isValidIdentity,
-  sameIdentity,
-  identityName,
-  deviceAndBrowser,
-  formatRelativeTime
-} from '../utils/identity'
+import { isValidIdentity, identityName, deviceAndBrowser } from '../utils/identity'
+import { isMeDevice, sortDevices } from '../utils/devices'
 
 const { t, locale } = useI18n()
 
@@ -30,21 +26,7 @@ const props = defineProps({
 const isOpen = ref(false)
 const root = ref(null)
 
-function isMe(device) {
-  return (!!props.mySocketId && device.socketId === props.mySocketId) ||
-    (isValidIdentity(device.identity) && sameIdentity(device.identity, props.myIdentity))
-}
-
-/** 내 기기를 맨 위로, 나머지는 접속 순서 */
-const sortedDevices = computed(() => {
-  const list = [...props.devices]
-  return list.sort((a, b) => {
-    const am = isMe(a) ? 0 : 1
-    const bm = isMe(b) ? 0 : 1
-    if (am !== bm) return am - bm
-    return (a.joinedAt ?? 0) - (b.joinedAt ?? 0)
-  })
-})
+const sortedDevices = computed(() => sortDevices(props.devices, props.mySocketId, props.myIdentity))
 
 function getDeviceIcon(deviceType) {
   switch (deviceType) {
@@ -76,11 +58,6 @@ const overflowLabel = computed(() =>
 
 function avatarStyle(index) {
   return { zIndex: props.devices.length - index }
-}
-
-function joinedText(device) {
-  if (!device.joinedAt) return ''
-  return t('identity.joinedAgo', { time: formatRelativeTime(device.joinedAt, locale?.value ?? 'en') })
 }
 
 function toggle() {
@@ -126,7 +103,7 @@ onBeforeUnmount(() => {
   >
     <button
       type="button"
-      class="flex items-center rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-primary"
+      class="flex items-center justify-center rounded-full cursor-pointer min-h-[44px] min-w-[44px] px-1 focus-visible:outline-2 focus-visible:outline-primary"
       :aria-expanded="isOpen"
       aria-haspopup="dialog"
       :aria-label="t('identity.openList')"
@@ -171,49 +148,14 @@ onBeforeUnmount(() => {
           <h3 class="text-sm font-semibold">{{ t('identity.listTitle', { count: devices.length }) }}</h3>
           <button
             type="button"
-            class="text-xs text-text-secondary hover:text-text-primary px-2 py-1"
+            class="text-xs text-text-secondary hover:text-text-primary px-3 min-h-[44px]"
             @click="close"
           >
             {{ t('identity.closeList') }}
           </button>
         </div>
 
-        <ul class="flex flex-col gap-2">
-          <li
-            v-for="device in sortedDevices"
-            :key="device.socketId"
-            class="flex items-center gap-3"
-            data-testid="device-row"
-          >
-            <AnimalAvatar v-if="isValidIdentity(device.identity)" :identity="device.identity" size="md" />
-            <span
-              v-else
-              class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-lg shrink-0"
-            >{{ getDeviceIcon(device.deviceType) }}</span>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold truncate">
-                  {{ isValidIdentity(device.identity) ? identityName(device.identity, t) : legacyLabel(device) }}
-                </span>
-                <span
-                  v-if="isMe(device)"
-                  class="text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-primary text-white shrink-0"
-                  data-testid="me-badge"
-                >{{ t('identity.me') }}</span>
-              </div>
-              <div v-if="isValidIdentity(device.identity)" class="text-xs text-text-secondary truncate">
-                {{ deviceAndBrowser(device, t) }}
-              </div>
-              <div v-if="joinedText(device)" class="text-xs text-text-secondary">
-                {{ joinedText(device) }}
-              </div>
-            </div>
-          </li>
-        </ul>
-
-        <p class="mt-3 text-xs text-text-secondary">
-          {{ scope === 'global' ? t('identity.globalNotice') : t('identity.verifyHint') }}
-        </p>
+        <DeviceList :devices="devices" :my-socket-id="mySocketId" :my-identity="myIdentity" :scope="scope" />
       </div>
     </template>
   </div>

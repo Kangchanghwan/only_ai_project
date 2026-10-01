@@ -19,7 +19,9 @@
     "copy": "Copiar",
     "qr": "QR",
     "joinOtherRoom": "Unirse a otra sala",
-    "enterCode": "Introduce el código de sala"
+    "enterCode": "Introduce el código de sala",
+    "otherDevices": "Otros dispositivos: {count}",
+    "waiting": "Esperando dispositivos"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Otras personas de la misma red (escuela, oficina, cafetería) también pueden verlo.",
+    "manage": "Gestionar etiqueta",
+    "notAuth": "La etiqueta solo distingue dispositivos. No verifica tu identidad.",
+    "globalWarning": "Cualquiera, incluso desconocidos, puede ver lo que envías y la información de tu dispositivo (etiqueta de animal, dispositivo y navegador). Usa «Misma red» para contenido sensible."
   },
   "shareScope": {
     "label": "Compartir con",
@@ -144,7 +150,13 @@
     "delete": "Eliminar",
     "deleteSelected": "Eliminar seleccionados",
     "clearStorage": "Limpiar almacenamiento",
-    "moreActions": "Más"
+    "moreActions": "Más",
+    "chooseFiles": "Elegir archivos",
+    "dropHint": "o arrastra y suelta archivos aquí",
+    "limitResume": "Hasta {size} por archivo · se reanuda si se interrumpe",
+    "receive": "Recibir",
+    "copyImage": "Copiar imagen",
+    "selectFile": "Seleccionar {name}"
   },
   "text": {
     "share": "Compartir Texto",
@@ -152,7 +164,9 @@
     "newText": "¡Nuevo texto compartido!",
     "removed": "Texto eliminado.",
     "clearAll": "Borrar Todos los Textos",
-    "cleared": "Todos los textos borrados."
+    "cleared": "Todos los textos borrados.",
+    "composePlaceholder": "Escribe o pega aquí y pulsa Compartir",
+    "inputPasteHint": "Lo que pegues en este cuadro solo se envía al pulsar Compartir."
   },
   "notification": {
     "uploading": "Subiendo...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / escritorio (Chrome, Edge)",
     "pwaAndroidDesc": "Toca el icono de instalación en la barra de direcciones o el banner de instalación en la parte inferior.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Toca el botón de compartir y luego elige \"Añadir a pantalla de inicio\"."
+    "pwaIOSDesc": "Toca el botón de compartir y luego elige \"Añadir a pantalla de inicio\".",
+    "downloadSingleDesc": "Pulsa el botón Recibir junto al archivo para descargarlo.",
+    "textShareCopyDesc": "Pulsa Copiar en un texto compartido para copiarlo al portapapeles. Lo que escribas o pegues en el cuadro se envía con el botón Compartir.",
+    "textShareDeleteDesc": "Abre el botón ⋯ a la derecha del texto y elige Eliminar.",
+    "scopeDevicesDesc": "La tarjeta de conexión (el panel izquierdo en pantallas anchas) muestra los otros dispositivos conectados en el mismo ámbito."
   },
   "seo": {
     "title": "Portapapeles online: comparte texto, imágenes y archivos",
@@ -231,7 +249,7 @@
     "useCase4": "Pegar en tu PC un enlace largo, un código de un solo uso o un fragmento copiado desde tu móvil",
     "safetyTitle": "¿Es seguro?",
     "safety1": "El alcance predeterminado es \"Misma red\", así que solo los dispositivos detrás de la misma IP pública pueden ver tus elementos. Para compartir con todos, tienes que cambiar tú mismo a la pestaña \"Todos\".",
-    "safety2": "Cuando todos los dispositivos se van, los archivos y textos se eliminan poco después. Sin cuentas, sin historial.",
+    "safety2": "Cuando todos los dispositivos salen, los archivos y textos se eliminan poco después; aunque sigas conectado, los archivos se limpian tras 1 día como máximo. Sin cuenta ni historial.",
     "safety3": "Las transferencias se cifran con HTTPS y el código fuente es público en GitHub.",
     "faqTitle": "Preguntas frecuentes",
     "faq1q": "¿Es realmente gratis?",
@@ -243,7 +261,7 @@
     "faq4q": "¿Hay un límite de tamaño de archivo?",
     "faq4a": "Cada archivo puede llegar hasta el límite que se muestra en la tarjeta de subida, y puedes subir varios archivos a la vez.",
     "faq5q": "¿Cuánto tiempo se guardan los archivos?",
-    "faq5a": "Solo mientras alguien los está viendo. En cuanto todos los dispositivos se van, todo se elimina poco después, así que descarga lo que necesites enseguida.",
+    "faq5a": "Por defecto, todo se elimina poco después de que salgan todos los dispositivos, y aunque haya dispositivos conectados los archivos se limpian en un máximo de 1 día (la limpieza es periódica, no se garantiza la hora exacta). Descarga lo que necesites enseguida. «Misma red» también puede ser visible para otras personas de esa red, como en una escuela u oficina.",
     "moreTitle": "Más información",
     "moreHowToUse": "Cómo usarlo",
     "moreFaq": "Ver todas las preguntas frecuentes",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "justo ahora"
+  },
+  "publicConfirm": {
+    "title": "¿Enviar a todos?",
+    "body": "Los desconocidos pueden ver este elemento y la información de tu dispositivo. Si aceptas, no volveremos a preguntar durante esta visita.",
+    "confirm": "Enviar públicamente"
+  },
+  "guide": {
+    "title": "Notas de almacenamiento y uso",
+    "retention": "Aunque sigas conectado, los archivos se eliminan automáticamente como máximo tras 1 día. La limpieza se ejecuta periódicamente, así que no se garantiza la hora exacta (al segundo), y pueden borrarse antes cuando todos los dispositivos salen. Descarga lo que necesites enseguida."
   }
 }

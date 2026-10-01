@@ -19,7 +19,9 @@
     "copy": "Kopyala",
     "qr": "QR",
     "joinOtherRoom": "Başka bir odaya katıl",
-    "enterCode": "Oda kodunu girin"
+    "enterCode": "Oda kodunu girin",
+    "otherDevices": "Diğer cihazlar: {count}",
+    "waiting": "Cihazlar bekleniyor"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Aynı ağdaki diğer kişiler de (okul, ofis, kafe) bunu görebilir.",
+    "manage": "Ad etiketini yönet",
+    "notAuth": "Ad etiketi yalnızca cihazları ayırt eder. Kimlik doğrulaması değildir.",
+    "globalWarning": "Yabancılar dahil herkes gönderdiklerinizi ve cihaz bilginizi (hayvan etiketi, cihaz ve tarayıcı) görebilir. Hassas içerikler için “Aynı ağ”ı kullanın."
   },
   "shareScope": {
     "label": "Paylaşılacak kişiler",
@@ -144,7 +150,13 @@
     "delete": "Sil",
     "deleteSelected": "Seçilenleri Sil",
     "clearStorage": "Depoyu Temizle",
-    "moreActions": "Diğer"
+    "moreActions": "Diğer",
+    "chooseFiles": "Dosya seç",
+    "dropHint": "veya dosyaları buraya sürükleyip bırakın",
+    "limitResume": "Dosya başına en fazla {size} · yarım kalan yüklemeler devam eder",
+    "receive": "Al",
+    "copyImage": "Görseli kopyala",
+    "selectFile": "{name} seç"
   },
   "text": {
     "share": "Metin Paylaş",
@@ -152,7 +164,9 @@
     "newText": "Yeni metin paylaşıldı!",
     "removed": "Metin kaldırıldı.",
     "clearAll": "Tüm Metinleri Temizle",
-    "cleared": "Tüm metinler temizlendi."
+    "cleared": "Tüm metinler temizlendi.",
+    "composePlaceholder": "Buraya yazın veya yapıştırın, sonra Paylaş'a basın",
+    "inputPasteHint": "Bu kutuya yapıştırılan metin yalnızca Paylaş'a basınca gönderilir."
   },
   "notification": {
     "uploading": "Yükleniyor...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / Masaüstü (Chrome, Edge)",
     "pwaAndroidDesc": "Adres çubuğundaki yükleme simgesine veya ekranın altındaki yükleme bannerına dokunun.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Paylaş düğmesine dokunun, ardından \"Ana Ekrana Ekle\" seçeneğini seçin."
+    "pwaIOSDesc": "Paylaş düğmesine dokunun, ardından \"Ana Ekrana Ekle\" seçeneğini seçin.",
+    "downloadSingleDesc": "İndirmek için dosyanın yanındaki Al düğmesine basın.",
+    "textShareCopyDesc": "Paylaşılan metinde Kopyala'ya basarak panoya kopyalayın. Kutuya yazdığınız veya yapıştırdığınız metin Paylaş düğmesiyle gönderilir.",
+    "textShareDeleteDesc": "Metnin sağındaki ⋯ düğmesini açıp Sil'i seçin.",
+    "scopeDevicesDesc": "Bağlantı kartı (geniş ekranlarda sol panel) aynı kapsamda bağlı diğer cihazları gösterir."
   },
   "seo": {
     "title": "Online Pano – Telefon ve PC Arasında Metin/Dosya Paylaşımı",
@@ -231,7 +249,7 @@
     "useCase4": "Telefonunuzdaki uzun bir bağlantıyı, tek kullanımlık kodu veya metni PC'nize yapıştırmak",
     "safetyTitle": "Güvenli mi?",
     "safety1": "Varsayılan kapsam \"Aynı ağ\" olduğundan öğelerinizi yalnızca aynı genel IP arkasındaki cihazlar görebilir. Herkesle paylaşmak için kendiniz \"Herkes\" sekmesine geçmeniz gerekir.",
-    "safety2": "Tüm cihazlar ayrıldığında dosyalar ve metin kısa süre sonra silinir. Hesap yok, geçmiş yok.",
+    "safety2": "Tüm cihazlar çıkınca dosya ve metinler kısa süre sonra silinir; bağlıyken bile dosyalar en geç 1 gün sonra temizlenir. Hesap yok, geçmiş yok.",
     "safety3": "Aktarımlar HTTPS ile şifrelenir ve kaynak kod GitHub'da herkese açıktır.",
     "faqTitle": "Sık sorulan sorular",
     "faq1q": "Gerçekten ücretsiz mi?",
@@ -243,7 +261,7 @@
     "faq4q": "Dosya boyutu sınırı var mı?",
     "faq4a": "Her dosya, yükleme kartında gösterilen sınır kadar büyük olabilir ve aynı anda birden fazla dosya yükleyebilirsiniz.",
     "faq5q": "Dosyalar ne kadar süre saklanır?",
-    "faq5a": "Yalnızca biri bakarken saklanır. Tüm cihazlar ayrıldığında her şey kısa süre sonra silinir, bu yüzden ihtiyacınız olanı hemen indirin.",
+    "faq5a": "Varsayılan olarak tüm cihazlar çıktıktan kısa süre sonra her şey silinir; cihazlar bağlıyken bile dosyalar 1 gün içinde temizlenir (düzenli temizlik, tam saat garanti edilmez). İhtiyacınız olan dosyaları hemen indirin. “Aynı ağ”, okul veya ofis gibi o ağdaki diğer kişilere de görünebilir.",
     "moreTitle": "Daha fazla bilgi",
     "moreHowToUse": "Nasıl kullanılır",
     "moreFaq": "Tüm SSS",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "az önce"
+  },
+  "publicConfirm": {
+    "title": "Herkese gönderilsin mi?",
+    "body": "Yabancılar bu öğeyi ve cihaz bilginizi görebilir. Kabul ederseniz bu ziyaret boyunca tekrar sormayacağız.",
+    "confirm": "Herkese açık gönder"
+  },
+  "guide": {
+    "title": "Saklama ve kullanım",
+    "retention": "Bağlı olsanız bile dosyalar en geç 1 gün sonra otomatik temizlenir. Temizlik düzenli aralıklarla çalışır, bu yüzden tam saat (saniyesine kadar) garanti edilmez; tüm cihazlar çıkınca daha erken silinebilir. İhtiyacınız olan dosyaları hemen indirin."
   }
 }

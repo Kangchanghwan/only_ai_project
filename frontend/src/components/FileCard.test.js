@@ -49,25 +49,36 @@ function findSheet() {
   return el ? new DOMWrapper(el) : null
 }
 
-describe('FileCard.vue - 데스크톱 액션 버튼 행 (sm 이상)', () => {
-  it('아이콘 버튼 행에는 hidden sm:flex 클래스가 있다', () => {
+describe('FileCard.vue - 받기(primary)와 더보기(secondary)', () => {
+  it('행 전체 클릭으로 복사하지 않고, 받기 버튼은 항상 보이며 44px 터치 영역을 가진다', async () => {
     const wrapper = mountCard()
-    const actionsRow = wrapper.find('.file-row > div.gap-1.flex-shrink-0')
-    expect(actionsRow.classes()).toContain('hidden')
-    expect(actionsRow.classes()).toContain('sm:flex')
+    await wrapper.find('.file-row').trigger('click')
+    expect(wrapper.emitted('copy-image')).toBeFalsy()
+    const receive = wrapper.find('[data-testid="file-receive"]')
+    expect(receive.classes()).toContain('min-h-[44px]')
+    await receive.trigger('click')
+    expect(wrapper.emitted('download-file')[0]).toEqual([file])
+  })
+
+  it('2행은 "보낸 사람 · 용량 · 시간"이며 시간은 한 번만 나온다', () => {
+    const wrapper = mountCard()
+    const meta = wrapper.find('[data-testid="file-meta"]')
+    expect(meta.exists()).toBe(true)
+    expect(meta.findAll('span.whitespace-nowrap')).toHaveLength(2)
   })
 })
 
-describe('FileCard.vue - 모바일 더보기 버튼 (sm 미만)', () => {
+describe('FileCard.vue - 더보기 메뉴', () => {
   beforeEach(() => {
     mountCard()
   })
 
-  it('더보기 트리거 버튼은 flex sm:hidden 클래스를 갖는다', () => {
+  it('더보기 트리거는 모든 폭에서 보이며 44px(w-11 h-11)이다', () => {
     const trigger = wrapper.find('[aria-label="file.moreActions"]')
     expect(trigger.exists()).toBe(true)
-    expect(trigger.classes()).toContain('flex')
-    expect(trigger.classes()).toContain('sm:hidden')
+    expect(trigger.classes()).toContain('w-11')
+    expect(trigger.classes()).toContain('h-11')
+    expect(trigger.classes()).not.toContain('sm:hidden')
   })
 
   it('더보기 버튼 클릭 시 액션 시트가 열린다', async () => {

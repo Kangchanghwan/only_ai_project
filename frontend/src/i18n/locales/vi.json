@@ -19,7 +19,9 @@
     "copy": "Sao chép",
     "qr": "QR",
     "joinOtherRoom": "Vào phòng khác",
-    "enterCode": "Nhập mã phòng"
+    "enterCode": "Nhập mã phòng",
+    "otherDevices": "Thiết bị khác: {count}",
+    "waiting": "Đang chờ thiết bị"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Những người khác trong cùng mạng (trường học, văn phòng, quán cà phê) cũng có thể thấy.",
+    "manage": "Quản lý thẻ tên",
+    "notAuth": "Thẻ tên chỉ để phân biệt thiết bị, không phải xác thực danh tính.",
+    "globalWarning": "Bất kỳ ai, kể cả người lạ, đều có thể thấy nội dung bạn gửi và thông tin thiết bị (thẻ động vật, thiết bị và trình duyệt). Với nội dung nhạy cảm, hãy dùng “Cùng mạng”."
   },
   "shareScope": {
     "label": "Chia sẻ với",
@@ -144,7 +150,13 @@
     "delete": "Xóa",
     "deleteSelected": "Xóa đã chọn",
     "clearStorage": "Xóa bộ nhớ",
-    "moreActions": "Thêm"
+    "moreActions": "Thêm",
+    "chooseFiles": "Chọn tệp",
+    "dropHint": "hoặc kéo và thả tệp vào đây",
+    "limitResume": "Tối đa {size} mỗi tệp · tải lên bị gián đoạn sẽ tiếp tục",
+    "receive": "Nhận",
+    "copyImage": "Sao chép ảnh",
+    "selectFile": "Chọn {name}"
   },
   "text": {
     "share": "Chia sẻ văn bản",
@@ -152,7 +164,9 @@
     "newText": "Văn bản mới đã được chia sẻ!",
     "removed": "Văn bản đã bị xóa.",
     "clearAll": "Xóa tất cả văn bản",
-    "cleared": "Đã xóa tất cả văn bản."
+    "cleared": "Đã xóa tất cả văn bản.",
+    "composePlaceholder": "Nhập hoặc dán vào đây rồi nhấn Chia sẻ",
+    "inputPasteHint": "Văn bản dán vào ô này chỉ được gửi khi bạn nhấn Chia sẻ."
   },
   "notification": {
     "uploading": "Đang tải lên...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / Máy tính (Chrome, Edge)",
     "pwaAndroidDesc": "Chạm vào biểu tượng cài đặt trên thanh địa chỉ hoặc biểu ngữ cài đặt ở cuối màn hình.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Chạm vào nút Chia sẻ, sau đó chọn \"Thêm vào Màn hình chính\"."
+    "pwaIOSDesc": "Chạm vào nút Chia sẻ, sau đó chọn \"Thêm vào Màn hình chính\".",
+    "downloadSingleDesc": "Nhấn nút Nhận bên cạnh tệp để tải xuống.",
+    "textShareCopyDesc": "Nhấn Sao chép ở văn bản được chia sẻ để chép vào bộ nhớ tạm. Văn bản bạn nhập hoặc dán vào ô sẽ được gửi bằng nút Chia sẻ.",
+    "textShareDeleteDesc": "Mở nút ⋯ bên phải văn bản và chọn Xóa.",
+    "scopeDevicesDesc": "Thẻ kết nối (bảng bên trái trên màn hình rộng) hiển thị các thiết bị khác đang kết nối trong cùng phạm vi."
   },
   "seo": {
     "title": "Clipboard Trực Tuyến – Chia Sẻ Văn Bản & Tệp Giữa Điện Thoại, PC",
@@ -231,7 +249,7 @@
     "useCase4": "Dán một liên kết dài, mã dùng một lần hoặc đoạn văn bản từ điện thoại sang PC",
     "safetyTitle": "Có an toàn không?",
     "safety1": "Phạm vi mặc định là \"Cùng mạng\", nên chỉ các thiết bị sau cùng địa chỉ IP công cộng mới thấy được nội dung của bạn. Muốn chia sẻ với mọi người, bạn phải tự chuyển sang tab \"Mọi người\".",
-    "safety2": "Khi mọi thiết bị đều rời đi, tệp và văn bản sẽ bị xóa ngay sau đó. Không tài khoản, không lưu lịch sử.",
+    "safety2": "Khi mọi thiết bị rời đi, tệp và văn bản sẽ sớm bị xóa; dù đang kết nối, tệp vẫn được dọn sau tối đa 1 ngày. Không tài khoản, không lưu lịch sử.",
     "safety3": "Dữ liệu truyền đi được mã hóa bằng HTTPS và mã nguồn được công khai trên GitHub.",
     "faqTitle": "Câu hỏi thường gặp",
     "faq1q": "Có thực sự miễn phí không?",
@@ -243,7 +261,7 @@
     "faq4q": "Có giới hạn dung lượng tệp không?",
     "faq4a": "Mỗi tệp có thể lớn tới giới hạn hiển thị trên thẻ tải lên, và bạn có thể tải lên nhiều tệp cùng lúc.",
     "faq5q": "Tệp được giữ trong bao lâu?",
-    "faq5a": "Chỉ khi có người đang xem. Khi mọi thiết bị rời đi, mọi thứ sẽ bị xóa ngay sau đó, nên hãy tải về ngay những gì bạn cần.",
+    "faq5a": "Theo mặc định, mọi thứ bị xóa ngay sau khi mọi thiết bị rời đi, và dù còn thiết bị kết nối, tệp vẫn được dọn trong vòng 1 ngày (dọn định kỳ, không đảm bảo thời điểm chính xác). Hãy tải ngay những gì bạn cần. “Cùng mạng” cũng có thể bị người khác trong mạng đó thấy, ví dụ ở trường học hoặc văn phòng.",
     "moreTitle": "Tìm hiểu thêm",
     "moreHowToUse": "Cách sử dụng",
     "moreFaq": "Toàn bộ câu hỏi thường gặp",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "vừa xong"
+  },
+  "publicConfirm": {
+    "title": "Gửi cho tất cả mọi người?",
+    "body": "Người lạ có thể thấy mục này và thông tin thiết bị của bạn. Nếu đồng ý, chúng tôi sẽ không hỏi lại trong lần truy cập này.",
+    "confirm": "Gửi công khai"
+  },
+  "guide": {
+    "title": "Lưu trữ và sử dụng",
+    "retention": "Dù đang kết nối, tệp vẫn được tự động dọn sau tối đa 1 ngày. Việc dọn chạy định kỳ nên không đảm bảo thời điểm chính xác (đến từng giây), và có thể xóa sớm hơn khi mọi thiết bị đã rời đi. Hãy tải ngay những gì bạn cần."
   }
 }

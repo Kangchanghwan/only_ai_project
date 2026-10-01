@@ -19,7 +19,9 @@
     "copy": "Copier",
     "qr": "QR",
     "joinOtherRoom": "Rejoindre une autre salle",
-    "enterCode": "Saisir le code de la salle"
+    "enterCode": "Saisir le code de la salle",
+    "otherDevices": "Autres appareils : {count}",
+    "waiting": "En attente d'appareils"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Les autres personnes du même réseau (école, bureau, café) peuvent aussi le voir.",
+    "manage": "Gérer l'étiquette",
+    "notAuth": "L'étiquette sert seulement à distinguer les appareils. Ce n'est pas une vérification d'identité.",
+    "globalWarning": "Tout le monde, y compris des inconnus, peut voir ce que vous envoyez et les infos de votre appareil (étiquette animale, appareil et navigateur). Pour du contenu sensible, utilisez « Même réseau »."
   },
   "shareScope": {
     "label": "Partager avec",
@@ -144,7 +150,13 @@
     "delete": "Supprimer",
     "deleteSelected": "Supprimer la sélection",
     "clearStorage": "Vider le stockage",
-    "moreActions": "Plus"
+    "moreActions": "Plus",
+    "chooseFiles": "Choisir des fichiers",
+    "dropHint": "ou glissez-déposez des fichiers ici",
+    "limitResume": "Jusqu'à {size} par fichier · reprise après interruption",
+    "receive": "Recevoir",
+    "copyImage": "Copier l'image",
+    "selectFile": "Sélectionner {name}"
   },
   "text": {
     "share": "Partager le texte",
@@ -152,7 +164,9 @@
     "newText": "Nouveau texte partagé!",
     "removed": "Texte supprimé.",
     "clearAll": "Effacer tous les textes",
-    "cleared": "Tous les textes effacés."
+    "cleared": "Tous les textes effacés.",
+    "composePlaceholder": "Saisissez ou collez ici, puis appuyez sur Partager",
+    "inputPasteHint": "Le texte collé dans cette zone n'est envoyé qu'en appuyant sur Partager."
   },
   "notification": {
     "uploading": "Téléchargement...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / Bureau (Chrome, Edge)",
     "pwaAndroidDesc": "Appuyez sur l'icône d'installation dans la barre d'adresse ou sur la bannière d'installation en bas de l'écran.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Appuyez sur le bouton Partager, puis choisissez « Sur l'écran d'accueil »."
+    "pwaIOSDesc": "Appuyez sur le bouton Partager, puis choisissez « Sur l'écran d'accueil ».",
+    "downloadSingleDesc": "Appuyez sur le bouton Recevoir à côté du fichier pour le télécharger.",
+    "textShareCopyDesc": "Appuyez sur Copier sur un texte partagé pour le copier dans le presse-papiers. Le texte saisi ou collé dans la zone est envoyé avec le bouton Partager.",
+    "textShareDeleteDesc": "Ouvrez le bouton ⋯ à droite du texte et choisissez Supprimer.",
+    "scopeDevicesDesc": "La carte de connexion (le panneau de gauche sur grand écran) affiche les autres appareils connectés dans la même portée."
   },
   "seo": {
     "title": "Presse-papiers en ligne: texte, images et fichiers",
@@ -231,7 +249,7 @@
     "useCase4": "Coller sur votre PC un long lien, un code à usage unique ou un extrait copié depuis votre mobile",
     "safetyTitle": "Est-ce sûr?",
     "safety1": "La portée par défaut est « Même réseau », donc seuls les appareils derrière la même IP publique peuvent voir vos éléments. Pour partager avec tout le monde, vous devez basculer vous-même vers l'onglet « Tout le monde ».",
-    "safety2": "Quand tous les appareils partent, les fichiers et textes sont supprimés peu après. Pas de compte, pas d'historique.",
+    "safety2": "Quand tous les appareils partent, fichiers et textes sont supprimés peu après ; même connecté, un fichier est nettoyé au bout de 1 jour maximum. Ni compte ni historique.",
     "safety3": "Les transferts sont chiffrés en HTTPS et le code source est public sur GitHub.",
     "faqTitle": "Questions fréquentes",
     "faq1q": "Est-ce vraiment gratuit?",
@@ -243,7 +261,7 @@
     "faq4q": "Y a-t-il une limite de taille de fichier?",
     "faq4a": "Chaque fichier peut atteindre la limite indiquée sur la carte d'envoi, et vous pouvez envoyer plusieurs fichiers à la fois.",
     "faq5q": "Combien de temps les fichiers sont-ils conservés?",
-    "faq5a": "Seulement tant que quelqu'un les consulte. Dès que tous les appareils partent, tout est supprimé peu après: téléchargez donc ce dont vous avez besoin tout de suite.",
+    "faq5a": "Par défaut, tout est supprimé peu après le départ de tous les appareils, et même avec des appareils connectés, les fichiers sont nettoyés sous 1 jour (nettoyage périodique, heure exacte non garantie). Téléchargez vite ce dont vous avez besoin. « Même réseau » peut aussi être visible par d'autres personnes de ce réseau, par exemple dans une école ou un bureau.",
     "moreTitle": "En savoir plus",
     "moreHowToUse": "Mode d'emploi",
     "moreFaq": "Toutes les questions fréquentes",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "à l'instant"
+  },
+  "publicConfirm": {
+    "title": "Envoyer à tout le monde ?",
+    "body": "Des inconnus peuvent voir cet élément et les infos de votre appareil. Si vous acceptez, nous ne redemanderons pas pendant cette visite.",
+    "confirm": "Envoyer publiquement"
+  },
+  "guide": {
+    "title": "Conservation et utilisation",
+    "retention": "Même connecté, un fichier est supprimé automatiquement au bout de 1 jour maximum. Le nettoyage s'exécute périodiquement : l'heure exacte (à la seconde) n'est pas garantie, et la suppression peut être plus rapide quand tous les appareils sont partis. Téléchargez vite ce dont vous avez besoin."
   }
 }

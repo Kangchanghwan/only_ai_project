@@ -19,7 +19,9 @@
     "copy": "Copiar",
     "qr": "QR",
     "joinOtherRoom": "Entrar em outra sala",
-    "enterCode": "Digite o código da sala"
+    "enterCode": "Digite o código da sala",
+    "otherDevices": "Outros dispositivos: {count}",
+    "waiting": "Aguardando dispositivos"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Outras pessoas na mesma rede (escola, escritório, café) também podem ver.",
+    "manage": "Gerenciar etiqueta",
+    "notAuth": "A etiqueta só distingue dispositivos. Não é verificação de identidade.",
+    "globalWarning": "Qualquer pessoa, inclusive desconhecidos, pode ver o que você envia e as informações do seu dispositivo (etiqueta de animal, dispositivo e navegador). Use «Mesma rede» para conteúdo sensível."
   },
   "shareScope": {
     "label": "Compartilhar com",
@@ -144,7 +150,13 @@
     "delete": "Excluir",
     "deleteSelected": "Excluir selecionados",
     "clearStorage": "Limpar armazenamento",
-    "moreActions": "Mais"
+    "moreActions": "Mais",
+    "chooseFiles": "Escolher arquivos",
+    "dropHint": "ou arraste e solte arquivos aqui",
+    "limitResume": "Até {size} por arquivo · retoma se for interrompido",
+    "receive": "Receber",
+    "copyImage": "Copiar imagem",
+    "selectFile": "Selecionar {name}"
   },
   "text": {
     "share": "Compartilhar texto",
@@ -152,7 +164,9 @@
     "newText": "Novo texto compartilhado!",
     "removed": "Texto removido.",
     "clearAll": "Limpar todos os textos",
-    "cleared": "Todos os textos limpos."
+    "cleared": "Todos os textos limpos.",
+    "composePlaceholder": "Digite ou cole aqui e toque em Compartilhar",
+    "inputPasteHint": "O texto colado nesta caixa só é enviado ao tocar em Compartilhar."
   },
   "notification": {
     "uploading": "Enviando...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / desktop (Chrome, Edge)",
     "pwaAndroidDesc": "Toque no ícone de instalação na barra de endereço ou no banner de instalação na parte inferior da tela.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Toque no botão Compartilhar e escolha \"Adicionar à Tela de Início\"."
+    "pwaIOSDesc": "Toque no botão Compartilhar e escolha \"Adicionar à Tela de Início\".",
+    "downloadSingleDesc": "Toque no botão Receber ao lado do arquivo para baixá-lo.",
+    "textShareCopyDesc": "Toque em Copiar em um texto compartilhado para copiá-lo. O que você digitar ou colar na caixa é enviado com o botão Compartilhar.",
+    "textShareDeleteDesc": "Abra o botão ⋯ à direita do texto e escolha Excluir.",
+    "scopeDevicesDesc": "O cartão de conexão (o painel esquerdo em telas largas) mostra os outros dispositivos conectados no mesmo escopo."
   },
   "seo": {
     "title": "Área de transferência online: texto, imagens e arquivos",
@@ -231,7 +249,7 @@
     "useCase4": "Colar no seu PC um link longo, um código de uso único ou um trecho copiado do celular",
     "safetyTitle": "É seguro?",
     "safety1": "O escopo padrão é \"Mesma rede\", então só dispositivos atrás do mesmo IP público veem seus itens. Para compartilhar com todos, você precisa mudar para a aba \"Todos\" você mesmo.",
-    "safety2": "Quando todos os dispositivos saem, os arquivos e textos são apagados pouco depois. Sem conta, sem histórico.",
+    "safety2": "Quando todos os dispositivos saem, arquivos e textos são apagados pouco depois; mesmo conectado, os arquivos são limpos após no máximo 1 dia. Sem conta nem histórico.",
     "safety3": "As transferências são criptografadas com HTTPS e o código-fonte é público no GitHub.",
     "faqTitle": "Perguntas frequentes",
     "faq1q": "É mesmo gratuito?",
@@ -243,7 +261,7 @@
     "faq4q": "Existe limite de tamanho de arquivo?",
     "faq4a": "Cada arquivo pode chegar ao limite mostrado no cartão de envio, e você pode enviar vários arquivos de uma vez.",
     "faq5q": "Por quanto tempo os arquivos ficam guardados?",
-    "faq5a": "Só enquanto alguém está vendo. Assim que todos os dispositivos saem, tudo é apagado pouco depois, então baixe o que precisar na hora.",
+    "faq5a": "Por padrão, tudo é apagado pouco depois de todos os dispositivos saírem, e mesmo com dispositivos conectados os arquivos são limpos em até 1 dia (limpeza periódica, horário exato não garantido). Baixe o que precisar logo. A «Mesma rede» também pode ser vista por outras pessoas dessa rede, como em escola ou escritório.",
     "moreTitle": "Saiba mais",
     "moreHowToUse": "Como usar",
     "moreFaq": "Ver todas as perguntas frequentes",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "agora mesmo"
+  },
+  "publicConfirm": {
+    "title": "Enviar para todos?",
+    "body": "Desconhecidos podem ver este item e as informações do seu dispositivo. Se você concordar, não perguntaremos de novo nesta visita.",
+    "confirm": "Enviar publicamente"
+  },
+  "guide": {
+    "title": "Armazenamento e uso",
+    "retention": "Mesmo conectado, os arquivos são apagados automaticamente após no máximo 1 dia. A limpeza roda periodicamente, então o horário exato (ao segundo) não é garantido, e podem ser apagados antes quando todos os dispositivos saem. Baixe o que precisar logo."
   }
 }

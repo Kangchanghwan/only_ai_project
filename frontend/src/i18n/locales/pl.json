@@ -19,7 +19,9 @@
     "copy": "Kopiuj",
     "qr": "QR",
     "joinOtherRoom": "Dołącz do innego pokoju",
-    "enterCode": "Wpisz kod pokoju"
+    "enterCode": "Wpisz kod pokoju",
+    "otherDevices": "Inne urządzenia: {count}",
+    "waiting": "Oczekiwanie na urządzenia"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Inne osoby w tej samej sieci (szkoła, biuro, kawiarnia) też mogą to zobaczyć.",
+    "manage": "Zarządzaj plakietką",
+    "notAuth": "Plakietka tylko odróżnia urządzenia. To nie jest weryfikacja tożsamości.",
+    "globalWarning": "Każdy, także obcy, widzi to, co wysyłasz, oraz dane Twojego urządzenia (zwierzę-plakietka, urządzenie i przeglądarka). Dla danych wrażliwych wybierz „Ta sama sieć”."
   },
   "shareScope": {
     "label": "Udostępnij dla",
@@ -144,7 +150,13 @@
     "delete": "Usuń",
     "deleteSelected": "Usuń zaznaczone",
     "clearStorage": "Wyczyść magazyn",
-    "moreActions": "Więcej"
+    "moreActions": "Więcej",
+    "chooseFiles": "Wybierz pliki",
+    "dropHint": "lub przeciągnij pliki tutaj",
+    "limitResume": "Do {size} na plik · przerwane wysyłanie zostanie wznowione",
+    "receive": "Odbierz",
+    "copyImage": "Kopiuj obraz",
+    "selectFile": "Zaznacz {name}"
   },
   "text": {
     "share": "Udostępnij tekst",
@@ -152,7 +164,9 @@
     "newText": "Nowy tekst udostępniony!",
     "removed": "Tekst usunięty.",
     "clearAll": "Wyczyść wszystkie teksty",
-    "cleared": "Wszystkie teksty wyczyszczone."
+    "cleared": "Wszystkie teksty wyczyszczone.",
+    "composePlaceholder": "Wpisz lub wklej tutaj, a potem naciśnij Udostępnij",
+    "inputPasteHint": "Tekst wklejony w to pole jest wysyłany dopiero po naciśnięciu Udostępnij."
   },
   "notification": {
     "uploading": "Przesyłanie...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / komputer (Chrome, Edge)",
     "pwaAndroidDesc": "Dotknij ikony instalacji na pasku adresu lub baner instalacji u dołu ekranu.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Dotknij przycisku Udostępnij, a następnie wybierz „Dodaj do ekranu głównego”."
+    "pwaIOSDesc": "Dotknij przycisku Udostępnij, a następnie wybierz „Dodaj do ekranu głównego”.",
+    "downloadSingleDesc": "Naciśnij przycisk Odbierz obok pliku, aby go pobrać.",
+    "textShareCopyDesc": "Naciśnij Kopiuj przy udostępnionym tekście, aby skopiować go do schowka. Tekst wpisany lub wklejony w pole wysyłasz przyciskiem Udostępnij.",
+    "textShareDeleteDesc": "Otwórz przycisk ⋯ po prawej stronie tekstu i wybierz Usuń.",
+    "scopeDevicesDesc": "Karta połączenia (na szerokich ekranach lewy panel) pokazuje inne urządzenia w tym samym zakresie."
   },
   "seo": {
     "title": "Schowek online między telefonem a PC",
@@ -231,7 +249,7 @@
     "useCase4": "Wkleić długi link, jednorazowy kod albo fragment tekstu z telefonu na PC",
     "safetyTitle": "Czy to bezpieczne?",
     "safety1": "Domyślny zakres to „Ta sama sieć”, więc twoje elementy widzą tylko urządzenia za tym samym publicznym adresem IP. Udostępnianie wszystkim wymaga samodzielnego przełączenia na kartę „Wszyscy”.",
-    "safety2": "Gdy wszystkie urządzenia opuszczą pokój, pliki i tekst są wkrótce usuwane. Bez konta, bez historii.",
+    "safety2": "Gdy wszystkie urządzenia wyjdą, pliki i teksty są wkrótce usuwane; nawet przy połączeniu pliki są czyszczone najpóźniej po 1 dniu. Bez konta i historii.",
     "safety3": "Transfery są szyfrowane przez HTTPS, a kod źródłowy jest publicznie dostępny na GitHub.",
     "faqTitle": "Najczęściej zadawane pytania",
     "faq1q": "Czy to naprawdę darmowe?",
@@ -243,7 +261,7 @@
     "faq4q": "Czy jest limit rozmiaru pliku?",
     "faq4a": "Każdy plik może mieć rozmiar do limitu pokazanego na karcie przesyłania, a jednocześnie możesz przesłać kilka plików naraz.",
     "faq5q": "Jak długo pliki są przechowywane?",
-    "faq5a": "Tylko dopóki ktoś je ogląda. Gdy wszystkie urządzenia opuszczą pokój, wszystko jest wkrótce usuwane, więc pobierz to, czego potrzebujesz, od razu.",
+    "faq5a": "Domyślnie wszystko jest usuwane wkrótce po wyjściu wszystkich urządzeń, a przy połączonych urządzeniach pliki są czyszczone w ciągu 1 dnia (czyszczenie okresowe, dokładny czas nie jest gwarantowany). Pobierz potrzebne pliki od razu. „Ta sama sieć” może być też widoczna dla innych osób w tej sieci, np. w szkole lub biurze.",
     "moreTitle": "Dowiedz się więcej",
     "moreHowToUse": "Jak używać",
     "moreFaq": "Pełne FAQ",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "przed chwilą"
+  },
+  "publicConfirm": {
+    "title": "Wysłać do wszystkich?",
+    "body": "Obcy mogą zobaczyć ten element i dane Twojego urządzenia. Jeśli się zgodzisz, nie zapytamy ponownie podczas tej wizyty.",
+    "confirm": "Wyślij publicznie"
+  },
+  "guide": {
+    "title": "Przechowywanie i użytkowanie",
+    "retention": "Nawet podczas połączenia pliki są automatycznie usuwane najpóźniej po 1 dniu. Czyszczenie działa okresowo, więc dokładna godzina (co do sekundy) nie jest gwarantowana, a po wyjściu wszystkich urządzeń usunięcie może nastąpić wcześniej. Pobierz potrzebne pliki od razu."
   }
 }

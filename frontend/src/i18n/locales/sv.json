@@ -19,7 +19,9 @@
     "copy": "Kopiera",
     "qr": "QR",
     "joinOtherRoom": "Gå med i ett annat rum",
-    "enterCode": "Ange rumskod"
+    "enterCode": "Ange rumskod",
+    "otherDevices": "Andra enheter: {count}",
+    "waiting": "Väntar på enheter"
   },
   "identity": {
     "adj": [
@@ -114,7 +116,11 @@
       "Instagram": "Instagram",
       "Facebook": "Facebook",
       "Unknown": "browser"
-    }
+    },
+    "ipNotice": "Andra personer i samma nätverk (skola, kontor, kafé) kan också se det.",
+    "manage": "Hantera namnlapp",
+    "notAuth": "Namnlappen skiljer bara enheter åt. Det är ingen identitetskontroll.",
+    "globalWarning": "Alla, även okända, kan se det du skickar och din enhetsinformation (djurlapp, enhet och webbläsare). Använd ”Samma nätverk” för känsligt innehåll."
   },
   "shareScope": {
     "label": "Dela med",
@@ -144,7 +150,13 @@
     "delete": "Ta bort",
     "deleteSelected": "Ta bort valda",
     "clearStorage": "Rensa lagring",
-    "moreActions": "Mer"
+    "moreActions": "Mer",
+    "chooseFiles": "Välj filer",
+    "dropHint": "eller dra och släpp filer här",
+    "limitResume": "Upp till {size} per fil · avbrutna uppladdningar återupptas",
+    "receive": "Ta emot",
+    "copyImage": "Kopiera bild",
+    "selectFile": "Markera {name}"
   },
   "text": {
     "share": "Dela text",
@@ -152,7 +164,9 @@
     "newText": "Ny text delad!",
     "removed": "Text borttagen.",
     "clearAll": "Rensa alla texter",
-    "cleared": "Alla texter rensade."
+    "cleared": "Alla texter rensade.",
+    "composePlaceholder": "Skriv eller klistra in här och tryck på Dela",
+    "inputPasteHint": "Text du klistrar in i rutan skickas först när du trycker på Dela."
   },
   "notification": {
     "uploading": "Laddar upp...",
@@ -211,7 +225,11 @@
     "pwaAndroidTitle": "Android / dator (Chrome, Edge)",
     "pwaAndroidDesc": "Tryck på installationsikonen i adressfältet eller installationsbannern längst ner på skärmen.",
     "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Tryck på delningsknappen och välj sedan \"Lägg till på hemskärmen\"."
+    "pwaIOSDesc": "Tryck på delningsknappen och välj sedan \"Lägg till på hemskärmen\".",
+    "downloadSingleDesc": "Tryck på Ta emot bredvid filen för att ladda ner den.",
+    "textShareCopyDesc": "Tryck på Kopiera vid en delad text för att kopiera den till urklipp. Text du skriver eller klistrar in i rutan skickas med Dela.",
+    "textShareDeleteDesc": "Öppna knappen ⋯ till höger om texten och välj Ta bort.",
+    "scopeDevicesDesc": "Anslutningskortet (på breda skärmar vänsterpanelen) visar andra enheter i samma omfång."
   },
   "seo": {
     "title": "Online-urklipp – dela text, bilder och filer mellan mobil och dator",
@@ -231,7 +249,7 @@
     "useCase4": "Klistra in en lång länk, engångskod eller textsnutt från mobilen till datorn",
     "safetyTitle": "Är det säkert?",
     "safety1": "Standardomfånget är \"Samma nätverk\", så bara enheter bakom samma publika IP-adress ser dina objekt. Att dela med alla kräver att du själv byter till fliken \"Alla\".",
-    "safety2": "När alla enheter lämnar raderas filer och text kort därefter. Inget konto, ingen historik.",
+    "safety2": "När alla enheter lämnat raderas filer och text strax därefter; även under anslutning rensas filer efter högst 1 dag. Inget konto, ingen historik.",
     "safety3": "Överföringar krypteras med HTTPS och källkoden är öppen på GitHub.",
     "faqTitle": "Vanliga frågor",
     "faq1q": "Är det verkligen gratis?",
@@ -243,7 +261,7 @@
     "faq4q": "Finns det en gräns för filstorlek?",
     "faq4a": "Varje fil kan vara så stor som gränsen som visas på uppladdningskortet, och du kan ladda upp flera filer samtidigt.",
     "faq5q": "Hur länge sparas filerna?",
-    "faq5a": "Bara medan någon tittar. När alla enheter lämnar raderas allt kort därefter, så ladda ner det du behöver direkt.",
+    "faq5a": "Som standard raderas allt strax efter att alla enheter lämnat, och även med anslutna enheter rensas filer inom 1 dag (periodisk rensning, exakt tid garanteras inte). Ladda ner det du behöver direkt. ”Samma nätverk” kan också synas för andra på nätverket, till exempel i skola eller kontor.",
     "moreTitle": "Läs mer",
     "moreHowToUse": "Så här använder du det",
     "moreFaq": "Alla vanliga frågor",
@@ -309,5 +327,14 @@
   },
   "time": {
     "justNow": "nyss"
+  },
+  "publicConfirm": {
+    "title": "Skicka till alla?",
+    "body": "Okända kan se den här posten och din enhetsinformation. Om du godkänner frågar vi inte igen under det här besöket.",
+    "confirm": "Skicka offentligt"
+  },
+  "guide": {
+    "title": "Lagring och användning",
+    "retention": "Även när du är ansluten rensas filer automatiskt efter högst 1 dag. Rensningen körs periodiskt, så exakt tid (på sekunden) garanteras inte, och när alla enheter lämnat kan det ske tidigare. Ladda ner det du behöver direkt."
   }
 }
