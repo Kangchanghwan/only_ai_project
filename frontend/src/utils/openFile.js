@@ -1,4 +1,5 @@
 import { r2Service } from '../services/r2Service.js'
+import { trackStoreFallback } from './storeFallback.js'
 
 /**
  * 파일을 새 탭으로 연다. 공개 store 도메인은 presigned보다 느리므로 presigned URL을 우선하고,
@@ -10,13 +11,17 @@ import { r2Service } from '../services/r2Service.js'
  */
 export async function openFileInNewTab(file, { open = (...a) => window.open(...a) } = {}) {
   const tab = open('', '_blank')
-  let url = file.url
+  let url = null
   if (file.roomId) {
     try {
-      url = (await r2Service.getDownloadUrl(file.roomId, file.name)) || file.url
+      url = await r2Service.getDownloadUrl(file.roomId, file.name)
     } catch (err) {
       console.warn('[openFile] presigned URL 발급 실패, store URL로 폴백:', err)
     }
+  }
+  if (!url) {
+    url = file.url
+    trackStoreFallback('open_tab', file.size, file.roomId ? 'presign_failed' : 'no_room')
   }
   if (tab) {
     tab.location.href = url

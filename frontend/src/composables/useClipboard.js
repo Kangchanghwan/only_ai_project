@@ -1,3 +1,4 @@
+import { fetchOriginal, fileFromStoreUrl } from '../utils/storeFallback.js'
 /**
  * @composable useClipboard
  * @description 클립보드 관련 기능을 제공하는 컴포저블.
@@ -38,7 +39,7 @@ export function useClipboard() {
     try {
       console.log('이미지 복사 시작:', imageUrl)
 
-      const response = await fetch(imageUrl)
+      const response = await fetchOriginal(fileFromStoreUrl(imageUrl), 'copy_image')
       const blob = await response.blob()
 
       await navigator.clipboard.write([

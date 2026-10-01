@@ -9,6 +9,7 @@ import { t } from '../i18n/translate.js'
  * 기존 fetch → Blob 방식으로 폴백한다.
  */
 import { r2Service } from '../services/r2Service'
+import { fetchOriginal, trackStoreFallback } from '../utils/storeFallback.js'
 
 /** 여러 파일을 연속 트리거할 때 브라우저가 놓치지 않도록 두는 간격 */
 const DOWNLOAD_GAP_MS = 250
@@ -30,7 +31,8 @@ export function useDownload() {
    * 폴백: 파일을 fetch로 받아 Blob URL로 다운로드한다 (교차 출처라 download 속성이
    * 무시되는 경우를 위한 기존 방식. 파일 전체가 메모리에 올라간다).
    */
-  async function downloadViaBlob(file) {
+  async function downloadViaBlob(file, reason = 'presign_failed') {
+    trackStoreFallback('download_blob', file.size, reason)
     const response = await fetch(file.url)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
@@ -102,7 +104,8 @@ export function useDownload() {
       const fileToClipboard = files[0]
       console.log(`파일을 클립보드에 복사 중: ${fileToClipboard.name}`)
 
-      const response = await fetch(fileToClipboard.url)
+      const response = await fetchOriginal(fileToClipboard, 'copy_files')
+      if (response.ok === false) throw new Error(`HTTP error! status: ${response.status}`)
       const blob = await response.blob()
 
       await navigator.clipboard.write([
