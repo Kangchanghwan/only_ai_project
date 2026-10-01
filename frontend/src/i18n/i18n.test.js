@@ -211,3 +211,61 @@ describe('i18n notification 업로드 취소 키', () => {
     }
   })
 })
+
+describe('i18n identity (기기 정체성)', () => {
+  const ko = locales['./locales/ko.json'].default || locales['./locales/ko.json']
+  const flat = (obj, prefix = '') =>
+    Object.entries(obj).flatMap(([k, v]) =>
+      v && typeof v === 'object' && !Array.isArray(v) ? flat(v, `${prefix}${k}.`) : [`${prefix}${k}`]
+    )
+
+  it('모든 로케일에 ko와 같은 identity 키 구조가 있어야 한다', () => {
+    const expected = flat(ko.identity).sort()
+    expect(expected.length).toBeGreaterThan(20)
+    for (const [path, mod] of Object.entries(locales)) {
+      const json = mod.default || mod
+      expect(json.identity, `${path}에 identity 섹션 없음`).toBeTruthy()
+      expect(flat(json.identity).sort(), `${path} identity 키 불일치`).toEqual(expected)
+    }
+  })
+
+  it('형용사 24개/동물 24개, 비어 있지 않고, 활용형 구분자(/)와 성별 문자열이 올바르다', () => {
+    for (const [path, mod] of Object.entries(locales)) {
+      const { identity } = mod.default || mod
+      expect(identity.adj, `${path} adj`).toHaveLength(24)
+      expect(identity.animal, `${path} animal`).toHaveLength(24)
+      for (const word of [...identity.adj, ...identity.animal]) {
+        expect(typeof word === 'string' && word.trim().length > 0, `${path} 빈 이름`).toBe(true)
+        expect(word, `${path}: 특수문자`).not.toMatch(/[|@{}]/)
+      }
+      expect(identity.gender === '-' || identity.gender === '' || /^[mfn]{24}$/.test(identity.gender), `${path} gender`).toBe(true)
+      if (/^[mfn]{24}$/.test(identity.gender)) {
+        // 성별이 있는 언어는 어순 상관없이 모든 형용사가 최소 1개의 활용형을 갖는다
+        for (const adj of identity.adj) expect(adj.split('/').every(Boolean), `${path} 활용형 ${adj}`).toBe(true)
+      }
+      expect(identity.nameFormat, `${path} nameFormat`).toContain('{adj}')
+      expect(identity.nameFormat, `${path} nameFormat`).toContain('{animal}')
+    }
+  })
+
+  it('형용사/동물 이름이 로케일 안에서 중복되지 않는다', () => {
+    for (const [path, mod] of Object.entries(locales)) {
+      const { identity } = mod.default || mod
+      expect(new Set(identity.animal).size, `${path} animal 중복`).toBe(24)
+      expect(new Set(identity.adj).size, `${path} adj 중복`).toBe(24)
+    }
+  })
+
+  it('자리표시자가 필요한 문구에 모두 들어 있다', () => {
+    for (const [path, mod] of Object.entries(locales)) {
+      const { identity } = mod.default || mod
+      expect(identity.connectedAs, `${path} connectedAs`).toMatch(/\{name\}/)
+      expect(identity.connectedAs, `${path} connectedAs`).toMatch(/\{device\}/)
+      expect(identity.connectedAs, `${path} connectedAs`).toMatch(/\{browser\}/)
+      expect(identity.toastJoined, `${path} toastJoined`).toMatch(/\{desc\}/)
+      expect(identity.youAre, `${path} youAre`).toMatch(/\{name\}/)
+      expect(identity.listTitle, `${path} listTitle`).toMatch(/\{count\}/)
+      expect(identity.joinedAgo, `${path} joinedAgo`).toMatch(/\{time\}/)
+    }
+  })
+})

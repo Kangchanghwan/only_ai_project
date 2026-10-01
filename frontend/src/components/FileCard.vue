@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../utils/fileUtils'
 import { r2Service } from '../services/r2Service'
 import FileQRCodeModal from './FileQRCodeModal.vue'
+import SenderLabel from './SenderLabel.vue'
 import { trackEvent } from '../utils/analytics'
 import { trackStoreFallback } from '../utils/storeFallback'
 import { useScopeAccent } from '../composables/useScopeAccent'
@@ -211,6 +212,8 @@ async function handleShare(event) {
       <p class="text-xs text-text-secondary mt-0.5">
         {{ fileMetadata.size }} · {{ fileMetadata.uploadTime }}
       </p>
+      <!-- 보낸 사람 (서버가 기록한 업로더가 있을 때만) -->
+      <SenderLabel v-if="file.uploader" :sender="file.uploader" :time="file.created" class="mt-0.5" />
     </div>
 
     <!-- 액션 버튼: sm 이상에서는 아이콘 행 그대로, sm 미만에서는 더보기 트리거로 대체 -->

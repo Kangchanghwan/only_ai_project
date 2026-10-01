@@ -10,6 +10,13 @@ import { roomAuthHeaders, invalidateRoomToken } from './roomTokenStore'
 import { trackEvent } from '../utils/analytics.js'
 import { SERVER_ERROR_MESSAGES } from '../utils/apiErrors.js'
 import { multipartUpload, isMultipartFile } from './multipartUploader.js'
+import { socketService } from './socketService.js'
+
+/** 업로더 표시용: 연결된 소켓 ID가 있으면 요청 본문에 실어 보낸다 (서버가 룸 소속 확인 후 기록, 없으면 생략) */
+const socketIdField = () => {
+  const id = socketService.socket?.id
+  return id ? { socketId: id } : {}
+}
 
 /**
  * 실패한 응답을 Error로 바꾼다. 알려진 서버 code는 i18n 메시지와 code/status를 붙인다.
@@ -110,7 +117,7 @@ class R2Service {
     const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/presigned-urls`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ roomId, files }),
+      body: JSON.stringify({ roomId, files, ...socketIdField() }),
     })
 
     if (response.status === 404) {
@@ -139,7 +146,7 @@ class R2Service {
     const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/presigned-url`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ roomId, fileName, contentType, size }),
+      body: JSON.stringify({ roomId, fileName, contentType, size, ...socketIdField() }),
     })
 
     if (!response.ok) {
@@ -209,7 +216,7 @@ class R2Service {
     const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/multipart/${action}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ roomId, ...payload }),
+      body: JSON.stringify({ roomId, ...payload, ...(action === 'create' ? socketIdField() : {}) }),
     })
     if (!response.ok) {
       throw await buildApiError(response, 'errors.multipartFailed')
@@ -315,7 +322,9 @@ class R2Service {
           url: file.url,
           created: file.lastModified,
           size: file.size,
-          type: this.getMimeTypeFromFileName(file.name)
+          type: this.getMimeTypeFromFileName(file.name),
+          // 서버가 기록해 둔 업로더 (없으면 생략)
+          ...(file.uploader ? { uploader: file.uploader } : {})
         })),
         nextToken
       }
@@ -381,6 +390,8 @@ class R2Service {
     try {
       const formData = new FormData()
       formData.append('roomId', roomId)
+      const { socketId } = socketIdField()
+      if (socketId) formData.append('socketId', socketId)
       formData.append('file', file)
 
       const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/upload`, {

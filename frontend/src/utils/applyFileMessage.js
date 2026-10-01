@@ -16,11 +16,12 @@ export function applyFileMessage(message, fileManager) {
 
   switch (message.type) {
     case 'file-uploaded': {
-      const { fileName, url, roomId, size, created } = message
+      const { fileName, url, roomId, size, created, sender } = message
       if (!fileName || !url || !roomId || typeof size !== 'number' || !created) {
         return 'reload'
       }
-      const added = fileManager.addFile({ name: fileName, url, size, created, roomId })
+      // sender는 서버가 붙인 보낸 사람 (구버전 백엔드는 없음)
+      const added = fileManager.addFile({ name: fileName, url, size, created, roomId, ...(sender ? { uploader: sender } : {}) })
       return added ? 'added' : 'updated'
     }
 
