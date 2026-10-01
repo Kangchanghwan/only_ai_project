@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
-import { DeviceInfo, DeviceType } from '../utils/deviceInfo';
+import { DeviceInfo, DeviceType, Identity, ClientHints } from '../utils/deviceInfo';
 
-export type { DeviceInfo, DeviceType };
+export type { DeviceInfo, DeviceType, Identity };
 
 // === 룸 관련 타입 ===
 
@@ -51,7 +51,14 @@ export interface RoomTokensPayload {
 export interface RegisteredPayload extends RoomTokensPayload {
     globalRoomId: string;
     ipRoomId: string;
+    /** 서버가 이 기기에 할당(또는 보장)한 정체성 — 클라이언트가 저장해 다음 접속에 보낸다 */
+    identity?: Identity;
 }
+
+/** identity:reroll 응답 */
+export type RerollResponse =
+    | { ok: true; identity: Identity }
+    | { ok: false; error: 'cooldown'; retryAfterMs: number };
 
 /** publish 메시지 공유 대상 */
 export type PublishTarget = 'global' | 'ip';
@@ -67,6 +74,8 @@ export interface ClientToServerEvents {
     'room-tokens': (callback: (payload: RoomTokensPayload) => void) => void;
     /** P2P 연결 사전 점검 시그널링 (같은 IP 룸 소켓에게만 중계) */
     'p2p:signal': (payload: { to: string; data: unknown }) => void;
+    /** 이름표(동물+형용사) 다시 뽑기. 소켓당 3초 쿨다운 */
+    'identity:reroll': (callback?: (res: RerollResponse) => void) => void;
 }
 
 /** 서버 → 클라이언트 이벤트 */
@@ -77,6 +86,8 @@ export interface ServerToClientEvents {
     /** 룸(ip 또는 global)의 접속 기기 목록이 바뀔 때마다 해당 룸의 전체 목록을 브로드캐스트 */
     'room-users': (payload: { roomId: string; devices: DeviceInfo[] }) => void;
     'p2p:signal': (payload: { from: string; data: unknown }) => void;
+    /** 이 기기의 정체성이 (재)할당됐을 때 */
+    identity: (payload: { identity: Identity }) => void;
     error: (error: ErrorResponse) => void;
 }
 
@@ -90,4 +101,10 @@ export interface SocketData {
     globalRoomId?: string;
     ipRoomId?: string;
     userId?: string;
+    /** 접속 시 sanitize된 클라이언트 힌트 (연결 복구 때 재사용) */
+    hints?: ClientHints;
+    /** 마지막으로 할당된 정체성 */
+    identity?: Identity;
+    /** 마지막 다시 뽑기 시각 (epoch ms) */
+    lastRerollAt?: number;
 }

@@ -1,8 +1,10 @@
 import { Server } from 'socket.io';
-import { ExtendedSocket, ErrorResponse, PublishResponse, PublishTarget, RoomTokensPayload } from '../types';
+import { ExtendedSocket, ErrorResponse, PublishResponse, PublishTarget, RoomTokensPayload, RerollResponse } from '../types';
 import { RoomManager, SHARED_ROOM_ID } from '../managers/RoomManager';
 import { extractClientIp, deriveIpRoomId } from '../utils/clientIp';
-import { parseDeviceInfo } from '../utils/deviceInfo';
+import { parseDeviceInfo, sanitizeHints, DeviceInfo } from '../utils/deviceInfo';
+import { assignIdentity, collectUsed, sanitizeIdentity, REROLL_COOLDOWN_MS } from '../utils/identity';
+import { toSender } from '../utils/uploaderStore';
 import { issueRoomTokens, getRoomTokenTtlSec } from '../utils/roomToken';
 import { TokenBucket } from '../utils/tokenBucket';
 import logger from '../utils/logger';
@@ -76,6 +78,64 @@ export const handleP2pSignal = (socket: ExtendedSocket, io: Server, payload: unk
     }
 };
 
+// === 정체성 / 보낸 사람 ===
+
+/** 소켓이 속한 방들에서 겹치지 않는 정체성을 할당한다 */
+const allocateIdentity = (
+    roomManager: RoomManager,
+    roomIds: string[],
+    socketId: string,
+    preferred: ReturnType<typeof sanitizeIdentity>,
+    avoid?: DeviceInfo['identity']
+) => {
+    const used = collectUsed(roomIds.map((r) => roomManager.getRoomUsers(r)), socketId);
+    return assignIdentity(used, preferred, { avoid });
+};
+
+/**
+ * publish 메시지에 서버가 보낸 사람 정보를 붙인다. 클라이언트가 보낸 sender 필드는
+ * 무조건 버리고 덮어쓴다(위조 방지). 객체가 아닌 메시지는 그대로 둔다.
+ */
+export const stampSender = (msg: unknown, device: DeviceInfo | undefined) => {
+    if (!msg || typeof msg !== 'object' || Array.isArray(msg)) return msg;
+    const { sender: _ignored, ...rest } = msg as Record<string, unknown>;
+    return device ? { ...rest, sender: toSender(device) } : rest;
+};
+
+/** identity:reroll — 쿨다운 확인 후 새 조합을 할당하고 두 방에 목록을 다시 알린다 */
+const handleIdentityReroll = (
+    socket: ExtendedSocket,
+    io: Server,
+    roomManager: RoomManager,
+    ack?: (res: RerollResponse) => void
+) => {
+    try {
+        const rooms = [socket.globalRoomId, socket.ipRoomId].filter((r): r is string => !!r);
+        if (rooms.length === 0) return;
+
+        const now = Date.now();
+        const last = socket.data.lastRerollAt ?? 0;
+        if (now - last < REROLL_COOLDOWN_MS) {
+            if (typeof ack === 'function') ack({ ok: false, error: 'cooldown', retryAfterMs: REROLL_COOLDOWN_MS - (now - last) });
+            return;
+        }
+
+        const current = roomManager.getUser(rooms[0], socket.id)?.identity;
+        const next = allocateIdentity(roomManager, rooms, socket.id, null, current);
+        socket.data.lastRerollAt = now;
+        socket.data.identity = next;
+        for (const roomId of rooms) {
+            const device = roomManager.getUser(roomId, socket.id);
+            if (device) device.identity = next;
+            io.to(roomId).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
+        }
+        socket.emit('identity', { identity: next });
+        if (typeof ack === 'function') ack({ ok: true, identity: next });
+    } catch (error) {
+        logger.error(`identity:reroll 처리 에러 [${socket.id}]:`, error);
+    }
+};
+
 // === 메인 핸들러 설정 ===
 
 export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
@@ -87,7 +147,12 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
         socket.on('disconnect', () => handleDisconnect(socket, io, roomManager));
 
         socket.on('publish', (msg: any, target: PublishTarget, ack?: (error: Error | null, response?: PublishResponse) => void) =>
-            handlePublish(socket, io, msg, target, ack)
+            handlePublish(socket, io, roomManager, msg, target, ack)
+        );
+
+        // 이름표 다시 뽑기 (소켓당 3초 쿨다운)
+        socket.on('identity:reroll', (ack?: (res: RerollResponse) => void) =>
+            handleIdentityReroll(socket, io, roomManager, ack)
         );
 
         // 룸 토큰 재발급: 만료 전에 클라이언트가 요청한다. 연결 시 정해진 룸에 대해서만 발급하므로
@@ -111,7 +176,12 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
 /** 새 연결 처리: 전체 공유 룸 + IP 격리 룸 양쪽에 입장 */
 const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomManager) => {
     try {
-        const deviceInfo = parseDeviceInfo(socket.handshake.headers['user-agent'], socket.id);
+        const handshakeAuth = (socket.handshake.auth ?? {}) as Record<string, unknown>;
+        // 복구된 연결은 처음 받은 힌트·정체성을 재사용한다
+        const hints = socket.recovered && socket.data.hints ? socket.data.hints : sanitizeHints(handshakeAuth.hints);
+        const preferred = socket.recovered && socket.data.identity ? socket.data.identity : sanitizeIdentity(handshakeAuth.identity);
+        const deviceInfo = parseDeviceInfo(socket.handshake.headers['user-agent'], socket.id, hints);
+        socket.data.hints = hints;
 
         // connectionStateRecovery로 복구된 연결
         if (socket.recovered && socket.data.globalRoomId && socket.data.ipRoomId) {
@@ -119,6 +189,8 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
             const recoveredIpRoomId = socket.data.ipRoomId;
             socket.globalRoomId = recoveredGlobalRoomId;
             socket.ipRoomId = recoveredIpRoomId;
+            deviceInfo.identity = allocateIdentity(roomManager, [recoveredGlobalRoomId, recoveredIpRoomId], socket.id, preferred);
+            socket.data.identity = deviceInfo.identity;
             roomManager.addUserToRoom(recoveredGlobalRoomId, socket.id, deviceInfo);
             roomManager.addUserToRoom(recoveredIpRoomId, socket.id, deviceInfo);
             io.to(recoveredIpRoomId).emit('room-users', { roomId: recoveredIpRoomId, devices: roomManager.getRoomUsers(recoveredIpRoomId) });
@@ -137,10 +209,12 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
 
         socket.join(globalRoomId);
         socket.join(ipRoomId);
+        deviceInfo.identity = allocateIdentity(roomManager, [globalRoomId, ipRoomId], socket.id, preferred);
+        socket.data.identity = deviceInfo.identity;
         roomManager.addUserToRoom(globalRoomId, socket.id, deviceInfo);
         roomManager.addUserToRoom(ipRoomId, socket.id, deviceInfo);
 
-        socket.emit('registered', { globalRoomId, ipRoomId, ...buildRoomTokenPayload(socket) });
+        socket.emit('registered', { globalRoomId, ipRoomId, identity: deviceInfo.identity, ...buildRoomTokenPayload(socket) });
         io.to(ipRoomId).emit('room-users', { roomId: ipRoomId, devices: roomManager.getRoomUsers(ipRoomId) });
         io.to(globalRoomId).emit('room-users', { roomId: globalRoomId, devices: roomManager.getRoomUsers(globalRoomId) });
 
@@ -176,6 +250,7 @@ const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager:
 const handlePublish = (
     socket: ExtendedSocket,
     io: Server,
+    roomManager: RoomManager,
     msg: any,
     target: PublishTarget,
     ack?: (error: Error | null, response?: PublishResponse) => void
@@ -201,7 +276,7 @@ const handlePublish = (
             return;
         }
 
-        io.to(targetRoomId).emit('message', msg);
+        io.to(targetRoomId).emit('message', stampSender(msg, roomManager.getUser(targetRoomId, socket.id)));
 
         if (ack) ack(null, { success: true });
 

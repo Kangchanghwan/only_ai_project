@@ -13,6 +13,7 @@ import { checkFileSize, checkRoomSize, SizeCheckFailure } from './utils/uploadLi
 import { requireRoomToken } from './middleware/roomAuth';
 import { registerMultipartRoutes } from './routes/multipart';
 import { reservedBytesForRoom } from './utils/multipartStore';
+import { recordUploader, getUploader, deleteUploader, deleteUploadersForRoom, toSender, Sender } from './utils/uploaderStore';
 import { quotaKeyFromRequest, reserveDailyQuota, releaseDailyQuota, dailyQuotaFailureBody } from './utils/dailyQuota';
 
 // === Multer 설정 (직접 업로드용) ===
@@ -125,8 +126,18 @@ app.get('/stats', (_req, res) => {
 const roomIdFromParams = requireRoomToken((req) => req.params.roomId);
 const roomIdFromBody = requireRoomToken((req) => req.body?.roomId);
 
+/**
+ * 요청 본문의 socketId로 업로더를 찾는다. 그 룸에 실제로 입장해 있는 소켓만 인정하므로
+ * 임의의 값을 보내도 다른 룸의 기기로 위장할 수 없다.
+ */
+const resolveUploader = (roomId: unknown, socketId: unknown): Sender | undefined => {
+    if (typeof roomId !== 'string' || typeof socketId !== 'string') return undefined;
+    const device = roomManager.getUser(roomId, socketId);
+    return device ? toSender(device) : undefined;
+};
+
 // 멀티파트(조각) 업로드: 100MB 초과 ~ 파일당 한도까지
-registerMultipartRoutes(app, roomIdFromBody);
+registerMultipartRoutes(app, roomIdFromBody, resolveUploader);
 
 /**
  * presign 요청 파일들의 크기를 검증한다 (파일당 한도 + 룸 총량 한도).
@@ -202,6 +213,9 @@ app.post('/api/r2/presigned-url', roomIdFromBody, async (req, res) => {
 
         const result = await r2Service.getUploadPresignedUrl(roomId, generatedFileName, contentType, undefined, size ?? undefined);
 
+        const uploader = resolveUploader(roomId, req.body.socketId);
+        if (uploader) recordUploader(roomId, result.fileName, uploader);
+
         res.json(result);
     } catch (error) {
         if (quotaHold) releaseDailyQuota(quotaHold.key, quotaHold.bytes);
@@ -256,6 +270,9 @@ app.post('/api/r2/presigned-urls', roomIdFromBody, async (req, res) => {
 
         const r2Service = getR2Service();
         const targets = await r2Service.getUploadPresignedUrls(roomId, files);
+
+        const uploader = resolveUploader(roomId, req.body.socketId);
+        if (uploader) targets.forEach((t) => recordUploader(roomId, t.fileName, uploader));
 
         logger.info(`[API] 배치 Presigned URL 생성: ${roomId}, ${targets.length}개`);
 
@@ -343,6 +360,9 @@ app.post('/api/r2/upload', upload.single('file'), roomIdFromBody, async (req, re
             file.mimetype
         );
 
+        const uploader = resolveUploader(roomId, req.body.socketId);
+        if (uploader) recordUploader(roomId, result.fileName, uploader);
+
         logger.info(`[API] 직접 업로드 성공: ${roomId}/${generatedFileName}`);
 
         res.json({
@@ -368,7 +388,14 @@ app.get('/api/r2/files/:roomId', roomIdFromParams, async (req, res) => {
         const r2Service = getR2Service();
         const result = await r2Service.loadFiles(roomId, { limit, continuationToken });
 
-        res.json(result);
+        // 업로더 기록이 있는 파일에만 uploader를 붙인다 (서버 재시작·24h 경과 시 생략)
+        res.json({
+            ...result,
+            files: result.files.map((f) => {
+                const uploader = getUploader(roomId, f.name);
+                return uploader ? { ...f, uploader } : f;
+            }),
+        });
     } catch (error) {
         logger.error('[API] 파일 목록 조회 오류:', error);
         res.status(500).json({ error: '파일 목록 조회 실패' });
@@ -397,6 +424,7 @@ app.delete('/api/r2/files/:roomId/:fileName', roomIdFromParams, async (req, res)
 
         const r2Service = getR2Service();
         await r2Service.deleteFile(roomId, fileName);
+        deleteUploader(roomId, fileName);
 
         res.json({ success: true });
     } catch (error) {
@@ -412,6 +440,7 @@ app.delete('/api/r2/files/:roomId', roomIdFromParams, async (req, res) => {
 
         const r2Service = getR2Service();
         const deletedCount = await r2Service.deleteAllFiles(roomId);
+        deleteUploadersForRoom(roomId);
 
         res.json({ success: true, deletedCount });
     } catch (error) {

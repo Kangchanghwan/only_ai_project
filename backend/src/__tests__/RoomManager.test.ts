@@ -6,7 +6,9 @@ const device = (socketId: string): DeviceInfo => ({
     socketId,
     deviceType: 'desktop',
     browser: 'Chrome',
-    os: 'Windows'
+    os: 'Windows',
+    deviceLabel: 'windows_pc',
+    joinedAt: 0
 });
 
 describe('RoomManager - Storage Integration', () => {
@@ -51,7 +53,7 @@ describe('RoomManager - Storage Integration', () => {
         it('룸에 입장한 기기 정보 목록을 반환해야 함', () => {
             const roomId = 'room-ipA';
             const d1 = device('sock-1');
-            const d2: DeviceInfo = { socketId: 'sock-2', deviceType: 'mobile', browser: 'Safari', os: 'iOS' };
+            const d2: DeviceInfo = { ...device('sock-2'), deviceType: 'mobile', browser: 'Safari', os: 'iOS' };
 
             roomManager.addUserToRoom(roomId, 'sock-1', d1);
             roomManager.addUserToRoom(roomId, 'sock-2', d2);

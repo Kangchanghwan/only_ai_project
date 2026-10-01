@@ -91,7 +91,7 @@ describe('Socket.IO Server - Single Shared Room', () => {
       let registeredCount = 0;
 
       const messageHandler = (msg: any) => {
-        expect(msg).toEqual(testMessage);
+        expect(msg).toMatchObject(testMessage);
         messageCount++;
         if (messageCount === 2) { // Both clients received
           done();
@@ -135,7 +135,7 @@ describe('Socket.IO Server - Single Shared Room', () => {
       a.on('registered', onReg);
       b.on('registered', onReg);
 
-      const onMsg = (m: any) => { expect(m).toEqual(msg); received++; if (received === 2) done(); };
+      const onMsg = (m: any) => { expect(m).toMatchObject(msg); received++; if (received === 2) done(); };
       a.on('message', onMsg);
       b.on('message', onMsg);
     });
