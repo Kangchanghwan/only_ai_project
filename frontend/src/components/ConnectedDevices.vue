@@ -20,8 +20,11 @@ const props = defineProps({
   mySocketId: { type: String, default: null },
   myIdentity: { type: Object, default: null },
   /** 'ip'(같은 네트워크) | 'global'(전체 공유) — 확인 안내 문구 선택용 */
-  scope: { type: String, default: 'ip' }
+  scope: { type: String, default: 'ip' },
+  rerollAvailableAt: { type: Number, default: 0 }
 })
+
+const emit = defineEmits(['reroll'])
 
 const isOpen = ref(false)
 const root = ref(null)
@@ -155,7 +158,14 @@ onBeforeUnmount(() => {
           </button>
         </div>
 
-        <DeviceList :devices="devices" :my-socket-id="mySocketId" :my-identity="myIdentity" :scope="scope" />
+        <DeviceList
+          :devices="devices"
+          :my-socket-id="mySocketId"
+          :my-identity="myIdentity"
+          :scope="scope"
+          :reroll-available-at="rerollAvailableAt"
+          @reroll="emit('reroll')"
+        />
       </div>
     </template>
   </div>

@@ -45,4 +45,13 @@ describe('ConnectionCard', () => {
     expect(w.findAll('[data-testid="device-row"]')).toHaveLength(2)
     w.unmount()
   })
+
+  it('"나: ... (이 기기)" 이름표 컴포넌트는 더 이상 없고, 넓은 화면 목록의 내 행에서 다시 뽑기가 emit 된다', async () => {
+    const narrow = mount(ConnectionCard, { props: { devices: [dev('me', fox)], mySocketId: 'me', myIdentity: fox }, global })
+    expect(narrow.text()).not.toContain('이 기기')
+    expect(narrow.find('[data-testid="my-identity"]').exists()).toBe(false)
+    const wide = mount(ConnectionCard, { props: { devices: [dev('me', fox), dev('a', { adj: 0, animal: 0 })], mySocketId: 'me', myIdentity: fox, wide: true }, global })
+    await wide.find('[data-testid="reroll-button"]').trigger('click')
+    expect(wide.emitted('reroll')).toHaveLength(1)
+  })
 })
