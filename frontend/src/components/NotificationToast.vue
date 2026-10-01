@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 import UploadProgressItem from './UploadProgressItem.vue'
 
 const { t } = useI18n()
@@ -13,6 +14,17 @@ const props = defineProps({
     type: Map,
     default: () => new Map()
   }
+})
+
+const emit = defineEmits(['cancel-upload', 'cancel-all'])
+
+/** 취소할 수 있는 진행 중 업로드 수 (다운로드·완료·실패 제외) */
+const cancellableCount = computed(() => {
+  let count = 0
+  for (const upload of props.uploads.values()) {
+    if (upload.cancellable && upload.status === 'uploading') count++
+  }
+  return count
 })
 </script>
 
@@ -28,7 +40,13 @@ const props = defineProps({
   <transition name="fade">
     <div v-if="uploads && uploads.size > 0" class="upload-panel" data-prerender-strip>
       <div class="upload-header">
-        {{ t('notification.activeHeader', { count: uploads.size }) }}
+        <span>{{ t('notification.activeHeader', { count: uploads.size }) }}</span>
+        <button
+          v-if="cancellableCount >= 2"
+          type="button"
+          class="cancel-all-btn"
+          @click="emit('cancel-all')"
+        >{{ t('notification.cancelAll') }}</button>
       </div>
       <div class="upload-list">
         <UploadProgressItem
@@ -37,6 +55,8 @@ const props = defineProps({
           :file-name="upload.fileName"
           :percent="upload.percent"
           :status="upload.status"
+          :cancellable="!!upload.cancellable"
+          @cancel="emit('cancel-upload', id)"
         />
       </div>
     </div>
@@ -95,11 +115,29 @@ const props = defineProps({
 }
 
 .upload-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cancel-all-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.cancel-all-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .upload-list {

@@ -88,7 +88,11 @@
     "deleteCountFailed": "Не удалось удалить файлов: {count}",
     "loadMoreFailed": "Не удалось загрузить другие файлы.",
     "activeHeader": "В процессе ({count})",
-    "uploadResumed": "Загрузка возобновляется"
+    "uploadResumed": "Загрузка возобновляется",
+    "cancel": "Отмена",
+    "cancelAll": "Отменить все",
+    "uploadCancelled": "Загрузка отменена",
+    "uploadsCancelled": "Отменено загрузок: {count}"
   },
   "clipboard": {
     "paste": "Вставить",

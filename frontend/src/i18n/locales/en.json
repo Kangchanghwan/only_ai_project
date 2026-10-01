@@ -100,7 +100,11 @@
     "deleteCountFailed": "Failed to delete {count} file(s)",
     "loadMoreFailed": "Failed to load more files.",
     "activeHeader": "In progress ({count})",
-    "uploadResumed": "Resuming the upload"
+    "uploadResumed": "Resuming the upload",
+    "cancel": "Cancel",
+    "cancelAll": "Cancel all",
+    "uploadCancelled": "Upload canceled",
+    "uploadsCancelled": "{count} uploads canceled"
   },
   "clipboard": {
     "paste": "Paste",

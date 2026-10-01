@@ -310,3 +310,53 @@ describe('오프라인 일시정지', () => {
     expect(sleep).not.toHaveBeenCalled()
   })
 })
+
+describe('취소 (UI 취소 버튼 경로)', () => {
+  const FP = () => fingerprintOf('room', fakeFile(40))
+
+  it('진행 중 파트 PUT을 abort 신호로 끊고, 서버 abort 호출 + mpu 항목 삭제', async () => {
+    const api = makeApi()
+    const storage = memoryStorage()
+    const ctrl = new AbortController()
+    const putPart = vi.fn((url, _blob, { signal }) => new Promise((_res, rej) => {
+      signal.addEventListener('abort', () => rej(Object.assign(new Error('x'), { code: 'UPLOAD_CANCELED' })))
+    }))
+    const p = multipartUpload('room', fakeFile(40), { api, signal: ctrl.signal, concurrency: 2, deps: { putPart, storage, sleep: instantSleep() } })
+    await vi.waitFor(() => expect(putPart).toHaveBeenCalled())
+    expect(storage.getItem(FP())).not.toBeNull()
+    ctrl.abort()
+    await expect(p).rejects.toMatchObject({ code: 'UPLOAD_CANCELED' })
+    expect(api.abort).toHaveBeenCalledTimes(1)
+    expect(api.complete).not.toHaveBeenCalled()
+    expect(storage.getItem(FP())).toBeNull()
+  })
+
+  it('서버 abort가 실패해도 취소로 끝나고 저장 항목은 지워진다', async () => {
+    const api = makeApi()
+    api.abort = vi.fn(async () => { throw new Error('500') })
+    const storage = memoryStorage()
+    const ctrl = new AbortController()
+    const putPart = vi.fn(() => new Promise(() => {})) // 영원히 대기
+    const p = multipartUpload('room', fakeFile(40), { api, signal: ctrl.signal, concurrency: 1, deps: { putPart, storage, sleep: instantSleep() } })
+    await vi.waitFor(() => expect(putPart).toHaveBeenCalled())
+    ctrl.abort()
+    await expect(p).rejects.toMatchObject({ code: 'UPLOAD_CANCELED' })
+    expect(api.abort).toHaveBeenCalled()
+    expect(storage.getItem(FP())).toBeNull()
+  })
+
+  it('complete 요청을 보낸 뒤의 취소는 무시하고 완료 처리한다', async () => {
+    const api = makeApi()
+    const ctrl = new AbortController()
+    let release
+    api.complete = vi.fn(() => new Promise((r) => { release = () => r({ fileName: 'big.bin', fileUrl: 'u', size: 40 }) }))
+    const onCommit = vi.fn()
+    const p = multipartUpload('room', fakeFile(40), { api, signal: ctrl.signal, onCommit, deps: { putPart: okPut(), storage: memoryStorage(), sleep: instantSleep() } })
+    await vi.waitFor(() => expect(api.complete).toHaveBeenCalled())
+    expect(onCommit).toHaveBeenCalledTimes(1)
+    ctrl.abort()
+    release()
+    await expect(p).resolves.toMatchObject({ fileName: 'big.bin' })
+    expect(api.abort).not.toHaveBeenCalled()
+  })
+})

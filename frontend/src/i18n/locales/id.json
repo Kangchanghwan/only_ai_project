@@ -88,7 +88,11 @@
     "deleteCountFailed": "Gagal menghapus {count} file",
     "loadMoreFailed": "Gagal memuat file tambahan.",
     "activeHeader": "Sedang berlangsung ({count})",
-    "uploadResumed": "Melanjutkan unggahan"
+    "uploadResumed": "Melanjutkan unggahan",
+    "cancel": "Batal",
+    "cancelAll": "Batalkan semua",
+    "uploadCancelled": "Unggahan dibatalkan",
+    "uploadsCancelled": "{count} unggahan dibatalkan"
   },
   "clipboard": {
     "paste": "Tempel",

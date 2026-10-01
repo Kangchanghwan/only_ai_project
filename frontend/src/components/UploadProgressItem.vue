@@ -1,5 +1,14 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+const emit = defineEmits(['cancel'])
+
 defineProps({
+  cancellable: {
+    type: Boolean,
+    default: false
+  },
   fileName: {
     type: String,
     required: true
@@ -25,6 +34,14 @@ defineProps({
         <template v-else-if="status === 'failed'">✗</template>
         <template v-else>{{ percent }}%</template>
       </span>
+      <button
+        v-if="cancellable && status === 'uploading'"
+        type="button"
+        class="cancel-btn"
+        :aria-label="t('notification.cancel')"
+        :title="t('notification.cancel')"
+        @click="emit('cancel')"
+      >✕</button>
     </div>
     <div class="progress-bar">
       <div
@@ -55,6 +72,25 @@ defineProps({
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 180px;
+}
+
+.cancel-btn {
+  flex: none;
+  margin-left: 6px;
+  width: 22px;
+  height: 22px;
+  line-height: 1;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #e0e0e0;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .status-indicator {

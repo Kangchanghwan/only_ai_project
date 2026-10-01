@@ -88,7 +88,11 @@
     "deleteCountFailed": "{count} dosya silinemedi",
     "loadMoreFailed": "Daha fazla dosya yüklenemedi.",
     "activeHeader": "Devam ediyor ({count})",
-    "uploadResumed": "Yükleme devam ettiriliyor"
+    "uploadResumed": "Yükleme devam ettiriliyor",
+    "cancel": "İptal",
+    "cancelAll": "Tümünü iptal et",
+    "uploadCancelled": "Yükleme iptal edildi",
+    "uploadsCancelled": "{count} yükleme iptal edildi"
   },
   "clipboard": {
     "paste": "Yapıştır",

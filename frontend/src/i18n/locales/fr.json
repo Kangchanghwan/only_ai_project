@@ -88,7 +88,11 @@
     "deleteCountFailed": "Échec de la suppression de {count} fichier(s)",
     "loadMoreFailed": "Impossible de charger d'autres fichiers.",
     "activeHeader": "En cours ({count})",
-    "uploadResumed": "Reprise de l'envoi"
+    "uploadResumed": "Reprise de l'envoi",
+    "cancel": "Annuler",
+    "cancelAll": "Tout annuler",
+    "uploadCancelled": "Envoi annulé",
+    "uploadsCancelled": "{count} envois annulés"
   },
   "clipboard": {
     "paste": "Coller",

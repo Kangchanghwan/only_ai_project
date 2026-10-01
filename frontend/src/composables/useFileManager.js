@@ -318,6 +318,8 @@ export function useFileManager() {
       onComplete,
       onError,
       onResume,
+      onQueue,
+      onCancel,
       signal
     } = options
 
@@ -328,6 +330,44 @@ export function useFileManager() {
       outcomes.set(file, { error })
       onError?.(file, error)
     }
+
+    // 파일별 취소 핸들. queued(대기) → running(전송 중) → committed(완료 요청 이후, 취소 불가)
+    // running 중 취소는 'cancelling'으로 표시하고 AbortSignal로 전송을 끊는다.
+    // 취소 확정(onCancel)은 전송이 실제로 중단됐을 때만 한다 (이미 올라간 파일은 완료로 처리).
+    const handles = new Map()
+    const cancelFile = (file, method) => {
+      const handle = handles.get(file)
+      if (!handle || handle.cancelled) return
+      handle.cancelled = true
+      outcomes.set(file, { cancelled: true })
+      onCancel?.(file, { method, size: file.size })
+    }
+    const register = (file, method) => {
+      const controller = new AbortController()
+      const handle = {
+        state: 'queued',
+        cancelled: false,
+        controller,
+        cancel() {
+          if (handle.state === 'queued') {
+            handle.state = 'cancelled'
+            cancelFile(file, method)
+            return true
+          }
+          if (handle.state === 'running') {
+            handle.state = 'cancelling'
+            controller.abort()
+            return true
+          }
+          return false
+        }
+      }
+      handles.set(file, handle)
+      onQueue?.(file, handle)
+      return handle
+    }
+    /** 취소로 끝난 업로드인지 (취소 요청 후 다른 오류로 끝난 경우 포함) */
+    const endedByCancel = (handle, err) => err?.code === 'UPLOAD_CANCELED' || handle.state === 'cancelling'
 
     // 1. 검증 — 실패한 파일은 presign 대상에서 제외
     const pending = []
@@ -343,6 +383,7 @@ export function useFileManager() {
     // 2. 배치 presign (N파일 = 1왕복) — 100MB 이하만. 초과 파일은 멀티파트로 따로 처리한다.
     const small = pending.filter(file => !isMultipartFile(file.size))
     const large = pending.filter(file => isMultipartFile(file.size))
+    for (const file of large) register(file, 'multipart')
     let targets = []
     if (small.length > 0) {
       try {
@@ -356,15 +397,20 @@ export function useFileManager() {
         small.length = 0
       }
     }
+    for (const file of small) register(file, 'single')
 
     // 3-a. 큰 파일: 멀티파트 (파일은 순차, 파트는 파일 내부에서 병렬)
     const largeRun = runWithConcurrency(large, 1, async (file) => {
+      const handle = handles.get(file)
+      if (handle.state !== 'queued') return undefined // 대기 중 취소됨
+      handle.state = 'running'
       onStart?.(file)
       const startedAt = Date.now()
       try {
         const res = await multipartUpload(roomId, file, {
           api: r2Service.multipartApi,
-          signal,
+          signal: handle.controller.signal,
+          onCommit: () => { handle.state = 'committed' },
           onProgress: percent => onProgress?.(file, percent),
           onResume: () => onResume?.(file)
         })
@@ -388,7 +434,11 @@ export function useFileManager() {
         onComplete?.(file, result)
         return result
       } catch (err) {
-        if (err?.code !== 'UPLOAD_CANCELED') {
+        if (endedByCancel(handle, err)) {
+          cancelFile(file, 'multipart')
+          return undefined
+        }
+        {
           trackEvent('multipart_upload_failed', {
             size_mb: Math.round(file.size / 1024 / 1024),
             reason: String(err?.code || err?.status || err?.message || 'unknown').slice(0, 100),
@@ -409,10 +459,13 @@ export function useFileManager() {
     // 3-b. 작은 파일: 제한 병렬 PUT
     await runWithConcurrency(small, concurrency, async (file, index) => {
       const target = targets[index]
+      const handle = handles.get(file)
+      if (handle.state !== 'queued') return undefined // 대기 중 취소됨 → 업로드·publish 하지 않는다
       if (!target) {
         throw new Error(t('errors.noPresignedUrl'))
       }
 
+      handle.state = 'running'
       onStart?.(file)
       const contentType = file.type || 'application/octet-stream'
 
@@ -423,9 +476,20 @@ export function useFileManager() {
             .catch(err => { console.warn('[useFileManager] 썸네일 업로드 실패(무시):', err); return null })
         : Promise.resolve(null)
 
-      await r2Service.putToPresignedUrl(target.uploadUrl, file, contentType, {
-        onProgress: percent => onProgress?.(file, percent)
-      })
+      try {
+        await r2Service.putToPresignedUrl(target.uploadUrl, file, contentType, {
+          onProgress: percent => onProgress?.(file, percent),
+          signal: handle.controller.signal
+        })
+      } catch (err) {
+        if (endedByCancel(handle, err)) {
+          cancelFile(file, 'single')
+          return undefined
+        }
+        throw err
+      }
+      // 응답을 받은 뒤의 취소는 무시하고 완료로 처리한다
+      handle.state = 'committed'
       await thumbUpload
 
       const result = {
@@ -458,7 +522,8 @@ export function useFileManager() {
   function summarize(files, outcomes) {
     const results = files.map(file => ({ file, ...(outcomes.get(file) || {}) }))
     const successCount = results.filter(r => r.result).length
-    return { successCount, failCount: results.length - successCount, results }
+    const cancelCount = results.filter(r => r.cancelled).length
+    return { successCount, failCount: results.length - successCount - cancelCount, cancelCount, results }
   }
 
   /**

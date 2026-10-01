@@ -88,7 +88,11 @@
     "deleteCountFailed": "Ștergerea a {count} fișier(e) a eșuat",
     "loadMoreFailed": "Nu s-au putut încărca mai multe fișiere.",
     "activeHeader": "În desfășurare ({count})",
-    "uploadResumed": "Încărcarea se reia"
+    "uploadResumed": "Încărcarea se reia",
+    "cancel": "Anulează",
+    "cancelAll": "Anulează tot",
+    "uploadCancelled": "Încărcare anulată",
+    "uploadsCancelled": "{count} încărcări anulate"
   },
   "clipboard": {
     "paste": "Lipește",

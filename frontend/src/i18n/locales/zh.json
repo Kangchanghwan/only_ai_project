@@ -88,7 +88,11 @@
     "deleteCountFailed": "{count} 个文件删除失败",
     "loadMoreFailed": "加载更多文件失败。",
     "activeHeader": "进行中（{count}）",
-    "uploadResumed": "正在继续上传"
+    "uploadResumed": "正在继续上传",
+    "cancel": "取消",
+    "cancelAll": "全部取消",
+    "uploadCancelled": "已取消上传",
+    "uploadsCancelled": "已取消 {count} 个上传"
   },
   "clipboard": {
     "paste": "粘贴",

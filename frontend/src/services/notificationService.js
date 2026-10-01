@@ -24,12 +24,13 @@ class NotificationService {
    * @param {string} uploadId - 업로드 고유 ID
    * @param {string} fileName - 파일명
    */
-  addUpload(uploadId, fileName) {
+  addUpload(uploadId, fileName, { cancellable = false } = {}) {
     this.uploads.value.set(uploadId, {
       fileName,
       percent: 0,
       status: 'uploading',
-      error: null
+      error: null,
+      cancellable
     })
     // Map의 변경을 감지하기 위해 새 Map으로 교체
     this.uploads.value = new Map(this.uploads.value)
@@ -56,6 +57,7 @@ class NotificationService {
     const upload = this.uploads.value.get(uploadId)
     if (upload) {
       upload.status = 'completed'
+      upload.cancellable = false
       upload.percent = 100
       this.uploads.value = new Map(this.uploads.value)
     }
@@ -70,6 +72,7 @@ class NotificationService {
     const upload = this.uploads.value.get(uploadId)
     if (upload) {
       upload.status = 'failed'
+      upload.cancellable = false
       upload.error = error
       this.uploads.value = new Map(this.uploads.value)
     }

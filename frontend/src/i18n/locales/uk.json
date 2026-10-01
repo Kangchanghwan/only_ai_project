@@ -88,7 +88,11 @@
     "deleteCountFailed": "Не вдалося видалити файлів: {count}",
     "loadMoreFailed": "Не вдалося завантажити інші файли.",
     "activeHeader": "Виконується ({count})",
-    "uploadResumed": "Завантаження відновлюється"
+    "uploadResumed": "Завантаження відновлюється",
+    "cancel": "Скасувати",
+    "cancelAll": "Скасувати все",
+    "uploadCancelled": "Завантаження скасовано",
+    "uploadsCancelled": "Скасовано завантажень: {count}"
   },
   "clipboard": {
     "paste": "Вставити",

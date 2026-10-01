@@ -100,7 +100,11 @@
     "deleteCountFailed": "{count}개 파일 삭제 실패",
     "loadMoreFailed": "추가 파일 로드에 실패했습니다.",
     "activeHeader": "진행 중 ({count}개)",
-    "uploadResumed": "이어서 올립니다"
+    "uploadResumed": "이어서 올립니다",
+    "cancel": "취소",
+    "cancelAll": "모두 취소",
+    "uploadCancelled": "업로드를 취소했어요",
+    "uploadsCancelled": "{count}개 업로드를 취소했어요"
   },
   "clipboard": {
     "paste": "붙여넣기",

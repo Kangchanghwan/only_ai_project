@@ -132,12 +132,13 @@ export function putPartXhr(url, blob, { onProgress, signal, timeoutMs = 10 * 60 
  * @param {(percent:number)=>void} [opts.onProgress]
  * @param {()=>void} [opts.onResume]  이어올리기 시작 시 1회
  * @param {AbortSignal} [opts.signal]  취소 시 서버 abort + 저장 항목 삭제
+ * @param {()=>void} [opts.onCommit]  complete 요청을 보내기 직전 1회 (이후의 취소는 무시해야 한다)
  * @param {number} [opts.concurrency]
  * @param {object} [opts.deps]  테스트 주입: putPart, storage, sleep, now
  * @returns {Promise<{fileName,fileUrl,size,parts,retries,resumed}>}
  */
 export async function multipartUpload(roomId, file, opts) {
-  const { api, onProgress, onResume, signal } = opts
+  const { api, onProgress, onResume, onCommit, signal } = opts
   const deps = opts.deps || {}
   const putPart = deps.putPart || putPartXhr
   const sleep = deps.sleep || defaultSleep
@@ -178,6 +179,18 @@ export async function multipartUpload(roomId, file, opts) {
     const created = await api.create(roomId, { fileName: file.name, contentType, size: file.size })
     session = { uploadId: created.uploadId, key: created.key, partSize: created.partSize, createdAt: now() }
     save(session)
+  }
+  // 취소 직전에 서버 세션을 만들었을 수 있다 → 정리하고 종료
+  const cancelCleanup = () => {
+    forget()
+    // 서버 정리는 기다리지 않는다 (실패해도 R2 수명 규칙이 미완료 업로드를 정리)
+    try {
+      Promise.resolve(api.abort(roomId, { uploadId: session.uploadId, key: session.key, size: file.size })).catch(() => { /* ignore */ })
+    } catch { /* ignore */ }
+  }
+  if (signal?.aborted) {
+    cancelCleanup()
+    throw cancelError()
   }
   if (resumed) onResume?.()
 
@@ -284,20 +297,30 @@ export async function multipartUpload(roomId, file, opts) {
       }
     }
   })
-  await Promise.all(workers)
+  // 취소 신호가 오면 진행 중인 서명 요청 등을 기다리지 않고 즉시 빠져나온다
+  let onAbort
+  const aborted = new Promise((resolve) => {
+    if (!signal) return
+    onAbort = () => resolve('aborted')
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
+  const outcome = await Promise.race([Promise.all(workers).then(() => 'done'), aborted])
+  if (onAbort) signal.removeEventListener('abort', onAbort)
+  if (outcome === 'aborted') failure = failure || cancelError()
 
   const partsDone = done.size
+  // 모든 파트가 끝난 뒤라도 complete 전송 전의 취소는 유효하다
+  if (!failure && signal?.aborted) failure = cancelError()
   if (failure) {
-    if (failure.code === 'UPLOAD_CANCELED') {
-      forget()
-      try { await api.abort(roomId, target) } catch { /* 서버 정리는 룸 종료 시에도 수행 */ }
-    }
+    if (failure.code === 'UPLOAD_CANCELED') cancelCleanup()
     // 그 외 실패는 저장 항목을 남겨 같은 파일 재선택 시 이어올리기
     throw Object.assign(failure, { partsDone, totalParts: parts.length, retries })
   }
 
   // === 6. 완료 ===
   const completeParts = [...done.entries()].sort((a, b) => a[0] - b[0]).map(([PartNumber, ETag]) => ({ PartNumber, ETag }))
+  // 여기부터는 취소할 수 없다 (취소 신호는 무시하고 완료 처리)
+  onCommit?.()
   try {
     const result = await api.complete(roomId, { ...target, parts: completeParts })
     forget()
