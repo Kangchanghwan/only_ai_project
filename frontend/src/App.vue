@@ -18,6 +18,7 @@ import { useSeoMeta } from './composables/useSeoMeta'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
+import { formatSizeMB } from './utils/fileUtils'
 import { socketService } from './services/socketService'
 import { startP2pProbe } from './services/p2pProbe'
 import { openFileInNewTab } from './utils/openFile'
@@ -219,7 +220,7 @@ async function uploadFiles(files, scopeOverride) {
     const currentSizeMB = (currentRoomSize / 1024 / 1024).toFixed(2)
     const uploadSizeMB = (totalUploadSize / 1024 / 1024).toFixed(2)
     notification.showError(
-      t('notification.sizeLimitExceeded', { limit: maxRoomSizeMB, current: currentSizeMB, upload: uploadSizeMB })
+      t('notification.sizeLimitExceeded', { limit: formatSizeMB(maxRoomSizeMB), current: formatSizeMB(currentSizeMB), upload: formatSizeMB(uploadSizeMB) })
     )
     return
   }

@@ -1,4 +1,5 @@
 <script setup>
+import { formatSizeMB } from '../utils/fileUtils'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
@@ -112,7 +113,7 @@ function handleDrop(event) {
       <div class="flex items-center gap-3">
         <span class="text-2xl">📁</span>
         <div class="flex items-center gap-2 text-xs text-text-primary/90">
-          <span>{{ t('file.maxSize', { size: maxFileSizeMB }) }}</span>
+          <span>{{ t('file.maxSize', { size: formatSizeMB(maxFileSizeMB) }) }}</span>
         </div>
       </div>
     </div>

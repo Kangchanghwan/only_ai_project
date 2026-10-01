@@ -31,6 +31,15 @@ const keyBelongsToRoom = (roomId: string, key: string): boolean =>
 
 const isNoSuchUpload = (error: unknown): boolean => (error as { name?: string })?.name === 'NoSuchUpload';
 
+/** CompleteMultipartUpload가 클라이언트 입력 문제(잘못된 파트/순서 등)로 거절된 경우 */
+const CLIENT_PART_ERRORS = new Set(['InvalidPart', 'InvalidPartOrder', 'EntityTooSmall', 'MalformedXML', 'InvalidRequest', 'InvalidArgument']);
+const isClientPartError = (error: unknown): boolean => {
+    const e = error as { name?: string; $metadata?: { httpStatusCode?: number } };
+    if (e?.name && CLIENT_PART_ERRORS.has(e.name)) return true;
+    const status = e?.$metadata?.httpStatusCode;
+    return typeof status === 'number' && status >= 400 && status < 500 && status !== 403 && status !== 429;
+};
+
 function fail(res: Response, status: number, error: string, code: string): void {
     res.status(status).json({ error, code });
 }
@@ -248,6 +257,11 @@ export function registerMultipartRoutes(app: Express, auth: RequestHandler): voi
             } catch (error) {
                 if (isNoSuchUpload(error)) {
                     fail(res, 404, '업로드 정보를 찾을 수 없습니다', 'UPLOAD_NOT_FOUND');
+                    return;
+                }
+                if (isClientPartError(error)) {
+                    logger.warn(`[API] 멀티파트 완료 거절(클라이언트 입력): ${key} (${(error as { name?: string })?.name})`);
+                    fail(res, 400, '업로드한 파트 정보가 올바르지 않습니다', 'INVALID_PARTS');
                     return;
                 }
                 throw error;

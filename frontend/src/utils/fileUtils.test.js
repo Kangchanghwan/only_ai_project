@@ -210,3 +210,18 @@ describe('formatUploadTime 로케일', () => {
     }
   })
 })
+
+describe('formatSizeMB', () => {
+  it('1024MB 이상은 GB, 미만은 MB로 표기한다', async () => {
+    const { formatSizeMB } = await import('./fileUtils.js')
+    expect(formatSizeMB(5120)).toBe('5GB')
+    expect(formatSizeMB('5120')).toBe('5GB')
+    expect(formatSizeMB(1536)).toBe('1.5GB')
+    expect(formatSizeMB(1024)).toBe('1GB')
+    expect(formatSizeMB(10240)).toBe('10GB')
+    expect(formatSizeMB(1023)).toBe('1023MB')
+    expect(formatSizeMB(100)).toBe('100MB')
+    expect(formatSizeMB(12.345)).toBe('12.35MB')
+    expect(formatSizeMB(undefined)).toBe('0MB')
+  })
+})

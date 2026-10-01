@@ -157,6 +157,29 @@ describe('멀티파트 업로드 API', () => {
     expect(spies.del).toHaveBeenCalledWith(bad.key);
   });
 
+  test.each([
+    ['InvalidPart', undefined, 400, 'INVALID_PARTS'],
+    ['InvalidPartOrder', undefined, 400, 'INVALID_PARTS'],
+    ['SomethingElse', 400, 400, 'INVALID_PARTS'],
+    ['NoSuchUpload', 404, 404, 'UPLOAD_NOT_FOUND'],
+  ])('complete: R2가 %s로 거절하면 상태 %s → %i %s', async (name, httpStatus, status, code) => {
+    const size = PART + 10;
+    const ok = await readJson(await create(size));
+    spies.complete.mockRejectedValue(Object.assign(new Error(name), { name, $metadata: { httpStatusCode: httpStatus } }));
+    const parts = [{ PartNumber: 1, ETag: '"a"' }, { PartNumber: 2, ETag: '"b"' }];
+    const res = await post('complete', { roomId: 'room-a', uploadId: ok.uploadId, key: ok.key, parts });
+    expect(res.status).toBe(status);
+    expect((await readJson(res)).code).toBe(code);
+  });
+
+  test('complete: 진짜 서버 오류(5xx)는 500 유지', async () => {
+    const ok = await readJson(await create(PART + 10));
+    spies.complete.mockRejectedValue(Object.assign(new Error('boom'), { name: 'InternalError', $metadata: { httpStatusCode: 500 } }));
+    const parts = [{ PartNumber: 1, ETag: '"a"' }, { PartNumber: 2, ETag: '"b"' }];
+    const res = await post('complete', { roomId: 'room-a', uploadId: ok.uploadId, key: ok.key, parts });
+    expect(res.status).toBe(500);
+  });
+
   test('서버 재시작 복구: 레코드 없이 size를 보내면 sign/complete 가능, 남의 접두사는 거절', async () => {
     const size = PART + 7;
     const key = 'room-a/restored.bin';

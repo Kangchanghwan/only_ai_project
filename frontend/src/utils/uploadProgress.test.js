@@ -36,7 +36,7 @@ describe('업로드 진행 카드 (거절/실패 파일)', () => {
     expect(summary.failCount).toBe(1)
     expect(getUrls).not.toHaveBeenCalled()
     expect(notificationService.uploads.value.size).toBe(0)
-    expect(notificationService.notification.value).toBe('✗ File size cannot exceed 5120MB')
+    expect(notificationService.notification.value).toBe('✗ File size cannot exceed 5GB')
   })
 
   it('presign 실패(413 등)도 진행 카드가 남지 않는다', async () => {

@@ -311,7 +311,7 @@ export async function multipartUpload(roomId, file, opts) {
       durationS: Math.round((now() - startedAt) / 1000),
     }
   } catch (err) {
-    if (err?.code === 'SIZE_MISMATCH' || err?.code === 'UPLOAD_NOT_FOUND') forget()
+    if (err?.code === 'SIZE_MISMATCH' || err?.code === 'UPLOAD_NOT_FOUND' || err?.code === 'INVALID_PARTS') forget()
     throw Object.assign(err, { partsDone, totalParts: parts.length, retries })
   }
 }

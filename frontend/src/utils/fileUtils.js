@@ -159,3 +159,17 @@ export function formatUploadTime(timestamp) {
   // 24시간 이상은 날짜로 표시
   return past.toLocaleDateString(locale)
 }
+
+/**
+ * MB 단위 한도/용량을 사용자 표시용 문자열로 변환합니다.
+ * 1024MB 이상이면 GB, 미만이면 MB (소수는 최대 2자리, 불필요한 0 제거).
+ *
+ * @param {number|string} mb - MB 단위 값
+ * @returns {string} 예: 5120 -> "5GB", 1536 -> "1.5GB", 100 -> "100MB"
+ */
+export function formatSizeMB(mb) {
+  const n = Number(mb)
+  if (!Number.isFinite(n) || n < 0) return '0MB'
+  const trim = (v) => String(Number(v.toFixed(2)))
+  return n >= 1024 ? `${trim(n / 1024)}GB` : `${trim(n)}MB`
+}
