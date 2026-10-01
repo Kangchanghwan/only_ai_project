@@ -1,8 +1,10 @@
+import { formatSizeMB } from './fileUtils.js'
+
 /** 서버 에러 code → 사용자에게 그대로 보여줄 i18n 메시지 (키 + 인자) */
 export const SERVER_ERROR_MESSAGES = {
   DAILY_QUOTA_EXCEEDED: { key: 'errors.dailyQuotaExceeded' },
   SINGLE_PUT_TOO_LARGE: { key: 'errors.singlePutTooLarge' },
-  FILE_TOO_LARGE: { key: 'notification.fileTooLarge', params: { limit: 5120 } },
+  FILE_TOO_LARGE: { key: 'notification.fileTooLarge', params: { limit: formatSizeMB(5120) } },
   ROOM_SIZE_EXCEEDED: { key: 'errors.serverRoomSizeExceeded' },
   SIZE_MISMATCH: { key: 'errors.sizeMismatch' },
 }

@@ -5,6 +5,7 @@ import { trackEvent } from '../utils/analytics.js'
 import { t } from '../i18n/translate.js'
 import { isMultipartFile, multipartUpload, pruneStaleUploads } from '../services/multipartUploader.js'
 import { createImageThumbnail, THUMBNAIL_CONTENT_TYPE } from '../utils/thumbnail.js'
+import { formatSizeMB } from '../utils/fileUtils.js'
 
 /** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
 const DEFAULT_UPLOAD_CONCURRENCY = 3
@@ -25,7 +26,7 @@ function validateFile(file) {
       file_size_mb: Math.round(file.size / 1024 / 1024),
       limit_mb: Number(maxFileSizeMB),
     })
-    return Object.assign(new Error(t('notification.fileTooLarge', { limit: maxFileSizeMB })), { code: 'FILE_TOO_LARGE' })
+    return Object.assign(new Error(t('notification.fileTooLarge', { limit: formatSizeMB(maxFileSizeMB) })), { code: 'FILE_TOO_LARGE' })
   }
   return null
 }
@@ -266,7 +267,7 @@ export function useFileManager() {
       const currentSizeMB = (currentRoomSize / 1024 / 1024).toFixed(2)
       const fileSizeMB = (file.size / 1024 / 1024).toFixed(2)
       throw new Error(
-        t('notification.sizeLimitExceeded', { limit: maxRoomSizeMB, current: currentSizeMB, upload: fileSizeMB })
+        t('notification.sizeLimitExceeded', { limit: formatSizeMB(maxRoomSizeMB), current: formatSizeMB(currentSizeMB), upload: formatSizeMB(fileSizeMB) })
       )
     }
 
