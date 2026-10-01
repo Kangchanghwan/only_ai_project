@@ -77,7 +77,7 @@ function joinedText(d) {
         <button
           v-if="isMe(device) && isValidIdentity(device.identity)"
           type="button"
-          class="shrink-0 -my-2 inline-flex items-center justify-center gap-1 min-h-[44px] whitespace-nowrap text-xs text-text-primary px-3 rounded-lg border border-border disabled:opacity-50 disabled:cursor-not-allowed"
+          class="shrink-0 -my-2 inline-flex items-center justify-center w-11 h-11 text-base text-text-primary rounded-lg border border-border disabled:opacity-50 disabled:cursor-not-allowed"
           :disabled="cooling"
           :title="t('identity.rerollTitle')"
           :aria-label="t('identity.rerollTitle')"
@@ -85,7 +85,7 @@ function joinedText(d) {
           @click="emit('reroll')"
         >
           <span aria-hidden="true">🎲</span>
-          {{ t('identity.reroll') }}
+          <span class="sr-only">{{ t('identity.reroll') }}</span>
         </button>
       </li>
     </ul>
