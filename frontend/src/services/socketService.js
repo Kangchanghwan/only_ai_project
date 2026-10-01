@@ -2,6 +2,10 @@ import { t } from '../i18n/translate.js'
 import { ref } from 'vue'
 import { io } from 'socket.io-client'
 import { setRoomTokens, setRoomTokenRefresher, clearRoomTokens } from './roomTokenStore'
+import { collectClientHints, loadIdentity, saveIdentity, isValidIdentity } from '../utils/identity.js'
+
+/** 이름표 다시 뽑기 쿨다운 (서버와 같은 3초) */
+export const REROLL_COOLDOWN_MS = 3000
 
 /** 룸 토큰 재발급 ack 대기 시간 */
 const ROOM_TOKEN_REQUEST_TIMEOUT_MS = 5000
@@ -24,6 +28,11 @@ class SocketService {
     this.ipRoomDevices = ref([])
     this.globalRoomDevices = ref([])
     this.connectionError = ref(null)
+
+    // 내 기기 정체성(서버가 할당) / 내 소켓 ID / 다시 뽑기 가능 시각
+    this.myIdentity = ref(null)
+    this.mySocketId = ref(null)
+    this.rerollAvailableAt = ref(0)
 
     // 룸 ID 상태 (전체 공유 / IP 격리)
     this.globalRoomId = ref(null)
@@ -155,6 +164,12 @@ class SocketService {
       // Socket.IO 클라이언트 초기화
       this.socket = io(this.serverUrl, {
         transports: ['websocket', 'polling'],
+        // 접속(재접속)마다 저장된 정체성과 기기 힌트를 보낸다. 구버전 백엔드는 auth를 무시한다.
+        auth: (cb) => {
+          collectClientHints()
+            .catch(() => ({}))
+            .then((hints) => cb({ identity: loadIdentity(), hints }))
+        },
         ...this.reconnectionConfig
       })
 
@@ -175,6 +190,7 @@ class SocketService {
 
         this.globalRoomId.value = payload.globalRoomId
         this.ipRoomId.value = payload.ipRoomId
+        this._applyIdentity(payload.identity)
         // REST API용 룸 토큰 (구버전 백엔드는 토큰이 없어 무시된다)
         setRoomTokens(payload)
 
@@ -189,6 +205,7 @@ class SocketService {
       // 연결 성공 이벤트
       this.socket.on('connect', () => {
         console.log('[SocketService] 연결 성공, Socket ID:', this.socket.id)
+        this.mySocketId.value = this.socket.id
         this.isConnected.value = true
         this.connectionError.value = null
 
@@ -203,6 +220,7 @@ class SocketService {
             this.socket.once('registered', (payload) => {
               // 복구 없이 새로 등록되면 서버가 토큰을 새로 준다
               setRoomTokens(payload)
+              this._applyIdentity(payload.identity)
               this._stopReconnectPolling()
               this._emitReconnected()
             })
@@ -249,6 +267,9 @@ class SocketService {
       // 자동 룸 입장 이벤트 리스너 등록
       this.socket.on('registered', handleRegistered)
 
+      // 다시 뽑기 결과 등 서버가 정체성을 (재)할당했을 때
+      this.socket.on('identity', (payload) => this._applyIdentity(payload?.identity))
+
       // 룸(ip/global)의 접속 기기 목록 갱신 — payload.roomId로 어느 룸인지 분기한다
       this.socket.on('room-users', ({ roomId, devices }) => {
         if (roomId === this.ipRoomId.value) {
@@ -256,6 +277,43 @@ class SocketService {
         } else if (roomId === this.globalRoomId.value) {
           this.globalRoomDevices.value = devices
         }
+      })
+    })
+  }
+
+  /** 서버가 할당한 정체성을 상태에 반영하고 30일간 저장한다 (구버전 백엔드는 identity가 없다) */
+  _applyIdentity(identity) {
+    if (!isValidIdentity(identity)) return
+    this.myIdentity.value = identity
+    saveIdentity(identity)
+  }
+
+  /** 서버가 중계 메시지에 붙이는 sender와 같은 모양의 내 정보 (내가 보낸 항목 표시용) */
+  getSelfSender() {
+    const me = [...this.ipRoomDevices.value, ...this.globalRoomDevices.value].find(
+      (d) => d.socketId === this.mySocketId.value
+    )
+    if (!me?.identity) return undefined
+    const { socketId, identity, deviceLabel, browser, model } = me
+    return { socketId, identity, deviceLabel, browser, ...(model ? { model } : {}) }
+  }
+
+  /**
+   * 이름표(동물+형용사)를 다시 뽑는다. 서버 쿨다운(3초)을 로컬에서도 미리 적용한다.
+   * @returns {Promise<{ok:boolean, identity?:object, error?:string}>}
+   */
+  rerollIdentity() {
+    return new Promise((resolve) => {
+      if (!this.socket?.connected || Date.now() < this.rerollAvailableAt.value) {
+        resolve({ ok: false, error: 'cooldown' })
+        return
+      }
+      this.rerollAvailableAt.value = Date.now() + REROLL_COOLDOWN_MS
+      const timer = setTimeout(() => resolve({ ok: false, error: 'timeout' }), 5000)
+      this.socket.emit('identity:reroll', (res) => {
+        clearTimeout(timer)
+        if (res?.ok) this._applyIdentity(res.identity)
+        resolve(res || { ok: false, error: 'unsupported' })
       })
     })
   }
@@ -322,6 +380,7 @@ class SocketService {
       this.usersInRoom.value = 0
       this.ipRoomDevices.value = []
       this.globalRoomDevices.value = []
+      this.mySocketId.value = null
       this.connectionError.value = null
       this.globalRoomId.value = null
       this.ipRoomId.value = null

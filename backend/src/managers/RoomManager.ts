@@ -1,6 +1,7 @@
 import { Rooms, RoomData } from '../types';
 import { DeviceInfo } from '../utils/deviceInfo';
 import { StorageService } from '../services/StorageService';
+import { deleteUploadersForRoom } from '../utils/uploaderStore';
 import logger from '../utils/logger';
 
 /** 고정 룸 ID */
@@ -94,6 +95,7 @@ export class RoomManager {
             logger.error(`Failed to delete files for room ${roomId}: ${result.error}`);
         }
 
+        deleteUploadersForRoom(roomId);
         delete this.rooms[roomId];
     }
 
@@ -116,6 +118,11 @@ export class RoomManager {
     /** 룸에 입장한 기기 정보 목록 조회 (입장 순서) */
     getRoomUsers(roomId: string): DeviceInfo[] {
         return this.rooms[roomId] ? Array.from(this.rooms[roomId].users.values()) : [];
+    }
+
+    /** 룸에 있는 특정 기기 정보 조회 */
+    getUser(roomId: string, socketId: string): DeviceInfo | undefined {
+        return this.rooms[roomId]?.users.get(socketId);
     }
 
     /** 전체 룸 개수 조회 */

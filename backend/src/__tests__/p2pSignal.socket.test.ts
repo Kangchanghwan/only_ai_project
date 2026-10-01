@@ -98,6 +98,8 @@ describe('Socket.IO - p2p:signal 중계', () => {
     b.on('message', (m: any) => msgs.push(m));
     a.emit('publish', { type: 'x' }, 'ip');
     await wait();
-    expect(msgs).toEqual([{ type: 'x' }]);
+    // 원본 필드는 그대로, 서버가 sender만 추가로 붙인다
+    expect(msgs).toHaveLength(1);
+    expect(msgs[0]).toMatchObject({ type: 'x' });
   });
 });

@@ -5,7 +5,7 @@
  * 전체 공유 룸(room-shared)과 IP 격리 룸에 동시 입장합니다.
  * 업로드 시 공유 대상을 선택할 수 있습니다.
  */
-import { onMounted, onUnmounted, ref, computed } from 'vue'
+import { onMounted, onUnmounted, ref, computed, watch } from 'vue'
 import { useRoomManager } from './composables/useRoomManager'
 import { useFileManager } from './composables/useFileManager'
 import { useClipboard } from './composables/useClipboard'
@@ -23,6 +23,8 @@ import { socketService } from './services/socketService'
 import { startP2pProbe } from './services/p2pProbe'
 import { openFileInNewTab } from './utils/openFile'
 import { createUploadProgress, cancelUpload, cancelAllUploads } from './utils/uploadProgress'
+import { createNewDeviceTracker } from './utils/newDevices'
+import { isValidIdentity, describeJoined } from './utils/identity'
 import { t } from './i18n/translate'
 
 import RoomScreen from './components/RoomScreen.vue'
@@ -45,6 +47,26 @@ const shareScope = useShareScope()
 // 로케일에 맞춰 title/description/og/canonical/lang을 갱신 (언어 전환 시 자동 반영)
 useSeoMeta()
 const isConnecting = ref(false)
+
+// 같은 네트워크(ipRoom)에 새 기기가 들어오면 토스트로 알린다.
+// 내 접속 직후의 초기 목록, 이미 본 기기의 재접속(연결 복구), 내 기기, 전체 공유 방은 알리지 않는다.
+const newDeviceTracker = createNewDeviceTracker()
+watch(
+  () => socket.ipRoomDevices.value,
+  (devices) => {
+    const fresh = newDeviceTracker.update(devices, socket.mySocketId.value)
+    const joined = fresh.filter((d) => isValidIdentity(d.identity))
+    if (joined.length === 0) return
+    notification.showInfo(describeJoined(joined[joined.length - 1], t))
+    trackEvent('new_device_toast')
+  }
+)
+
+async function handleRerollIdentity() {
+  const result = await socket.rerollIdentity()
+  if (result?.ok) trackEvent('identity_reroll')
+}
+
 const currentRoute = ref({ type: 'home' })
 
 // 룸별 목록 페이지 크기. 백엔드가 최신순으로 정렬해 주므로 첫 페이지가 곧 최신 파일들이다.
@@ -73,6 +95,8 @@ let cleanupOnMessage = null
 // ========================================
 
 socket.onReconnected(() => {
+  // 재접속 후 처음 받는 목록은 초기 목록으로 취급해 토스트를 띄우지 않는다
+  newDeviceTracker.markInitial()
   console.log('[App] 재연결 완료')
   roomManager.setRooms({
     globalRoomId: socket.globalRoomId.value,
@@ -156,7 +180,9 @@ function setupSocketListeners() {
           id: message.textId,
           content: message.content,
           timestamp: message.timestamp,
-          roomId: message.roomId
+          roomId: message.roomId,
+          // 서버가 붙인 보낸 사람 (구버전 백엔드는 없음 → 표시 생략)
+          ...(message.sender ? { sender: message.sender } : {})
         }
         textShare.sharedTexts.value.push(newText)
         notification.showInfo(t('text.newText'))
@@ -247,6 +273,12 @@ async function uploadFiles(files, scopeOverride) {
         }, targetScope)
       } catch (error) {
         console.warn('[App] 업로드 알림 전송 실패 (파일은 업로드됨):', error)
+      }
+
+      // 내가 올린 파일에 내 이름표를 붙인다 (목록 재조회 없이도 "나"로 표시)
+      const uploader = socket.getSelfSender()
+      if (uploader) {
+        fileManager.addFile({ name: result.fileName, url: result.url, size: result.size, created: result.created, roomId: targetRoomId, uploader })
       }
 
       progress.complete(file)
@@ -402,6 +434,10 @@ async function handleAddText(content, scopeOverride) {
 
   const newText = textShare.addText(content, targetRoomId)
   if (!newText) return
+
+  // 내가 보낸 텍스트에는 내 이름표를 붙인다 ("나"로 표시)
+  const self = socket.getSelfSender()
+  if (self) newText.sender = self
 
   socket.publishMessage({
     type: 'text-shared',
@@ -720,6 +756,10 @@ onUnmounted(() => {
         :scope="shareScope.scope.value"
         :ip-room-devices="socket.ipRoomDevices.value"
         :global-room-devices="socket.globalRoomDevices.value"
+        :my-identity="socket.myIdentity.value"
+        :my-socket-id="socket.mySocketId.value"
+        :reroll-available-at="socket.rerollAvailableAt.value"
+        @reroll-identity="handleRerollIdentity"
         :has-more="fileManager.hasMoreForRoom(activeRoomId)"
         @copy-image="handleCopyImage"
         @upload-files="handleUploadFiles"

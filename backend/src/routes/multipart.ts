@@ -1,6 +1,7 @@
 import type { Express, Request, RequestHandler, Response } from 'express';
 import { getR2Service } from '../services/r2Service';
 import logger from '../utils/logger';
+import { recordUploader, Sender } from '../utils/uploaderStore';
 import { getMaxFileSizeBytes, checkRoomSize } from '../utils/uploadLimits';
 import {
     MULTIPART_PART_SIZE,
@@ -98,7 +99,11 @@ function resolveRecord(
     return { record: recovered, roomId, uploadId, key };
 }
 
-export function registerMultipartRoutes(app: Express, auth: RequestHandler): void {
+export function registerMultipartRoutes(
+    app: Express,
+    auth: RequestHandler,
+    resolveUploader?: (roomId: unknown, socketId: unknown) => Sender | undefined
+): void {
     /** 멀티파트 시작 */
     app.post('/api/r2/multipart/create', auth, async (req, res) => {
         let reservedKey: string | null = null;
@@ -151,6 +156,9 @@ export function registerMultipartRoutes(app: Express, auth: RequestHandler): voi
                 createdAt: Date.now(),
             });
             reservedKey = null;
+
+            const uploader = resolveUploader?.(roomId, req.body?.socketId);
+            if (uploader && key.startsWith(`${roomId}/`)) recordUploader(roomId, key.slice(roomId.length + 1), uploader);
 
             res.json({ uploadId, key, partSize: MULTIPART_PART_SIZE, partCount });
         } catch (error) {

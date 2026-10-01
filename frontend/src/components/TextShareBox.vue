@@ -12,6 +12,7 @@
  */
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
+import SenderLabel from './SenderLabel.vue'
 
 const { t } = useI18n()
 
@@ -101,6 +102,7 @@ function formatTime(timestamp) {
               <p class="text-xs text-text-secondary mt-2">
                 {{ formatTime(text.timestamp) }}
               </p>
+              <SenderLabel v-if="text.sender" :sender="text.sender" :time="text.timestamp" class="mt-1" />
             </div>
 
             <!-- 액션 버튼 -->
