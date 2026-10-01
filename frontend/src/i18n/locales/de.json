@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} Datei(en) gelöscht",
     "deleteCountFailed": "{count} Datei(en) konnten nicht gelöscht werden",
     "loadMoreFailed": "Weitere Dateien konnten nicht geladen werden.",
-    "activeHeader": "In Bearbeitung ({count})"
+    "activeHeader": "In Bearbeitung ({count})",
+    "uploadResumed": "Upload wird fortgesetzt"
   },
   "clipboard": {
     "paste": "Einfügen",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Direkter Upload fehlgeschlagen: {status}",
     "deleteFailed": "Datei konnte nicht gelöscht werden: {status}",
     "deleteAllFailed": "Alle Dateien konnten nicht gelöscht werden: {status}",
-    "quotaFailed": "Raumauslastung konnte nicht abgerufen werden: {status}"
+    "quotaFailed": "Raumauslastung konnte nicht abgerufen werden: {status}",
+    "dailyQuotaExceeded": "Das heutige Upload-Limit ist erreicht. Bitte versuche es morgen erneut.",
+    "singlePutTooLarge": "Diese Datei überschreitet das Limit für einfache Uploads (100 MB). Lade die Seite neu und versuche es erneut.",
+    "sizeMismatch": "Die Größe der hochgeladenen Datei stimmte nicht überein und wurde verworfen. Bitte erneut hochladen.",
+    "multipartFailed": "Upload der großen Datei fehlgeschlagen: {status}",
+    "serverRoomSizeExceeded": "Das würde das Speicherlimit des Raums überschreiten."
   },
   "qrModal": {
     "roomTitle": "Raum per QR-Code teilen",

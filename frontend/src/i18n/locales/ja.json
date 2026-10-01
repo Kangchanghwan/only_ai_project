@@ -99,7 +99,8 @@
     "deleteCountDone": "{count}個のファイルを削除しました",
     "deleteCountFailed": "{count}個のファイルの削除に失敗しました",
     "loadMoreFailed": "追加のファイルを読み込めませんでした。",
-    "activeHeader": "進行中（{count}件）"
+    "activeHeader": "進行中（{count}件）",
+    "uploadResumed": "アップロードを再開します"
   },
   "clipboard": {
     "paste": "貼り付け",
@@ -185,7 +186,7 @@
     "shortcutShare": "ファイル/テキスト共有",
     "shortcutCopy": "選択したファイルをクリップボードにコピー",
     "limitTitle": "制限事項",
-    "limit1": "ファイルサイズ制限：ファイルあたり最大500MB",
+    "limit1": "ファイルサイズ制限：ファイルあたり最大5GB",
     "limit2": "ルームは最後のユーザーが退出してからしばらくすると自動的に削除されます",
     "limit3": "ブラウザのクリップボードコピーは単一ファイルのみサポート",
     "tipsTitle": "ヒント",
@@ -274,7 +275,12 @@
     "directUploadFailed": "直接アップロードに失敗しました：{status}",
     "deleteFailed": "ファイルの削除に失敗しました：{status}",
     "deleteAllFailed": "すべてのファイルの削除に失敗しました：{status}",
-    "quotaFailed": "ルームの使用量の取得に失敗しました：{status}"
+    "quotaFailed": "ルームの使用量の取得に失敗しました：{status}",
+    "dailyQuotaExceeded": "本日のアップロード上限に達しました。明日もう一度お試しください。",
+    "singlePutTooLarge": "このファイルは単一アップロードの上限（100MB）を超えています。ページを更新してもう一度お試しください。",
+    "sizeMismatch": "アップロードされたファイルのサイズが一致しないため破棄されました。もう一度アップロードしてください。",
+    "multipartFailed": "大容量アップロードに失敗しました: {status}",
+    "serverRoomSizeExceeded": "ルームの容量上限を超えます。"
   },
   "qrModal": {
     "roomTitle": "QRコードでルームを共有",

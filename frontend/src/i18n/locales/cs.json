@@ -87,7 +87,8 @@
     "deleteCountDone": "Smazáno souborů: {count}",
     "deleteCountFailed": "Nepodařilo se smazat souborů: {count}",
     "loadMoreFailed": "Načtení dalších souborů se nezdařilo.",
-    "activeHeader": "Probíhá ({count})"
+    "activeHeader": "Probíhá ({count})",
+    "uploadResumed": "Nahrávání pokračuje"
   },
   "clipboard": {
     "paste": "Vložit",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Přímé nahrání se nezdařilo: {status}",
     "deleteFailed": "Smazání souboru se nezdařilo: {status}",
     "deleteAllFailed": "Smazání všech souborů se nezdařilo: {status}",
-    "quotaFailed": "Zjištění využití místnosti se nezdařilo: {status}"
+    "quotaFailed": "Zjištění využití místnosti se nezdařilo: {status}",
+    "dailyQuotaExceeded": "Dosáhli jste denního limitu nahrávání. Zkuste to prosím zítra.",
+    "singlePutTooLarge": "Tento soubor překračuje limit jednoduchého nahrání (100 MB). Obnovte stránku a zkuste to znovu.",
+    "sizeMismatch": "Velikost nahraného souboru nesouhlasila a soubor byl zahozen. Nahrajte ho prosím znovu.",
+    "multipartFailed": "Nahrání velkého souboru se nezdařilo: {status}",
+    "serverRoomSizeExceeded": "Došlo by k překročení limitu úložiště místnosti."
   },
   "qrModal": {
     "roomTitle": "Sdílet místnost přes QR kód",

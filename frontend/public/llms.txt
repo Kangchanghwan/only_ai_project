@@ -21,7 +21,7 @@
 - [Galaxy to MacBook photo transfer](https://www.clipboardapp.org/guide/galaxy-to-macbook-photo-transfer.html): Moving photos from a Samsung Galaxy to a Mac, where Quick Share is not available (Korean).
 - [Windows to iPhone file transfer](https://www.clipboardapp.org/guide/windows-to-iphone-file-transfer.html): Sending PDFs, images and documents from Windows to an iPhone without iTunes (Korean).
 - [Office PC file transfer without a messenger](https://www.clipboardapp.org/guide/office-pc-file-transfer-without-messenger.html): Getting phone files onto a work PC where messengers and USB are blocked (Korean).
-- [Phone video to PC transfer](https://www.clipboardapp.org/guide/phone-video-to-pc-transfer.html): Moving videos to a computer at original quality, including how to handle files over 500MB (Korean).
+- [Phone video to PC transfer](https://www.clipboardapp.org/guide/phone-video-to-pc-transfer.html): Moving videos to a computer at original quality, including files up to 5GB and how to handle longer clips (Korean).
 - [Online clipboard: copy on one device, paste on another](https://www.clipboardapp.org/en/guide/online-clipboard-copy-paste-between-devices.html): Using the service as a no-login online clipboard across devices (English).
 - [Snapdrop / PairDrop alternative](https://www.clipboardapp.org/en/guide/snapdrop-pairdrop-alternative.html): How the service compares to Snapdrop and PairDrop, and when to use which (English).
 - [Send text from phone to PC](https://www.clipboardapp.org/en/guide/send-text-from-phone-to-pc.html): Moving copied text, links and codes from a phone to a computer without email (English).

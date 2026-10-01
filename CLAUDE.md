@@ -88,7 +88,7 @@ Components (UI) → Composables (Logic) → Services (API)
 ### Storage
 - **Primary**: CloudFlare R2 via AWS S3 SDK. Files stored as `{roomId}/{fileName}`.
 - Files <1MB upload directly through server; >1MB use presigned URLs for direct R2 upload.
-- File size limits via env vars: `VITE_MAX_FILE_SIZE_MB` (default 500MB), `VITE_MAX_ROOM_SIZE_MB` (default 2048MB).
+- File size limits via env vars: `VITE_MAX_FILE_SIZE_MB` (default 5120MB), `VITE_MAX_ROOM_SIZE_MB` (default 10240MB).
 - Files auto-deleted when room empties (grace period configurable via `ROOM_GRACE_PERIOD_SEC`).
 
 ### Internationalization

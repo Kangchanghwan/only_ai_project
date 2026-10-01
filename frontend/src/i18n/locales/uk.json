@@ -87,7 +87,8 @@
     "deleteCountDone": "Видалено файлів: {count}",
     "deleteCountFailed": "Не вдалося видалити файлів: {count}",
     "loadMoreFailed": "Не вдалося завантажити інші файли.",
-    "activeHeader": "Виконується ({count})"
+    "activeHeader": "Виконується ({count})",
+    "uploadResumed": "Завантаження відновлюється"
   },
   "clipboard": {
     "paste": "Вставити",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Пряме вивантаження не вдалося: {status}",
     "deleteFailed": "Не вдалося видалити файл: {status}",
     "deleteAllFailed": "Не вдалося видалити всі файли: {status}",
-    "quotaFailed": "Не вдалося отримати використання кімнати: {status}"
+    "quotaFailed": "Не вдалося отримати використання кімнати: {status}",
+    "dailyQuotaExceeded": "Досягнуто денного ліміту завантаження. Спробуйте завтра.",
+    "singlePutTooLarge": "Цей файл перевищує ліміт звичайного завантаження (100 МБ). Оновіть сторінку й повторіть спробу.",
+    "sizeMismatch": "Розмір завантаженого файлу не збігся, файл видалено. Завантажте його ще раз.",
+    "multipartFailed": "Не вдалося завантажити великий файл: {status}",
+    "serverRoomSizeExceeded": "Це перевищить ліміт сховища кімнати."
   },
   "qrModal": {
     "roomTitle": "Поділитися кімнатою через QR-код",

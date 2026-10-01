@@ -4,10 +4,18 @@ import {
   GetObjectCommand,
   DeleteObjectsCommand,
   ListObjectsV2Command,
+  CreateMultipartUploadCommand,
+  UploadPartCommand,
+  ListPartsCommand,
+  CompleteMultipartUploadCommand,
+  AbortMultipartUploadCommand,
+  ListMultipartUploadsCommand,
+  HeadObjectCommand,
   _Object,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import logger from '../utils/logger';
+import { deleteRecordsForRoom } from '../utils/multipartStore';
 
 /** 썸네일 객체 프리픽스 (룸 프리픽스 밖에 두어 목록 API에 노출되지 않게 한다) */
 const THUMB_PREFIX = 'thumbs';
@@ -370,21 +378,149 @@ class R2Service {
   async deleteAllFiles(roomId: string): Promise<number> {
     logger.info(`[R2Service] 룸 전체 파일 삭제 시작: ${roomId}`);
 
+    // 진행 중 멀티파트는 미완료 파트가 저장 용량을 차지하므로 먼저 중단한다
+    const abortedCount = await this.abortRoomMultipartUploads(roomId);
+    deleteRecordsForRoom(roomId);
+
     const [fileKeys, thumbKeys] = await Promise.all([
       this.listAllKeys(`${roomId}/`),
       this.listAllKeys(`${THUMB_PREFIX}/${roomId}/`),
     ]);
 
     if (fileKeys.length === 0 && thumbKeys.length === 0) {
-      logger.info(`[R2Service] 삭제할 파일이 없습니다`);
+      logger.info(`[R2Service] 삭제할 파일이 없습니다 (중단한 멀티파트 ${abortedCount}개)`);
       return 0;
     }
 
     await this.deleteKeys([...fileKeys, ...thumbKeys]);
 
-    logger.info(`[R2Service] 전체 삭제 완료: ${fileKeys.length}개 파일, ${thumbKeys.length}개 썸네일`);
+    logger.info(`[R2Service] 전체 삭제 완료: ${fileKeys.length}개 파일, ${thumbKeys.length}개 썸네일, 멀티파트 ${abortedCount}개 중단`);
 
     return fileKeys.length;
+  }
+
+  // === 멀티파트 업로드 ===
+
+  /** 멀티파트 업로드를 시작한다. 키는 단일 업로드와 같은 `${roomId}/${sanitized}` */
+  async createMultipartUpload(
+    roomId: string,
+    fileName: string,
+    contentType: string
+  ): Promise<{ uploadId: string; key: string; fileName: string }> {
+    const safeName = this.sanitizeFileName(fileName);
+    const key = `${roomId}/${safeName}`;
+    const res = await this.client.send(
+      new CreateMultipartUploadCommand({ Bucket: this.bucketName, Key: key, ContentType: contentType })
+    );
+    if (!res.UploadId) throw new Error('UploadId를 받지 못했습니다');
+    logger.info(`[R2Service] 멀티파트 시작: ${key}`);
+    return { uploadId: res.UploadId, key, fileName: safeName };
+  }
+
+  /** 파트 업로드 presigned URL (Content-Length 서명) */
+  async signUploadPart(
+    key: string,
+    uploadId: string,
+    partNumber: number,
+    contentLength: number,
+    expiresIn: number = 3600
+  ): Promise<string> {
+    const command = new UploadPartCommand({
+      Bucket: this.bucketName,
+      Key: key,
+      UploadId: uploadId,
+      PartNumber: partNumber,
+      ContentLength: contentLength,
+    });
+    return getSignedUrl(this.client, command, { expiresIn });
+  }
+
+  /** 업로드된 파트 목록 (페이지네이션 전체) */
+  async listParts(
+    key: string,
+    uploadId: string
+  ): Promise<Array<{ PartNumber: number; ETag: string; Size: number }>> {
+    const parts: Array<{ PartNumber: number; ETag: string; Size: number }> = [];
+    let marker: string | undefined;
+    do {
+      const res = await this.client.send(
+        new ListPartsCommand({ Bucket: this.bucketName, Key: key, UploadId: uploadId, PartNumberMarker: marker })
+      );
+      for (const p of res.Parts || []) {
+        if (p.PartNumber !== undefined && p.ETag) {
+          parts.push({ PartNumber: p.PartNumber, ETag: p.ETag, Size: p.Size ?? 0 });
+        }
+      }
+      marker = res.IsTruncated ? String(res.NextPartNumberMarker) : undefined;
+    } while (marker);
+    return parts;
+  }
+
+  async completeMultipartUpload(
+    key: string,
+    uploadId: string,
+    parts: Array<{ PartNumber: number; ETag: string }>
+  ): Promise<void> {
+    await this.client.send(
+      new CompleteMultipartUploadCommand({
+        Bucket: this.bucketName,
+        Key: key,
+        UploadId: uploadId,
+        MultipartUpload: { Parts: parts.map(({ PartNumber, ETag }) => ({ PartNumber, ETag })) },
+      })
+    );
+  }
+
+  async abortMultipartUpload(key: string, uploadId: string): Promise<void> {
+    await this.client.send(
+      new AbortMultipartUploadCommand({ Bucket: this.bucketName, Key: key, UploadId: uploadId })
+    );
+  }
+
+  /** 객체 크기(HeadObject). 없으면 null */
+  async getObjectSize(key: string): Promise<number | null> {
+    try {
+      const res = await this.client.send(new HeadObjectCommand({ Bucket: this.bucketName, Key: key }));
+      return res.ContentLength ?? 0;
+    } catch (error) {
+      const name = (error as { name?: string }).name;
+      if (name === 'NotFound' || name === 'NoSuchKey') return null;
+      throw error;
+    }
+  }
+
+  /** 단일 객체 삭제 (원본 키 그대로) */
+  async deleteObjectKey(key: string): Promise<void> {
+    await this.deleteKeys([key]);
+  }
+
+  /** 프리픽스 아래 진행 중 멀티파트를 모두 Abort한다. 중단한 개수를 반환 */
+  async abortRoomMultipartUploads(roomId: string): Promise<number> {
+    let aborted = 0;
+    let keyMarker: string | undefined;
+    let uploadIdMarker: string | undefined;
+    do {
+      const res = await this.client.send(
+        new ListMultipartUploadsCommand({
+          Bucket: this.bucketName,
+          Prefix: `${roomId}/`,
+          KeyMarker: keyMarker,
+          UploadIdMarker: uploadIdMarker,
+        })
+      );
+      for (const u of res.Uploads || []) {
+        if (!u.Key || !u.UploadId) continue;
+        try {
+          await this.abortMultipartUpload(u.Key, u.UploadId);
+          aborted++;
+        } catch (error) {
+          logger.warn(`[R2Service] 멀티파트 Abort 실패: ${u.Key}`, error);
+        }
+      }
+      keyMarker = res.IsTruncated ? res.NextKeyMarker : undefined;
+      uploadIdMarker = res.IsTruncated ? res.NextUploadIdMarker : undefined;
+    } while (keyMarker || uploadIdMarker);
+    return aborted;
   }
 
   /**

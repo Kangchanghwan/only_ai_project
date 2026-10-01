@@ -173,3 +173,26 @@ describe('i18n 키 커버리지', () => {
     expect(missing).toEqual([])
   })
 })
+
+describe('i18n 멀티파트/일일 한도 메시지', () => {
+  it('모든 로케일에 업로드 관련 신규 키가 비어 있지 않게 있어야 한다', () => {
+    const entries = Object.entries(locales)
+    expect(entries.length).toBeGreaterThanOrEqual(21)
+    const keys = [
+      ['notification', 'uploadResumed'],
+      ['errors', 'dailyQuotaExceeded'],
+      ['errors', 'singlePutTooLarge'],
+      ['errors', 'sizeMismatch'],
+      ['errors', 'multipartFailed'],
+      ['errors', 'serverRoomSizeExceeded']
+    ]
+    for (const [path, mod] of entries) {
+      const json = mod.default || mod
+      for (const [section, key] of keys) {
+        expect(typeof json[section]?.[key], `${path}의 ${section}.${key} 없음`).toBe('string')
+        expect(json[section][key].length, `${path}의 ${section}.${key} 비어있음`).toBeGreaterThan(0)
+      }
+      expect(json.errors.multipartFailed, `${path} multipartFailed에 {status} 없음`).toContain('{status}')
+    }
+  })
+})

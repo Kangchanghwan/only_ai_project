@@ -3,6 +3,7 @@ import { r2Service } from '../services/r2Service.js'
 import { runWithConcurrency } from '../utils/concurrency.js'
 import { trackEvent } from '../utils/analytics.js'
 import { t } from '../i18n/translate.js'
+import { isMultipartFile, multipartUpload, pruneStaleUploads } from '../services/multipartUploader.js'
 import { createImageThumbnail, THUMBNAIL_CONTENT_TYPE } from '../utils/thumbnail.js'
 
 /** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
@@ -13,7 +14,7 @@ const DEFAULT_UPLOAD_CONCURRENCY = 3
  * 환경 변수는 호출 시점에 읽는다 (테스트에서 값을 바꿀 수 있도록).
  */
 function validateFile(file) {
-  const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 500
+  const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120
   const MAX_FILE_SIZE = maxFileSizeMB * 1024 * 1024
 
   if (file.size === 0) {
@@ -242,15 +243,15 @@ export function useFileManager() {
       throw new Error('roomId와 file이 필요합니다')
     }
 
-    // 파일 크기 검증 (환경 변수 VITE_MAX_FILE_SIZE_MB, 기본 500MB)
+    // 파일 크기 검증 (환경 변수 VITE_MAX_FILE_SIZE_MB, 기본 5120MB(5GB))
     const validationError = validateFile(file)
     if (validationError) {
       throw validationError
     }
 
     // 룸 총 용량 제한 검증
-    // 환경 변수에서 룸 최대 용량을 가져오거나 기본값 2048MB 사용
-    const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 2048
+    // 환경 변수에서 룸 최대 용량을 가져오거나 기본값 10240MB(10GB) 사용
+    const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 10240
     const MAX_ROOM_SIZE = maxRoomSizeMB * 1024 * 1024
 
     // 병합된 totalSize가 아니라, 업로드 대상 룸만의 현재 용량을 사용한다
@@ -314,8 +315,12 @@ export function useFileManager() {
       onStart,
       onProgress,
       onComplete,
-      onError
+      onError,
+      onResume,
+      signal
     } = options
+
+    pruneStaleUploads() // 24시간 지난 이어올리기 항목 정리
 
     const outcomes = new Map() // file -> { result } | { error }
     const fail = (file, error) => {
@@ -334,23 +339,74 @@ export function useFileManager() {
       }
     }
 
-    // 2. 배치 presign (N파일 = 1왕복)
+    // 2. 배치 presign (N파일 = 1왕복) — 100MB 이하만. 초과 파일은 멀티파트로 따로 처리한다.
+    const small = pending.filter(file => !isMultipartFile(file.size))
+    const large = pending.filter(file => isMultipartFile(file.size))
     let targets = []
-    if (pending.length > 0) {
+    if (small.length > 0) {
       try {
         targets = await r2Service.getUploadUrls(
           roomId,
-          pending.map(file => ({ fileName: file.name, contentType: file.type || 'application/octet-stream', size: file.size }))
+          small.map(file => ({ fileName: file.name, contentType: file.type || 'application/octet-stream', size: file.size }))
         )
       } catch (err) {
         console.error('[useFileManager] 배치 presign 실패:', err)
-        for (const file of pending) fail(file, err)
-        return summarize(files, outcomes)
+        for (const file of small) fail(file, err)
+        small.length = 0
       }
     }
 
-    // 3. 제한 병렬 PUT
-    await runWithConcurrency(pending, concurrency, async (file, index) => {
+    // 3-a. 큰 파일: 멀티파트 (파일은 순차, 파트는 파일 내부에서 병렬)
+    const largeRun = runWithConcurrency(large, 1, async (file) => {
+      onStart?.(file)
+      const startedAt = Date.now()
+      try {
+        const res = await multipartUpload(roomId, file, {
+          api: r2Service.multipartApi,
+          signal,
+          onProgress: percent => onProgress?.(file, percent),
+          onResume: () => onResume?.(file)
+        })
+        trackEvent('multipart_upload_complete', {
+          size_mb: Math.round(file.size / 1024 / 1024),
+          parts: res.parts,
+          duration_s: Math.round((Date.now() - startedAt) / 1000),
+          retries: res.retries,
+          resumed: res.resumed
+        })
+        const result = {
+          success: true,
+          path: `${roomId}/${res.fileName}`,
+          fileName: res.fileName,
+          url: res.fileUrl,
+          size: res.size,
+          created: new Date().toISOString()
+        }
+        addFile({ name: result.fileName, url: result.url, size: result.size, created: result.created, roomId })
+        outcomes.set(file, { result })
+        onComplete?.(file, result)
+        return result
+      } catch (err) {
+        if (err?.code !== 'UPLOAD_CANCELED') {
+          trackEvent('multipart_upload_failed', {
+            size_mb: Math.round(file.size / 1024 / 1024),
+            reason: String(err?.code || err?.status || err?.message || 'unknown').slice(0, 100),
+            parts_done: err?.partsDone ?? 0
+          })
+        }
+        throw err
+      }
+    }).then(settled => {
+      settled.forEach((outcome, index) => {
+        if (outcome.status === 'rejected') {
+          console.error('[useFileManager] 멀티파트 업로드 실패:', large[index].name, outcome.reason)
+          fail(large[index], outcome.reason)
+        }
+      })
+    })
+
+    // 3-b. 작은 파일: 제한 병렬 PUT
+    await runWithConcurrency(small, concurrency, async (file, index) => {
       const target = targets[index]
       if (!target) {
         throw new Error(t('errors.noPresignedUrl'))
@@ -387,11 +443,12 @@ export function useFileManager() {
     }).then(settled => {
       settled.forEach((outcome, index) => {
         if (outcome.status === 'rejected') {
-          console.error('[useFileManager] 업로드 실패:', pending[index].name, outcome.reason)
-          fail(pending[index], outcome.reason)
+          console.error('[useFileManager] 업로드 실패:', small[index].name, outcome.reason)
+          fail(small[index], outcome.reason)
         }
       })
     })
+    await largeRun
 
     return summarize(files, outcomes)
   }

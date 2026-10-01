@@ -87,7 +87,8 @@
     "deleteCountDone": "Đã xóa {count} tệp",
     "deleteCountFailed": "Xóa {count} tệp thất bại",
     "loadMoreFailed": "Không thể tải thêm tệp.",
-    "activeHeader": "Đang xử lý ({count})"
+    "activeHeader": "Đang xử lý ({count})",
+    "uploadResumed": "Đang tiếp tục tải lên"
   },
   "clipboard": {
     "paste": "Dán",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Tải lên trực tiếp thất bại: {status}",
     "deleteFailed": "Xóa tệp thất bại: {status}",
     "deleteAllFailed": "Xóa tất cả tệp thất bại: {status}",
-    "quotaFailed": "Lấy dung lượng sử dụng của phòng thất bại: {status}"
+    "quotaFailed": "Lấy dung lượng sử dụng của phòng thất bại: {status}",
+    "dailyQuotaExceeded": "Bạn đã đạt giới hạn tải lên hôm nay. Hãy thử lại vào ngày mai.",
+    "singlePutTooLarge": "Tệp này vượt quá giới hạn tải lên đơn (100 MB). Hãy làm mới trang và thử lại.",
+    "sizeMismatch": "Kích thước tệp đã tải lên không khớp nên đã bị hủy. Vui lòng tải lại.",
+    "multipartFailed": "Tải tệp lớn thất bại: {status}",
+    "serverRoomSizeExceeded": "Việc này sẽ vượt quá giới hạn dung lượng của phòng."
   },
   "qrModal": {
     "roomTitle": "Chia sẻ phòng bằng mã QR",

@@ -99,7 +99,8 @@
     "deleteCountDone": "{count} file(s) deleted",
     "deleteCountFailed": "Failed to delete {count} file(s)",
     "loadMoreFailed": "Failed to load more files.",
-    "activeHeader": "In progress ({count})"
+    "activeHeader": "In progress ({count})",
+    "uploadResumed": "Resuming the upload"
   },
   "clipboard": {
     "paste": "Paste",
@@ -185,7 +186,7 @@
     "shortcutShare": "Share File/Text",
     "shortcutCopy": "Copy Selected Files to Clipboard",
     "limitTitle": "Limitations",
-    "limit1": "File size limit: Maximum 500MB per file",
+    "limit1": "File size limit: Maximum 5GB per file",
     "limit2": "Rooms are automatically deleted a while after the last user leaves",
     "limit3": "Browser clipboard copy supports single files only",
     "tipsTitle": "Tips",
@@ -274,7 +275,12 @@
     "directUploadFailed": "Direct upload failed: {status}",
     "deleteFailed": "Failed to delete the file: {status}",
     "deleteAllFailed": "Failed to delete all files: {status}",
-    "quotaFailed": "Failed to load room usage: {status}"
+    "quotaFailed": "Failed to load room usage: {status}",
+    "dailyQuotaExceeded": "You have reached today's upload limit. Please try again tomorrow.",
+    "singlePutTooLarge": "This file is over the single-upload limit (100MB). Refresh the page and try again.",
+    "sizeMismatch": "The uploaded file size did not match and was discarded. Please upload it again.",
+    "multipartFailed": "Large file upload failed: {status}",
+    "serverRoomSizeExceeded": "This would exceed the room storage limit."
   },
   "qrModal": {
     "roomTitle": "Share room via QR code",

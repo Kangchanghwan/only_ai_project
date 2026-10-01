@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} dosya silindi",
     "deleteCountFailed": "{count} dosya silinemedi",
     "loadMoreFailed": "Daha fazla dosya yüklenemedi.",
-    "activeHeader": "Devam ediyor ({count})"
+    "activeHeader": "Devam ediyor ({count})",
+    "uploadResumed": "Yükleme devam ettiriliyor"
   },
   "clipboard": {
     "paste": "Yapıştır",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Doğrudan yükleme başarısız: {status}",
     "deleteFailed": "Dosya silinemedi: {status}",
     "deleteAllFailed": "Tüm dosyalar silinemedi: {status}",
-    "quotaFailed": "Oda kullanımı alınamadı: {status}"
+    "quotaFailed": "Oda kullanımı alınamadı: {status}",
+    "dailyQuotaExceeded": "Bugünkü yükleme sınırına ulaştınız. Lütfen yarın tekrar deneyin.",
+    "singlePutTooLarge": "Bu dosya tekli yükleme sınırını (100 MB) aşıyor. Sayfayı yenileyip tekrar deneyin.",
+    "sizeMismatch": "Yüklenen dosyanın boyutu uyuşmadı ve silindi. Lütfen yeniden yükleyin.",
+    "multipartFailed": "Büyük dosya yüklenemedi: {status}",
+    "serverRoomSizeExceeded": "Bu, odanın depolama sınırını aşacak."
   },
   "qrModal": {
     "roomTitle": "Odayı QR kodla paylaş",

@@ -87,7 +87,8 @@
     "deleteCountDone": "已删除 {count} 个文件",
     "deleteCountFailed": "{count} 个文件删除失败",
     "loadMoreFailed": "加载更多文件失败。",
-    "activeHeader": "进行中（{count}）"
+    "activeHeader": "进行中（{count}）",
+    "uploadResumed": "正在继续上传"
   },
   "clipboard": {
     "paste": "粘贴",
@@ -174,7 +175,12 @@
     "directUploadFailed": "直接上传失败：{status}",
     "deleteFailed": "删除文件失败：{status}",
     "deleteAllFailed": "删除全部文件失败：{status}",
-    "quotaFailed": "获取房间用量失败：{status}"
+    "quotaFailed": "获取房间用量失败：{status}",
+    "dailyQuotaExceeded": "今日上传额度已用完，请明天再试。",
+    "singlePutTooLarge": "此文件超过单次上传限制（100MB），请刷新页面后重试。",
+    "sizeMismatch": "上传文件的大小不一致，已被丢弃，请重新上传。",
+    "multipartFailed": "大文件上传失败：{status}",
+    "serverRoomSizeExceeded": "将超过房间存储容量上限。"
   },
   "qrModal": {
     "roomTitle": "通过二维码分享房间",

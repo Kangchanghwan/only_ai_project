@@ -87,7 +87,8 @@
     "deleteCountDone": "{count} bestand(en) verwijderd",
     "deleteCountFailed": "Verwijderen van {count} bestand(en) mislukt",
     "loadMoreFailed": "Meer bestanden laden mislukt.",
-    "activeHeader": "Bezig ({count})"
+    "activeHeader": "Bezig ({count})",
+    "uploadResumed": "Upload wordt hervat"
   },
   "clipboard": {
     "paste": "Plakken",
@@ -174,7 +175,12 @@
     "directUploadFailed": "Directe upload mislukt: {status}",
     "deleteFailed": "Bestand verwijderen mislukt: {status}",
     "deleteAllFailed": "Alle bestanden verwijderen mislukt: {status}",
-    "quotaFailed": "Ruimtegebruik ophalen mislukt: {status}"
+    "quotaFailed": "Ruimtegebruik ophalen mislukt: {status}",
+    "dailyQuotaExceeded": "Je hebt de uploadlimiet van vandaag bereikt. Probeer het morgen opnieuw.",
+    "singlePutTooLarge": "Dit bestand overschrijdt de limiet voor enkelvoudige uploads (100 MB). Ververs de pagina en probeer het opnieuw.",
+    "sizeMismatch": "De grootte van het geüploade bestand klopte niet en is verwijderd. Upload het opnieuw.",
+    "multipartFailed": "Uploaden van groot bestand mislukt: {status}",
+    "serverRoomSizeExceeded": "Dit zou de opslaglimiet van de ruimte overschrijden."
   },
   "qrModal": {
     "roomTitle": "Ruimte delen via QR-code",
