@@ -156,7 +156,8 @@
     "limitResume": "Hingga {size} per file · unggahan terputus dilanjutkan",
     "receive": "Terima",
     "copyImage": "Salin gambar",
-    "selectFile": "Pilih {name}"
+    "selectFile": "Pilih {name}",
+    "uploadPasteHint": "(Tempel dengan Ctrl+V)"
   },
   "text": {
     "share": "Bagikan Teks",
@@ -166,7 +167,11 @@
     "clearAll": "Hapus Semua Teks",
     "cleared": "Semua teks dihapus.",
     "composePlaceholder": "Ketik atau tempel di sini, lalu tekan Bagikan",
-    "inputPasteHint": "Teks yang ditempel di kotak ini hanya dikirim saat Anda menekan Bagikan."
+    "inputPasteHint": "Teks yang ditempel di kotak ini hanya dikirim saat Anda menekan Bagikan.",
+    "receivedText": "Teks diterima",
+    "autoShareHint": "Teks dibagikan otomatis saat ditempel (Ctrl+V / Cmd+V)",
+    "noMessages": "Belum ada pesan",
+    "delete": "Hapus"
   },
   "notification": {
     "uploading": "Mengunggah...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Tempel",
     "empty": "Clipboard kosong.",
-    "permissionDenied": "Izin akses clipboard diperlukan."
+    "permissionDenied": "Izin akses clipboard diperlukan.",
+    "pasteTitle": "Tempel",
+    "pasteDescription": "Bagikan teks/gambar dari papan klip"
   },
   "footer": {
     "privacyPolicy": "Kebijakan Privasi",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Ketuk ikon instal di address bar atau banner instal di bagian bawah layar.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Ketuk tombol Bagikan, lalu pilih \"Tambah ke Layar Utama\".",
-    "downloadSingleDesc": "Tekan tombol Terima di samping file untuk mengunduhnya.",
+    "downloadSingleDesc": "Tekan tombol Terima di samping file untuk mengunduhnya. Tombol ⋯ (Lainnya) menyediakan berbagi kode QR, unduh, dan hapus (gambar juga bisa disalin). Sama di komputer maupun ponsel.",
     "textShareCopyDesc": "Tekan Salin pada teks yang dibagikan untuk menyalinnya ke papan klip. Teks yang Anda ketik atau tempel di kotak dikirim dengan tombol Bagikan.",
     "textShareDeleteDesc": "Buka tombol ⋯ di sebelah kanan teks lalu pilih Hapus.",
-    "scopeDevicesDesc": "Kartu koneksi (panel kiri pada layar lebar) menampilkan perangkat lain yang terhubung dalam cakupan yang sama."
+    "scopeDevicesDesc": "Kartu koneksi (panel kiri pada layar lebar) menampilkan perangkat lain yang terhubung dalam cakupan yang sama.",
+    "limit4": "Meski tetap terhubung, file disimpan paling lama sekitar 1 hari (dihapus tak lama setelah semua perangkat keluar)",
+    "tip4": "Gunakan tombol \"⋯\" pada kartu file untuk membuka menu kode QR/unduh/hapus (gambar juga bisa disalin)"
   },
   "seo": {
     "title": "Clipboard Online – Bagikan Teks, Gambar & File di HP dan PC",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Penyimpanan dan penggunaan",
     "retention": "Meski Anda masih terhubung, file dibersihkan otomatis paling lama setelah 1 hari. Pembersihan berjalan berkala sehingga waktu persisnya (hingga detik) tidak dijamin, dan bisa lebih cepat setelah semua perangkat keluar. Unduh yang Anda perlukan segera."
+  },
+  "download": {
+    "title": "Mengunduh file...",
+    "selectAll": "Pilih semua",
+    "deselectAll": "Batalkan semua",
+    "downloadSelected": "Unduh",
+    "qrCode": "Kode QR",
+    "selectAllHint": "Pilih semua file",
+    "deselectAllHint": "Batalkan pilihan semua file",
+    "downloadHint": "Unduh file yang dipilih satu per satu",
+    "qrCodeHint": "Buat kode QR untuk file yang dipilih"
   }
 }

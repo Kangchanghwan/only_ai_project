@@ -156,7 +156,8 @@
     "limitResume": "每个文件最大 {size} · 中断后可续传",
     "receive": "接收",
     "copyImage": "复制图片",
-    "selectFile": "选择 {name}"
+    "selectFile": "选择 {name}",
+    "uploadPasteHint": "(按 Ctrl+V 粘贴)"
   },
   "text": {
     "share": "分享文本",
@@ -166,7 +167,11 @@
     "clearAll": "清除所有文本",
     "cleared": "所有文本已清除。",
     "composePlaceholder": "在此输入或粘贴，然后点击“分享”",
-    "inputPasteHint": "粘贴到输入框的内容需点击“分享”才会发送。"
+    "inputPasteHint": "粘贴到输入框的内容需点击“分享”才会发送。",
+    "receivedText": "收到的文字",
+    "autoShareHint": "粘贴(Ctrl+V / Cmd+V)后文字会自动分享",
+    "noMessages": "还没有消息",
+    "delete": "删除"
   },
   "notification": {
     "uploading": "上传中...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "粘贴",
     "empty": "剪贴板为空。",
-    "permissionDenied": "需要剪贴板访问权限。"
+    "permissionDenied": "需要剪贴板访问权限。",
+    "pasteTitle": "粘贴",
+    "pasteDescription": "分享剪贴板中的文字/图片"
   },
   "footer": {
     "privacyPolicy": "隐私政策",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "点击地址栏中的安装图标，或屏幕底部弹出的安装横幅。",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "点击分享按钮，然后选择\"添加到主屏幕\"。",
-    "downloadSingleDesc": "点击文件旁的“接收”按钮即可下载。",
+    "downloadSingleDesc": "点击文件旁的“接收”按钮即可下载。旁边的“⋯”更多按钮可进行二维码分享、下载和删除(图片还可复制)。电脑和手机上都一样。",
     "textShareCopyDesc": "点击已分享文本上的“复制”按钮可复制到剪贴板。在输入框中输入或粘贴的内容需用“分享”按钮发送。",
     "textShareDeleteDesc": "点击文本右侧的“⋯”按钮并选择删除。",
-    "scopeDevicesDesc": "在连接卡片（宽屏时为左侧面板）中可以查看同一范围内已连接的其他设备。"
+    "scopeDevicesDesc": "在连接卡片（宽屏时为左侧面板）中可以查看同一范围内已连接的其他设备。",
+    "limit4": "即使保持连接,文件最多也只保存约 1 天(所有设备离开后不久即会删除)",
+    "tip4": "点击文件卡片上的“⋯”按钮,可打开二维码分享/下载/删除菜单(图片还可复制)"
   },
   "seo": {
     "title": "在线剪贴板：手机与PC共享文本、图片、文件",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "保存与使用说明",
     "retention": "即使在线，文件最多保留1天后也会自动清理。清理会定期执行，不保证精确到秒；所有设备离开后可能更早删除。请尽快保存需要的文件。"
+  },
+  "download": {
+    "title": "正在下载文件...",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "downloadSelected": "下载",
+    "qrCode": "二维码",
+    "selectAllHint": "选择所有文件",
+    "deselectAllHint": "取消选择所有文件",
+    "downloadHint": "按顺序依次下载所选文件",
+    "qrCodeHint": "为所选文件生成二维码"
   }
 }

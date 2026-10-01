@@ -156,7 +156,8 @@
     "limitResume": "Dosya başına en fazla {size} · yarım kalan yüklemeler devam eder",
     "receive": "Al",
     "copyImage": "Görseli kopyala",
-    "selectFile": "{name} seç"
+    "selectFile": "{name} seç",
+    "uploadPasteHint": "(Ctrl+V ile yapıştırın)"
   },
   "text": {
     "share": "Metin Paylaş",
@@ -166,7 +167,11 @@
     "clearAll": "Tüm Metinleri Temizle",
     "cleared": "Tüm metinler temizlendi.",
     "composePlaceholder": "Buraya yazın veya yapıştırın, sonra Paylaş'a basın",
-    "inputPasteHint": "Bu kutuya yapıştırılan metin yalnızca Paylaş'a basınca gönderilir."
+    "inputPasteHint": "Bu kutuya yapıştırılan metin yalnızca Paylaş'a basınca gönderilir.",
+    "receivedText": "Alınan metin",
+    "autoShareHint": "Yapıştırdığınızda (Ctrl+V / Cmd+V) metin otomatik paylaşılır",
+    "noMessages": "Henüz mesaj yok",
+    "delete": "Sil"
   },
   "notification": {
     "uploading": "Yükleniyor...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Yapıştır",
     "empty": "Pano boş.",
-    "permissionDenied": "Pano erişim izni gerekli."
+    "permissionDenied": "Pano erişim izni gerekli.",
+    "pasteTitle": "Yapıştır",
+    "pasteDescription": "Panodaki metni/görselleri paylaş"
   },
   "footer": {
     "privacyPolicy": "Gizlilik Politikası",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Adres çubuğundaki yükleme simgesine veya ekranın altındaki yükleme bannerına dokunun.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Paylaş düğmesine dokunun, ardından \"Ana Ekrana Ekle\" seçeneğini seçin.",
-    "downloadSingleDesc": "İndirmek için dosyanın yanındaki Al düğmesine basın.",
+    "downloadSingleDesc": "İndirmek için dosyanın yanındaki Al düğmesine basın. ⋯ (Daha fazla) düğmesiyle QR kod paylaşımı, indirme ve silme yapılır (görseller kopyalanabilir). Bilgisayarda ve mobilde aynıdır.",
     "textShareCopyDesc": "Paylaşılan metinde Kopyala'ya basarak panoya kopyalayın. Kutuya yazdığınız veya yapıştırdığınız metin Paylaş düğmesiyle gönderilir.",
     "textShareDeleteDesc": "Metnin sağındaki ⋯ düğmesini açıp Sil'i seçin.",
-    "scopeDevicesDesc": "Bağlantı kartı (geniş ekranlarda sol panel) aynı kapsamda bağlı diğer cihazları gösterir."
+    "scopeDevicesDesc": "Bağlantı kartı (geniş ekranlarda sol panel) aynı kapsamda bağlı diğer cihazları gösterir.",
+    "limit4": "Bağlı kalsanız bile dosyalar en fazla yaklaşık 1 gün saklanır (tüm cihazlar ayrıldıktan kısa süre sonra silinir)",
+    "tip4": "Dosya kartındaki \"⋯\" düğmesi QR kod/indirme/silme menüsünü açar (görseller için kopyalama da var)"
   },
   "seo": {
     "title": "Online Pano – Telefon ve PC Arasında Metin/Dosya Paylaşımı",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Saklama ve kullanım",
     "retention": "Bağlı olsanız bile dosyalar en geç 1 gün sonra otomatik temizlenir. Temizlik düzenli aralıklarla çalışır, bu yüzden tam saat (saniyesine kadar) garanti edilmez; tüm cihazlar çıkınca daha erken silinebilir. İhtiyacınız olan dosyaları hemen indirin."
+  },
+  "download": {
+    "title": "Dosyalar indiriliyor...",
+    "selectAll": "Tümünü seç",
+    "deselectAll": "Seçimi kaldır",
+    "downloadSelected": "İndir",
+    "qrCode": "QR kod",
+    "selectAllHint": "Tüm dosyaları seç",
+    "deselectAllHint": "Tüm dosyaların seçimini kaldır",
+    "downloadHint": "Seçili dosyaları sırayla indir",
+    "qrCodeHint": "Seçili dosyalar için QR kod oluştur"
   }
 }

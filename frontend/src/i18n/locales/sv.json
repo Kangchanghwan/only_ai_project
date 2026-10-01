@@ -156,7 +156,8 @@
     "limitResume": "Upp till {size} per fil · avbrutna uppladdningar återupptas",
     "receive": "Ta emot",
     "copyImage": "Kopiera bild",
-    "selectFile": "Markera {name}"
+    "selectFile": "Markera {name}",
+    "uploadPasteHint": "(Klistra in med Ctrl+V)"
   },
   "text": {
     "share": "Dela text",
@@ -166,7 +167,11 @@
     "clearAll": "Rensa alla texter",
     "cleared": "Alla texter rensade.",
     "composePlaceholder": "Skriv eller klistra in här och tryck på Dela",
-    "inputPasteHint": "Text du klistrar in i rutan skickas först när du trycker på Dela."
+    "inputPasteHint": "Text du klistrar in i rutan skickas först när du trycker på Dela.",
+    "receivedText": "Mottagen text",
+    "autoShareHint": "Text delas automatiskt när du klistrar in (Ctrl+V / Cmd+V)",
+    "noMessages": "Inga meddelanden än",
+    "delete": "Ta bort"
   },
   "notification": {
     "uploading": "Laddar upp...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Klistra in",
     "empty": "Urklipp är tomt.",
-    "permissionDenied": "Åtkomstbehörighet till urklipp krävs."
+    "permissionDenied": "Åtkomstbehörighet till urklipp krävs.",
+    "pasteTitle": "Klistra in",
+    "pasteDescription": "Dela text/bilder från urklipp"
   },
   "footer": {
     "privacyPolicy": "Integritetspolicy",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Tryck på installationsikonen i adressfältet eller installationsbannern längst ner på skärmen.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Tryck på delningsknappen och välj sedan \"Lägg till på hemskärmen\".",
-    "downloadSingleDesc": "Tryck på Ta emot bredvid filen för att ladda ner den.",
+    "downloadSingleDesc": "Tryck på Ta emot bredvid en fil för att ladda ner den. Knappen ⋯ (Mer) ger QR-kodsdelning, nedladdning och borttagning (bilder kan även kopieras). Fungerar likadant på dator och mobil.",
     "textShareCopyDesc": "Tryck på Kopiera vid en delad text för att kopiera den till urklipp. Text du skriver eller klistrar in i rutan skickas med Dela.",
     "textShareDeleteDesc": "Öppna knappen ⋯ till höger om texten och välj Ta bort.",
-    "scopeDevicesDesc": "Anslutningskortet (på breda skärmar vänsterpanelen) visar andra enheter i samma omfång."
+    "scopeDevicesDesc": "Anslutningskortet (på breda skärmar vänsterpanelen) visar andra enheter i samma omfång.",
+    "limit4": "Även om du är ansluten sparas filer högst cirka 1 dag (de tas bort strax efter att alla enheter lämnat)",
+    "tip4": "Knappen \"⋯\" på ett filkort öppnar menyn för QR-kod/nedladdning/borttagning (bilder kan även kopieras)"
   },
   "seo": {
     "title": "Online-urklipp – dela text, bilder och filer mellan mobil och dator",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Lagring och användning",
     "retention": "Även när du är ansluten rensas filer automatiskt efter högst 1 dag. Rensningen körs periodiskt, så exakt tid (på sekunden) garanteras inte, och när alla enheter lämnat kan det ske tidigare. Ladda ner det du behöver direkt."
+  },
+  "download": {
+    "title": "Laddar ner filer...",
+    "selectAll": "Markera alla",
+    "deselectAll": "Avmarkera alla",
+    "downloadSelected": "Ladda ner",
+    "qrCode": "QR-kod",
+    "selectAllHint": "Markera alla filer",
+    "deselectAllHint": "Avmarkera alla filer",
+    "downloadHint": "Ladda ner markerade filer en i taget",
+    "qrCodeHint": "Skapa QR-koder för markerade filer"
   }
 }

@@ -156,7 +156,8 @@
     "limitResume": "Până la {size} per fișier · încărcările întrerupte se reiau",
     "receive": "Primește",
     "copyImage": "Copiază imaginea",
-    "selectFile": "Selectează {name}"
+    "selectFile": "Selectează {name}",
+    "uploadPasteHint": "(Lipiți cu Ctrl+V)"
   },
   "text": {
     "share": "Partajează text",
@@ -166,7 +167,11 @@
     "clearAll": "Șterge toate textele",
     "cleared": "Toate textele șterse.",
     "composePlaceholder": "Scrie sau lipește aici, apoi apasă Partajează",
-    "inputPasteHint": "Textul lipit în această casetă se trimite doar când apeși Partajează."
+    "inputPasteHint": "Textul lipit în această casetă se trimite doar când apeși Partajează.",
+    "receivedText": "Text primit",
+    "autoShareHint": "Textul este partajat automat la lipire (Ctrl+V / Cmd+V)",
+    "noMessages": "Încă nu există mesaje",
+    "delete": "Șterge"
   },
   "notification": {
     "uploading": "Se încarcă...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Lipește",
     "empty": "Clipboard-ul este gol.",
-    "permissionDenied": "Permisiune de acces la clipboard necesară."
+    "permissionDenied": "Permisiune de acces la clipboard necesară.",
+    "pasteTitle": "Lipește",
+    "pasteDescription": "Partajează textul/imaginile din clipboard"
   },
   "footer": {
     "privacyPolicy": "Politica de Confidențialitate",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Atinge pictograma de instalare din bara de adrese sau bannerul de instalare din partea de jos a ecranului.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Atinge butonul de distribuire, apoi alege „Adaugă la ecranul de start”.",
-    "downloadSingleDesc": "Apasă butonul Primește de lângă fișier pentru a-l descărca.",
+    "downloadSingleDesc": "Apasă butonul Primește de lângă fișier pentru a-l descărca. Butonul ⋯ (Mai mult) permite partajarea prin cod QR, descărcarea și ștergerea (imaginile se pot și copia). La fel pe computer și pe mobil.",
     "textShareCopyDesc": "Apasă Copiază la un text partajat ca să-l copiezi în clipboard. Textul scris sau lipit în casetă se trimite cu butonul Partajează.",
     "textShareDeleteDesc": "Deschide butonul ⋯ din dreapta textului și alege Șterge.",
-    "scopeDevicesDesc": "Cardul de conexiune (panoul din stânga pe ecrane late) arată celelalte dispozitive conectate în același domeniu."
+    "scopeDevicesDesc": "Cardul de conexiune (panoul din stânga pe ecrane late) arată celelalte dispozitive conectate în același domeniu.",
+    "limit4": "Chiar dacă rămâi conectat, fișierele sunt păstrate cel mult aproximativ 1 zi (se șterg la scurt timp după ce toate dispozitivele ies)",
+    "tip4": "Butonul „⋯” de pe cardul unui fișier deschide meniul cod QR/descărcare/ștergere (la imagini și copiere)"
   },
   "seo": {
     "title": "Clipboard Online – Distribuie Text și Fișiere Între Telefon și PC",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Stocare și utilizare",
     "retention": "Chiar și cât ești conectat, fișierele sunt șterse automat după cel mult 1 zi. Curățarea rulează periodic, deci ora exactă (la secundă) nu este garantată, iar după ce pleacă toate dispozitivele se poate șterge mai devreme. Descarcă imediat ce ai nevoie."
+  },
+  "download": {
+    "title": "Se descarcă fișierele...",
+    "selectAll": "Selectează tot",
+    "deselectAll": "Deselectează tot",
+    "downloadSelected": "Descarcă",
+    "qrCode": "Cod QR",
+    "selectAllHint": "Selectează toate fișierele",
+    "deselectAllHint": "Deselectează toate fișierele",
+    "downloadHint": "Descarcă pe rând fișierele selectate",
+    "qrCodeHint": "Generează coduri QR pentru fișierele selectate"
   }
 }

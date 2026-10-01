@@ -156,7 +156,8 @@
     "limitResume": "Jusqu'à {size} par fichier · reprise après interruption",
     "receive": "Recevoir",
     "copyImage": "Copier l'image",
-    "selectFile": "Sélectionner {name}"
+    "selectFile": "Sélectionner {name}",
+    "uploadPasteHint": "(Collez avec Ctrl+V)"
   },
   "text": {
     "share": "Partager le texte",
@@ -166,7 +167,11 @@
     "clearAll": "Effacer tous les textes",
     "cleared": "Tous les textes effacés.",
     "composePlaceholder": "Saisissez ou collez ici, puis appuyez sur Partager",
-    "inputPasteHint": "Le texte collé dans cette zone n'est envoyé qu'en appuyant sur Partager."
+    "inputPasteHint": "Le texte collé dans cette zone n'est envoyé qu'en appuyant sur Partager.",
+    "receivedText": "Texte reçu",
+    "autoShareHint": "Le texte est partagé automatiquement lorsque vous collez (Ctrl+V / Cmd+V)",
+    "noMessages": "Aucun message pour le moment",
+    "delete": "Supprimer"
   },
   "notification": {
     "uploading": "Téléchargement...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Coller",
     "empty": "Le presse-papiers est vide.",
-    "permissionDenied": "Permission d'accès au presse-papiers requise."
+    "permissionDenied": "Permission d'accès au presse-papiers requise.",
+    "pasteTitle": "Coller",
+    "pasteDescription": "Partager le texte/les images du presse-papiers"
   },
   "footer": {
     "privacyPolicy": "Politique de Confidentialité",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Appuyez sur l'icône d'installation dans la barre d'adresse ou sur la bannière d'installation en bas de l'écran.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Appuyez sur le bouton Partager, puis choisissez « Sur l'écran d'accueil ».",
-    "downloadSingleDesc": "Appuyez sur le bouton Recevoir à côté du fichier pour le télécharger.",
+    "downloadSingleDesc": "Appuyez sur le bouton Recevoir à côté d'un fichier pour le télécharger. Le bouton ⋯ (Plus) permet de partager par code QR, de télécharger et de supprimer (les images peuvent aussi être copiées). C'est identique sur ordinateur et mobile.",
     "textShareCopyDesc": "Appuyez sur Copier sur un texte partagé pour le copier dans le presse-papiers. Le texte saisi ou collé dans la zone est envoyé avec le bouton Partager.",
     "textShareDeleteDesc": "Ouvrez le bouton ⋯ à droite du texte et choisissez Supprimer.",
-    "scopeDevicesDesc": "La carte de connexion (le panneau de gauche sur grand écran) affiche les autres appareils connectés dans la même portée."
+    "scopeDevicesDesc": "La carte de connexion (le panneau de gauche sur grand écran) affiche les autres appareils connectés dans la même portée.",
+    "limit4": "Même si vous restez connecté, les fichiers sont conservés environ 1 jour au maximum (ils sont supprimés peu après le départ de tous les appareils)",
+    "tip4": "Utilisez le bouton « ⋯ » d'une carte de fichier pour ouvrir le menu code QR/téléchargement/suppression (copie incluse pour les images)"
   },
   "seo": {
     "title": "Presse-papiers en ligne: texte, images et fichiers",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Conservation et utilisation",
     "retention": "Même connecté, un fichier est supprimé automatiquement au bout de 1 jour maximum. Le nettoyage s'exécute périodiquement : l'heure exacte (à la seconde) n'est pas garantie, et la suppression peut être plus rapide quand tous les appareils sont partis. Téléchargez vite ce dont vous avez besoin."
+  },
+  "download": {
+    "title": "Téléchargement des fichiers...",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner",
+    "downloadSelected": "Télécharger",
+    "qrCode": "Code QR",
+    "selectAllHint": "Sélectionner tous les fichiers",
+    "deselectAllHint": "Désélectionner tous les fichiers",
+    "downloadHint": "Télécharger les fichiers sélectionnés les uns après les autres",
+    "qrCodeHint": "Générer des codes QR pour les fichiers sélectionnés"
   }
 }

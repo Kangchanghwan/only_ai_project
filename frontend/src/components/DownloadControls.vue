@@ -29,9 +29,9 @@ const { text: accentText } = useScopeAccent(() => props.scope)
 </script>
 
 <template>
-  <div class="fixed left-1/2 -translate-x-1/2 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 w-[calc(100%-2rem)] max-w-[28rem] bg-surface border border-border rounded-2xl shadow-lg grid grid-cols-5 overflow-hidden">
+  <div class="fixed left-1/2 -translate-x-1/2 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 w-[calc(100%-2rem)] max-w-[28rem] bg-surface border border-border rounded-2xl shadow-lg md:grid-cols-5 overflow-hidden download-controls flex flex-wrap justify-center md:grid" data-testid="download-controls">
     <button
-      class="flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :class="accentText"
       :disabled="totalCount === 0"
       @click="$emit('toggle-select-all')"
@@ -44,12 +44,12 @@ const { text: accentText } = useScopeAccent(() => props.scope)
       <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
         <rect x="4" y="4" width="16" height="16" rx="4" />
       </svg>
-      <span class="text-[11px] leading-tight text-center">
+      <span class="dc-label text-[11px] leading-tight text-center">
         {{ allSelected ? t('download.deselectAll') : t('download.selectAll') }} ({{ selectedCount }}/{{ totalCount }})
       </span>
     </button>
     <button
-      class="flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :class="accentText"
       :disabled="selectedCount === 0"
       @click="$emit('download-parallel')"
@@ -60,10 +60,10 @@ const { text: accentText } = useScopeAccent(() => props.scope)
         <polyline points="7 10 12 15 17 10" />
         <line x1="12" y1="15" x2="12" y2="3" />
       </svg>
-      <span class="text-[11px] leading-tight text-center">{{ t('download.downloadSelected') }} ({{ selectedCount }})</span>
+      <span class="dc-label text-[11px] leading-tight text-center">{{ t('download.downloadSelected') }} ({{ selectedCount }})</span>
     </button>
     <button
-      class="flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :class="accentText"
       :disabled="selectedCount === 0"
       @click="$emit('show-multi-qr')"
@@ -78,10 +78,10 @@ const { text: accentText } = useScopeAccent(() => props.scope)
         <rect x="14" y="18" width="3" height="3" rx="0.5" fill="currentColor" stroke="none" />
         <rect x="18" y="14" width="3" height="3" rx="0.5" fill="currentColor" stroke="none" />
       </svg>
-      <span class="text-[11px] leading-tight text-center">{{ t('download.qrCode') }} ({{ selectedCount }})</span>
+      <span class="dc-label text-[11px] leading-tight text-center">{{ t('download.qrCode') }} ({{ selectedCount }})</span>
     </button>
     <button
-      class="flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-red-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-red-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="selectedCount === 0"
       @click="$emit('delete-selected')"
     >
@@ -92,10 +92,10 @@ const { text: accentText } = useScopeAccent(() => props.scope)
         <path d="M14 11v6" />
         <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
       </svg>
-      <span class="text-[11px] leading-tight text-center">{{ t('file.deleteSelected') }} ({{ selectedCount }})</span>
+      <span class="dc-label text-[11px] leading-tight text-center">{{ t('file.deleteSelected') }} ({{ selectedCount }})</span>
     </button>
     <button
-      class="flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="totalCount === 0"
       @click="$emit('clear-storage')"
     >
@@ -105,7 +105,23 @@ const { text: accentText } = useScopeAccent(() => props.scope)
         <line x1="6" y1="19" x2="4" y2="21" />
         <line x1="9" y1="19" x2="7.5" y2="21" />
       </svg>
-      <span class="text-[11px] leading-tight text-center">{{ t('file.clearStorage') }}</span>
+      <span class="dc-label text-[11px] leading-tight text-center">{{ t('file.clearStorage') }}</span>
     </button>
   </div>
 </template>
+
+<style scoped>
+/* 좁은 폭(<768px): 버튼 단위로 줄바꿈하고 라벨은 한 줄 유지 (단어 중간 끊김 방지) */
+@media (max-width: 767.98px) {
+  .dc-btn {
+    flex: 1 1 auto;
+    min-height: 44px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .dc-label {
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+}
+</style>

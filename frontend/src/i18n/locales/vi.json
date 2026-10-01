@@ -156,7 +156,8 @@
     "limitResume": "Tối đa {size} mỗi tệp · tải lên bị gián đoạn sẽ tiếp tục",
     "receive": "Nhận",
     "copyImage": "Sao chép ảnh",
-    "selectFile": "Chọn {name}"
+    "selectFile": "Chọn {name}",
+    "uploadPasteHint": "(Dán bằng Ctrl+V)"
   },
   "text": {
     "share": "Chia sẻ văn bản",
@@ -166,7 +167,11 @@
     "clearAll": "Xóa tất cả văn bản",
     "cleared": "Đã xóa tất cả văn bản.",
     "composePlaceholder": "Nhập hoặc dán vào đây rồi nhấn Chia sẻ",
-    "inputPasteHint": "Văn bản dán vào ô này chỉ được gửi khi bạn nhấn Chia sẻ."
+    "inputPasteHint": "Văn bản dán vào ô này chỉ được gửi khi bạn nhấn Chia sẻ.",
+    "receivedText": "Văn bản đã nhận",
+    "autoShareHint": "Văn bản được chia sẻ tự động khi bạn dán (Ctrl+V / Cmd+V)",
+    "noMessages": "Chưa có tin nhắn",
+    "delete": "Xóa"
   },
   "notification": {
     "uploading": "Đang tải lên...",
@@ -206,7 +211,9 @@
   "clipboard": {
     "paste": "Dán",
     "empty": "Clipboard trống.",
-    "permissionDenied": "Cần quyền truy cập clipboard."
+    "permissionDenied": "Cần quyền truy cập clipboard.",
+    "pasteTitle": "Dán",
+    "pasteDescription": "Chia sẻ văn bản/hình ảnh trong bộ nhớ tạm"
   },
   "footer": {
     "privacyPolicy": "Chính Sách Bảo Mật",
@@ -226,10 +233,12 @@
     "pwaAndroidDesc": "Chạm vào biểu tượng cài đặt trên thanh địa chỉ hoặc biểu ngữ cài đặt ở cuối màn hình.",
     "pwaIOSTitle": "iOS (Safari)",
     "pwaIOSDesc": "Chạm vào nút Chia sẻ, sau đó chọn \"Thêm vào Màn hình chính\".",
-    "downloadSingleDesc": "Nhấn nút Nhận bên cạnh tệp để tải xuống.",
+    "downloadSingleDesc": "Nhấn nút Nhận bên cạnh tệp để tải xuống. Nút ⋯ (Thêm) cho phép chia sẻ bằng mã QR, tải xuống và xóa (hình ảnh còn có thể sao chép). Trên máy tính và điện thoại đều giống nhau.",
     "textShareCopyDesc": "Nhấn Sao chép ở văn bản được chia sẻ để chép vào bộ nhớ tạm. Văn bản bạn nhập hoặc dán vào ô sẽ được gửi bằng nút Chia sẻ.",
     "textShareDeleteDesc": "Mở nút ⋯ bên phải văn bản và chọn Xóa.",
-    "scopeDevicesDesc": "Thẻ kết nối (bảng bên trái trên màn hình rộng) hiển thị các thiết bị khác đang kết nối trong cùng phạm vi."
+    "scopeDevicesDesc": "Thẻ kết nối (bảng bên trái trên màn hình rộng) hiển thị các thiết bị khác đang kết nối trong cùng phạm vi.",
+    "limit4": "Dù vẫn đang kết nối, tệp chỉ được lưu tối đa khoảng 1 ngày (sẽ bị xóa ngay sau khi tất cả thiết bị rời đi)",
+    "tip4": "Dùng nút \"⋯\" trên thẻ tệp để mở menu mã QR/tải xuống/xóa (hình ảnh có thêm sao chép)"
   },
   "seo": {
     "title": "Clipboard Trực Tuyến – Chia Sẻ Văn Bản & Tệp Giữa Điện Thoại, PC",
@@ -336,5 +345,16 @@
   "guide": {
     "title": "Lưu trữ và sử dụng",
     "retention": "Dù đang kết nối, tệp vẫn được tự động dọn sau tối đa 1 ngày. Việc dọn chạy định kỳ nên không đảm bảo thời điểm chính xác (đến từng giây), và có thể xóa sớm hơn khi mọi thiết bị đã rời đi. Hãy tải ngay những gì bạn cần."
+  },
+  "download": {
+    "title": "Đang tải tệp...",
+    "selectAll": "Chọn tất cả",
+    "deselectAll": "Bỏ chọn tất cả",
+    "downloadSelected": "Tải xuống",
+    "qrCode": "Mã QR",
+    "selectAllHint": "Chọn tất cả tệp",
+    "deselectAllHint": "Bỏ chọn tất cả tệp",
+    "downloadHint": "Tải lần lượt các tệp đã chọn",
+    "qrCodeHint": "Tạo mã QR cho các tệp đã chọn"
   }
 }

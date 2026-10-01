@@ -66,6 +66,19 @@ describe('FileCard.vue - 받기(primary)와 더보기(secondary)', () => {
     expect(meta.exists()).toBe(true)
     expect(meta.findAll('span.whitespace-nowrap')).toHaveLength(2)
   })
+
+  it('메타 줄은 줄바꿈/overflow-hidden으로 받기 버튼 영역을 침범하지 않고, 액션은 shrink-0이다', () => {
+    const wrapper = mountCard()
+    const meta = wrapper.find('[data-testid="file-meta"]')
+    expect(meta.classes()).toContain('flex-wrap')
+    expect(meta.classes()).toContain('overflow-hidden')
+    expect(wrapper.find('.file-row').classes()).toContain('flex-wrap')
+    expect(wrapper.find('.file-row').classes()).toContain('sm:flex-nowrap')
+    expect(wrapper.find('.file-actions').classes()).toContain('shrink-0')
+    expect(meta.classes()).toContain('min-w-0')
+    expect(wrapper.find('[data-testid="file-receive"]').classes()).toContain('shrink-0')
+    expect(wrapper.find('.more-btn').classes()).toContain('shrink-0')
+  })
 })
 
 describe('FileCard.vue - 더보기 메뉴', () => {
