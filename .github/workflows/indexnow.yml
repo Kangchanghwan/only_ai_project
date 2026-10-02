@@ -1,0 +1,55 @@
+# 페이지가 master에 반영되면 IndexNow로 네이버·Bing 등에 바로 알린다.
+# - owner의 master 푸시: push 트리거
+# - growth-operator 자동 머지: GITHUB_TOKEN 푸시는 push 워크플로를 깨우지 않으므로 workflow_run 으로 받는다
+# - 수동: workflow_dispatch (all=true 면 sitemap 전체)
+name: indexnow
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'frontend/public/**/*.html'
+      - 'frontend/index.html'
+      - 'frontend/src/i18n/locales/ko.json'
+      - 'frontend/src/i18n/locales/en.json'
+  workflow_run:
+    workflows: ['auto-merge (SEO·콘텐츠)']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      all:
+        description: 'sitemap 전체 제출'
+        type: boolean
+        default: false
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 50
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 변경 URL 제출
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          ALL: ${{ inputs.all }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ] && [ "$ALL" = "true" ]; then
+            node ops/scripts/indexnow.mjs --all
+          elif [ "$EVENT" = "push" ] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            git diff --name-only "$BEFORE" HEAD | node ops/scripts/indexnow.mjs
+          else
+            # 자동 머지 직후: 최근 40분 동안 master에 들어온 커밋의 변경 파일
+            git log --since="40 minutes ago" --name-only --format= | node ops/scripts/indexnow.mjs
+          fi
