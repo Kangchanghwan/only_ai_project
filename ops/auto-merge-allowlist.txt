@@ -1,0 +1,17 @@
+# auto/* 브랜치의 변경 파일이 전부 이 패턴에 맞을 때만 CI 통과 후 master로 자동 머지된다.
+# 하나라도 벗어나면 자동 머지하지 않고 owner 승인(PR)을 기다린다.
+# 이 파일과 .github/ 자체는 절대 여기에 넣지 않는다 (게이트를 스스로 넓히지 못하게).
+# 문법: ** = 하위 경로 전체, * = 경로 구분자(/) 제외 임의 문자열
+
+intent/**
+ops/reports/**
+ops/metrics/**
+ops/playbooks/**
+frontend/public/guide/**
+frontend/public/en/guide/**
+frontend/public/sitemap.xml
+frontend/public/llms.txt
+frontend/public/robots.txt
+frontend/public/faq.html
+frontend/public/how-to-use.html
+frontend/src/i18n/locales/*.json

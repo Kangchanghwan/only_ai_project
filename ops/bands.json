@@ -1,0 +1,29 @@
+{
+  "_comment": "지표 제어 밴드. 탐지는 ops/scripts/bands.mjs가 결정론적으로 한다(모델 미개입). tier: log=기록만, diagnose=에이전트가 읽기 전용 진단 후 intent 작성, propose=intent + 변경(자동 머지 허용 경로면 auto/ 브랜치, 아니면 PR) 실행.",
+  "north_star": {
+    "metric": "au28",
+    "label": "28일 활성 사용자",
+    "baseline": { "date": "2026-10-02", "value": 150 },
+    "milestones": [
+      { "date": "2026-10-31", "value": 300 },
+      { "date": "2026-11-30", "value": 600 },
+      { "date": "2026-12-31", "value": 1000 }
+    ],
+    "pace_tiers": { "log": 0.8, "diagnose": 0.5 }
+  },
+  "metrics": [
+    { "key": "sessions7", "label": "7일 세션", "direction": "up" },
+    { "key": "au7", "label": "7일 활성 사용자", "direction": "up" },
+    { "key": "organic7", "label": "7일 자연검색 세션", "direction": "up" },
+    { "key": "referral7", "label": "7일 추천 유입 세션", "direction": "up" },
+    { "key": "conversions7", "label": "7일 전환(file_upload+text_share+file_download)", "direction": "up" },
+    { "key": "gsc_clicks7", "label": "GSC 7일 클릭", "direction": "up" },
+    { "key": "gsc_impr7", "label": "GSC 7일 노출", "direction": "up" },
+    { "key": "naver_clicks7", "label": "네이버 7일 클릭", "direction": "up" }
+  ],
+  "z_tiers": { "log": 1, "diagnose": 2, "propose": 3 },
+  "pct_tiers_when_short_history": { "log": 0.1, "diagnose": 0.2, "propose": 0.4 },
+  "min_history_for_z": 6,
+  "min_volume": 10,
+  "drift_weeks": 3
+}

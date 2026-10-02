@@ -1,0 +1,16 @@
+{
+  "_comment": "사실과 다른 카피를 막는 eval. 제품이 바뀌어 문구가 사실이 되면 owner 승인 PR로만 이 목록을 줄인다. 새 사고가 나면 여기에 문구를 추가해 재발을 막는다.",
+  "forbidden": [
+    "최대 100MB",
+    "100MB까지",
+    "max 100MB",
+    "up to 100MB",
+    "100MB limit",
+    "종단간 암호화",
+    "end-to-end encrypt",
+    "P2P로 직접 전송",
+    "peer-to-peer transfer",
+    "영구 보관",
+    "학생 결과물 받기"
+  ]
+}

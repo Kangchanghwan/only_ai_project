@@ -1,0 +1,57 @@
+# growth-operator가 auto/* 브랜치에 푸시하면 실행된다.
+# 결정론적 게이트를 전부 통과할 때만 master로 머지한다 (Vercel이 master를 자동 배포).
+# 허용목록 밖 파일이 하나라도 있으면 머지하지 않는다 → 에이전트가 PR을 열고 owner 승인을 기다린다.
+name: auto-merge (SEO·콘텐츠)
+
+on:
+  push:
+    branches: ['auto/**']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-merge
+  cancel-in-progress: false
+
+jobs:
+  gate-and-merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 허용목록 게이트
+        run: node ops/scripts/check-allowlist.mjs origin/master
+
+      - name: SEO/콘텐츠 평가
+        run: node ops/scripts/check-seo.mjs
+
+      - name: 프론트 테스트
+        working-directory: frontend
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
+        run: |
+          npm ci --no-audit --no-fund
+          npx vitest run
+
+      - name: 프론트 빌드
+        working-directory: frontend
+        run: npm run build:prod
+
+      - name: master로 머지
+        run: |
+          git config user.name "growth-operator[bot]"
+          git config user.email "growth-operator@users.noreply.github.com"
+          git fetch origin master
+          git rebase origin/master
+          node ops/scripts/check-allowlist.mjs origin/master
+          node ops/scripts/check-seo.mjs
+          git push origin HEAD:master
+          git push origin --delete "$GITHUB_REF_NAME"
