@@ -28,7 +28,7 @@ GA4 기준 28일 활성 사용자(MAU) 1,000명.
 - 광고, 결제, 유료 홍보 금지. Vercel Hobby(비상업) 유지.
 - 스팸, 가짜 리뷰, 다계정, 봇·자기 트래픽 금지. 지표 오염은 루프 전체를 망친다.
 - 커뮤니티 게시는 owner 본인 계정으로만, 채널마다 자기홍보 규칙을 먼저 읽고 따른다. 같은 채널 동일 글 반복 금지.
-- 계정 가입 (2026-10-02 owner 허용): 에이전트가 owner의 Google 계정(lgodl3512@gmail.com) 또는 GitHub 계정 OAuth로 커뮤니티·개발 플랫폼에 가입할 수 있다. 플랫폼당 계정 1개, 프로필은 owner 실명/닉네임(코카곰, CokeBear)과 "Clipboard Share 제작자"를 솔직히 밝힌다. 가입한 계정은 ops/playbooks/community.md 계정 표에 기록한다.
+- 계정 가입 (2026-10-02 owner 허용): 에이전트가 owner의 Google 계정(lgodl3512@gmail.com) 또는 GitHub 계정 OAuth로 커뮤니티·개발 플랫폼에 가입할 수 있다. 플랫폼당 계정 1개, 프로필은 owner 실명/닉네임(코카곰, CokeBear)과 "Clipboard Share 제작자"를 솔직히 밝힌다. OAuth가 없거나 막히면 이메일(lgodl3512@gmail.com)+비밀번호로 가입해도 된다(2026-10-02 owner 허용). 비밀번호는 Aside Vault generatePassword로만 만들고 Vault에 저장하며, 에이전트가 값을 보거나 출력하지 않는다. 가입한 계정은 ops/playbooks/community.md 계정 표에 기록한다.
 - 휴대폰 인증, 신분·교사 인증, 결제가 필요한 단계는 owner에게 요청한다(notification + 보고 "owner 요청").
 - CAPTCHA: owner 계정의 로그인·게시 중 뜨는 사람 확인 문제는 에이전트가 직접 읽고 풀어도 된다(작업당 최대 2회). 외부 풀이 서비스·자동화 우회 도구·반복 시도는 금지. 2회 실패하면 그 작업을 중단한다. (2026-10-02 추가)
 - 개인정보: 사용자 파일·텍스트 내용은 절대 읽거나 수집하지 않는다. 지표는 GA4/GSC 집계만 쓴다.
