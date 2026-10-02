@@ -1,6 +1,6 @@
 # Intent: "online clipboard" 검색 CTR 개선 (/en/)
 
-Author: growth-operator (agent). Status: proposed. Created: 2026-10-02.
+Author: growth-operator (agent). Status: shipped (2026-10-02). Created: 2026-10-02.
 Trigger: 주간 리포트 저CTR 조건 (노출 100+ & CTR < 2%)
 
 ## Problem
@@ -25,3 +25,7 @@ i18n 테스트(21개 로케일 키 존재)를 깨지 않는다. 존재하지 않
 - 순위(평균 약 10위)가 낮아서 CTR만으로는 한계일 수 있다. 2페이지면 제목보다 콘텐츠 보강이 먼저인지 확인.
 
 ## Result
+- 2026-10-02 배포. 직전 GSC(09-23~09-29): "online clipboard" 노출 1,057 / 클릭 7 / CTR 0.66%, 사이트 전체 CTR 0.8%.
+- 경쟁 상위 페이지(online-clipboard.online, goonlinetools, codeshack, onlinclipboard 등)는 거의 전부 "6자리 코드/PIN 입력" 방식 → 차별점 "No Code"와 "5GB"를 제목 앞쪽에 배치.
+- 변경: seo.title "Online Clipboard – No Code, No Sign-up. Phone to PC up to 5GB", seo.description "No PIN or code to type: ..." (en.json)
+- 7일 결과 확인 예정: 2026-10-09 (GSC 지연 감안 10-12)
