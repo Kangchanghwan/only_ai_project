@@ -20,6 +20,7 @@ Anthropic Academy의 [AI 네이티브 SDLC 플레이북](https://academy.claude.
 | 3 빌드: 스킬·CLAUDE.md | `ops/playbooks/*.md` (에이전트가 매일 읽는 절차), 루트 `CLAUDE.md` |
 | 4 테스트: 지속적 eval | `ops/scripts/check-seo.mjs` + `ops/content-rules.json`(사실과 다른 카피 금지 목록), vitest |
 | 5 배포: hooks/게이트 | `ops/auto-merge-allowlist.txt` + `ops/scripts/check-allowlist.mjs`, `.github/workflows/auto-merge.yml` |
+| 5 배포: 색인 알림 | `.github/workflows/indexnow.yml` + `ops/scripts/indexnow.mjs` (배포된 페이지를 네이버·Bing에 IndexNow로 즉시 알림) |
 | 6 유지보수: 지표 루프 | `ops/bands.json` + `ops/scripts/bands.mjs`, `ops/metrics/daily.csv`, `ops/reports/` |
 
 ## 위험도 등급
