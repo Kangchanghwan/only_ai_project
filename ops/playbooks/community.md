@@ -24,8 +24,8 @@
 | DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02. 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정 |
 | Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만 |
 | Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 대기 | 2026-10-09 이후 화~목 00:01 PT 런칭, 1주 전 owner 예고 |
-| GeekNews | 없음 | OAuth 없음 (ID/비밀번호만) | owner 결정 대기 | 가입 후 7일 지나야 링크 글 가능. Show GN 초안 있음 |
-| AlternativeTo | 없음 | 소셜 로그인은 기존 계정 연결용만 (account_not_linked) | owner 결정 대기 | 이메일+비밀번호+hCaptcha 가입 필요. 등록명은 "Clipboard Share (clipboardapp.org)" (동명 Windows 앱 있음) |
+| GeekNews | cokebear https://news.hada.io/@cokebear | 이메일+비밀번호 (Vault "GeekNews (cokebear)") | 글쓰기 잠금 (가입 2026-10-02 16:53) | 2026-10-09부터 글·댓글 가능. 그날 글등록 열렸는지 확인 후 Show GN (초안: 하네스 각도) |
+| AlternativeTo | 없음 | 이메일 가입 시도, hCaptcha 체크박스 2회 실패 | owner 가입 요청 중 | owner가 https://alternativeto.net/signup/ 에서 직접 가입(아이디 cokebear)하면 에이전트가 앱 등록. 등록명 "Clipboard Share (clipboardapp.org)" |
 
 ## 새 계정 에티켓
 - Reddit: 새 계정은 karma가 낮아 자기홍보 글이 자동 삭제되기 쉽다. 가입 후 1~2주는 관련 서브레딧에서 도움 되는 댓글만 달고, 런칭 글은 그 뒤에 규칙을 확인하고 올린다.
