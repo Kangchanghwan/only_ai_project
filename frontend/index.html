@@ -5,10 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Google Analytics 4: 프로덕션 호스트에서만 로드 (dev/preview/prerender 트래픽 차단) -->
+    <!-- 내부 트래픽(운영자·에이전트) 제외: ?internal=1 로 한 번 열면 이 브라우저는 GA를 끈다. ?internal=0 으로 해제 -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      if (location.hostname === 'www.clipboardapp.org') {
+      var csInternal = false;
+      try {
+        var csFlag = location.search.match(/[?&]internal=([01])/);
+        if (csFlag) {
+          if (csFlag[1] === '1') localStorage.setItem('cs_internal', '1');
+          else localStorage.removeItem('cs_internal');
+        }
+        csInternal = localStorage.getItem('cs_internal') === '1';
+      } catch (e) {}
+      if (csInternal) window['ga-disable-G-GT656L9026'] = true;
+      if (location.hostname === 'www.clipboardapp.org' && !csInternal) {
         var gaScript = document.createElement('script');
         gaScript.async = true;
         gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-GT656L9026';
