@@ -25,7 +25,7 @@
 | Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만 |
 | Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 대기 | 2026-10-09 이후 화~목 00:01 PT 런칭, 1주 전 owner 예고 |
 | GeekNews | cokebear https://news.hada.io/@cokebear | 이메일+비밀번호 (Vault "GeekNews (cokebear)") | 글쓰기 잠금 (가입 2026-10-02 16:53) | 2026-10-09부터 글·댓글 가능. 그날 글등록 열렸는지 확인 후 Show GN (초안: 하네스 각도) |
-| AlternativeTo | 없음 | 이메일 가입 시도, hCaptcha 체크박스 2회 실패 | owner 가입 요청 중 | owner가 https://alternativeto.net/signup/ 에서 직접 가입(아이디 cokebear)하면 에이전트가 앱 등록. 등록명 "Clipboard Share (clipboardapp.org)" |
+| AlternativeTo | user-7504 (표시명 CokeBear) | owner가 Google로 가입. 로그인은 반드시 "Google" 버튼 (Vault의 "ALTERNATIV NET" 비밀번호는 맞지 않음, 시도 금지) | 앱 심사 대기 (일반 큐, 매우 김) | 앱 "Clipboard Share Web" https://alternativeto.net/software/clipboard-share-web/ (승인 전 비공개, 링크 공유 금지). 유료 우선심사($5/$15) 거절. 대안 연결: LocalSend, PairDrop, AirDrop |
 
 ## 새 계정 에티켓
 - Reddit: 새 계정은 karma가 낮아 자기홍보 글이 자동 삭제되기 쉽다. 가입 후 1~2주는 관련 서브레딧에서 도움 되는 댓글만 달고, 런칭 글은 그 뒤에 규칙을 확인하고 올린다.
@@ -58,7 +58,7 @@
 ## C. 런칭 큐 (계정 없으면 Google/GitHub OAuth로 가입 후 진행)
 | # | 채널 | 형식 | 상태 | URL / 메모 |
 |---|---|---|---|---|
-| 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 계정 대기 | 계정 표 참고 |
+| 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 제출 완료 (2026-10-02, 심사 대기) | 월요일마다 My submissions 상태 확인 |
 | 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | 계정 대기 | 초안: 하네스 각도 |
 | 4 | SaaSHub / Toolify 류 무료 디렉터리 | 무료 등록만 (유료 리스팅 금지) | 대기 | |
 | 5 | Reddit r/SideProject | 런칭 글 (규칙 확인) | 대기 | |
