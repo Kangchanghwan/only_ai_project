@@ -20,6 +20,12 @@
 |---|---|---|---|---|
 | 네이버 (블로그·카페) | lgodl1598 / 코카곰 | 기존 | 사용 중 | |
 | velog | @ch_kang | 기존 | 사용 중 | |
+| 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 프로덕트 승인 대기 (2026-10-02 등록) | 승인 전엔 포스트 불가. 승인되면 drafts의 메이커 로그를 제품 연결 "포스트"로 게시. 아티클은 막힘 |
+| DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02. 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정 |
+| Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만 |
+| Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 대기 | 2026-10-09 이후 화~목 00:01 PT 런칭, 1주 전 owner 예고 |
+| GeekNews | 없음 | OAuth 없음 (ID/비밀번호만) | owner 결정 대기 | 가입 후 7일 지나야 링크 글 가능. Show GN 초안 있음 |
+| AlternativeTo | 없음 | 소셜 로그인은 기존 계정 연결용만 (account_not_linked) | owner 결정 대기 | 이메일+비밀번호+hCaptcha 가입 필요. 등록명은 "Clipboard Share (clipboardapp.org)" (동명 Windows 앱 있음) |
 
 ## 새 계정 에티켓
 - Reddit: 새 계정은 karma가 낮아 자기홍보 글이 자동 삭제되기 쉽다. 가입 후 1~2주는 관련 서브레딧에서 도움 되는 댓글만 달고, 런칭 글은 그 뒤에 규칙을 확인하고 올린다.
@@ -52,14 +58,14 @@
 ## C. 런칭 큐 (계정 없으면 Google/GitHub OAuth로 가입 후 진행)
 | # | 채널 | 형식 | 상태 | URL / 메모 |
 |---|---|---|---|---|
-| 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop의 대체 앱으로 등록 | 대기 | |
-| 2 | GeekNews (news.hada.io) | Show GN 글 | 대기 | |
+| 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 계정 대기 | 계정 표 참고 |
+| 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | 계정 대기 | 초안: 하네스 각도 |
 | 4 | SaaSHub / Toolify 류 무료 디렉터리 | 무료 등록만 (유료 리스팅 금지) | 대기 | |
 | 5 | Reddit r/SideProject | 런칭 글 (규칙 확인) | 대기 | |
 | 6 | Reddit r/InternetIsBeautiful | 규칙이 엄격함, 조건 맞을 때만 | 대기 | |
 | 7 | Product Hunt | 런칭 (화~목 00:01 PT 권장, 준비물 많음, 1주 전 owner에게 예고) | 대기 | |
 | 8 | 인디스쿨 등 교사 커뮤니티 | 교사 인증 필요할 가능성 높음 → 불가하면 owner 조치 필요 | 대기 | |
-| 10 | DEV.to (영어) | velog 개발기를 영어로 다시 써서 매주 크로스포스트. 구글 노출 대부분이 영어권이라 효과 큼 | 계정 필요 | |
+| 10 | DEV.to (영어) | velog 개발기를 영어로 다시 써서 매주 크로스포스트. 구글 노출 대부분이 영어권이라 효과 큼 | 진행 중 | https://dev.to/kangchanghwan/i-let-an-ai-agent-run-my-side-projects-growth-loop-intentmd-ci-gates-and-metric-bands-1jmo |
 | 11 | Hashnode / Medium (영어) | DEV.to와 같은 글, canonical은 원문 | 계정 필요 | |
 | 9 | 클리앙 / 뽐뿌 사이트 소개 게시판 | 게시판 규칙 확인 | 대기 | |
 
