@@ -14,7 +14,8 @@ const toRegex = (p) => new RegExp('^' + p
   .replace(/\*\*/g, '\u0000')
   .replace(/\*/g, '[^/]*')
   .replace(/\u0000/g, '.*') + '$')
-const regexes = patterns.map(toRegex)
+const regexes = patterns.filter(p => !p.startsWith('!')).map(toRegex)
+const denies = patterns.filter(p => p.startsWith('!')).map(p => toRegex(p.slice(1)))
 
 const changed = execSync(`git diff --name-only ${base}...HEAD`, { encoding: 'utf8' })
   .split('\n').filter(Boolean)
@@ -23,7 +24,7 @@ if (changed.length === 0) {
   console.log('변경 파일 없음')
   process.exit(1)
 }
-const blocked = changed.filter(f => !regexes.some(r => r.test(f)))
+const blocked = changed.filter(f => denies.some(r => r.test(f)) || !regexes.some(r => r.test(f)))
 for (const f of changed) console.log(`${blocked.includes(f) ? 'BLOCK' : 'ok   '} ${f}`)
 if (blocked.length) {
   console.log(`\n허용목록 밖 변경 ${blocked.length}개 → 자동 머지 불가, owner 승인 필요`)
