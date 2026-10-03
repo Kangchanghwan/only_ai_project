@@ -3,3 +3,4 @@ date,au28,au7,sessions7,organic7,referral7,direct7,social7,file_upload7,text_sha
 2026-09-20,,39,57,34,6,17,0,24,2,31,57,28,1110,5,110,weekly seed (GA4 09-14~09-20)
 2026-09-27,,35,50,22,2,20,4,6,78,13,97,17,1100,,,weekly seed (GA4 09-21~09-27)
 2026-10-02,149,46,68,16,7,37,1,21,115,5,141,13,1570,,,first daily run (GA4 09-25~10-01; GSC 09-23~09-29; naver 30d 7/180; AI Assistant 5 sessions; referral incl vercel.com 6)
+2026-10-03,166,62,92,20,7,50,0,24,150,8,182,13,1570,0,60,"GA4 09-26~10-02 (au28 09-05~10-02); GSC 09-23~09-29 (not refreshed); naver 7d; Unassigned 19 sessions, AI Assistant 6; shipped intent 0002 large-file guide; indexnow all=true run"

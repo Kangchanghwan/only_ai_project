@@ -20,7 +20,7 @@
 |---|---|---|---|---|
 | 네이버 (블로그·카페) | lgodl1598 / 코카곰 | 기존 | 사용 중 | |
 | velog | @ch_kang | 기존 | 사용 중 | |
-| 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 프로덕트 승인 대기 (2026-10-02 등록) | 승인 전엔 포스트 불가. 승인되면 drafts의 메이커 로그를 제품 연결 "포스트"로 게시. 아티클은 막힘 |
+| 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 프로덕트 승인 대기 (2026-10-02 등록, 10-03 재확인 여전히 대기) | 승인 전엔 포스트 불가. 승인되면 drafts의 메이커 로그를 제품 연결 "포스트"로 게시. 아티클은 막힘 |
 | DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02. 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정 |
 | Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만 |
 | Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 대기 | 2026-10-09 이후 화~목 00:01 PT 런칭, 1주 전 owner 예고 |
@@ -54,6 +54,7 @@
 
 ## B. 디스콰이엇
 - 프로덕트 페이지 1회 등록, 이후 매주 토요일 메이커 로그 1개: 이번 주 배포한 것, 지표 변화, AI 에이전트 운영 실험에서 배운 점. 숫자는 ops/reports 에 있는 것만.
+- 첫 메이커 로그 초안: ops/reports/2026-10-03.md "디스콰이엇 메이커 로그 초안". 승인되면 숫자를 그날 기준으로 갱신해 게시.
 
 ## C. 런칭 큐 (계정 없으면 Google/GitHub OAuth로 가입 후 진행)
 | # | 채널 | 형식 | 상태 | URL / 메모 |
