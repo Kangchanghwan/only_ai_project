@@ -27,6 +27,7 @@
 - [Snapdrop / PairDrop alternative](https://www.clipboardapp.org/en/guide/snapdrop-pairdrop-alternative.html): How the service compares to Snapdrop and PairDrop, and when to use which (English).
 - [Send text from phone to PC](https://www.clipboardapp.org/en/guide/send-text-from-phone-to-pc.html): Moving copied text, links and codes from a phone to a computer without email (English).
 - [Transfer photos from iPhone to Windows without a cable](https://www.clipboardapp.org/en/guide/transfer-photos-iphone-to-windows-without-cable.html): Moving iPhone photos and videos to a Windows PC using only a browser (English).
+- [Online clipboard for files and images](https://www.clipboardapp.org/en/guide/online-clipboard-for-files-and-images.html): Pasting screenshots and sending files up to 5GB through an online clipboard, then downloading them on another device (English).
 
 - [Guide index (Korean)](https://www.clipboardapp.org/guide/): All Korean guides grouped by device combination and task.
 - [Guide index (English)](https://www.clipboardapp.org/en/guide/): All English guides grouped by task.
