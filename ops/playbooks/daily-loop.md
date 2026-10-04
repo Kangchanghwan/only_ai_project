@@ -33,7 +33,7 @@ GA4·GSC·네이버 서치어드바이저 값을 읽어 `ops/metrics/daily.csv`�
 | 수 | 커뮤니티 1곳 (카페 큐 또는 런칭 큐에서 다음 차례) | community.md |
 | 목 | velog 개발기 1편 발행 (매주) + 같은 주제를 영어로 다시 써서 DEV.to 게시 (canonical = velog) | velog.md, community.md |
 | 토 | 디스콰이엇 메이커 로그 1개 (이번 주 배포·실험 결과 요약) | community.md |
-| 일 | Reddit karma 쌓기: r/SideProject, r/webdev 등에서 진짜 도움이 되는 댓글 2~3개 (홍보 링크 금지, 2026-10-16까지) | community.md |
+| 일 | Reddit karma 쌓기: r/SideProject, r/PWA 등 규칙에 AI 생성 댓글 금지가 없는 곳에서 (r/webdev·r/webdevelopment는 금지라 제외) 진짜 도움이 되는 댓글 2~3개 (홍보 링크 금지, 2026-10-16까지) | community.md |
 
 지식iN은 2026-10-02부로 중단 (적합 질문 부족, 홍보성으로 보일 위험). kin.md는 참고용으로만 남긴다.
 
