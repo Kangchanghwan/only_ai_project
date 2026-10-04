@@ -20,7 +20,7 @@
 |---|---|---|---|---|
 | 네이버 (블로그·카페) | lgodl1598 / 코카곰 | 기존 | 사용 중 | |
 | velog | @ch_kang | 기존 | 사용 중 | |
-| 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 프로덕트 승인 대기 (2026-10-02 등록, 10-03 재확인 여전히 대기) | 승인 전엔 포스트 불가. 승인되면 drafts의 메이커 로그를 제품 연결 "포스트"로 게시. 아티클은 막힘 |
+| 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 사용 중 (프로덕트 10-05 승인 확인) | 첫 메이커 로그 2026-10-05 https://disquiet.io/posts/dKConX . 이후 매주 토요일 포스트(제품 페이지 "글쓰기", 마크다운, 제목은 첫 줄 굵게). 언더스코어가 든 이름은 링크로 감싸야 이탤릭으로 깨지지 않음 |
 | DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02. 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정 |
 | Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 (10-04 karma 1) | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만. r/webdev·r/webdevelopment는 규칙상 "LLM/AI 생성 댓글" 금지라 댓글 대상에서 제외. 사용: r/SideProject, r/PWA, r/vuejs 등 규칙에 AI 금지가 없는 곳. 댓글 기록: 10-04 r/PWA https://www.reddit.com/r/PWA/comments/1wwu1ys/what_i_learned_making_a_pwa_work_offline_with/pdqcapg/ , r/SideProject https://www.reddit.com/r/SideProject/comments/1wx27hg/im_technical_but_dont_know_how_to_make_my_own_app/pdqce8z/ |
 | Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 대기 | 2026-10-09 이후 화~목 00:01 PT 런칭, 1주 전 owner 예고 |
@@ -44,7 +44,7 @@
 카페마다 공지·게시판 안내를 먼저 읽는다. 홍보 금지, 등급 제한, 특정 게시판만 허용이면 그대로 따르고, 안 되면 건너뛴다.
 | # | 카페 | 독자 | 각도 | 상태 | URL / 메모 |
 |---|---|---|---|---|---|
-| 1 | 디튜모: 디지털튜터 모임 (cafe.naver.com/ditu3387) | 학교 디지털튜터 | 교실 PC에 카톡 로그인 없이 폰 사진·파일 옮기기 | 게시 (2026-10-02, 도구추천·활용팁 게시판) | https://cafe.naver.com/ditu3387/4702 · 카페 규칙상 댓글 달린 글 삭제 금지, 댓글엔 감사 답글 |
+| 1 | 디튜모: 디지털튜터 모임 (cafe.naver.com/ditu3387) | 학교 디지털튜터 | 교실 PC에 카톡 로그인 없이 폰 사진·파일 옮기기 | 게시 (2026-10-02, 도구추천·활용팁 게시판) | https://cafe.naver.com/ditu3387/4702 · 카페 규칙상 댓글 달린 글 삭제 금지, 댓글엔 감사 답글. 10-05 기준 조회 177, 좋아요 13, 댓글 7 모두 답글 완료 |
 | 2 | BBC 마이크로비트 사용자 모임 (cafe.naver.com/bbcmicro) | 코딩 교육 교사 | 수업 자료·학생 화면 캡처를 교실 PC로 | 대기 | |
 | 3 | 한국방송통신대학교 컴퓨터과학과 (cafe.naver.com/sknou) | 컴과 학생·직장인 | 직접 만든 사이드 프로젝트 공유 + Claude Code 개발기 | 대기 | |
 | 4 | 남궁성의 코드초보스터디 (cafe.naver.com/javachobostudy) | 입문 개발자 | 프로젝트 자랑/소개 게시판이 있으면 | 대기 | |
@@ -59,7 +59,7 @@
 ## C. 런칭 큐 (계정 없으면 Google/GitHub OAuth로 가입 후 진행)
 | # | 채널 | 형식 | 상태 | URL / 메모 |
 |---|---|---|---|---|
-| 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 제출 완료 (2026-10-02, 심사 대기) | 월요일마다 My submissions 상태 확인 |
+| 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 제출 완료 (2026-10-02, 심사 대기, 10-05 재확인 여전히 대기) | 월요일마다 My submissions 상태 확인 |
 | 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | 계정 대기 | 초안: 하네스 각도 |
 | 4 | SaaSHub / Toolify 류 무료 디렉터리 | 무료 등록만 (유료 리스팅 금지) | 대기 | |
 | 5 | Reddit r/SideProject | 런칭 글 (규칙 확인) | 대기 | |
