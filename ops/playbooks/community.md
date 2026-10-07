@@ -21,7 +21,7 @@
 | 네이버 (블로그·카페) | lgodl1598 / 코카곰 | 기존 | 사용 중 | |
 | velog | @ch_kang | 기존 | 사용 중 | |
 | 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 사용 중 (프로덕트 10-05 승인 확인) | 첫 메이커 로그 2026-10-05 https://disquiet.io/posts/dKConX . 이후 매주 토요일 포스트(제품 페이지 "글쓰기", 마크다운, 제목은 첫 줄 굵게). 언더스코어가 든 이름은 링크로 감싸야 이탤릭으로 깨지지 않음 |
-| DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02. 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정 |
+| DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02, 2편 2026-10-08 (velog 개발기 1편 IP 해시 룸 영어판, canonical=velog). 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정 |
 | Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 (10-04 karma 1) | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만. r/webdev·r/webdevelopment는 규칙상 "LLM/AI 생성 댓글" 금지라 댓글 대상에서 제외. 사용: r/SideProject, r/PWA, r/vuejs 등 규칙에 AI 금지가 없는 곳. 댓글 기록: 10-04 r/PWA https://www.reddit.com/r/PWA/comments/1wwu1ys/what_i_learned_making_a_pwa_work_offline_with/pdqcapg/ , r/SideProject https://www.reddit.com/r/SideProject/comments/1wx27hg/im_technical_but_dont_know_how_to_make_my_own_app/pdqce8z/ |
 | Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 대기 | 2026-10-09 이후 화~목 00:01 PT 런칭, 1주 전 owner 예고 |
 | GeekNews | cokebear https://news.hada.io/@cokebear | 이메일+비밀번호 (Vault "GeekNews (cokebear)") | 글쓰기 잠금 (가입 2026-10-02 16:53) | 2026-10-09부터 글·댓글 가능. 그날 글등록 열렸는지 확인 후 Show GN (초안: 하네스 각도) |
@@ -66,7 +66,7 @@
 | 6 | Reddit r/InternetIsBeautiful | 규칙이 엄격함, 조건 맞을 때만 | 대기 | |
 | 7 | Product Hunt | 런칭 (화~목 00:01 PT 권장, 준비물 많음, 1주 전 owner에게 예고) | 대기 | |
 | 8 | 인디스쿨 등 교사 커뮤니티 | 교사 인증 필요할 가능성 높음 → 불가하면 owner 조치 필요 | 대기 | |
-| 10 | DEV.to (영어) | velog 개발기를 영어로 다시 써서 매주 크로스포스트. 구글 노출 대부분이 영어권이라 효과 큼 | 진행 중 | https://dev.to/kangchanghwan/i-let-an-ai-agent-run-my-side-projects-growth-loop-intentmd-ci-gates-and-metric-bands-1jmo |
+| 10 | DEV.to (영어) | velog 개발기를 영어로 다시 써서 매주 크로스포스트. 구글 노출 대부분이 영어권이라 효과 큼 | 진행 중 | https://dev.to/kangchanghwan/i-let-an-ai-agent-run-my-side-projects-growth-loop-intentmd-ci-gates-and-metric-bands-1jmo , 10-08 https://dev.to/kangchanghwan/zero-step-device-pairing-socketio-rooms-from-an-hmac-of-the-public-ip-and-the-ipv6-bug-i-shipped-479p |
 | 11 | Hashnode / Medium (영어) | DEV.to와 같은 글, canonical은 원문 | 계정 필요 | |
 | 9 | 클리앙 / 뽐뿌 사이트 소개 게시판 | 게시판 규칙 확인 | 대기 | |
 
