@@ -31,6 +31,7 @@
 - [Send text from phone to PC](https://www.clipboardapp.org/en/guide/send-text-from-phone-to-pc.html): Moving copied text, links and codes from a phone to a computer without email (English).
 - [Transfer photos from iPhone to Windows without a cable](https://www.clipboardapp.org/en/guide/transfer-photos-iphone-to-windows-without-cable.html): Moving iPhone photos and videos to a Windows PC using only a browser (English).
 - [Online clipboard for files and images](https://www.clipboardapp.org/en/guide/online-clipboard-for-files-and-images.html): Pasting screenshots and sending files up to 5GB through an online clipboard, then downloading them on another device (English).
+- [Send large files free without sign-up](https://www.clipboardapp.org/en/guide/send-large-files-free-no-sign-up.html): Sending files up to 5GB (resumable over 100MB) between phone and PC on the same Wi-Fi with no account, app, or payment (English).
 
 - [Guide index (Korean)](https://www.clipboardapp.org/guide/): All Korean guides grouped by device combination and task.
 - [Guide index (English)](https://www.clipboardapp.org/en/guide/): All English guides grouped by task.
