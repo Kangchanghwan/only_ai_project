@@ -24,7 +24,7 @@
 | DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02, 2편 2026-10-08 (velog 개발기 1편 IP 해시 룸 영어판, canonical=velog). 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정 |
 | Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 (10-04 karma 1) | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만. r/webdev·r/webdevelopment는 규칙상 "LLM/AI 생성 댓글" 금지라 댓글 대상에서 제외. 사용: r/SideProject, r/PWA, r/vuejs 등 규칙에 AI 금지가 없는 곳. 댓글 기록: 10-04 r/PWA https://www.reddit.com/r/PWA/comments/1wwu1ys/what_i_learned_making_a_pwa_work_offline_with/pdqcapg/ , r/SideProject https://www.reddit.com/r/SideProject/comments/1wx27hg/im_technical_but_dont_know_how_to_make_my_own_app/pdqce8z/ |
 | Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 대기 | 2026-10-09 이후 화~목 00:01 PT 런칭, 1주 전 owner 예고 |
-| GeekNews | cokebear https://news.hada.io/@cokebear | 이메일+비밀번호 (Vault "GeekNews (cokebear)") | 글쓰기 잠금 (가입 2026-10-02 16:53) | 2026-10-09부터 글·댓글 가능. 그날 글등록 열렸는지 확인 후 Show GN (초안: 하네스 각도) |
+| GeekNews | cokebear https://news.hada.io/@cokebear | 이메일+비밀번호 (Vault "GeekNews (cokebear)") | 로그인·글등록 화면 열림 (10-09 확인, 점수 1) | Show GN 초안은 ops/reports/2026-10-09.md. Show 등록 폼이 "AI가 생성한 소개글을 그대로 붙여 넣지 말고 직접 검토", 위반 시 도메인·저장소 등록 차단이라고 명시 → owner가 검토·수정 후 직접 등록하거나 "그대로 올려" 회신하면 에이전트가 등록. 제목에 "Show GN:"은 자동으로 붙음(제목엔 "프로젝트명 - 한 줄 설명"만) |
 | AlternativeTo | user-7504 (표시명 CokeBear) | owner가 Google로 가입. 로그인은 반드시 "Google" 버튼 (Vault의 "ALTERNATIV NET" 비밀번호는 맞지 않음, 시도 금지) | 앱 심사 대기 (일반 큐, 매우 김) | 앱 "Clipboard Share Web" https://alternativeto.net/software/clipboard-share-web/ (승인 전 비공개, 링크 공유 금지). 유료 우선심사($5/$15) 거절. 대안 연결: LocalSend, PairDrop, AirDrop |
 
 ## 새 계정 에티켓
@@ -60,7 +60,7 @@
 | # | 채널 | 형식 | 상태 | URL / 메모 |
 |---|---|---|---|---|
 | 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 제출 완료 (2026-10-02, 심사 대기, 10-05 재확인 여전히 대기) | 월요일마다 My submissions 상태 확인 |
-| 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | 계정 대기 | 초안: 하네스 각도 |
+| 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | owner 검토 대기 (10-09 초안) | URL은 사이트(https://www.clipboardapp.org), 본문에 레포 링크 |
 | 4 | SaaSHub / Toolify 류 무료 디렉터리 | 무료 등록만 (유료 리스팅 금지) | 대기 | |
 | 5 | Reddit r/SideProject | 런칭 글 (규칙 확인) | 대기 | |
 | 6 | Reddit r/InternetIsBeautiful | 규칙이 엄격함, 조건 맞을 때만 | 대기 | |
