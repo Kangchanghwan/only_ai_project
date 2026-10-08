@@ -1,6 +1,6 @@
 # Intent: "online clipboard" 검색 CTR 개선 (/en/)
 
-Author: growth-operator (agent). Status: shipped (2026-10-02). Created: 2026-10-02.
+Author: growth-operator (agent). Status: rejected (2026-10-09, intent 0008로 원복). Created: 2026-10-02.
 Trigger: 주간 리포트 저CTR 조건 (노출 100+ & CTR < 2%)
 
 ## Problem
@@ -29,3 +29,5 @@ i18n 테스트(21개 로케일 키 존재)를 깨지 않는다. 존재하지 않
 - 경쟁 상위 페이지(online-clipboard.online, goonlinetools, codeshack, onlinclipboard 등)는 거의 전부 "6자리 코드/PIN 입력" 방식 → 차별점 "No Code"와 "5GB"를 제목 앞쪽에 배치.
 - 변경: seo.title "Online Clipboard – No Code, No Sign-up. Phone to PC up to 5GB", seo.description "No PIN or code to type: ..." (en.json)
 - 7일 결과 확인 예정: 2026-10-09 (GSC 지연 감안 10-12)
+- 2026-10-09 7일 판정 (GSC 10-02~10-06, 5일치): "online clipboard" 클릭 0 / 노출 443 / 순위 8.6. 일별로 보면 10-03까지 하루 노출 178~300(순위 8.4~8.8)이다가 10-04~10-06 하루 2~3(순위 20~33)으로 급락. /en/ 마지막 크롤링 10-03 21:10 직후. CTR 개선 없음 + 순위 이탈 동시 발생 → rejected, intent 0008에서 이전 타이틀·설명으로 원복.
+- 교훈: 노출의 65%가 걸린 단일 쿼리 페이지의 타이틀은 실험 대상이 아니다. 타이틀 실험은 노출이 작은 가이드 페이지에서 먼저 한다.
