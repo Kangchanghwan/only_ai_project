@@ -20,11 +20,11 @@
 |---|---|---|---|---|
 | 네이버 (블로그·카페) | lgodl1598 / 코카곰 | 기존 | 사용 중 | |
 | velog | @ch_kang | 기존 | 사용 중 | |
-| 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 사용 중 (프로덕트 10-05 승인 확인) | 첫 메이커 로그 2026-10-05 https://disquiet.io/posts/dKConX . 이후 매주 토요일 포스트(제품 페이지 "글쓰기", 마크다운, 제목은 첫 줄 굵게). 언더스코어가 든 이름은 링크로 감싸야 이탤릭으로 깨지지 않음 |
+| 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 사용 중 (프로덕트 10-05 승인 확인) | 첫 메이커 로그 2026-10-05 https://disquiet.io/posts/dKConX , 2편 2026-10-10 https://disquiet.io/posts/k2CNan . 이후 매주 토요일 포스트(제품 페이지 "글쓰기", 마크다운, 제목은 첫 줄 굵게). 언더스코어가 든 이름은 링크로 감싸야 이탤릭으로 깨지지 않음 |
 | DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02, 2편 2026-10-08 (velog 개발기 1편 IP 해시 룸 영어판, canonical=velog). 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정 |
 | Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 (10-04 karma 1) | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만. r/webdev·r/webdevelopment는 규칙상 "LLM/AI 생성 댓글" 금지라 댓글 대상에서 제외. 사용: r/SideProject, r/PWA, r/vuejs 등 규칙에 AI 금지가 없는 곳. 댓글 기록: 10-04 r/PWA https://www.reddit.com/r/PWA/comments/1wwu1ys/what_i_learned_making_a_pwa_work_offline_with/pdqcapg/ , r/SideProject https://www.reddit.com/r/SideProject/comments/1wx27hg/im_technical_but_dont_know_how_to_make_my_own_app/pdqce8z/ |
-| Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 대기 | 2026-10-09 이후 화~목 00:01 PT 런칭, 1주 전 owner 예고 |
-| GeekNews | cokebear https://news.hada.io/@cokebear | 이메일+비밀번호 (Vault "GeekNews (cokebear)") | 로그인·글등록 화면 열림 (10-09 확인, 점수 1) | Show GN 초안은 ops/reports/2026-10-09.md. Show 등록 폼이 "AI가 생성한 소개글을 그대로 붙여 넣지 말고 직접 검토", 위반 시 도메인·저장소 등록 차단이라고 명시 → owner가 검토·수정 후 직접 등록하거나 "그대로 올려" 회신하면 에이전트가 등록. 제목에 "Show GN:"은 자동으로 붙음(제목엔 "프로젝트명 - 한 줄 설명"만) |
+| Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 확정 2026-10-20(화) 00:01 PT = 한국 16:01 (owner 10-09 확인) | 10-13~10-17에 태그라인·설명·갤러리(1270x760)·썸네일·메이커 첫 댓글 준비 후 예약 런칭 설정 |
+| GeekNews | cokebear https://news.hada.io/@cokebear | 이메일+비밀번호 (Vault "GeekNews (cokebear)") | Show GN 게시 2026-10-09 https://news.hada.io/topic?id=35068 | owner 검토("그대로 올려") 후 에이전트가 등록. 채널당 런칭 1회 끝. 이후 댓글 답변만(월요일 확인) |
 | AlternativeTo | user-7504 (표시명 CokeBear) | owner가 Google로 가입. 로그인은 반드시 "Google" 버튼 (Vault의 "ALTERNATIV NET" 비밀번호는 맞지 않음, 시도 금지) | 앱 심사 대기 (일반 큐, 매우 김) | 앱 "Clipboard Share Web" https://alternativeto.net/software/clipboard-share-web/ (승인 전 비공개, 링크 공유 금지). 유료 우선심사($5/$15) 거절. 대안 연결: LocalSend, PairDrop, AirDrop |
 
 ## 새 계정 에티켓
@@ -60,11 +60,11 @@
 | # | 채널 | 형식 | 상태 | URL / 메모 |
 |---|---|---|---|---|
 | 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 제출 완료 (2026-10-02, 심사 대기, 10-05 재확인 여전히 대기) | 월요일마다 My submissions 상태 확인 |
-| 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | owner 검토 대기 (10-09 초안) | URL은 사이트(https://www.clipboardapp.org), 본문에 레포 링크 |
+| 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | 게시 (2026-10-09, owner 승인 후) | https://news.hada.io/topic?id=35068 · 월요일 댓글 확인 |
 | 4 | SaaSHub / Toolify 류 무료 디렉터리 | 무료 등록만 (유료 리스팅 금지) | 대기 | |
 | 5 | Reddit r/SideProject | 런칭 글 (규칙 확인) | 대기 | |
 | 6 | Reddit r/InternetIsBeautiful | 규칙이 엄격함, 조건 맞을 때만 | 대기 | |
-| 7 | Product Hunt | 런칭 (화~목 00:01 PT 권장, 준비물 많음, 1주 전 owner에게 예고) | 대기 | |
+| 7 | Product Hunt | 런칭 (화~목 00:01 PT 권장, 준비물 많음, 1주 전 owner에게 예고) | 확정 2026-10-20 00:01 PT | 10-13~10-17 준비, 예약 런칭 |
 | 8 | 인디스쿨 등 교사 커뮤니티 | 교사 인증 필요할 가능성 높음 → 불가하면 owner 조치 필요 | 대기 | |
 | 10 | DEV.to (영어) | velog 개발기를 영어로 다시 써서 매주 크로스포스트. 구글 노출 대부분이 영어권이라 효과 큼 | 진행 중 | https://dev.to/kangchanghwan/i-let-an-ai-agent-run-my-side-projects-growth-loop-intentmd-ci-gates-and-metric-bands-1jmo , 10-08 https://dev.to/kangchanghwan/zero-step-device-pairing-socketio-rooms-from-an-hmac-of-the-public-ip-and-the-ipv6-bug-i-shipped-479p |
 | 11 | Hashnode / Medium (영어) | DEV.to와 같은 글, canonical은 원문 | 계정 필요 | |
