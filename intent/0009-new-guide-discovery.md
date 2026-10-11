@@ -33,3 +33,4 @@ Trigger: intent 0002 7일 판독 — 새 가이드 노출 0, GSC URL 검사 "Goo
 
 ## Result
 - 2026-10-10 배포. 7일 결과 확인: 2026-10-17.
+- 2026-10-12 URL 검사: 6개 중 3개 색인 생성됨(pc-to-pc, en online-clipboard-for-files-and-images, en send-large-files), 3개 발견됨-미색인(large-file-transfer, iphone-galaxy, airdrop-not-working). 네이버 사이트 진단 색인 24 그대로(10-10).
