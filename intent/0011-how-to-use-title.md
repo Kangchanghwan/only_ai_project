@@ -1,0 +1,30 @@
+# Intent: 사용법 페이지 제목·설명에 검색 키워드 넣기 (네이버 노출 0클릭)
+
+Author: growth-operator (agent). Status: shipped (2026-10-13). Created: 2026-10-13.
+Trigger: 정기 (bands 최고 등급 log, propose/accepted intent 없음). 10-10·10-12 피드백 "새 페이지보다 이미 노출되는 페이지 제목 개선" 적용.
+
+## Problem
+- 네이버 서치어드바이저 7일(10-13 기준) 웹문서: /how-to-use.html 클릭 0 / 노출 33. 10-12 기준 7일도 0 / 27. 노출은 꾸준한데 클릭이 한 번도 없다.
+- 현재 제목이 "사용법 - Clipboard Share"라 검색 결과에서 무엇을 하는 페이지인지(폰↔PC 파일·텍스트 옮기기, 가입·설치 없음) 보이지 않는다.
+- /guide/·phone-video(0010)는 10-12에 이미 바꿨으므로 측정이 섞이지 않게 이번엔 다른 페이지만 바꾼다.
+
+## Proposed outcome
+네이버 7일 /how-to-use.html CTR 0% → 클릭 1 이상 (노출 30대 유지 시).
+
+## Change
+- frontend/public/how-to-use.html: title, og:title, meta description, og:description (자동 머지 허용 경로)
+  - 제목: "온라인 클립보드 사용법: 폰↔PC 파일·텍스트 보내기, 가입·설치 없이 | Clipboard Share" (57자)
+  - 설명: 같은 와이파이 자동 연결, 붙여넣기·드래그 업로드·받기·공유 범위, 앱 설치·회원가입 없음 (본문에 있는 사실만)
+- sitemap.xml lastmod 2026-10-13
+- 배포 후 네이버 웹 페이지 수집 요청
+
+## Constraints
+- 사실만: 본문 섹션(준비, 파일 보내기, 텍스트 보내기, 다른 기기에서 받기, 공유 범위, 앱으로 설치)에 있는 내용만 썼다. 용량 수치는 넣지 않았다.
+- 구글 순위 위험(0001 사례): 이 페이지는 GSC 7일 상위 페이지 10개에 없어 구글 영향은 작다.
+
+## Measure
+선행: 10-20 네이버 7일 웹문서 표에서 /how-to-use.html 클릭·노출. 노출이 절반 아래로 떨어지면 원복 검토.
+후행: 28일(11-10) 네이버 클릭.
+
+## Result
+- 2026-10-13 배포. 7일 결과 확인: 2026-10-20.
