@@ -19,6 +19,7 @@
 - [Send a link from PC to phone](https://www.clipboardapp.org/guide/send-link-from-pc-to-phone.html): Passing URLs and long text from a computer to a phone without a messenger (Korean).
 - [Copy a verification code from phone to PC](https://www.clipboardapp.org/guide/copy-verification-code-phone-to-pc.html): Getting SMS verification codes onto a computer before they expire (Korean).
 - [Galaxy to MacBook photo transfer](https://www.clipboardapp.org/guide/galaxy-to-macbook-photo-transfer.html): Moving photos from a Samsung Galaxy to a Mac, where Quick Share is not available (Korean).
+- [Galaxy photo to Windows PC transfer](https://www.clipboardapp.org/guide/galaxy-photo-to-pc-transfer.html): Moving photos and videos from a Samsung Galaxy to a Windows PC without a USB cable, PC app, or account, at original quality (Korean).
 - [Windows to iPhone file transfer](https://www.clipboardapp.org/guide/windows-to-iphone-file-transfer.html): Sending PDFs, images and documents from Windows to an iPhone without iTunes (Korean).
 - [Office PC file transfer without a messenger](https://www.clipboardapp.org/guide/office-pc-file-transfer-without-messenger.html): Getting phone files onto a work PC where messengers and USB are blocked (Korean).
 - [Phone video to PC transfer](https://www.clipboardapp.org/guide/phone-video-to-pc-transfer.html): Moving videos to a computer at original quality, including files up to 5GB and how to handle longer clips (Korean).
