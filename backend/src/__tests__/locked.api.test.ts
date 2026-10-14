@@ -212,13 +212,67 @@ describe('비밀번호 잠금 API', () => {
         expect((await readJson(res)).files).toHaveLength(1);
     });
 
-    test('삭제: 룸 토큰이 있어야 하고, 잠금 버킷에서 지운다', async () => {
-        const id = 'a'.repeat(32);
-        const noToken = await fetch(`${baseUrl}/api/r2/locked/room-a/${id}`, { method: 'DELETE' });
-        expect(noToken.status).toBe(401);
-        const ok = await fetch(`${baseUrl}/api/r2/locked/room-a/${id}`, { method: 'DELETE', headers: { 'X-Room-Token': issueRoomToken('room-a') } });
+    const delKey = randomBytes(32);
+    const deleteKey = b64url(delKey);
+    const dh = createHash('sha256').update(delKey).digest('hex');
+    const del = (body: object, room: string | null = 'room-a') => post('/api/r2/locked/delete', { roomId: 'room-a', id: 'a'.repeat(32), ...body }, room);
+
+    test('create: 삭제 키 해시(dh)를 메타데이터에 저장한다 (형식이 틀리면 400)', async () => {
+        const ok = await create(10, { lock: { ...lock, dh } });
         expect(ok.status).toBe(200);
-        expect(spies.delLocked).toHaveBeenCalledWith('room-a', id);
+        expect((spies.create.mock.calls[0][2] as LockObjectMetadata).dh).toBe(dh);
+        expect((await create(10, { lock: { ...lock, dh: 'xyz' } })).status).toBe(400);
+    });
+
+    test('삭제: 룸 토큰이 없으면 401, 증명이 없으면 403 (비밀번호 모르는 사람은 못 지움)', async () => {
+        spies.obj.mockResolvedValue({ meta: { ...storedMeta(5), dh }, ctSize: ctSizeOf(5) });
+        expect((await del({ deleteKey }, null)).status).toBe(401);
+        const none = await del({});
+        expect(none.status).toBe(403);
+        expect(await readJson(none)).toMatchObject({ code: 'DELETE_FORBIDDEN' });
+        expect(spies.delLocked).not.toHaveBeenCalled();
+    });
+
+    test('삭제: 올린 기기의 삭제 키가 맞으면 지운다', async () => {
+        spies.obj.mockResolvedValue({ meta: { ...storedMeta(5), dh }, ctSize: ctSizeOf(5) });
+        const res = await del({ deleteKey });
+        expect(res.status).toBe(200);
+        expect(spies.delLocked).toHaveBeenCalledWith('room-a', 'a'.repeat(32));
+    });
+
+    test('삭제: 삭제 키가 틀리거나 dh가 없는 옛 파일이면 비밀번호 확인값으로 판단한다', async () => {
+        spies.obj.mockResolvedValue({ meta: storedMeta(5), ctSize: ctSizeOf(5) }); // dh 없음
+        expect((await del({ deleteKey })).status).toBe(403);
+        expect((await del({ deleteKey, verifier })).status).toBe(200);
+        expect(spies.delLocked).toHaveBeenCalledTimes(1);
+    });
+
+    test('삭제: 틀린 비밀번호는 풀기와 같은 시도 카운터를 쓴다', async () => {
+        spies.obj.mockResolvedValue({ meta: storedMeta(5), ctSize: ctSizeOf(5) });
+        const wrong = b64url(randomBytes(32));
+        const r1 = await del({ verifier: wrong });
+        expect(r1.status).toBe(403);
+        expect(await readJson(r1)).toMatchObject({ code: 'WRONG_PASSWORD', remaining: UNLOCK_MAX_PER_IP - 1 });
+        const u = await post('/api/r2/locked/unlock', { roomId: 'room-a', id: 'a'.repeat(32), verifier: wrong }, null);
+        expect(await readJson(u)).toMatchObject({ remaining: UNLOCK_MAX_PER_IP - 2 });
+        expect(spies.delLocked).not.toHaveBeenCalled();
+    });
+
+    test('삭제: 옛 DELETE 경로는 더 이상 없다', async () => {
+        const res = await fetch(`${baseUrl}/api/r2/locked/room-a/${'a'.repeat(32)}`, { method: 'DELETE', headers: { 'X-Room-Token': issueRoomToken('room-a') } });
+        expect(res.status).toBe(404);
+        expect(spies.delLocked).not.toHaveBeenCalled();
+    });
+
+    test('저장소 초기화(DELETE /api/r2/files/:roomId)는 잠긴 파일을 지우지 않는다', async () => {
+        const all = jest.spyOn(R2Service.prototype, 'deleteAllFiles').mockResolvedValue(2);
+        try {
+            const res = await fetch(`${baseUrl}/api/r2/files/room-a`, { method: 'DELETE', headers: { 'X-Room-Token': issueRoomToken('room-a') } });
+            expect(res.status).toBe(200);
+            expect(all).toHaveBeenCalledWith('room-a', { includeLocked: false });
+        } finally {
+            all.mockRestore();
+        }
     });
 });
 

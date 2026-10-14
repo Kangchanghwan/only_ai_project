@@ -52,10 +52,10 @@ export function deleteUploader(roomId: string, fileName: string): void {
     entries.delete(keyOf(roomId, fileName));
 }
 
-export function deleteUploadersForRoom(roomId: string): void {
+export function deleteUploadersForRoom(roomId: string, keep?: Set<string>): void {
     const prefix = `${roomId}/`;
     for (const key of Array.from(entries.keys())) {
-        if (key.startsWith(prefix)) entries.delete(key);
+        if (key.startsWith(prefix) && !keep?.has(key.slice(prefix.length))) entries.delete(key);
     }
 }
 

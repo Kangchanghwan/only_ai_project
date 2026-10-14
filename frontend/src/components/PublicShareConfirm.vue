@@ -78,7 +78,7 @@ async function confirm() {
         <p v-else class="mt-3 text-xs text-text-secondary m-0" data-testid="public-confirm-locked">🔒 {{ t('lock.confirmAlreadyLocked') }}</p>
         <div class="mt-4 flex gap-2 justify-end flex-wrap">
           <button ref="cancelBtn" type="button" class="min-h-[44px] px-5 rounded-full border border-border text-sm font-semibold" data-testid="public-confirm-cancel" @click="emit('cancel')">{{ t('notification.cancel') }}</button>
-          <button type="button" class="min-h-[44px] px-5 rounded-full bg-scope-global text-white text-sm font-semibold" data-testid="public-confirm-accept" :disabled="busy" @click="confirm">{{ busy ? t('lock.settingUp') : (password ? t('lock.confirmLockedSend') : t('publicConfirm.confirm')) }}</button>
+          <button type="button" class="min-h-[44px] px-5 rounded-full bg-scope-global text-white text-sm font-semibold" data-testid="public-confirm-accept" :disabled="busy" @click="confirm">{{ busy ? t('lock.settingUp') : (password || alreadyLocked ? t('lock.confirmLockedSend') : t('publicConfirm.confirm')) }}</button>
         </div>
       </div>
     </div>

@@ -7,6 +7,8 @@ import { isMultipartFile, multipartUpload, pruneStaleUploads } from '../services
 import { createImageThumbnail, THUMBNAIL_CONTENT_TYPE } from '../utils/thumbnail.js'
 import { formatSizeMB } from '../utils/fileUtils.js'
 import { lockedUpload } from '../services/lockedUploader.js'
+import { deleteLockedWithProof } from '../services/lockedDownloader.js'
+import { useLockState } from './useLockState.js'
 
 /** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
 const DEFAULT_UPLOAD_CONCURRENCY = 3
@@ -87,7 +89,7 @@ export function useFileManager() {
     let result = [...fileList]
     for (const mutation of pendingMutations) {
       if (mutation.type === 'clear') {
-        result = result.filter(f => f.roomId !== mutation.roomId)
+        result = result.filter(f => f.roomId !== mutation.roomId || f.locked)
       } else if (mutation.type === 'remove') {
         const key = fileKey(mutation.roomId, mutation.name)
         result = result.filter(f => fileKey(f.roomId, f.name) !== key)
@@ -543,6 +545,7 @@ export function useFileManager() {
           locked: true,
           fileName: res.id,
           originalName: file.name,
+          deleteKey: res.deleteKey,
           size: res.size,
           created: new Date().toISOString()
         }
@@ -600,11 +603,12 @@ export function useFileManager() {
   function clearRoomFiles(roomId) {
     recordMutation({ type: 'clear', roomId })
 
+    // 초기화는 공개 파일만 지운다 (잠긴 파일은 서버에도 남는다)
     const removedSize = files.value
-      .filter(f => f.roomId === roomId)
+      .filter(f => f.roomId === roomId && !f.locked)
       .reduce((sum, f) => sum + (f.size || 0), 0)
 
-    files.value = files.value.filter(f => f.roomId !== roomId)
+    files.value = files.value.filter(f => f.roomId !== roomId || f.locked)
     totalSize.value -= removedSize
     roomTokens.value.delete(roomId)
   }
@@ -627,8 +631,9 @@ export function useFileManager() {
 
       // 서비스 레이어를 통해 파일 삭제 (잠긴 파일은 별도 저장소라 다른 API)
       const target = files.value.find(f => f.roomId === roomId && f.name === fileName)
+      // 잠긴 파일은 올린 기기의 삭제 키나 이번 접속에서 확인한 비밀번호가 있어야 지울 수 있다
       const result = target?.locked
-        ? await r2Service.deleteLockedFile(roomId, fileName)
+        ? await deleteLockedWithProof({ roomId, id: fileName, lockState: useLockState() })
         : await r2Service.deleteFile(roomId, fileName)
 
       // 로컬 상태에서도 제거 (totalSize 포함)

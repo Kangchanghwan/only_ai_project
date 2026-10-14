@@ -4,7 +4,7 @@ import { getR2Service } from '../services/r2Service';
 import logger from '../utils/logger';
 import { deleteUploader } from '../utils/uploaderStore';
 import { quotaKeyFromRequest } from '../utils/dailyQuota';
-import { LOCK_RECORD_SIZE, LOCK_VERSION, isLockId, isVerifier } from '../utils/lockFormat';
+import { LOCK_RECORD_SIZE, LOCK_VERSION, LockObjectMetadata, isLockId, isVerifier, isDeleteKey } from '../utils/lockFormat';
 import { recordUnlockFailure, unlockRemaining } from '../utils/unlockLimiter';
 
 /** 다운로드 URL 유효 시간(초). 새어도 암호문뿐이지만 짧게 둔다 */
@@ -19,12 +19,36 @@ function fail(res: Response, status: number, error: string, code: string, extra:
 
 const fromB64url = (s: string): Buffer => Buffer.from(s.replace(/-/g, '+').replace(/_/g, '/'), 'base64');
 
+/** SHA-256(base64url 값의 바이트)이 저장된 hex 해시와 같은지 (상수 시간 비교) */
+const hashMatches = (b64: string, hexHash: string | undefined): boolean => {
+    if (!hexHash) return false;
+    const actual = createHash('sha256').update(fromB64url(b64)).digest();
+    const expected = Buffer.from(hexHash, 'hex');
+    return actual.length === expected.length && timingSafeEqual(actual, expected);
+};
+
+type VerifyResult = { ok: true } | { ok: false; status: 403 | 429; code: 'WRONG_PASSWORD' | 'LOCKED_OUT'; remaining: number };
+
+/**
+ * 비밀번호 확인값 검증 + 시도 제한. 풀기와 삭제가 같은 카운터를 쓴다
+ * (삭제 API가 횟수 제한 없는 비밀번호 대입 통로가 되지 않게).
+ */
+function checkVerifier(meta: LockObjectMetadata, verifier: string, ipKey: string): VerifyResult {
+    if (unlockRemaining(meta.vh, ipKey) <= 0) return { ok: false, status: 429, code: 'LOCKED_OUT', remaining: 0 };
+    if (hashMatches(verifier, meta.vh)) return { ok: true };
+    const remaining = recordUnlockFailure(meta.vh, ipKey);
+    return remaining <= 0
+        ? { ok: false, status: 429, code: 'LOCKED_OUT', remaining: 0 }
+        : { ok: false, status: 403, code: 'WRONG_PASSWORD', remaining };
+}
+
 /**
  * 비밀번호 잠금 파일 라우트.
  * - meta/unlock은 룸 토큰 없이 연다: 공유 링크 수신자도 쓸 수 있어야 하고, 관문은 비밀번호(+시도 제한)다.
- * - 삭제는 룸 토큰을 요구한다(기존 삭제 API와 같은 권한).
+ * - 삭제는 룸 토큰 + 증명(올린 기기의 삭제 키 또는 비밀번호 확인값)을 요구한다.
+ *   비밀번호를 모르는 사람이 남의 잠긴 파일을 지우지 못하게 한다.
  */
-export function registerLockedRoutes(app: Express, roomAuthFromParams: RequestHandler): void {
+export function registerLockedRoutes(app: Express, roomAuthFromBody: RequestHandler): void {
     const enabled: RequestHandler = (_req, res, next) => {
         if (!getR2Service().isLockedEnabled()) {
             fail(res, 503, '비밀번호 잠금을 사용할 수 없습니다', 'LOCKED_DISABLED');
@@ -75,24 +99,12 @@ export function registerLockedRoutes(app: Express, roomAuthFromParams: RequestHa
                 return;
             }
             const { meta, ctSize } = obj;
-            const ipKey = quotaKeyFromRequest(req);
             res.setHeader('Cache-Control', 'no-store');
 
-            if (unlockRemaining(meta.vh, ipKey) <= 0) {
-                fail(res, 429, '시도 횟수를 모두 썼습니다', 'LOCKED_OUT', { remaining: 0 });
-                return;
-            }
-
-            const actual = createHash('sha256').update(fromB64url(verifier)).digest();
-            const expected = Buffer.from(meta.vh, 'hex');
-            const ok = actual.length === expected.length && timingSafeEqual(actual, expected);
-            if (!ok) {
-                const remaining = recordUnlockFailure(meta.vh, ipKey);
-                if (remaining <= 0) {
-                    fail(res, 429, '시도 횟수를 모두 썼습니다', 'LOCKED_OUT', { remaining: 0 });
-                } else {
-                    fail(res, 403, '비밀번호가 맞지 않습니다', 'WRONG_PASSWORD', { remaining });
-                }
+            const check = checkVerifier(meta, verifier, quotaKeyFromRequest(req));
+            if (!check.ok) {
+                const msg = check.code === 'LOCKED_OUT' ? '시도 횟수를 모두 썼습니다' : '비밀번호가 맞지 않습니다';
+                fail(res, check.status, msg, check.code, { remaining: check.remaining });
                 return;
             }
 
@@ -115,15 +127,44 @@ export function registerLockedRoutes(app: Express, roomAuthFromParams: RequestHa
         }
     });
 
-    /** 잠긴 파일 삭제 */
-    app.delete('/api/r2/locked/:roomId/:id', enabled, roomAuthFromParams, async (req, res) => {
+    /**
+     * 잠긴 파일 삭제. body: {roomId, id, deleteKey?, verifier?}
+     * 삭제 키(올린 기기)가 맞거나, 비밀번호 확인값이 맞을 때만 지운다. 둘 다 없으면 403.
+     */
+    app.post('/api/r2/locked/delete', enabled, roomAuthFromBody, async (req, res) => {
         try {
-            const { roomId, id } = req.params;
-            if (!isRoomId(roomId) || !isLockId(id)) {
+            const { roomId, id, deleteKey, verifier } = req.body ?? {};
+            if (
+                !isRoomId(roomId) ||
+                !isLockId(id) ||
+                (deleteKey !== undefined && !isDeleteKey(deleteKey)) ||
+                (verifier !== undefined && !isVerifier(verifier))
+            ) {
                 fail(res, 400, '잘못된 요청입니다', 'INVALID_REQUEST');
                 return;
             }
-            await getR2Service().deleteLockedFile(roomId, id);
+            const r2 = getR2Service();
+            const obj = await r2.getLockedObject(roomId, id);
+            if (!obj) {
+                fail(res, 404, '잠긴 파일을 찾을 수 없습니다', 'LOCKED_NOT_FOUND');
+                return;
+            }
+
+            const ownerOk = typeof deleteKey === 'string' && hashMatches(deleteKey, obj.meta.dh);
+            if (!ownerOk) {
+                if (typeof verifier !== 'string') {
+                    fail(res, 403, '비밀번호가 필요합니다', 'DELETE_FORBIDDEN');
+                    return;
+                }
+                const check = checkVerifier(obj.meta, verifier, quotaKeyFromRequest(req));
+                if (!check.ok) {
+                    const msg = check.code === 'LOCKED_OUT' ? '시도 횟수를 모두 썼습니다' : '비밀번호가 맞지 않습니다';
+                    fail(res, check.status, msg, check.code, { remaining: check.remaining });
+                    return;
+                }
+            }
+
+            await r2.deleteLockedFile(roomId, id);
             deleteUploader(roomId, id);
             res.json({ success: true });
         } catch (error) {

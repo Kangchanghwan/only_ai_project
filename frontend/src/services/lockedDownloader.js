@@ -7,6 +7,7 @@
  * 풀린 내용은 서버로 다시 보내지 않는다.
  */
 import { r2Service } from './r2Service.js'
+import { t } from '../i18n/translate.js'
 import {
   LOCK_VERSION, RECORD_SIZE, deriveLock, unwrapFileKeyRaw, importRawKey, decryptName, fromB64u, createDecryptor
 } from '../utils/lockCrypto.js'
@@ -132,6 +133,20 @@ export async function downloadLocked(job) {
  * @param {boolean} [p.download=true]
  * @returns {Promise<{name:string}>}
  */
+/**
+ * 잠긴 파일을 증명과 함께 지운다.
+ * 내가 올린 파일이면 삭제 키, 아니면 이번 접속에서 확인한 비밀번호(같은 salt)의 확인값을 쓴다.
+ * 둘 다 없으면 서버에 묻지 않고 NEED_PASSWORD를 던진다 (화면에는 삭제 버튼이 없어야 하는 경우).
+ */
+export async function deleteLockedWithProof({ roomId, id, lockState }) {
+  const deleteKey = lockState.deleteKeyFor(roomId, id)
+  if (deleteKey) return r2Service.deleteLockedFile(roomId, id, { deleteKey })
+  const meta = await r2Service.lockedMeta(roomId, id)
+  const entry = lockState.keyFor(meta.salt)
+  if (!entry) throw Object.assign(new Error(t('lock.errors.deleteForbidden')), { code: 'NEED_PASSWORD' })
+  return r2Service.deleteLockedFile(roomId, id, { verifier: entry.verifier })
+}
+
 export async function openLockedFile({ roomId, id, password, lockState, onName, onProgress, download = true }) {
   const meta = await r2Service.lockedMeta(roomId, id)
   if (meta.v !== LOCK_VERSION || (meta.rs && meta.rs !== RECORD_SIZE)) throw lockError('LOCK_UNSUPPORTED')

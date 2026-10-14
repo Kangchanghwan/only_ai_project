@@ -296,16 +296,29 @@ class R2Service {
     })
   }
 
-  /** 잠긴 파일 삭제 (룸 토큰 필요) */
-  async deleteLockedFile(roomId, id) {
+  /**
+   * 잠긴 파일 삭제 (룸 토큰 + 증명 필요).
+   * @param {{deleteKey?: string, verifier?: string}} proof 올린 기기의 삭제 키 또는 비밀번호 확인값
+   */
+  async deleteLockedFile(roomId, id, proof = {}) {
     if (!roomId || !id) throw new Error('roomId와 id는 필수입니다')
-    const response = await this.fetchWithRoomAuth(
-      roomId,
-      `${this.apiUrl}/api/r2/locked/${encodeURIComponent(roomId)}/${encodeURIComponent(id)}`,
-      { method: 'DELETE' }
-    )
-    if (!response.ok) throw new Error(t('errors.deleteFailed', { status: response.status }))
-    return { success: true, data: await response.json().catch(() => ({})) }
+    const body = { roomId, id }
+    if (proof.deleteKey) body.deleteKey = proof.deleteKey
+    if (proof.verifier) body.verifier = proof.verifier
+    const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/locked/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (response.ok) return { success: true, data: await response.json().catch(() => ({})) }
+    let data = {}
+    try { data = (await response.json()) || {} } catch { /* 본문 없음 */ }
+    const message = data.code === 'LOCKED_OUT'
+      ? t('lock.lockedOut')
+      : response.status === 403
+        ? t('lock.errors.deleteForbidden')
+        : t('errors.deleteFailed', { status: response.status })
+    throw Object.assign(new Error(message), { code: data.code, status: response.status })
   }
 
   /**

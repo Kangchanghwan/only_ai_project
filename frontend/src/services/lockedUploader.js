@@ -26,7 +26,7 @@ import { ctSize, CT_PART_SIZE, encryptPart, prepareLockedFile } from '../utils/l
 export async function lockedUpload(roomId, file, lock, opts = {}) {
   const pt = file.size
   const total = ctSize(pt)
-  const { dk, np, meta } = await prepareLockedFile(lock, file)
+  const { dk, np, meta, deleteKey } = await prepareLockedFile(lock, file)
 
   const baseApi = opts.api || r2Service.lockedMultipartApi
   let completed = null
@@ -91,5 +91,5 @@ export async function lockedUpload(roomId, file, lock, opts = {}) {
     deps: { putPart, storage: null }
   })
 
-  return { id: res.fileName, size: completed?.size ?? pt, ctSize: completed?.ctSize ?? total, retries: res.retries, parts: res.parts }
+  return { id: res.fileName, size: completed?.size ?? pt, ctSize: completed?.ctSize ?? total, deleteKey, retries: res.retries, parts: res.parts }
 }
