@@ -379,7 +379,8 @@ class R2Service {
   /**
    * 룸의 모든 파일(과 썸네일)을 삭제합니다. 반환값은 삭제된 원본 파일 수입니다.
    */
-  async deleteAllFiles(roomId: string): Promise<number> {
+  async deleteAllFiles(roomId: string, opts: { includeLocked?: boolean } = {}): Promise<number> {
+    const includeLocked = opts.includeLocked ?? true;
     logger.info(`[R2Service] 룸 전체 파일 삭제 시작: ${roomId}`);
 
     // 진행 중 멀티파트는 미완료 파트가 저장 용량을 차지하므로 먼저 중단한다
@@ -391,7 +392,7 @@ class R2Service {
       this.listAllKeys(`${THUMB_PREFIX}/${roomId}/`),
     ]);
 
-    const lockedCount = await this.deleteAllLockedFiles(roomId);
+    const lockedCount = includeLocked ? await this.deleteAllLockedFiles(roomId) : 0;
 
     if (fileKeys.length === 0 && thumbKeys.length === 0) {
       logger.info(`[R2Service] 삭제할 파일이 없습니다 (중단한 멀티파트 ${abortedCount}개, 잠긴 파일 ${lockedCount}개)`);

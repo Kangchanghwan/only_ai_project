@@ -18,6 +18,7 @@ const busy = reactive({ ip: false, global: false })
 const secrets = { ip: null, global: null } // { salt, encKey, verifier, vh }
 const keyring = new Map()
 const names = reactive(new Map())
+const deleteKeys = new Map() // roomId::id → 삭제 키 (내가 올린 잠긴 파일만, 메모리에만)
 const version = ref(0) // keyring 변경 알림용
 
 const nameKey = (roomId, id) => `${roomId}::${id}`
@@ -64,12 +65,19 @@ function rememberName(roomId, id, name) {
 
 const nameFor = (roomId, id) => names.get(nameKey(roomId, id)) || null
 
+function rememberDeleteKey(roomId, id, key) {
+  if (roomId && id && key) deleteKeys.set(nameKey(roomId, id), key)
+}
+
+const deleteKeyFor = (roomId, id) => deleteKeys.get(nameKey(roomId, id)) || null
+
 /** 테스트용 초기화 */
 function resetLockState() {
   clearLock('ip')
   clearLock('global')
   keyring.clear()
   names.clear()
+  deleteKeys.clear()
 }
 
 export function useLockState() {
@@ -85,6 +93,8 @@ export function useLockState() {
     keyFor,
     rememberName,
     nameFor,
+    rememberDeleteKey,
+    deleteKeyFor,
     resetLockState
   }
 }

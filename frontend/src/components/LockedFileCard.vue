@@ -62,6 +62,10 @@ async function checkKnownKey() {
 }
 onMounted(checkKnownKey)
 watch(() => lockState.version.value, checkKnownKey)
+// 삭제 버튼은 지울 수 있는 증명이 있을 때만: 내가 올린 파일(삭제 키) 또는 이번 접속에서 같은 비밀번호를 확인한 경우
+const canDelete = computed(() =>
+  !!lockState.deleteKeyFor(props.file.roomId, props.file.name) || hasKey.value || phase.value === 'done'
+)
 const quickOpen = computed(() => (phase.value === 'done' || !!knownName.value || hasKey.value) && !message.value)
 
 /** 원래 이름이 한 글자씩 돌아오는 연출 (실제로 풀린 직후에만) */
@@ -173,6 +177,7 @@ onUnmounted(() => clearInterval(revealTimer))
         </p>
       </div>
       <button
+        v-if="canDelete"
         type="button"
         class="shrink-0 w-11 h-11 flex items-center justify-center rounded-full border border-border bg-background text-red-500"
         :title="t('file.delete')"

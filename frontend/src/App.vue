@@ -306,7 +306,10 @@ async function uploadFiles(files, scopeOverride) {
       }
 
       // 내가 올린 파일에 내 이름표를 붙인다 (목록 재조회 없이도 "나"로 표시)
-      if (result.locked) lockState.rememberName(targetRoomId, result.fileName, result.originalName)
+      if (result.locked) {
+        lockState.rememberName(targetRoomId, result.fileName, result.originalName)
+        lockState.rememberDeleteKey(targetRoomId, result.fileName, result.deleteKey)
+      }
       const uploader = socket.getSelfSender()
       if (uploader) {
         fileManager.addFile(result.locked
@@ -599,7 +602,8 @@ async function handleDeleteFile(file) {
   try {
     await fileManager.deleteFile(file.roomId, file.name)
     publishFileDeleted(file)
-    notification.showSuccess(t('notification.deleted', { name: file.name }))
+    const shownName = file.locked ? (lockState.nameFor(file.roomId, file.name) || t('lock.lockedFile')) : file.name
+    notification.showSuccess(t('notification.deleted', { name: shownName }))
   } catch (error) {
     notification.showError(t('notification.deleteFailed', { message: error.message }))
   }

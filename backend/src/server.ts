@@ -142,7 +142,7 @@ registerMultipartRoutes(app, roomIdFromBody, resolveUploader);
 
 // 비밀번호 잠금 업로드(비공개 버킷) + 해제/삭제. R2_LOCKED_BUCKET_NAME이 없으면 503
 registerMultipartRoutes(app, roomIdFromBody, resolveUploader, LOCKED_MULTIPART);
-registerLockedRoutes(app, roomIdFromParams);
+registerLockedRoutes(app, roomIdFromBody);
 
 /**
  * presign 요청 파일들의 크기를 검증한다 (파일당 한도 + 룸 총량 한도).
@@ -454,8 +454,11 @@ app.delete('/api/r2/files/:roomId', roomIdFromParams, async (req, res) => {
         const { roomId } = req.params;
 
         const r2Service = getR2Service();
-        const deletedCount = await r2Service.deleteAllFiles(roomId);
-        deleteUploadersForRoom(roomId);
+        // 사용자가 누르는 초기화는 공개 파일만 지운다. 잠긴 파일은 비밀번호를 아는 사람만 지울 수 있다
+        // (모든 기기가 나간 뒤의 룸 정리와 1일 수명 주기는 잠긴 파일도 지운다)
+        const lockedIds = new Set((await r2Service.listLockedFiles(roomId).catch(() => [])).map((l) => l.id));
+        const deletedCount = await r2Service.deleteAllFiles(roomId, { includeLocked: false });
+        deleteUploadersForRoom(roomId, lockedIds);
 
         res.json({ success: true, deletedCount });
     } catch (error) {

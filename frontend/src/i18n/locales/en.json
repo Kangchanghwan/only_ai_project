@@ -468,7 +468,8 @@
       "unlockFailed": "Couldn't open the locked file ({status})",
       "setFailed": "Couldn't turn on the lock. Please try again.",
       "notFound": "File not found. It may have been deleted.",
-      "downloadFailed": "Something went wrong while downloading. Please try again."
+      "downloadFailed": "Something went wrong while downloading. Please try again.",
+      "deleteForbidden": "Only people who know the password can delete this file."
     },
     "downloadAgain": "Download again"
   }

@@ -304,9 +304,13 @@ export async function prepareLockedFile(lock, file) {
   const { dk, dkRaw, np } = await createFileKey()
   const { wk, wkIv } = await wrapFileKey(lock.encKey, dkRaw)
   const { en, enIv } = await encryptName(dk, file.name)
+  // 올린 기기만 아는 삭제 키. 서버에는 해시(dh)만 보내고, 키는 이 기기 메모리에만 둔다
+  const deleteKeyBytes = randomBytes(32)
+  const dh = toHex(await subtle().digest('SHA-256', deleteKeyBytes))
   return {
     dk,
     np,
-    meta: { v: LOCK_VERSION, salt: lock.salt, vh: lock.vh, wk, wkIv, np: b64u(np), en, enIv }
+    deleteKey: b64u(deleteKeyBytes),
+    meta: { v: LOCK_VERSION, salt: lock.salt, vh: lock.vh, wk, wkIv, np: b64u(np), en, enIv, dh }
   }
 }

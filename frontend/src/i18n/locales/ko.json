@@ -468,7 +468,8 @@
       "unlockFailed": "잠긴 파일을 열지 못했어요 ({status})",
       "setFailed": "잠금을 켜지 못했어요. 다시 시도해 주세요.",
       "notFound": "파일이 없어요. 이미 삭제됐을 수 있어요.",
-      "downloadFailed": "받는 중 문제가 생겼어요. 다시 시도해 주세요."
+      "downloadFailed": "받는 중 문제가 생겼어요. 다시 시도해 주세요.",
+      "deleteForbidden": "비밀번호를 아는 사람만 이 파일을 지울 수 있어요."
     },
     "downloadAgain": "다시 받기"
   }

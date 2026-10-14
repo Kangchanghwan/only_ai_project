@@ -34,10 +34,12 @@ export interface LockMetaInput {
     np: string;
     en: string;
     enIv: string;
+    /** 올린 기기만 아는 삭제 키의 SHA-256(hex). 없으면 비밀번호로만 지울 수 있다 */
+    dh?: string;
 }
 
 /** R2 객체 메타데이터로 저장하는 형태 (S3 메타데이터 키는 소문자) */
-export type LockObjectMetadata = Record<'v' | 'salt' | 'vh' | 'wk' | 'wkiv' | 'np' | 'en' | 'eniv' | 'pt', string>;
+export type LockObjectMetadata = Record<'v' | 'salt' | 'vh' | 'wk' | 'wkiv' | 'np' | 'en' | 'eniv' | 'pt', string> & { dh?: string };
 
 const B64URL = /^[A-Za-z0-9_-]+$/;
 /** n바이트를 패딩 없는 base64url로 인코딩한 길이 */
@@ -64,6 +66,7 @@ export function normalizeLockMeta(input: unknown, pt: number): LockObjectMetadat
     if (!isB64(m.np, 4)) return null;
     if (!isB64(m.enIv, 12)) return null;
     if (typeof m.en !== 'string' || m.en.length < EN_MIN || m.en.length > EN_MAX || !B64URL.test(m.en)) return null;
+    if (m.dh !== undefined && (typeof m.dh !== 'string' || !/^[0-9a-f]{64}$/.test(m.dh))) return null;
     return {
         v: String(LOCK_VERSION),
         salt: m.salt,
@@ -74,6 +77,7 @@ export function normalizeLockMeta(input: unknown, pt: number): LockObjectMetadat
         en: m.en,
         eniv: m.enIv,
         pt: String(pt),
+        ...(m.dh ? { dh: m.dh } : {}),
     };
 }
 
@@ -91,3 +95,6 @@ export const isLockId = (v: unknown): v is string => typeof v === 'string' && /^
 
 /** 해제 요청의 verifier: 32바이트 base64url */
 export const isVerifier = (v: unknown): v is string => isB64(v, 32);
+
+/** 삭제 키: 32바이트 base64url (올린 기기가 만든 무작위 값) */
+export const isDeleteKey = (v: unknown): v is string => isB64(v, 32);
