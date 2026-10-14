@@ -120,7 +120,7 @@
     "ipNotice": "Other people on the same network, such as a school, office or cafe, can see it too.",
     "manage": "Manage name tag",
     "notAuth": "The name tag only tells devices apart. It is not identity verification.",
-    "globalWarning": "Everyone can see what you send and your device info (animal name tag, device and browser), including strangers. Use 'Same network' for sensitive files."
+    "globalWarning": "Everyone, including strangers, can see what you send and your device info (animal name tag, device and browser). Turn on 'Lock with a password' for sensitive files so only people with the password can open them. Text can't be locked."
   },
   "shareScope": {
     "label": "Share with",
@@ -347,14 +347,14 @@
     "safetyTitle": "Is it safe?",
     "safety1": "The default scope is \"Same network\", so only devices behind the same public IP can see your items. Sharing with everyone requires switching to the \"Everyone\" tab yourself.",
     "safety2": "When every device leaves, files and text are deleted shortly after, and even while connected, files are cleaned up after at most 1 day. No account, no history.",
-    "safety3": "Transfers are encrypted with HTTPS and the source code is public on GitHub.",
+    "safety3": "Transfers are encrypted with HTTPS and the source code is public on GitHub. With 'Lock with a password' on, files are encrypted on your device before upload, and only people with the password can open them.",
     "faqTitle": "Frequently asked questions",
     "faq1q": "Is it really free?",
     "faq1a": "Yes. Every feature is free and there is no account.",
     "faq2q": "Do I need to install an app?",
     "faq2a": "No. Any modern browser works: Chrome, Safari, Edge, Firefox. You can add it to your home screen if you like.",
     "faq3q": "Does it work when devices are on different networks?",
-    "faq3a": "Switch to the \"Everyone\" tab to share with anyone who has the service open, regardless of network. Keep sensitive files on \"Same network\".",
+    "faq3a": "Switch to the \"Everyone\" tab to share with anyone who has the service open, regardless of network. For sensitive files, turn on \"Lock with a password\" so only people with the password can open them.",
     "faq4q": "Is there a file size limit?",
     "faq4a": "Each file can be as large as the limit shown on the upload card, and you can upload several files at once.",
     "faq5q": "How long are files kept?",
@@ -427,7 +427,7 @@
   },
   "publicConfirm": {
     "title": "Send to everyone?",
-    "body": "Strangers can see this item and your device info. If you agree, we won't ask again during this visit.",
+    "body": "If you send without a password, strangers can see this item. Your device info (animal name tag, device and browser) stays visible even when locked. If you agree, we won't ask again during this visit.",
     "confirm": "Send publicly"
   },
   "guide": {
@@ -445,7 +445,7 @@
     "passwordTooShort": "Password must be at least {min} characters.",
     "confirmLabel": "Password (optional)",
     "confirmPlaceholder": "Leave empty to send without a lock",
-    "confirmHint": "If set, files are locked on this device before sending. Only people who know the password can open them.",
+    "confirmHint": "If you enter one, files are locked on this device before sending. Only people with the password can open them. Text isn't locked.",
     "confirmAlreadyLocked": "Lock is on for Everyone. Files you send are locked with your password.",
     "confirmLockedSend": "Lock and send",
     "lockedFile": "Locked file",
