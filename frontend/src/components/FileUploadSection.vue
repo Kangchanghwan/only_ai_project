@@ -3,6 +3,7 @@ import { formatSizeMB } from '../utils/fileUtils'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
+import LockChip from './LockChip.vue'
 
 const { t } = useI18n()
 
@@ -92,5 +93,6 @@ function handleDrop(event) {
     <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
       {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
     </p>
+    <LockChip :scope="scope" />
   </div>
 </template>

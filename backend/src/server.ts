@@ -11,7 +11,8 @@ import requestLogger from './middleware/requestLogger';
 import { getR2Service } from './services/r2Service';
 import { checkFileSize, checkRoomSize, SizeCheckFailure } from './utils/uploadLimits';
 import { requireRoomToken } from './middleware/roomAuth';
-import { registerMultipartRoutes } from './routes/multipart';
+import { registerMultipartRoutes, LOCKED_MULTIPART } from './routes/multipart';
+import { registerLockedRoutes } from './routes/locked';
 import { reservedBytesForRoom } from './utils/multipartStore';
 import { recordUploader, getUploader, deleteUploader, deleteUploadersForRoom, toSender, Sender } from './utils/uploaderStore';
 import { quotaKeyFromRequest, reserveDailyQuota, releaseDailyQuota, dailyQuotaFailureBody } from './utils/dailyQuota';
@@ -138,6 +139,10 @@ const resolveUploader = (roomId: unknown, socketId: unknown): Sender | undefined
 
 // 멀티파트(조각) 업로드: 100MB 초과 ~ 파일당 한도까지
 registerMultipartRoutes(app, roomIdFromBody, resolveUploader);
+
+// 비밀번호 잠금 업로드(비공개 버킷) + 해제/삭제. R2_LOCKED_BUCKET_NAME이 없으면 503
+registerMultipartRoutes(app, roomIdFromBody, resolveUploader, LOCKED_MULTIPART);
+registerLockedRoutes(app, roomIdFromParams);
 
 /**
  * presign 요청 파일들의 크기를 검증한다 (파일당 한도 + 룸 총량 한도).
@@ -388,10 +393,20 @@ app.get('/api/r2/files/:roomId', roomIdFromParams, async (req, res) => {
         const r2Service = getR2Service();
         const result = await r2Service.loadFiles(roomId, { limit, continuationToken });
 
+        // 잠긴 파일은 첫 페이지에 함께 준다 (url 없음, size는 평문 크기). 조회 실패는 일반 목록을 막지 않는다
+        const locked = continuationToken
+            ? []
+            : await r2Service.listLockedFiles(roomId).catch((error) => {
+                logger.error('[API] 잠긴 파일 목록 조회 오류:', error);
+                return [];
+            });
+        const lockedEntries = locked.map((l) => ({ name: l.id, locked: true as const, size: l.size, lastModified: l.lastModified }));
+        const merged = [...lockedEntries, ...result.files].sort((a, b) => b.lastModified.localeCompare(a.lastModified));
+
         // 업로더 기록이 있는 파일에만 uploader를 붙인다 (서버 재시작·24h 경과 시 생략)
         res.json({
             ...result,
-            files: result.files.map((f) => {
+            files: merged.map((f) => {
                 const uploader = getUploader(roomId, f.name);
                 return uploader ? { ...f, uploader } : f;
             }),

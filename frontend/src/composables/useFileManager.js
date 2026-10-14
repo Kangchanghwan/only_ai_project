@@ -6,6 +6,7 @@ import { t } from '../i18n/translate.js'
 import { isMultipartFile, multipartUpload, pruneStaleUploads } from '../services/multipartUploader.js'
 import { createImageThumbnail, THUMBNAIL_CONTENT_TYPE } from '../utils/thumbnail.js'
 import { formatSizeMB } from '../utils/fileUtils.js'
+import { lockedUpload } from '../services/lockedUploader.js'
 
 /** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
 const DEFAULT_UPLOAD_CONCURRENCY = 3
@@ -320,7 +321,9 @@ export function useFileManager() {
       onResume,
       onQueue,
       onCancel,
-      signal
+      signal,
+      // 비밀번호 잠금 (useLockState.getLock). 있으면 크기와 상관없이 모든 파일을 잠금 업로드로 보낸다
+      lock = null
     } = options
 
     pruneStaleUploads() // 24시간 지난 이어올리기 항목 정리
@@ -381,8 +384,11 @@ export function useFileManager() {
     }
 
     // 2. 배치 presign (N파일 = 1왕복) — 100MB 이하만. 초과 파일은 멀티파트로 따로 처리한다.
-    const small = pending.filter(file => !isMultipartFile(file.size))
-    const large = pending.filter(file => isMultipartFile(file.size))
+    //    잠금이 켜져 있으면 전부 잠금 업로드(이 기기에서 암호화 후 멀티파트)로 보낸다.
+    const lockedFiles = lock ? pending : []
+    const small = lock ? [] : pending.filter(file => !isMultipartFile(file.size))
+    const large = lock ? [] : pending.filter(file => isMultipartFile(file.size))
+    for (const file of lockedFiles) register(file, 'locked')
     for (const file of large) register(file, 'multipart')
     let targets = []
     if (small.length > 0) {
@@ -515,6 +521,51 @@ export function useFileManager() {
     })
     await largeRun
 
+    // 3-c. 잠금 파일: 파일은 순차 (파트는 내부에서 병렬, 파트마다 암호화)
+    await runWithConcurrency(lockedFiles, 1, async (file) => {
+      const handle = handles.get(file)
+      if (handle.state !== 'queued') return undefined
+      handle.state = 'running'
+      onStart?.(file)
+      const startedAt = Date.now()
+      try {
+        const res = await lockedUpload(roomId, file, lock, {
+          signal: handle.controller.signal,
+          onCommit: () => { handle.state = 'committed' },
+          onProgress: ({ encPercent, upPercent }) => onProgress?.(file, upPercent, { locked: true, encPercent })
+        })
+        trackEvent('locked_upload_complete', {
+          size_mb: Math.round(file.size / 1024 / 1024),
+          duration_s: Math.round((Date.now() - startedAt) / 1000)
+        })
+        const result = {
+          success: true,
+          locked: true,
+          fileName: res.id,
+          originalName: file.name,
+          size: res.size,
+          created: new Date().toISOString()
+        }
+        addFile({ name: result.fileName, locked: true, size: result.size, created: result.created, roomId })
+        outcomes.set(file, { result })
+        onComplete?.(file, result)
+        return result
+      } catch (err) {
+        if (endedByCancel(handle, err)) {
+          cancelFile(file, 'locked')
+          return undefined
+        }
+        throw err
+      }
+    }).then(settled => {
+      settled.forEach((outcome, index) => {
+        if (outcome.status === 'rejected') {
+          console.error('[useFileManager] 잠금 업로드 실패:', lockedFiles[index].name, outcome.reason)
+          fail(lockedFiles[index], outcome.reason)
+        }
+      })
+    })
+
     return summarize(files, outcomes)
   }
 
@@ -574,8 +625,11 @@ export function useFileManager() {
     try {
       console.log('[useFileManager] 파일 삭제 시작:', fileName)
 
-      // 서비스 레이어를 통해 파일 삭제
-      const result = await r2Service.deleteFile(roomId, fileName)
+      // 서비스 레이어를 통해 파일 삭제 (잠긴 파일은 별도 저장소라 다른 API)
+      const target = files.value.find(f => f.roomId === roomId && f.name === fileName)
+      const result = target?.locked
+        ? await r2Service.deleteLockedFile(roomId, fileName)
+        : await r2Service.deleteFile(roomId, fileName)
 
       // 로컬 상태에서도 제거 (totalSize 포함)
       removeFile(roomId, fileName)

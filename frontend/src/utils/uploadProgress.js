@@ -87,10 +87,14 @@ export function createUploadProgress(notification) {
     start(file) {
       ensureCard(file)
     },
-    progress(file, percent) {
+    /** extra: 잠금 업로드면 { locked: true, encPercent } (잠그는 중/올리는 중 2단 표시) */
+    progress(file, percent, extra) {
       percents.set(file, percent)
       const uploadId = ids.get(file)
-      if (uploadId) notification.updateUpload(uploadId, percent)
+      if (uploadId) {
+        if (extra) notification.updateUpload(uploadId, percent, extra)
+        else notification.updateUpload(uploadId, percent)
+      }
     },
     /** 취소 확정: 카드를 즉시 제거하고 토스트/GA4는 묶어서 한 번만 보낸다 (실패 토스트 없음) */
     cancelled(file, info = {}) {

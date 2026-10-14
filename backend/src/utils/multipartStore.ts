@@ -18,6 +18,10 @@ export interface MultipartRecord {
     createdAt: number;
     /** 서버 재시작 후 클라이언트 size로 복원된 레코드 (일일 한도 예약 없음) */
     recovered?: boolean;
+    /** 비밀번호 잠금 업로드(비공개 버킷). size는 암호문 크기 */
+    locked?: boolean;
+    /** 잠금 업로드의 평문 크기 */
+    pt?: number;
 }
 
 const records = new Map<string, MultipartRecord>();

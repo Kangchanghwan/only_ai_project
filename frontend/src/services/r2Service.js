@@ -235,6 +235,79 @@ class R2Service {
     }
   }
 
+  // === 비밀번호 잠금 파일 (docs/superpowers/specs/2026-10-13-password-lock-design.md) ===
+
+  /**
+   * 잠금 멀티파트 엔드포인트 호출. 업로드·삭제는 룸 토큰이 필요하다.
+   * @param {string} roomId
+   * @param {'create'|'sign'|'parts'|'complete'|'abort'} action
+   * @param {object} payload
+   */
+  async lockedMultipartCall(roomId, action, payload) {
+    const response = await this.fetchWithRoomAuth(roomId, `${this.apiUrl}/api/r2/locked/multipart/${action}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId, ...payload, ...(action === 'create' ? socketIdField() : {}) }),
+    })
+    if (!response.ok) {
+      throw await buildApiError(response, 'errors.multipartFailed')
+    }
+    return response.json()
+  }
+
+  /** 잠금 업로드용 multipartUploader API 어댑터. create 본문은 { size: 평문 크기, lock: 잠금 메타데이터 } */
+  get lockedMultipartApi() {
+    return {
+      create: (roomId, p) => this.lockedMultipartCall(roomId, 'create', { size: p.size, lock: p.lock }),
+      sign: (roomId, p) => this.lockedMultipartCall(roomId, 'sign', p),
+      parts: (roomId, p) => this.lockedMultipartCall(roomId, 'parts', p),
+      complete: (roomId, p) => this.lockedMultipartCall(roomId, 'complete', p),
+      abort: (roomId, p) => this.lockedMultipartCall(roomId, 'abort', p),
+    }
+  }
+
+  /**
+   * 잠긴 파일 메타데이터 (토큰 불필요 — 비밀번호가 관문이다)
+   * @returns {Promise<{v:number, salt:string, size:number, rs:number, remaining:number}>}
+   */
+  async lockedMeta(roomId, id) {
+    const response = await fetch(`${this.apiUrl}/api/r2/locked/meta/${encodeURIComponent(roomId)}/${encodeURIComponent(id)}`)
+    if (!response.ok) throw await buildApiError(response, 'lock.errors.metaFailed')
+    return response.json()
+  }
+
+  /**
+   * 비밀번호 확인값(verifier)으로 60초 다운로드 URL과 감싼 키를 받는다.
+   * 틀리면 code=WRONG_PASSWORD(+remaining), 시도 초과면 LOCKED_OUT 에러를 던진다.
+   */
+  async lockedUnlock(roomId, id, verifier) {
+    const response = await fetch(`${this.apiUrl}/api/r2/locked/unlock`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId, id, verifier }),
+    })
+    if (response.ok) return response.json()
+    let body = {}
+    try { body = (await response.json()) || {} } catch { /* 본문 없음 */ }
+    throw Object.assign(new Error(t('lock.errors.unlockFailed', { status: response.status })), {
+      code: body.code,
+      status: response.status,
+      remaining: typeof body.remaining === 'number' ? body.remaining : undefined,
+    })
+  }
+
+  /** 잠긴 파일 삭제 (룸 토큰 필요) */
+  async deleteLockedFile(roomId, id) {
+    if (!roomId || !id) throw new Error('roomId와 id는 필수입니다')
+    const response = await this.fetchWithRoomAuth(
+      roomId,
+      `${this.apiUrl}/api/r2/locked/${encodeURIComponent(roomId)}/${encodeURIComponent(id)}`,
+      { method: 'DELETE' }
+    )
+    if (!response.ok) throw new Error(t('errors.deleteFailed', { status: response.status }))
+    return { success: true, data: await response.json().catch(() => ({})) }
+  }
+
   /**
    * 브라우저 네이티브 다운로드용 Presigned URL(Content-Disposition: attachment)을 받습니다.
    *
@@ -317,7 +390,15 @@ class R2Service {
 
       // 파일 정보를 표준 형식으로 변환 (supabaseService와 동일한 형식)
       return {
-        files: files.map(file => ({
+        files: files.map(file => file.locked ? ({
+          // 잠긴 파일: name은 서버 id, 공개 URL·썸네일 없음, size는 평문 크기
+          name: file.name,
+          locked: true,
+          created: file.lastModified,
+          size: file.size,
+          type: 'application/octet-stream',
+          ...(file.uploader ? { uploader: file.uploader } : {})
+        }) : ({
           name: file.name,
           url: file.url,
           created: file.lastModified,

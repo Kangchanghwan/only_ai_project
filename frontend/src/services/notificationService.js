@@ -41,10 +41,15 @@ class NotificationService {
    * @param {string} uploadId - 업로드 고유 ID
    * @param {number} percent - 진행률 (0-100)
    */
-  updateUpload(uploadId, percent) {
+  updateUpload(uploadId, percent, extra) {
     const upload = this.uploads.value.get(uploadId)
     if (upload) {
       upload.percent = percent
+      // 잠금 업로드: { locked: true, encPercent } (잠그는 진행률)
+      if (extra?.locked) {
+        upload.locked = true
+        upload.encPercent = extra.encPercent ?? 0
+      }
       this.uploads.value = new Map(this.uploads.value)
     }
   }

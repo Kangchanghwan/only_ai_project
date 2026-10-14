@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import FileCard from './FileCard.vue'
+import LockedFileCard from './LockedFileCard.vue'
 import FileUploadSection from './FileUploadSection.vue'
 import PasteSection from './PasteSection.vue'
 import TransferProgress from './TransferProgress.vue'
@@ -67,6 +68,9 @@ function fileKey(file) {
   return `${file.roomId}::${file.name}`
 }
 
+// 잠긴 파일은 선택(일괄 받기·QR·복사) 대상이 아니다. 비밀번호로 하나씩 푼다
+const selectableFiles = computed(() => props.files.filter(file => !file.locked))
+
 // 선택된 파일 개수
 const selectedCount = computed(() => selectedFiles.value.size)
 
@@ -77,7 +81,7 @@ const selectedFilesArray = computed(() => {
 
 // 모든 파일이 선택되었는지 확인
 const allFilesSelected = computed(() => {
-  return props.files.length > 0 && selectedFiles.value.size === props.files.length
+  return selectableFiles.value.length > 0 && selectedFiles.value.size === selectableFiles.value.length
 })
 
 // 파일 선택/해제
@@ -99,7 +103,7 @@ function toggleSelectAll() {
     selectedFiles.value = new Set()
   } else {
     // 전체 선택
-    selectedFiles.value = new Set(props.files.map(fileKey))
+    selectedFiles.value = new Set(selectableFiles.value.map(fileKey))
   }
 }
 
@@ -150,7 +154,7 @@ onUnmounted(() => {
     <DownloadControls
       v-if="files.length > 0 && !isLoading"
       :selected-count="selectedCount"
-      :total-count="files.length"
+      :total-count="selectableFiles.length"
       :all-selected="allFilesSelected"
       :scope="scope"
       @download-parallel="downloadParallel"
@@ -181,8 +185,16 @@ onUnmounted(() => {
     <!-- 파일 리스트 (로딩 중이 아닐 때) -->
     <div v-else class="flex flex-col gap-2 mt-4">
       <TransitionGroup name="card-land" @before-enter="onCardBeforeEnter">
+        <template v-for="file in files">
+        <LockedFileCard
+          v-if="file.locked"
+          :key="'locked:' + fileKey(file)"
+          :file="file"
+          :scope="scope"
+          @delete-file="$emit('delete-file', file)"
+        />
         <FileCard
-          v-for="file in files"
+          v-else
           :key="fileKey(file)"
           :file="file"
           :is-selected="selectedFiles.has(fileKey(file))"
@@ -192,6 +204,7 @@ onUnmounted(() => {
           @download-file="$emit('download-file', file)"
           @delete-file="$emit('delete-file', file)"
         />
+        </template>
       </TransitionGroup>
     </div>
 

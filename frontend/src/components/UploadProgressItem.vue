@@ -9,6 +9,15 @@ defineProps({
     type: Boolean,
     default: false
   },
+  /** 비밀번호 잠금 업로드: 잠그는 중 / 올리는 중 2단으로 보여 준다 */
+  locked: {
+    type: Boolean,
+    default: false
+  },
+  encPercent: {
+    type: Number,
+    default: 0
+  },
   fileName: {
     type: String,
     required: true
@@ -43,12 +52,20 @@ defineProps({
         @click="emit('cancel')"
       >✕</button>
     </div>
-    <div class="progress-bar">
+    <div v-if="locked && status === 'uploading'" class="progress-bar locked-bar" data-testid="locked-progress">
+      <div class="progress-fill lock-enc" :style="{ width: encPercent / 2 + '%' }"></div>
+      <div class="progress-fill lock-up" :style="{ width: percent / 2 + '%' }"></div>
+    </div>
+    <div v-else class="progress-bar">
       <div
         class="progress-fill"
         :class="status"
         :style="{ width: percent + '%' }"
       ></div>
+    </div>
+    <div v-if="locked && status === 'uploading'" class="lock-steps">
+      <span :class="encPercent >= 100 ? 'done' : 'on'">{{ t('lock.progress.encrypting') }} {{ encPercent }}%</span>
+      <span :class="percent >= 100 ? 'done' : (encPercent > 0 ? 'on' : '')">{{ t('lock.progress.uploading') }} {{ percent }}%</span>
     </div>
   </div>
 </template>
@@ -129,5 +146,31 @@ defineProps({
 
 .progress-fill.failed {
   background: linear-gradient(90deg, #ef4444, #f87171);
+}
+.locked-bar {
+  display: flex;
+}
+.progress-fill.lock-enc {
+  background: var(--color-primary);
+  transition: width 0.12s linear;
+}
+.progress-fill.lock-up {
+  background: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  transition: width 0.12s linear;
+}
+.lock-steps {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 4px;
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.lock-steps .on {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+.lock-steps .done {
+  color: var(--color-success, #16a34a);
 }
 </style>
