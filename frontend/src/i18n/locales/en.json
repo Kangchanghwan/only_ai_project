@@ -473,6 +473,20 @@
     "noBulk": "Locked files are received one at a time",
     "sheetTitle": "Enter the password",
     "showPassword": "Show",
-    "hidePassword": "Hide"
+    "hidePassword": "Hide",
+    "qrScan": "Scan to get this file without the password",
+    "qrHint": "This QR code and link contain the key to this file. Anyone who has them can download it without the password, so only show them to the recipient. They stop working once the file is deleted or after a day.",
+    "qrNeedKey": "Unlock it with the password once to create a QR code.",
+    "qrFailed": "Couldn't create the QR code. Please try again.",
+    "qrPreparing": "Creating QR…",
+    "link": {
+      "title": "Locked file",
+      "loading": "Checking the file…",
+      "done": "Saved",
+      "again": "Download again",
+      "openApp": "Open Clipboard Share",
+      "invalid": "This link isn't valid. Please scan the QR code again.",
+      "expired": "File not found. It may have expired after a day or been deleted."
+    }
   }
 }

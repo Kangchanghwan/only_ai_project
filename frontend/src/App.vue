@@ -32,6 +32,7 @@ import { t } from './i18n/translate'
 
 import RoomScreen from './components/RoomScreen.vue'
 import DownloadPage from './components/DownloadPage.vue'
+import LockedLinkPage from './components/LockedLinkPage.vue'
 import NotificationToast from './components/NotificationToast.vue'
 import ShareConfirmSheet from './components/ShareConfirmSheet.vue'
 import PublicShareConfirm from './components/PublicShareConfirm.vue'
@@ -757,7 +758,9 @@ async function handleShareTargetData() {
 }
 
 onMounted(async () => {
-  const hash = window.location.hash
+  // 잠긴 파일 링크는 index.html이 주소창에서 미리 지우고 window.__csLockedLink에 옮겨 둔다
+  const hash = window.__csLockedLink || window.location.hash
+  window.__csLockedLink = undefined
   currentRoute.value = parseRoute(hash)
 
   console.log('[App] 라우트 파싱 결과:', currentRoute.value)
@@ -767,6 +770,9 @@ onMounted(async () => {
     console.log('[App] 다운로드 페이지 렌더링')
     return
   }
+
+  // 잠긴 파일 링크도 룸에 접속하지 않고 그 파일 하나만 받는다
+  if (currentRoute.value.type === 'locked' || currentRoute.value.type === 'locked-invalid') return
 
   // share-target 파라미터 감지
   const isShareTarget = new URLSearchParams(window.location.search).has('share-target')
@@ -800,9 +806,15 @@ onUnmounted(() => {
 <template>
   <div id="app">
     <div class="app-frame" :class="{ 'app-frame--narrow': currentRoute.type === 'download' }">
+      <!-- 잠긴 파일 QR·링크 받기 -->
+      <LockedLinkPage
+        v-if="currentRoute.type === 'locked' || currentRoute.type === 'locked-invalid'"
+        :link="currentRoute.type === 'locked' ? currentRoute : null"
+      />
+
       <!-- 다운로드 페이지 -->
       <DownloadPage
-        v-if="currentRoute.type === 'download'"
+        v-else-if="currentRoute.type === 'download'"
         :room-id="currentRoute.roomId"
         :file-names-base64="currentRoute.fileNamesBase64"
       />

@@ -473,6 +473,20 @@
     "noBulk": "잠긴 파일은 하나씩 받아요",
     "sheetTitle": "비밀번호를 입력하세요",
     "showPassword": "보기",
-    "hidePassword": "숨기기"
+    "hidePassword": "숨기기",
+    "qrScan": "찍으면 비밀번호 없이 이 파일을 받을 수 있어요",
+    "qrHint": "이 QR과 주소에는 이 파일의 열쇠가 들어 있어요. 가진 사람은 누구나 비밀번호 없이 받을 수 있으니 받을 사람에게만 보여 주세요. 파일이 삭제되거나 하루가 지나면 열리지 않아요.",
+    "qrNeedKey": "비밀번호로 한 번 푼 뒤에 QR을 만들 수 있어요.",
+    "qrFailed": "QR을 만들지 못했어요. 다시 시도해 주세요.",
+    "qrPreparing": "QR 만드는 중…",
+    "link": {
+      "title": "잠긴 파일 받기",
+      "loading": "파일을 확인하는 중…",
+      "done": "저장했어요",
+      "again": "다시 받기",
+      "openApp": "Clipboard Share 열기",
+      "invalid": "링크가 올바르지 않아요. QR을 다시 찍어 주세요.",
+      "expired": "파일이 없어요. 하루가 지났거나 삭제됐을 수 있어요."
+    }
   }
 }

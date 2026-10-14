@@ -2,6 +2,7 @@
  * 라우팅 유틸리티
  * Vue Router 없이 해시 기반 라우팅을 처리하는 유틸리티 함수들
  */
+import { LOCKED_LINK_PREFIX, parseLockedLink } from './lockedLink.js'
 
 /**
  * URL 해시를 파싱하여 라우트 정보 반환
@@ -11,6 +12,12 @@
 export function parseRoute(hash) {
   if (!hash || hash === '#' || hash === '#/') {
     return { type: 'home' }
+  }
+
+  // 잠긴 파일 링크: /#/lk?r=&i=&v=&k= (형식이 틀리면 'locked-invalid'로 안내한다)
+  if (hash.startsWith(LOCKED_LINK_PREFIX)) {
+    const link = parseLockedLink(hash)
+    return link ? { type: 'locked', ...link } : { type: 'locked-invalid' }
   }
 
   // 다운로드 페이지: /#/download?r={roomId}&f={base64}

@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- 잠긴 파일 QR 링크(#/lk?...)에는 파일 키가 들어 있다. 분석 스크립트가 주소를 읽기 전에
+         주소창·방문 기록에서 지우고 메모리(window.__csLockedLink)에만 둔다. -->
+    <script>
+      try {
+        if (location.hash.indexOf('#/lk?') === 0) {
+          window.__csLockedLink = location.hash;
+          history.replaceState(null, '', location.pathname + location.search);
+        }
+      } catch (e) {}
+    </script>
+
     <!-- Google Analytics 4: 프로덕션 호스트에서만 로드 (dev/preview/prerender 트래픽 차단) -->
     <!-- 내부 트래픽(운영자·에이전트) 제외: ?internal=1 로 한 번 열면 이 브라우저는 GA를 끈다. ?internal=0 으로 해제 -->
     <script>

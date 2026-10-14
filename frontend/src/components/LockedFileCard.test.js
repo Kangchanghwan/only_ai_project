@@ -7,7 +7,11 @@ vi.mock('vue-i18n', async (importOriginal) => ({
 }))
 
 const openLockedFile = vi.fn()
-vi.mock('../services/lockedDownloader', () => ({ openLockedFile: (...a) => openLockedFile(...a) }))
+const createLockedShareLink = vi.fn()
+vi.mock('../services/lockedDownloader', () => ({
+  openLockedFile: (...a) => openLockedFile(...a),
+  createLockedShareLink: (...a) => createLockedShareLink(...a)
+}))
 
 import LockedFileCard from './LockedFileCard.vue'
 import LockChip from './LockChip.vue'
@@ -107,6 +111,38 @@ describe('LockedFileCard', () => {
     await w2.find('[data-testid="locked-more"]').trigger('click')
     await w2.find('[data-testid="locked-delete"]').trigger('click')
     expect(w2.emitted('delete-file')).toHaveLength(1)
+  })
+})
+
+describe('LockedFileCard QR 공유', () => {
+  beforeEach(() => {
+    openLockedFile.mockReset()
+    createLockedShareLink.mockReset()
+    useLockState().resetLockState()
+  })
+
+  it('비밀번호를 모르는 기기에는 QR 메뉴가 없다', async () => {
+    const w = mountCard()
+    await w.find('[data-testid="locked-more"]').trigger('click')
+    expect(w.find('[data-testid="locked-qr"]').exists()).toBe(false)
+  })
+
+  it('푼 뒤에는 QR 메뉴가 생기고, 누르면 키가 든 링크로 QR 창을 연다', async () => {
+    openLockedFile.mockImplementation(async ({ onName }) => { onName('계획서.pdf'); return { name: '계획서.pdf' } })
+    createLockedShareLink.mockResolvedValue({ url: 'https://www.clipboardapp.org/#/lk?r=room-1', name: '계획서.pdf', size: 2048 })
+    const w = mountCard()
+    await w.find('[data-testid="locked-open"]').trigger('click')
+    await w.find('[data-testid="locked-password"]').setValue('0912')
+    await w.find('[data-testid="locked-password-sheet"] form').trigger('submit')
+    await flushPromises()
+    await w.find('[data-testid="locked-more"]').trigger('click')
+    await w.find('[data-testid="locked-qr"]').trigger('click')
+    await flushPromises()
+    expect(createLockedShareLink.mock.calls[0][0]).toMatchObject({ roomId: 'room-1', id: 'abc123' })
+    expect(w.find('[data-testid="locked-actions-sheet"]').exists()).toBe(false)
+    expect(w.text()).toContain('lock.qrScan')
+    expect(w.text()).toContain('lock.qrHint')
+    expect(w.find('input[readonly]').element.value).toBe('https://www.clipboardapp.org/#/lk?r=room-1')
   })
 })
 
