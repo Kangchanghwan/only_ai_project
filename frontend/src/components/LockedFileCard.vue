@@ -38,7 +38,6 @@ const message = ref('')
 const shaking = ref(false)
 const percent = ref(0)
 const lockedOut = ref(false)
-const showExplain = ref(false)
 const revealing = ref('') // 이름 복원 애니메이션 중 표시 문자열
 let revealTimer = null
 
@@ -219,12 +218,6 @@ onUnmounted(() => clearInterval(revealTimer))
       >{{ phase === 'done' ? t('lock.downloadAgain') : quickOpen ? t('file.receive') : t('lock.unlock') }}</button>
     </form>
     <p v-if="message" class="text-xs mt-1 m-0" :class="phase === 'error' || remaining !== null || lockedOut ? 'text-red-500' : 'text-text-secondary'" role="status" data-testid="locked-message">{{ message }}</p>
-
-    <button type="button" class="lock-badge mt-2" :aria-expanded="showExplain" data-testid="locked-badge" @click="showExplain = !showExplain">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z" /></svg>
-      {{ t('lock.badge') }}
-    </button>
-    <p v-if="showExplain" class="text-xs text-text-secondary leading-relaxed mt-2 m-0" data-testid="locked-explain">{{ t('lock.explain') }}</p>
   </div>
 </template>
 
@@ -239,8 +232,7 @@ onUnmounted(() => clearInterval(revealTimer))
   background: color-mix(in srgb, var(--color-primary) 16%, transparent);
   color: var(--color-primary);
 }
-.lock-ico svg,
-.lock-badge svg {
+.lock-ico svg {
   width: 18px;
   height: 18px;
   fill: none;
@@ -248,23 +240,6 @@ onUnmounted(() => clearInterval(revealTimer))
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-.lock-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  border: 0;
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-  color: var(--color-primary);
-  font-size: 0.6875rem;
-  cursor: pointer;
-}
-.lock-badge svg {
-  width: 11px;
-  height: 11px;
-  stroke-width: 2;
 }
 .lock-bar {
   height: 6px;

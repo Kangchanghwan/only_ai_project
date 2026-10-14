@@ -459,8 +459,6 @@
     "wrongPasswordNoCount": "Wrong password.",
     "lockedOut": "Too many wrong tries. This file can no longer be downloaded.",
     "tooLargeForDevice": "This device can't receive locked files larger than {size}. Please download it on a PC or Chrome for Android.",
-    "badge": "Even the operator can't open it",
-    "explain": "Files are locked with the password on this device before upload. The server and storage only keep unreadable data, so even the operator can't open them. The password is never sent to the server, and wrong passwords are accepted only a limited number of times. File size, upload time, and sender device are visible.",
     "progress": {
       "encrypting": "Locking",
       "uploading": "Uploading"
