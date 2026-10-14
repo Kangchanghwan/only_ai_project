@@ -17,6 +17,12 @@ export function applyFileMessage(message, fileManager) {
   switch (message.type) {
     case 'file-uploaded': {
       const { fileName, url, roomId, size, created, sender } = message
+      if (message.locked === true) {
+        // 잠긴 파일: 공개 URL 없음, fileName은 서버 id, size는 평문 크기
+        if (!fileName || !roomId || typeof size !== 'number' || !created) return 'reload'
+        const added = fileManager.addFile({ name: fileName, locked: true, size, created, roomId, ...(sender ? { uploader: sender } : {}) })
+        return added ? 'added' : 'updated'
+      }
       if (!fileName || !url || !roomId || typeof size !== 'number' || !created) {
         return 'reload'
       }

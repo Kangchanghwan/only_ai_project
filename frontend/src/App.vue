@@ -16,6 +16,7 @@ import { useTextShare } from './composables/useTextShare'
 import { useShareScope } from './composables/useShareScope'
 import { useSeoMeta } from './composables/useSeoMeta'
 import { usePublicShareGuard } from './composables/usePublicShareGuard'
+import { useLockState } from './composables/useLockState'
 import { isEditableTarget } from './utils/editable'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
@@ -49,6 +50,7 @@ const textShare = useTextShare()
 const shareScope = useShareScope()
 // 전체 공유로 처음 보낼 때 한 번 확인 (파일 선택/드롭/전역 붙여넣기/텍스트 공유 공통)
 const publicGuard = usePublicShareGuard()
+const lockState = useLockState()
 // 로케일에 맞춰 title/description/og/canonical/lang을 갱신 (언어 전환 시 자동 반영)
 useSeoMeta()
 const isConnecting = ref(false)
@@ -269,30 +271,47 @@ async function uploadFiles(files, scopeOverride) {
   // 진행 카드는 실제 전송이 시작된 파일에만 만든다 (거절/사전 실패 파일은 토스트만).
   const progress = createUploadProgress(notification)
 
+  // 이 범위에 비밀번호 잠금이 켜져 있으면 이 기기에서 잠근 뒤 올린다 (확인창에서 방금 켠 경우 포함)
+  const lock = lockState.getLock(targetScope)
+
   const summary = await fileManager.uploadFiles(targetRoomId, files, {
+    lock,
     onQueue: (file, handle) => progress.queue(file, handle),
     onStart: (file) => progress.start(file),
     onCancel: (file, info) => progress.cancelled(file, info),
-    onProgress: (file, percent) => progress.progress(file, percent),
+    onProgress: (file, percent, extra) => progress.progress(file, percent, extra),
     onComplete: (file, result) => {
       // size/created를 함께 보내 수신 측이 목록을 재조회하지 않고 바로 추가할 수 있게 한다
       try {
-        socket.publishMessage({
-          type: 'file-uploaded',
-          fileName: result.fileName,
-          url: result.url,
-          size: result.size,
-          created: result.created,
-          roomId: targetRoomId
-        }, targetScope)
+        socket.publishMessage(result.locked
+          ? {
+              // 잠긴 파일: 공개 URL·원래 이름은 보내지 않는다
+              type: 'file-uploaded',
+              locked: true,
+              fileName: result.fileName,
+              size: result.size,
+              created: result.created,
+              roomId: targetRoomId
+            }
+          : {
+              type: 'file-uploaded',
+              fileName: result.fileName,
+              url: result.url,
+              size: result.size,
+              created: result.created,
+              roomId: targetRoomId
+            }, targetScope)
       } catch (error) {
         console.warn('[App] 업로드 알림 전송 실패 (파일은 업로드됨):', error)
       }
 
       // 내가 올린 파일에 내 이름표를 붙인다 (목록 재조회 없이도 "나"로 표시)
+      if (result.locked) lockState.rememberName(targetRoomId, result.fileName, result.originalName)
       const uploader = socket.getSelfSender()
       if (uploader) {
-        fileManager.addFile({ name: result.fileName, url: result.url, size: result.size, created: result.created, roomId: targetRoomId, uploader })
+        fileManager.addFile(result.locked
+          ? { name: result.fileName, locked: true, size: result.size, created: result.created, roomId: targetRoomId, uploader }
+          : { name: result.fileName, url: result.url, size: result.size, created: result.created, roomId: targetRoomId, uploader })
       }
 
       progress.complete(file)

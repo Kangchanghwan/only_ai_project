@@ -16,6 +16,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import logger from '../utils/logger';
 import { deleteRecordsForRoom } from '../utils/multipartStore';
+import { LockObjectMetadata, readLockMeta, ptSizeOf } from '../utils/lockFormat';
 
 /** 썸네일 객체 프리픽스 (룸 프리픽스 밖에 두어 목록 API에 노출되지 않게 한다) */
 const THUMB_PREFIX = 'thumbs';
@@ -52,6 +53,8 @@ class R2Service {
   private client: S3Client;
   private bucketName: string;
   private publicUrl: string;
+  /** 비밀번호 잠금 파일 전용 비공개 버킷. 설정되지 않으면 잠금 기능은 꺼진다 */
+  private lockedBucketName: string | null;
 
   constructor() {
     const accountId = process.env.R2_ACCOUNT_ID;
@@ -75,6 +78,7 @@ class R2Service {
 
     this.bucketName = bucketName;
     this.publicUrl = publicUrl;
+    this.lockedBucketName = process.env.R2_LOCKED_BUCKET_NAME || null;
   }
 
   /**
@@ -192,14 +196,14 @@ class R2Service {
   }
 
   /** 프리픽스 아래 모든 객체 키를 페이지네이션을 따라 전부 수집합니다 */
-  private async listAllKeys(prefix: string): Promise<string[]> {
+  private async listAllKeys(prefix: string, bucket: string = this.bucketName): Promise<string[]> {
     const keys: string[] = [];
     let continuationToken: string | undefined;
 
     do {
       const response = await this.client.send(
         new ListObjectsV2Command({
-          Bucket: this.bucketName,
+          Bucket: bucket,
           Prefix: prefix,
           ContinuationToken: continuationToken,
         })
@@ -216,12 +220,12 @@ class R2Service {
   }
 
   /** 키 목록을 DeleteObjects 최대 크기 단위로 나눠 삭제합니다 */
-  private async deleteKeys(keys: string[]): Promise<void> {
+  private async deleteKeys(keys: string[], bucket: string = this.bucketName): Promise<void> {
     for (let i = 0; i < keys.length; i += DELETE_BATCH_SIZE) {
       const chunk = keys.slice(i, i + DELETE_BATCH_SIZE);
       await this.client.send(
         new DeleteObjectsCommand({
-          Bucket: this.bucketName,
+          Bucket: bucket,
           Delete: { Objects: chunk.map((Key) => ({ Key })), Quiet: true },
         })
       );
@@ -310,14 +314,14 @@ class R2Service {
   }
 
   /** 프리픽스 아래 모든 객체(키·크기·수정시각)를 페이지네이션을 따라 전부 수집합니다 */
-  private async listAllObjects(prefix: string): Promise<_Object[]> {
+  private async listAllObjects(prefix: string, bucket: string = this.bucketName): Promise<_Object[]> {
     const objects: _Object[] = [];
     let continuationToken: string | undefined;
 
     do {
       const response = await this.client.send(
         new ListObjectsV2Command({
-          Bucket: this.bucketName,
+          Bucket: bucket,
           Prefix: prefix,
           ContinuationToken: continuationToken,
         })
@@ -387,16 +391,18 @@ class R2Service {
       this.listAllKeys(`${THUMB_PREFIX}/${roomId}/`),
     ]);
 
+    const lockedCount = await this.deleteAllLockedFiles(roomId);
+
     if (fileKeys.length === 0 && thumbKeys.length === 0) {
-      logger.info(`[R2Service] 삭제할 파일이 없습니다 (중단한 멀티파트 ${abortedCount}개)`);
-      return 0;
+      logger.info(`[R2Service] 삭제할 파일이 없습니다 (중단한 멀티파트 ${abortedCount}개, 잠긴 파일 ${lockedCount}개)`);
+      return lockedCount;
     }
 
     await this.deleteKeys([...fileKeys, ...thumbKeys]);
 
     logger.info(`[R2Service] 전체 삭제 완료: ${fileKeys.length}개 파일, ${thumbKeys.length}개 썸네일, 멀티파트 ${abortedCount}개 중단`);
 
-    return fileKeys.length;
+    return fileKeys.length + lockedCount;
   }
 
   // === 멀티파트 업로드 ===
@@ -423,10 +429,11 @@ class R2Service {
     uploadId: string,
     partNumber: number,
     contentLength: number,
-    expiresIn: number = 3600
+    expiresIn: number = 3600,
+    bucket: string = this.bucketName
   ): Promise<string> {
     const command = new UploadPartCommand({
-      Bucket: this.bucketName,
+      Bucket: bucket,
       Key: key,
       UploadId: uploadId,
       PartNumber: partNumber,
@@ -438,13 +445,14 @@ class R2Service {
   /** 업로드된 파트 목록 (페이지네이션 전체) */
   async listParts(
     key: string,
-    uploadId: string
+    uploadId: string,
+    bucket: string = this.bucketName
   ): Promise<Array<{ PartNumber: number; ETag: string; Size: number }>> {
     const parts: Array<{ PartNumber: number; ETag: string; Size: number }> = [];
     let marker: string | undefined;
     do {
       const res = await this.client.send(
-        new ListPartsCommand({ Bucket: this.bucketName, Key: key, UploadId: uploadId, PartNumberMarker: marker })
+        new ListPartsCommand({ Bucket: bucket, Key: key, UploadId: uploadId, PartNumberMarker: marker })
       );
       for (const p of res.Parts || []) {
         if (p.PartNumber !== undefined && p.ETag) {
@@ -459,11 +467,12 @@ class R2Service {
   async completeMultipartUpload(
     key: string,
     uploadId: string,
-    parts: Array<{ PartNumber: number; ETag: string }>
+    parts: Array<{ PartNumber: number; ETag: string }>,
+    bucket: string = this.bucketName
   ): Promise<void> {
     await this.client.send(
       new CompleteMultipartUploadCommand({
-        Bucket: this.bucketName,
+        Bucket: bucket,
         Key: key,
         UploadId: uploadId,
         MultipartUpload: { Parts: parts.map(({ PartNumber, ETag }) => ({ PartNumber, ETag })) },
@@ -471,16 +480,16 @@ class R2Service {
     );
   }
 
-  async abortMultipartUpload(key: string, uploadId: string): Promise<void> {
+  async abortMultipartUpload(key: string, uploadId: string, bucket: string = this.bucketName): Promise<void> {
     await this.client.send(
-      new AbortMultipartUploadCommand({ Bucket: this.bucketName, Key: key, UploadId: uploadId })
+      new AbortMultipartUploadCommand({ Bucket: bucket, Key: key, UploadId: uploadId })
     );
   }
 
   /** 객체 크기(HeadObject). 없으면 null */
-  async getObjectSize(key: string): Promise<number | null> {
+  async getObjectSize(key: string, bucket: string = this.bucketName): Promise<number | null> {
     try {
-      const res = await this.client.send(new HeadObjectCommand({ Bucket: this.bucketName, Key: key }));
+      const res = await this.client.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
       return res.ContentLength ?? 0;
     } catch (error) {
       const name = (error as { name?: string }).name;
@@ -490,19 +499,19 @@ class R2Service {
   }
 
   /** 단일 객체 삭제 (원본 키 그대로) */
-  async deleteObjectKey(key: string): Promise<void> {
-    await this.deleteKeys([key]);
+  async deleteObjectKey(key: string, bucket: string = this.bucketName): Promise<void> {
+    await this.deleteKeys([key], bucket);
   }
 
   /** 프리픽스 아래 진행 중 멀티파트를 모두 Abort한다. 중단한 개수를 반환 */
-  async abortRoomMultipartUploads(roomId: string): Promise<number> {
+  async abortRoomMultipartUploads(roomId: string, bucket: string = this.bucketName): Promise<number> {
     let aborted = 0;
     let keyMarker: string | undefined;
     let uploadIdMarker: string | undefined;
     do {
       const res = await this.client.send(
         new ListMultipartUploadsCommand({
-          Bucket: this.bucketName,
+          Bucket: bucket,
           Prefix: `${roomId}/`,
           KeyMarker: keyMarker,
           UploadIdMarker: uploadIdMarker,
@@ -511,7 +520,7 @@ class R2Service {
       for (const u of res.Uploads || []) {
         if (!u.Key || !u.UploadId) continue;
         try {
-          await this.abortMultipartUpload(u.Key, u.UploadId);
+          await this.abortMultipartUpload(u.Key, u.UploadId, bucket);
           aborted++;
         } catch (error) {
           logger.warn(`[R2Service] 멀티파트 Abort 실패: ${u.Key}`, error);
@@ -531,11 +540,98 @@ class R2Service {
 
     const { files } = await this.loadFiles(roomId, { limit: 1000 });
 
-    const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    const lockedSize = (await this.listLockedFiles(roomId)).reduce((sum, f) => sum + f.ctSize, 0);
+    const totalSize = files.reduce((sum, file) => sum + file.size, 0) + lockedSize;
 
     logger.info(`[R2Service] 룸 총 용량: ${totalSize} bytes`);
 
     return totalSize;
+  }
+  // === 비밀번호 잠금 파일 (비공개 버킷) ===
+
+  /** 잠금 기능 사용 가능 여부 (R2_LOCKED_BUCKET_NAME 설정 시) */
+  isLockedEnabled(): boolean {
+    return !!this.lockedBucketName;
+  }
+
+  /** 잠금 버킷 이름. 꺼져 있으면 예외 */
+  getLockedBucket(): string {
+    if (!this.lockedBucketName) throw new Error('잠금 버킷이 설정되지 않았습니다');
+    return this.lockedBucketName;
+  }
+
+  /** 잠금 멀티파트 시작. 키는 `${roomId}/${id}`, 잠금 메타데이터를 객체 메타데이터로 저장한다 */
+  async createLockedMultipartUpload(
+    roomId: string,
+    id: string,
+    metadata: LockObjectMetadata
+  ): Promise<{ uploadId: string; key: string }> {
+    const key = `${roomId}/${id}`;
+    const res = await this.client.send(
+      new CreateMultipartUploadCommand({
+        Bucket: this.getLockedBucket(),
+        Key: key,
+        ContentType: 'application/octet-stream',
+        Metadata: metadata,
+      })
+    );
+    if (!res.UploadId) throw new Error('UploadId를 받지 못했습니다');
+    logger.info(`[R2Service] 잠금 멀티파트 시작: ${key}`);
+    return { uploadId: res.UploadId, key };
+  }
+
+  /** 잠금 객체 메타데이터와 암호문 크기. 없거나 형식이 아니면 null */
+  async getLockedObject(roomId: string, id: string): Promise<{ meta: LockObjectMetadata; ctSize: number } | null> {
+    try {
+      const res = await this.client.send(
+        new HeadObjectCommand({ Bucket: this.getLockedBucket(), Key: `${roomId}/${id}` })
+      );
+      const meta = readLockMeta(res.Metadata);
+      if (!meta) return null;
+      return { meta, ctSize: res.ContentLength ?? 0 };
+    } catch (error) {
+      const name = (error as { name?: string }).name;
+      if (name === 'NotFound' || name === 'NoSuchKey') return null;
+      throw error;
+    }
+  }
+
+  /** 잠금 객체 다운로드 presigned URL (짧게: 기본 60초) */
+  async getLockedDownloadUrl(roomId: string, id: string, expiresIn: number = 60): Promise<string> {
+    const command = new GetObjectCommand({ Bucket: this.getLockedBucket(), Key: `${roomId}/${id}` });
+    return getSignedUrl(this.client, command, { expiresIn });
+  }
+
+  /** 룸의 잠금 파일 목록 (꺼져 있으면 빈 배열). size는 평문 크기, ctSize는 저장 크기 */
+  async listLockedFiles(roomId: string): Promise<Array<{ id: string; size: number; ctSize: number; lastModified: string }>> {
+    if (!this.lockedBucketName) return [];
+    const objects = await this.listAllObjects(`${roomId}/`, this.lockedBucketName);
+    return objects
+      .filter((obj) => obj.Key && !obj.Key.endsWith('/'))
+      .map((obj) => {
+        const ctSize = obj.Size || 0;
+        return {
+          id: obj.Key!.split('/').pop()!,
+          size: ptSizeOf(ctSize),
+          ctSize,
+          lastModified: obj.LastModified?.toISOString() || new Date().toISOString(),
+        };
+      })
+      .sort((a, b) => b.lastModified.localeCompare(a.lastModified));
+  }
+
+  /** 잠금 파일 하나 삭제 */
+  async deleteLockedFile(roomId: string, id: string): Promise<void> {
+    await this.deleteKeys([`${roomId}/${id}`], this.getLockedBucket());
+  }
+
+  /** 룸의 잠금 파일·진행 중 잠금 멀티파트를 모두 정리한다. 삭제한 파일 수 반환 (꺼져 있으면 0) */
+  async deleteAllLockedFiles(roomId: string): Promise<number> {
+    if (!this.lockedBucketName) return 0;
+    await this.abortRoomMultipartUploads(roomId, this.lockedBucketName);
+    const keys = await this.listAllKeys(`${roomId}/`, this.lockedBucketName);
+    if (keys.length > 0) await this.deleteKeys(keys, this.lockedBucketName);
+    return keys.length;
   }
 }
 

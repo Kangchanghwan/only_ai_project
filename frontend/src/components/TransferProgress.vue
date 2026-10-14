@@ -49,6 +49,8 @@ const cancellableCount = computed(() => {
         :percent="upload.percent"
         :status="upload.status"
         :cancellable="!!upload.cancellable"
+        :locked="!!upload.locked"
+        :enc-percent="upload.encPercent || 0"
         @cancel="emit('cancel-upload', id)"
       />
     </div>

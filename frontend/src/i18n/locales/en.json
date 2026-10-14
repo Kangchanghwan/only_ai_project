@@ -433,5 +433,45 @@
   "guide": {
     "title": "Storage and usage notes",
     "retention": "Even while you are connected, files are cleaned up automatically after at most 1 day. Cleanup runs periodically, so the exact time (to the second) is not guaranteed, and items may be deleted sooner once every device leaves. Download what you need right away."
+  },
+  "lock": {
+    "chipStart": "Lock with a password",
+    "chipOn": "Lock on",
+    "chipOff": "Turn off",
+    "chipHint": "At least 4 characters. For this session, files you send to this space are locked on this device before upload. Tell the recipient the password separately.",
+    "apply": "Turn on lock",
+    "settingUp": "Setting up…",
+    "passwordPlaceholder": "Password",
+    "passwordTooShort": "Password must be at least {min} characters.",
+    "confirmLabel": "Password (optional)",
+    "confirmPlaceholder": "Leave empty to send without a lock",
+    "confirmHint": "If set, files are locked on this device before sending. Only people who know the password can open them.",
+    "confirmAlreadyLocked": "Lock is on for Everyone. Files you send are locked with your password.",
+    "confirmLockedSend": "Lock and send",
+    "lockedFile": "Locked file",
+    "hiddenName": "The file name is visible only to people who know the password",
+    "unlockedHere": "Unlocked on this device only",
+    "unlock": "Unlock",
+    "checking": "Checking password…",
+    "decrypting": "Downloading and unlocking {percent}%",
+    "needPassword": "Enter the password.",
+    "wrongPassword": "Wrong password · {count} tries left",
+    "wrongPasswordNoCount": "Wrong password.",
+    "lockedOut": "Too many wrong tries. This file can no longer be downloaded.",
+    "tooLargeForDevice": "This device can't receive locked files larger than {size}. Please download it on a PC or Chrome for Android.",
+    "badge": "Even the operator can't open it",
+    "explain": "Files are locked with the password on this device before upload. The server and storage only keep unreadable data, so even the operator can't open them. The password is never sent to the server, and wrong passwords are accepted only a limited number of times. File size, upload time, and sender device are visible.",
+    "progress": {
+      "encrypting": "Locking",
+      "uploading": "Uploading"
+    },
+    "errors": {
+      "metaFailed": "Couldn't load the locked file info ({status})",
+      "unlockFailed": "Couldn't open the locked file ({status})",
+      "setFailed": "Couldn't turn on the lock. Please try again.",
+      "notFound": "File not found. It may have been deleted.",
+      "downloadFailed": "Something went wrong while downloading. Please try again."
+    },
+    "downloadAgain": "Download again"
   }
 }
