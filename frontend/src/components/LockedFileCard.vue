@@ -8,7 +8,9 @@
  * - 메타 줄은 일반 카드와 같은 내용(보낸 사람 · 용량 · 시간)으로 고정해 좁은 화면에서도 줄 수가 같다.
  *   받는 중 진행률은 주 버튼 안의 %와 카드 아래 테두리의 얇은 막대로, 풀린 상태는 열린 자물쇠로 보여 준다.
  *   시트 밖에서 난 오류는 알림 토스트로 띄운다.
- * 공유 링크·QR·미리보기·썸네일은 없다.
+ * - 이번 접속에서 비밀번호를 확인했거나 내가 잠근 파일은 "…" → QR로 공유할 수 있다.
+ *   QR·링크에는 이 파일의 키가 들어 있어 가진 사람은 비밀번호 없이 받는다 (lockedLink.js).
+ * 미리보기·썸네일은 없다.
  */
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -16,7 +18,8 @@ import { formatFileSize, formatUploadTime } from '../utils/fileUtils'
 import SenderLabel from './SenderLabel.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import { useLockState } from '../composables/useLockState'
-import { openLockedFile } from '../services/lockedDownloader'
+import { openLockedFile, createLockedShareLink } from '../services/lockedDownloader'
+import FileQRCodeModal from './FileQRCodeModal.vue'
 import { r2Service } from '../services/r2Service.js'
 import { trackEvent } from '../utils/analytics'
 import { useNotification } from '../composables/useNotification'
@@ -66,7 +69,7 @@ const busy = computed(() => phase.value === 'checking' || phase.value === 'downl
 const hasKey = ref(false)
 let saltCache = null
 async function checkKnownKey() {
-  if (knownName.value || hasKey.value || lockState.version.value === 0) return
+  if (hasKey.value || lockState.version.value === 0) return
   try {
     if (!saltCache) saltCache = (await r2Service.lockedMeta(props.file.roomId, props.file.name))?.salt || null
     hasKey.value = !!(saltCache && lockState.keyFor(saltCache))
@@ -81,6 +84,11 @@ watch(() => lockState.version.value, checkKnownKey)
 const canDelete = computed(() =>
   !!lockState.deleteKeyFor(props.file.roomId, props.file.name) || hasKey.value || phase.value === 'done'
 )
+// QR 공유: 이 파일의 키를 풀 수 있을 때만 (내가 잠갔거나 이번 접속에서 같은 비밀번호를 확인)
+const canShareQR = computed(() => hasKey.value || phase.value === 'done')
+const qrFile = ref(null)
+const isQRModalOpen = ref(false)
+const qrPreparing = ref(false)
 // 주 버튼: 바로 받을 수 있으면 "받기", 아니면 "풀기"
 const canReceiveDirectly = computed(() => phase.value === 'done' || !!knownName.value || hasKey.value)
 
@@ -208,6 +216,27 @@ function closeActionsSheet() {
 
 function handleActionsBackdrop(event) {
   if (event.target === event.currentTarget) closeActionsSheet()
+}
+
+async function handleSheetQR() {
+  if (qrPreparing.value) return
+  qrPreparing.value = true
+  try {
+    const link = await createLockedShareLink({ roomId: props.file.roomId, id: props.file.name, lockState })
+    qrFile.value = link
+    closeActionsSheet()
+    isQRModalOpen.value = true
+    trackEvent('qr_open', { qr_type: 'locked' })
+  } catch (err) {
+    closeActionsSheet()
+    notification.showError(
+      err?.code === 'NEED_PASSWORD' ? t('lock.qrNeedKey')
+        : (err?.status === 404 || err?.code === 'LOCKED_NOT_FOUND') ? t('lock.errors.notFound')
+          : t('lock.qrFailed')
+    )
+  } finally {
+    qrPreparing.value = false
+  }
 }
 
 function handleSheetDelete() {
@@ -385,7 +414,18 @@ onUnmounted(() => clearInterval(revealTimer))
       </Transition>
     </Teleport>
 
-    <!-- 더보기 시트: 지울 수 있으면 "삭제", 아니면 안내 한 줄 -->
+    <FileQRCodeModal
+      v-if="qrFile"
+      :file="qrFile"
+      :is-open="isQRModalOpen"
+      :scan-text="t('lock.qrScan')"
+      :hint="t('lock.qrHint')"
+      error-correction-level="M"
+      link-type="locked"
+      @close="isQRModalOpen = false"
+    />
+
+    <!-- 더보기 시트: QR(키가 있을 때), 지울 수 있으면 "삭제", 아니면 안내 한 줄 -->
     <Teleport to="body">
       <Transition name="sheet">
         <div
@@ -400,6 +440,16 @@ onUnmounted(() => clearInterval(revealTimer))
         >
           <div class="w-full sm:w-80 bg-surface rounded-t-2xl sm:rounded-2xl p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
             <p class="px-4 py-2 text-xs text-text-secondary truncate m-0">{{ isPlain ? displayName : t('lock.lockedFile') }}</p>
+            <button
+              v-if="canShareQR"
+              class="sheet-qr w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary disabled:opacity-60"
+              :disabled="qrPreparing"
+              data-testid="locked-qr"
+              @click="handleSheetQR"
+            >
+              <span aria-hidden="true">▦</span>
+              <span class="text-sm font-medium">{{ qrPreparing ? t('lock.qrPreparing') : t('room.qrShareTitle') }}</span>
+            </button>
             <button
               v-if="canDelete"
               class="sheet-delete w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-red-500/10 text-red-500"

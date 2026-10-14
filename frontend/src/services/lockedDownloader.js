@@ -9,8 +9,9 @@
 import { r2Service } from './r2Service.js'
 import { t } from '../i18n/translate.js'
 import {
-  LOCK_VERSION, RECORD_SIZE, deriveLock, unwrapFileKeyRaw, importRawKey, decryptName, fromB64u, createDecryptor
+  LOCK_VERSION, RECORD_SIZE, deriveLock, unwrapFileKeyRaw, importRawKey, decryptName, fromB64u, b64u, createDecryptor
 } from '../utils/lockCrypto.js'
+import { buildLockedLink } from '../utils/lockedLink.js'
 
 const MB = 1024 * 1024
 /** 메모리 복호화 상한 (평문). 넘으면 다른 기기에서 받도록 안내한다 */
@@ -183,4 +184,52 @@ export async function openLockedFile({ roomId, id, password, lockState, onName, 
     })
   }
   return { name }
+}
+
+/**
+ * QR·링크로 넘길 주소를 만든다. 이번 접속에서 같은 비밀번호(salt)를 확인했거나 내가 잠근 경우에만 된다.
+ * 링크에는 이 파일 하나의 키(DK)와 서버 확인값만 들어간다 (비밀번호·encKey는 넣지 않는다).
+ * @returns {Promise<{url:string, name:string, size:number}>}
+ */
+export async function createLockedShareLink({ roomId, id, lockState, origin = window.location.origin }) {
+  const meta = await r2Service.lockedMeta(roomId, id)
+  const entry = lockState.keyFor(meta.salt)
+  if (!entry) throw lockError('NEED_PASSWORD')
+  const res = await r2Service.lockedUnlock(roomId, id, entry.verifier)
+  const dkRaw = await unwrapFileKeyRaw(entry.encKey, res.wk, res.wkIv)
+  const name = await decryptName(await importRawKey(dkRaw), res.en, res.enIv)
+  lockState.rememberName(roomId, id, name)
+  return {
+    url: buildLockedLink(origin, { roomId, id, verifier: entry.verifier, key: b64u(dkRaw) }),
+    name,
+    size: res.size
+  }
+}
+
+/**
+ * QR·링크의 키로 연다 (비밀번호 입력 없음).
+ * download=false면 이름·크기만 확인한다. 받을 때는 60초 URL이 만료되지 않게 다시 요청한다.
+ * 링크가 손상됐으면(키·확인값 불일치) LOCK_LINK_INVALID.
+ * @returns {Promise<{name:string, size:number}>}
+ */
+export async function openLockedLink({ roomId, id, verifier, key, download = true, onProgress }) {
+  let res
+  try {
+    res = await r2Service.lockedUnlock(roomId, id, verifier)
+  } catch (err) {
+    if (err?.code === 'WRONG_PASSWORD') throw lockError('LOCK_LINK_INVALID')
+    throw err
+  }
+  const dkRaw = fromB64u(key)
+  let name
+  try {
+    name = await decryptName(await importRawKey(dkRaw), res.en, res.enIv)
+  } catch {
+    throw lockError('LOCK_LINK_INVALID')
+  }
+  if (download) {
+    if (!canStreamViaServiceWorker() && res.size > MEMORY_DECRYPT_LIMIT) throw lockError('LOCK_TOO_LARGE_FOR_DEVICE')
+    await downloadLocked({ url: res.url, size: res.size, ctSize: res.ctSize, dkRaw, np: fromB64u(res.np), name, onProgress })
+  }
+  return { name, size: res.size }
 }

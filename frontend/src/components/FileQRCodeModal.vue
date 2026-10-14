@@ -16,7 +16,13 @@ const props = defineProps({
   isOpen: {
     type: Boolean,
     default: false
-  }
+  },
+  // 잠긴 파일 링크처럼 다른 안내가 필요할 때 덮어쓴다
+  scanText: { type: String, default: '' },
+  hint: { type: String, default: '' },
+  // 주소가 길면(잠긴 파일 링크) 오류 정정 수준을 낮춰 QR을 덜 빽빽하게 만든다
+  errorCorrectionLevel: { type: String, default: 'H' },
+  linkType: { type: String, default: 'file' }
 })
 
 const emit = defineEmits(['close', 'download'])
@@ -33,7 +39,7 @@ async function generateQR() {
 
   try {
     await QRCode.toCanvas(canvasRef.value, props.file.url, {
-      errorCorrectionLevel: 'H',
+      errorCorrectionLevel: props.errorCorrectionLevel,
       margin: 2,
       width: 256,
       color: {
@@ -41,7 +47,6 @@ async function generateQR() {
         light: '#FFFFFF'
       }
     })
-    console.log('[FileQRCodeModal] QR 코드 생성 완료:', props.file.url)
   } catch (error) {
     console.error('[FileQRCodeModal] QR 코드 생성 실패:', error)
   }
@@ -90,7 +95,7 @@ async function handleCopyUrl() {
   try {
     await navigator.clipboard.writeText(props.file.url)
     copySuccess.value = true
-    trackEvent('link_copy', { link_type: 'file' })
+    trackEvent('link_copy', { link_type: props.linkType })
     setTimeout(() => {
       copySuccess.value = false
     }, 2000)
@@ -136,7 +141,7 @@ async function handleCopyUrl() {
           <!-- 파일 정보 -->
           <div class="mt-4 text-center w-full">
             <p class="text-gray-600 text-sm mb-3">
-              {{ t('qrModal.scanFile') }}
+              {{ scanText || t('qrModal.scanFile') }}
             </p>
             <div class="flex items-center justify-center gap-2 mb-1">
               <span class="text-2xl">{{ getFileIcon(file.name) }}</span>
@@ -172,7 +177,7 @@ async function handleCopyUrl() {
         <!-- 안내 메시지 -->
         <div class="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6">
           <p class="text-text-primary text-sm leading-relaxed">
-            💡 {{ t('qrModal.fileHint') }}
+            💡 {{ hint || t('qrModal.fileHint') }}
           </p>
         </div>
 
