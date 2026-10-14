@@ -454,7 +454,6 @@
     "unlock": "Unlock",
     "checking": "Checking password…",
     "decrypting": "Downloading and unlocking {percent}%",
-    "needPassword": "Enter the password.",
     "wrongPassword": "Wrong password · {count} tries left",
     "wrongPasswordNoCount": "Wrong password.",
     "lockedOut": "Too many wrong tries. This file can no longer be downloaded.",
@@ -471,6 +470,9 @@
       "downloadFailed": "Something went wrong while downloading. Please try again.",
       "deleteForbidden": "Only people who know the password can delete this file."
     },
-    "downloadAgain": "Download again"
+    "noBulk": "Locked files are received one at a time",
+    "sheetTitle": "Enter the password",
+    "showPassword": "Show",
+    "hidePassword": "Hide"
   }
 }

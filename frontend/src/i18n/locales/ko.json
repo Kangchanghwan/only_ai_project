@@ -454,7 +454,6 @@
     "unlock": "풀기",
     "checking": "비밀번호 확인 중…",
     "decrypting": "받으면서 푸는 중 {percent}%",
-    "needPassword": "비밀번호를 입력해 주세요.",
     "wrongPassword": "비밀번호가 맞지 않아요 · 남은 시도 {count}회",
     "wrongPasswordNoCount": "비밀번호가 맞지 않아요.",
     "lockedOut": "틀린 횟수가 많아 이 파일은 더 받을 수 없어요.",
@@ -471,6 +470,9 @@
       "downloadFailed": "받는 중 문제가 생겼어요. 다시 시도해 주세요.",
       "deleteForbidden": "비밀번호를 아는 사람만 이 파일을 지울 수 있어요."
     },
-    "downloadAgain": "다시 받기"
+    "noBulk": "잠긴 파일은 하나씩 받아요",
+    "sheetTitle": "비밀번호를 입력하세요",
+    "showPassword": "보기",
+    "hidePassword": "숨기기"
   }
 }
