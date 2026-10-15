@@ -1,6 +1,6 @@
 # Intent: 한국어 가이드 "파일 비밀번호 걸어서 보내기"
 
-Author: owner (2026-10-15 지시, 에이전트 작성). Status: accepted. Created: 2026-10-15.
+Author: owner (2026-10-15 지시, 에이전트 작성). Status: shipped (2026-10-16). Created: 2026-10-15.
 Trigger: owner 아이디어 — 비밀번호 잠금·QR 공유 출시(PR #52~#55)를 유입 각도로 쓰기. ops/playbooks/lock-campaign.md.
 
 ## Problem
@@ -24,3 +24,6 @@ Trigger: owner 아이디어 — 비밀번호 잠금·QR 공유 출시(PR #52~#55
 후행: 28일 이 URL 클릭.
 
 ## Result
+- 2026-10-16 배포: https://www.clipboardapp.org/guide/send-file-with-password.html (master b376768, auto 게이트 통과, 라이브 title 확인). 허브 "파일 옮기기"·ItemList 19, pc-bang 관련 글, sitemap, llms.txt. 배포 당일 GSC 색인 생성 요청(요청됨), 네이버 웹 페이지 수집 요청. 같은 날 네이버 블로그 L1 글에서 링크.
+- 기준값: 배포 전 GSC 28일 "비밀번호·암호·password·encrypt" 포함 쿼리 노출 0. GA4 10-09–10-15 locked_upload_complete 5회(1명), locked_download_complete 2회(1명), locked_link_download_complete 1회(1명) = 10-15 출시 테스트분.
+- 판독: 7일 10-23, 28일 11-13.
