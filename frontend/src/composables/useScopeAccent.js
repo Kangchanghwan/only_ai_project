@@ -1,27 +1,32 @@
 import { computed } from 'vue'
+import { isPrivateScope } from './useShareScope.js'
 
 /**
- * scope('ip'|'global') 값에 따라 coral(ip)/sage(global) 액센트 Tailwind 클래스를 반환한다.
- * DESIGN.md: ip 스코프 = --color-primary(coral, 기본), global 스코프 = --color-scope-global(sage).
- * 각 반환값은 리터럴 삼항식으로 작성되어야 Tailwind JIT 스캐너가 클래스를 인식한다.
- * @param {() => 'ip'|'global'} scopeGetter
+ * scope('ip'|'global'|'prv:<roomId>') 값에 따라 coral(ip)/sage(global)/blue(1:1) 액센트 Tailwind 클래스를 반환한다.
+ * DESIGN.md: ip 스코프 = --color-primary(coral, 기본), global 스코프 = --color-scope-global(sage),
+ * 1:1 비공개 방 = --color-scope-private(blue).
+ * 각 반환값은 리터럴 문자열로 작성되어야 Tailwind JIT 스캐너가 클래스를 인식한다.
+ * @param {() => string} scopeGetter
  */
 export function useScopeAccent(scopeGetter) {
   const isGlobal = computed(() => scopeGetter() === 'global')
+  const isPrivate = computed(() => isPrivateScope(scopeGetter()))
+  const pick = (ip, global, prv) => computed(() => (isPrivate.value ? prv : isGlobal.value ? global : ip))
 
   return {
     isGlobal,
-    bg: computed(() => (isGlobal.value ? 'bg-scope-global' : 'bg-primary')),
-    text: computed(() => (isGlobal.value ? 'text-scope-global' : 'text-primary')),
-    border: computed(() => (isGlobal.value ? 'border-scope-global' : 'border-primary')),
-    borderL: computed(() => (isGlobal.value ? 'border-l-scope-global' : 'border-l-primary')),
-    bgSoft10: computed(() => (isGlobal.value ? 'bg-scope-global/10' : 'bg-primary/10')),
-    bgSoft5: computed(() => (isGlobal.value ? 'bg-scope-global/5' : 'bg-primary/5')),
-    hoverShadow30: computed(() => (isGlobal.value ? 'hover:shadow-scope-global/30' : 'hover:shadow-primary/30')),
-    hoverBorder: computed(() => (isGlobal.value ? 'hover:border-scope-global' : 'hover:border-primary')),
-    hoverBorder50: computed(() => (isGlobal.value ? 'hover:border-scope-global/50' : 'hover:border-primary/50')),
-    hoverBg: computed(() => (isGlobal.value ? 'hover:bg-scope-global' : 'hover:bg-primary')),
-    hoverText: computed(() => (isGlobal.value ? 'hover:text-scope-global' : 'hover:text-primary')),
-    accentColor: computed(() => (isGlobal.value ? 'accent-scope-global' : 'accent-primary')),
+    isPrivate,
+    bg: pick('bg-primary', 'bg-scope-global', 'bg-scope-private'),
+    text: pick('text-primary', 'text-scope-global', 'text-scope-private'),
+    border: pick('border-primary', 'border-scope-global', 'border-scope-private'),
+    borderL: pick('border-l-primary', 'border-l-scope-global', 'border-l-scope-private'),
+    bgSoft10: pick('bg-primary/10', 'bg-scope-global/10', 'bg-scope-private/10'),
+    bgSoft5: pick('bg-primary/5', 'bg-scope-global/5', 'bg-scope-private/5'),
+    hoverShadow30: pick('hover:shadow-primary/30', 'hover:shadow-scope-global/30', 'hover:shadow-scope-private/30'),
+    hoverBorder: pick('hover:border-primary', 'hover:border-scope-global', 'hover:border-scope-private'),
+    hoverBorder50: pick('hover:border-primary/50', 'hover:border-scope-global/50', 'hover:border-scope-private/50'),
+    hoverBg: pick('hover:bg-primary', 'hover:bg-scope-global', 'hover:bg-scope-private'),
+    hoverText: pick('hover:text-primary', 'hover:text-scope-global', 'hover:text-scope-private'),
+    accentColor: pick('accent-primary', 'accent-scope-global', 'accent-scope-private'),
   }
 }

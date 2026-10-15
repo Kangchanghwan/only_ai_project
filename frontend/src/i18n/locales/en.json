@@ -488,5 +488,72 @@
       "invalid": "This link isn't valid. Please scan the QR code again.",
       "expired": "File not found. It may have expired after a day or been deleted."
     }
+  },
+  "pair": {
+    "button": "Connect 1:1",
+    "buttonShort": "1:1",
+    "paired": "1:1 on",
+    "connecting": "Connecting…",
+    "openWith": "Open a private room with {name}",
+    "openRoom": "Go to your 1:1 room with {name}",
+    "pending": "Waiting for them to accept",
+    "pendingSeconds": "{n}s",
+    "cancel": "Cancel",
+    "hint": "Tap a device to open a private 1:1 room",
+    "hintClose": "Close tip",
+    "unknownDevice": "Unknown device",
+    "request": {
+      "title": "1:1 connection request",
+      "body": "If you accept, you'll both check a picture match, then a room just for the two of you opens.",
+      "sameNetwork": "Same network",
+      "otherNetwork": "Different network",
+      "decline": "Decline",
+      "accept": "Accept",
+      "block": "Don't accept requests from this device this visit",
+      "announce": "{name} wants a 1:1 connection"
+    },
+    "confirm": {
+      "title": "Check that both screens show the same pictures",
+      "preparing": "Getting ready…",
+      "waiting": "Waiting for the other device",
+      "different": "Different",
+      "same": "Same"
+    },
+    "connected": "Connected with {name}",
+    "ended": {
+      "mismatch": "The pictures didn't match, so the connection was cancelled. Please try again.",
+      "declined": "They declined the request",
+      "cancelled": "They cancelled the request",
+      "expired": "The request timed out",
+      "peerLeft": "They left, so the connection was cancelled",
+      "failed": "Couldn't connect. Please try again."
+    },
+    "errors": {
+      "COOLDOWN": "They just declined. Try again in a moment",
+      "TOO_MANY": "Too many requests in progress",
+      "BLOCKED": "This device isn't accepting requests",
+      "TARGET_NOT_FOUND": "That device is no longer in the list",
+      "ALREADY_PAIRED": "Already connected to this device",
+      "RATE_LIMITED": "Too many requests. Try again in a moment",
+      "TIMEOUT": "The server didn't respond. Please try again",
+      "generic": "Couldn't send the request",
+      "leaveFailed": "Couldn't disconnect. Please try again",
+      "noRoom": "This 1:1 room isn't available"
+    },
+    "tab": "1:1",
+    "tabMany": "1:1 ({n})",
+    "tabTitle": "1:1 with {name}",
+    "stripTitle": "1:1 with {name}",
+    "stripNote": "Files and text here are seen only by the two of you and encrypted automatically",
+    "statusOnline": "Online",
+    "statusLeft": "Left",
+    "leave": "Disconnect",
+    "leaveConfirmTitle": "Disconnect this 1:1 room?",
+    "leaveConfirmBody": "Files and text in this room disappear from this screen. You'll need to connect again to see them.",
+    "uploadHint": "Drag and drop works too, and it's encrypted automatically",
+    "peerLeftNotice": "They left. Reconnect to share again.",
+    "reconnect": "Reconnect",
+    "peerLeftToast": "They left the 1:1 room",
+    "unreadableText": "Unreadable text"
   }
 }

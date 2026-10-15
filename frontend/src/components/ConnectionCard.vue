@@ -4,11 +4,13 @@
  * 넓은 화면(wide): 같은 DeviceList를 왼쪽 패널에 항상 펼쳐 보여준다.
  * 어느 쪽이든 기기 데이터(devices)는 하나이고, 목록은 한 번에 한 곳에만 마운트된다(포커스/다이얼로그 중복 없음).
  */
-import { computed } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ConnectedDevices from './ConnectedDevices.vue'
 import DeviceList from './DeviceList.vue'
 import { countOtherDevices } from '../utils/devices'
+import { PAIR_CONTEXT_KEY, PAIR_HINT_KEY } from '../utils/pairContext'
+import { isPrivateScope } from '../composables/useShareScope'
 
 const { t } = useI18n()
 
@@ -21,6 +23,17 @@ const props = defineProps({
   wide: { type: Boolean, default: false }
 })
 const emit = defineEmits(['reroll'])
+
+// 폰 첫 안내: 다른 기기가 1대 이상일 때 한 줄, 닫으면 다시 보이지 않는다
+const pair = inject(PAIR_CONTEXT_KEY, null)
+function hintDismissed() {
+  try { return localStorage.getItem(PAIR_HINT_KEY) === '1' } catch { return false }
+}
+const hintClosed = ref(hintDismissed())
+function closeHint() {
+  hintClosed.value = true
+  try { localStorage.setItem(PAIR_HINT_KEY, '1') } catch { /* 저장 실패는 무시 */ }
+}
 
 const otherCount = computed(() => countOtherDevices(props.devices, props.mySocketId, props.myIdentity))
 </script>
@@ -50,9 +63,24 @@ const otherCount = computed(() => countOtherDevices(props.devices, props.mySocke
         :my-socket-id="mySocketId"
         :my-identity="myIdentity"
         :scope="scope"
+        :wide="true"
         :reroll-available-at="rerollAvailableAt"
         @reroll="emit('reroll')"
       />
+    </div>
+    <div
+      v-if="!wide && pair && otherCount >= 1 && !hintClosed && !isPrivateScope(scope)"
+      class="mt-2 pt-2 border-t border-border flex items-center gap-2 text-xs text-text-secondary"
+      data-testid="pair-hint"
+    >
+      <p class="m-0 flex-1 min-w-0 leading-relaxed">{{ t('pair.hint') }}</p>
+      <button
+        type="button"
+        class="shrink-0 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-text-secondary"
+        :aria-label="t('pair.hintClose')"
+        data-testid="pair-hint-close"
+        @click="closeHint"
+      ><span aria-hidden="true">✕</span></button>
     </div>
   </div>
 </template>

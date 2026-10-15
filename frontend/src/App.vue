@@ -13,7 +13,9 @@ import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
-import { useShareScope } from './composables/useShareScope'
+import { useShareScope, isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from './composables/useShareScope'
+import { usePrivateRooms } from './composables/usePrivateRooms'
+import { usePairFlow } from './composables/usePairFlow'
 import { useSeoMeta } from './composables/useSeoMeta'
 import { usePublicShareGuard } from './composables/usePublicShareGuard'
 import { useLockState } from './composables/useLockState'
@@ -27,7 +29,7 @@ import { startP2pProbe } from './services/p2pProbe'
 import { openFileInNewTab } from './utils/openFile'
 import { createUploadProgress, cancelUpload, cancelAllUploads } from './utils/uploadProgress'
 import { createNewDeviceTracker } from './utils/newDevices'
-import { isValidIdentity, describeJoined } from './utils/identity'
+import { isValidIdentity, describeJoined, sameIdentity } from './utils/identity'
 import { t } from './i18n/translate'
 
 import RoomScreen from './components/RoomScreen.vue'
@@ -36,6 +38,8 @@ import LockedLinkPage from './components/LockedLinkPage.vue'
 import NotificationToast from './components/NotificationToast.vue'
 import ShareConfirmSheet from './components/ShareConfirmSheet.vue'
 import PublicShareConfirm from './components/PublicShareConfirm.vue'
+import PairRequestSheet from './components/PairRequestSheet.vue'
+import PairConfirmSheet from './components/PairConfirmSheet.vue'
 
 // ========================================
 // Composables 초기화
@@ -55,6 +59,7 @@ const lockState = useLockState()
 // 로케일에 맞춰 title/description/og/canonical/lang을 갱신 (언어 전환 시 자동 반영)
 useSeoMeta()
 const isConnecting = ref(false)
+const privateRooms = usePrivateRooms()
 
 // 같은 네트워크(ipRoom)에 새 기기가 들어오면 토스트로 알린다.
 // 내 접속 직후의 초기 목록, 이미 본 기기의 재접속(연결 복구), 내 기기, 전체 공유 방은 알리지 않는다.
@@ -80,6 +85,73 @@ const currentRoute = ref({ type: 'home' })
 // 룸별 목록 페이지 크기. 백엔드가 최신순으로 정렬해 주므로 첫 페이지가 곧 최신 파일들이다.
 // 10개였을 때는 R2 이름순 첫 10개만 보여 방금 올린 파일이 "더 보기" 뒤에 숨는 문제가 있었다.
 const FILE_PAGE_SIZE = 50
+
+/** 목록 조회 대상: ip/global + 내가 들어가 있는 1:1 비공개 방 */
+const allRoomIds = computed(() => [...roomManager.roomIds.value, ...privateRooms.rooms.map((r) => r.roomId)])
+
+/** 메시지의 roomId가 내가 들어간 방(ip, global, 내 비공개 방)인지 */
+const isMyRoom = (roomId) =>
+  !!roomId && (roomManager.roomIds.value.includes(roomId) || privateRooms.has(roomId))
+
+/** socketService.publishMessage의 target: 'ip' | 'global' | 비공개 roomId */
+const publishTargetForScope = (scope) => privateRoomIdOfScope(scope) ?? scope
+function publishTargetForRoom(roomId) {
+  if (privateRooms.has(roomId)) return roomId
+  return roomId === roomManager.globalRoomId.value ? 'global' : 'ip'
+}
+
+// 1:1 연결 흐름 (요청/확인 시트, 완료 처리). 소켓 어댑터가 없는 환경(테스트)에서는 비활성
+const pairFlow = usePairFlow({
+  adapter: socketService.getPairAdapter?.() ?? null,
+  privateRooms,
+  notify: notification,
+  track: trackEvent,
+  t,
+  leaveRoom: (roomId) => socket.leavePrivate?.(roomId),
+  onRoomReady: async (roomId) => {
+    // 새 1:1 탭으로 자동 이동하고, 그 방의 파일 목록을 불러온다
+    shareScope.setScope(scopeForPrivateRoom(roomId))
+    await fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
+  }
+})
+const incomingSession = computed(() => (pairFlow.confirming.value ? null : pairFlow.incoming.value))
+
+const deviceIsPeer = (d, peer) =>
+  !!peer && (peer.socketId ? d.socketId === peer.socketId : sameIdentity(d.identity, peer.identity))
+
+// 상대 접속 상태: 그 방의 room-users에 상대가 있는지로 판단한다
+watch(
+  () => [socket.privateRoomDevices?.value, privateRooms.rooms.length],
+  () => {
+    const byRoom = socket.privateRoomDevices?.value || {}
+    for (const r of privateRooms.rooms) {
+      const devs = byRoom[r.roomId]
+      if (!Array.isArray(devs)) continue
+      privateRooms.setStatus(r.roomId, devs.some((d) => deviceIsPeer(d, r.peer)) ? 'online' : 'left')
+    }
+  },
+  { deep: true }
+)
+
+async function handlePrivateLeave(roomId) {
+  if (!privateRooms.has(roomId)) return
+  const res = await socket.leavePrivate?.(roomId)
+  if (res && !res.ok && res.code !== 'NOT_MEMBER') {
+    notification.showError(t('pair.errors.leaveFailed'))
+    return
+  }
+  trackEvent('pair_leave')
+  if (shareScope.scope.value === scopeForPrivateRoom(roomId)) shareScope.setScope('ip')
+  privateRooms.removeRoom(roomId)
+  fileManager.clearRoomFiles?.(roomId)
+  textShare.clearTextsForRoom(roomId)
+}
+
+function handlePrivateLeftMessage(message) {
+  if (!privateRooms.has(message.roomId)) return
+  privateRooms.setStatus(message.roomId, 'left')
+  notification.showInfo(t('pair.peerLeftToast'))
+}
 
 // 현재 선택된 scope('ip'|'global')에 대응하는 룸 ID — 피드 필터링/업로드 대상 공통 기준
 const activeRoomId = computed(() => roomManager.roomIdForScope(shareScope.scope.value))
@@ -119,7 +191,7 @@ socket.onReconnected(() => {
   // 파일 목록 다시 로드
   fileManager.clearFiles()
   textShare.clearAllTexts()
-  fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
+  fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
 
   notification.showSuccess(t('notification.reconnected'))
 })
@@ -166,11 +238,42 @@ async function connectToRoom() {
   }
 }
 
+/** 받은 텍스트를 목록에 넣는다. 1:1 방은 암호문(enc)만 오며 평문 content는 쓰지 않는다 */
+async function receiveText(message) {
+  if (textShare.sharedTexts.value.some((x) => x.id === message.textId)) return
+  let content = message.content
+  if (privateRooms.has(message.roomId)) {
+    try {
+      content = await privateRooms.decryptFor(message.roomId, message.enc)
+    } catch {
+      content = t('pair.unreadableText')
+    }
+    // 복호화 사이에 같은 항목이 들어왔는지 다시 확인
+    if (textShare.sharedTexts.value.some((x) => x.id === message.textId)) return
+  }
+  textShare.sharedTexts.value.push({
+    id: message.textId,
+    content,
+    timestamp: message.timestamp,
+    roomId: message.roomId,
+    // 서버가 붙인 보낸 사람 (구버전 백엔드는 없음 → 표시 생략)
+    ...(message.sender ? { sender: message.sender } : {})
+  })
+  notification.showInfo(t('text.newText'))
+}
+
 /**
  * 소켓 이벤트 리스너를 설정합니다.
  */
 function setupSocketListeners() {
   cleanupOnMessage = socket.onMessage((message) => {
+    if (!message || typeof message !== 'object') return
+    if (message.type === 'private-left') {
+      handlePrivateLeftMessage(message)
+      return
+    }
+    // 내가 들어간 방(ip, global, 내 1:1 방)이 아닌 roomId의 메시지는 무시한다
+    if (!isMyRoom(message.roomId)) return
     if (message.type === 'file-uploaded' || message.type === 'file-deleted' || message.type === 'files-cleared') {
       // 메시지에 담긴 정보만으로 로컬 목록을 갱신한다 — 업로드마다 전체 목록을 재조회하지 않는다.
       // 정보가 부족한 구버전 메시지('reload')일 때만 기존처럼 재조회한다.
@@ -182,21 +285,11 @@ function setupSocketListeners() {
         fileManager.loadFilesFromRooms(roomManager.roomIds.value)
       }
     } else if (message.type === 'text-shared') {
-      const exists = textShare.sharedTexts.value.some(t => t.id === message.textId)
-      if (!exists) {
-        const newText = {
-          id: message.textId,
-          content: message.content,
-          timestamp: message.timestamp,
-          roomId: message.roomId,
-          // 서버가 붙인 보낸 사람 (구버전 백엔드는 없음 → 표시 생략)
-          ...(message.sender ? { sender: message.sender } : {})
-        }
-        textShare.sharedTexts.value.push(newText)
-        notification.showInfo(t('text.newText'))
-      }
+      receiveText(message)
     } else if (message.type === 'text-removed') {
-      textShare.removeText(message.textId)
+      // 다른 방의 텍스트를 지우는 메시지는 무시한다
+      const target = textShare.sharedTexts.value.find((x) => x.id === message.textId)
+      if (target && target.roomId === message.roomId) textShare.removeText(message.textId)
     } else if (message.type === 'texts-cleared') {
       textShare.clearTextsForRoom(message.roomId)
       notification.showInfo(t('text.cleared'))
@@ -273,7 +366,14 @@ async function uploadFiles(files, scopeOverride) {
   const progress = createUploadProgress(notification)
 
   // 이 범위에 비밀번호 잠금이 켜져 있으면 이 기기에서 잠근 뒤 올린다 (확인창에서 방금 켠 경우 포함)
-  const lock = lockState.getLock(targetScope)
+  // 1:1 방은 항상 방 키로 잠금 업로드한다. 일반(공개) 업로드 경로는 절대 쓰지 않는다
+  const isPrv = isPrivateScope(targetScope)
+  const lock = isPrv ? privateRooms.lockFor(targetRoomId) : lockState.getLock(targetScope)
+  if (isPrv && !lock) {
+    notification.showError(t('pair.errors.noRoom'))
+    return
+  }
+  const target = publishTargetForScope(targetScope)
 
   const summary = await fileManager.uploadFiles(targetRoomId, files, {
     lock,
@@ -284,6 +384,7 @@ async function uploadFiles(files, scopeOverride) {
     onComplete: (file, result) => {
       // size/created를 함께 보내 수신 측이 목록을 재조회하지 않고 바로 추가할 수 있게 한다
       try {
+        if (isPrv && !result.locked) return
         socket.publishMessage(result.locked
           ? {
               // 잠긴 파일: 공개 URL·원래 이름은 보내지 않는다
@@ -301,7 +402,7 @@ async function uploadFiles(files, scopeOverride) {
               size: result.size,
               created: result.created,
               roomId: targetRoomId
-            }, targetScope)
+            }, target)
       } catch (error) {
         console.warn('[App] 업로드 알림 전송 실패 (파일은 업로드됨):', error)
       }
@@ -326,14 +427,15 @@ async function uploadFiles(files, scopeOverride) {
 
   if (summary.successCount > 0) {
     // GA4 주요 이벤트: 실제로 업로드에 성공한 파일 수만 집계한다
-    trackEvent('file_upload', { file_count: summary.successCount, scope: targetScope })
+    if (isPrv) trackEvent('private_upload', { file_count: summary.successCount })
+    else trackEvent('file_upload', { file_count: summary.successCount, scope: targetScope })
     notification.showSuccess(t('notification.uploadComplete', { count: summary.successCount }))
   }
 }
 
-/** 룸 ID에 해당하는 공유 scope ('global' | 'ip') */
+/** 룸 ID에 해당하는 발행 대상 ('global' | 'ip' | 비공개 roomId) */
 function scopeForRoom(roomId) {
-  return roomId === roomManager.globalRoomId.value ? 'global' : 'ip'
+  return publishTargetForRoom(roomId)
 }
 
 /** 같은 룸의 다른 클라이언트가 목록을 재조회하지 않고 삭제를 반영하도록 알린다 */
@@ -477,6 +579,19 @@ async function handleAddText(content, scopeOverride) {
   const targetRoomId = roomManager.roomIdForScope(targetScope)
   if (!targetRoomId) return false
 
+  // 1:1 방: 방 키로 암호화한 enc만 보낸다 (평문 content 없음)
+  const isPrv = isPrivateScope(targetScope)
+  let enc = null
+  if (isPrv) {
+    try {
+      enc = await privateRooms.encryptFor(targetRoomId, content.trim())
+    } catch (error) {
+      console.warn('[App] 텍스트 암호화 실패:', error)
+      notification.showError(t('pair.errors.noRoom'))
+      return false
+    }
+  }
+
   const newText = textShare.addText(content, targetRoomId)
   if (!newText) return false
 
@@ -485,13 +600,10 @@ async function handleAddText(content, scopeOverride) {
   if (self) newText.sender = self
 
   try {
-    socket.publishMessage({
-      type: 'text-shared',
-      textId: newText.id,
-      content: newText.content,
-      timestamp: newText.timestamp,
-      roomId: targetRoomId
-    }, targetScope)
+    socket.publishMessage(isPrv
+      ? { type: 'text-shared', textId: newText.id, enc, timestamp: newText.timestamp, roomId: targetRoomId }
+      : { type: 'text-shared', textId: newText.id, content: newText.content, timestamp: newText.timestamp, roomId: targetRoomId },
+    publishTargetForScope(targetScope))
   } catch (error) {
     console.warn('[App] 텍스트 전송 실패:', error)
     textShare.removeText(newText.id)
@@ -499,7 +611,8 @@ async function handleAddText(content, scopeOverride) {
     return false
   }
 
-  trackEvent('text_share', { scope: targetScope })
+  if (isPrv) trackEvent('private_text')
+  else trackEvent('text_share', { scope: targetScope })
 
   notification.showSuccess(t('text.shared'))
   return true
@@ -521,7 +634,7 @@ async function handleRemoveText(textId) {
   const removed = textShare.removeText(textId)
   if (!removed) return
 
-  const targetScope = removed.roomId === roomManager.globalRoomId.value ? 'global' : 'ip'
+  const targetScope = publishTargetForRoom(removed.roomId)
 
   socket.publishMessage({
     type: 'text-removed',
@@ -533,7 +646,7 @@ async function handleRemoveText(textId) {
 async function handleClearAllTexts() {
   if (roomManager.roomIds.value.length === 0) return
 
-  const targetScope = shareScope.scope.value
+  const targetScope = publishTargetForScope(shareScope.scope.value)
   const targetRoomId = activeRoomId.value
   if (!targetRoomId) return
 
@@ -799,6 +912,7 @@ onUnmounted(() => {
   if (cleanupUserLeft) cleanupUserLeft()
   if (cleanupOnMessage) cleanupOnMessage()
   document.removeEventListener('paste', handlePaste)
+  pairFlow.destroy()
   socket.destroy()
 })
 </script>
@@ -834,6 +948,14 @@ onUnmounted(() => {
         :my-identity="socket.myIdentity.value"
         :my-socket-id="socket.mySocketId.value"
         :reroll-available-at="socket.rerollAvailableAt.value"
+        :pair-enabled="pairFlow.enabled"
+        :private-rooms="privateRooms.rooms"
+        :private-devices="socket.privateRoomDevices?.value ?? {}"
+        :pair-states="pairFlow.pairStates.value"
+        :highlight-room-id="pairFlow.highlightRoomId.value"
+        @pair-invite="pairFlow.invite"
+        @pair-cancel="pairFlow.cancel"
+        @leave-private="handlePrivateLeave"
         @reroll-identity="handleRerollIdentity"
         :has-more="fileManager.hasMoreForRoom(activeRoomId)"
         @copy-image="handleCopyImage"
@@ -863,6 +985,19 @@ onUnmounted(() => {
         :is-open="publicGuard.isOpen.value"
         @confirm="publicGuard.accept()"
         @cancel="publicGuard.cancel()"
+      />
+
+      <!-- 1:1 연결: 받은 요청 / 그림 확인 -->
+      <PairRequestSheet
+        :session="incomingSession"
+        :announcement="pairFlow.announcement.value"
+        @respond="({ accept, block }) => pairFlow.respond(accept, { block })"
+      />
+      <PairConfirmSheet
+        :session="pairFlow.confirming.value"
+        :me="{ identity: socket.myIdentity.value }"
+        @confirm="pairFlow.confirm"
+        @cancel="pairFlow.cancelConfirming"
       />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->

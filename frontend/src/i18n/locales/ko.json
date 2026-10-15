@@ -488,5 +488,72 @@
       "invalid": "링크가 올바르지 않아요. QR을 다시 찍어 주세요.",
       "expired": "파일이 없어요. 하루가 지났거나 삭제됐을 수 있어요."
     }
+  },
+  "pair": {
+    "button": "1:1 연결",
+    "buttonShort": "1:1",
+    "paired": "1:1 중",
+    "connecting": "연결 중…",
+    "openWith": "{name}와 둘만 쓰는 방 열기",
+    "openRoom": "{name}와 1:1 방으로 이동",
+    "pending": "수락 기다리는 중",
+    "pendingSeconds": "{n}초",
+    "cancel": "취소",
+    "hint": "기기를 눌러 둘만 쓰는 1:1 방을 열 수 있어요",
+    "hintClose": "안내 닫기",
+    "unknownDevice": "알 수 없는 기기",
+    "request": {
+      "title": "1:1 연결 요청",
+      "body": "수락하면 두 기기에서 그림을 확인한 뒤, 둘만 쓰는 방이 열려요.",
+      "sameNetwork": "같은 네트워크",
+      "otherNetwork": "다른 네트워크",
+      "decline": "거절",
+      "accept": "수락",
+      "block": "이번 접속 동안 이 기기 요청 받지 않기",
+      "announce": "{name}가 1:1 연결을 요청했어요"
+    },
+    "confirm": {
+      "title": "두 화면의 그림이 같은지 확인하세요",
+      "preparing": "연결을 준비하는 중이에요",
+      "waiting": "상대 확인 기다리는 중",
+      "different": "달라요",
+      "same": "같아요"
+    },
+    "connected": "{name}와 연결됐어요",
+    "ended": {
+      "mismatch": "그림이 달라서 연결을 취소했어요. 다시 시도해 보세요.",
+      "declined": "상대가 연결을 거절했어요",
+      "cancelled": "상대가 연결을 취소했어요",
+      "expired": "시간이 지나 연결 요청이 끝났어요",
+      "peerLeft": "상대가 나가서 연결이 취소됐어요",
+      "failed": "연결하지 못했어요. 다시 시도해 보세요."
+    },
+    "errors": {
+      "COOLDOWN": "방금 거절한 기기예요. 잠시 후 다시 시도해 주세요",
+      "TOO_MANY": "진행 중인 요청이 너무 많아요",
+      "BLOCKED": "이 기기는 요청을 받지 않고 있어요",
+      "TARGET_NOT_FOUND": "기기가 목록에서 사라졌어요",
+      "ALREADY_PAIRED": "이미 연결된 기기예요",
+      "RATE_LIMITED": "요청이 너무 잦아요. 잠시 후 다시 시도해 주세요",
+      "TIMEOUT": "서버 응답이 없어요. 다시 시도해 주세요",
+      "generic": "연결 요청을 보내지 못했어요",
+      "leaveFailed": "연결을 끊지 못했어요. 다시 시도해 주세요",
+      "noRoom": "1:1 방을 찾을 수 없어요"
+    },
+    "tab": "1:1",
+    "tabMany": "1:1 ({n})",
+    "tabTitle": "{name}와 1:1",
+    "stripTitle": "{name}와 1:1",
+    "stripNote": "여기 올리는 파일·텍스트는 둘만 보고 자동으로 암호화돼요",
+    "statusOnline": "접속 중",
+    "statusLeft": "나갔어요",
+    "leave": "연결 끊기",
+    "leaveConfirmTitle": "1:1 연결을 끊을까요?",
+    "leaveConfirmBody": "이 방의 파일과 텍스트는 이 화면에서 사라지고, 다시 보려면 새로 연결해야 해요.",
+    "uploadHint": "끌어다 놓아도 자동으로 암호화돼요",
+    "peerLeftNotice": "상대가 나갔어요. 다시 연결하면 올릴 수 있어요.",
+    "reconnect": "다시 연결",
+    "peerLeftToast": "상대가 1:1 방에서 나갔어요",
+    "unreadableText": "읽을 수 없는 텍스트"
   }
 }

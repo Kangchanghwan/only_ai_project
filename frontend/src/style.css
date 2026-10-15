@@ -11,6 +11,8 @@ body.light {
   --color-border: #E9E3DA;
   --color-scope-global: #4F8767;
   --color-scope-global-tint: #E4EEE7;
+  --color-scope-private: #2F66D0;
+  --color-scope-private-tint: #E3ECFB;
 }
 
 /* Dark Theme - 웜 뉴트럴 (기본값) */
@@ -25,6 +27,8 @@ body.dark {
   --color-border: #3A3430;
   --color-scope-global: #6FAE8A;
   --color-scope-global-tint: #223026;
+  --color-scope-private: #5B8DEF;
+  --color-scope-private-tint: #1F2A40;
 }
 
 @theme {
@@ -36,6 +40,8 @@ body.dark {
   --color-border: #3A3430;
   --color-scope-global: #6FAE8A;
   --color-scope-global-tint: #223026;
+  --color-scope-private: #5B8DEF;
+  --color-scope-private-tint: #1F2A40;
   /* 'Cabinet Grotesk Fallback*' / 'Plus Jakarta Sans Fallback*'는 index.html critical CSS의 메트릭 보정 @font-face(로컬 폴백). 스택 순서는 index.html과 동일하게 유지할 것. */
   --font-display: 'Cabinet Grotesk', 'Cabinet Grotesk Fallback', 'Cabinet Grotesk Fallback Android', 'Plus Jakarta Sans', sans-serif;
 }

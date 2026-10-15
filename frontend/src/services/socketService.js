@@ -33,6 +33,8 @@ class SocketService {
     this.usersInRoom = ref(0)
     this.ipRoomDevices = ref([])
     this.globalRoomDevices = ref([])
+    /** 1:1 비공개 방별 접속 기기 { [roomId]: DeviceInfo[] } */
+    this.privateRoomDevices = ref({})
     this.connectionError = ref(null)
 
     // 내 기기 정체성(서버가 할당) / 내 소켓 ID / 다시 뽑기 가능 시각
@@ -287,6 +289,8 @@ class SocketService {
           this.ipRoomDevices.value = devices
         } else if (roomId === this.globalRoomId.value) {
           this.globalRoomDevices.value = devices
+        } else if (typeof roomId === 'string' && roomId.startsWith('prv-') && Array.isArray(devices)) {
+          this.privateRoomDevices.value = { ...this.privateRoomDevices.value, [roomId]: devices }
         }
       })
     })
@@ -460,6 +464,7 @@ class SocketService {
       this.usersInRoom.value = 0
       this.ipRoomDevices.value = []
       this.globalRoomDevices.value = []
+      this.privateRoomDevices.value = {}
       this.mySocketId.value = null
       this.connectionError.value = null
       this.globalRoomId.value = null

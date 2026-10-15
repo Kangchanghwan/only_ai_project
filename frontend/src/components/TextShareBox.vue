@@ -14,7 +14,9 @@ const { t } = useI18n()
 
 const props = defineProps({
   texts: { type: Array, required: true, default: () => [] },
-  scope: { type: String, default: 'ip' }
+  scope: { type: String, default: 'ip' },
+  /** 1:1 상대가 나간 방: 입력을 막는다 */
+  composeDisabled: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['remove-text', 'clear-all', 'copy-text', 'share-text', 'paste-content'])
@@ -65,6 +67,7 @@ function formatTime(timestamp) {
         class="w-full min-h-[6rem] resize-y rounded-xl border border-border bg-background text-text-primary text-sm p-3 font-mono focus-visible:outline-2 focus-visible:outline-primary"
         :placeholder="t('text.composePlaceholder')"
         data-testid="text-input"
+        :disabled="composeDisabled"
         @keydown="onKeydown"
       ></textarea>
       <div class="flex items-center gap-2 flex-wrap">
@@ -72,7 +75,7 @@ function formatTime(timestamp) {
           type="submit"
           class="min-h-[44px] px-6 rounded-full text-white font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           :class="accentBg"
-          :disabled="!draft.trim() || sending"
+          :disabled="composeDisabled || !draft.trim() || sending"
           data-testid="text-share-button"
         >{{ t('file.share') }}</button>
         <button
