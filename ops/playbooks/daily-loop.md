@@ -20,12 +20,13 @@ GA4·GSC·네이버 서치어드바이저 값을 읽어 `ops/metrics/daily.csv`�
 
 ## 3. 개선 1건 (ship-change.md)
 매일 최대 1건만 배포한다 (효과 측정을 위해 변경을 섞지 않는다).
-우선순위: propose 등급 intent > accepted intent > 효과 큰 proposed intent(가장 오래된 것부터) > 새 가이드 페이지 1개.
+우선순위: propose 등급 intent > accepted intent (2026-10-16~ 잠금 캠페인 0014 → 0015 → 0016 순) > 효과 큰 proposed intent(가장 오래된 것부터) > 새 가이드 페이지 1개.
 - 자동 머지 허용 경로면 `auto/YYYYMMDD-<slug>` 브랜치로 푸시 → Actions가 게이트 통과 시 머지·배포.
 - 허용 경로 밖이면 `pr/YYYYMMDD-<slug>` 브랜치로 푸시하고 GitHub에서 PR을 연다. 보고에 "승인 필요"로 올린다. 머지하지 않는다.
 - 배포 7일·28일 뒤 해당 intent의 Result 칸에 수치를 채운다. 효과가 없으면 rejected로 바꾸고 이유를 적는다.
 
 ## 4. 홍보 (요일별, 한 번에 하나)
+2026-10-16~11-15에는 ops/playbooks/lock-campaign.md의 일정이 아래 표의 주제 선택보다 먼저다 (요일 슬롯은 그대로).
 | 요일 | 작업 | 플레이북 |
 |---|---|---|
 | 월 | 주간 심층 리포트 (지난 7일 vs 전 7일, 저CTR 쿼리 표) + 지난주 커뮤니티 글 댓글 확인·답글 | metrics.md, community.md |

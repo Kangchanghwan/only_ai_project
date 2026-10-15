@@ -23,7 +23,7 @@
 | 디스콰이엇 | 코카곰 https://disquiet.io/profiles/ZBtVZyj | 이메일 매직링크 (lgodl3512@gmail.com, Gmail에서 링크 열어 로그인) | 사용 중 (프로덕트 10-05 승인 확인) | 첫 메이커 로그 2026-10-05 https://disquiet.io/posts/dKConX , 2편 2026-10-10 https://disquiet.io/posts/k2CNan . 이후 매주 토요일 포스트(제품 페이지 "글쓰기", 마크다운, 제목은 첫 줄 굵게). 언더스코어가 든 이름은 링크로 감싸야 이탤릭으로 깨지지 않음 |
 | DEV.to | @kangchanghwan (CokeBear) https://dev.to/kangchanghwan | GitHub OAuth | 사용 중 | 첫 글 2026-10-02, 2편 2026-10-08 (velog 개발기 1편 IP 해시 룸 영어판, canonical=velog), 3편 2026-10-15 (velog 2편 업로드 경로 영어판, canonical=velog, 태그 webdev/showdev/javascript/node — cloudflare 태그는 자동완성에 없음). 알림은 lgodl1598@naver.com. 게시 때마다 AI 공개 옵션 설정, velog 원문이면 canonical 지정. 월요일에 댓글 확인(1편 10-03 댓글에 10-12 답글) |
 | Reddit | u/Dry_Recognition_3070 (표시명 CokeBear) | Google OAuth | karma 쌓는 중 (10-04 karma 1) | 아이디 자동 생성(변경 불가). 2026-10-16 전까지 자기홍보 글 금지, 도움 댓글만. r/webdev·r/webdevelopment는 규칙상 "LLM/AI 생성 댓글" 금지라 댓글 대상에서 제외. 사용: r/SideProject, r/PWA, r/vuejs 등 규칙에 AI 금지가 없는 곳. 댓글 기록: 10-04 r/PWA https://www.reddit.com/r/PWA/comments/1wwu1ys/what_i_learned_making_a_pwa_work_offline_with/pdqcapg/ , r/SideProject https://www.reddit.com/r/SideProject/comments/1wx27hg/im_technical_but_dont_know_how_to_make_my_own_app/pdqce8z/ |
-| Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 확정 2026-10-20(화) 00:01 PT = 한국 16:01 (owner 10-09 확인). 2026-10-13 런칭 초안 생성(비공개, 아직 예약 전) https://www.producthunt.com/products/clipboard-share?launch=clipboard-share | 초안: 태그라인·설명·태그(Productivity, Open Source, Web App)·GitHub 링크·썸네일·갤러리 3장(영어 UI)·메이커 첫 댓글·Free·Bootstrapped. 문구는 ops/reports/2026-10-13.md. owner 문구 확인 후(늦어도 10-17) 상단 "Schedule"로 10-20 00:01 PT 예약. Shoutouts는 비워 둠 |
+| Product Hunt | @kangchanghwan (CokeBear) https://www.producthunt.com/@kangchanghwan | GitHub OAuth | 런칭 확정 2026-10-20(화) 00:01 PT = 한국 16:01 (owner 10-09 확인). 2026-10-13 런칭 초안 생성(비공개, 아직 예약 전) https://www.producthunt.com/products/clipboard-share?launch=clipboard-share | 초안: 태그라인·설명·태그(Productivity, Open Source, Web App)·GitHub 링크·썸네일·갤러리 3장(영어 UI)·메이커 첫 댓글·Free·Bootstrapped. 문구는 ops/reports/2026-10-13.md. owner 문구 확인 후(늦어도 10-17) 상단 "Schedule"로 10-20 00:01 PT 예약. Shoutouts는 비워 둠. **10-15 추가: 예약 전에 설명·첫 댓글에 비밀번호 잠금·QR 공유 1~2문장, 갤러리에 잠긴 파일 카드 1장을 넣고 owner 확인을 다시 받는다 (lock-campaign.md 2절 문구 규칙)** |
 | GeekNews | cokebear https://news.hada.io/@cokebear | 이메일+비밀번호 (Vault "GeekNews (cokebear)") | Show GN 게시 2026-10-09 https://news.hada.io/topic?id=35068 | owner 검토("그대로 올려") 후 에이전트가 등록. 채널당 런칭 1회 끝. 이후 댓글 답변만(월요일 확인) |
 | AlternativeTo | user-7504 (표시명 CokeBear) | owner가 Google로 가입. 로그인은 반드시 "Google" 버튼 (Vault의 "ALTERNATIV NET" 비밀번호는 맞지 않음, 시도 금지) | 앱 심사 대기 (일반 큐, 매우 김) | 앱 "Clipboard Share Web" https://alternativeto.net/software/clipboard-share-web/ (승인 전 비공개, 링크 공유 금지). 유료 우선심사($5/$15) 거절. 대안 연결: LocalSend, PairDrop, AirDrop |
 
@@ -39,6 +39,8 @@
 - 공개 글에는 학교 이름 대신 "중학교 디지털튜터" 정도로 쓴다.
 - 스마트에디터: URL을 친 뒤 다음 줄로 넘기고 3~4초 기다렸다가 이어서 입력해야 링크 카드가 문단 중간에 끼지 않는다. 사진 파일은 현재 세션의 실제 tmp 폴더에 있어야 업로드된다.
 - 예상 질문(선례 기준): "AI로 어떻게 만들었나", "보안은 괜찮나", "유료인가". 답글에 쓸 수 있게 준비한다.
+- "보안은 괜찮나" 답 (2026-10-15~): 민감한 파일은 비밀번호로 잠가 보내면 보내는 기기에서 암호화되고 비밀번호를 아는 사람만 연다. 텍스트·기기 정보는 잠기지 않는다. 코드는 GitHub에 공개. 과장 금지(lock-campaign.md 2절).
+- 2026-10-16~11-15 잠금 캠페인 기간에는 새 글의 주 각도를 "같은 와이파이 자동 연결 + 필요한 파일만 비밀번호 잠금" 조합으로 잡는다 (lock-campaign.md).
 
 ## A. 네이버 카페 큐 (owner가 이미 가입한 카페만, 주 1곳)
 카페마다 공지·게시판 안내를 먼저 읽는다. 홍보 금지, 등급 제한, 특정 게시판만 허용이면 그대로 따르고, 안 되면 건너뛴다.
@@ -48,7 +50,7 @@
 | 2 | BBC 마이크로비트 사용자 모임 (cafe.naver.com/bbcmicro) | 코딩 교육 교사 | 수업 자료·학생 화면 캡처를 교실 PC로 | 게시 (2026-10-07, 자유게시판) | https://cafe.naver.com/bbcmicro/7421 · 업체(아이씨뱅큐) 운영 카페, 규칙은 "노골적인 홍보 삼가·게시판 성격 맞추기". 자유게시판은 외부 공모전 홍보가 대부분이고 조회 3~28로 활동이 적음. 10-12 기준 조회 13, 댓글 0 |
 | 3 | 한국방송통신대학교 컴퓨터과학과 (cafe.naver.com/sknou) | 컴과 학생·직장인 | 직접 만든 사이드 프로젝트 공유 + Claude Code 개발기 | 건너뜀 (2026-10-14) | 공지 "전체 게시판 운영 원칙": 특정 사이트 홍보 글은 즉시 삭제·강퇴. 마지막 일반 글 2026-03, 오늘 방문 2명으로 활동도 거의 없음 → 게시 안 함 |
 | 4 | 남궁성의 코드초보스터디 (cafe.naver.com/javachobostudy) | 입문 개발자 | 직접 만든 사이트 소개 + 구현 고민 + 피드백 요청 | 게시 (2026-10-14, 맘대로 쓰세요.) | https://cafe.naver.com/javachobostudy/192678 · 회원 15만, 글 조회 70~200. 공지에 자기홍보 금지 규정 없음, 선례 "웹사이트를 만들어봤습니다"(191022, 댓글 8)·"제가 어플을 좀 만들어보았습니다"(191127, 댓글 12)가 같은 게시판에서 호의적 반응. 코카곰 등급 성실멤버. 다음 월요일 댓글 확인 |
-| 5 | 메타코딩 (cafe.naver.com/metacoding) | 개발자 | Socket.IO·R2 멀티파트 구현기 | 대기 | |
+| 5 | 메타코딩 (cafe.naver.com/metacoding) | 개발자 | 브라우저에서 파일 잠그기 구현기 (Web Crypto AES-GCM, QR 키는 # 뒤로) — 10-15 각도 변경 | 대기 | |
 | 6 | 개발자 포럼 & 랭크커뮤니티 (cafe.naver.com/rankcommunity) | 개발자 | 프로젝트 소개 | 대기 | |
 | 7 | 유니티 허브 (cafe.naver.com/unityhub) | 게임 개발자 | 빌드·스크린샷을 폰↔PC로 옮기기 | 대기 | |
 
@@ -62,7 +64,7 @@
 | 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 제출 완료 (2026-10-02, 심사 대기, 10-05 재확인 여전히 대기) | 월요일마다 My submissions 상태 확인 |
 | 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | 게시 (2026-10-09, owner 승인 후) | https://news.hada.io/topic?id=35068 · 월요일 댓글 확인. 10-12 기준 2포인트, 댓글 0, GA 유입 12세션 |
 | 4 | SaaSHub / Toolify 류 무료 디렉터리 | 무료 등록만 (유료 리스팅 금지) | 대기 | |
-| 5 | Reddit r/SideProject | 런칭 글 (규칙 확인) | 대기 | |
+| 5 | Reddit r/SideProject | 런칭 글 (규칙 확인). 각도: 같은 와이파이 자동 연결 + 필요한 파일만 브라우저에서 비밀번호 잠금 | 대기 (10-16 이후 가능) | |
 | 6 | Reddit r/InternetIsBeautiful | 규칙이 엄격함, 조건 맞을 때만 | 대기 | |
 | 7 | Product Hunt | 런칭 (화~목 00:01 PT 권장, 준비물 많음, 1주 전 owner에게 예고) | 확정 2026-10-20 00:01 PT, 초안 생성 10-13 | 10-17까지 예약 런칭 설정 |
 | 8 | 인디스쿨 등 교사 커뮤니티 | 교사 인증 필요할 가능성 높음 → 불가하면 owner 조치 필요 | 대기 | |
