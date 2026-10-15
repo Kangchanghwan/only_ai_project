@@ -43,3 +43,31 @@ describe('useShareScope', () => {
     expect(b.getScope()).toBe('global')
   })
 })
+
+describe('useShareScope 비공개 스코프', () => {
+  beforeEach(() => { localStorage.clear() })
+
+  it('방이 있으면 prv 스코프를 설정하되 localStorage에는 저장하지 않는다', () => {
+    localStorage.setItem('share-scope', 'global')
+    const { scope, setScope, getScope } = useShareScope({ isValid: (id) => id === 'prv-1' })
+    setScope('prv:prv-1')
+    expect(scope.value).toBe('prv:prv-1')
+    expect(getScope()).toBe('prv:prv-1')
+    expect(localStorage.getItem('share-scope')).toBe('global')
+  })
+
+  it('없는 방·빈 id는 무시한다', () => {
+    const { scope, setScope } = useShareScope({ isValid: () => false })
+    setScope('prv:nope')
+    setScope('prv:')
+    expect(scope.value).toBe('ip')
+  })
+
+  it('방이 사라지면 저장된 스코프로 돌아간다', () => {
+    let alive = true
+    const { scope, setScope, getScope } = useShareScope({ isValid: () => alive })
+    setScope('prv:prv-1')
+    alive = false
+    expect(getScope()).toBe('ip')
+  })
+})

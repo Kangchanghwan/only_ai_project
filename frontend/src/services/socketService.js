@@ -7,6 +7,12 @@ import { collectClientHints, loadIdentity, saveIdentity, isValidIdentity } from 
 /** 이름표 다시 뽑기 쿨다운 (서버와 같은 3초) */
 export const REROLL_COOLDOWN_MS = 3000
 
+/** pair/private ack 대기 시간 */
+const PAIR_ACK_TIMEOUT_MS = 5000
+
+/** 1:1 연결 서버 이벤트 */
+const PAIR_EVENTS = ['pair:incoming', 'pair:accepted', 'pair:signal', 'pair:ended', 'pair:done']
+
 /** 룸 토큰 재발급 ack 대기 시간 */
 const ROOM_TOKEN_REQUEST_TIMEOUT_MS = 5000
 
@@ -45,6 +51,9 @@ class SocketService {
 
     // 콜백
     this._onReconnectedCallbacks = []
+
+    // 1:1 연결 이벤트 리스너 (소켓이 다시 만들어져도 유지)
+    this._pairListeners = new Map()
 
     // 설정
     this.serverUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001'
@@ -173,6 +182,8 @@ class SocketService {
         ...this.reconnectionConfig
       })
 
+      this._attachPairListeners()
+
       // 연결 타임아웃 설정
       const connectionTimeout = setTimeout(() => {
         this.socket?.off('registered', handleRegistered)
@@ -281,6 +292,75 @@ class SocketService {
     })
   }
 
+  /** 등록해 둔 pair 리스너와 pair:done 토큰 병합을 현재 소켓에 붙인다 */
+  _attachPairListeners() {
+    if (!this.socket) return
+    this.socket.on('pair:done', (payload) => this._mergePairToken(payload))
+    for (const [event, set] of this._pairListeners) {
+      for (const fn of set) this.socket.on(event, fn)
+    }
+  }
+
+  /** pair:done의 룸 토큰을 기존 ip/global 토큰을 지우지 않고 합친다 */
+  _mergePairToken(payload) {
+    if (!payload?.roomId || !payload.roomToken) return
+    setRoomTokens({ roomTokens: { [payload.roomId]: payload.roomToken }, roomTokenTtlSec: payload.roomTokenTtlSec })
+  }
+
+  /**
+   * pair 이벤트 리스너 등록 (pair:incoming|accepted|signal|ended|done). 소켓 연결 전에도 등록할 수 있다.
+   * @returns {() => void} 해제 함수
+   */
+  onPair(event, callback) {
+    if (!PAIR_EVENTS.includes(event)) throw new Error('unknown pair event: ' + event)
+    if (!this._pairListeners.has(event)) this._pairListeners.set(event, new Set())
+    this._pairListeners.get(event).add(callback)
+    this.socket?.on(event, callback)
+    return () => this.offPair(event, callback)
+  }
+
+  offPair(event, callback) {
+    this._pairListeners.get(event)?.delete(callback)
+    this.socket?.off(event, callback)
+  }
+
+  /**
+   * ack가 있는 이벤트를 보낸다. 5초 안에 응답이 없거나 연결이 없으면 {ok:false, code:'TIMEOUT'}.
+   * @returns {Promise<object>}
+   */
+  emitWithAck(event, payload) {
+    return new Promise((resolve) => {
+      if (!this.socket?.connected) {
+        resolve({ ok: false, code: 'TIMEOUT' })
+        return
+      }
+      const timer = setTimeout(() => resolve({ ok: false, code: 'TIMEOUT' }), PAIR_ACK_TIMEOUT_MS)
+      this.socket.emit(event, payload, (res) => {
+        clearTimeout(timer)
+        resolve(res && typeof res === 'object' ? res : { ok: false, code: 'BAD_ACK' })
+      })
+    })
+  }
+
+  /** pair:invite|respond|signal|confirm|cancel 전송 (pairing.js의 socket 어댑터 emit) */
+  pairEmit(event, payload) {
+    return this.emitWithAck(event, payload)
+  }
+
+  /** 1:1 연결 끊기 */
+  leavePrivate(roomId) {
+    return this.emitWithAck('private:leave', { roomId })
+  }
+
+  /** pairing.js에 주입할 소켓 어댑터 */
+  getPairAdapter() {
+    return {
+      emit: (event, payload) => this.pairEmit(event, payload),
+      on: (event, fn) => this.onPair(event, fn),
+      off: (event, fn) => this.offPair(event, fn)
+    }
+  }
+
   /** 서버가 할당한 정체성을 상태에 반영하고 30일간 저장한다 (구버전 백엔드는 identity가 없다) */
   _applyIdentity(identity) {
     if (!isValidIdentity(identity)) return
@@ -321,7 +401,7 @@ class SocketService {
   /**
    * 메시지를 서버로 전송합니다.
    * @param {Object} message - 전송할 메시지
-   * @param {'global'|'ip'} target - 공유 대상 룸
+   * @param {'global'|'ip'|string} target - 공유 대상 룸 ('prv-' 로 시작하는 비공개 roomId 허용)
    */
   publishMessage(message, target) {
     if (!this.socket?.connected) {

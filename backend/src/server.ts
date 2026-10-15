@@ -12,6 +12,7 @@ import { getR2Service } from './services/r2Service';
 import { checkFileSize, checkRoomSize, SizeCheckFailure } from './utils/uploadLimits';
 import { requireRoomToken } from './middleware/roomAuth';
 import { registerMultipartRoutes, LOCKED_MULTIPART } from './routes/multipart';
+import { rejectPrivateRoom } from './middleware/rejectPrivateRoom';
 import { registerLockedRoutes } from './routes/locked';
 import { reservedBytesForRoom } from './utils/multipartStore';
 import { recordUploader, getUploader, deleteUploader, deleteUploadersForRoom, toSender, Sender } from './utils/uploaderStore';
@@ -190,7 +191,7 @@ const reserveQuotaOrReject = (req: express.Request, res: express.Response, sizes
 };
 
 /** 업로드용 Presigned URL 생성 */
-app.post('/api/r2/presigned-url', roomIdFromBody, async (req, res) => {
+app.post('/api/r2/presigned-url', rejectPrivateRoom, roomIdFromBody, async (req, res) => {
     let quotaHold: { key: string; bytes: number } | null = null;
     try {
         const { roomId, fileName, contentType, size } = req.body;
@@ -235,7 +236,7 @@ const MAX_PRESIGN_BATCH = 50;
 const MAX_DOWNLOAD_BATCH = 100;
 
 /** 업로드용 Presigned URL 배치 생성 (여러 파일 = 1왕복, 이미지는 썸네일 URL 동봉) */
-app.post('/api/r2/presigned-urls', roomIdFromBody, async (req, res) => {
+app.post('/api/r2/presigned-urls', rejectPrivateRoom, roomIdFromBody, async (req, res) => {
     let quotaHold: { key: string; bytes: number } | null = null;
     try {
         const { roomId, files } = req.body ?? {};
@@ -335,7 +336,7 @@ app.post('/api/r2/download-urls', async (req, res) => {
 });
 
 /** 직접 업로드 (작은 파일용, 1MB 이하) */
-app.post('/api/r2/upload', upload.single('file'), roomIdFromBody, async (req, res) => {
+app.post('/api/r2/upload', upload.single('file'), rejectPrivateRoom, roomIdFromBody, async (req, res) => {
     try {
         const { roomId } = req.body;
         const file = req.file;

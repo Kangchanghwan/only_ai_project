@@ -63,3 +63,16 @@ describe('useRoomManager', () => {
     })
   })
 })
+
+describe('useRoomManager 비공개 스코프', () => {
+  it('prv:<id> → <id>, scopeForRoom 역변환', () => {
+    const m = useRoomManager()
+    m.setRooms({ globalRoomId: 'g1', ipRoomId: 'i1' })
+    expect(m.roomIdForScope('prv:prv-abc')).toBe('prv-abc')
+    expect(m.roomIdForScope('ip')).toBe('i1')
+    expect(m.scopeForRoom('prv-abc')).toBe('prv:prv-abc')
+    expect(m.scopeForRoom('g1')).toBe('global')
+    expect(m.scopeForRoom('i1')).toBe('ip')
+    expect(m.scopeForRoom('zzz')).toBe(null)
+  })
+})

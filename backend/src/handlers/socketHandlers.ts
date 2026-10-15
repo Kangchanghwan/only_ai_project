@@ -6,6 +6,8 @@ import { parseDeviceInfo, sanitizeHints, DeviceInfo } from '../utils/deviceInfo'
 import { assignIdentity, collectUsed, sanitizeIdentity, REROLL_COOLDOWN_MS } from '../utils/identity';
 import { toSender } from '../utils/uploaderStore';
 import { issueRoomTokens, getRoomTokenTtlSec } from '../utils/roomToken';
+import { PairSessionManager, PairSession } from '../managers/PairSessionManager';
+import { newPrivateRoomId, isPrivateRoomId } from '../utils/privateRoom';
 import { TokenBucket } from '../utils/tokenBucket';
 import logger from '../utils/logger';
 
@@ -30,9 +32,12 @@ const resolveIpRoomId = (socket: ExtendedSocket): string => {
     return deriveIpRoomId(ip, secret);
 };
 
-/** 소켓이 속한 룸들(전체 + IP)의 REST API용 룸 토큰 묶음 */
+/** 소켓이 들어가 있는 1:1 비공개 방 ID 목록 */
+const getPrivateRooms = (socket: ExtendedSocket): string[] => socket.data.privateRooms ?? [];
+
+/** 소켓이 속한 룸들(전체 + IP + 1:1 비공개)의 REST API용 룸 토큰 묶음 */
 const buildRoomTokenPayload = (socket: ExtendedSocket): RoomTokensPayload => ({
-    roomTokens: issueRoomTokens([socket.globalRoomId, socket.ipRoomId]),
+    roomTokens: issueRoomTokens([socket.globalRoomId, socket.ipRoomId, ...getPrivateRooms(socket)]),
     roomTokenTtlSec: getRoomTokenTtlSec(),
 });
 
@@ -76,6 +81,185 @@ export const handleP2pSignal = (socket: ExtendedSocket, io: Server, payload: unk
     } catch (error) {
         logger.error(`p2p:signal 처리 에러 [${socket.id}]:`, error);
     }
+};
+
+// === 1:1 연결 (비공개 방) ===
+
+/** pair:signal data 최대 크기 (JSON 직렬화 기준, bytes) */
+export const PAIR_SIGNAL_MAX_BYTES = 4 * 1024;
+/** pair:* 이벤트 소켓당 토큰 버킷: 용량 / 초당 충전 */
+export const PAIR_BUCKET_CAPACITY = 20;
+export const PAIR_BUCKET_REFILL_PER_SEC = 5;
+/** 만료 점검 주기 */
+const PAIR_SWEEP_INTERVAL_MS = 1000;
+
+type Ack = ((res: Record<string, unknown>) => void) | undefined;
+
+const pairBuckets = new WeakMap<object, TokenBucket>();
+
+/** 토큰 버킷 확인. 초과면 ack로 RATE_LIMITED를 돌려주고 false */
+const pairAllowed = (socket: ExtendedSocket, ack: Ack): boolean => {
+    let bucket = pairBuckets.get(socket);
+    if (!bucket) {
+        bucket = new TokenBucket(PAIR_BUCKET_CAPACITY, PAIR_BUCKET_REFILL_PER_SEC);
+        pairBuckets.set(socket, bucket);
+    }
+    if (bucket.tryConsume()) return true;
+    if (typeof ack === 'function') ack({ ok: false, code: 'RATE_LIMITED' });
+    return false;
+};
+
+const reply = (ack: Ack, res: Record<string, unknown>) => {
+    if (typeof ack === 'function') ack(res);
+};
+
+const otherOf = (s: PairSession, socketId: string) => (s.initiator === socketId ? s.responder : s.initiator);
+
+const endSession = (io: Server, s: PairSession, reason: string, targets: string[]) => {
+    for (const id of targets) io.to(id).emit('pair:ended', { sessionId: s.id, reason });
+};
+
+const broadcastUsers = (io: Server, roomManager: RoomManager, roomId: string) => {
+    io.to(roomId).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
+};
+
+const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: RoomManager, pairs: PairSessionManager) => {
+    socket.on('pair:invite', (payload: unknown, ack?: Ack) => {
+        try {
+            if (!pairAllowed(socket, ack)) return;
+            const to = payload && typeof payload === 'object' ? (payload as { to?: unknown }).to : undefined;
+            if (typeof to !== 'string' || to.length === 0 || to.length > 64) return reply(ack, { ok: false, code: 'TARGET_NOT_FOUND' });
+
+            const target = io.sockets.sockets.get(to) as ExtendedSocket | undefined;
+            const targetConnected = !!target && !!roomManager.getUser(SHARED_ROOM_ID, to);
+            const mine = new Set(getPrivateRooms(socket));
+            const alreadyPaired = !!target && getPrivateRooms(target).some((r) => mine.has(r));
+
+            const result = pairs.invite(socket.id, to, { targetConnected, alreadyPaired });
+            if (!result.ok) return reply(ack, { ok: false, code: result.code });
+
+            const { session } = result;
+            const from = roomManager.getUser(SHARED_ROOM_ID, socket.id);
+            target!.emit('pair:incoming', {
+                sessionId: session.id,
+                from,
+                sameNetwork: !!socket.ipRoomId && socket.ipRoomId === target!.ipRoomId,
+                expiresAt: session.expiresAt,
+            });
+            reply(ack, { ok: true, sessionId: session.id, expiresAt: session.expiresAt });
+        } catch (error) {
+            logger.error(`pair:invite 처리 에러 [${socket.id}]:`, error);
+        }
+    });
+
+    socket.on('pair:respond', (payload: unknown, ack?: Ack) => {
+        try {
+            if (!pairAllowed(socket, ack)) return;
+            const p = (payload && typeof payload === 'object' ? payload : {}) as { sessionId?: unknown; accept?: unknown; block?: unknown };
+            if (typeof p.sessionId !== 'string' || typeof p.accept !== 'boolean') return reply(ack, { ok: false, code: 'INVALID_PAYLOAD' });
+
+            const s = pairs.respond(p.sessionId, socket.id, p.accept, p.block === true);
+            if (!s) return reply(ack, { ok: false, code: 'SESSION_NOT_FOUND' });
+
+            if (!p.accept) {
+                endSession(io, s, 'declined', [s.initiator]);
+                return reply(ack, { ok: true });
+            }
+            io.to(s.initiator).emit('pair:accepted', { sessionId: s.id, role: 'initiator', peer: roomManager.getUser(SHARED_ROOM_ID, s.responder) });
+            io.to(s.responder).emit('pair:accepted', { sessionId: s.id, role: 'responder', peer: roomManager.getUser(SHARED_ROOM_ID, s.initiator) });
+            reply(ack, { ok: true });
+        } catch (error) {
+            logger.error(`pair:respond 처리 에러 [${socket.id}]:`, error);
+        }
+    });
+
+    // 키 교환 중계: 수락된 세션의 두 멤버 사이에서만. 조건 위반은 조용히 버린다
+    socket.on('pair:signal', (payload: unknown, ack?: Ack) => {
+        try {
+            if (!pairAllowed(socket, ack)) return;
+            if (!payload || typeof payload !== 'object') return;
+            const { sessionId, data } = payload as { sessionId?: unknown; data?: unknown };
+            if (typeof sessionId !== 'string' || data === undefined || data === null || typeof data !== 'object') return;
+            const s = pairs.getForMember(sessionId, socket.id);
+            if (!s || s.state !== 'accepted') return;
+            const serialized = JSON.stringify(data);
+            if (serialized === undefined || Buffer.byteLength(serialized, 'utf8') > PAIR_SIGNAL_MAX_BYTES) return;
+            io.to(otherOf(s, socket.id)).emit('pair:signal', { sessionId, data });
+        } catch (error) {
+            logger.error(`pair:signal 처리 에러 [${socket.id}]:`, error);
+        }
+    });
+
+    socket.on('pair:confirm', (payload: unknown, ack?: Ack) => {
+        try {
+            if (!pairAllowed(socket, ack)) return;
+            const p = (payload && typeof payload === 'object' ? payload : {}) as { sessionId?: unknown; same?: unknown };
+            if (typeof p.sessionId !== 'string' || typeof p.same !== 'boolean') return reply(ack, { ok: false, code: 'INVALID_PAYLOAD' });
+
+            const r = pairs.confirm(p.sessionId, socket.id, p.same);
+            if (r.status === 'invalid') return reply(ack, { ok: false, code: 'SESSION_NOT_FOUND' });
+            if (r.status === 'mismatch') {
+                endSession(io, r.session, 'mismatch', [r.session.initiator, r.session.responder]);
+                return reply(ack, { ok: true });
+            }
+            if (r.status === 'waiting') return reply(ack, { ok: true });
+
+            // 둘 다 같음 → 방 생성, 두 소켓 입장
+            const s = r.session;
+            const members = [s.initiator, s.responder]
+                .map((id) => ({ id, sock: io.sockets.sockets.get(id) as ExtendedSocket | undefined, info: roomManager.getUser(SHARED_ROOM_ID, id) }));
+            if (members.some((m) => !m.sock || !m.info)) {
+                endSession(io, s, 'peer-left', members.filter((m) => m.sock).map((m) => m.id));
+                return reply(ack, { ok: false, code: 'SESSION_NOT_FOUND' });
+            }
+            const roomId = newPrivateRoomId();
+            for (const m of members) {
+                m.sock!.join(roomId);
+                roomManager.addUserToRoom(roomId, m.id, m.info!);
+                m.sock!.data.privateRooms = [...getPrivateRooms(m.sock!), roomId];
+            }
+            const tokens = issueRoomTokens([roomId]);
+            const ttl = getRoomTokenTtlSec();
+            for (const m of members) {
+                const peer = members.find((o) => o.id !== m.id)!.info;
+                m.sock!.emit('pair:done', { sessionId: s.id, roomId, peer, roomToken: tokens[roomId], roomTokenTtlSec: ttl });
+            }
+            broadcastUsers(io, roomManager, roomId);
+            logger.log(`1:1 방 생성 ${roomId} [${s.initiator} + ${s.responder}]`);
+            reply(ack, { ok: true });
+        } catch (error) {
+            logger.error(`pair:confirm 처리 에러 [${socket.id}]:`, error);
+        }
+    });
+
+    socket.on('pair:cancel', (payload: unknown, ack?: Ack) => {
+        try {
+            if (!pairAllowed(socket, ack)) return;
+            const sessionId = payload && typeof payload === 'object' ? (payload as { sessionId?: unknown }).sessionId : undefined;
+            if (typeof sessionId !== 'string') return reply(ack, { ok: false, code: 'INVALID_PAYLOAD' });
+            const s = pairs.cancel(sessionId, socket.id);
+            if (!s) return reply(ack, { ok: false, code: 'SESSION_NOT_FOUND' });
+            endSession(io, s, 'cancelled', [otherOf(s, socket.id)]);
+            reply(ack, { ok: true });
+        } catch (error) {
+            logger.error(`pair:cancel 처리 에러 [${socket.id}]:`, error);
+        }
+    });
+
+    socket.on('private:leave', async (payload: unknown, ack?: Ack) => {
+        try {
+            const roomId = payload && typeof payload === 'object' ? (payload as { roomId?: unknown }).roomId : undefined;
+            if (!isPrivateRoomId(roomId) || !getPrivateRooms(socket).includes(roomId)) return reply(ack, { ok: false, code: 'NOT_MEMBER' });
+            socket.data.privateRooms = getPrivateRooms(socket).filter((r) => r !== roomId);
+            socket.leave(roomId);
+            await roomManager.removeUserFromRoom(roomId, socket.id);
+            broadcastUsers(io, roomManager, roomId);
+            io.to(roomId).emit('message', { type: 'private-left', roomId });
+            reply(ack, { ok: true });
+        } catch (error) {
+            logger.error(`private:leave 처리 에러 [${socket.id}]:`, error);
+        }
+    });
 };
 
 // === 정체성 / 보낸 사람 ===
@@ -139,12 +323,21 @@ const handleIdentityReroll = (
 // === 메인 핸들러 설정 ===
 
 export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
+    const pairs = new PairSessionManager();
+    // 만료된 연결 세션 정리 (요청 60초 미응답, 수락 후 확인 2분)
+    const sweeper = setInterval(() => {
+        for (const s of pairs.expireDue()) endSession(io, s, 'expired', [s.initiator, s.responder]);
+    }, PAIR_SWEEP_INTERVAL_MS);
+    sweeper.unref();
+
     io.on('connection', (socket: ExtendedSocket) => {
         logger.log(`새 연결: ${socket.id}`);
 
         handleConnection(socket, io, roomManager);
 
-        socket.on('disconnect', () => handleDisconnect(socket, io, roomManager));
+        socket.on('disconnect', () => handleDisconnect(socket, io, roomManager, pairs));
+
+        setupPairHandlers(socket, io, roomManager, pairs);
 
         socket.on('publish', (msg: any, target: PublishTarget, ack?: (error: Error | null, response?: PublishResponse) => void) =>
             handlePublish(socket, io, roomManager, msg, target, ack)
@@ -195,6 +388,11 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
             roomManager.addUserToRoom(recoveredIpRoomId, socket.id, deviceInfo);
             io.to(recoveredIpRoomId).emit('room-users', { roomId: recoveredIpRoomId, devices: roomManager.getRoomUsers(recoveredIpRoomId) });
             io.to(recoveredGlobalRoomId).emit('room-users', { roomId: recoveredGlobalRoomId, devices: roomManager.getRoomUsers(recoveredGlobalRoomId) });
+            // 1:1 비공개 방 복구 (adapter가 소켓 룸은 복원, 서버 메모리 멤버십만 다시 채운다)
+            for (const roomId of getPrivateRooms(socket)) {
+                roomManager.addUserToRoom(roomId, socket.id, deviceInfo);
+                broadcastUsers(io, roomManager, roomId);
+            }
             logger.log(`연결 복구 [${socket.id}] → ${recoveredGlobalRoomId} / ${recoveredIpRoomId}`);
             return;
         }
@@ -229,7 +427,20 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
 };
 
 /** 연결 종료 처리: 두 방 모두에서 사용자 제거 */
-const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager: RoomManager) => {
+const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager: RoomManager, pairs: PairSessionManager) => {
+    // 진행 중인 연결 세션 정리: 상대에게 peer-left
+    for (const s of pairs.removeBySocket(socket.id)) endSession(io, s, 'peer-left', [otherOf(s, socket.id)]);
+
+    // 비공개 방은 연결 복구를 위해 socket.data.privateRooms를 지우지 않는다 (서버 메모리 멤버십만 제거)
+    for (const roomId of getPrivateRooms(socket)) {
+        try {
+            await roomManager.removeUserFromRoom(roomId, socket.id);
+            broadcastUsers(io, roomManager, roomId);
+        } catch (error) {
+            logger.error(`퇴장 처리 에러 [${socket.id}] @ ${roomId}:`, error);
+        }
+    }
+
     const rooms = [socket.globalRoomId, socket.ipRoomId].filter((r): r is string => !!r);
     if (rooms.length === 0) return;
 
@@ -258,6 +469,7 @@ const handlePublish = (
     const targetRoomId =
         target === 'global' ? socket.globalRoomId :
         target === 'ip' ? socket.ipRoomId :
+        isPrivateRoomId(target) && getPrivateRooms(socket).includes(target) ? target :
         undefined;
 
     if (!targetRoomId) {

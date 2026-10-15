@@ -1,4 +1,5 @@
 import { ref, computed, readonly } from 'vue'
+import { privateRoomIdOfScope, scopeForPrivateRoom } from './useShareScope.js'
 
 /**
  * @composable useRoomManager
@@ -27,7 +28,18 @@ export function useRoomManager() {
   function roomIdForScope(scope) {
     if (scope === 'global') return globalRoomId.value
     if (scope === 'ip') return ipRoomId.value
+    const prv = privateRoomIdOfScope(scope)
+    if (prv) return prv
     console.warn('[useRoomManager] 유효하지 않은 스코프:', scope)
+    return null
+  }
+
+  /** roomId → 스코프. ip/global 룸이 아니고 prv- 로 시작하면 'prv:<roomId>', 모르면 null */
+  function scopeForRoom(roomId) {
+    if (!roomId) return null
+    if (roomId === globalRoomId.value) return 'global'
+    if (roomId === ipRoomId.value) return 'ip'
+    if (String(roomId).startsWith('prv-')) return scopeForPrivateRoom(roomId)
     return null
   }
 
@@ -42,6 +54,7 @@ export function useRoomManager() {
     roomIds,
     setRooms,
     roomIdForScope,
+    scopeForRoom,
     leaveRoom
   }
 }
