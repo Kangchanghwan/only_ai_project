@@ -133,3 +133,39 @@ owner 결정:
 
 ## 열린 질문
 - 그림 64장 목록 선정(초안을 PR에 이미지로 첨부해 확인받기).
+
+## 프로토콜 계약 (M1·M2 공통, 구현은 이 표를 그대로 따른다)
+공통: 모든 pair 이벤트 payload는 객체. 서버 ack는 `{ok:true, ...}` | `{ok:false, code}`. sessionId는 서버가 만든 16B hex.
+
+| 이벤트 | 보내는 쪽 | payload | 응답/결과 |
+|---|---|---|---|
+| `pair:invite` | 요청자 | `{to: socketId}` | ack `{ok:true, sessionId, expiresAt}` / `{ok:false, code: 'TARGET_NOT_FOUND'|'SELF'|'COOLDOWN'|'TOO_MANY'|'BLOCKED'|'ALREADY_PAIRED'}`. 대상에게 `pair:incoming {sessionId, from: DeviceInfo, sameNetwork: boolean, expiresAt}` |
+| `pair:respond` | 대상 | `{sessionId, accept: boolean, block?: boolean}` | ack. accept=false면 요청자에게 `pair:ended {sessionId, reason:'declined'}`(block=true면 그 요청자 소켓의 이후 초대는 `BLOCKED`). accept=true면 두 소켓에 `pair:accepted {sessionId, role: 'initiator'|'responder', peer: DeviceInfo}` |
+| `pair:signal` | 둘 다 | `{sessionId, data: object}` (JSON 직렬화 4KB 이하) | 상대에게 `pair:signal {sessionId, data}`. 세션 멤버가 아니면 무시 |
+| `pair:confirm` | 둘 다 | `{sessionId, same: boolean}` | 하나라도 same=false → 둘에게 `pair:ended {sessionId, reason:'mismatch'}`. 둘 다 true → 방 생성, 두 소켓 join → 각자에게 `pair:done {sessionId, roomId, peer: DeviceInfo, roomToken, roomTokenTtlSec}` + 그 방에 `room-users {roomId, devices}` |
+| `pair:cancel` | 둘 다 | `{sessionId}` | 상대에게 `pair:ended {sessionId, reason:'cancelled'}` |
+| (서버) | — | — | 만료(요청 60초 미응답, 수락 후 확인 2분) `pair:ended {reason:'expired'}`, 한쪽 연결 끊김 `pair:ended {reason:'peer-left'}` |
+| `private:leave` | 멤버 | `{roomId}` | ack. 방에서 제거, 남은 멤버에게 `room-users` + `message {type:'private-left', roomId}` |
+| `publish` | 멤버 | `(message, target)` target = `'ip'|'global'|<prv- roomId>` | prv-는 `socket.data.privateRooms`에 있을 때만 |
+| `room-tokens` | — | — | 응답 `roomTokens`에 내가 든 비공개 방 포함 |
+
+키 교환 `data` 형식(서버는 내용을 보지 않음):
+- `{t:'pk', v:1, pk: base64url(raw P-256 공개키 65B)}` — 수락 직후 양쪽이 보냄.
+- `{t:'secret', v:1, iv, ct}` — initiator가 상대 pk를 받은 뒤 roomSecret을 k_wrap으로 감싸 보냄(AAD=`cs-pair-v1/secret`).
+- 그림 계산은 양쪽 pk를 다 받은 뒤 각자 로컬에서.
+
+남용 제한 기본값: 소켓당 진행 중 요청 3, 같은 대상 거절 후 30초 쿨다운, pair 이벤트 토큰 버킷(용량 20, 초당 5), 받는 쪽 동시 표시 1(나머지는 서버가 그대로 보내고 클라이언트가 대기열).
+
+## UI 배치 (owner 승인 2026-10-15: 추천안 전부)
+- 시작점: 기기 목록 행 오른쪽 끝 "1:1"(넓은 패널) / "1:1 연결"(폰 시트, 44px). 내 행 제외. 연결된 상대는 채워진 "1:1 중" → 그 탭으로 이동. 같은 네트워크·전체 공유 목록 모두.
+- 폰 첫 안내: 다른 기기가 처음 1대 이상일 때 연결 카드 아래 한 줄 "기기를 눌러 둘만 쓰는 1:1 방을 열 수 있어요" + 닫기. 닫으면 localStorage `pair-hint-dismissed`.
+- 보내는 쪽: 해당 행이 "수락 기다리는 중 · N초 · 취소"로 바뀜(작업 막지 않음).
+- 받는 쪽 요청 시트: 상대 아바타·이름·기기·브라우저, 같은/다른 네트워크 배지, 거절(첫 포커스)/수락(주 버튼), "이번 접속 동안 이 기기 요청 받지 않기". 탭이 숨겨져 있으면 문서 제목 앞 "(1) ".
+- 그림 확인 시트(양쪽): 두 아바타 ⇄, "두 화면의 그림이 같은지 확인하세요", 그림 4장 큰 정사각 타일(글자 없음, alt=이모지 문자), 달라요/같아요. 먼저 누르면 "상대 확인 기다리는 중".
+- 완료: 1:1 탭으로 자동 이동 + 탭 1회 강조(prefers-reduced-motion이면 생략) + 토스트 "○○와 연결됐어요".
+- 범위 탭: 연결 1개면 "[상대 아바타] 1:1", 2개 이상이면 "1:1 (n)" → 상대 선택 팝오버. 연결 없으면 기존 2탭 그대로.
+- 1:1 탭: 탭 아래(전체 공유 경고 자리) 안내 띠 = 상대 아바타·이름 "와 1:1", 상태 점(접속 중/나갔어요), "여기 올리는 파일·텍스트는 둘만 보고 자동으로 암호화돼요", "⋯" 메뉴(연결 끊기 → 확인). 업로드 칸 보조 문구 "끌어다 놓아도 자동으로 암호화돼요", 잠금 칩 숨김.
+- 상대가 나감: 상태 회색 "나갔어요", 업로드 칸 대신 "다시 연결"(상대가 목록에 있을 때) 또는 "상대가 나갔어요" 안내.
+- 색: 1:1 전용 파랑 계열 토큰 `scope-private` (tailwind 설정에 추가), 탭·주 버튼·테두리·띠 통일.
+- 접근성: 44px, 시트 포커스 가둠 + Esc=거절/취소, 요청 도착 aria-live, 색+아이콘+문구.
+- GA 이벤트: pair_invite, pair_incoming, pair_accept, pair_decline, pair_confirm(same), pair_done, pair_mismatch, private_upload, private_text, pair_leave.
