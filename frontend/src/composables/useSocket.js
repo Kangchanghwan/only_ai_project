@@ -52,6 +52,7 @@ export function useSocket() {
     publishMessage: socketService.publishMessage.bind(socketService),
     rerollIdentity: socketService.rerollIdentity.bind(socketService),
     leavePrivate: socketService.leavePrivate.bind(socketService),
+    joinPrivate: socketService.joinPrivate.bind(socketService),
     getSelfSender: socketService.getSelfSender.bind(socketService),
 
     onMessage,

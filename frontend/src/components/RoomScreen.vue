@@ -109,6 +109,7 @@ const emit = defineEmits([
   'cancel-all',
   'pair-invite',
   'pair-cancel',
+  'pair-confirm',
   'leave-private'
 ])
 
@@ -134,6 +135,15 @@ const activeDevices = computed(() => {
 
 // 상대가 나갔을 때 "다시 연결": 같은 상대가 ip/전체 공유 목록에 보이면 다시 초대할 수 있다
 const peerLeft = computed(() => currentRoom.value?.status === 'left')
+// 상대 오프라인: 파일은 올릴 수 있고(상대가 나중에 받음), 텍스트는 접속 중인 상대에게만 가므로 막는다
+const peerOffline = computed(() => currentRoom.value?.status === 'offline')
+const peerConnecting = computed(() => currentRoom.value?.status === 'connecting')
+
+// 다른 네트워크 기기: 전체 공유 방에는 있고 내 IP 방에는 없는 기기 (socketId 기준)
+const otherNetworkDevices = computed(() => {
+  const inIp = new Set(props.ipRoomDevices.map((d) => d.socketId))
+  return props.globalRoomDevices.filter((d) => !inIp.has(d.socketId) && !isMeDevice(d, props.mySocketId, props.myIdentity))
+})
 const reinviteDevice = computed(() => {
   const peer = currentRoom.value?.peer
   if (!peer || !peerLeft.value) return null
@@ -150,6 +160,7 @@ if (props.pairEnabled) {
     states: computed(() => props.pairStates),
     invite: (device) => emit('pair-invite', device),
     cancel: (sessionId) => emit('pair-cancel', sessionId),
+    confirm: (sessionId) => emit('pair-confirm', sessionId),
     open: (roomId) => emit('select-scope', scopeForPrivateRoom(roomId))
   })
 }
@@ -202,6 +213,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
             :my-identity="myIdentity"
             :reroll-available-at="rerollAvailableAt"
             :scope="scope"
+            :other-network-devices="otherNetworkDevices"
             :wide="isWide"
             @reroll="$emit('reroll-identity')"
           />
@@ -237,6 +249,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 
           <div class="flex flex-col gap-8">
             <section :class="{ hidden: mobilePanel !== 'files' }">
+              <p v-if="peerOffline" class="m-0 mb-2 text-xs text-text-secondary" role="status" data-testid="peer-offline-upload-note">{{ t('pair.offlineUploadNote') }}</p>
               <FileGallery
                 :files="files"
                 :room-id="roomId"
@@ -278,7 +291,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
               <TextShareBox
                 :texts="texts"
                 :scope="scope"
-                :compose-disabled="peerLeft"
+                :compose-disabled="peerLeft || peerOffline || peerConnecting"
+                :compose-note="peerOffline ? t('pair.offlineTextNote') : ''"
                 @remove-text="$emit('remove-text', $event)"
                 @clear-all="$emit('clear-all-texts')"
                 @copy-text="$emit('copy-text', $event)"

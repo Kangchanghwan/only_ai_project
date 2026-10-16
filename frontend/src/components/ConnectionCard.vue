@@ -8,7 +8,9 @@ import { computed, inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ConnectedDevices from './ConnectedDevices.vue'
 import DeviceList from './DeviceList.vue'
-import { countOtherDevices } from '../utils/devices'
+import DeviceRow from './DeviceRow.vue'
+import { countOtherDevices, isMeDevice } from '../utils/devices'
+import { isValidIdentity, identityName } from '../utils/identity'
 import { PAIR_CONTEXT_KEY, PAIR_HINT_KEY } from '../utils/pairContext'
 import { isPrivateScope } from '../composables/useShareScope'
 
@@ -20,7 +22,9 @@ const props = defineProps({
   myIdentity: { type: Object, default: null },
   rerollAvailableAt: { type: Number, default: 0 },
   scope: { type: String, default: 'ip' },
-  wide: { type: Boolean, default: false }
+  wide: { type: Boolean, default: false },
+  /** 전체 공유 방에만 있는 기기 (같은 네트워크 목록 아래 "다른 네트워크 기기 n대") */
+  otherNetworkDevices: { type: Array, default: () => [] }
 })
 const emit = defineEmits(['reroll'])
 
@@ -36,6 +40,19 @@ function closeHint() {
 }
 
 const otherCount = computed(() => countOtherDevices(props.devices, props.mySocketId, props.myIdentity))
+
+// 폰 바로가기: 다른 기기가 정확히 1대이고 아직 연결 시도/연결이 없으면 시트를 열지 않고 바로 "○○와 1:1".
+// 진행 중(수락 대기)인 기기는 시트가 닫혀 있어도 같은 자리에서 그림 확인을 할 수 있게 행으로 보여 준다.
+const others = computed(() => props.devices.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)))
+const stateOf = (d) => pair?.states?.value?.[d.socketId] || null
+const narrowPair = computed(() => !props.wide && !!pair && !isPrivateScope(props.scope))
+const shortcutDevice = computed(() => (narrowPair.value && others.value.length === 1 && !stateOf(others.value[0]) ? others.value[0] : null))
+const pendingDevices = computed(() => (narrowPair.value ? others.value.filter((d) => stateOf(d)?.state === 'pending') : []))
+const shortcutName = computed(() => {
+  const d = shortcutDevice.value
+  if (!d) return ''
+  return isValidIdentity(d.identity) ? identityName(d.identity, t) : `${d.browser} · ${d.os}`
+})
 </script>
 
 <template>
@@ -52,10 +69,22 @@ const otherCount = computed(() => countOtherDevices(props.devices, props.mySocke
           :my-socket-id="mySocketId"
           :my-identity="myIdentity"
           :scope="scope"
+          :other-network-devices="otherNetworkDevices"
           :reroll-available-at="rerollAvailableAt"
           @reroll="emit('reroll')"
         />
       </div>
+    </div>
+    <ul v-if="pendingDevices.length > 0" class="mt-3 pt-3 border-t border-border flex flex-col gap-2 list-none p-0 m-0" data-testid="pair-pending-rows">
+      <DeviceRow v-for="d in pendingDevices" :key="d.socketId" :device="d" />
+    </ul>
+    <div v-if="shortcutDevice" class="mt-3" data-testid="pair-shortcut-wrap">
+      <button
+        type="button"
+        class="w-full min-h-[44px] px-4 rounded-full border border-scope-private text-scope-private text-sm font-semibold truncate"
+        data-testid="pair-shortcut"
+        @click="pair.invite(shortcutDevice)"
+      >{{ t('pair.shortcut', { name: shortcutName }) }}</button>
     </div>
     <div v-if="wide && devices.length > 0" class="mt-3 pt-3 border-t border-border" data-testid="device-panel">
       <DeviceList
@@ -64,12 +93,13 @@ const otherCount = computed(() => countOtherDevices(props.devices, props.mySocke
         :my-identity="myIdentity"
         :scope="scope"
         :wide="true"
+        :other-network-devices="otherNetworkDevices"
         :reroll-available-at="rerollAvailableAt"
         @reroll="emit('reroll')"
       />
     </div>
     <div
-      v-if="!wide && pair && otherCount >= 1 && !hintClosed && !isPrivateScope(scope)"
+      v-if="!wide && pair && otherCount >= 1 && !hintClosed && !isPrivateScope(scope) && !shortcutDevice"
       class="mt-2 pt-2 border-t border-border flex items-center gap-2 text-xs text-text-secondary"
       data-testid="pair-hint"
     >

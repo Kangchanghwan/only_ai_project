@@ -73,17 +73,23 @@ export async function unwrapSecret(kWrap, { iv, ct }) {
 }
 
 async function hkdfBits(secret, salt, info, bits) {
-  const k = await subtle().importKey('raw', secret, 'HKDF', false, ['deriveBits'])
+  // secret: 원본 바이트 또는 HKDF CryptoKey(IndexedDB에 저장된 비추출 키)
+  const k = ArrayBuffer.isView(secret) ? await subtle().importKey('raw', secret, 'HKDF', false, ['deriveBits']) : secret
   return new Uint8Array(await subtle().deriveBits({ name: 'HKDF', hash: 'SHA-256', salt, info: enc.encode(info) }, k, bits))
 }
 
 /**
  * 방 비밀 → 기존 잠금 규격 {salt, encKey, verifier, vh}
- * @param {Uint8Array} roomSecretBytes
+ * @param {Uint8Array|CryptoKey} roomSecret 바이트 또는 HKDF CryptoKey(deriveBits)
  * @param {string} roomId
  */
-export async function deriveRoomLock(roomSecretBytes, roomId) {
-  const master = await hkdfBits(roomSecretBytes, enc.encode(roomId), 'cs-room-v1/master', 256)
-  const salt16 = await hkdfBits(roomSecretBytes, empty, 'cs-room-v1/salt', 128)
+export async function deriveRoomLock(roomSecret, roomId) {
+  const master = await hkdfBits(roomSecret, enc.encode(roomId), 'cs-room-v1/master', 256)
+  const salt16 = await hkdfBits(roomSecret, empty, 'cs-room-v1/salt', 128)
   return deriveLockFromMaster(master, b64u(salt16))
+}
+
+/** 방 비밀 바이트 → 저장용 비추출 HKDF 키 (IndexedDB에 구조화 복제로 저장 가능) */
+export function importRoomSecretKey(roomSecretBytes) {
+  return subtle().importKey('raw', roomSecretBytes, 'HKDF', false, ['deriveBits'])
 }

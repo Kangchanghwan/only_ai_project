@@ -10,14 +10,15 @@ import { isValidIdentity, identityName } from '../utils/identity'
 
 const { t } = useI18n()
 const props = defineProps({
-  /** { roomId, peer, status: 'online'|'left' } */
+  /** { roomId, peer, status: 'online'|'offline'|'connecting'|'left' } */
   room: { type: Object, required: true }
 })
 const emit = defineEmits(['leave'])
 
 const menuOpen = ref(false)
 const confirming = ref(false)
-const online = computed(() => props.room.status !== 'left')
+const status = computed(() => (['online', 'offline', 'connecting', 'left'].includes(props.room.status) ? props.room.status : 'online'))
+const STATUS_TEXT = { online: 'pair.statusOnline', offline: 'pair.statusOffline', connecting: 'pair.statusConnecting', left: 'pair.statusLeft' }
 const name = computed(() => (isValidIdentity(props.room.peer?.identity) ? identityName(props.room.peer.identity, t) : t('pair.unknownDevice')))
 
 function toggleMenu() {
@@ -51,12 +52,17 @@ function doLeave() {
           <span class="font-semibold truncate" data-testid="private-strip-title">{{ t('pair.stripTitle', { name }) }}</span>
           <span
             class="inline-flex items-center gap-1 text-xs"
-            :class="online ? 'text-scope-private' : 'text-text-secondary'"
+            :class="status === 'online' ? 'text-scope-private' : 'text-text-secondary'"
             data-testid="private-status"
-            :data-status="online ? 'online' : 'left'"
+            :data-status="status"
           >
-            <span class="inline-block w-2 h-2 rounded-full" :class="online ? 'bg-scope-private' : 'bg-text-secondary'" aria-hidden="true"></span>
-            {{ online ? t('pair.statusOnline') : t('pair.statusLeft') }}
+            <span
+              class="inline-block w-2 h-2 rounded-full"
+              :class="[status === 'online' ? 'bg-scope-private' : status === 'connecting' ? 'bg-text-secondary animate-pulse' : status === 'offline' ? 'border border-text-secondary' : 'bg-text-secondary']"
+              data-testid="private-status-dot"
+              aria-hidden="true"
+            ></span>
+            {{ t(STATUS_TEXT[status]) }}
           </span>
         </div>
         <p class="m-0 mt-0.5 text-xs text-text-secondary leading-relaxed">🔒 {{ t('pair.stripNote') }}</p>

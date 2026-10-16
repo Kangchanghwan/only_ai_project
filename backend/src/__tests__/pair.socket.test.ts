@@ -282,4 +282,72 @@ describe('Socket.IO - 1:1 연결 (비공개 방)', () => {
     expect(r4.status).toBe(400);
     expect(((await r4.json()) as any).code).toBe('PRIVATE_ROOM_LOCKED_ONLY');
   });
+
+  describe('v3: pk / 선확인 / 입장권', () => {
+    test('invite pk 전달 → 수락 전 signal 중계 → 선확인 → accept+same → done(ticket) → private:join 복구', async () => {
+      const A = await connect(freshIp());
+      const B = await connect(freshIp());
+      const a = collect(A.c, EVENTS);
+      const b = collect(B.c, EVENTS);
+
+      const bad = await ask(A.c, 'pair:invite', { to: B.c.id, pk: 123 });
+      expect(bad).toEqual({ ok: false, code: 'INVALID_PAYLOAD' });
+      const long = await ask(A.c, 'pair:invite', { to: B.c.id, pk: 'x'.repeat(201) });
+      expect(long.code).toBe('INVALID_PAYLOAD');
+
+      const inv = await ask(A.c, 'pair:invite', { to: B.c.id, pk: 'PK_A' });
+      expect(inv.ok).toBe(true);
+      await wait();
+      expect(b['pair:incoming'][0].pk).toBe('PK_A');
+
+      B.c.emit('pair:signal', { sessionId: inv.sessionId, data: { t: 'pk', pk: 'PK_B' } });
+      await wait();
+      expect(a['pair:signal']).toEqual([{ sessionId: inv.sessionId, data: { t: 'pk', pk: 'PK_B' } }]);
+
+      expect((await ask(A.c, 'pair:confirm', { sessionId: inv.sessionId, same: true })).ok).toBe(true);
+      await wait();
+      expect(a['pair:done']).toHaveLength(0);
+
+      expect((await ask(B.c, 'pair:respond', { sessionId: inv.sessionId, accept: true, same: true })).ok).toBe(true);
+      await wait();
+      expect(a['pair:accepted']).toHaveLength(1);
+      expect(a['pair:done']).toHaveLength(1);
+      expect(b['pair:done']).toHaveLength(1);
+      const done = b['pair:done'][0];
+      expect(typeof done.ticket).toBe('string');
+      expect(a['pair:done'][0].roomId).toBe(done.roomId);
+
+      // 새로고침 시뮬레이션: B 끊고 새 소켓으로 입장권 사용
+      B.c.disconnect();
+      await wait();
+      const B2 = await connect(freshIp());
+      const b2 = collect(B2.c, EVENTS);
+      const forged = done.ticket.slice(0, -3) + 'AAA';
+      const res = await ask(B2.c, 'private:join', { tickets: [done.ticket, forged] });
+      expect(res.ok).toBe(true);
+      expect(res.invalid).toEqual([forged]);
+      expect(res.rooms).toHaveLength(1);
+      expect(res.rooms[0].roomId).toBe(done.roomId);
+      expect(typeof res.rooms[0].ticket).toBe('string');
+      expect(verifyRoomToken(done.roomId, res.rooms[0].roomToken)).toBe('valid');
+      expect(res.rooms[0].devices).toHaveLength(2);
+      await wait();
+      expect(a['room-users'].some((u: any) => u.roomId === done.roomId && u.devices.length === 2)).toBe(true);
+
+      // 재입장 소켓에서 publish → 상대에게 도달
+      const pub = await new Promise<any>((r) => B2.c.emit('publish', { type: 'text', text: 'hi' }, done.roomId, (e: any, x: any) => r({ e, x })));
+      expect(pub.e).toBeNull();
+      await wait();
+      expect(a['message'].some((m: any) => m.text === 'hi')).toBe(true);
+      expect(b2['message'].length).toBeGreaterThan(0);
+    });
+
+    test('private:join 11장은 INVALID_PAYLOAD', async () => {
+      const A = await connect(freshIp());
+      const res = await ask(A.c, 'private:join', { tickets: Array(11).fill('x') });
+      expect(res).toEqual({ ok: false, code: 'INVALID_PAYLOAD' });
+      const res2 = await ask(A.c, 'private:join', {});
+      expect(res2.code).toBe('INVALID_PAYLOAD');
+    });
+  });
 });

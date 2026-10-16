@@ -169,3 +169,46 @@ owner 결정:
 - 색: 1:1 전용 파랑 계열 토큰 `scope-private` (tailwind 설정에 추가), 탭·주 버튼·테두리·띠 통일.
 - 접근성: 44px, 시트 포커스 가둠 + Esc=거절/취소, 요청 도착 aria-live, 색+아이콘+문구.
 - GA 이벤트: pair_invite, pair_incoming, pair_accept, pair_decline, pair_confirm(same), pair_done, pair_mismatch, private_upload, private_text, pair_leave.
+
+---
+
+# v3 (owner 승인 2026-10-16): 클릭 최소화 + 30일 유지(E1 앞당김)
+목표: 연결 클릭 4번 → 3번(A: "1:1" → 제자리 "같아요", B: "수락"), A의 큰 마우스 이동 제거, 폰 탭 1번·탭 전환 1번 절약, 두 번째부터 다시 연결 0번. 브라우저 알림은 넣지 않는다.
+양쪽 확인은 유지한다(서버 바꿔치기 방지). 위 v2 내용 중 아래와 다른 것은 v3가 우선.
+
+## 프로토콜 변경 (하위 호환: 옛 클라이언트 흐름도 계속 동작)
+| 이벤트 | 변경 |
+|---|---|
+| `pair:invite` | payload `{to, pk?}`. pk가 있으면 서버가 `pair:incoming`에 그대로 실어 보낸다 |
+| `pair:incoming` | `{sessionId, from, sameNetwork, expiresAt, pk?}` |
+| `pair:signal` | 세션 상태 `invited`에서도 중계 허용(사람 수락 전 키 교환용) |
+| `pair:confirm` | `invited` 상태에서도 받는다(요청자가 먼저 "같아요"). 방 생성 조건은 그대로 "두 사람 모두 same=true" |
+| `pair:respond` | `{sessionId, accept, block?, same?}`. accept=true이면서 same=true면 **수락 + 확인**을 한 번에 기록 |
+| `pair:accepted` | 그대로(옛 흐름용). 새 클라이언트는 이미 키가 있으면 pk 재전송 안 함 |
+| `pair:done` | `{sessionId, roomId, peer, roomToken, roomTokenTtlSec, ticket}` — ticket 추가 |
+| `private:join` (신규, ack) | `{tickets: string[]}` (최대 10) → `{ok:true, rooms:[{roomId, ticket, roomToken, roomTokenTtlSec, devices}], invalid:[ticket...]}`. 유효한 입장권마다 socket.join + RoomManager 등록 + socket.data.privateRooms 추가 + 그 방에 room-users. 새 만료(지금+30일)로 재발급 |
+| `private:leave` | 그대로. 남은 멤버에게 `message {type:'private-left', roomId}` |
+
+새 흐름:
+1. A "1:1" → A가 1회용 키 생성 → `pair:invite {to, pk}`.
+2. B 클라이언트는 `pair:incoming`을 받는 즉시(사람 조작 없이) 키를 만들어 `pair:signal {t:'pk'}`로 답한다 → 양쪽에서 그림 계산. A는 B의 pk를 받으면 roomSecret을 감싸 `pair:signal {t:'secret'}`로 보낸다.
+3. B 요청 시트: 처음부터 그림 4장 + "수락"(= `pair:respond {accept:true, same:true}`) / "거절" / "달라요"(→ respond accept:false 후 mismatch 안내). 그림 준비 전에는 수락 비활성(보통 수백 ms).
+4. A 기기 행: "1:1" 버튼 자리에 그림 4장(작게) + "같아요" 버튼이 **같은 위치**에 나타난다(가운데 창 없음). A는 B 수락 전에 미리 눌러도 된다. 행에 "상대 수락 기다리는 중 · N초 · 취소".
+5. 둘 다 확인 → `pair:done` → 1:1 탭 자동 이동.
+
+## 입장권 (30일 유지)
+- `utils/privateTicket.ts`: `pv1.<roomId>.<expSec>.<base64url HMAC-SHA256(secret, "private-ticket:v1:"+roomId+":"+expSec)>`. secret = `PRIVATE_ROOM_SECRET || ROOM_TOKEN_SECRET || ROOM_ID_SECRET || dev`. TTL 30일(`PRIVATE_TICKET_TTL_SEC`). 서버는 멤버 목록을 저장하지 않는다.
+- `pair:done`에서 각자에게 발급, `private:join`에서 갱신(슬라이딩 30일).
+- 빈 비공개 방은 **파일을 지우지 않는다**(방 객체만 메모리에서 정리). 파일은 잠금 버킷 1일 수명 주기로 정리.
+- 한계(문서화): 무상태라 한쪽이 끊어도 오프라인이던 상대의 입장권은 만료 전까지 유효 → 그 기기는 다음 접속 때 상대 없는 방으로 다시 들어간다. 안내 띠에서 "상대 오프라인 · 마지막 접속" 표시, 직접 지울 수 있음.
+
+## 프론트 저장 (E1)
+- IndexedDB DB `cs-private-rooms`, store `rooms`: `{roomId, ticket, secretKey (CryptoKey, HKDF, extractable=false), peer:{name, identity, deviceLabel...}, createdAt, lastUsedAt, expiresAt}`. `deriveRoomLock`가 bytes와 CryptoKey(HKDF) 둘 다 받게.
+- 시작 시: 만료 항목 삭제 → 나머지를 1:1 탭으로 바로 표시(상태 "연결 중…") → `registered` 뒤와 재연결 뒤 `private:join` → 성공은 상태 갱신·토큰·파일 목록 로드, invalid는 삭제.
+- IndexedDB를 못 쓰면 지금처럼 메모리(이번 접속만) + 안내 없음.
+- 상대 상태: 그 방 room-users에 다른 기기가 있으면 "접속 중", 없으면 "오프라인"(파일은 올릴 수 있음 — 상대가 나중에 받음, 1일 보관). `private-left`를 받으면 "상대가 연결을 끊었어요" + 내 저장소에서도 삭제.
+
+## 화면 추가·변경
+- 폰 바로가기: 다른 기기가 정확히 1대이고 아직 연결 안 됐으면 연결 카드에 "○○와 1:1" 버튼(44px)을 바로 보여 준다(시트 안 열어도 됨).
+- 다른 네트워크 기기: 같은 네트워크 기기 목록 아래 접힌 묶음 "다른 네트워크 기기 n대"(전체 공유 방에만 있고 내 IP 방에는 없는 기기). 펼치면 각 행에 "1:1". 탭 전환 없이 연결.
+- 오프라인 상태에서도 업로드 가능(파일 보관 1일 안내 한 줄). 텍스트는 접속 중인 상대에게만 전달되므로 오프라인이면 텍스트 입력 아래 "상대가 접속하면 보낼 수 있어요" 안내 + 공유 버튼 비활성.

@@ -2,6 +2,7 @@ import { Rooms, RoomData } from '../types';
 import { DeviceInfo } from '../utils/deviceInfo';
 import { StorageService } from '../services/StorageService';
 import { deleteUploadersForRoom } from '../utils/uploaderStore';
+import { isPrivateRoomId } from '../utils/privateRoom';
 import logger from '../utils/logger';
 
 /** 고정 룸 ID */
@@ -88,11 +89,14 @@ export class RoomManager {
             return;
         }
 
-        const result = await this.storageService.deleteRoomFiles(roomId);
-        if (result.success) {
-            logger.info(`Deleted ${result.deletedCount} files for room ${roomId}`);
-        } else {
-            logger.error(`Failed to delete files for room ${roomId}: ${result.error}`);
+        // 1:1 비공개 방은 상대가 나중에 받을 수 있도록 파일을 지우지 않는다 (잠금 버킷 수명 주기로 정리)
+        if (!isPrivateRoomId(roomId)) {
+            const result = await this.storageService.deleteRoomFiles(roomId);
+            if (result.success) {
+                logger.info(`Deleted ${result.deletedCount} files for room ${roomId}`);
+            } else {
+                logger.error(`Failed to delete files for room ${roomId}: ${result.error}`);
+            }
         }
 
         deleteUploadersForRoom(roomId);

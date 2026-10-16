@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { usePairFlow } from './usePairFlow.js'
 import { usePrivateRooms } from './usePrivateRooms.js'
+import { generateEphemeral } from '../utils/pairCrypto.js'
 
 // 서버 이벤트를 흉내 내는 가짜 어댑터
 function fakeAdapter() {
@@ -74,5 +75,47 @@ describe('usePairFlow', () => {
     adapter.fire('pair:ended', { sessionId: 'R9', reason: 'mismatch' })
     expect(track).toHaveBeenCalledWith('pair_mismatch')
     expect(notify.showError).toHaveBeenCalledWith('pair.ended.mismatch')
+  })
+
+  const settle = async () => { for (let i = 0; i < 20; i++) await new Promise((r) => setTimeout(r, 0)) }
+
+  it('v3 보낸 쪽: invite에 pk가 실리고, 상대 pk가 오면 pending 상태에 sas가 실려 제자리에서 확인할 수 있다', async () => {
+    await flow.invite({ socketId: 'B' })
+    const inv = adapter.emitted.find(([e]) => e === 'pair:invite')[1]
+    expect(inv.to).toBe('B')
+    expect(typeof inv.pk).toBe('string')
+    const eph = await generateEphemeral()
+    adapter.fire('pair:signal', { sessionId: 'S1', data: { t: 'pk', v: 1, pk: eph.publicRaw } })
+    await settle()
+    expect(flow.pairStates.value.B.sas).toHaveLength(4)
+    expect(flow.pairStates.value.B.confirmed).toBe(false)
+    await flow.confirmInvite('S1')
+    expect(flow.pairStates.value.B).toMatchObject({ state: 'pending', confirmed: true })
+    expect(adapter.emitted).toContainEqual(['pair:confirm', { sessionId: 'S1', same: true }])
+    expect(track).toHaveBeenCalledWith('pair_confirm', { same: true })
+    expect(flow.confirming.value).toBeNull() // 가운데 확인 시트는 쓰지 않는다
+  })
+
+  it('v3 받는 쪽: pk가 실린 요청은 바로 그림이 준비되고, 수락(same) 뒤엔 대기 세션이 되며 가운데 시트는 뜨지 않는다', async () => {
+    const eph = await generateEphemeral()
+    adapter.fire('pair:incoming', { sessionId: 'R1', from: peer, sameNetwork: true, expiresAt: Date.now() + 60000, pk: eph.publicRaw })
+    await settle()
+    expect(flow.incoming.value.sas).toHaveLength(4)
+    expect(adapter.emitted).toContainEqual(['pair:signal', expect.objectContaining({ sessionId: 'R1' })])
+    await flow.respond(true, { same: true })
+    expect(adapter.emitted).toContainEqual(['pair:respond', { sessionId: 'R1', accept: true, same: true }])
+    expect(flow.incoming.value).toBeNull()
+    expect(flow.respondedWaiting.value.sessionId).toBe('R1')
+    expect(flow.confirming.value).toBeNull()
+  })
+
+  it('"그림이 달라요"는 거절로 보내고 mismatch 안내(pair_mismatch)를 낸다', async () => {
+    const eph = await generateEphemeral()
+    adapter.fire('pair:incoming', { sessionId: 'R2', from: peer, sameNetwork: true, expiresAt: Date.now() + 60000, pk: eph.publicRaw })
+    await settle()
+    await flow.respond(false, { mismatch: true })
+    expect(adapter.emitted).toContainEqual(['pair:respond', { sessionId: 'R2', accept: false }])
+    expect(notify.showError).toHaveBeenCalledWith('pair.ended.mismatch')
+    expect(track).toHaveBeenCalledWith('pair_mismatch')
   })
 })

@@ -510,14 +510,19 @@
       "decline": "Decline",
       "accept": "Accept",
       "block": "Don't accept requests from this device this visit",
-      "announce": "{name} wants a 1:1 connection"
+      "announce": "{name} wants a 1:1 connection",
+      "compare": "Accept if they match, decline if not"
     },
     "confirm": {
       "title": "Check that both screens show the same pictures",
       "preparing": "Getting ready…",
       "waiting": "Waiting for the other device",
       "different": "Different",
-      "same": "Same"
+      "same": "Same",
+      "sameInline": "Pictures match with {name}",
+      "askSame": "Same pictures as their screen?",
+      "doneWaitingAccept": "Confirmed · waiting for them to accept",
+      "doneWaitingPeer": "Confirmed · waiting for them to confirm"
     },
     "connected": "Connected with {name}",
     "ended": {
@@ -551,9 +556,20 @@
     "leaveConfirmTitle": "Disconnect this 1:1 room?",
     "leaveConfirmBody": "Files and text in this room disappear from this screen. You'll need to connect again to see them.",
     "uploadHint": "Drag and drop works too, and it's encrypted automatically",
-    "peerLeftNotice": "They left. Reconnect to share again.",
+    "peerLeftNotice": "They ended the connection",
     "reconnect": "Reconnect",
-    "peerLeftToast": "They left the 1:1 room",
-    "unreadableText": "Unreadable text"
+    "peerLeftToast": "They ended the 1:1 connection",
+    "unreadableText": "Unreadable text",
+    "waitingAccept": "Waiting for them to accept",
+    "otherNetworkGroup": "{n} devices on other networks",
+    "shortcut": "1:1 with {name}",
+    "statusOffline": "Offline",
+    "statusConnecting": "Connecting…",
+    "offlineUploadNote": "They can receive it when they're online (files are kept up to 1 day)",
+    "offlineTextNote": "You can send text when they're online",
+    "expired": "The 1:1 connection expired",
+    "checking": "Checking",
+    "peerChecking": "Waiting for them",
+    "acceptNote": "You'll connect once they accept"
   }
 }

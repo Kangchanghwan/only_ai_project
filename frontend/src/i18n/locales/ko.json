@@ -510,14 +510,19 @@
       "decline": "거절",
       "accept": "수락",
       "block": "이번 접속 동안 이 기기 요청 받지 않기",
-      "announce": "{name}가 1:1 연결을 요청했어요"
+      "announce": "{name}가 1:1 연결을 요청했어요",
+      "compare": "그림이 같으면 수락, 다르면 거절하세요"
     },
     "confirm": {
       "title": "두 화면의 그림이 같은지 확인하세요",
       "preparing": "연결을 준비하는 중이에요",
       "waiting": "상대 확인 기다리는 중",
       "different": "달라요",
-      "same": "같아요"
+      "same": "같아요",
+      "sameInline": "{name}와 그림이 같아요",
+      "askSame": "상대 화면의 그림과 같나요?",
+      "doneWaitingAccept": "확인했어요 · 상대 수락 기다리는 중",
+      "doneWaitingPeer": "확인했어요 · 상대 확인 기다리는 중"
     },
     "connected": "{name}와 연결됐어요",
     "ended": {
@@ -551,9 +556,20 @@
     "leaveConfirmTitle": "1:1 연결을 끊을까요?",
     "leaveConfirmBody": "이 방의 파일과 텍스트는 이 화면에서 사라지고, 다시 보려면 새로 연결해야 해요.",
     "uploadHint": "끌어다 놓아도 자동으로 암호화돼요",
-    "peerLeftNotice": "상대가 나갔어요. 다시 연결하면 올릴 수 있어요.",
+    "peerLeftNotice": "상대가 연결을 끊었어요",
     "reconnect": "다시 연결",
-    "peerLeftToast": "상대가 1:1 방에서 나갔어요",
-    "unreadableText": "읽을 수 없는 텍스트"
+    "peerLeftToast": "상대가 연결을 끊었어요",
+    "unreadableText": "읽을 수 없는 텍스트",
+    "waitingAccept": "상대 수락 기다리는 중",
+    "otherNetworkGroup": "다른 네트워크 기기 {n}대",
+    "shortcut": "{name}와 1:1",
+    "statusOffline": "오프라인",
+    "statusConnecting": "연결 중…",
+    "offlineUploadNote": "상대가 접속하면 받을 수 있어요 (파일은 최대 1일 보관)",
+    "offlineTextNote": "상대가 접속하면 보낼 수 있어요",
+    "expired": "1:1 연결이 만료됐어요",
+    "checking": "확인 중",
+    "peerChecking": "상대 확인 중",
+    "acceptNote": "상대가 수락하면 연결돼요"
   }
 }

@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { createPairing } from '../services/pairing.js'
-import { identityName, isValidIdentity } from '../utils/identity.js'
+import { identityName, isValidIdentity, sameIdentity } from '../utils/identity.js'
 
 /** 보낸 초대 에러 코드 → 사용자 안내 문구 */
 export function inviteErrorText(code, t) {
@@ -51,8 +51,13 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
   const nameOf = (peer) => (peer && isValidIdentity(peer.identity) ? identityName(peer.identity, t) : '')
 
   const incoming = computed(() => sessions.value.find((s) => s.state === 'incoming') || null)
+  /** 내가 수락(+확인)을 눌렀고 보낸 쪽 확인을 기다리는 받은 요청 (요청 시트 안에서 대기 문구를 보여 준다) */
+  const respondedWaiting = computed(
+    () => sessions.value.find((s) => s.role === 'responder' && !s.legacy && s.state === 'waiting-peer-confirm') || null
+  )
+  /** 가운데 그림 확인 시트는 옛 흐름(legacy)에서만 쓴다. v3는 보낸 쪽은 기기 행, 받은 쪽은 요청 시트 안에서 확인한다 */
   const confirming = computed(
-    () => sessions.value.find((s) => ['accepted', 'keyed', 'waiting-peer-confirm'].includes(s.state)) || null
+    () => sessions.value.find((s) => s.legacy && ['accepted', 'keyed', 'waiting-peer-confirm'].includes(s.state)) || null
   )
 
   /** socketId → 기기 행 상태 { state: 'pending'|'connecting'|'paired', sessionId?, expiresAt?, roomId? } */
@@ -62,8 +67,12 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
     for (const s of sessions.value) {
       const target = targets.value[s.sessionId] || s.peer?.socketId
       if (!target) continue
-      if (s.state === 'inviting') map[target] = { state: 'pending', sessionId: s.sessionId, expiresAt: s.expiresAt }
-      else if (['accepted', 'keyed', 'waiting-peer-confirm'].includes(s.state)) map[target] = { state: 'connecting', sessionId: s.sessionId }
+      const initiatorWaiting = s.role === 'initiator' && !s.legacy && s.state === 'waiting-peer-confirm'
+      if (s.state === 'inviting' || initiatorWaiting) {
+        map[target] = { state: 'pending', sessionId: s.sessionId, expiresAt: s.expiresAt, sas: s.sas, confirmed: !!s.confirmed }
+      } else if (['accepted', 'keyed', 'waiting-peer-confirm'].includes(s.state)) {
+        map[target] = { state: 'connecting', sessionId: s.sessionId }
+      }
     }
     for (const r of privateRooms.rooms) {
       if (r.status !== 'online' || !r.peer?.socketId) continue
@@ -124,15 +133,17 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
     for (const id of toDismiss) queueMicrotask(() => pairing?.dismiss(id))
   }
 
-  async function handlePaired({ roomId, peer, roomSecret }) {
+  async function handlePaired({ roomId, peer, roomSecret, ticket = null }) {
     // 같은 상대와 이전에 나간 방이 남아 있으면 정리
     for (const r of [...privateRooms.rooms]) {
-      if (r.roomId !== roomId && r.status === 'left' && peer?.socketId && r.peer?.socketId === peer.socketId) {
+      const samePeer = !!peer && ((peer.socketId && r.peer?.socketId === peer.socketId) ||
+        (isValidIdentity(peer.identity) && isValidIdentity(r.peer?.identity) && sameIdentity(peer.identity, r.peer.identity)))
+      if (r.roomId !== roomId && r.status === 'left' && samePeer) {
         privateRooms.removeRoom(r.roomId)
         try { await leaveRoom?.(r.roomId) } catch { /* 이미 정리된 방 */ }
       }
     }
-    await privateRooms.addRoom({ roomId, peer, roomSecret })
+    await privateRooms.addRoom({ roomId, peer, roomSecret, ticket })
     track('pair_done')
     notify.showSuccess(t('pair.connected', { name: nameOf(peer) }))
     if (!prefersReducedMotion()) {
@@ -176,13 +187,26 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
     await pairing.cancel(sessionId)
   }
 
-  /** 받은 요청 응답. block=true면 이번 접속 동안 이 기기 요청을 받지 않는다 */
-  async function respond(accept, { block = false } = {}) {
+  /**
+   * 받은 요청 응답. block=true면 이번 접속 동안 이 기기 요청을 받지 않는다.
+   * same=true는 수락+그림 확인 한 번에, mismatch=true는 "그림이 달라요"(거절 + 불일치 안내)
+   */
+  async function respond(accept, { block = false, same = false, mismatch = false } = {}) {
     const s = incoming.value
     if (!pairing || !s) return
-    track(accept ? 'pair_accept' : 'pair_decline', block ? { blocked: true } : {})
-    const res = await pairing.respond(s.sessionId, accept, { block })
+    // mismatch는 종료 안내(showEnded)에서 pair_mismatch로 기록된다
+    if (!mismatch) track(accept ? 'pair_accept' : 'pair_decline', block ? { blocked: true } : {})
+    if (accept && same) track('pair_confirm', { same: true })
+    const res = await pairing.respond(s.sessionId, accept, { block, same, reason: mismatch ? 'mismatch' : null })
     if (!res.ok) notify.showError(t('pair.ended.failed'))
+  }
+
+  /** 보낸 쪽 기기 행의 "같아요" (수락 전에도 가능) */
+  async function confirmInvite(sessionId) {
+    if (!pairing || !sessionId) return
+    track('pair_confirm', { same: true })
+    const res = await pairing.confirm(sessionId, true)
+    if (!res.ok && res.code !== 'BAD_STATE') notify.showError(t('pair.ended.failed'))
   }
 
   /** 그림 확인 결과 */
@@ -214,7 +238,7 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
 
   return {
     enabled: !!pairing,
-    sessions, incoming, confirming, pairStates, highlightRoomId, announcement,
-    invite, cancel, respond, confirm, cancelConfirming, destroy
+    sessions, incoming, respondedWaiting, confirming, pairStates, highlightRoomId, announcement,
+    invite, cancel, respond, confirm, confirmInvite, cancelConfirming, destroy
   }
 }

@@ -16,7 +16,9 @@ const props = defineProps({
   texts: { type: Array, required: true, default: () => [] },
   scope: { type: String, default: 'ip' },
   /** 1:1 상대가 나간 방: 입력을 막는다 */
-  composeDisabled: { type: Boolean, default: false }
+  composeDisabled: { type: Boolean, default: false },
+  /** 입력을 막은 이유 안내 (예: 상대 오프라인) */
+  composeNote: { type: String, default: '' }
 })
 
 const emit = defineEmits(['remove-text', 'clear-all', 'copy-text', 'share-text', 'paste-content'])
@@ -70,6 +72,7 @@ function formatTime(timestamp) {
         :disabled="composeDisabled"
         @keydown="onKeydown"
       ></textarea>
+      <p v-if="composeDisabled && composeNote" class="m-0 text-xs text-text-secondary" role="status" data-testid="text-compose-note">{{ composeNote }}</p>
       <div class="flex items-center gap-2 flex-wrap">
         <button
           type="submit"
