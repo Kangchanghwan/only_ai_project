@@ -511,8 +511,7 @@
       "accept": "Accept",
       "block": "Don't accept requests from this device this visit",
       "announce": "{name} wants a 1:1 connection",
-      "compare": "Accept if both screens show the same pictures",
-      "different": "The pictures are different"
+      "compare": "Accept if they match, decline if not"
     },
     "confirm": {
       "title": "Check that both screens show the same pictures",
@@ -520,7 +519,10 @@
       "waiting": "Waiting for the other device",
       "different": "Different",
       "same": "Same",
-      "sameInline": "Pictures match with {name}"
+      "sameInline": "Pictures match with {name}",
+      "askSame": "Same pictures as their screen?",
+      "doneWaitingAccept": "Confirmed · waiting for them to accept",
+      "doneWaitingPeer": "Confirmed · waiting for them to confirm"
     },
     "connected": "Connected with {name}",
     "ended": {
@@ -565,6 +567,9 @@
     "statusConnecting": "Connecting…",
     "offlineUploadNote": "They can receive it when they're online (files are kept up to 1 day)",
     "offlineTextNote": "You can send text when they're online",
-    "expired": "The 1:1 connection expired"
+    "expired": "The 1:1 connection expired",
+    "checking": "Checking",
+    "peerChecking": "Waiting for them",
+    "acceptNote": "You'll connect once they accept"
   }
 }

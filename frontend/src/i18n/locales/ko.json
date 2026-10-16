@@ -511,8 +511,7 @@
       "accept": "수락",
       "block": "이번 접속 동안 이 기기 요청 받지 않기",
       "announce": "{name}가 1:1 연결을 요청했어요",
-      "compare": "두 화면의 그림이 같으면 수락하세요",
-      "different": "그림이 달라요"
+      "compare": "그림이 같으면 수락, 다르면 거절하세요"
     },
     "confirm": {
       "title": "두 화면의 그림이 같은지 확인하세요",
@@ -520,7 +519,10 @@
       "waiting": "상대 확인 기다리는 중",
       "different": "달라요",
       "same": "같아요",
-      "sameInline": "{name}와 그림이 같아요"
+      "sameInline": "{name}와 그림이 같아요",
+      "askSame": "상대 화면의 그림과 같나요?",
+      "doneWaitingAccept": "확인했어요 · 상대 수락 기다리는 중",
+      "doneWaitingPeer": "확인했어요 · 상대 확인 기다리는 중"
     },
     "connected": "{name}와 연결됐어요",
     "ended": {
@@ -565,6 +567,9 @@
     "statusConnecting": "연결 중…",
     "offlineUploadNote": "상대가 접속하면 받을 수 있어요 (파일은 최대 1일 보관)",
     "offlineTextNote": "상대가 접속하면 보낼 수 있어요",
-    "expired": "1:1 연결이 만료됐어요"
+    "expired": "1:1 연결이 만료됐어요",
+    "checking": "확인 중",
+    "peerChecking": "상대 확인 중",
+    "acceptNote": "상대가 수락하면 연결돼요"
   }
 }

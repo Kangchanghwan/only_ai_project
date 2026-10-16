@@ -7,6 +7,7 @@
  */
 import { ref, watch, nextTick, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import PairSasTiles from './PairSasTiles.vue'
 import PairPeerAvatar from './PairPeerAvatar.vue'
 import { sasImages } from '../utils/sasImages'
 import { isValidIdentity, identityName, deviceAndBrowser } from '../utils/identity'
@@ -85,23 +86,11 @@ function onKeydown(event) {
         </div>
         <template v-if="!legacy">
           <p class="mt-4 text-sm font-semibold m-0 text-center">{{ t('pair.request.compare') }}</p>
-          <div v-if="sasReady" class="mt-3 grid grid-cols-4 gap-2" data-testid="pair-sas">
-            <div
-              v-for="(img, i) in images"
-              :key="i"
-              class="aspect-square rounded-xl bg-background border border-border flex items-center justify-center p-2"
-            >
-              <img :src="img.src" :alt="img.emoji" draggable="false" class="w-full h-full object-contain select-none" data-testid="pair-sas-image" />
-            </div>
-          </div>
-          <div v-else class="mt-3 flex items-center justify-center gap-2 min-h-[72px] text-sm text-text-secondary" role="status" data-testid="pair-sas-loading">
-            <span class="inline-block w-5 h-5 rounded-full border-2 border-scope-private border-t-transparent animate-spin" aria-hidden="true"></span>
-            {{ t('pair.confirm.preparing') }}
-          </div>
+          <PairSasTiles class="mt-3" :images="images" size="lg" />
         </template>
         <p v-else class="mt-3 text-xs text-text-secondary leading-relaxed m-0">{{ t('pair.request.body') }}</p>
         <div v-if="waiting" class="mt-4 text-center">
-          <p class="m-0 text-sm font-semibold text-scope-private" role="status" data-testid="pair-waiting">{{ t('pair.confirm.waiting') }}</p>
+          <p class="m-0 text-sm font-semibold text-scope-private" role="status" data-testid="pair-waiting">{{ t('pair.confirm.doneWaitingPeer') }}</p>
           <button
             ref="declineBtn"
             type="button"
@@ -110,7 +99,7 @@ function onKeydown(event) {
             @click="emit('cancel')"
           >{{ t('pair.cancel') }}</button>
         </div>
-        <div v-if="!waiting" class="mt-4 flex gap-2 justify-end">
+        <div v-if="!waiting" class="mt-4 grid grid-cols-2 gap-2">
           <button
             ref="declineBtn"
             type="button"
@@ -131,14 +120,6 @@ function onKeydown(event) {
           </button>
         </div>
         <div v-if="!waiting" class="mt-1 flex flex-col items-center">
-          <button
-            v-if="!legacy"
-            type="button"
-            class="min-h-[44px] px-3 text-xs text-text-secondary underline"
-            :disabled="!sasReady"
-            data-testid="pair-different"
-            @click="emit('respond', { accept: false, mismatch: true })"
-          >{{ t('pair.request.different') }}</button>
           <button
             type="button"
             class="min-h-[44px] px-3 text-xs text-text-secondary underline"

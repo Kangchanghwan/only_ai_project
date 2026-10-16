@@ -41,7 +41,7 @@ describe('DeviceList 1:1 버튼', () => {
   it('수락 대기 중이면 안내 문구와 취소 버튼, 취소하면 cancel(sessionId)', async () => {
     const { wrapper, ctx } = build({ p1: { state: 'pending', sessionId: 's1', expiresAt: Date.now() + 30000 } })
     expect(wrapper.find('[data-testid="pair-invite-button"]').exists()).toBe(false)
-    expect(wrapper.find('[data-testid="pair-pending-text"]').text()).toContain('수락 기다리는 중')
+    expect(wrapper.find('[data-testid="pair-pending-text"]').text()).toMatch(/^확인 중 · \d+초$/)
     await wrapper.find('[data-testid="pair-cancel-button"]').trigger('click')
     expect(ctx.cancel).toHaveBeenCalledWith('s1')
     wrapper.unmount()
@@ -64,39 +64,55 @@ describe('DeviceList 1:1 버튼', () => {
   describe('제자리 그림 확인 (보낸 쪽)', () => {
     const pending = (extra = {}) => ({ p1: { state: 'pending', sessionId: 's1', expiresAt: Date.now() + 30000, sas: [3, 9, 20, 41], confirmed: false, ...extra } })
 
-    it('그림이 준비되기 전에는 1:1 버튼 자리에 스피너와 취소만 있다', () => {
+    it('그림이 준비되기 전에는 같은 크기의 빈 타일 4개와 비활성 "같아요"', () => {
       const { wrapper } = build(pending({ sas: null }))
       expect(wrapper.find('[data-testid="pair-invite-button"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="pair-sas-spinner"]').exists()).toBe(true)
-      expect(wrapper.find('[data-testid="pair-same-inline"]').exists()).toBe(false)
+      expect(wrapper.find('[data-testid="pair-pending-panel"]').exists()).toBe(true)
+      expect(wrapper.findAll('[data-testid="pair-sas-skeleton-tile"]')).toHaveLength(4)
+      expect(wrapper.find('[data-testid="pair-sas-image"]').exists()).toBe(false)
+      expect(wrapper.find('[data-testid="pair-same-inline"]').attributes('disabled')).toBeDefined()
       expect(wrapper.find('[data-testid="pair-cancel-button"]').exists()).toBe(true)
     })
 
-    it('1:1 버튼과 같은 자리(행 오른쪽 끝)에 그림 4장과 "같아요"가 나온다', async () => {
-      const idle = build()
-      const row0 = idle.wrapper.findAll('[data-testid="device-row"]')[1]
-      expect(row0.element.lastElementChild).toBe(idle.wrapper.find('[data-testid="pair-invite-button"]').element)
-
-      const { wrapper, ctx } = build(pending())
+    it('헤더 아래 전체 너비 패널에 질문, 그림 4장, 전체 너비 "같아요"가 나오고 칩은 "확인 중 · n초"', async () => {
+      const { wrapper, ctx } = build(pending(), { wide: true })
       const row = wrapper.findAll('[data-testid="device-row"]')[1]
-      const box = wrapper.find('[data-testid="pair-inline-confirm"]')
-      expect(row.element.lastElementChild).toBe(box.element) // 같은 위치 컨테이너
-      const imgs = wrapper.findAll('[data-testid="pair-inline-sas-image"]') // 그림은 이름 아래 줄, 버튼만 1:1 자리
+      const header = row.find('[data-testid="device-row-header"]')
+      const panel = row.find('[data-testid="pair-pending-panel"]')
+      expect(row.element.lastElementChild).toBe(panel.element) // 헤더 아래 패널
+      expect(header.element.contains(panel.element)).toBe(false)
+      expect(header.find('[data-testid="pair-pending-text"]').text()).toMatch(/^확인 중 · \d+초$/)
+      expect(header.find('[data-testid="pair-pending-text"]').classes()).toContain('whitespace-nowrap')
+      expect(panel.text()).toContain('상대 화면의 그림과 같나요?')
+      expect(panel.text()).toContain('상대가 수락하면 연결돼요')
+      const imgs = panel.findAll('[data-testid="pair-sas-image"]')
       expect(imgs).toHaveLength(4)
       for (const img of imgs) expect(img.attributes('alt').length).toBeGreaterThan(0)
-      const same = box.find('[data-testid="pair-same-inline"]')
+      const same = panel.find('[data-testid="pair-same-inline"]')
       expect(same.text()).toBe('같아요')
-      expect(box.element.lastElementChild).toBe(same.element) // 버튼이 오른쪽 끝
-      expect(wrapper.find('[data-testid="pair-pending-text"]').text()).toMatch(/수락 기다리는 중 · \d+초/)
+      expect(same.classes()).toContain('w-full')
       await same.trigger('click')
       expect(ctx.confirm).toHaveBeenCalledWith('s1')
     })
 
-    it('"같아요"를 누른 뒤에는 그림·버튼이 사라지고 "상대 수락 기다리는 중"', () => {
-      const { wrapper } = build(pending({ confirmed: true }))
+    it('좁은 화면은 [취소][같아요] 두 칸 버튼', async () => {
+      const { wrapper, ctx } = build(pending())
+      const panel = wrapper.find('[data-testid="pair-pending-panel"]')
+      expect(panel.text()).not.toContain('상대가 수락하면 연결돼요')
+      await panel.find('[data-testid="pair-cancel-button"]').trigger('click')
+      expect(ctx.cancel).toHaveBeenCalledWith('s1')
+      await panel.find('[data-testid="pair-same-inline"]').trigger('click')
+      expect(ctx.confirm).toHaveBeenCalledWith('s1')
+    })
+
+    it('"같아요"를 누른 뒤에도 그림은 남고 상태 문구와 "상대 확인 중" 칩, 취소가 있다', async () => {
+      const { wrapper, ctx } = build(pending({ confirmed: true }))
       expect(wrapper.find('[data-testid="pair-same-inline"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="pair-inline-sas-image"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="pair-pending-text"]').text()).toContain('상대 수락 기다리는 중')
+      expect(wrapper.findAll('[data-testid="pair-sas-image"]')).toHaveLength(4)
+      expect(wrapper.find('[data-testid="pair-confirmed-text"]').text()).toBe('확인했어요 · 상대 수락 기다리는 중')
+      expect(wrapper.find('[data-testid="pair-pending-text"]').text()).toMatch(/^상대 확인 중 · \d+초$/)
+      await wrapper.find('[data-testid="pair-cancel-button"]').trigger('click')
+      expect(ctx.cancel).toHaveBeenCalledWith('s1')
     })
   })
 
