@@ -4,6 +4,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import LockChip from './LockChip.vue'
+import { isPrivateScope } from '../composables/useShareScope'
 
 const { t } = useI18n()
 
@@ -93,6 +94,8 @@ function handleDrop(event) {
     <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
       {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
     </p>
-    <LockChip :scope="scope" />
+    <!-- 1:1 방은 자동 암호화라 비밀번호 잠금 칩을 숨긴다 -->
+    <LockChip v-if="!isPrivateScope(scope)" :scope="scope" />
+    <p v-else class="text-xs text-scope-private m-0" data-testid="private-upload-hint">🔒 {{ t('pair.uploadHint') }}</p>
   </div>
 </template>

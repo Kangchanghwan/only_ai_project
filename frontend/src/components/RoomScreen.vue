@@ -12,7 +12,12 @@ import { useMediaQuery } from '../composables/useMediaQuery'
 import { formatSizeMB } from '../utils/fileUtils'
 import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 import LandingContent from './LandingContent.vue'
+import PrivateRoomStrip from './PrivateRoomStrip.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
+import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
+import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
+import { isMeDevice } from '../utils/devices'
+import { sameIdentity } from '../utils/identity'
 
 const { t } = useI18n()
 
@@ -70,6 +75,12 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  /** 1:1 연결: 비공개 방 목록 [{roomId, peer, status}] / 방별 접속 기기 / 기기 행 상태 / 방금 연결된 방 */
+  pairEnabled: { type: Boolean, default: false },
+  privateRooms: { type: Array, default: () => [] },
+  privateDevices: { type: Object, default: () => ({}) },
+  pairStates: { type: Object, default: () => ({}) },
+  highlightRoomId: { type: String, default: null },
   /** 진행 중인 업로드/다운로드 (App.vue 상태) */
   uploads: {
     type: Map,
@@ -95,7 +106,10 @@ const emit = defineEmits([
   'reroll-identity',
   'share-text',
   'cancel-upload',
-  'cancel-all'
+  'cancel-all',
+  'pair-invite',
+  'pair-cancel',
+  'leave-private'
 ])
 
 const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120
@@ -105,9 +119,40 @@ const mobilePanel = ref('files')
 // 작업 영역은 이 값으로 다시 마운트되지 않는다 (목록 표시 방식만 바뀐다).
 const isWide = useMediaQuery()
 
-const activeDevices = computed(() =>
-  props.scope === 'global' ? props.globalRoomDevices : props.ipRoomDevices
-)
+// 1:1 탭이면 그 방의 접속 기기(나 + 상대)를 보여 준다
+const currentRoom = computed(() => {
+  const id = privateRoomIdOfScope(props.scope)
+  return id ? props.privateRooms.find((r) => r.roomId === id) || null : null
+})
+const activeDevices = computed(() => {
+  if (isPrivateScope(props.scope)) {
+    const room = currentRoom.value
+    return props.privateDevices[room?.roomId] ?? (room?.peer ? [room.peer] : [])
+  }
+  return props.scope === 'global' ? props.globalRoomDevices : props.ipRoomDevices
+})
+
+// 상대가 나갔을 때 "다시 연결": 같은 상대가 ip/전체 공유 목록에 보이면 다시 초대할 수 있다
+const peerLeft = computed(() => currentRoom.value?.status === 'left')
+const reinviteDevice = computed(() => {
+  const peer = currentRoom.value?.peer
+  if (!peer || !peerLeft.value) return null
+  return [...props.ipRoomDevices, ...props.globalRoomDevices].find((d) =>
+    !isMeDevice(d, props.mySocketId, props.myIdentity) &&
+    (d.socketId === peer.socketId || sameIdentity(d.identity, peer.identity))
+  ) || null
+})
+const reinviteState = computed(() => (reinviteDevice.value ? props.pairStates[reinviteDevice.value.socketId] || null : null))
+
+// 1:1 연결 동작을 기기 목록(DeviceList)에 내려준다. pairEnabled가 아니면 제공하지 않아 버튼이 나타나지 않는다
+if (props.pairEnabled) {
+  provide(PAIR_CONTEXT_KEY, {
+    states: computed(() => props.pairStates),
+    invite: (device) => emit('pair-invite', device),
+    cancel: (sessionId) => emit('pair-cancel', sessionId),
+    open: (roomId) => emit('select-scope', scopeForPrivateRoom(roomId))
+  })
+}
 
 // 파일 카드/텍스트 항목의 보낸 사람 표시(나/타인/나간 기기)에 쓰이는 문맥
 provide(SENDER_CONTEXT_KEY, {
@@ -124,7 +169,12 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
     <AppHeader :user-count="userCount" :is-connecting="isConnecting" />
 
     <div class="page-shell px-4 sm:px-6">
-      <ShareScopeTabs :scope="scope" @select="$emit('select-scope', $event)" />
+      <ShareScopeTabs
+        :scope="scope"
+        :private-rooms="privateRooms"
+        :highlight-room-id="highlightRoomId"
+        @select="$emit('select-scope', $event)"
+      />
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->
       <div
@@ -135,6 +185,13 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       >
         {{ t('identity.globalWarning') }}
       </div>
+
+      <!-- 1:1 안내 띠: 전체 공유 경고와 같은 자리 -->
+      <PrivateRoomStrip
+        v-if="currentRoom"
+        :room="currentRoom"
+        @leave="$emit('leave-private', $event)"
+      />
 
       <div class="workspace">
         <!-- 연결 카드 (좁은 화면: 상단 카드 / 넓은 화면: 왼쪽 패널). grid-area로 위치만 바뀐다 -->
@@ -199,13 +256,29 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 @load-more="$emit('load-more')"
                 @cancel-upload="$emit('cancel-upload', $event)"
                 @cancel-all="$emit('cancel-all')"
-              />
+              >
+                <!-- 상대가 나간 1:1 방: 업로드 칸 대신 안내 -->
+                <template v-if="peerLeft" #send>
+                  <div class="rounded-xl border border-dashed border-scope-private p-4 mb-2 text-center" data-testid="peer-left-notice">
+                    <p class="m-0 text-sm text-text-secondary">{{ t('pair.peerLeftNotice') }}</p>
+                    <p v-if="reinviteState?.state === 'pending'" class="m-0 mt-2 text-sm font-semibold text-scope-private" role="status">{{ t('pair.pending') }}</p>
+                    <button
+                      v-else-if="reinviteDevice"
+                      type="button"
+                      class="mt-3 min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold"
+                      data-testid="pair-reinvite"
+                      @click="$emit('pair-invite', reinviteDevice)"
+                    >{{ t('pair.reconnect') }}</button>
+                  </div>
+                </template>
+              </FileGallery>
             </section>
 
             <section :class="{ hidden: mobilePanel !== 'text' }">
               <TextShareBox
                 :texts="texts"
                 :scope="scope"
+                :compose-disabled="peerLeft"
                 @remove-text="$emit('remove-text', $event)"
                 @clear-all="$emit('clear-all-texts')"
                 @copy-text="$emit('copy-text', $event)"

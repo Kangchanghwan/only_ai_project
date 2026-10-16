@@ -39,6 +39,7 @@ export function useSocket() {
     usersInRoom: readonly(socketService.usersInRoom),
     ipRoomDevices: readonly(socketService.ipRoomDevices),
     globalRoomDevices: readonly(socketService.globalRoomDevices),
+    privateRoomDevices: readonly(socketService.privateRoomDevices),
     myIdentity: readonly(socketService.myIdentity),
     mySocketId: readonly(socketService.mySocketId),
     rerollAvailableAt: readonly(socketService.rerollAvailableAt),
@@ -50,6 +51,7 @@ export function useSocket() {
     destroy: socketService.destroy.bind(socketService),
     publishMessage: socketService.publishMessage.bind(socketService),
     rerollIdentity: socketService.rerollIdentity.bind(socketService),
+    leavePrivate: socketService.leavePrivate.bind(socketService),
     getSelfSender: socketService.getSelfSender.bind(socketService),
 
     onMessage,

@@ -1,6 +1,7 @@
 import type { Express, Request, RequestHandler, Response } from 'express';
 import { randomBytes } from 'crypto';
 import { getR2Service } from '../services/r2Service';
+import { rejectPrivateRoom } from '../middleware/rejectPrivateRoom';
 import logger from '../utils/logger';
 import { recordUploader, Sender } from '../utils/uploaderStore';
 import { getMaxFileSizeBytes, checkRoomSize } from '../utils/uploadLimits';
@@ -141,7 +142,7 @@ export function registerMultipartRoutes(
     };
 
     /** 멀티파트 시작 */
-    app.post(`${base}/create`, enabled, auth, async (req, res) => {
+    app.post(`${base}/create`, enabled, ...(variant.locked ? [] : [rejectPrivateRoom]), auth, async (req, res) => {
         let reservedKey: string | null = null;
         let reservedBytes = 0;
         try {

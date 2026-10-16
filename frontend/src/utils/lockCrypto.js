@@ -83,7 +83,17 @@ export async function deriveLock(password, salt, opts = {}) {
   const iterations = opts.iterations ?? PBKDF2_ITERATIONS
   const pwKey = await subtle().importKey('raw', enc.encode(String(password).normalize('NFC')), 'PBKDF2', false, ['deriveBits'])
   const master = await subtle().deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: saltBytes, iterations }, pwKey, 256)
-  const hkdf = await subtle().importKey('raw', master, 'HKDF', false, ['deriveBits', 'deriveKey'])
+  return deriveLockFromMaster(new Uint8Array(master), b64u(saltBytes))
+}
+
+/**
+ * master(32B)에서 encKey·verifier·vh를 파생한다 (PBKDF2 이후 단계).
+ * 비밀번호 잠금과 1:1 방(방 비밀 → master)이 같은 규격을 공유한다.
+ * @param {Uint8Array|ArrayBuffer} masterBytes
+ * @param {string} saltB64u 잠금 메타 salt (base64url)
+ */
+export async function deriveLockFromMaster(masterBytes, saltB64u) {
+  const hkdf = await subtle().importKey('raw', masterBytes, 'HKDF', false, ['deriveBits', 'deriveKey'])
   const empty = new Uint8Array(0)
   const encKey = await subtle().deriveKey(
     { name: 'HKDF', hash: 'SHA-256', salt: empty, info: INFO_ENC },
@@ -94,7 +104,7 @@ export async function deriveLock(password, salt, opts = {}) {
   )
   const verifierBits = await subtle().deriveBits({ name: 'HKDF', hash: 'SHA-256', salt: empty, info: INFO_VERIFY }, hkdf, 256)
   const vh = toHex(await subtle().digest('SHA-256', verifierBits))
-  return { salt: b64u(saltBytes), encKey, verifier: b64u(verifierBits), vh }
+  return { salt: saltB64u, encKey, verifier: b64u(verifierBits), vh }
 }
 
 // === 파일 키 ===

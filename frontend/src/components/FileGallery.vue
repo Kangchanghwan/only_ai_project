@@ -165,10 +165,12 @@ onUnmounted(() => {
     />
 
     <!-- 보내기: 파일 선택(primary) + 붙여넣기(secondary, compact) -->
-    <div class="flex flex-col gap-3 mb-2" data-testid="send-area">
-      <FileUploadSection :scope="scope" @upload-files="$emit('upload-files', $event)" />
-      <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
-    </div>
+    <slot name="send">
+      <div class="flex flex-col gap-3 mb-2" data-testid="send-area">
+        <FileUploadSection :scope="scope" @upload-files="$emit('upload-files', $event)" />
+        <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
+      </div>
+    </slot>
 
     <!-- 진행 상황: 보내기 영역 바로 아래 inline (업로드·다운로드 공통) -->
     <TransferProgress

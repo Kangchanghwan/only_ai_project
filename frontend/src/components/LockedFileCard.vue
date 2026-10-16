@@ -18,6 +18,7 @@ import { formatFileSize, formatUploadTime } from '../utils/fileUtils'
 import SenderLabel from './SenderLabel.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import { useLockState } from '../composables/useLockState'
+import { usePrivateRooms } from '../composables/usePrivateRooms'
 import { openLockedFile, createLockedShareLink } from '../services/lockedDownloader'
 import FileQRCodeModal from './FileQRCodeModal.vue'
 import { r2Service } from '../services/r2Service.js'
@@ -78,6 +79,22 @@ async function checkKnownKey() {
   }
 }
 onMounted(checkKnownKey)
+
+// 1:1 방의 파일: 방 키가 이미 keyring에 있으므로 이름을 자동으로 풀어 보여 준다(받기는 하지 않음)
+const privateRooms = usePrivateRooms()
+let autoRevealing = false
+async function autoRevealName() {
+  if (autoRevealing || knownName.value || !privateRooms.has(props.file.roomId)) return
+  autoRevealing = true
+  try {
+    await openLockedFile({ roomId: props.file.roomId, id: props.file.name, lockState, download: false })
+  } catch {
+    /* 실패하면 기존처럼 알아볼 수 없는 문자열로 둔다 */
+  } finally {
+    autoRevealing = false
+  }
+}
+onMounted(autoRevealName)
 watch(() => lockState.version.value, checkKnownKey)
 
 // 삭제는 지울 수 있는 증명이 있을 때만: 내가 올린 파일(삭제 키) 또는 이번 접속에서 같은 비밀번호를 확인한 경우

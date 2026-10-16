@@ -61,7 +61,7 @@ export type RerollResponse =
     | { ok: false; error: 'cooldown'; retryAfterMs: number };
 
 /** publish 메시지 공유 대상 */
-export type PublishTarget = 'global' | 'ip';
+export type PublishTarget = 'global' | 'ip' | (string & {}); // 문자열은 prv- 비공개 방 ID (멤버만 허용)
 
 /** 클라이언트 → 서버 이벤트 */
 export interface ClientToServerEvents {
@@ -107,4 +107,6 @@ export interface SocketData {
     identity?: Identity;
     /** 마지막 다시 뽑기 시각 (epoch ms) */
     lastRerollAt?: number;
+    /** 들어가 있는 1:1 비공개 방 ID 목록 (연결 복구 직렬화를 위해 배열) */
+    privateRooms?: string[];
 }
