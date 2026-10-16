@@ -85,12 +85,11 @@ describe('PairSessionManager', () => {
     expect(m.respond(s.id, 'B', true)).toBeNull();
   });
 
-  test('confirm: 둘 다 true면 done, 하나라도 false면 mismatch, 비멤버·invited는 invalid', () => {
+  test('confirm: 둘 다 true면 done, 하나라도 false면 mismatch, 비멤버는 invalid, invited에서도 기록(방은 수락 후)', () => {
     const s = invite('A', 'B');
-    expect(m.confirm(s.id, 'A', true).status).toBe('invalid'); // 아직 invited
+    expect(m.confirm(s.id, 'A', true).status).toBe('waiting'); // invited에서도 기록
     m.respond(s.id, 'B', true);
     expect(m.confirm(s.id, 'X', true).status).toBe('invalid');
-    expect(m.confirm(s.id, 'A', true).status).toBe('waiting');
     expect(m.confirm(s.id, 'B', true).status).toBe('done');
     expect(m.get(s.id)).toBeUndefined();
 
@@ -109,5 +108,23 @@ describe('PairSessionManager', () => {
     const s2 = invite('D', 'A');
     expect(m.removeBySocket('A').map((x) => x.id).sort()).toEqual([s1.id, s2.id].sort());
     expect(m.size()).toBe(0);
+  });
+});
+
+describe('PairSessionManager v3', () => {
+  test('invited 상태에서 둘 다 same=true여도 수락 전에는 done이 아니다', () => {
+    const m = new PairSessionManager();
+    const r = m.invite('A', 'B', { targetConnected: true, alreadyPaired: false });
+    if (!r.ok) throw new Error('x');
+    expect(m.confirm(r.session.id, 'A', true).status).toBe('waiting');
+    expect(m.confirm(r.session.id, 'B', true).status).toBe('waiting');
+    m.respond(r.session.id, 'B', true);
+    expect(m.confirm(r.session.id, 'A', true).status).toBe('done');
+  });
+  test('invited에서 same=false는 mismatch', () => {
+    const m = new PairSessionManager();
+    const r = m.invite('A', 'B', { targetConnected: true, alreadyPaired: false });
+    if (!r.ok) throw new Error('x');
+    expect(m.confirm(r.session.id, 'A', false).status).toBe('mismatch');
   });
 });

@@ -201,4 +201,21 @@ describe('RoomManager - Storage Integration', () => {
             expect(mockStorageService.deleteRoomFiles).not.toHaveBeenCalled();
         });
     });
+
+    describe('비공개 방 정리', () => {
+        it('빈 비공개 방은 파일을 지우지 않고 메모리 방만 정리한다', async () => {
+            mockStorageService.deleteRoomFiles.mockResolvedValue({ success: true, deletedCount: 0 } as any);
+            const priv = 'prv-0123456789abcdef01234567';
+            roomManager.addUserToRoom(priv, 'a', device('a'));
+            await roomManager.removeUserFromRoom(priv, 'a');
+            await jest.advanceTimersByTimeAsync(6000);
+            expect(mockStorageService.deleteRoomFiles).not.toHaveBeenCalled();
+            expect(roomManager.getRoomData(priv)).toBeUndefined();
+
+            roomManager.addUserToRoom('room-x', 'a', device('a'));
+            await roomManager.removeUserFromRoom('room-x', 'a');
+            await jest.advanceTimersByTimeAsync(6000);
+            expect(mockStorageService.deleteRoomFiles).toHaveBeenCalledWith('room-x');
+        });
+    });
 });

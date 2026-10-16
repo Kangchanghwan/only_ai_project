@@ -8,6 +8,7 @@ import { toSender } from '../utils/uploaderStore';
 import { issueRoomTokens, getRoomTokenTtlSec } from '../utils/roomToken';
 import { PairSessionManager, PairSession } from '../managers/PairSessionManager';
 import { newPrivateRoomId, isPrivateRoomId } from '../utils/privateRoom';
+import { issueTicket, verifyTicket } from '../utils/privateTicket';
 import { TokenBucket } from '../utils/tokenBucket';
 import logger from '../utils/logger';
 
@@ -92,6 +93,11 @@ export const PAIR_BUCKET_CAPACITY = 20;
 export const PAIR_BUCKET_REFILL_PER_SEC = 5;
 /** 만료 점검 주기 */
 const PAIR_SWEEP_INTERVAL_MS = 1000;
+/** pair:invite pk 최대 길이(문자) */
+export const PAIR_PK_MAX_CHARS = 200;
+/** 소켓당 비공개 방 최대 개수 / private:join 한 번에 받는 입장권 수 */
+export const MAX_PRIVATE_ROOMS_PER_SOCKET = 10;
+export const MAX_TICKETS_PER_JOIN = 10;
 
 type Ack = ((res: Record<string, unknown>) => void) | undefined;
 
@@ -123,12 +129,40 @@ const broadcastUsers = (io: Server, roomManager: RoomManager, roomId: string) =>
     io.to(roomId).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
 };
 
+/** 둘 다 확인된 세션의 비공개 방 생성. 멤버가 사라졌으면 세션을 끝내고 false */
+const createPairRoom = (io: Server, roomManager: RoomManager, s: PairSession): boolean => {
+    const members = [s.initiator, s.responder]
+        .map((id) => ({ id, sock: io.sockets.sockets.get(id) as ExtendedSocket | undefined, info: roomManager.getUser(SHARED_ROOM_ID, id) }));
+    if (members.some((m) => !m.sock || !m.info)) {
+        endSession(io, s, 'peer-left', members.filter((m) => m.sock).map((m) => m.id));
+        return false;
+    }
+    const roomId = newPrivateRoomId();
+    for (const m of members) {
+        m.sock!.join(roomId);
+        roomManager.addUserToRoom(roomId, m.id, m.info!);
+        m.sock!.data.privateRooms = [...getPrivateRooms(m.sock!), roomId];
+    }
+    const tokens = issueRoomTokens([roomId]);
+    const ttl = getRoomTokenTtlSec();
+    for (const m of members) {
+        const peer = members.find((o) => o.id !== m.id)!.info;
+        m.sock!.emit('pair:done', { sessionId: s.id, roomId, peer, roomToken: tokens[roomId], roomTokenTtlSec: ttl, ticket: issueTicket(roomId) });
+    }
+    broadcastUsers(io, roomManager, roomId);
+    logger.log(`1:1 방 생성 ${roomId} [${s.initiator} + ${s.responder}]`);
+    return true;
+};
+
 const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: RoomManager, pairs: PairSessionManager) => {
     socket.on('pair:invite', (payload: unknown, ack?: Ack) => {
         try {
             if (!pairAllowed(socket, ack)) return;
-            const to = payload && typeof payload === 'object' ? (payload as { to?: unknown }).to : undefined;
+            const ip = (payload && typeof payload === 'object' ? payload : {}) as { to?: unknown; pk?: unknown };
+            const to = ip.to;
             if (typeof to !== 'string' || to.length === 0 || to.length > 64) return reply(ack, { ok: false, code: 'TARGET_NOT_FOUND' });
+            const pk = ip.pk;
+            if (pk !== undefined && (typeof pk !== 'string' || pk.length > PAIR_PK_MAX_CHARS)) return reply(ack, { ok: false, code: 'INVALID_PAYLOAD' });
 
             const target = io.sockets.sockets.get(to) as ExtendedSocket | undefined;
             const targetConnected = !!target && !!roomManager.getUser(SHARED_ROOM_ID, to);
@@ -145,6 +179,7 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
                 from,
                 sameNetwork: !!socket.ipRoomId && socket.ipRoomId === target!.ipRoomId,
                 expiresAt: session.expiresAt,
+                ...(pk !== undefined ? { pk } : {}),
             });
             reply(ack, { ok: true, sessionId: session.id, expiresAt: session.expiresAt });
         } catch (error) {
@@ -155,8 +190,9 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
     socket.on('pair:respond', (payload: unknown, ack?: Ack) => {
         try {
             if (!pairAllowed(socket, ack)) return;
-            const p = (payload && typeof payload === 'object' ? payload : {}) as { sessionId?: unknown; accept?: unknown; block?: unknown };
+            const p = (payload && typeof payload === 'object' ? payload : {}) as { sessionId?: unknown; accept?: unknown; block?: unknown; same?: unknown };
             if (typeof p.sessionId !== 'string' || typeof p.accept !== 'boolean') return reply(ack, { ok: false, code: 'INVALID_PAYLOAD' });
+            if (p.same !== undefined && typeof p.same !== 'boolean') return reply(ack, { ok: false, code: 'INVALID_PAYLOAD' });
 
             const s = pairs.respond(p.sessionId, socket.id, p.accept, p.block === true);
             if (!s) return reply(ack, { ok: false, code: 'SESSION_NOT_FOUND' });
@@ -167,6 +203,11 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
             }
             io.to(s.initiator).emit('pair:accepted', { sessionId: s.id, role: 'initiator', peer: roomManager.getUser(SHARED_ROOM_ID, s.responder) });
             io.to(s.responder).emit('pair:accepted', { sessionId: s.id, role: 'responder', peer: roomManager.getUser(SHARED_ROOM_ID, s.initiator) });
+            // 수락 + 확인을 한 번에 (같아요). 요청자가 이미 확인했다면 여기서 방이 만들어진다
+            if (p.same === true || s.confirms.get(socket.id) === true) {
+                const r = pairs.confirm(s.id, socket.id, true);
+                if (r.status === 'done') return reply(ack, createPairRoom(io, roomManager, r.session) ? { ok: true } : { ok: false, code: 'SESSION_NOT_FOUND' });
+            }
             reply(ack, { ok: true });
         } catch (error) {
             logger.error(`pair:respond 처리 에러 [${socket.id}]:`, error);
@@ -181,7 +222,7 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
             const { sessionId, data } = payload as { sessionId?: unknown; data?: unknown };
             if (typeof sessionId !== 'string' || data === undefined || data === null || typeof data !== 'object') return;
             const s = pairs.getForMember(sessionId, socket.id);
-            if (!s || s.state !== 'accepted') return;
+            if (!s || (s.state !== 'accepted' && s.state !== 'invited')) return;
             const serialized = JSON.stringify(data);
             if (serialized === undefined || Buffer.byteLength(serialized, 'utf8') > PAIR_SIGNAL_MAX_BYTES) return;
             io.to(otherOf(s, socket.id)).emit('pair:signal', { sessionId, data });
@@ -205,28 +246,7 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
             if (r.status === 'waiting') return reply(ack, { ok: true });
 
             // 둘 다 같음 → 방 생성, 두 소켓 입장
-            const s = r.session;
-            const members = [s.initiator, s.responder]
-                .map((id) => ({ id, sock: io.sockets.sockets.get(id) as ExtendedSocket | undefined, info: roomManager.getUser(SHARED_ROOM_ID, id) }));
-            if (members.some((m) => !m.sock || !m.info)) {
-                endSession(io, s, 'peer-left', members.filter((m) => m.sock).map((m) => m.id));
-                return reply(ack, { ok: false, code: 'SESSION_NOT_FOUND' });
-            }
-            const roomId = newPrivateRoomId();
-            for (const m of members) {
-                m.sock!.join(roomId);
-                roomManager.addUserToRoom(roomId, m.id, m.info!);
-                m.sock!.data.privateRooms = [...getPrivateRooms(m.sock!), roomId];
-            }
-            const tokens = issueRoomTokens([roomId]);
-            const ttl = getRoomTokenTtlSec();
-            for (const m of members) {
-                const peer = members.find((o) => o.id !== m.id)!.info;
-                m.sock!.emit('pair:done', { sessionId: s.id, roomId, peer, roomToken: tokens[roomId], roomTokenTtlSec: ttl });
-            }
-            broadcastUsers(io, roomManager, roomId);
-            logger.log(`1:1 방 생성 ${roomId} [${s.initiator} + ${s.responder}]`);
-            reply(ack, { ok: true });
+            reply(ack, createPairRoom(io, roomManager, r.session) ? { ok: true } : { ok: false, code: 'SESSION_NOT_FOUND' });
         } catch (error) {
             logger.error(`pair:confirm 처리 에러 [${socket.id}]:`, error);
         }
@@ -243,6 +263,42 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
             reply(ack, { ok: true });
         } catch (error) {
             logger.error(`pair:cancel 처리 에러 [${socket.id}]:`, error);
+        }
+    });
+
+    // 입장권으로 비공개 방 재입장 (새로고침/재접속 후). 무효 입장권은 invalid로 돌려준다
+    socket.on('private:join', (payload: unknown, ack?: Ack) => {
+        try {
+            if (!pairAllowed(socket, ack)) return;
+            const tickets = payload && typeof payload === 'object' ? (payload as { tickets?: unknown }).tickets : undefined;
+            if (!Array.isArray(tickets) || tickets.length > MAX_TICKETS_PER_JOIN) return reply(ack, { ok: false, code: 'INVALID_PAYLOAD' });
+
+            const info = roomManager.getUser(SHARED_ROOM_ID, socket.id);
+            const rooms: Array<Record<string, unknown>> = [];
+            const invalid: unknown[] = [];
+            const seen = new Set<string>();
+            for (const t of tickets) {
+                const v = verifyTicket(t);
+                if (!v.ok || !info) { invalid.push(t); continue; }
+                if (seen.has(v.roomId)) continue;
+                const current = getPrivateRooms(socket);
+                if (!current.includes(v.roomId) && current.length >= MAX_PRIVATE_ROOMS_PER_SOCKET) { invalid.push(t); continue; }
+                seen.add(v.roomId);
+                socket.join(v.roomId);
+                roomManager.addUserToRoom(v.roomId, socket.id, info);
+                if (!current.includes(v.roomId)) socket.data.privateRooms = [...current, v.roomId];
+                broadcastUsers(io, roomManager, v.roomId);
+                rooms.push({
+                    roomId: v.roomId,
+                    ticket: issueTicket(v.roomId),
+                    roomToken: issueRoomTokens([v.roomId])[v.roomId],
+                    roomTokenTtlSec: getRoomTokenTtlSec(),
+                    devices: roomManager.getRoomUsers(v.roomId),
+                });
+            }
+            reply(ack, { ok: true, rooms, invalid });
+        } catch (error) {
+            logger.error(`private:join 처리 에러 [${socket.id}]:`, error);
         }
     });
 

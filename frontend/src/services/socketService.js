@@ -356,6 +356,33 @@ class SocketService {
     return this.emitWithAck('private:leave', { roomId })
   }
 
+  /**
+   * 저장된 입장권으로 1:1 방에 다시 들어간다 (최대 10개씩). 등록(registered)/재연결 뒤에 부른다.
+   * 성공하면 방 토큰을 합치고 방별 접속 기기를 반영한다.
+   * @param {string[]} tickets
+   * @returns {Promise<{ok: boolean, rooms?: Array, invalid?: string[], code?: string}>}
+   */
+  async joinPrivate(tickets) {
+    const list = (Array.isArray(tickets) ? tickets : []).filter((x) => typeof x === 'string' && x)
+    if (list.length === 0) return { ok: true, rooms: [], invalid: [] }
+    const rooms = []
+    const invalid = []
+    for (let i = 0; i < list.length; i += 10) {
+      const res = await this.emitWithAck('private:join', { tickets: list.slice(i, i + 10) })
+      if (!res?.ok) return rooms.length || invalid.length ? { ok: true, rooms, invalid } : { ok: false, code: res?.code || 'FAILED' }
+      for (const r of Array.isArray(res.rooms) ? res.rooms : []) {
+        if (!r || typeof r.roomId !== 'string') continue
+        rooms.push(r)
+        this._mergePairToken(r)
+        if (Array.isArray(r.devices)) {
+          this.privateRoomDevices.value = { ...this.privateRoomDevices.value, [r.roomId]: r.devices }
+        }
+      }
+      for (const t of Array.isArray(res.invalid) ? res.invalid : []) invalid.push(t)
+    }
+    return { ok: true, rooms, invalid }
+  }
+
   /** pairing.js에 주입할 소켓 어댑터 */
   getPairAdapter() {
     return {

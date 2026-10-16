@@ -114,16 +114,17 @@ export class PairSessionManager {
         return s && (s.initiator === socketId || s.responder === socketId) ? s : undefined;
     }
 
-    /** 확인 버튼. accepted 상태에서만 유효. done/mismatch면 세션을 제거한다 */
+    /** 확인 버튼. invited/accepted 상태에서 유효(방 생성은 accepted일 때만). done/mismatch면 세션을 제거한다 */
     confirm(sessionId: string, socketId: string, same: boolean): ConfirmResult {
         const s = this.getForMember(sessionId, socketId);
-        if (!s || s.state !== 'accepted') return { status: 'invalid' };
+        if (!s || (s.state !== 'accepted' && s.state !== 'invited')) return { status: 'invalid' };
         s.confirms.set(socketId, same);
         if (!same) {
             this.sessions.delete(sessionId);
             return { status: 'mismatch', session: s };
         }
-        if (s.confirms.get(s.initiator) === true && s.confirms.get(s.responder) === true) {
+        // 방 생성 조건: 두 사람 모두 same=true 이고 대상이 수락함(accepted)
+        if (s.state === 'accepted' && s.confirms.get(s.initiator) === true && s.confirms.get(s.responder) === true) {
             s.state = 'confirmed';
             this.sessions.delete(sessionId);
             return { status: 'done', session: s };

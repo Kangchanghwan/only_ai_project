@@ -21,7 +21,9 @@ const props = defineProps({
   myIdentity: { type: Object, default: null },
   /** 'ip'(같은 네트워크) | 'global'(전체 공유) — 확인 안내 문구 선택용 */
   scope: { type: String, default: 'ip' },
-  rerollAvailableAt: { type: Number, default: 0 }
+  rerollAvailableAt: { type: Number, default: 0 },
+  /** 다른 네트워크 기기 묶음 (DeviceList로 전달) */
+  otherNetworkDevices: { type: Array, default: () => [] }
 })
 
 const emit = defineEmits(['reroll'])
@@ -163,6 +165,7 @@ onBeforeUnmount(() => {
           :my-socket-id="mySocketId"
           :my-identity="myIdentity"
           :scope="scope"
+          :other-network-devices="otherNetworkDevices"
           :reroll-available-at="rerollAvailableAt"
           @reroll="emit('reroll')"
         />

@@ -4,7 +4,7 @@ import PairRequestSheet from './PairRequestSheet.vue'
 import i18n from '../i18n/index.js'
 
 const session = {
-  sessionId: 's1', role: 'responder', state: 'incoming', sameNetwork: true,
+  sessionId: 's1', role: 'responder', state: 'incoming', sameNetwork: true, legacy: false, sas: [1, 2, 3, 4],
   peer: { socketId: 'p1', identity: { adj: 1, animal: 1 }, deviceType: 'mobile', browser: 'Safari', os: 'iOS' }
 }
 let wrapper
@@ -36,17 +36,55 @@ describe('PairRequestSheet', () => {
     expect(q('pair-network-badge').textContent).toContain('다른 네트워크')
   })
 
-  it('수락/거절/요청 받지 않기가 respond를 올린다', async () => {
+  it('처음부터 그림 4장(alt=이모지)과 안내 문구를 보여 준다', () => {
+    mountSheet()
+    const imgs = [...document.body.querySelectorAll('[data-testid="pair-sas-image"]')]
+    expect(imgs).toHaveLength(4)
+    for (const img of imgs) expect(img.getAttribute('alt').length).toBeGreaterThan(0)
+    expect(document.body.textContent).toContain('두 화면의 그림이 같으면 수락하세요')
+  })
+
+  it('그림이 준비되기 전엔 수락이 비활성(스피너)이고 눌러도 아무 일 없다', async () => {
+    mountSheet({ session: { ...session, sas: null } })
+    expect(q('pair-accept').disabled).toBe(true)
+    expect(q('pair-accept-spinner')).not.toBeNull()
+    expect(q('pair-sas')).toBeNull()
+    q('pair-accept').click()
+    expect(wrapper.emitted('respond')).toBeUndefined()
+    await wrapper.setProps({ session: { ...session } })
+    expect(q('pair-accept').disabled).toBe(false)
+    expect(q('pair-accept-spinner')).toBeNull()
+  })
+
+  it('수락은 same:true 한 번, 거절/그림이 달라요/요청 받지 않기가 respond를 올린다', async () => {
     mountSheet()
     q('pair-accept').click()
     q('pair-decline').click()
+    q('pair-different').click()
     q('pair-block').click()
     await wrapper.vm.$nextTick()
     expect(wrapper.emitted('respond')).toEqual([
-      [{ accept: true }],
+      [{ accept: true, same: true }],
       [{ accept: false }],
+      [{ accept: false, mismatch: true }],
       [{ accept: false, block: true }]
     ])
+  })
+
+  it('옛 흐름(legacy)은 그림 없이 수락이 바로 켜지고 same 없이 수락한다', async () => {
+    mountSheet({ session: { ...session, legacy: true, sas: null } })
+    expect(q('pair-sas')).toBeNull()
+    expect(q('pair-different')).toBeNull()
+    q('pair-accept').click()
+    expect(wrapper.emitted('respond')).toEqual([[{ accept: true }]])
+  })
+
+  it('수락한 뒤 상대 확인을 기다리는 동안은 대기 문구와 취소만 보인다', async () => {
+    mountSheet({ session: { ...session, state: 'waiting-peer-confirm', confirmed: true } })
+    expect(q('pair-waiting').textContent).toContain('기다리는 중')
+    expect(q('pair-accept')).toBeNull()
+    q('pair-wait-cancel').click()
+    expect(wrapper.emitted('cancel')).toHaveLength(1)
   })
 
   it('Esc는 거절이다', async () => {

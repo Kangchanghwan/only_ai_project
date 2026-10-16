@@ -87,7 +87,11 @@ const currentRoute = ref({ type: 'home' })
 const FILE_PAGE_SIZE = 50
 
 /** 목록 조회 대상: ip/global + 내가 들어가 있는 1:1 비공개 방 */
-const allRoomIds = computed(() => [...roomManager.roomIds.value, ...privateRooms.rooms.map((r) => r.roomId)])
+const allRoomIds = computed(() => [
+  ...roomManager.roomIds.value,
+  // 아직 입장권으로 다시 들어가지 못한 방('connecting')은 토큰이 없어 조회하지 않는다
+  ...privateRooms.rooms.filter((r) => r.status !== 'connecting').map((r) => r.roomId)
+])
 
 /** 메시지의 roomId가 내가 들어간 방(ip, global, 내 비공개 방)인지 */
 const isMyRoom = (roomId) =>
@@ -114,24 +118,92 @@ const pairFlow = usePairFlow({
     await fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
   }
 })
-const incomingSession = computed(() => (pairFlow.confirming.value ? null : pairFlow.incoming.value))
+// 받은 요청 시트: 요청 + (내가 수락해서 상대 확인을 기다리는 동안 같은 시트의 대기 문구). 옛 흐름의 그림 확인 시트가 뜨면 숨긴다
+const incomingSession = computed(() =>
+  pairFlow.confirming.value ? null : pairFlow.incoming.value || pairFlow.respondedWaiting.value
+)
 
 const deviceIsPeer = (d, peer) =>
   !!peer && (peer.socketId ? d.socketId === peer.socketId : sameIdentity(d.identity, peer.identity))
 
-// 상대 접속 상태: 그 방의 room-users에 상대가 있는지로 판단한다
+/** 1:1 방 접속 기기 목록에서 상대 기기 찾기 (방에는 나와 상대뿐이므로 "내가 아닌 기기") */
+const findPeerDevice = (devs, peer) => {
+  const me = socket.mySocketId?.value
+  return devs.find((d) => (me ? d.socketId !== me : deviceIsPeer(d, peer))) || null
+}
+
+// 상대 접속 상태: 그 방의 room-users에 상대가 있으면 접속 중, 없으면 오프라인(나갔다고 보지 않는다).
+// 'left'는 private-left 메시지로만, 'connecting'은 입장권으로 다시 들어가기 전까지 그대로 둔다.
 watch(
   () => [socket.privateRoomDevices?.value, privateRooms.rooms.length],
   () => {
     const byRoom = socket.privateRoomDevices?.value || {}
     for (const r of privateRooms.rooms) {
+      if (r.status === 'left' || r.status === 'connecting') continue
       const devs = byRoom[r.roomId]
       if (!Array.isArray(devs)) continue
-      privateRooms.setStatus(r.roomId, devs.some((d) => deviceIsPeer(d, r.peer)) ? 'online' : 'left')
+      const peerDev = findPeerDevice(devs, r.peer)
+      if (peerDev) privateRooms.setPeer(r.roomId, peerDev)
+      privateRooms.setStatus(r.roomId, peerDev ? 'online' : 'offline')
     }
   },
   { deep: true }
 )
+
+// 연결이 끊기면 서버 쪽 방 입장도 사라지므로, 다시 입장하기 전까지 "연결 중"으로 표시한다
+watch(
+  () => socket.isConnected?.value,
+  (connected) => {
+    if (connected !== false) return
+    for (const r of privateRooms.rooms) if (r.status !== 'left') privateRooms.setStatus(r.roomId, 'connecting')
+  }
+)
+
+// 저장된 1:1 방을 시작하자마자 "연결 중…" 탭으로 보여 준다 (IndexedDB 불가 시 빈 목록)
+privateRooms.hydrate()
+
+let rejoinRunning = null
+/** 저장된 입장권으로 1:1 방에 다시 들어간다 (registered/재연결/연결 복구 뒤) */
+function rejoinPrivateRooms() {
+  if (!rejoinRunning) {
+    rejoinRunning = doRejoinPrivateRooms()
+      .catch((e) => console.warn('[App] 1:1 방 다시 입장 실패:', e?.message || e))
+      .finally(() => { rejoinRunning = null })
+  }
+  return rejoinRunning
+}
+
+async function doRejoinPrivateRooms() {
+  await privateRooms.hydrate()
+  const targets = privateRooms.rooms.filter((r) => r.status !== 'left' && r.ticket)
+  if (targets.length === 0 || typeof socket.joinPrivate !== 'function') return
+  const res = await socket.joinPrivate(targets.map((r) => r.ticket))
+  if (!res?.ok) return
+  const me = socket.mySocketId?.value
+  const joined = []
+  for (const entry of res.rooms || []) {
+    if (!privateRooms.has(entry.roomId)) continue
+    privateRooms.setTicket(entry.roomId, entry.ticket)
+    const devs = Array.isArray(entry.devices) ? entry.devices : []
+    const peerDev = devs.find((d) => d.socketId !== me) || null
+    if (peerDev) privateRooms.setPeer(entry.roomId, peerDev)
+    privateRooms.setStatus(entry.roomId, peerDev ? 'online' : 'offline')
+    joined.push(entry.roomId)
+  }
+  let expired = 0
+  for (const ticket of res.invalid || []) {
+    const r = targets.find((x) => x.ticket === ticket)
+    if (!r) continue
+    if (shareScope.scope.value === scopeForPrivateRoom(r.roomId)) shareScope.setScope('ip')
+    privateRooms.removeRoom(r.roomId)
+    expired++
+  }
+  if (expired > 0) notification.showInfo(t('pair.expired'))
+  if (joined.length > 0) {
+    trackEvent('pair_rejoin', { count: joined.length })
+    await fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
+  }
+}
 
 async function handlePrivateLeave(roomId) {
   if (!privateRooms.has(roomId)) return
@@ -149,6 +221,7 @@ async function handlePrivateLeave(roomId) {
 
 function handlePrivateLeftMessage(message) {
   if (!privateRooms.has(message.roomId)) return
+  // 상대가 연결을 끊음: 화면에는 안내용으로 남기고 내 저장소에서는 지운다(setStatus가 처리)
   privateRooms.setStatus(message.roomId, 'left')
   notification.showInfo(t('pair.peerLeftToast'))
 }
@@ -192,6 +265,8 @@ socket.onReconnected(() => {
   fileManager.clearFiles()
   textShare.clearAllTexts()
   fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
+  // 1:1 방은 서버가 소켓별로 입장을 기억하므로 입장권으로 다시 들어간다 (끝나면 파일 목록도 다시 불러온다)
+  rejoinPrivateRooms()
 
   notification.showSuccess(t('notification.reconnected'))
 })
@@ -223,6 +298,8 @@ async function connectToRoom() {
     // 파일 로딩을 백그라운드에서 실행 (룸별 최신 FILE_PAGE_SIZE개, 나머지는 "더 보기")
     fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
     notification.showSuccess(t('notification.connected'))
+    // 저장된 1:1 방에 입장권으로 다시 들어간다 (백그라운드)
+    rejoinPrivateRooms()
 
     // 새 이벤트 리스너 설정
     setupSocketListeners()
@@ -955,6 +1032,7 @@ onUnmounted(() => {
         :highlight-room-id="pairFlow.highlightRoomId.value"
         @pair-invite="pairFlow.invite"
         @pair-cancel="pairFlow.cancel"
+        @pair-confirm="pairFlow.confirmInvite"
         @leave-private="handlePrivateLeave"
         @reroll-identity="handleRerollIdentity"
         :has-more="fileManager.hasMoreForRoom(activeRoomId)"
@@ -991,7 +1069,8 @@ onUnmounted(() => {
       <PairRequestSheet
         :session="incomingSession"
         :announcement="pairFlow.announcement.value"
-        @respond="({ accept, block }) => pairFlow.respond(accept, { block })"
+        @respond="({ accept, block, same, mismatch }) => pairFlow.respond(accept, { block, same, mismatch })"
+        @cancel="pairFlow.cancel(incomingSession?.sessionId)"
       />
       <PairConfirmSheet
         :session="pairFlow.confirming.value"

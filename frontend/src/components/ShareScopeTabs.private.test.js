@@ -45,6 +45,18 @@ describe('ShareScopeTabs 1:1 탭', () => {
   })
 })
 
+describe('PrivateRoomStrip 상태', () => {
+  it('online/offline/connecting/left를 각각 글자와 data-status로 표시한다', () => {
+    const expected = { online: '접속 중', offline: '오프라인', connecting: '연결 중…', left: '나갔어요' }
+    for (const [status, text] of Object.entries(expected)) {
+      const w = mount(PrivateRoomStrip, { ...opts, props: { room: { ...room('prv-a'), status } } })
+      const el = w.find('[data-testid="private-status"]')
+      expect(el.text()).toBe(text)
+      expect(el.attributes('data-status')).toBe(status)
+    }
+  })
+})
+
 describe('PrivateRoomStrip', () => {
   it('상대 이름/상태/암호화 안내를 보여 주고 상태는 글자로도 표시', () => {
     const w = mount(PrivateRoomStrip, { ...opts, props: { room: room('prv-a') } })
