@@ -34,3 +34,4 @@ Trigger: intent 0002 7일 판독 — 새 가이드 노출 0, GSC URL 검사 "Goo
 ## Result
 - 2026-10-10 배포. 7일 결과 확인: 2026-10-17.
 - 2026-10-12 URL 검사: 6개 중 3개 색인 생성됨(pc-to-pc, en online-clipboard-for-files-and-images, en send-large-files), 3개 발견됨-미색인(large-file-transfer, iphone-galaxy, airdrop-not-working). 네이버 사이트 진단 색인 24 그대로(10-10).
+- 2026-10-17 7일 판독: 6개 중 3개 색인(10-12 그대로). large-file-transfer, iphone-galaxy, airdrop-not-working 3개는 GSC URL 검사에서 여전히 "발견됨 - 현재 색인이 생성되지 않음". 사이트 전체 GSC 7일 노출은 1,740 → 2,172로 늘었지만 3개 페이지 몫은 아님. 14일 판독(10-24)에서도 그대로면 세 페이지의 차별점(기존 가이드와 겹치는 주제인지)을 점검하는 intent를 연다.

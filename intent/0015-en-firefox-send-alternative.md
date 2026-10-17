@@ -1,6 +1,6 @@
 # Intent: 영어 가이드 "Firefox Send alternative"
 
-Author: owner (2026-10-15 지시, 에이전트 작성). Status: accepted. Created: 2026-10-15.
+Author: owner (2026-10-15 지시, 에이전트 작성). Status: shipped. Created: 2026-10-15.
 Trigger: owner 아이디어 — 잠금 기능 유입 각도. ops/playbooks/lock-campaign.md.
 
 ## Problem
@@ -21,3 +21,9 @@ Trigger: owner 아이디어 — 잠금 기능 유입 각도. ops/playbooks/lock-
 선행: 7일 GSC 노출. 후행: 28일 클릭, GA4 locked_upload_complete 중 en 로케일 비중(가능하면).
 
 ## Result
+- 2026-10-17 배포: https://www.clipboardapp.org/en/guide/firefox-send-alternative.html (master 071b992, auto 게이트 통과, 라이브 200 확인, IndexNow 자동, GSC 색인 생성 요청됨, 네이버 웹 페이지 수집 요청).
+  - 기준값: GSC 28일 "password·firefox·encrypt·비밀번호·암호" 포함 쿼리 노출 0 ("firefox upload from clipboard" 1건뿐).
+  - 경쟁 서비스 사실은 공식 문서로만: Mozilla 지원 문서·블로그(2019-03 공개, 2020 여름 중단, 2020-09-17 종료 발표, 악성코드·피싱 악용), timvisee Send 포크(send.vis.ee, 자체 호스팅 가능), Wormhole FAQ·보안 문서(브라우저 AES-GCM, 키는 # 뒤, 24시간 삭제). 수치 비교표·비하 없음.
+  - "end-to-end"는 FAQ 1곳에서 "Files you lock with a password are"라는 한정어와 함께만 썼다. 1:1 연결(PR #57·#58, 10-16 라이브)은 "Good to know"에 1줄(그림 확인 후 둘만의 방, 파일·텍스트 자동 암호화).
+  - 허브 ItemList 9, en/guide 허브 "Files and photos", online-clipboard-for-files-and-images 관련 글 맨 위, sitemap(새 URL·허브·online-clipboard-for-files lastmod 10-17), llms.txt.
+  - 7일 결과 10-24, 28일 11-14.
