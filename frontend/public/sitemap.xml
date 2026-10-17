@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://www.clipboardapp.org/</loc>
     <lastmod>2026-09-12</lastmod>
@@ -43,7 +43,19 @@
   <url><loc>https://www.clipboardapp.org/guide/galaxy-photo-to-pc-transfer.html</loc><lastmod>2026-10-14</lastmod></url>
   <url><loc>https://www.clipboardapp.org/guide/iphone-video-to-pc-transfer.html</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://www.clipboardapp.org/guide/send-file-with-password.html</loc><lastmod>2026-10-16</lastmod></url>
-  <url><loc>https://www.clipboardapp.org/guide/</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://www.clipboardapp.org/guide/</loc><lastmod>2026-10-17</lastmod></url>
   <url><loc>https://www.clipboardapp.org/en/guide/firefox-send-alternative.html</loc><lastmod>2026-10-17</lastmod></url>
   <url><loc>https://www.clipboardapp.org/en/guide/</loc><lastmod>2026-10-17</lastmod></url>
+  <url>
+    <loc>https://www.clipboardapp.org/guide/clipboard-share-video.html</loc>
+    <lastmod>2026-10-17</lastmod>
+    <video:video>
+      <video:thumbnail_loc>https://i.ytimg.com/vi/DqPto5orZ1s/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>PC와 스마트폰 사이 파일·텍스트 바로 옮기기 | Clipboard Share</video:title>
+      <video:description>설치도 가입도 없이 같은 와이파이의 폰과 PC가 자동으로 연결되어 사진, 링크, 큰 파일을 주고받는 모습을 52초에 담았습니다.</video:description>
+      <video:player_loc>https://www.youtube.com/embed/DqPto5orZ1s</video:player_loc>
+      <video:duration>52</video:duration>
+      <video:publication_date>2026-10-17T14:20:00+09:00</video:publication_date>
+    </video:video>
+  </url>
 </urlset>
