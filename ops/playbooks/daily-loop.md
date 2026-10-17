@@ -5,7 +5,7 @@
 
 ## 0. 준비
 1. `git fetch origin` → `git worktree add /tmp/cs-ops-YYYYMMDD origin/master --detach`
-2. 읽기: intent/goal.md, 최근 ops/reports/ 3개, 상태가 proposed/accepted인 intent/*.md, 루틴 메모리.
+2. 읽기: intent/goal.md, 최근 ops/reports/ 3개, 상태가 proposed/accepted인 intent/*.md, 루틴 메모리. 2026-10-17~11-14에는 ops/playbooks/video-campaign.md(사용법 영상 캠페인)도 읽고, 그날 날짜에 해당하는 일정(2절 블로그, 3절 측정)을 오늘 할 일에 넣는다.
 3. 어제 연 PR·auto 브랜치 결과 확인: GitHub Actions(https://github.com/Kangchanghwan/only_ai_project/actions)에서 auto-merge 성공/실패. 실패면 원인을 읽고 오늘 고치거나 intent에 기록.
 
 ## 1. 수집 (metrics.md)
@@ -27,6 +27,7 @@ GA4·GSC·네이버 서치어드바이저 값을 읽어 `ops/metrics/daily.csv`�
 
 ## 4. 홍보 (요일별, 한 번에 하나)
 2026-10-16~11-15에는 ops/playbooks/lock-campaign.md의 일정이 아래 표의 주제 선택보다 먼저다 (요일 슬롯은 그대로).
+2026-10-20(화) 네이버 슬롯은 video-campaign.md 2절의 영상 글 V1을 잠금 L2(10-23 금)보다 먼저 쓴다. 월요일 리포트에는 video-campaign.md 3절 표를 붙이고, 10-24·11-14에는 intent 0017 Result를 채운다. 유튜브 채널 휴대폰 인증이 끝날 때까지 보고의 "승인 필요"에 올린다.
 | 요일 | 작업 | 플레이북 |
 |---|---|---|
 | 월 | 주간 심층 리포트 (지난 7일 vs 전 7일, 저CTR 쿼리 표) + 지난주 커뮤니티 글 댓글 확인·답글 | metrics.md, community.md |
