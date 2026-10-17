@@ -158,4 +158,19 @@ describe('LockChip', () => {
     expect(w.text()).toContain('lock.passwordTooShort')
     expect(useLockState().isLocked('ip')).toBe(false)
   })
+
+  it('1:1 방(selectable)이면 체크박스가 켜지고 누르면 toggle-selection을 보낸다', async () => {
+    const w = mountCard({ file, selectable: true, isSelected: false })
+    const box = w.find('[data-testid="locked-select"]')
+    expect(box.exists()).toBe(true)
+    expect(box.attributes('disabled')).toBeUndefined()
+    await box.trigger('change')
+    expect(w.emitted('toggle-selection')[0][0]).toMatchObject({ name: 'abc123' })
+  })
+
+  it('선택된 1:1 카드는 일반 카드처럼 왼쪽 강조선이 생긴다', () => {
+    const w = mountCard({ file, selectable: true, isSelected: true })
+    expect(w.classes()).toContain('border-l-4')
+    expect(w.find('[data-testid="locked-select"]').element.checked).toBe(true)
+  })
 })
