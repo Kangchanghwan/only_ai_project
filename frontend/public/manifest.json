@@ -61,6 +61,13 @@
       "type": "image/png",
       "form_factor": "wide",
       "label": "PC에서 파일·텍스트 주고받기"
+    },
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "폰에서 보내기"
     }
   ],
   "share_target": {
