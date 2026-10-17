@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import FileCard from './FileCard.vue'
 import LockedFileCard from './LockedFileCard.vue'
 import FileUploadSection from './FileUploadSection.vue'
@@ -9,6 +9,7 @@ import DownloadControls from './DownloadControls.vue'
 import MultiFileQRCodeModal from './MultiFileQRCodeModal.vue'
 import { createEnterStagger } from '../utils/enterStagger'
 import { trackEvent } from '../utils/analytics'
+import { isPrivateScope } from '../composables/useShareScope'
 
 const props = defineProps({
   files: {
@@ -68,20 +69,31 @@ function fileKey(file) {
   return `${file.roomId}::${file.name}`
 }
 
-// 잠긴 파일은 선택(일괄 받기·QR·복사) 대상이 아니다. 비밀번호로 하나씩 푼다
-const selectableFiles = computed(() => props.files.filter(file => !file.locked))
+// 1:1 방: 파일이 전부 방 키로 잠겨 있고 두 기기 모두 그 키를 가진다.
+// 그래서 잠긴 파일도 선택해서 한꺼번에 지울 수 있다 (일괄 받기·QR·복사·비우기는 공개 URL 기준이라 숨긴다)
+const isPrivate = computed(() => isPrivateScope(props.scope))
+
+// 그 밖의 범위에서 잠긴 파일은 선택(일괄 받기·QR·복사) 대상이 아니다. 비밀번호로 하나씩 푼다
+const selectableFiles = computed(() =>
+  isPrivate.value ? props.files : props.files.filter(file => !file.locked)
+)
+
+// 선택된 파일 배열 (지금 목록에서 선택 가능한 파일만: 지워졌거나 범위가 바뀐 파일의 키는 세지 않는다)
+const selectedFilesArray = computed(() => {
+  return selectableFiles.value.filter(file => selectedFiles.value.has(fileKey(file)))
+})
 
 // 선택된 파일 개수
-const selectedCount = computed(() => selectedFiles.value.size)
+const selectedCount = computed(() => selectedFilesArray.value.length)
 
-// 선택된 파일 배열
-const selectedFilesArray = computed(() => {
-  return props.files.filter(file => selectedFiles.value.has(fileKey(file)))
+// 범위(탭)를 바꾸면 선택을 비운다
+watch(() => props.scope, () => {
+  selectedFiles.value = new Set()
 })
 
 // 모든 파일이 선택되었는지 확인
 const allFilesSelected = computed(() => {
-  return selectableFiles.value.length > 0 && selectedFiles.value.size === selectableFiles.value.length
+  return selectableFiles.value.length > 0 && selectedCount.value === selectableFiles.value.length
 })
 
 // 파일 선택/해제
@@ -116,6 +128,7 @@ const multiQRFiles = computed(() =>
 
 // 병렬 다운로드
 function downloadParallel() {
+  if (isPrivate.value) return
   if (selectedCount.value > 0) {
     emit('download-parallel', selectedFilesArray.value)
   }
@@ -123,6 +136,7 @@ function downloadParallel() {
 
 // QR 코드 모달 열기
 function showQRModal() {
+  if (isPrivate.value) return
   if (selectedCount.value > 0) {
     showMultiQRModal.value = true
     trackEvent('qr_open', { qr_type: 'multi_file', file_count: selectedCount.value })
@@ -132,6 +146,7 @@ function showQRModal() {
 // Ctrl+C 키보드 이벤트 핸들러
 function handleKeydown(event) {
   if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+    if (isPrivate.value) return
     if (selectedCount.value > 0) {
       emit('copy-selected-to-clipboard', selectedFilesArray.value)
     }
@@ -157,6 +172,7 @@ onUnmounted(() => {
       :total-count="selectableFiles.length"
       :all-selected="allFilesSelected"
       :scope="scope"
+      :private-mode="isPrivate"
       @download-parallel="downloadParallel"
       @toggle-select-all="toggleSelectAll"
       @show-multi-qr="showQRModal"
@@ -193,6 +209,9 @@ onUnmounted(() => {
           :key="'locked:' + fileKey(file)"
           :file="file"
           :scope="scope"
+          :selectable="isPrivate"
+          :is-selected="isPrivate && selectedFiles.has(fileKey(file))"
+          @toggle-selection="toggleFileSelection(file)"
           @delete-file="$emit('delete-file', file)"
         />
         <FileCard

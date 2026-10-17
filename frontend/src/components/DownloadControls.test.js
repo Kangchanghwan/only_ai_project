@@ -74,3 +74,22 @@ describe('DownloadControls.vue - 좁은 폭 줄바꿈', () => {
     expect(wrapper.findAll('.dc-label')).toHaveLength(5)
   })
 })
+
+describe('DownloadControls.vue - 1:1 방 (privateMode)', () => {
+  it('모두 선택·선택 삭제 2개만 보이고 2열 그리드다', () => {
+    const wrapper = mountControls({ privateMode: true })
+    expect(wrapper.findAll('button')).toHaveLength(2)
+    expect(wrapper.find('[data-testid="select-all"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="delete-selected"]').exists()).toBe(true)
+    expect(wrapper.element.className).toContain('md:grid-cols-2')
+    expect(wrapper.element.className).not.toContain('grid-cols-5')
+  })
+
+  it('선택이 있으면 선택 삭제가 켜지고 누르면 delete-selected를 보낸다', async () => {
+    const wrapper = mountControls({ privateMode: true, selectedCount: 2 })
+    const del = wrapper.find('[data-testid="delete-selected"]')
+    expect(del.attributes('disabled')).toBeUndefined()
+    await del.trigger('click')
+    expect(wrapper.emitted('delete-selected')).toHaveLength(1)
+  })
+})

@@ -28,14 +28,19 @@ import { useNotification } from '../composables/useNotification'
 const { t } = useI18n()
 const props = defineProps({
   file: { type: Object, required: true },
-  scope: { type: String, default: 'ip' }
+  scope: { type: String, default: 'ip' },
+  /** 1:1 방에서만 true: 방 키로 지울 수 있어 일괄 삭제 대상으로 고를 수 있다 */
+  selectable: { type: Boolean, default: false },
+  isSelected: { type: Boolean, default: false }
 })
-const emit = defineEmits(['delete-file'])
+const emit = defineEmits(['delete-file', 'toggle-selection'])
 const {
   bg: accentBg,
   text: accentText,
   bgSoft10: accentBgSoft10,
   hoverBorder50: accentHoverBorder50,
+  borderL: accentBorderL,
+  bgSoft5: accentBgSoft5,
   accentColor
 } = useScopeAccent(() => props.scope)
 const lockState = useLockState()
@@ -267,11 +272,23 @@ onUnmounted(() => clearInterval(revealTimer))
 <template>
   <div
     class="file-row relative overflow-hidden flex flex-wrap sm:flex-nowrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
-    :class="accentHoverBorder50"
+    :class="[accentHoverBorder50, isSelected ? ['border-l-4', accentBgSoft5, accentBorderL] : '']"
     data-testid="locked-file"
   >
+    <!-- 1:1 방: 방 키로 지울 수 있으니 일괄 삭제용으로 고를 수 있다 -->
+    <label v-if="selectable" class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 cursor-pointer">
+      <input
+        type="checkbox"
+        class="select-checkbox w-5 h-5 cursor-pointer"
+        :class="accentColor"
+        :checked="isSelected"
+        :aria-label="t('file.selectFile', { name: isPlain ? displayName : t('lock.lockedFile') })"
+        data-testid="locked-select"
+        @change="$emit('toggle-selection', file)"
+      />
+    </label>
     <!-- 체크박스 자리: 잠긴 파일은 하나씩 받으므로 선택할 수 없다 (정렬을 맞추려고 자리는 둔다) -->
-    <label class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 opacity-40" :title="t('lock.noBulk')">
+    <label v-else class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 opacity-40" :title="t('lock.noBulk')">
       <input
         type="checkbox"
         class="select-checkbox w-5 h-5"

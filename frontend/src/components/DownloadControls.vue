@@ -20,6 +20,11 @@ const props = defineProps({
   scope: {
     type: String,
     default: 'ip'
+  },
+  /** 1:1 방: 모두 선택·선택 삭제만 보인다 (선택 받기·QR·비우기는 공개 URL 기준이라 잠긴 파일에 쓸 수 없다) */
+  privateMode: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -29,11 +34,12 @@ const { text: accentText } = useScopeAccent(() => props.scope)
 </script>
 
 <template>
-  <div class="fixed left-1/2 -translate-x-1/2 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 w-[calc(100%-2rem)] max-w-[28rem] bg-surface border border-border rounded-2xl shadow-lg md:grid-cols-5 overflow-hidden download-controls flex flex-wrap justify-center md:grid" data-testid="download-controls">
+  <div class="fixed left-1/2 -translate-x-1/2 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 w-[calc(100%-2rem)] max-w-[28rem] bg-surface border border-border rounded-2xl shadow-lg overflow-hidden download-controls flex flex-wrap justify-center md:grid" :class="privateMode ? 'md:grid-cols-2' : 'md:grid-cols-5'" data-testid="download-controls">
     <button
       class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :class="accentText"
       :disabled="totalCount === 0"
+      data-testid="select-all"
       @click="$emit('toggle-select-all')"
       :title="allSelected ? t('download.deselectAllHint') : t('download.selectAllHint')"
     >
@@ -51,6 +57,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
     <button
       class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :class="accentText"
+      v-if="!privateMode"
       :disabled="selectedCount === 0"
       @click="$emit('download-parallel')"
       :title="t('download.downloadHint')"
@@ -65,6 +72,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
     <button
       class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :class="accentText"
+      v-if="!privateMode"
       :disabled="selectedCount === 0"
       @click="$emit('show-multi-qr')"
       :title="t('download.qrCodeHint')"
@@ -83,6 +91,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
     <button
       class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-red-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="selectedCount === 0"
+      data-testid="delete-selected"
       @click="$emit('delete-selected')"
     >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
@@ -96,6 +105,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
     </button>
     <button
       class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      v-if="!privateMode"
       :disabled="totalCount === 0"
       @click="$emit('clear-storage')"
     >
