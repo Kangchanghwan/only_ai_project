@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import HelpModal from './HelpModal.vue'
 import LanguageSelector from './LanguageSelector.vue'
 import ThemeToggleButton from './ThemeToggleButton.vue'
 import QRZoomModal from './QRZoomModal.vue'
 import { useQRCode } from '../composables/useQRCode'
+import InstallGuideSheet from './InstallGuideSheet.vue'
 import { trackEvent } from '../utils/analytics'
+import { usePWAInstall, isIOS, isStandalone } from '../composables/usePWAInstall'
 
 const { t } = useI18n()
 const { qrCodeDataUrl, generateQRCodeForUrl } = useQRCode()
@@ -24,6 +26,20 @@ const props = defineProps({
 
 const isHelpModalOpen = ref(false)
 const isQrZoomOpen = ref(false)
+const isInstallGuideOpen = ref(false)
+
+const { canInstall, isInstalled, promptInstall } = usePWAInstall()
+const ios = isIOS()
+const showInstall = computed(() => !isInstalled.value && !isStandalone() && (canInstall.value || ios))
+
+function onInstallClick() {
+  if (canInstall.value) {
+    promptInstall()
+  } else if (ios) {
+    trackEvent('pwa_install_click', { platform: 'ios_guide' })
+    isInstallGuideOpen.value = true
+  }
+}
 
 function openHelpModal() {
   isHelpModalOpen.value = true
@@ -59,6 +75,20 @@ onMounted(async () => {
       <LanguageSelector />
       <ThemeToggleButton />
       <button
+        v-if="showInstall"
+        type="button"
+        class="header-install-button h-11 min-w-11 px-0 sm:px-4 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 border-2 border-primary/30 hover:border-primary/50 w-11 sm:w-auto"
+        :title="t('pwa.installAria')"
+        :aria-label="t('pwa.installAria')"
+        data-testid="header-install-button"
+        @click="onInstallClick"
+      >
+        <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v11" /><path d="m8 10 4 4 4-4" /><rect x="4" y="15" width="16" height="6" rx="2" />
+        </svg>
+        <span class="hidden sm:inline whitespace-nowrap">{{ t('pwa.installLabel') }}</span>
+      </button>
+      <button
         class="w-11 h-11 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-bold text-lg transition-all duration-200 flex items-center justify-center border-2 border-primary/30 hover:border-primary/50"
         @click="openHelpModal"
         :title="t('app.helpTitle')"
@@ -85,6 +115,8 @@ onMounted(async () => {
     :is-open="isHelpModalOpen"
     @close="closeHelpModal"
   />
+
+  <InstallGuideSheet :is-open="isInstallGuideOpen" @close="isInstallGuideOpen = false" />
 
   <!-- QR 확대 모달 -->
   <QRZoomModal

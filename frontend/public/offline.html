@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Offline - Clipboard Share</title>
+<style>
+:root{color-scheme:light dark;--bg:#FFFBF7;--fg:#1C1917;--sub:#78716C;--pri:#FF6B4A}
+@media (prefers-color-scheme:dark){:root{--bg:#1C1917;--fg:#FAFAF9;--sub:#A8A29E}}
+html,body{margin:0;height:100%}
+body{display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;padding:24px;box-sizing:border-box}
+h1{font-size:1.25rem;margin:12px 0 4px}
+p{margin:0 0 20px;color:var(--sub)}
+button{min-height:44px;padding:0 24px;border:0;border-radius:999px;background:var(--pri);color:#fff;font-size:1rem;font-weight:600;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+<div style="font-size:48px" aria-hidden="true">📋</div>
+<h1>인터넷에 연결되어 있지 않아요</h1>
+<p>You're offline</p>
+<button type="button" onclick="location.reload()">다시 시도</button>
+</main>
+</body>
+</html>

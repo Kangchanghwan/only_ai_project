@@ -571,5 +571,16 @@
     "checking": "Checking",
     "peerChecking": "Waiting for them",
     "acceptNote": "You'll connect once they accept"
+  },
+  "pwa": {
+    "installLabel": "Install app",
+    "installAria": "Install as an app",
+    "guideTitle": "Add to Home Screen",
+    "guideBenefit": "Open it straight from your home screen, in full screen",
+    "step1Phone": "Tap the Share button at the bottom of Safari",
+    "step1Tablet": "Tap the Share button at the top of Safari",
+    "step2": "Choose \"Add to Home Screen\"",
+    "step3": "Tap \"Add\" at the top right",
+    "close": "Close"
   }
 }

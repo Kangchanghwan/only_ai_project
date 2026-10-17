@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Clipboard Share - 온라인 클립보드",
   "short_name": "Clipboard Share",
   "description": "회원가입·앱 설치 없이 같은 와이파이의 PC와 스마트폰 사이에서 텍스트, 스크린샷, 파일을 바로 주고받는 무료 온라인 클립보드",
@@ -6,7 +7,6 @@
   "display": "standalone",
   "background_color": "#1C1917",
   "theme_color": "#FF6B4A",
-  "orientation": "portrait-primary",
   "scope": "/",
   "lang": "ko-KR",
   "categories": [
@@ -56,10 +56,11 @@
   ],
   "screenshots": [
     {
-      "src": "/og-image.png",
-      "sizes": "1200x630",
+      "src": "/screenshots/desktop.png",
+      "sizes": "1280x800",
       "type": "image/png",
-      "label": "Clipboard Share 메인 화면"
+      "form_factor": "wide",
+      "label": "PC에서 파일·텍스트 주고받기"
     }
   ],
   "share_target": {
@@ -86,5 +87,6 @@
     }
   },
   "related_applications": [],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "dir": "ltr"
 }
