@@ -6,12 +6,30 @@
 let pendingShareData = null;
 
 // 새 서비스워커가 바로 페이지를 맡게 한다 (잠금 파일 스트리밍 다운로드에 필요)
-self.addEventListener('install', () => {
+// 오프라인 폴백: 페이지 이동(navigate) 요청이 네트워크 실패할 때만 /offline.html을 보여 준다
+const OFFLINE_CACHE = 'cs-offline-v1';
+
+self.addEventListener('install', (event) => {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(OFFLINE_CACHE).then((cache) => cache.add('/offline.html')).catch(() => {})
+  );
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    (async () => {
+      try {
+        const keys = await caches.keys();
+        await Promise.all(
+          keys.filter((k) => k.startsWith('cs-offline-') && k !== OFFLINE_CACHE).map((k) => caches.delete(k))
+        );
+      } catch {
+        /* 캐시를 쓸 수 없으면 무시 */
+      }
+      await self.clients.claim();
+    })()
+  );
 });
 
 self.addEventListener('fetch', (event) => {
@@ -24,6 +42,11 @@ self.addEventListener('fetch', (event) => {
 
   if (url.pathname.startsWith('/__locked/') && event.request.method === 'GET') {
     event.respondWith(handleLockedDownload(url.pathname.slice('/__locked/'.length)));
+    return;
+  }
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(fetch(event.request).catch(() => caches.match('/offline.html')));
   }
 });
 

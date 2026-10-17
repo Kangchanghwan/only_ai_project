@@ -70,4 +70,46 @@ describe('usePWAInstall', () => {
     const { promptInstall } = usePWAInstall()
     await expect(promptInstall()).resolves.toBeUndefined()
   })
+
+  describe('GA 이벤트', () => {
+    beforeEach(() => { global.gtag = vi.fn() })
+
+    it('promptInstall은 pwa_install_click(prompt)과 pwa_install_result를 보낸다', async () => {
+      const { usePWAInstall } = await import('./usePWAInstall.js')
+      const { promptInstall } = usePWAInstall()
+      const bip = new Event('beforeinstallprompt')
+      bip.preventDefault = vi.fn()
+      bip.prompt = vi.fn()
+      bip.userChoice = Promise.resolve({ outcome: 'dismissed' })
+      window.dispatchEvent(bip)
+      await promptInstall()
+      expect(window.gtag).toHaveBeenCalledWith('event', 'pwa_install_click', { platform: 'prompt' })
+      expect(window.gtag).toHaveBeenCalledWith('event', 'pwa_install_result', { outcome: 'dismissed' })
+    })
+
+    it('appinstalled에서 pwa_installed를 보낸다', async () => {
+      const { usePWAInstall } = await import('./usePWAInstall.js')
+      usePWAInstall()
+      window.dispatchEvent(new Event('appinstalled'))
+      expect(window.gtag).toHaveBeenCalledWith('event', 'pwa_installed', {})
+    })
+
+    it('standalone 실행이면 pwa_launch_standalone을 한 번만 보낸다', async () => {
+      window.matchMedia = vi.fn().mockReturnValue({ matches: true })
+      const { usePWAInstall } = await import('./usePWAInstall.js')
+      usePWAInstall(); usePWAInstall()
+      const calls = window.gtag.mock.calls.filter((c) => c[1] === 'pwa_launch_standalone')
+      expect(calls).toHaveLength(1)
+    })
+
+    it('iPadOS 데스크톱 UA(터치 있음)도 iOS로 본다', async () => {
+      const ua = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari')
+      const tp = vi.spyOn(navigator, 'maxTouchPoints', 'get').mockReturnValue(5)
+      const { isIOS } = await import('./usePWAInstall.js')
+      expect(isIOS()).toBe(true)
+      tp.mockReturnValue(0)
+      expect(isIOS()).toBe(false)
+      ua.mockRestore(); tp.mockRestore()
+    })
+  })
 })

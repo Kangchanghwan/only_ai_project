@@ -74,3 +74,31 @@ describe('서비스워커 잠금 복호기', () => {
     expect(replies[1]).toEqual({ type: 'SHARE_DATA', data: null })
   })
 })
+
+describe('서비스워커 오프라인 폴백', () => {
+  function fetchEvent(request) {
+    let responded
+    return { request, respondWith: (p) => { responded = p }, get responded() { return responded } }
+  }
+
+  it('navigate 요청은 폴백을 쓰지만 /share-target POST는 가로채는 핸들러가 먼저 처리한다', async () => {
+    globalThis.caches = { match: async () => 'OFFLINE' }
+    globalThis.fetch = async () => { throw new Error('offline') }
+    const realRedirect = Response.redirect
+    Response.redirect = (u, st) => ({ redirected: u, status: st })
+    const { listeners } = loadSw()
+    const nav = fetchEvent({ url: 'https://x.test/room', mode: 'navigate', method: 'GET' })
+    listeners.fetch(nav)
+    expect(await nav.responded).toBe('OFFLINE')
+
+    const share = fetchEvent({ url: 'https://x.test/share-target', mode: 'navigate', method: 'POST', formData: async () => { throw new Error('x') } })
+    listeners.fetch(share)
+    const res = await share.responded
+    expect(res).toEqual({ redirected: '/?share-target=1', status: 303 })
+    Response.redirect = realRedirect
+
+    const other = fetchEvent({ url: 'https://x.test/a.js', mode: 'no-cors', method: 'GET' })
+    listeners.fetch(other)
+    expect(other.responded).toBeUndefined()
+  })
+})
