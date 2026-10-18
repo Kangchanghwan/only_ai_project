@@ -9,6 +9,7 @@
 - [How to use](https://www.clipboardapp.org/how-to-use.html): Step-by-step walkthrough of sharing text, screenshots and files, locking a file with a password, and opening a 1:1 room (Korean).
 - [Video walkthrough](https://www.clipboardapp.org/guide/clipboard-share-video.html): 52-second screen recording of the real site (Android emulator + Mac Chrome) showing same-Wi-Fi auto-connect, phone photo to PC, PC link to phone, a 2.48GB upload, a password-locked file and 1:1 pairing, with the full narration transcript (Korean; video on YouTube).
 - [FAQ](https://www.clipboardapp.org/faq.html): Common questions about price, file size limits, retention and privacy (Korean).
+- [Microsoft Store app](https://apps.microsoft.com/detail/9N2BTKVCPCC5): The same web app packaged for Windows (PWA), listed as "Clipboard Share - 온라인 클립보드"; it opens the site in its own app window from the Start menu.
 - [iPhone to Windows photo transfer](https://www.clipboardapp.org/guide/iphone-to-windows-photo-transfer.html): Moving photos from an iPhone to a Windows PC without a cable or iCloud (Korean).
 - [PC bang file transfer](https://www.clipboardapp.org/guide/pc-bang-file-transfer.html): Getting files onto a shared or public PC without logging into anything (Korean).
 - [AirDrop alternative for Android and Mac](https://www.clipboardapp.org/guide/android-mac-airdrop-alternative.html): Sending files between Android and macOS, which AirDrop does not support (Korean).
