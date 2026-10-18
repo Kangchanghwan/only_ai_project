@@ -1,6 +1,6 @@
 # Intent: how-to-use·llms.txt·가이드 허브에 비밀번호 잠금 반영
 
-Author: owner (2026-10-15 지시, 에이전트 작성). Status: accepted. Created: 2026-10-15.
+Author: owner (2026-10-15 지시, 에이전트 작성). Status: shipped (2026-10-18, master 96e6706). Created: 2026-10-15.
 Trigger: ops/playbooks/lock-campaign.md.
 
 ## Problem
@@ -17,3 +17,4 @@ frontend/public/how-to-use.html, frontend/public/llms.txt, frontend/public/guide
 선행: 7일 how-to-use 네이버·GSC 클릭 유지 이상. 후행: 28일 AI Assistant 채널 세션.
 
 ## Result
+- 2026-10-18 배포: how-to-use 잠금·1:1 두 절, llms.txt 소개·How to use 설명, 한국어·영어 허브 소개 문단. 기준값: how-to-use 네이버 7일 41 노출 / 1 클릭, AI Assistant 7일 11세션(10-11–10-17). 7일 판독 10-25, 28일 11-15.
