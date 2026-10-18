@@ -1,12 +1,12 @@
 # Clipboard Share
 
-> Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves.
+> Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves. Sensitive files can be locked with a password in the sending browser before upload (text and device labels are not locked), and two devices can open a private 1:1 room where files and text are encrypted automatically.
 
 ## Pages
 
 - [Home (Korean)](https://www.clipboardapp.org/): The app itself — open it on two devices on the same Wi-Fi and they connect automatically.
 - [Home (English)](https://www.clipboardapp.org/en/): English version of the app and its landing page.
-- [How to use](https://www.clipboardapp.org/how-to-use.html): Step-by-step walkthrough of sharing text, screenshots and files (Korean).
+- [How to use](https://www.clipboardapp.org/how-to-use.html): Step-by-step walkthrough of sharing text, screenshots and files, locking a file with a password, and opening a 1:1 room (Korean).
 - [Video walkthrough](https://www.clipboardapp.org/guide/clipboard-share-video.html): 52-second screen recording of the real site (Android emulator + Mac Chrome) showing same-Wi-Fi auto-connect, phone photo to PC, PC link to phone, a 2.48GB upload, a password-locked file and 1:1 pairing, with the full narration transcript (Korean; video on YouTube).
 - [FAQ](https://www.clipboardapp.org/faq.html): Common questions about price, file size limits, retention and privacy (Korean).
 - [iPhone to Windows photo transfer](https://www.clipboardapp.org/guide/iphone-to-windows-photo-transfer.html): Moving photos from an iPhone to a Windows PC without a cable or iCloud (Korean).
