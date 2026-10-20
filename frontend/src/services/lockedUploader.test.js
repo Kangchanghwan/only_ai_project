@@ -30,7 +30,7 @@ function fakeApi({ partSize = CT_PART_SIZE } = {}) {
 
 describe('lockedUpload', () => {
   it('파트를 잠가 올리고, 받는 쪽이 메타데이터로 이름과 본문을 복원한다', async () => {
-    const lock = await deriveLock('0912', undefined, { iterations: 1000 })
+    const lock = await deriveLock('비번0912', undefined, { iterations: 1000 })
     const plain = new Uint8Array(RECORD_SIZE + 500).map((_, i) => (i * 7) & 0xff)
     const file = new File([plain], '수학여행.pdf', { type: 'application/pdf', lastModified: 1 })
     const api = fakeApi()
@@ -46,10 +46,10 @@ describe('lockedUpload', () => {
     const body = api.calls.create[0]
     expect(body.size).toBe(plain.length)
     expect(JSON.stringify(body)).not.toContain('수학여행')
-    expect(JSON.stringify(body)).not.toContain('0912')
+    expect(JSON.stringify(body)).not.toContain('비번0912')
     expect(progress.at(-1)).toEqual({ encPercent: 100, upPercent: 100 })
 
-    const recv = await deriveLock('0912', body.lock.salt, { iterations: 1000 })
+    const recv = await deriveLock('비번0912', body.lock.salt, { iterations: 1000 })
     const dk = await unwrapFileKey(recv.encKey, body.lock.wk, body.lock.wkIv)
     expect(await decryptName(dk, body.lock.en, body.lock.enIv)).toBe('수학여행.pdf')
     const ct = sent.get('https://r2/1')
