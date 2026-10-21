@@ -10,7 +10,7 @@
 톤: 개발기, 반말, 솔직하고 짧은 문장. 계정 velog @ch_kang (CokeBear). AI(Claude Code)로 만들었다는 언급 허용. "왜 이렇게 바꿨나 → 어떻게 → 뭐가 아직 아쉬운가" 흐름 권장. 마지막에 https://www.clipboardapp.org 링크와 "써보고 피드백 달라"는 한 줄(사이트 하단 "건의하기"도 언급 가능). 지어낸 에피소드는 쓰지 않는다.
 
 잠금 캠페인 (2026-10-15 owner 지시, ops/playbooks/lock-campaign.md): 다음 목요일(10-22) 편은 아래 L편으로 앞당기고, 기존 3편부터는 한 주씩 민다.
-- L편: 브라우저에서 파일 잠그기 — PBKDF2 60만 회 → HKDF로 encKey·verifier, 파일마다 랜덤 키를 감싸 메타데이터에, 1MiB 레코드 AES-GCM 스트리밍, 서비스워커로 받으면서 풀기, 비밀번호 확인값 단위 시도 제한, 삭제 증명(업로더 삭제 키), QR 링크는 `#` 뒤에 파일 키만(비밀번호·encKey는 넣지 않음). 코드: frontend/src/utils/lockCrypto.js, services/lockedUploader.js, services/lockedDownloader.js, utils/lockedLink.js, public/sw.js, backend/src/routes/locked.ts, utils/unlockLimiter.ts. PR #52~#55와 docs/superpowers/specs/2026-10-13-password-lock-design.md 참고.
+- L편 (발행 2026-10-22: https://velog.io/@ch_kang/브라우저-파일-암호화-Web-Crypto-AES-GCM으로-파일-잠그기-온라인-클립보드-개발기 / DEV.to https://dev.to/kangchanghwan/locking-files-in-the-browser-with-web-crypto-pbkdf2-hkdf-and-1-mib-aes-gcm-records-4d50 ). 다음 목요일(10-29)은 시리즈 3번(멀티파트·이어올리기). 내용: 브라우저에서 파일 잠그기 — PBKDF2 60만 회 → HKDF로 encKey·verifier, 파일마다 랜덤 키를 감싸 메타데이터에, 1MiB 레코드 AES-GCM 스트리밍, 서비스워커로 받으면서 풀기, 비밀번호 확인값 단위 시도 제한, 삭제 증명(업로더 삭제 키), QR 링크는 `#` 뒤에 파일 키만(비밀번호·encKey는 넣지 않음). 코드: frontend/src/utils/lockCrypto.js, services/lockedUploader.js, services/lockedDownloader.js, utils/lockedLink.js, public/sw.js, backend/src/routes/locked.ts, utils/unlockLimiter.ts. PR #52~#55와 docs/superpowers/specs/2026-10-13-password-lock-design.md 참고.
 - "아직 아쉬운 점"에 반드시: 텍스트·기기 정보는 잠기지 않음, 웹 암호화는 서버가 내려주는 JS를 믿어야 한다는 한계, QR 확인값이 비밀번호 단위라 같은 비밀번호의 다른 파일 암호문 접근·삭제 요청은 가능, 시도 횟수가 서버 메모리라 재시작 시 초기화.
 - 제목 키워드 예: "Web Crypto AES-GCM", "브라우저 파일 암호화", "URL fragment". "종단간 암호화"는 content-rules 금지 문구가 풀린 뒤에만, 한정어와 함께.
 
