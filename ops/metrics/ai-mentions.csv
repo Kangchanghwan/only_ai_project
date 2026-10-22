@@ -1,2 +1,2 @@
-date,engine,qid,mentioned,cited_url,rank_in_answer,other_tools
-2026-10-22,brave_ai,adhoc,1,1,1,online-clipboard.online / EasyCopy
+date,engine,qid,mentioned,cited_url,rank_in_answer,other_tools,sources,score
+2026-10-22,brave_ai,adhoc,1,1,1,online-clipboard.online / EasyCopy,,100
