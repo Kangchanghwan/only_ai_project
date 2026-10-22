@@ -157,7 +157,8 @@
     "receive": "Receber",
     "copyImage": "Copiar imagem",
     "selectFile": "Selecionar {name}",
-    "uploadPasteHint": "(Cole com Ctrl+V)"
+    "uploadPasteHint": "(Cole com Ctrl+V)",
+    "inputLabel": "Escolher arquivos"
   },
   "text": {
     "share": "Compartilhar texto",
@@ -171,7 +172,10 @@
     "receivedText": "Texto recebido",
     "autoShareHint": "O texto é compartilhado automaticamente ao colar (Ctrl+V / Cmd+V)",
     "noMessages": "Ainda não há mensagens",
-    "delete": "Excluir"
+    "delete": "Excluir",
+    "prefillNote": "Este texto veio de um link. Confira e toque em \"Compartilhar\" para enviar.",
+    "sentStatus": "Compartilhado. Agora aparece na lista de textos dos dispositivos conectados.",
+    "sendFailedStatus": "Não foi possível compartilhar. Tente novamente."
   },
   "notification": {
     "uploading": "Enviando...",

@@ -5,7 +5,7 @@
  * - 입력 중인 textarea에 붙여넣은 내용은 자동 전송되지 않고 일반 입력으로 남는다(App의 전역 paste 핸들러가 편집 가능 요소는 무시)
  * - 모든 본문은 텍스트 노드로만 렌더링한다 (v-html 사용 금지)
  */
-import { ref } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import SenderLabel from './SenderLabel.vue'
@@ -18,7 +18,9 @@ const props = defineProps({
   /** 1:1 상대가 나간 방: 입력을 막는다 */
   composeDisabled: { type: Boolean, default: false },
   /** 입력을 막은 이유 안내 (예: 상대 오프라인) */
-  composeNote: { type: String, default: '' }
+  composeNote: { type: String, default: '' },
+  /** #/send?t= 링크로 받은 텍스트. 입력란이 비어 있을 때만 채우고 자동 전송하지 않는다 */
+  prefill: { type: String, default: '' }
 })
 
 const emit = defineEmits(['remove-text', 'clear-all', 'copy-text', 'share-text', 'paste-content'])
@@ -27,6 +29,19 @@ const { bg: accentBg, hoverText: accentHoverText, hoverBorder50: accentHoverBord
 
 const draft = ref('')
 const sending = ref(false)
+/** 링크로 채운 내용인지 (안내 문구 표시용) */
+const fromLink = ref(false)
+/** 마지막 공유 결과: 화면과 보조기술·브라우저 에이전트가 성공 여부를 확인할 수 있게 글자로 남긴다 */
+const lastResult = ref('')
+const inputRef = ref(null)
+
+watch(() => props.prefill, async (v) => {
+  if (!v || draft.value.trim()) return
+  draft.value = v
+  fromLink.value = true
+  await nextTick()
+  inputRef.value?.focus?.()
+}, { immediate: true })
 const openMenuId = ref(null)
 
 /** 공유 버튼: 빈 입력은 무시. 부모가 done(ok)로 결과를 알려주면 성공 시에만 입력을 비운다. */
@@ -39,7 +54,11 @@ function submit() {
     if (settled) return
     settled = true
     sending.value = false
-    if (ok) draft.value = ''
+    if (ok) {
+      draft.value = ''
+      fromLink.value = false
+    }
+    lastResult.value = ok ? 'ok' : 'fail'
   }
   emit('share-text', { content, done })
 }
@@ -64,6 +83,7 @@ function formatTime(timestamp) {
       <label class="text-sm font-semibold text-text-primary" for="text-share-input">{{ t('text.share') }}</label>
       <textarea
         id="text-share-input"
+        ref="inputRef"
         v-model="draft"
         rows="4"
         class="w-full min-h-[6rem] resize-y rounded-xl border border-border bg-background text-text-primary text-sm p-3 font-mono focus-visible:outline-2 focus-visible:outline-primary"
@@ -88,6 +108,8 @@ function formatTime(timestamp) {
           @click="emit('paste-content')"
         >📋 {{ t('clipboard.pasteTitle') }}</button>
       </div>
+      <p v-if="fromLink" class="m-0 text-xs font-semibold text-text-primary" data-testid="text-prefill-note">{{ t('text.prefillNote') }}</p>
+      <p class="m-0 text-xs text-text-secondary" role="status" aria-live="polite" data-testid="text-share-result">{{ lastResult === 'ok' ? t('text.sentStatus') : lastResult === 'fail' ? t('text.sendFailedStatus') : '' }}</p>
       <p class="text-xs text-text-secondary m-0">{{ t('text.autoShareHint') }} {{ t('text.inputPasteHint') }}</p>
     </form>
 

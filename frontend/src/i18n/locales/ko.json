@@ -161,7 +161,8 @@
     "limitResume": "파일당 최대 {size} · 끊겨도 이어서 올려요",
     "receive": "받기",
     "copyImage": "이미지 복사",
-    "selectFile": "{name} 선택"
+    "selectFile": "{name} 선택",
+    "inputLabel": "파일 선택"
   },
   "text": {
     "share": "텍스트 공유",
@@ -178,7 +179,10 @@
     "messageCount": "{count}개 메시지",
     "messageCount_plural": "{count}개 메시지",
     "composePlaceholder": "여기에 입력하거나 붙여넣은 뒤 '공유'를 누르세요",
-    "inputPasteHint": "입력란에 붙여넣은 내용은 '공유'를 눌러야 전송돼요."
+    "inputPasteHint": "입력란에 붙여넣은 내용은 '공유'를 눌러야 전송돼요.",
+    "prefillNote": "링크로 받은 텍스트예요. 내용을 확인한 뒤 '공유'를 누르면 보내져요.",
+    "sentStatus": "공유했어요. 연결된 기기의 텍스트 목록에 나타나요.",
+    "sendFailedStatus": "공유하지 못했어요. 다시 시도해 주세요."
   },
   "notification": {
     "uploading": "업로드 중...",

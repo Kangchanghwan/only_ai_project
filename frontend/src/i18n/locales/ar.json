@@ -157,7 +157,8 @@
     "receive": "استلام",
     "copyImage": "نسخ الصورة",
     "selectFile": "تحديد {name}",
-    "uploadPasteHint": "(الصق بـ Ctrl+V)"
+    "uploadPasteHint": "(الصق بـ Ctrl+V)",
+    "inputLabel": "اختيار ملفات"
   },
   "text": {
     "share": "مشاركة النص",
@@ -171,7 +172,10 @@
     "receivedText": "نص مستلم",
     "autoShareHint": "تتم مشاركة النص تلقائيًا عند اللصق (Ctrl+V / Cmd+V)",
     "noMessages": "لا توجد رسائل بعد",
-    "delete": "حذف"
+    "delete": "حذف",
+    "prefillNote": "هذا النص وصل من رابط. راجعه ثم اضغط «مشاركة» لإرساله.",
+    "sentStatus": "تمت المشاركة. يظهر الآن في قائمة النصوص على الأجهزة المتصلة.",
+    "sendFailedStatus": "تعذّرت المشاركة. حاول مرة أخرى."
   },
   "notification": {
     "uploading": "جاري التحميل...",

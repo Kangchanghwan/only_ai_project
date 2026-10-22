@@ -11,6 +11,10 @@
         if (location.hash.indexOf('#/lk?') === 0) {
           window.__csLockedLink = location.hash;
           history.replaceState(null, '', location.pathname + location.search);
+        } else if (location.hash.indexOf('#/send?') === 0) {
+          // 텍스트 미리 채우기 링크(#/send?t=...)도 본문이 기록·분석에 남지 않게 같은 방식으로 옮긴다
+          window.__csSendLink = location.hash;
+          history.replaceState(null, '', location.pathname + location.search);
         }
       } catch (e) {}
     </script>
@@ -226,7 +230,7 @@
       "alternateName": "클립보드 셰어",
       "url": "https://www.clipboardapp.org",
       "logo": { "@type": "ImageObject", "url": "https://www.clipboardapp.org/apple-touch-icon.png", "width": 180, "height": 180 },
-      "sameAs": ["https://github.com/Kangchanghwan/only_ai_project"]
+      "sameAs": ["https://github.com/Kangchanghwan/only_ai_project", "https://apps.microsoft.com/detail/9N2BTKVCPCC5", "https://www.producthunt.com/products/clipboard-share", "https://disquiet.io/products/clipboard-share", "https://velog.io/@ch_kang", "https://dev.to/kangchanghwan"]
     }
     </script>
 

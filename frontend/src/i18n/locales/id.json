@@ -157,7 +157,8 @@
     "receive": "Terima",
     "copyImage": "Salin gambar",
     "selectFile": "Pilih {name}",
-    "uploadPasteHint": "(Tempel dengan Ctrl+V)"
+    "uploadPasteHint": "(Tempel dengan Ctrl+V)",
+    "inputLabel": "Pilih file"
   },
   "text": {
     "share": "Bagikan Teks",
@@ -171,7 +172,10 @@
     "receivedText": "Teks diterima",
     "autoShareHint": "Teks dibagikan otomatis saat ditempel (Ctrl+V / Cmd+V)",
     "noMessages": "Belum ada pesan",
-    "delete": "Hapus"
+    "delete": "Hapus",
+    "prefillNote": "Teks ini berasal dari tautan. Periksa, lalu tekan \"Bagikan\" untuk mengirim.",
+    "sentStatus": "Dibagikan. Sekarang muncul di daftar teks perangkat yang terhubung.",
+    "sendFailedStatus": "Gagal membagikan. Coba lagi."
   },
   "notification": {
     "uploading": "Mengunggah...",

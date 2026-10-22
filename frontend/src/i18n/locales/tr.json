@@ -157,7 +157,8 @@
     "receive": "Al",
     "copyImage": "Görseli kopyala",
     "selectFile": "{name} seç",
-    "uploadPasteHint": "(Ctrl+V ile yapıştırın)"
+    "uploadPasteHint": "(Ctrl+V ile yapıştırın)",
+    "inputLabel": "Dosya seç"
   },
   "text": {
     "share": "Metin Paylaş",
@@ -171,7 +172,10 @@
     "receivedText": "Alınan metin",
     "autoShareHint": "Yapıştırdığınızda (Ctrl+V / Cmd+V) metin otomatik paylaşılır",
     "noMessages": "Henüz mesaj yok",
-    "delete": "Sil"
+    "delete": "Sil",
+    "prefillNote": "Bu metin bir bağlantıdan geldi. Kontrol edip göndermek için \"Paylaş\"a dokunun.",
+    "sentStatus": "Paylaşıldı. Bağlı cihazların metin listesinde görünüyor.",
+    "sendFailedStatus": "Paylaşılamadı. Lütfen tekrar deneyin."
   },
   "notification": {
     "uploading": "Yükleniyor...",

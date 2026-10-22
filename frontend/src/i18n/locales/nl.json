@@ -157,7 +157,8 @@
     "receive": "Ontvangen",
     "copyImage": "Afbeelding kopiëren",
     "selectFile": "{name} selecteren",
-    "uploadPasteHint": "(Plak met Ctrl+V)"
+    "uploadPasteHint": "(Plak met Ctrl+V)",
+    "inputLabel": "Bestanden kiezen"
   },
   "text": {
     "share": "Tekst delen",
@@ -171,7 +172,10 @@
     "receivedText": "Ontvangen tekst",
     "autoShareHint": "Tekst wordt automatisch gedeeld bij plakken (Ctrl+V / Cmd+V)",
     "noMessages": "Nog geen berichten",
-    "delete": "Verwijderen"
+    "delete": "Verwijderen",
+    "prefillNote": "Deze tekst komt uit een link. Controleer hem en tik op 'Delen' om te verzenden.",
+    "sentStatus": "Gedeeld. Hij staat nu in de tekstlijst op verbonden apparaten.",
+    "sendFailedStatus": "Delen mislukt. Probeer het opnieuw."
   },
   "notification": {
     "uploading": "Uploaden...",

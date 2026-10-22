@@ -77,3 +77,32 @@ describe('TextShareBox 받은 텍스트', () => {
     expect(w.find('[data-testid="text-body"]').text()).toContain('<img src=x')
   })
 })
+
+describe('TextShareBox 링크 미리 채우기 (#/send?t=)', () => {
+  it('prefill은 입력란만 채우고 자동 전송하지 않으며 안내 문구를 보인다', async () => {
+    const w = mountBox({ prefill: '링크 텍스트' })
+    await w.vm.$nextTick()
+    expect(w.find('[data-testid="text-input"]').element.value).toBe('링크 텍스트')
+    expect(w.find('[data-testid="text-prefill-note"]').exists()).toBe(true)
+    expect(w.emitted('share-text')).toBeFalsy()
+  })
+
+  it('공유 성공·실패를 role=status 문구로 남긴다', async () => {
+    const w = mountBox({ prefill: 'x' })
+    await w.vm.$nextTick()
+    await w.find('[data-testid="text-compose"]').trigger('submit')
+    w.emitted('share-text')[0][0].done(true)
+    await w.vm.$nextTick()
+    const status = w.find('[data-testid="text-share-result"]')
+    expect(status.attributes('role')).toBe('status')
+    expect(status.text()).not.toBe('')
+    expect(w.find('[data-testid="text-prefill-note"]').exists()).toBe(false)
+  })
+
+  it('이미 입력 중인 내용은 덮어쓰지 않는다', async () => {
+    const w = mountBox()
+    await w.find('[data-testid="text-input"]').setValue('내가 쓰던 글')
+    await w.setProps({ prefill: '링크 텍스트' })
+    expect(w.find('[data-testid="text-input"]').element.value).toBe('내가 쓰던 글')
+  })
+})

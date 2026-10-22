@@ -157,7 +157,8 @@
     "receive": "Odbierz",
     "copyImage": "Kopiuj obraz",
     "selectFile": "Zaznacz {name}",
-    "uploadPasteHint": "(Wklej przez Ctrl+V)"
+    "uploadPasteHint": "(Wklej przez Ctrl+V)",
+    "inputLabel": "Wybierz pliki"
   },
   "text": {
     "share": "Udostępnij tekst",
@@ -171,7 +172,10 @@
     "receivedText": "Otrzymany tekst",
     "autoShareHint": "Tekst jest udostępniany automatycznie po wklejeniu (Ctrl+V / Cmd+V)",
     "noMessages": "Brak wiadomości",
-    "delete": "Usuń"
+    "delete": "Usuń",
+    "prefillNote": "Ten tekst pochodzi z linku. Sprawdź go i naciśnij „Udostępnij”, aby wysłać.",
+    "sentStatus": "Udostępniono. Tekst pojawił się na liście na połączonych urządzeniach.",
+    "sendFailedStatus": "Nie udało się udostępnić. Spróbuj ponownie."
   },
   "notification": {
     "uploading": "Przesyłanie...",

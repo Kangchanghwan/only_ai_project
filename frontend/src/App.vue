@@ -23,6 +23,7 @@ import { isEditableTarget } from './utils/editable'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
+import { parseSendLink } from './utils/sendLink'
 import { formatSizeMB } from './utils/fileUtils'
 import { socketService } from './services/socketService'
 import { startP2pProbe } from './services/p2pProbe'
@@ -696,10 +697,18 @@ async function handleAddText(content, scopeOverride) {
 }
 
 /** 텍스트 탭의 직접 입력 공유. 결과를 done(ok)으로 돌려줘 성공 시에만 입력을 비운다 */
+/** #/send?t= 링크로 채운 텍스트 (RoomScreen → TextShareBox 입력란) */
+const prefillText = ref('')
+let prefillPending = false
+
 async function handleShareText({ content, done }) {
   let ok = false
   try {
     ok = await handleAddText(content)
+    if (ok && prefillPending) {
+      prefillPending = false
+      trackEvent('send_link_share', { chars: content.length })
+    }
   } finally {
     done?.(ok)
   }
@@ -952,6 +961,9 @@ onMounted(async () => {
   const hash = window.__csLockedLink || window.location.hash
   window.__csLockedLink = undefined
   currentRoute.value = parseRoute(hash)
+  const sendHash = window.__csSendLink || hash
+  window.__csSendLink = undefined
+  const sendText = parseSendLink(sendHash)
 
   console.log('[App] 라우트 파싱 결과:', currentRoute.value)
 
@@ -977,6 +989,13 @@ onMounted(async () => {
   if (isShareTarget) {
     console.log('[App] Share target 감지, 공유 데이터 처리 중...')
     await handleShareTargetData()
+  }
+
+  // 텍스트 미리 채우기 링크: 입력란만 채운다. 전송은 사용자가 '공유'를 눌러야 한다
+  if (sendText) {
+    prefillText.value = sendText
+    prefillPending = true
+    trackEvent('send_link_open', { chars: sendText.length })
   }
 
   // URL을 깨끗하게 정리
@@ -1049,6 +1068,7 @@ onUnmounted(() => {
         @clear-all-texts="handleClearAllTexts"
         @copy-text="handleCopyText"
         @paste-content="handlePasteContent"
+        :prefill-text="prefillText"
         @share-text="handleShareText"
         :uploads="notification.uploads.value"
         @cancel-upload="cancelUpload"

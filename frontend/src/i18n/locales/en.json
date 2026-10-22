@@ -161,7 +161,8 @@
     "limitResume": "Up to {size} per file · interrupted uploads resume",
     "receive": "Receive",
     "copyImage": "Copy image",
-    "selectFile": "Select {name}"
+    "selectFile": "Select {name}",
+    "inputLabel": "Choose files"
   },
   "text": {
     "share": "Share Text",
@@ -178,7 +179,10 @@
     "messageCount": "{count} message",
     "messageCount_plural": "{count} messages",
     "composePlaceholder": "Type or paste here, then press Share",
-    "inputPasteHint": "Text pasted into this box is only sent when you press Share."
+    "inputPasteHint": "Text pasted into this box is only sent when you press Share.",
+    "prefillNote": "This text came from a link. Check it, then press 'Share' to send it.",
+    "sentStatus": "Shared. It now appears in the text list on connected devices.",
+    "sendFailedStatus": "Couldn't share. Please try again."
   },
   "notification": {
     "uploading": "Uploading...",

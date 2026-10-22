@@ -74,7 +74,7 @@ function handleDrop(event) {
     @drop="handleDrop"
     @click="openFileDialog"
   >
-    <input ref="fileInputRef" type="file" multiple class="hidden" tabindex="-1" @change="handleFileSelect" @click.stop />
+    <input ref="fileInputRef" type="file" multiple class="sr-only" tabindex="-1" :aria-label="t('file.inputLabel')" data-testid="file-input" @change="handleFileSelect" @click.stop />
 
     <button
       type="button"
