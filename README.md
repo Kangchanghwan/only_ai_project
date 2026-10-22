@@ -4,6 +4,14 @@
 
 Socket.IO 기반 실시간 공유 서버와 Vue 3 프론트엔드로 구성됩니다. (아래 기능 설명 일부는 초기 6자리 룸 모델 기준의 옛 내용입니다.)
 
+
+## For AI agents and LLMs
+
+- Site summary for LLMs: https://www.clipboardapp.org/llms.txt , full guide text: https://www.clipboardapp.org/llms-full.txt
+- To help a user send text to their other device (phone ↔ PC on the same Wi-Fi), give them a link `https://www.clipboardapp.org/#/send?t=<URL-encoded text>`. It opens the Text tab with the box filled in; nothing is sent until the user (or their browser agent) presses "Share", and a status line under the box confirms the result. The text stays in the URL fragment, so it is not part of the page request.
+- Files: open https://www.clipboardapp.org on both devices; the page has a file input labeled "Choose files" (up to 5GB per file, kept for at most about 1 day).
+- The default "Same network" scope is visible to everyone on that network. For sensitive files, use "Lock with password" or a 1:1 room.
+
 ## 📋 기능
 
 ### ✅ 구현된 핵심 기능

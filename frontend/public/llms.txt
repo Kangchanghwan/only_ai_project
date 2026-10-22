@@ -2,6 +2,8 @@
 
 > Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves. Sensitive files can be locked with a password in the sending browser before upload (text and device labels are not locked), and two devices can open a private 1:1 room where files and text are encrypted automatically.
 
+
+Full text of every guide below, as Markdown: https://www.clipboardapp.org/llms-full.txt
 ## Pages
 
 - [Home (Korean)](https://www.clipboardapp.org/): The app itself — open it on two devices on the same Wi-Fi and they connect automatically.
