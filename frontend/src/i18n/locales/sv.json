@@ -157,7 +157,8 @@
     "receive": "Ta emot",
     "copyImage": "Kopiera bild",
     "selectFile": "Markera {name}",
-    "uploadPasteHint": "(Klistra in med Ctrl+V)"
+    "uploadPasteHint": "(Klistra in med Ctrl+V)",
+    "inputLabel": "Välj filer"
   },
   "text": {
     "share": "Dela text",
@@ -171,7 +172,10 @@
     "receivedText": "Mottagen text",
     "autoShareHint": "Text delas automatiskt när du klistrar in (Ctrl+V / Cmd+V)",
     "noMessages": "Inga meddelanden än",
-    "delete": "Ta bort"
+    "delete": "Ta bort",
+    "prefillNote": "Den här texten kom från en länk. Kontrollera den och tryck på ”Dela” för att skicka.",
+    "sentStatus": "Delat. Texten syns nu i textlistan på anslutna enheter.",
+    "sendFailedStatus": "Det gick inte att dela. Försök igen."
   },
   "notification": {
     "uploading": "Laddar upp...",

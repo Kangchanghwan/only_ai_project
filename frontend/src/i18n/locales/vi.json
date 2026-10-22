@@ -157,7 +157,8 @@
     "receive": "Nhận",
     "copyImage": "Sao chép ảnh",
     "selectFile": "Chọn {name}",
-    "uploadPasteHint": "(Dán bằng Ctrl+V)"
+    "uploadPasteHint": "(Dán bằng Ctrl+V)",
+    "inputLabel": "Chọn tệp"
   },
   "text": {
     "share": "Chia sẻ văn bản",
@@ -171,7 +172,10 @@
     "receivedText": "Văn bản đã nhận",
     "autoShareHint": "Văn bản được chia sẻ tự động khi bạn dán (Ctrl+V / Cmd+V)",
     "noMessages": "Chưa có tin nhắn",
-    "delete": "Xóa"
+    "delete": "Xóa",
+    "prefillNote": "Văn bản này đến từ một liên kết. Kiểm tra rồi nhấn \"Chia sẻ\" để gửi.",
+    "sentStatus": "Đã chia sẻ. Văn bản đã hiện trong danh sách trên các thiết bị đã kết nối.",
+    "sendFailedStatus": "Không chia sẻ được. Vui lòng thử lại."
   },
   "notification": {
     "uploading": "Đang tải lên...",

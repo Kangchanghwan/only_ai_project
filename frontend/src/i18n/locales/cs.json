@@ -157,7 +157,8 @@
     "receive": "Přijmout",
     "copyImage": "Kopírovat obrázek",
     "selectFile": "Vybrat {name}",
-    "uploadPasteHint": "(Vložte pomocí Ctrl+V)"
+    "uploadPasteHint": "(Vložte pomocí Ctrl+V)",
+    "inputLabel": "Vybrat soubory"
   },
   "text": {
     "share": "Sdílet text",
@@ -171,7 +172,10 @@
     "receivedText": "Přijatý text",
     "autoShareHint": "Text se po vložení (Ctrl+V / Cmd+V) sdílí automaticky",
     "noMessages": "Zatím žádné zprávy",
-    "delete": "Smazat"
+    "delete": "Smazat",
+    "prefillNote": "Tento text přišel z odkazu. Zkontrolujte ho a stiskněte „Sdílet“ pro odeslání.",
+    "sentStatus": "Sdíleno. Text se zobrazí v seznamu na připojených zařízeních.",
+    "sendFailedStatus": "Sdílení se nezdařilo. Zkuste to znovu."
   },
   "notification": {
     "uploading": "Nahrávání...",

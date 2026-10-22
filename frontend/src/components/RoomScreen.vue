@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, provide, toRef } from 'vue'
+import { computed, ref, provide, toRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppHeader from './AppHeader.vue'
 import AppFooter from './AppFooter.vue'
@@ -22,6 +22,8 @@ import { sameIdentity } from '../utils/identity'
 const { t } = useI18n()
 
 const props = defineProps({
+  /** #/send?t= 링크로 받은 텍스트: 텍스트 탭을 열고 입력란을 채운다 */
+  prefillText: { type: String, default: '' },
   roomId: {
     type: String,
     default: null
@@ -115,6 +117,7 @@ const emit = defineEmits([
 
 const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120
 const mobilePanel = ref('files')
+watch(() => props.prefillText, (v) => { if (v) mobilePanel.value = 'text' }, { immediate: true })
 
 // 넓은 화면(CSS의 @media (min-width: 1100px)와 동일 값)에서는 기기 목록을 왼쪽 패널에 항상 보여준다.
 // 작업 영역은 이 값으로 다시 마운트되지 않는다 (목록 표시 방식만 바뀐다).
@@ -291,6 +294,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
               <TextShareBox
                 :texts="texts"
                 :scope="scope"
+                :prefill="prefillText"
                 :compose-disabled="peerLeft || peerOffline || peerConnecting"
                 :compose-note="peerOffline ? t('pair.offlineTextNote') : ''"
                 @remove-text="$emit('remove-text', $event)"

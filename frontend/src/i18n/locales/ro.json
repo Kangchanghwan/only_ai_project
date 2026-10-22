@@ -157,7 +157,8 @@
     "receive": "Primește",
     "copyImage": "Copiază imaginea",
     "selectFile": "Selectează {name}",
-    "uploadPasteHint": "(Lipiți cu Ctrl+V)"
+    "uploadPasteHint": "(Lipiți cu Ctrl+V)",
+    "inputLabel": "Alege fișiere"
   },
   "text": {
     "share": "Partajează text",
@@ -171,7 +172,10 @@
     "receivedText": "Text primit",
     "autoShareHint": "Textul este partajat automat la lipire (Ctrl+V / Cmd+V)",
     "noMessages": "Încă nu există mesaje",
-    "delete": "Șterge"
+    "delete": "Șterge",
+    "prefillNote": "Acest text vine dintr-un link. Verifică-l, apoi apasă „Partajează” pentru a-l trimite.",
+    "sentStatus": "Partajat. Apare acum în lista de texte a dispozitivelor conectate.",
+    "sendFailedStatus": "Partajarea a eșuat. Încearcă din nou."
   },
   "notification": {
     "uploading": "Se încarcă...",

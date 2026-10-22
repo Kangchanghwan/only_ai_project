@@ -157,7 +157,8 @@
     "receive": "Empfangen",
     "copyImage": "Bild kopieren",
     "selectFile": "{name} auswählen",
-    "uploadPasteHint": "(Mit Strg+V einfügen)"
+    "uploadPasteHint": "(Mit Strg+V einfügen)",
+    "inputLabel": "Dateien auswählen"
   },
   "text": {
     "share": "Text teilen",
@@ -171,7 +172,10 @@
     "receivedText": "Empfangener Text",
     "autoShareHint": "Text wird beim Einfügen automatisch geteilt (Strg+V / Cmd+V)",
     "noMessages": "Noch keine Nachrichten",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "prefillNote": "Dieser Text stammt aus einem Link. Prüfe ihn und tippe dann auf „Teilen“, um ihn zu senden.",
+    "sentStatus": "Geteilt. Er erscheint jetzt in der Textliste der verbundenen Geräte.",
+    "sendFailedStatus": "Teilen fehlgeschlagen. Bitte versuche es erneut."
   },
   "notification": {
     "uploading": "Hochladen...",

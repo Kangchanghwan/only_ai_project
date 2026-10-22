@@ -157,7 +157,8 @@
     "receive": "接收",
     "copyImage": "复制图片",
     "selectFile": "选择 {name}",
-    "uploadPasteHint": "(按 Ctrl+V 粘贴)"
+    "uploadPasteHint": "(按 Ctrl+V 粘贴)",
+    "inputLabel": "选择文件"
   },
   "text": {
     "share": "分享文本",
@@ -171,7 +172,10 @@
     "receivedText": "收到的文字",
     "autoShareHint": "粘贴(Ctrl+V / Cmd+V)后文字会自动分享",
     "noMessages": "还没有消息",
-    "delete": "删除"
+    "delete": "删除",
+    "prefillNote": "这段文字来自链接。确认内容后点击“分享”即可发送。",
+    "sentStatus": "已分享，已出现在已连接设备的文本列表中。",
+    "sendFailedStatus": "分享失败，请重试。"
   },
   "notification": {
     "uploading": "上传中...",

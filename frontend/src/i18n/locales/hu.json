@@ -157,7 +157,8 @@
     "receive": "Fogadás",
     "copyImage": "Kép másolása",
     "selectFile": "{name} kijelölése",
-    "uploadPasteHint": "(Illessze be Ctrl+V-vel)"
+    "uploadPasteHint": "(Illessze be Ctrl+V-vel)",
+    "inputLabel": "Fájlok kiválasztása"
   },
   "text": {
     "share": "Szöveg megosztása",
@@ -171,7 +172,10 @@
     "receivedText": "Kapott szöveg",
     "autoShareHint": "A szöveg beillesztéskor (Ctrl+V / Cmd+V) automatikusan megosztásra kerül",
     "noMessages": "Még nincs üzenet",
-    "delete": "Törlés"
+    "delete": "Törlés",
+    "prefillNote": "Ez a szöveg egy linkből érkezett. Ellenőrizd, majd nyomd meg a „Megosztás” gombot a küldéshez.",
+    "sentStatus": "Megosztva. Megjelent a csatlakozott eszközök szöveglistájában.",
+    "sendFailedStatus": "Nem sikerült megosztani. Próbáld újra."
   },
   "notification": {
     "uploading": "Feltöltés...",

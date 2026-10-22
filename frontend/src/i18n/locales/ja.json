@@ -161,7 +161,8 @@
     "limitResume": "1ファイルあたり最大 {size} · 中断しても続きから再開",
     "receive": "受け取る",
     "copyImage": "画像をコピー",
-    "selectFile": "{name} を選択"
+    "selectFile": "{name} を選択",
+    "inputLabel": "ファイルを選択"
   },
   "text": {
     "share": "テキストを共有",
@@ -178,7 +179,10 @@
     "messageCount": "{count} 件のメッセージ",
     "messageCount_plural": "{count} 件のメッセージ",
     "composePlaceholder": "ここに入力または貼り付けて「共有」を押してください",
-    "inputPasteHint": "入力欄に貼り付けた内容は「共有」を押すまで送信されません。"
+    "inputPasteHint": "入力欄に貼り付けた内容は「共有」を押すまで送信されません。",
+    "prefillNote": "リンクから受け取ったテキストです。内容を確認して「共有」を押すと送信されます。",
+    "sentStatus": "共有しました。接続中の端末のテキスト一覧に表示されます。",
+    "sendFailedStatus": "共有できませんでした。もう一度お試しください。"
   },
   "notification": {
     "uploading": "アップロード中...",

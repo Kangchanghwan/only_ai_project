@@ -11,6 +11,10 @@
         if (location.hash.indexOf('#/lk?') === 0) {
           window.__csLockedLink = location.hash;
           history.replaceState(null, '', location.pathname + location.search);
+        } else if (location.hash.indexOf('#/send?') === 0) {
+          // 텍스트 미리 채우기 링크(#/send?t=...)도 본문이 기록·분석에 남지 않게 같은 방식으로 옮긴다
+          window.__csSendLink = location.hash;
+          history.replaceState(null, '', location.pathname + location.search);
         }
       } catch (e) {}
     </script>
