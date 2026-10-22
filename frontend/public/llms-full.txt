@@ -2,8 +2,6 @@
 
 > Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves. Sensitive files can be locked with a password in the sending browser before upload (text and device labels are not locked), and two devices can open a private 1:1 room where files and text are encrypted automatically.
 
-Full text of every guide below, as Markdown: https://www.clipboardapp.org/llms-full.txt
-
 > Full text of the guides listed in https://www.clipboardapp.org/llms.txt, generated from the published HTML. Korean pages stay in Korean.
 
 ---
@@ -1477,6 +1475,128 @@ The same as unlocked files: they are deleted shortly after every device leaves t
 ### Is the QR code safe to share?
 
 Treat it like the file itself. Anyone who has the QR code or its link can download that file without the password. The key sits after the # in the address, so it is not sent to the server, and the link stops working once the file is deleted or about a day has passed.
+
+[Try it now](https://www.clipboardapp.org/en/)
+
+---
+
+Source: https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html
+
+# ChatGPT·Claude에게 '폰으로 보내 줘' 하기
+
+2026년 10월 기준, AI에게 대화 속 텍스트를 폰으로 보내고 싶다고 하면 `https://www.clipboardapp.org/#/send?t=` 뒤에 URL 인코딩한 텍스트를 붙인 링크를 만들어 달라고 요청하면 됩니다. 그 링크를 폰에서 열고 '공유'를 누르는 2단계면 끝나고, 가입과 설치는 필요 없습니다.
+
+같은 와이파이의 기기가 브라우저에서 자동으로 연결되고, 가입·설치 없이 쓸 수 있습니다. 파일은 한 개당 5GB까지, 최대 약 1일 보관됩니다. 필요한 파일만 비밀번호로 잠글 수 있고, 1:1 방은 자동으로 암호화됩니다. 이 글은 텍스트를 보내는 링크 기능(링크로 텍스트 미리 채우기)을 다룹니다. 이 기능은 서비스 코드에서 확인한 내용만 적었고, 특정 AI 제품이 이 링크를 지원한다는 뜻은 아닙니다.
+
+## 링크 형식
+
+`https://www.clipboardapp.org/#/send?t=<URL 인코딩한 텍스트>`
+
+예를 들어 '안녕'을 보내려면 `https://www.clipboardapp.org/#/send?t=%EC%95%88%EB%85%95` 처럼 만듭니다.
+- 링크를 열면 텍스트 탭의 입력란이 채워지고, '링크로 받은 텍스트예요. 내용을 확인한 뒤 ‘공유’를 누르면 보내져요.'라는 안내가 나옵니다.
+- 자동으로 전송되지 않습니다. 사람이든 에이전트든 '공유'를 눌러야 보내집니다.
+- 링크로 미리 채울 수 있는 텍스트는 최대 20000자입니다. 입력란에 이미 내용이 있으면 덮어쓰지 않습니다.
+- 공유 범위는 링크로 정할 수 없습니다. 화면에서 고른 탭('같은 네트워크' 또는 '전체 공유') 그대로 보내집니다.
+- 텍스트는 주소의 `#` 뒤에 들어가서 페이지를 요청할 때 서버로 가지 않고, 페이지가 열리면 주소창에서 지워집니다. 다만 '공유'를 누르면 텍스트는 서비스를 거쳐 연결된 기기로 전달됩니다.
+
+## 사람이 하는 단계
+- AI에게 보낼 텍스트를 알려 주고, 위 형식의 링크로 만들어 달라고 요청합니다. 링크 안의 텍스트는 URL 인코딩되어 있어야 합니다.
+- 받을 기기(폰)의 브라우저에서 링크를 엽니다. 링크를 폰으로 옮기기 번거롭다면, 폰에서 [https://www.clipboardapp.org/](https://www.clipboardapp.org/) 를 열어 두고 PC에서 링크를 열어 '공유'를 눌러도 됩니다.
+- 화면 위쪽 '공유 대상'이 **같은 네트워크**인지 확인합니다. 보내는 기기와 받는 기기가 같은 와이파이에 있어야 서로 보입니다.
+- 입력란에 채워진 내용을 확인하고 **공유** 버튼을 누릅니다. 입력란 아래에 '공유했어요. 연결된 기기의 텍스트 목록에 나타나요.'가 나오면 성공입니다.
+- 받는 기기에서 [https://www.clipboardapp.org/](https://www.clipboardapp.org/) 를 열고 **텍스트** 탭의 목록에서 항목을 탭하면 복사됩니다.
+
+## 브라우저 에이전트가 하는 단계
+
+사용자의 브라우저를 조작할 수 있는 에이전트에게 맡기는 경우의 순서입니다. 사용자가 맡긴 작업만 하도록 하고, 아래 순서도 사용자에게 먼저 알려 주세요.
+- 링크 `https://www.clipboardapp.org/#/send?t=…` 를 엽니다.
+- **텍스트** 탭의 **텍스트 공유** 입력란에 내용이 채워졌는지 확인합니다.
+- '공유 대상'이 사용자가 원한 범위인지 확인합니다. 모르면 사용자에게 묻고, 기본값 '같은 네트워크'를 바꾸지 않습니다.
+- **공유** 버튼을 누릅니다. 전체 공유로 처음 보낼 때는 확인 창이 뜹니다.
+- 입력란 아래 상태 문구가 '공유했어요…'인지 읽어 결과를 확인합니다. '공유하지 못했어요. 다시 시도해 주세요.'가 나오면 실패입니다.
+- 파일을 보내야 하면 페이지의 **파일 선택** 입력(접근성 이름도 '파일 선택')으로 파일을 고릅니다. 링크로는 파일을 채울 수 없습니다.
+
+## 안전하게 쓰려면
+- 기본 범위인 **같은 네트워크**는 같은 공인 IP를 쓰는 사람에게 보입니다. 학교, 회사, 카페처럼 여러 사람이 쓰는 네트워크라면 그 안의 다른 사람에게도 보일 수 있습니다.
+- 민감한 파일은 업로드 전에 **비밀번호로 잠그기**를 켜서 보내세요(4자 이상). 보내는 기기에서 암호화되고, 비밀번호를 아는 사람만 열 수 있습니다.
+- 비밀번호 잠금은 텍스트를 잠그지 않습니다. 비밀번호, 인증번호 같은 텍스트는 공용 네트워크에서 보내지 마세요.
+- 둘만 주고받으려면 기기 목록에서 **1:1**을 눌러 연결하세요. 상대가 수락하고 두 화면의 그림이 같은지 확인하면 둘만 쓰는 방이 열리고, 그 방의 파일과 텍스트는 자동으로 암호화됩니다.
+- 링크에는 텍스트가 그대로 들어갑니다. 비밀번호나 개인정보가 든 링크를 메신저나 공개 게시물에 남기지 마세요.
+
+## 자주 묻는 질문
+
+### AI가 직접 제 폰으로 보내 주나요?
+
+AI가 만든 링크를 사람이 열고 '공유'를 눌러야 보내집니다. 링크는 입력란만 채우고 자동으로 전송하지 않습니다. 브라우저를 조작할 수 있는 에이전트라면 사용자의 허락 아래 같은 단계를 대신 누를 수 있습니다.
+
+### 긴 텍스트도 링크에 넣을 수 있나요?
+
+링크로 미리 채울 수 있는 텍스트는 최대 20000자이고, 넘는 부분은 잘립니다. 더 긴 내용은 텍스트 파일로 저장해 파일로 보내세요. 파일은 한 개당 5GB까지 보낼 수 있습니다.
+
+### 파일도 링크로 보낼 수 있나요?
+
+링크는 텍스트만 미리 채웁니다. 파일은 '파일 선택' 버튼으로 직접 고르거나, 브라우저 에이전트가 페이지의 '파일 선택' 입력을 사용해야 합니다.
+
+[지금 바로 써보기](https://www.clipboardapp.org/)
+
+---
+
+Source: https://www.clipboardapp.org/en/guide/ask-ai-to-send-text-to-your-phone.html
+
+# Ask an AI assistant to send text to your phone
+
+As of October 2026, the way to get text from an AI chat onto another device is to ask the assistant for a link that starts with `https://www.clipboardapp.org/#/send?t=` and ends with your text, URL-encoded. Open that link on the receiving device and press Share. That is two steps, with no sign-up and nothing to install.
+
+Devices on the same Wi-Fi connect automatically in the browser. There is no sign-up and no install, files can be up to 5GB each and are kept for about a day at most, you can lock just the files that need it with a password, and a 1:1 room is encrypted automatically. This guide covers the text link only. It describes what the site's code does; it does not mean any particular AI product already supports these links, so you may need to ask the assistant to build the link by hand.
+
+## The link format
+
+`https://www.clipboardapp.org/#/send?t=<URL-encoded text>`
+
+For example, the word "hello" becomes `https://www.clipboardapp.org/#/send?t=hello`, and a space is written as `%20`.
+- Opening the link switches to the Text tab and fills the box. A note under it says the text came from a link and asks you to check it and press Share.
+- Nothing is sent automatically. A person, or an agent acting for one, has to press Share.
+- The link can pre-fill up to 20,000 characters. If the box already has text in it, the link does not overwrite it.
+- The link cannot choose the audience. The text goes to whichever scope is selected on screen, Same network or Everyone.
+- The text sits after the `#`, so it is not part of the page request, and the page removes it from the address bar once it loads. Pressing Share does send the text through the service to the connected devices.
+
+## Steps for a person
+- Tell the assistant which text to send and ask for a link in the format above, with the text URL-encoded.
+- Open the link in a browser on the device that should receive the text. If getting the link onto the phone is the hard part, open the link on your PC instead and keep [https://www.clipboardapp.org/en/](https://www.clipboardapp.org/en/) open on the phone.
+- Check that **Share with** is set to **Same network**. Both devices need to be on the same Wi-Fi to see each other.
+- Read the text in the box, then press **Share**. The line under the box says "Shared. It now appears in the text list on connected devices." when it worked.
+- On the other device, open [the site](https://www.clipboardapp.org/en/), go to the **Text** tab and tap the item to copy it.
+
+## Steps for a browser agent
+
+If you let an agent control your browser, this is the sequence. Keep it to the task you gave it, and tell the user what you are about to press.
+- Open `https://www.clipboardapp.org/#/send?t=…`.
+- Check that the **Share Text** box on the **Text** tab now contains the text.
+- Check that **Share with** matches what the user wanted. If you are unsure, ask, and leave the default **Same network** alone.
+- Press **Share**. The first time you send to Everyone, a confirmation dialog appears.
+- Read the status line under the box. "Shared…" means success; "Couldn't share. Please try again." means it failed.
+- For files, use the page's file input, whose accessible name is **Choose files**. A link cannot attach files.
+
+## Keeping it safe
+- The default **Same network** scope is visible to people behind the same public IP. On a school, office or cafe network that can include other people on that network.
+- For sensitive files, turn on **Lock with a password** before uploading (at least 4 characters). The file is encrypted in the sending browser and only people with the password can open it.
+- The password lock does not lock text. Do not send passwords or one-time codes as text over a shared network.
+- To exchange things with one person only, press **Connect 1:1** in the device list. After they accept and you both confirm the same pictures, a room for just the two of you opens, and files and text in it are encrypted automatically.
+- The link contains the text itself. Do not leave a link with private text in a chat, a document or a public post.
+
+## Questions
+
+### Will the assistant send it to my phone by itself?
+
+No. A link only fills in the box, and someone has to press Share. An assistant that can drive your browser can press it for you, if you ask it to.
+
+### How long can the text in the link be?
+
+The link pre-fills up to 20,000 characters and cuts anything beyond that. For longer material, save a text file and send it as a file, which can be up to 5GB.
+
+### Can a link send a file?
+
+No, a link only pre-fills text. Files go through the Choose files button, or through the file input labeled Choose files if a browser agent is doing the clicking.
 
 [Try it now](https://www.clipboardapp.org/en/)
 
