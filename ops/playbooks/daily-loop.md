@@ -20,7 +20,7 @@ GA4·GSC·네이버 서치어드바이저 값을 읽어 `ops/metrics/daily.csv`�
 
 ## 3. 개선 1건 (ship-change.md)
 매일 최대 1건만 배포한다 (효과 측정을 위해 변경을 섞지 않는다).
-우선순위: propose 등급 intent > accepted intent (2026-10-16~ 잠금 캠페인 0014 → 0015 → 0016 순) > 효과 큰 proposed intent(가장 오래된 것부터) > 새 가이드 페이지 1개.
+우선순위: 2026-10-23~12-31에는 ai-visibility.md 3절 순서를 따른다 (propose > intent 0022(PR #62 머지 후) > 잠금 캠페인 > 틈새 큐). 그 전 규칙: propose 등급 intent > accepted intent (2026-10-16~ 잠금 캠페인 0014 → 0015 → 0016 순) > 효과 큰 proposed intent(가장 오래된 것부터) > 새 가이드 페이지 1개.
 - 자동 머지 허용 경로면 `auto/YYYYMMDD-<slug>` 브랜치로 푸시 → Actions가 게이트 통과 시 머지·배포.
 - 허용 경로 밖이면 `pr/YYYYMMDD-<slug>` 브랜치로 푸시하고 GitHub에서 PR을 연다. 보고에 "승인 필요"로 올린다. 머지하지 않는다.
 - 배포 7일·28일 뒤 해당 intent의 Result 칸에 수치를 채운다. 효과가 없으면 rejected로 바꾸고 이유를 적는다.
@@ -30,9 +30,9 @@ GA4·GSC·네이버 서치어드바이저 값을 읽어 `ops/metrics/daily.csv`�
 2026-10-20(화) 네이버 슬롯은 video-campaign.md 2절의 영상 글 V1을 잠금 L2(10-23 금)보다 먼저 쓴다. 월요일 리포트에는 video-campaign.md 3절 표를 붙이고, 10-24·11-14에는 intent 0017 Result를 채운다. 유튜브 채널 휴대폰 인증이 끝날 때까지 보고의 "승인 필요"에 올린다.
 | 요일 | 작업 | 플레이북 |
 |---|---|---|
-| 월 | 주간 심층 리포트 (지난 7일 vs 전 7일, 저CTR 쿼리 표) + 지난주 커뮤니티 글 댓글 확인·답글 + Microsoft Store 취득·리뷰 표 | metrics.md, community.md, ms-store.md |
+| 월 | 주간 심층 리포트 (지난 7일 vs 전 7일, 저CTR 쿼리 표) + 지난주 커뮤니티 글 댓글 확인·답글 + Microsoft Store 취득·리뷰 표 + **틈새 순위표·AI 언급표 (ai-visibility.md 2절)** | metrics.md, community.md, ms-store.md, ai-visibility.md |
 | 화, 금 | 네이버 블로그 1편 발행 | naver-blog.md |
-| 수 | 커뮤니티 1곳 (카페 큐 또는 런칭 큐에서 다음 차례) | community.md |
+| 수 | 커뮤니티 1곳 (카페 큐 또는 런칭 큐에서 다음 차례). 카페 큐가 비면 ai-visibility.md 4절 제3자 언급 1건 | community.md, ai-visibility.md |
 | 목 | velog 개발기 1편 발행 (매주) + 같은 주제를 영어로 다시 써서 DEV.to 게시 (canonical = velog) | velog.md, community.md |
 | 토 | 디스콰이엇 메이커 로그 1개 (이번 주 배포·실험 결과 요약) | community.md |
 | 일 | Reddit karma 쌓기: r/SideProject, r/PWA 등 규칙에 AI 생성 댓글 금지가 없는 곳에서 (r/webdev·r/webdevelopment는 금지라 제외) 진짜 도움이 되는 댓글 2~3개 (홍보 링크 금지, 2026-10-16까지) | community.md |
