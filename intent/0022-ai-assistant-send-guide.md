@@ -24,4 +24,8 @@ Trigger: owner 지시 — 사용자가 LLM에게 "폰으로 보낼 방법 없어
 - 28일 안에 send_link_open 10회 이상(owner·에이전트 테스트 제외, ?internal=1), ai-mentions.csv에서 q1·q6 중 1개 이상 엔진이 우리를 언급.
 
 ## Result
-(배포 7일·28일 뒤 채움)
+- 2026-10-23 배포 (master cd8ba1e, auto 게이트 통과, 라이브 200·title 확인): llms.txt "For AI assistants" 절, https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html , https://www.clipboardapp.org/en/guide/ask-ai-to-send-text-to-your-phone.html , 허브·ItemList·sitemap·llms.txt Pages, 관련 글 링크(ko send-link-from-pc-to-phone, en send-text-from-phone-to-pc), llms-full.txt 재생성.
+- 배포 전 라이브 확인(10-23): `/#/send?t=send%20link%20check%201023`를 새로 열면 주소창 해시가 지워지고 텍스트 탭 입력란이 채워지며 "링크로 받은 텍스트예요…" 안내가 나옴. 텍스트 목록 (0) 그대로 = 자동 전송 없음. 테스트 문장은 공유하지 않고 지움. 같은 탭에서 해시만 바꾸면(SPA 내부 이동) 채워지지 않는다.
+- 문안 교정: 라벨은 en/ko.json 실제 값(Share Text, Share with, Choose files, Lock with a password, Connect 1:1, 상태·실패 문구), 20,000자 상한, '공유' 후 서비스 경유, 전체 공유 첫 전송 확인 창 추가. 특정 AI 제품의 지원을 단정하는 표현은 넣지 않음.
+- 기준값: GA4 10-16–10-22 send_link_open 0 / send_link_share 0. AI 언급 기준값은 10-26 측정.
+- 판독: 7일 10-30, 28일 11-20.

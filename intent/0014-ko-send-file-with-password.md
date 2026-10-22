@@ -27,3 +27,4 @@ Trigger: owner 아이디어 — 비밀번호 잠금·QR 공유 출시(PR #52~#55
 - 2026-10-16 배포: https://www.clipboardapp.org/guide/send-file-with-password.html (master b376768, auto 게이트 통과, 라이브 title 확인). 허브 "파일 옮기기"·ItemList 19, pc-bang 관련 글, sitemap, llms.txt. 배포 당일 GSC 색인 생성 요청(요청됨), 네이버 웹 페이지 수집 요청. 같은 날 네이버 블로그 L1 글에서 링크.
 - 기준값: 배포 전 GSC 28일 "비밀번호·암호·password·encrypt" 포함 쿼리 노출 0. GA4 10-09–10-15 locked_upload_complete 5회(1명), locked_download_complete 2회(1명), locked_link_download_complete 1회(1명) = 10-15 출시 테스트분.
 - 판독: 7일 10-23, 28일 11-13.
+- 7일 판독(10-23): GSC 10-16–10-20 이 URL 노출 1, 클릭 0, 순위 6 (검색어 표 비어 있음). 네이버 웹문서 상위 표 밖(노출 사실상 0). GA4 10-16–10-22 locked_upload_complete 30회(12명) / locked_download_complete 17회(8명) / locked_link_download_complete 0 — 기준값(10-09–10-15 5회·1명)보다 늘었으나 L1 블로그·velog 잠금 편 등 다른 홍보와 섞여 이 페이지 효과로 볼 수 없다. 판정 보류, 28일(11-13).
