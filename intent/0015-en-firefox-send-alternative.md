@@ -27,3 +27,4 @@ Trigger: owner 아이디어 — 잠금 기능 유입 각도. ops/playbooks/lock-
   - "end-to-end"는 FAQ 1곳에서 "Files you lock with a password are"라는 한정어와 함께만 썼다. 1:1 연결(PR #57·#58, 10-16 라이브)은 "Good to know"에 1줄(그림 확인 후 둘만의 방, 파일·텍스트 자동 암호화).
   - 허브 ItemList 9, en/guide 허브 "Files and photos", online-clipboard-for-files-and-images 관련 글 맨 위, sitemap(새 URL·허브·online-clipboard-for-files lastmod 10-17), llms.txt.
   - 7일 결과 10-24, 28일 11-14.
+- 2026-10-24 7일 판독: GSC 10-17–10-23 노출 26, 클릭 0, 평균 순위 14. 색인됨(10-20 확인). 잠금 이벤트는 7일 locked_upload_complete 29(11명)지만 로케일별 분리는 못 했다. 노출이 붙기 시작했으니 28일(11-14)에 클릭으로 판단한다.
