@@ -10,16 +10,44 @@
  */
 import { watch } from 'vue'
 import { trackEvent } from '../utils/analytics'
+import { mbpsBucket } from '../utils/mbpsBucket'
 
 export const ICE_SERVERS = [
   { urls: 'stun:stun.cloudflare.com:3478' },
   { urls: 'stun:stun.l.google.com:19302' },
 ]
 export const CONNECT_TIMEOUT_MS = 8000
-export const TRANSFER_TIMEOUT_MS = 5000
-export const RESPONDER_TIMEOUT_MS = 15000
+export const PROBE_VERSION = 2
+export const MIN_TRANSFER_TIMEOUT_MS = 8000
+export const MAX_TRANSFER_TIMEOUT_MS = 30000
+export const MIN_ASSUMED_MBPS = 1.5
+/** 크기에 비례한 전송 타임아웃: max(8초, bytes / 1.5Mbit/s), 상한 30초 */
+export function transferTimeoutFor(bytes) {
+  const ms = (bytes * 8) / (MIN_ASSUMED_MBPS * 1e6) * 1000
+  return Math.min(MAX_TRANSFER_TIMEOUT_MS, Math.max(MIN_TRANSFER_TIMEOUT_MS, Math.round(ms)))
+}
+/** 응답측 대기 상한: 연결 8초 + 전송 최대 30초 + 여유 7초. 느린 회선의 8MB 전송을 끊김으로 오판하지 않게 한다 */
+export const RESPONDER_TIMEOUT_MS = 45000
 export const CHUNK_BYTES = 16 * 1024
-export const CHUNK_COUNT = 64
+export const PROBE_BYTES_LAN = 8 * 1024 * 1024
+export const PROBE_BYTES_NAT = 2 * 1024 * 1024
+/** 결과별 측정 크기 */
+export function probeBytesFor(result) {
+  return result === 'direct_lan' ? PROBE_BYTES_LAN : PROBE_BYTES_NAT
+}
+/** 청크 i: 첫 4바이트에 i(Uint32 LE), 나머지는 (i*31+j)&0xff */
+export function fillChunk(buf, i) {
+  const u8 = new Uint8Array(buf)
+  for (let j = 4; j < u8.length; j++) u8[j] = (i * 31 + j) & 0xff
+  new DataView(buf).setUint32(0, i, true)
+  return buf
+}
+export function readChunkIndex(data) {
+  try {
+    if (!data || data.byteLength < 4) return -1
+    return new DataView(data).getUint32(0, true)
+  } catch { return -1 }
+}
 export const SESSION_FLAG = 'p2p_probe_done'
 const BUFFER_HIGH = 256 * 1024
 const BUFFER_LOW = 64 * 1024
@@ -77,7 +105,7 @@ export function createP2pProbe(deps = {}) {
     doc = typeof document !== 'undefined' ? document : null,
     now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now()),
     connectTimeoutMs = CONNECT_TIMEOUT_MS,
-    transferTimeoutMs = TRANSFER_TIMEOUT_MS,
+    transferTimeoutMs,
   } = deps
 
   const enabled = isProbeEnabled(env)
@@ -205,7 +233,16 @@ export function createP2pProbe(deps = {}) {
       let connected = false
       let ackResolve
       const acked = new Promise((res) => { ackResolve = res })
-      dc.onmessage = (e) => { if (e.data === 'ack') ackResolve(true) }
+      dc.onmessage = (e) => { if (typeof e.data === 'string' && (e.data === 'ack' || e.data.startsWith('ack:'))) ackResolve(e.data) }
+      let transferState = null // 전송 중 close 감지용
+      dc.onclose = () => { if (transferState === 'sending') transferState = 'closed'; ackResolve('closed') }
+      const prevStateChange = pc.onconnectionstatechange
+      pc.onconnectionstatechange = () => {
+        prevStateChange?.()
+        if (transferState === 'sending' && ['failed', 'closed', 'disconnected'].includes(pc.connectionState)) {
+          transferState = 'closed'; ackResolve('closed')
+        }
+      }
 
       dc.onopen = async () => {
         if (reported) return
@@ -224,14 +261,20 @@ export function createP2pProbe(deps = {}) {
         const extra = { result, connect_ms: connectMs, local_type: localType ?? 'none', remote_type: remoteType ?? 'none' }
         if (result === 'failed') { complete(extra); return }
 
-        // 처리량 측정: 0으로 채운 16KB x 64 = 1MB, 수신측 ack까지의 시간
-        timers.push(setTimeout(() => complete(extra), transferTimeoutMs))
+        // 처리량 측정: 결정적 패턴 데이터를 보내고 응답측 ack(바이트 수·순서 검증 결과)까지의 시간
+        const probeBytes = probeBytesFor(result)
+        const chunkCount = Math.ceil(probeBytes / CHUNK_BYTES)
+        const sentBytes = chunkCount * CHUNK_BYTES
+        const withT = { ...extra, probe_v: PROBE_VERSION, probe_bytes: sentBytes }
+        const tmo = transferTimeoutMs ?? transferTimeoutFor(sentBytes)
+        timers.push(setTimeout(() => complete({ ...withT, transfer: 'stalled' }), tmo))
         try {
-          const chunk = new ArrayBuffer(CHUNK_BYTES)
+          transferState = 'sending'
           const ts = now()
           dc.send('start')
-          for (let i = 0; i < CHUNK_COUNT; i++) {
+          for (let i = 0; i < chunkCount; i++) {
             if (reported) return
+            if (transferState === 'closed') { complete({ ...withT, transfer: 'closed' }); return }
             if (dc.bufferedAmount > BUFFER_HIGH) {
               await new Promise((res) => {
                 const h = () => { dc.removeEventListener?.('bufferedamountlow', h); res() }
@@ -239,16 +282,32 @@ export function createP2pProbe(deps = {}) {
                 else dc.onbufferedamountlow = h
               })
             }
-            dc.send(chunk)
+            dc.send(fillChunk(new ArrayBuffer(CHUNK_BYTES), i))
           }
           dc.send('end')
-          await acked
-          const sec = Math.max((now() - ts) / 1000, 0.001)
-          const mbit = (CHUNK_BYTES * CHUNK_COUNT * 8) / 1e6 / sec
-          complete({ ...extra, throughput_mbps: Math.round(mbit * 10) / 10 })
+          const ackMsg = await acked
+          const te = now()
+          if (ackMsg === 'closed') { complete({ ...withT, transfer: 'closed' }); return }
+          let transfer
+          if (ackMsg === 'ack') {
+            transfer = 'complete_legacy' // 구버전 응답측: 바이트 검증 불가
+          } else {
+            const [, got, flag] = String(ackMsg).split(':')
+            transfer = Number(got) === sentBytes && flag === 'ok' ? 'complete' : 'mismatch'
+          }
+          if (transfer === 'mismatch') { complete({ ...withT, transfer }); return }
+          const sec = Math.max((te - ts) / 1000, 0.001)
+          const mbit = (sentBytes * 8) / 1e6 / sec
+          const mbps = Math.round(mbit * 10) / 10
+          complete({
+            ...withT,
+            transfer,
+            throughput_mbps: mbps,
+            ...(transfer === 'complete' ? { mbps_bucket: mbpsBucket(mbps) } : {}),
+          })
         } catch (err) {
           warn('transfer', err)
-          complete(extra)
+          complete({ ...withT, transfer: 'error' })
         }
       }
 
@@ -294,12 +353,24 @@ export function createP2pProbe(deps = {}) {
       pc.ondatachannel = (e) => {
         dc = e.channel
         dc.binaryType = 'arraybuffer'
+        let recvBytes = 0
+        let expectIdx = 0
+        let orderOk = true
         dc.onmessage = (m) => {
-          // 수신 데이터는 버리고, 끝 신호에만 ack로 응답한다
-          if (m.data === 'end') {
-            try { dc.send('ack') } catch (err) { warn('ack', err) }
-            setTimeout(close, 500)
+          // 수신 데이터는 저장하지 않고 바이트 수·순서만 센 뒤 버린다. 끝 신호에 ack:<바이트>:<ok|bad>로 응답
+          const d = m.data
+          if (typeof d === 'string') {
+            if (d === 'start') { recvBytes = 0; expectIdx = 0; orderOk = true }
+            else if (d === 'end') {
+              try { dc.send(`ack:${recvBytes}:${orderOk ? 'ok' : 'bad'}`) } catch (err) { warn('ack', err) }
+              setTimeout(close, 500)
+            }
+            return
           }
+          const len = d?.byteLength ?? 0
+          recvBytes += len
+          if (readChunkIndex(d) !== expectIdx) orderOk = false
+          expectIdx++
         }
         dc.onclose = close
       }
