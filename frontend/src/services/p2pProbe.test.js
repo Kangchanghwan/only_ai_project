@@ -388,3 +388,10 @@ describe('v2 측정', () => {
     expect(await feed([0, 2, 1])).toEqual([`ack:${3 * CHUNK_BYTES}:bad`])
   })
 })
+
+describe('v2 응답측 타임아웃', () => {
+  it('응답측 대기 상한이 연결 타임아웃 + 최대 전송 타임아웃보다 길다', async () => {
+    const m = await import('./p2pProbe.js')
+    expect(m.RESPONDER_TIMEOUT_MS).toBeGreaterThan(m.CONNECT_TIMEOUT_MS + m.MAX_TRANSFER_TIMEOUT_MS)
+  })
+})

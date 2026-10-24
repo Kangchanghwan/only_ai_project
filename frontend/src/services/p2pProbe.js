@@ -26,7 +26,8 @@ export function transferTimeoutFor(bytes) {
   const ms = (bytes * 8) / (MIN_ASSUMED_MBPS * 1e6) * 1000
   return Math.min(MAX_TRANSFER_TIMEOUT_MS, Math.max(MIN_TRANSFER_TIMEOUT_MS, Math.round(ms)))
 }
-export const RESPONDER_TIMEOUT_MS = 15000
+/** 응답측 대기 상한: 연결 8초 + 전송 최대 30초 + 여유 7초. 느린 회선의 8MB 전송을 끊김으로 오판하지 않게 한다 */
+export const RESPONDER_TIMEOUT_MS = 45000
 export const CHUNK_BYTES = 16 * 1024
 export const PROBE_BYTES_LAN = 8 * 1024 * 1024
 export const PROBE_BYTES_NAT = 2 * 1024 * 1024
