@@ -11,6 +11,30 @@ import { trackEvent } from '../utils/analytics.js'
 import { SERVER_ERROR_MESSAGES } from '../utils/apiErrors.js'
 import { multipartUpload, isMultipartFile } from './multipartUploader.js'
 import { socketService } from './socketService.js'
+import { mbpsBucket } from '../utils/mbpsBucket.js'
+
+export const UPLOAD_PERF_MIN_BYTES = 8 * 1024 * 1024
+
+const perfNow = () => (typeof performance !== 'undefined' ? performance.now() : Date.now())
+const perfMobile = () => {
+  try { return /iPhone|iPad|iPod|Android|Mobi/i.test(navigator.userAgent || '') } catch { return false }
+}
+const perfConn = () => {
+  try { return navigator.connection?.effectiveType || undefined } catch { return undefined }
+}
+const perfClean = (o) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined && v !== null))
+/** 측정 이벤트는 어떤 경우에도 업로드 결과에 영향을 주지 않는다 */
+function safeTrack(name, params) {
+  try { trackEvent(name, perfClean(params)) } catch { /* noop */ }
+}
+function failReason(err) {
+  try {
+    if (err?.code === 'UPLOAD_CANCELED' || err?.name === 'AbortError') return 'canceled'
+    if (typeof err?.status === 'number' || /\b[1-5]\d\d\b/.test(String(err?.message || ''))) return 'http'
+    if (err instanceof TypeError || /network|네트워크|timeout|시간/i.test(String(err?.message || ''))) return 'network'
+  } catch { /* noop */ }
+  return 'other'
+}
 
 /** 업로더 표시용: 연결된 소켓 ID가 있으면 요청 본문에 실어 보낸다 (서버가 룸 소속 확인 후 기록, 없으면 생략) */
 const socketIdField = () => {
@@ -455,10 +479,50 @@ class R2Service {
 
     console.log('[R2Service] 파일 업로드 시작:', { roomId, fileName: file.name, size: file.size })
 
+    const measure = file.size >= UPLOAD_PERF_MIN_BYTES
+    const multipart = isMultipartFile(file.size)
+    const uploadPath = multipart ? 'multipart' : 'single'
+    const uploadMb = Math.round((file.size / (1024 * 1024)) * 10) / 10
+    const t0 = measure ? perfNow() : 0
+    try {
+      const result = await this._uploadFileInner(roomId, file, options, multipart)
+      if (measure) {
+        const ms = Math.max(perfNow() - t0, 1)
+        const mbps = Math.round(((file.size * 8) / 1e6 / (ms / 1000)) * 10) / 10
+        safeTrack('upload_perf', {
+          upload_mb: uploadMb,
+          upload_ms: Math.round(ms),
+          upload_mbps: mbps,
+          mbps_bucket: mbpsBucket(mbps),
+          upload_path: uploadPath,
+          retries: Number(result?._retries) || 0,
+          resumed: !!result?._resumed,
+          locked: !!options?.locked,
+          is_mobile: perfMobile(),
+          effective_type: perfConn(),
+        })
+      }
+      if (result && '_retries' in result) { delete result._retries; delete result._resumed }
+      return result
+    } catch (error) {
+      if (measure) {
+        safeTrack('upload_perf_fail', {
+          upload_mb: uploadMb,
+          upload_path: uploadPath,
+          reason: failReason(error),
+          is_mobile: perfMobile(),
+        })
+      }
+      throw error
+    }
+  }
 
-    if (isMultipartFile(file.size)) {
+  async _uploadFileInner(roomId, file, options, multipart) {
+    if (multipart) {
       const result = await multipartUpload(roomId, file, { api: this.multipartApi, ...options })
       return {
+        _retries: result.retries,
+        _resumed: result.resumed,
         success: true,
         path: `${roomId}/${result.fileName}`,
         fileName: result.fileName,
