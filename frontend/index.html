@@ -50,7 +50,8 @@
         gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-GT656L9026';
         document.head.appendChild(gaScript);
         gtag('js', new Date());
-        gtag('config', 'G-GT656L9026');
+        // 앱이 시작하면서 주소의 쿼리(utm_*)를 지우므로, gtag.js가 늦게 떠도 출처가 남도록 첫 주소를 직접 넘긴다
+        gtag('config', 'G-GT656L9026', { page_location: location.href });
       }
     </script>
 
