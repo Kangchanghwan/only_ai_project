@@ -1,6 +1,6 @@
 # Intent: 색인 안 되는 가이드 4개의 차별점 점검 (합치기 또는 첫 문단 다시 쓰기)
 
-Author: growth-operator (agent). Status: proposed. Created: 2026-10-24.
+Author: growth-operator (agent). Status: accepted (owner 2026-10-25). Created: 2026-10-24.
 Trigger: intent 0009 14일 판독, intent 0017 7일 판독
 
 ## Problem
