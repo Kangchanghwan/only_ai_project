@@ -25,4 +25,4 @@ Trigger: ai-visibility.md 3절 큐 B·AI 2번째 항목.
 - 없음.
 
 ## Result
-(배포 후 7일·28일에 채움)
+- 2026-10-25 배포 (master f990450, auto 게이트 통과, 라이브 200·title 확인). 경쟁 수치 중 clipboard.im(100MB/파일·300MB 합계·7일)과 ClipSync(25MB/파일·24시간)는 공식 페이지에서 다시 확인. 기준값: "online clipboard" 10-18–10-24 노출 563·평균 9.9위(일별 10-24 13.6위 잠정), AI Assistant 7일 12세션. 7일 판독 11-01, 28일 11-22.

@@ -18,3 +18,4 @@ frontend/public/how-to-use.html, frontend/public/llms.txt, frontend/public/guide
 
 ## Result
 - 2026-10-18 배포: how-to-use 잠금·1:1 두 절, llms.txt 소개·How to use 설명, 한국어·영어 허브 소개 문단. 기준값: how-to-use 네이버 7일 41 노출 / 1 클릭, AI Assistant 7일 11세션(10-11–10-17). 7일 판독 10-25, 28일 11-15.
+- 2026-10-25 7일 판독: how-to-use 네이버 최근 7일 43 노출 / 4 클릭(CTR 9.3%, 기준 41/1) → 선행 조건(클릭 유지 이상) 충족. GSC 10-18–10-24 노출 0(이 페이지는 원래 구글 노출이 거의 없음). AI Assistant 7일 12세션(기준 11). 28일 판독 11-15에 계속.
