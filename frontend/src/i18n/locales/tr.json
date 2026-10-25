@@ -21,7 +21,12 @@
     "joinOtherRoom": "Başka bir odaya katıl",
     "enterCode": "Oda kodunu girin",
     "otherDevices": "Diğer cihazlar: {count}",
-    "waiting": "Cihazlar bekleniyor"
+    "waiting": "Cihazlar bekleniyor",
+    "emptyState": {
+      "qrLine": "Telefon kameranla tara, anında bağlan",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Bilgisayarında {site} adresini aç"
+    }
   },
   "identity": {
     "adj": [

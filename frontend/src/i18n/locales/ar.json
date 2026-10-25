@@ -21,7 +21,12 @@
     "joinOtherRoom": "الانضمام إلى غرفة أخرى",
     "enterCode": "أدخل رمز الغرفة",
     "otherDevices": "أجهزة أخرى: {count}",
-    "waiting": "بانتظار الأجهزة"
+    "waiting": "بانتظار الأجهزة",
+    "emptyState": {
+      "qrLine": "امسح الرمز بكاميرا هاتفك للاتصال فورًا",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "افتح {site} على جهاز الكمبيوتر"
+    }
   },
   "identity": {
     "adj": [

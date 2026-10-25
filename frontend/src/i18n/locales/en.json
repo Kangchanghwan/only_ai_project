@@ -21,7 +21,12 @@
     "joinOtherRoom": "Join another room",
     "enterCode": "Enter room code",
     "otherDevices": "Other devices: {count}",
-    "waiting": "Waiting for devices"
+    "waiting": "Waiting for devices",
+    "emptyState": {
+      "qrLine": "Scan with your phone camera to connect instantly",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Open {site} on your PC"
+    }
   },
   "identity": {
     "adj": [

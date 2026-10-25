@@ -21,7 +21,12 @@
     "joinOtherRoom": "加入其他房间",
     "enterCode": "输入房间代码",
     "otherDevices": "其他设备 {count} 台",
-    "waiting": "等待连接"
+    "waiting": "等待连接",
+    "emptyState": {
+      "qrLine": "用手机相机扫一扫即可连接",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "请在电脑上打开 {site}"
+    }
   },
   "identity": {
     "adj": [

@@ -21,7 +21,12 @@
     "joinOtherRoom": "Připojit se do jiné místnosti",
     "enterCode": "Zadejte kód místnosti",
     "otherDevices": "Další zařízení: {count}",
-    "waiting": "Čekání na zařízení"
+    "waiting": "Čekání na zařízení",
+    "emptyState": {
+      "qrLine": "Naskenujte fotoaparátem telefonu a hned se připojíte",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Otevřete {site} na počítači"
+    }
   },
   "identity": {
     "adj": [

@@ -21,7 +21,12 @@
     "joinOtherRoom": "Csatlakozás másik szobához",
     "enterCode": "Add meg a szobakódot",
     "otherDevices": "Más eszközök: {count}",
-    "waiting": "Eszközökre várakozás"
+    "waiting": "Eszközökre várakozás",
+    "emptyState": {
+      "qrLine": "Olvasd be a telefon kamerájával, és azonnal csatlakozol",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Nyisd meg a {site} oldalt a számítógépeden"
+    }
   },
   "identity": {
     "adj": [

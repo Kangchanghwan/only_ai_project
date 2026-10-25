@@ -21,7 +21,12 @@
     "joinOtherRoom": "Gå med i ett annat rum",
     "enterCode": "Ange rumskod",
     "otherDevices": "Andra enheter: {count}",
-    "waiting": "Väntar på enheter"
+    "waiting": "Väntar på enheter",
+    "emptyState": {
+      "qrLine": "Skanna med mobilkameran för att ansluta direkt",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Öppna {site} på din dator"
+    }
   },
   "identity": {
     "adj": [
