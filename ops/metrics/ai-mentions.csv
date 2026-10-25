@@ -1,2 +1,42 @@
 date,engine,qid,mentioned,cited_url,rank_in_answer,other_tools,sources,score
 2026-10-22,brave_ai,adhoc,1,1,1,online-clipboard.online / EasyCopy,,100
+2026-10-26,perplexity,q1,0,0,,USB cable / Bluetooth / Snapdrop / Email or cloud link,samsung.com/us/support/answer/ANS10001478 / mobiletrans.wondershare.com/android-transfer/app-transfer-files-from-pc-to-android-phone.html / pcworld.com/article/2899231/here-are-the-best-ways-to-move-files-from-pc-to-phone-and-vice-versa.html,0
+2026-10-26,perplexity,q2,0,0,,Apple Universal Clipboard / Microsoft Phone Link / Online Clipboard / ClipSync / SyncClip / iClipboard.online,online-clipboard.com/guides/copy-text-from-phone-to-computer / online-clipboard.com / clipsync.live / syncclip.in/clipboard / iclipboard.online,0
+2026-10-26,perplexity,q3,0,0,,Quick Share / LocalSend,,0
+2026-10-26,perplexity,q4,,,,blocked: login wall,,
+2026-10-26,perplexity,q5,,,,blocked: login wall,,
+2026-10-26,perplexity,q6,0,0,,USB cable / Send Anywhere / Files to Friends / Sharedrop / Gmail or Google Drive / Bluetooth,support.google.com/android/answer/9064445 / it.donga.com/103557 / hp.com/us-en/tech-takes/connectivity/how-to,0
+2026-10-26,perplexity,q7,0,0,,iCloud Photos / Snapdrop-type web transfer / Google Photos,alibaba.com/product-insights/step-by-step-guide-to-transferring-photos / tenorshare.kr/ios-file-transfer,0
+2026-10-26,perplexity,q8,0,0,,LocalSend / Windows Nearby Sharing / SMB shared folder / browser P2P tool / Quick Share,bishare.app/ko/best-file-sharing-app / computerworld.com/article/2076109/the-best-ways-to-share-files-between / 4share.work/blog/wifi-file-transfer / quick-share.app/ko,0
+2026-10-26,perplexity,q9,0,0,,번개보드 / cl1p.net / Clipboardify / CopyPaste.me / iClipboard / Online Clipboard app,bunboard.pages.dev / clipboard.im/en/guides/online-clipboard-alternatives / iclipboard.online / play.google.com/store/apps/details?id=com.bbclub.onlineclipboard,0
+2026-10-26,perplexity,q10,0,0,,USB drive / email attachment / web file transfer service / Windows Nearby Sharing / Bluetooth,support.microsoft.com/ko-kr/Windows/Experience/Backup-Recovery / learn.microsoft.com/en-us/answers/questions/1305237,0
+2026-10-26,brave_ai,q1,0,0,,Google Drive / Dropbox / OneDrive / email / ToffeeShare / Snapdrop / ShareIt Online / FTP,,0
+2026-10-26,brave_ai,q2,0,0,,SyncClip / ClipboardSyncer,,0
+2026-10-26,brave_ai,q3,0,0,,Quick Share / LocalSend / Snapdrop / PairDrop / BIShare,,0
+2026-10-26,brave_ai,q4,,,,blocked: bot-check CAPTCHA,,
+2026-10-26,brave_ai,q5,,,,blocked: bot-check CAPTCHA,,
+2026-10-26,brave_ai,q6,,,,blocked: bot-check CAPTCHA,,
+2026-10-26,brave_ai,q7,,,,blocked: bot-check CAPTCHA,,
+2026-10-26,brave_ai,q8,,,,blocked: bot-check CAPTCHA,,
+2026-10-26,brave_ai,q9,,,,blocked: bot-check CAPTCHA,,
+2026-10-26,brave_ai,q10,,,,blocked: bot-check CAPTCHA,,
+2026-10-26,chatgpt,q1,0,0,,USB cable / PairDrop / Google Drive / Email,pairdrop.net / drive.google.com,0
+2026-10-26,chatgpt,q2,1,1,2,SharedClipboard / Colurus / CopyNPaste,sharedclipboard.com/online-clipboard / clipboardapp.org/en/ / colurus.com/en/tools/online-clipboard / copynpaste.org,93
+2026-10-26,chatgpt,q3,0,0,,Quick Share / LocalSend / PairDrop,android.com/better-together/quick-share-app / localsend.org / pairdrop.net,0
+2026-10-26,chatgpt,q4,0,0,,PairDrop / Snapdrop / LocalSend,pairdrop.net / snapdrop.net / localsend.org,0
+2026-10-26,chatgpt,q5,0,0,,PairDrop / LocalSend / ShareDrop / Quick Share / ToffeeShare,pairdrop.net / localsend.org / sharedrop.io / toffeeshare.com / android.com/better-together/quick-share-app,0
+2026-10-26,chatgpt,q6,0,0,,PairDrop / ToffeeShare / Google Drive,pairdrop.net / toffeeshare.com / drive.google.com,0
+2026-10-26,chatgpt,q7,0,0,,LocalSend / PairDrop / iCloud 사진 / Google 포토,localsend.org / pairdrop.net / icloud.com/photos / photos.google.com,0
+2026-10-26,chatgpt,q8,0,0,,PairDrop / LocalSend / Snapdrop / Windows 네트워크 공유 폴더,pairdrop.net / localsend.org / snapdrop.net,0
+2026-10-26,chatgpt,q9,1,1,1,SharedClipboard / WebClipboard / SyncClip,clipboardapp.org/en/ / sharedclipboard.com/online-clipboard / webclipboard.online / syncclip.in,100
+2026-10-26,chatgpt,q10,0,0,,PairDrop / Snapdrop / Wormhole / QR 코드 공유 링크,pairdrop.net / snapdrop.net / wormhole.app,0
+2026-10-26,gemini,q1,0,0,,Snapdrop / PairDrop / Sharedrop / USB 케이블 / Google Drive / OneDrive / iCloud / Telegram / WhatsApp Web / Send Anywhere / WeTransfer,send-anywhere.com,0
+2026-10-26,gemini,q2,0,0,,Online-Clipboard.tech / Clipper.live / Pastes.io / BIShare / Clip Cloud / Phone Link / Universal Clipboard,online-clipboard.tech / clipper.live / pastes.io,0
+2026-10-26,gemini,q3,0,0,,Quick Share / LocalSend,,0
+2026-10-26,gemini,q4,0,0,,Snapdrop / PairDrop / Sharedrop / Wormhole,,0
+2026-10-26,gemini,q5,0,0,,PairDrop / Transfer.zip / ShareDrop / LocalSend,,0
+2026-10-26,gemini,q6,0,0,,USB 케이블 / Snapdrop / PairDrop / Quick Share / Google Drive / MYBOX / 웹메일,snapdrop.net / pairdrop.net,0
+2026-10-26,gemini,q7,0,0,,Intel Unison / Quick Share / iCloud for Windows / Google Drive / OneDrive / MYBOX,,0
+2026-10-26,gemini,q8,0,0,,Quick Share / AirDrop / LocalSend / PairDrop / Snapdrop / Windows 네트워크 공유(SMB) / Send Anywhere,,0
+2026-10-26,gemini,q9,1,1,1,ClipShare / Pastebin / Ditto / CopyQ / Paste / Windows Win+V,clipboardapp.org / clipshare.cc / pastebin.com,100
+2026-10-26,gemini,q10,0,0,,Send Anywhere / SendGB / 카카오톡 / Google Drive / Dropbox / USB 메모리,,0

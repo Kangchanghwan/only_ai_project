@@ -24,3 +24,4 @@ Trigger: intent 0009 14일 판독, intent 0017 7일 판독
 
 ## Result
 (배포 후 7일·28일에 에이전트가 채움)
+- 2026-10-26 (1/4): 겹침 표(상: large-file-transfer ↔ en send-large-files 번역 수준, 중: iphone-galaxy ↔ iphone-to-windows·galaxy-photo-to-pc, 하~중: airdrop-not-working ↔ android-mac, 하: 영상 ↔ how-to-use). 겹침이 가장 큰 /guide/large-file-transfer-free-no-signup.html 의 title·description·H1·첫 문단·H2를 "수 GB 파일 한 번에 보내기·끊기면 이어 올리기"(파일당 5GB, 방 합계 10GB, 100MB 초과 시 조각 업로드·같은 파일 다시 고르면 이어짐 = multipartUploader.js 확인)로 다시 씀. master ecce007. GSC URL 검사 '발견됨 - 현재 색인이 생성되지 않음'(크롤링 기록 없음) → 색인 요청, 네이버 수집 요청 완료. 다음: iphone-galaxy-photo-transfer(폰→폰 기기 간 전송 각도).

@@ -3,3 +3,13 @@ date,group,query,engine,impressions,clicks,position,serp_rank,url
 2026-10-21,A,online clipboard file transfer,google,3,1,9.7,,90d GSC
 2026-10-21,A,clipboard file transfer,google,2,0,6.0,,90d GSC
 2026-10-22,E,file share,google,0,0,,,GSC 90d 노출 0; SERP us 1 file.io 2 WeTransfer 3 Dropbox / kr 1 file.kiwi 2 Send Anywhere
+2026-10-26,A,online clipboard file share,google,0,0,,,GSC 10-17~10-23
+2026-10-26,A,clipboard file transfer,google,0,0,,,GSC 10-17~10-23
+2026-10-26,A,online clipboard file transfer,google,0,0,,,GSC 10-17~10-23
+2026-10-26,B,online clipboard,google,592,4,10.0,,/en/guide/online-clipboard-copy-paste-between-devices.html (GSC 10-17~10-23)
+2026-10-26,C,같은 와이파이 파일 공유,google,0,0,,,GSC 10-17~10-23; SERP gl=kr 1~9위 밖
+2026-10-26,C,폰 pc 파일 공유,google,0,0,,,GSC 10-17~10-23; SERP gl=kr 1~9위 밖
+2026-10-26,C,폰 컴퓨터 파일 옮기기 앱 없이,google,0,0,,,GSC 10-17~10-23; SERP gl=kr 1~9위 밖
+2026-10-26,C,같은 와이파이 파일 공유,naver,,,,,서치어드바이저 7일 키워드 표 1쪽에 없음
+2026-10-26,D,share files on same wifi,google,0,0,,,GSC 10-17~10-23
+2026-10-26,D,file share phone to pc without app,google,0,0,,,GSC 10-17~10-23

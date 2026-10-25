@@ -24,3 +24,4 @@ Trigger: owner 지시 — 2026-10-18 Microsoft Store 게시(9N2BTKVCPCC5)를 그
 - 2026-10-19 배포(허용 경로 부분): faq.html "앱처럼 홈 화면에 설치" 답변, llms.txt Pages, 윈도우 관련 가이드 6곳(pc-to-pc, mac-to-windows, windows-to-iphone, iphone-to-windows-photo, galaxy-photo-to-pc, en transfer-photos-iphone-to-windows)의 "알아두면 좋은 것"에 스토어 링크 1줄. 사무실 PC 가이드는 회사 PC가 스토어 설치를 막는 경우가 많아 뺐다.
 - 기준선(10-19): 파트너 센터 취득·페이지 조회 0(데이터 아직 없음), GA4 7일 pwa_install_click 3, pwa_installed 2, pwa_launch_standalone 2(1명). 7일 판독 10-26, 28일 11-16.
 - 앱 화면(헤더) 스토어 링크는 frontend/src 변경이라 pr/* + owner 승인 필요. 7일 판독에서 페이지 보기가 생기는지 보고 제안 여부 결정.
+- 7일 판독(2026-10-26): 파트너 센터 지난 1개월 취득 1(10-18, 베트남), 10-19~10-25 취득 0·페이지 보기 1, 평점·리뷰 없음. GA4 10-19~10-25 pwa_install_click 23(17명)·pwa_install_result 15·pwa_installed 11(8명)·pwa_launch_standalone 21(10명) (기준 3/2/2). 설치 지표는 늘었지만 스토어 페이지 보기는 거의 없어 가이드의 스토어 링크가 스토어 유입을 만들지는 못했다. 늘어난 설치는 브라우저 설치로 본다(스토어 설치는 0). 앱 헤더 스토어 링크 PR은 지금 제안하지 않고 28일(11-16)에 다시 본다.
