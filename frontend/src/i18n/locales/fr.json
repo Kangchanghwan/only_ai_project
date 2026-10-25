@@ -365,5 +365,19 @@
     "deselectAllHint": "Désélectionner tous les fichiers",
     "downloadHint": "Télécharger les fichiers sélectionnés les uns après les autres",
     "qrCodeHint": "Générer des codes QR pour les fichiers sélectionnés"
+  },
+  "arrival": {
+    "notifyPrompt": "Être averti quand quelque chose arrive alors que l'onglet est en arrière-plan ?",
+    "notifyEnable": "Activer",
+    "notifyDismiss": "Non merci",
+    "notifyFile": "{name} a envoyé {count} fichier(s)",
+    "notifyText": "{name} a envoyé du texte",
+    "someDevice": "Autre appareil"
+  },
+  "dropOverlay": {
+    "title": "Déposez ici pour envoyer tout de suite",
+    "toIp": "Envoyé à votre réseau",
+    "toGlobal": "Envoyé à tout le monde (public)",
+    "toPair": "Envoyé à votre contact 1:1"
   }
 }

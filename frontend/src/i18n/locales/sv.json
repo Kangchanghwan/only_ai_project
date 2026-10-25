@@ -365,5 +365,19 @@
     "deselectAllHint": "Avmarkera alla filer",
     "downloadHint": "Ladda ner markerade filer en i taget",
     "qrCodeHint": "Skapa QR-koder för markerade filer"
+  },
+  "arrival": {
+    "notifyPrompt": "Vill du få en avisering när något kommer medan fliken ligger i bakgrunden?",
+    "notifyEnable": "Slå på",
+    "notifyDismiss": "Nej tack",
+    "notifyFile": "{name} skickade {count} fil(er)",
+    "notifyText": "{name} skickade text",
+    "someDevice": "Annan enhet"
+  },
+  "dropOverlay": {
+    "title": "Släpp här för att ladda upp direkt",
+    "toIp": "Skickas till ditt nätverk",
+    "toGlobal": "Skickas till alla (offentligt)",
+    "toPair": "Skickas till din 1:1-motpart"
   }
 }

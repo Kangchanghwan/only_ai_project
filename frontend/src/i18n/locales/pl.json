@@ -365,5 +365,19 @@
     "deselectAllHint": "Odznacz wszystkie pliki",
     "downloadHint": "Pobierz zaznaczone pliki po kolei",
     "qrCodeHint": "Utwórz kody QR dla zaznaczonych plików"
+  },
+  "arrival": {
+    "notifyPrompt": "Powiadamiać, gdy coś dotrze, a karta jest w tle?",
+    "notifyEnable": "Włącz",
+    "notifyDismiss": "Nie, dziękuję",
+    "notifyFile": "{name} wysłał(a) plików: {count}",
+    "notifyText": "{name} wysłał(a) tekst",
+    "someDevice": "Inne urządzenie"
+  },
+  "dropOverlay": {
+    "title": "Upuść tutaj, aby od razu wysłać",
+    "toIp": "Wysyłane do Twojej sieci",
+    "toGlobal": "Wysyłane do wszystkich (publicznie)",
+    "toPair": "Wysyłane do rozmówcy 1:1"
   }
 }

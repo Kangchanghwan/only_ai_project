@@ -23,6 +23,9 @@ import { isEditableTarget } from './utils/editable'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
+import { useArrivalBadge } from './composables/useArrivalBadge'
+import ArrivalNotifyPrompt from './components/ArrivalNotifyPrompt.vue'
+import WindowDropOverlay from './components/WindowDropOverlay.vue'
 import { parseSendLink, consumePendingSendLink } from './utils/sendLink'
 import { formatSizeMB } from './utils/fileUtils'
 import { socketService } from './services/socketService'
@@ -316,6 +319,10 @@ async function connectToRoom() {
   }
 }
 
+// 탭이 뒤에 있을 때 도착 표시 (제목 숫자·파비콘 점·선택 알림)
+const isMobile = /iPhone|iPad|iPod|Android|Mobi/i.test(typeof navigator !== 'undefined' ? navigator.userAgent || '' : '')
+const arrival = useArrivalBadge({ getMySocketId: () => socket.mySocketId?.value, isMobile })
+
 /** 받은 텍스트를 목록에 넣는다. 1:1 방은 암호문(enc)만 오며 평문 content는 쓰지 않는다 */
 async function receiveText(message) {
   if (textShare.sharedTexts.value.some((x) => x.id === message.textId)) return
@@ -338,6 +345,7 @@ async function receiveText(message) {
     ...(message.sender ? { sender: message.sender } : {})
   })
   notification.showInfo(t('text.newText'))
+  arrival.onArrival({ kind: 'text', count: 1, sender: message.sender })
 }
 
 /**
@@ -358,6 +366,7 @@ function setupSocketListeners() {
       const action = applyFileMessage(message, fileManager)
       if (action === 'added') {
         notification.showInfo(t('file.uploaded'))
+        if (message.type === 'file-uploaded') arrival.onArrival({ kind: 'file', count: Array.isArray(message.files) ? message.files.length || 1 : 1, sender: message.sender })
       } else if (action === 'reload' && roomManager.roomIds.value.length > 0) {
         notification.showInfo(t('file.uploaded'))
         fileManager.loadFilesFromRooms(roomManager.roomIds.value)
@@ -1091,6 +1100,17 @@ onUnmounted(() => {
         @cancel-upload="cancelUpload"
         @cancel-all="cancelAllUploads"
         @load-more="handleLoadMore"
+      />
+
+      <ArrivalNotifyPrompt :visible="arrival.promptVisible.value" @enable="arrival.enableNotifications" @dismiss="arrival.dismissPrompt" />
+
+      <!-- 창 전체 드롭 -->
+      <WindowDropOverlay
+        :disabled="isMobile"
+        :enabled="roomManager.roomIds.value.length > 0"
+        :blocked="isShareConfirmOpen || publicGuard.isOpen.value || !!pairFlow.confirming.value || !!incomingSession"
+        :scope-kind="isPrivateScope(shareScope.scope.value) ? 'private' : shareScope.scope.value"
+        @drop-files="handleUploadFiles"
       />
 
       <!-- 알림 토스트 -->

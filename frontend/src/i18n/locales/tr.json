@@ -365,5 +365,19 @@
     "deselectAllHint": "Tüm dosyaların seçimini kaldır",
     "downloadHint": "Seçili dosyaları sırayla indir",
     "qrCodeHint": "Seçili dosyalar için QR kod oluştur"
+  },
+  "arrival": {
+    "notifyPrompt": "Sekme arka plandayken bir şey geldiğinde bildirim almak ister misiniz?",
+    "notifyEnable": "Aç",
+    "notifyDismiss": "Hayır, teşekkürler",
+    "notifyFile": "{name} {count} dosya gönderdi",
+    "notifyText": "{name} metin gönderdi",
+    "someDevice": "Başka bir cihaz"
+  },
+  "dropOverlay": {
+    "title": "Hemen yüklemek için buraya bırakın",
+    "toIp": "Ağınıza gönderilir",
+    "toGlobal": "Herkese gönderilir (herkese açık)",
+    "toPair": "1:1 eşinize gönderilir"
   }
 }

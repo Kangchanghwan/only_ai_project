@@ -365,5 +365,19 @@
     "deselectAllHint": "Selectie van alle bestanden opheffen",
     "downloadHint": "Geselecteerde bestanden na elkaar downloaden",
     "qrCodeHint": "QR-codes maken voor geselecteerde bestanden"
+  },
+  "arrival": {
+    "notifyPrompt": "Een melding krijgen als er iets binnenkomt terwijl dit tabblad op de achtergrond staat?",
+    "notifyEnable": "Aanzetten",
+    "notifyDismiss": "Nee, bedankt",
+    "notifyFile": "{name} heeft {count} bestand(en) gestuurd",
+    "notifyText": "{name} heeft tekst gestuurd",
+    "someDevice": "Ander apparaat"
+  },
+  "dropOverlay": {
+    "title": "Laat hier los om meteen te uploaden",
+    "toIp": "Wordt naar je netwerk gestuurd",
+    "toGlobal": "Wordt naar iedereen gestuurd (openbaar)",
+    "toPair": "Wordt naar je 1:1-contact gestuurd"
   }
 }

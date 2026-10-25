@@ -365,5 +365,19 @@
     "deselectAllHint": "Bỏ chọn tất cả tệp",
     "downloadHint": "Tải lần lượt các tệp đã chọn",
     "qrCodeHint": "Tạo mã QR cho các tệp đã chọn"
+  },
+  "arrival": {
+    "notifyPrompt": "Nhận thông báo khi có nội dung đến lúc tab đang chạy nền?",
+    "notifyEnable": "Bật",
+    "notifyDismiss": "Không, cảm ơn",
+    "notifyFile": "{name} đã gửi {count} tệp",
+    "notifyText": "{name} đã gửi văn bản",
+    "someDevice": "Thiết bị khác"
+  },
+  "dropOverlay": {
+    "title": "Thả vào đây để tải lên ngay",
+    "toIp": "Gửi tới mạng của bạn",
+    "toGlobal": "Gửi cho mọi người (công khai)",
+    "toPair": "Gửi cho đối tác 1:1"
   }
 }

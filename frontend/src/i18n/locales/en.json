@@ -591,5 +591,19 @@
     "step2": "Choose \"Add to Home Screen\"",
     "step3": "Tap \"Add\" at the top right",
     "close": "Close"
+  },
+  "arrival": {
+    "notifyPrompt": "Get notified when something arrives while this tab is in the background?",
+    "notifyEnable": "Turn on",
+    "notifyDismiss": "No thanks",
+    "notifyFile": "{name} sent {count} file(s)",
+    "notifyText": "{name} sent text",
+    "someDevice": "Another device"
+  },
+  "dropOverlay": {
+    "title": "Drop here to upload right away",
+    "toIp": "Sent to your network",
+    "toGlobal": "Sent to everyone (public)",
+    "toPair": "Sent to your 1:1 peer"
   }
 }

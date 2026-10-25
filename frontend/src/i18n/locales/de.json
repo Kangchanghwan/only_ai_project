@@ -365,5 +365,19 @@
     "deselectAllHint": "Auswahl aller Dateien aufheben",
     "downloadHint": "Ausgewählte Dateien nacheinander herunterladen",
     "qrCodeHint": "QR-Codes für ausgewählte Dateien erstellen"
+  },
+  "arrival": {
+    "notifyPrompt": "Benachrichtigen, wenn etwas ankommt, während dieser Tab im Hintergrund ist?",
+    "notifyEnable": "Aktivieren",
+    "notifyDismiss": "Nein, danke",
+    "notifyFile": "{name} hat {count} Datei(en) gesendet",
+    "notifyText": "{name} hat Text gesendet",
+    "someDevice": "Anderes Gerät"
+  },
+  "dropOverlay": {
+    "title": "Hier ablegen, um sofort hochzuladen",
+    "toIp": "Wird an dein Netzwerk gesendet",
+    "toGlobal": "Wird an alle gesendet (öffentlich)",
+    "toPair": "Wird an dein 1:1-Gegenüber gesendet"
   }
 }

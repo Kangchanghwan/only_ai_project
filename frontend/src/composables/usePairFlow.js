@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import { setTitleBadge } from './useTitleBadge'
 import { createPairing } from '../services/pairing.js'
 import { identityName, isValidIdentity, sameIdentity } from '../utils/identity.js'
 
@@ -84,10 +85,7 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
   // === 탭 제목 알림 ===
   function syncTitle() {
     if (typeof document === 'undefined') return
-    const want = !!incoming.value && document.hidden
-    const has = document.title.startsWith('(1) ')
-    if (want && !has) document.title = '(1) ' + document.title
-    else if (!want && has) document.title = document.title.slice(4)
+    setTitleBadge('pair', !!incoming.value && document.hidden ? 1 : 0)
   }
 
   function showEnded(s) {
@@ -232,7 +230,7 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
     clearTimeout(highlightTimer)
     if (typeof document !== 'undefined') {
       document.removeEventListener('visibilitychange', onVisibility)
-      if (document.title.startsWith('(1) ')) document.title = document.title.slice(4)
+      setTitleBadge('pair', 0)
     }
   }
 

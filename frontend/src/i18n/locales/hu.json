@@ -365,5 +365,19 @@
     "deselectAllHint": "Összes fájl kijelölésének törlése",
     "downloadHint": "A kijelölt fájlok letöltése egymás után",
     "qrCodeHint": "QR-kódok létrehozása a kijelölt fájlokhoz"
+  },
+  "arrival": {
+    "notifyPrompt": "Értesítést kér, ha valami megérkezik, miközben a lap a háttérben van?",
+    "notifyEnable": "Bekapcsolás",
+    "notifyDismiss": "Nem, köszönöm",
+    "notifyFile": "{name} {count} fájlt küldött",
+    "notifyText": "{name} szöveget küldött",
+    "someDevice": "Másik eszköz"
+  },
+  "dropOverlay": {
+    "title": "Ide ejtve azonnal feltöltődik",
+    "toIp": "A hálózatodnak küldi",
+    "toGlobal": "Mindenkinek küldi (nyilvános)",
+    "toPair": "1:1 partnerednek küldi"
   }
 }
