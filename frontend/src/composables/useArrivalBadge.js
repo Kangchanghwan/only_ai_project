@@ -75,10 +75,10 @@ export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = fa
           const ctx = c.getContext('2d')
           ctx.drawImage(img, 0, 0, 32, 32)
           ctx.beginPath()
-          ctx.arc(24, 8, 7, 0, Math.PI * 2)
-          ctx.fillStyle = '#f97316'
+          ctx.arc(24, 8, 7.5, 0, Math.PI * 2)
+          ctx.fillStyle = '#e11d48' // 주황 아이콘 위에서도 보이도록 빨간 점
           ctx.fill()
-          ctx.lineWidth = 2
+          ctx.lineWidth = 2.5
           ctx.strokeStyle = '#ffffff'
           ctx.stroke()
           const url = c.toDataURL('image/png')

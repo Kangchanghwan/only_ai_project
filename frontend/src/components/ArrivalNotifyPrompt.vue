@@ -16,7 +16,8 @@ const { t } = useI18n()
 <style scoped>
 .arrival-prompt {
   position: fixed;
-  top: calc(0.75rem + env(safe-area-inset-top));
+  /* 헤더 버튼(언어·테마 등)을 가리지 않도록 화면 아래, 토스트(아래 6rem)보다 낮게 둔다 */
+  bottom: calc(1.5rem + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
   z-index: 900;
