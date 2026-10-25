@@ -1297,6 +1297,67 @@ No. Devices on the same Wi-Fi are grouped automatically and there is no pairing 
 
 ---
 
+Source: https://www.clipboardapp.org/en/guide/best-online-clipboards-compared.html
+
+# Best online clipboards in 2026, compared
+
+As of October 2026, choose by file size and how long things stay: for text, any free online clipboard below works; for files, Clipboard Share allows 5GB per file and keeps files for at most about 1 day, while clipboard.im (100MB per file, 7 days), ClipSync (25 MB per file, 24 hours) and cl1p.net (read-once text) suit smaller or shorter jobs. PairDrop suits direct transfer with nothing stored. Every cell below comes from each service's own page, and anything that page does not say is marked "Not stated".
+
+This is a comparison to help you choose. If you already know you want Clipboard Share, the [step-by-step online clipboard guide](https://www.clipboardapp.org/en/guide/online-clipboard-copy-paste-between-devices.html) shows how to use it. Clipboard Share is our own service, so we kept its limits in the table next to the others, including the ones that count against it.
+
+## Comparison table
+
+Service | Sign-up needed | File size limit | How long items are kept | Same Wi-Fi auto-connect | Open source | Password-lock files |
+
+**Clipboard Share** | No | 5GB per file | Files up to about 1 day | Yes | Yes (public repo, ISC per README) | Yes, for the files you choose |
+
+**cl1p.net** | Not stated | Not stated | Destroyed when read; up to a month if kept | Not stated | Not stated | Not stated |
+
+**clipboard.im** | No registration or login | 100MB per file, 300MB total | Files cleaned up after 7 days | Not stated | Not stated | Not stated |
+
+**ClipSync (Free rooms)** | No account | 25 MB per file | 24 hours | Not stated | Not stated | Not stated |
+
+**PairDrop** | Not stated | Not stated | Not kept (direct transfer, no database) | Yes | Yes (public repo) | Not stated |
+
+Checked on October 25, 2026. Sources: [cl1p.net](https://cl1p.net/) and its [API page](https://cl1p.net/sys/api.jsp); [clipboard.im](https://clipboard.im/en); [ClipSync](https://clipsync.live/) and its [limits page](https://clipsync.live/limits); [PairDrop](https://pairdrop.net), its [GitHub page](https://github.com/schlagmichdoch/PairDrop) and [FAQ](https://github.com/schlagmichdoch/PairDrop/blob/master/docs/faq.md); Clipboard Share's [public repository](https://github.com/Kangchanghwan/only_ai_project). Limits change, so check the service before relying on a number. ClipSync also has a paid Pro plan; the row shows Free rooms.
+
+## When each one is the better pick
+- **Clipboard Share:** your phone and PC are on the same Wi-Fi and you want them to connect automatically in the browser, with no sign-up or install, files up to 5GB, and a password on the files that need it. Limits: files are kept for at most about 1 day, and text and device information cannot be locked with a password.
+- **cl1p.net:** you want a short URL you can type on any computer, and an item that is destroyed as soon as it is read. Its page does not state a file size limit, so check it before sending anything large.
+- **clipboard.im:** you want to choose your own address and have files stay up to 7 days. The limit is 100MB per file and 300MB in total, so large files do not fit.
+- **ClipSync:** you want rooms you can open by code, link or QR, and a paid option that keeps items longer. Free rooms hold up to 30 items and 5 files, 25 MB per file, for 24 hours.
+- **PairDrop:** you want a direct device-to-device transfer with no database, and you can accept that the other device has to be open at the same time. It is open source and can be self-hosted.
+
+## What Clipboard Share does
+- Devices on the same Wi-Fi connect automatically in the browser.
+- No sign-up or install.
+- 5GB per file.
+- Files are kept for at most about 1 day.
+- You can lock only the files that need it with a password.
+- A 1:1 room is encrypted automatically.
+
+## Questions
+
+### Which online clipboard should I pick?
+
+Pick by what you send and how long it must last. For short text, any of the clipboards here works. For files over 100MB, check the size limit first: Clipboard Share allows 5GB per file, while clipboard.im and ClipSync list lower limits. For strictly direct device-to-device transfer with nothing stored, PairDrop is the better fit.
+
+### Do online clipboards need sign-up?
+
+As of October 2026, Clipboard Share needs no sign-up or install, clipboard.im states no registration or login is required, and ClipSync states no account is required for Free rooms. cl1p.net and PairDrop do not state this on the pages checked, and cl1p.net offers a separate pro account for extra features.
+
+### How long do online clipboards keep my items?
+
+It differs. Clipboard Share keeps files for at most about 1 day, ClipSync deletes Free room items after 24 hours, clipboard.im cleans files up after 7 days, and cl1p.net destroys an item when it is read unless you choose to keep it for up to a month. PairDrop sends directly between devices and has no database.
+
+### Is an online clipboard safe for passwords or private files?
+
+Treat every shared clipboard as temporary. In Clipboard Share you can lock the files you choose with a password, and a 1:1 room is encrypted automatically, but text and device information are not locked. Do not paste one-time codes or secrets into any shared space you do not control.
+
+[Try it now](https://www.clipboardapp.org/en/)
+
+---
+
 Source: https://www.clipboardapp.org/en/guide/send-text-from-phone-to-pc.html
 
 # Send text from your phone to your PC without email
