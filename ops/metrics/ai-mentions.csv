@@ -3,8 +3,8 @@ date,engine,qid,mentioned,cited_url,rank_in_answer,other_tools,sources,score
 2026-10-26,perplexity,q1,0,0,,USB cable / Bluetooth / Snapdrop / Email or cloud link,samsung.com/us/support/answer/ANS10001478 / mobiletrans.wondershare.com/android-transfer/app-transfer-files-from-pc-to-android-phone.html / pcworld.com/article/2899231/here-are-the-best-ways-to-move-files-from-pc-to-phone-and-vice-versa.html,0
 2026-10-26,perplexity,q2,0,0,,Apple Universal Clipboard / Microsoft Phone Link / Online Clipboard / ClipSync / SyncClip / iClipboard.online,online-clipboard.com/guides/copy-text-from-phone-to-computer / online-clipboard.com / clipsync.live / syncclip.in/clipboard / iclipboard.online,0
 2026-10-26,perplexity,q3,0,0,,Quick Share / LocalSend,,0
-2026-10-26,perplexity,q4,,,,blocked: login wall,,
-2026-10-26,perplexity,q5,,,,blocked: login wall,,
+2026-10-26,perplexity,q4,0,0,,PairDrop / Quick Share LAN Transfer / LocalShare / python http.server,online-tech-tips.com/share-files-and-folders-across-computers / quick-share.app/blog/introducing-web-lan-transfer / local-share.com / dev.to/ankitsahu/effortlessly-share-files-across-devices-on-your-wi-fi-network-with-python-3800,0
+2026-10-26,perplexity,q5,0,0,,PairDrop / LocalSend / ShareDrop / Transfer.zip / Quick Share / AirDrop / KDE Connect,transfer.zip/alternative/snapdrop / usefwd.io/blog/snapdrop-pairdrop-alternatives,0
 2026-10-26,perplexity,q6,0,0,,USB cable / Send Anywhere / Files to Friends / Sharedrop / Gmail or Google Drive / Bluetooth,support.google.com/android/answer/9064445 / it.donga.com/103557 / hp.com/us-en/tech-takes/connectivity/how-to,0
 2026-10-26,perplexity,q7,0,0,,iCloud Photos / Snapdrop-type web transfer / Google Photos,alibaba.com/product-insights/step-by-step-guide-to-transferring-photos / tenorshare.kr/ios-file-transfer,0
 2026-10-26,perplexity,q8,0,0,,LocalSend / Windows Nearby Sharing / SMB shared folder / browser P2P tool / Quick Share,bishare.app/ko/best-file-sharing-app / computerworld.com/article/2076109/the-best-ways-to-share-files-between / 4share.work/blog/wifi-file-transfer / quick-share.app/ko,0
