@@ -24,3 +24,11 @@ export function parseSendLink(hash) {
 export function buildSendLink(origin, text) {
   return `${origin}/${SEND_LINK_PREFIX}t=${encodeURIComponent(text)}`
 }
+
+/** index.html이 옮겨 둔 window.__csSendLink를 한 번만 꺼내 텍스트로 돌려준다 */
+export function consumePendingSendLink(win = globalThis.window) {
+  if (!win) return null
+  const hash = win.__csSendLink
+  win.__csSendLink = undefined
+  return parseSendLink(hash)
+}
