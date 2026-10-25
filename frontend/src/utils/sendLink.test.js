@@ -21,3 +21,13 @@ describe('sendLink', () => {
     expect(parseSendLink(link.slice(link.indexOf('#')))).toBe('줄1\n줄2 #태그 100%')
   })
 })
+
+describe('consumePendingSendLink', () => {
+  it('window.__csSendLink를 한 번만 꺼내고 지운다', async () => {
+    const { consumePendingSendLink } = await import('./sendLink.js')
+    const win = { __csSendLink: '#/send?t=' + encodeURIComponent('두 번째 링크') }
+    expect(consumePendingSendLink(win)).toBe('두 번째 링크')
+    expect(win.__csSendLink).toBeUndefined()
+    expect(consumePendingSendLink(win)).toBeNull()
+  })
+})

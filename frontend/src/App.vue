@@ -5,7 +5,7 @@
  * 전체 공유 룸(room-shared)과 IP 격리 룸에 동시 입장합니다.
  * 업로드 시 공유 대상을 선택할 수 있습니다.
  */
-import { onMounted, onUnmounted, ref, computed, watch } from 'vue'
+import { onMounted, onUnmounted, ref, computed, watch, nextTick } from 'vue'
 import { useRoomManager } from './composables/useRoomManager'
 import { useFileManager } from './composables/useFileManager'
 import { useClipboard } from './composables/useClipboard'
@@ -23,7 +23,7 @@ import { isEditableTarget } from './utils/editable'
 import { parseRoute } from './utils/router'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
-import { parseSendLink } from './utils/sendLink'
+import { parseSendLink, consumePendingSendLink } from './utils/sendLink'
 import { formatSizeMB } from './utils/fileUtils'
 import { socketService } from './services/socketService'
 import { startP2pProbe } from './services/p2pProbe'
@@ -701,6 +701,21 @@ async function handleAddText(content, scopeOverride) {
 const prefillText = ref('')
 let prefillPending = false
 
+/** 입력란을 채운다(전송 안 함). 같은 텍스트가 다시 와도 감시자가 반응하도록 한 번 비웠다가 넣는다 */
+async function applySendLink(text) {
+  if (!text || currentRoute.value.type !== 'home') return
+  prefillText.value = ''
+  await nextTick()
+  prefillText.value = text
+  prefillPending = true
+  trackEvent('send_link_open', { chars: text.length })
+}
+
+/** 이미 열린 탭에서 #/send?t= 로 바뀐 경우 (index.html이 가로채 cs-send-link 이벤트를 보낸다) */
+function onSendLinkEvent() {
+  applySendLink(consumePendingSendLink())
+}
+
 async function handleShareText({ content, done }) {
   let ok = false
   try {
@@ -982,6 +997,8 @@ onMounted(async () => {
   // 프리렌더 중에는 소켓에 연결하지 않아 정적 HTML에 접속 상태·토스트·룸 파일 목록이 구워지지 않게 한다
   if (window.__PRERENDER__) return
 
+  window.addEventListener('cs-send-link', onSendLinkEvent)
+
   // 공유 룸에 연결
   await connectToRoom()
 
@@ -992,11 +1009,9 @@ onMounted(async () => {
   }
 
   // 텍스트 미리 채우기 링크: 입력란만 채운다. 전송은 사용자가 '공유'를 눌러야 한다
-  if (sendText) {
-    prefillText.value = sendText
-    prefillPending = true
-    trackEvent('send_link_open', { chars: sendText.length })
-  }
+  if (sendText) await applySendLink(sendText)
+  // 연결하는 동안 해시가 바뀌어 들어온 링크도 처리
+  onSendLinkEvent()
 
   // URL을 깨끗하게 정리
   window.history.replaceState(null, '', window.location.pathname)
@@ -1008,6 +1023,7 @@ onUnmounted(() => {
   if (cleanupUserLeft) cleanupUserLeft()
   if (cleanupOnMessage) cleanupOnMessage()
   document.removeEventListener('paste', handlePaste)
+  window.removeEventListener('cs-send-link', onSendLinkEvent)
   pairFlow.destroy()
   socket.destroy()
 })
