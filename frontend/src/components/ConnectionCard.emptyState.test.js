@@ -42,7 +42,7 @@ describe('ConnectionCard 빈 방 안내', () => {
 
   it('ko에서만 핑.한국 줄, en에서는 없다', async () => {
     const w = mountCard(alone())
-    expect(w.find('[data-testid="empty-state-ping"]').text()).toContain('핑.한국/보드')
+    expect(w.find('[data-testid="empty-state-ping"]').text()).toContain('핑.한국')
     i18n.global.locale.value = 'en'
     await flushPromises()
     expect(w.find('[data-testid="empty-state-ping"]').exists()).toBe(false)
@@ -57,7 +57,7 @@ describe('ConnectionCard 빈 방 안내', () => {
     expect(w.find('[data-testid="empty-state-qr"]').exists()).toBe(false)
     expect(qr).not.toHaveBeenCalled()
     expect(w.find('[data-testid="empty-state-mobile"]').text()).toContain('clipboardapp.org')
-    expect(w.find('[data-testid="empty-state-mobile"]').text()).toContain('핑.한국/보드')
+    expect(w.find('[data-testid="empty-state-mobile"]').text()).toContain('핑.한국')
   })
 
   it('1:1(prv)·전체 공유에서는 표시하지 않는다', () => {
@@ -71,7 +71,7 @@ describe('ConnectionCard 빈 방 안내', () => {
     const w = mountCard(alone())
     await w.find('[data-testid="empty-state-copy-ping"]').trigger('click')
     await flushPromises()
-    expect(writeText).toHaveBeenCalledWith('핑.한국/보드')
+    expect(writeText).toHaveBeenCalledWith('핑.한국')
     expect(w.emitted('hint-copied')).toHaveLength(1)
     expect(track).toHaveBeenCalledWith('empty_hint_copy', { target: 'ping', is_mobile: false })
   })

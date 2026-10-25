@@ -18,7 +18,7 @@ import { trackEvent } from '../utils/analytics'
 import { isMobileUa } from '../services/p2pProbe'
 
 import { EMPTY_STATE_QR_URL } from '../utils/emptyState'
-const PING_ADDRESS = '핑.한국/보드'
+const PING_ADDRESS = '핑.한국'
 const SITE_ADDRESS = 'clipboardapp.org'
 const VIEW_FLAG = 'cs_empty_state_view'
 const JOINED_FLAG = 'cs_peer_joined'
