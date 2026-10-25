@@ -1070,6 +1070,7 @@ onUnmounted(() => {
         @pair-confirm="pairFlow.confirmInvite"
         @leave-private="handlePrivateLeave"
         @reroll-identity="handleRerollIdentity"
+        @hint-copied="notification.showSuccess(t('file.copied'))"
         :has-more="fileManager.hasMoreForRoom(activeRoomId)"
         @copy-image="handleCopyImage"
         @upload-files="handleUploadFiles"

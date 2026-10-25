@@ -92,6 +92,7 @@ const props = defineProps({
 
 const emit = defineEmits([
   'copy-image',
+  'hint-copied',
   'upload-files',
   'download-file',
   'download-parallel',
@@ -219,6 +220,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
             :other-network-devices="otherNetworkDevices"
             :wide="isWide"
             @reroll="$emit('reroll-identity')"
+            @hint-copied="$emit('hint-copied', $event)"
           />
         </div>
 

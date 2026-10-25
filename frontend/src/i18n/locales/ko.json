@@ -21,7 +21,12 @@
     "joinOtherRoom": "다른 룸 입장",
     "enterCode": "룸 코드 입력",
     "otherDevices": "다른 기기 {count}대",
-    "waiting": "연결 대기"
+    "waiting": "연결 대기",
+    "emptyState": {
+      "qrLine": "폰 카메라로 찍으면 바로 연결돼요",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "PC에서 {site} 또는 {ping}를 여세요"
+    }
   },
   "identity": {
     "adj": [

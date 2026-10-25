@@ -21,7 +21,12 @@
     "joinOtherRoom": "Vào phòng khác",
     "enterCode": "Nhập mã phòng",
     "otherDevices": "Thiết bị khác: {count}",
-    "waiting": "Đang chờ thiết bị"
+    "waiting": "Đang chờ thiết bị",
+    "emptyState": {
+      "qrLine": "Quét bằng camera điện thoại để kết nối ngay",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Mở {site} trên máy tính của bạn"
+    }
   },
   "identity": {
     "adj": [

@@ -21,7 +21,12 @@
     "joinOtherRoom": "Gabung ke ruang lain",
     "enterCode": "Masukkan kode ruang",
     "otherDevices": "Perangkat lain: {count}",
-    "waiting": "Menunggu perangkat"
+    "waiting": "Menunggu perangkat",
+    "emptyState": {
+      "qrLine": "Pindai dengan kamera ponsel untuk langsung terhubung",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Buka {site} di PC kamu"
+    }
   },
   "identity": {
     "adj": [

@@ -21,7 +21,12 @@
     "joinOtherRoom": "別のルームに参加",
     "enterCode": "ルームコードを入力",
     "otherDevices": "他の端末 {count} 台",
-    "waiting": "接続待ち"
+    "waiting": "接続待ち",
+    "emptyState": {
+      "qrLine": "スマホのカメラで読み取るとすぐつながります",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "PCで{site}を開いてください"
+    }
   },
   "identity": {
     "adj": [

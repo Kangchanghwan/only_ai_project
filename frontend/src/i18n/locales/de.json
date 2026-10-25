@@ -21,7 +21,12 @@
     "joinOtherRoom": "Anderem Raum beitreten",
     "enterCode": "Raumcode eingeben",
     "otherDevices": "Andere Geräte: {count}",
-    "waiting": "Warte auf Geräte"
+    "waiting": "Warte auf Geräte",
+    "emptyState": {
+      "qrLine": "Mit der Handykamera scannen und sofort verbinden",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Öffne {site} auf deinem PC"
+    }
   },
   "identity": {
     "adj": [

@@ -21,7 +21,12 @@
     "joinOtherRoom": "Intră în altă cameră",
     "enterCode": "Introdu codul camerei",
     "otherDevices": "Alte dispozitive: {count}",
-    "waiting": "Se așteaptă dispozitive"
+    "waiting": "Se așteaptă dispozitive",
+    "emptyState": {
+      "qrLine": "Scanează cu camera telefonului pentru a te conecta imediat",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Deschide {site} pe PC"
+    }
   },
   "identity": {
     "adj": [

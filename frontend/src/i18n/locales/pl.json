@@ -21,7 +21,12 @@
     "joinOtherRoom": "Dołącz do innego pokoju",
     "enterCode": "Wpisz kod pokoju",
     "otherDevices": "Inne urządzenia: {count}",
-    "waiting": "Oczekiwanie na urządzenia"
+    "waiting": "Oczekiwanie na urządzenia",
+    "emptyState": {
+      "qrLine": "Zeskanuj aparatem w telefonie, aby od razu się połączyć",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "Otwórz {site} na komputerze"
+    }
   },
   "identity": {
     "adj": [

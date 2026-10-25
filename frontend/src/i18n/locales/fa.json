@@ -21,7 +21,12 @@
     "joinOtherRoom": "ورود به اتاق دیگر",
     "enterCode": "کد اتاق را وارد کنید",
     "otherDevices": "دستگاه‌های دیگر: {count}",
-    "waiting": "در انتظار دستگاه"
+    "waiting": "در انتظار دستگاه",
+    "emptyState": {
+      "qrLine": "با دوربین گوشی اسکن کنید تا فوراً وصل شوید",
+      "pingLine": "또는 폰 주소창에 {ping}",
+      "mobile": "در رایانه خود {site} را باز کنید"
+    }
   },
   "identity": {
     "adj": [
