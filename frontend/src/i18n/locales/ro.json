@@ -365,5 +365,19 @@
     "deselectAllHint": "Deselectează toate fișierele",
     "downloadHint": "Descarcă pe rând fișierele selectate",
     "qrCodeHint": "Generează coduri QR pentru fișierele selectate"
+  },
+  "arrival": {
+    "notifyPrompt": "Vrei să fii notificat când sosește ceva cât timp fila este în fundal?",
+    "notifyEnable": "Activează",
+    "notifyDismiss": "Nu, mulțumesc",
+    "notifyFile": "{name} a trimis {count} fișier(e)",
+    "notifyText": "{name} a trimis text",
+    "someDevice": "Alt dispozitiv"
+  },
+  "dropOverlay": {
+    "title": "Lasă aici pentru încărcare imediată",
+    "toIp": "Trimis în rețeaua ta",
+    "toGlobal": "Trimis tuturor (public)",
+    "toPair": "Trimis partenerului 1:1"
   }
 }

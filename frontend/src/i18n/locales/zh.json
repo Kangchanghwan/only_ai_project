@@ -365,5 +365,19 @@
     "deselectAllHint": "取消选择所有文件",
     "downloadHint": "按顺序依次下载所选文件",
     "qrCodeHint": "为所选文件生成二维码"
+  },
+  "arrival": {
+    "notifyPrompt": "标签页在后台时，有内容到达要通知您吗？",
+    "notifyEnable": "开启",
+    "notifyDismiss": "不用了",
+    "notifyFile": "{name}发送了{count}个文件",
+    "notifyText": "{name}发送了文本",
+    "someDevice": "另一台设备"
+  },
+  "dropOverlay": {
+    "title": "拖到这里即可立即上传",
+    "toIp": "发送到你的网络",
+    "toGlobal": "发送给所有人（公开）",
+    "toPair": "发送给你的 1:1 对象"
   }
 }

@@ -365,5 +365,19 @@
     "deselectAllHint": "إلغاء تحديد جميع الملفات",
     "downloadHint": "تنزيل الملفات المحددة واحدًا تلو الآخر",
     "qrCodeHint": "إنشاء رموز QR للملفات المحددة"
+  },
+  "arrival": {
+    "notifyPrompt": "هل تريد إشعارًا عند وصول شيء والتبويب في الخلفية؟",
+    "notifyEnable": "تفعيل",
+    "notifyDismiss": "لا، شكرًا",
+    "notifyFile": "أرسل {name} {count} ملف(ات)",
+    "notifyText": "أرسل {name} نصًا",
+    "someDevice": "جهاز آخر"
+  },
+  "dropOverlay": {
+    "title": "أفلت هنا للرفع فورًا",
+    "toIp": "يُرسل إلى شبكتك",
+    "toGlobal": "يُرسل للجميع (عام)",
+    "toPair": "يُرسل إلى طرفك في 1:1"
   }
 }

@@ -365,5 +365,19 @@
     "deselectAllHint": "Zrušit výběr všech souborů",
     "downloadHint": "Stáhnout vybrané soubory postupně",
     "qrCodeHint": "Vytvořit QR kódy pro vybrané soubory"
+  },
+  "arrival": {
+    "notifyPrompt": "Chcete dostávat upozornění, když něco dorazí a karta je na pozadí?",
+    "notifyEnable": "Zapnout",
+    "notifyDismiss": "Ne, děkuji",
+    "notifyFile": "{name} poslal(a) soubory: {count}",
+    "notifyText": "{name} poslal(a) text",
+    "someDevice": "Jiné zařízení"
+  },
+  "dropOverlay": {
+    "title": "Pusťte sem a nahraje se to hned",
+    "toIp": "Odešle se do vaší sítě",
+    "toGlobal": "Odešle se všem (veřejně)",
+    "toPair": "Odešle se protějšku 1:1"
   }
 }
