@@ -37,6 +37,14 @@ export interface ErrorResponse {
 /** 메시지 발행 응답 */
 export interface PublishResponse {
     success: boolean;
+    /** 실패 이유 (RATE_LIMITED: 소켓당 속도 제한) */
+    code?: 'RATE_LIMITED';
+    /** text-shared가 대기열에 보관됐으면 만료 시각(epoch ms) */
+    expiresAt?: number;
+    /** 보관하면서 몫을 넘어 밀려난 보낸 쪽 자신의 textId들 */
+    evicted?: string[];
+    /** 중계는 했지만 보관하지 않은 이유 (TOO_LARGE: 96KiB 초과, FULL: 서버 보관함 가득) */
+    notStored?: 'TOO_LARGE' | 'FULL';
 }
 
 // === Socket.IO 이벤트 타입 정의 ===

@@ -84,12 +84,16 @@ Components (UI) → Composables (Logic) → Services (API)
 - `GET /api/r2/size/:roomId` — Room total size in bytes
 - `DELETE /api/r2/files/:roomId` — Delete all room files
 - `DELETE /api/r2/files/:roomId/:fileName` — Delete single file
+- `GET /api/texts/:roomId` — Queued texts (10-minute text queue; plain texts as-is, locked texts carry only `lock.salt`, no ciphertext)
+- `POST /api/texts/unlock` — Ciphertext of locked queued texts (body: roomId, textIds, verifier; shares the locked-file attempt limiter)
+- `POST /api/texts/delete` — Delete queued texts (body: roomId, textIds | all, deleteKeys?, proofs?[{salt, verifier}]; 1:1 rooms and plain texts need membership only)
 
 ### Storage
 - **Primary**: CloudFlare R2 via AWS S3 SDK. Files stored as `{roomId}/{fileName}`.
 - Files <1MB upload directly through server; >1MB use presigned URLs for direct R2 upload.
 - File size limits via env vars: `VITE_MAX_FILE_SIZE_MB` (default 5120MB), `VITE_MAX_ROOM_SIZE_MB` (default 10240MB).
 - Files auto-deleted when room empties (grace period configurable via `ROOM_GRACE_PERIOD_SEC`).
+- **Text queue** (`backend/src/utils/textQueue.ts`, frontend `useTextQueue`): every `text-shared` is kept 10 minutes per room so devices that join/reload later receive it. 1:1 rooms: room-key ciphertext (`enc`) only. ip/global: lock off → plain `content` (relayed/listed as-is to room-token holders), lock on → ciphertext (`locked: true`, `lock: {salt, vh, dh}`; list/relay carry only `lock.salt`). Mixed plain+cipher messages are not kept. Limits: 96KiB (plaintext UTF-8) per text (over → relayed but not kept, ack `notStored: 'TOO_LARGE'`), 20 per room, per-sender quota 5 (socket in ip/1:1 rooms, network/IP-room-hash in global; 1:1 rooms 10) — over quota evicts the sender's own oldest, a full room evicts from the largest sender. `publish` is rate-limited per socket (text-shared: burst 10, 1 per 3s; others: burst 300, 50/s) → ack `{success:false, code:'RATE_LIMITED'}`. Text content is never logged. In-memory, written through to the private locked bucket under `_texts/<roomId>/<textId>.json` and rehydrated on start (memory-only when `R2_LOCKED_BUCKET_NAME` is unset). Expiry is enforced on read and by a 60s sweep.
 
 ### Internationalization
 21 languages in `frontend/src/i18n/locales/`. Browser language auto-detected, persisted to localStorage. Fallback language: Korean (`ko`). When adding UI text, add keys to all locale files.

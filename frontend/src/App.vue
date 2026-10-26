@@ -13,6 +13,7 @@ import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
+import { useTextQueue, textBytes, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA } from './composables/useTextQueue'
 import { useShareScope, isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from './composables/useShareScope'
 import { usePrivateRooms } from './composables/usePrivateRooms'
 import { usePairFlow } from './composables/usePairFlow'
@@ -64,6 +65,8 @@ const lockState = useLockState()
 useSeoMeta()
 const isConnecting = ref(false)
 const privateRooms = usePrivateRooms()
+// 텍스트 10분 보관: 1:1 방은 방 키 암호문, 같은 네트워크·전체 공유는 잠금 꺼짐이면 평문, 켜짐이면 암호문
+const textQueue = useTextQueue({ textShare, privateRooms, lockState, t, getMySocketId: () => socket.mySocketId?.value ?? null })
 
 // 같은 네트워크(ipRoom)에 새 기기가 들어오면 토스트로 알린다.
 // 내 접속 직후의 초기 목록, 이미 본 기기의 재접속(연결 복구), 내 기기, 전체 공유 방은 알리지 않는다.
@@ -205,6 +208,7 @@ async function doRejoinPrivateRooms() {
   if (expired > 0) notification.showInfo(t('pair.expired'))
   if (joined.length > 0) {
     trackEvent('pair_rejoin', { count: joined.length })
+    textQueue.loadRooms(joined)
     await fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
   }
 }
@@ -239,9 +243,45 @@ const activeRoomId = computed(() => roomManager.roomIdForScope(shareScope.scope.
 const visibleFiles = computed(() =>
   fileManager.files.value.filter(f => f.roomId === activeRoomId.value)
 )
-const visibleTexts = computed(() =>
-  textShare.sharedTexts.value.filter(t => t.roomId === activeRoomId.value)
-)
+// 보관 남은 시간 표시·만료 정리용 시계 (15초마다)
+const nowTick = ref(Date.now())
+let nowTimer = null
+const visibleTexts = computed(() => {
+  void lockState.version.value // 비밀번호를 확인하면 보관 취소 가능 여부가 바뀐다
+  void nowTick.value // 15초마다 다시 계산 (텍스트가 바뀔 때도 다시 계산되므로 시각은 지금 값을 쓴다)
+  const now = Date.now()
+  return textShare.sharedTexts.value
+    .filter(t => t.roomId === activeRoomId.value)
+    .map((t) => {
+      const queued = textQueue.isQueued(t, now)
+      return { ...t, expiresAt: queued ? t.expiresAt : undefined, remainingMs: queued ? t.expiresAt - now : 0, canCancel: textQueue.canCancel(t, now) }
+    })
+})
+
+/** 현재 범위에서 텍스트를 받을 수 있는 다른 기기 수 (나 제외) */
+const textReceiverCount = computed(() => {
+  const me = socket.mySocketId?.value
+  const scope = shareScope.scope.value
+  const prvId = privateRoomIdOfScope(scope)
+  const devices = prvId
+    ? socket.privateRoomDevices?.value?.[prvId] || []
+    : scope === 'global' ? socket.globalRoomDevices.value : socket.ipRoomDevices.value
+  return (devices || []).filter((d) => d.socketId !== me).length
+})
+
+/**
+ * 지금 범위로 보내는 텍스트를 어떻게 보관하는지:
+ * 'private' 1:1 방 키 암호문 | 'locked' 범위 잠금 암호문 | 'plain' 평문 | 'none' 보관 안 함(구버전 백엔드)
+ */
+const textStorageMode = computed(() => {
+  if (textQueue.supported.value === false) return 'none'
+  const scope = shareScope.scope.value
+  if (isPrivateScope(scope)) return 'private'
+  return lockState.isLocked(scope) ? 'locked' : 'plain'
+})
+
+// 비밀번호를 확인하면(잠긴 파일을 풀었거나 잠금을 켬) 같은 묶음의 잠긴 텍스트도 푼다
+watch(() => lockState.version.value, () => textQueue.unlockKnown())
 
 // 이벤트 리스너 cleanup 함수들을 저장
 let cleanupUserLeft = null
@@ -269,6 +309,8 @@ socket.onReconnected(() => {
   fileManager.clearFiles()
   textShare.clearAllTexts()
   fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
+  // 보관 중인 텍스트(10분)를 다시 받는다. 같은 textId는 한 번만 보인다
+  textQueue.loadRooms(allRoomIds.value)
   // 1:1 방은 서버가 소켓별로 입장을 기억하므로 입장권으로 다시 들어간다 (끝나면 파일 목록도 다시 불러온다)
   rejoinPrivateRooms()
 
@@ -301,6 +343,8 @@ async function connectToRoom() {
     roomManager.setRooms({ globalRoomId, ipRoomId })
     // 파일 로딩을 백그라운드에서 실행 (룸별 최신 FILE_PAGE_SIZE개, 나머지는 "더 보기")
     fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
+    // 내가 없는 동안 보관된 텍스트(10분)를 받는다 (1:1 방은 다시 입장한 뒤 불러온다)
+    textQueue.loadRooms(roomManager.roomIds.value)
     notification.showSuccess(t('notification.connected'))
     // 저장된 1:1 방에 입장권으로 다시 들어간다 (백그라운드)
     rejoinPrivateRooms()
@@ -323,27 +367,13 @@ async function connectToRoom() {
 const isMobile = /iPhone|iPad|iPod|Android|Mobi/i.test(typeof navigator !== 'undefined' ? navigator.userAgent || '' : '')
 const arrival = useArrivalBadge({ getMySocketId: () => socket.mySocketId?.value, isMobile })
 
-/** 받은 텍스트를 목록에 넣는다. 1:1 방은 암호문(enc)만 오며 평문 content는 쓰지 않는다 */
+/**
+ * 받은 텍스트를 목록에 넣는다. 1:1 방은 암호문(enc)만 오며 평문 content는 쓰지 않는다.
+ * 잠긴 텍스트는 이 범위 비밀번호를 확인한 기기에서만 풀린다. 같은 textId(내가 보낸 것의 되돌아옴 포함)는 한 번만.
+ */
 async function receiveText(message) {
-  if (textShare.sharedTexts.value.some((x) => x.id === message.textId)) return
-  let content = message.content
-  if (privateRooms.has(message.roomId)) {
-    try {
-      content = await privateRooms.decryptFor(message.roomId, message.enc)
-    } catch {
-      content = t('pair.unreadableText')
-    }
-    // 복호화 사이에 같은 항목이 들어왔는지 다시 확인
-    if (textShare.sharedTexts.value.some((x) => x.id === message.textId)) return
-  }
-  textShare.sharedTexts.value.push({
-    id: message.textId,
-    content,
-    timestamp: message.timestamp,
-    roomId: message.roomId,
-    // 서버가 붙인 보낸 사람 (구버전 백엔드는 없음 → 표시 생략)
-    ...(message.sender ? { sender: message.sender } : {})
-  })
+  const added = await textQueue.ingest(message)
+  if (!added) return
   notification.showInfo(t('text.newText'))
   arrival.onArrival({ kind: 'text', count: 1, sender: message.sender })
 }
@@ -667,39 +697,78 @@ async function handleAddText(content, scopeOverride) {
   if (!targetRoomId) return false
 
   // 1:1 방: 방 키로 암호화한 enc만 보낸다 (평문 content 없음)
+  // 같은 네트워크·전체 공유: 그 범위 잠금이 켜져 있으면 잠금 키로 암호화해 보낸다 (서버가 10분 보관)
   const isPrv = isPrivateScope(targetScope)
+  const scopeLock = isPrv ? null : lockState.getLock(targetScope)
   let enc = null
-  if (isPrv) {
-    try {
-      enc = await privateRooms.encryptFor(targetRoomId, content.trim())
-    } catch (error) {
-      console.warn('[App] 텍스트 암호화 실패:', error)
-      notification.showError(t('pair.errors.noRoom'))
-      return false
-    }
+  let sealed = null
+  try {
+    if (isPrv) enc = await privateRooms.encryptFor(targetRoomId, content.trim())
+    else if (scopeLock) sealed = await textQueue.sealForScope(scopeLock, targetRoomId, content.trim())
+  } catch (error) {
+    console.warn('[App] 텍스트 암호화 실패:', error)
+    notification.showError(isPrv ? t('pair.errors.noRoom') : t('lock.errors.setFailed'))
+    return false
   }
 
   const newText = textShare.addText(content, targetRoomId)
   if (!newText) return false
+  if (sealed) {
+    newText.locked = true
+    newText.salt = sealed.lock.salt
+    // 보관 취소용 삭제 키 (이 기기 메모리에만)
+    lockState.rememberDeleteKey(targetRoomId, newText.id, sealed.deleteKey)
+  }
 
   // 내가 보낸 텍스트에는 내 이름표를 붙인다 ("나"로 표시)
   const self = socket.getSelfSender()
   if (self) newText.sender = self
 
+  const base = { type: 'text-shared', textId: newText.id, timestamp: newText.timestamp, roomId: targetRoomId }
+  const message = isPrv
+    ? { ...base, enc }
+    : sealed
+      ? { ...base, locked: true, lock: sealed.lock, enc: sealed.enc }
+      : { ...base, content: newText.content }
+  const target = publishTargetForScope(targetScope)
+  let res = { success: true }
   try {
-    socket.publishMessage(isPrv
-      ? { type: 'text-shared', textId: newText.id, enc, timestamp: newText.timestamp, roomId: targetRoomId }
-      : { type: 'text-shared', textId: newText.id, content: newText.content, timestamp: newText.timestamp, roomId: targetRoomId },
-    publishTargetForScope(targetScope))
+    if (typeof socket.publishWithAck === 'function') res = await socket.publishWithAck(message, target)
+    else socket.publishMessage(message, target)
   } catch (error) {
     console.warn('[App] 텍스트 전송 실패:', error)
     textShare.removeText(newText.id)
     notification.showError(t('notification.connectFailed'))
     return false
   }
+  if (res?.success === false) {
+    // 속도 제한 등으로 서버가 받지 않았다: 아무에게도 가지 않았으므로 입력을 남긴다
+    textShare.removeText(newText.id)
+    notification.showError(res.code === 'RATE_LIMITED' ? t('text.rateLimited') : t('notification.connectFailed'))
+    return false
+  }
 
   if (isPrv) trackEvent('private_text')
-  else trackEvent('text_share', { scope: targetScope })
+  else trackEvent('text_share', { scope: targetScope, locked: !!sealed })
+
+  // 보관 결과: 크기 초과·서버 보관함 가득이면 지금 열린 기기에만 갔다고 알린다 (구버전 백엔드는 이유가 없어 크기로 판단)
+  const tooLarge = res?.notStored === 'TOO_LARGE' ||
+    (!res?.expiresAt && textQueue.supported.value !== false && textBytes(newText.content) > TEXT_QUEUE_MAX_BYTES)
+  if (tooLarge || res?.notStored === 'FULL') {
+    textQueue.markNotStored(newText.id, tooLarge ? 'TOO_LARGE' : 'FULL')
+    notification.showInfo(tooLarge ? t('text.tooLargeToast') : t('text.notKeptFull'))
+    return true
+  }
+  if (res?.expiresAt) {
+    const entry = textShare.sharedTexts.value.find((x) => x.id === newText.id)
+    if (entry && !entry.expiresAt) entry.expiresAt = res.expiresAt
+  }
+  if (res?.evicted?.length) {
+    // 보낸 쪽 몫을 넘어 내 가장 오래된 보관분이 밀려났다
+    textQueue.markEvicted(res.evicted)
+    notification.showInfo(t('text.quotaEvicted', { count: isPrv ? TEXT_QUEUE_SENDER_QUOTA * 2 : TEXT_QUEUE_SENDER_QUOTA }))
+    return true
+  }
 
   notification.showSuccess(t('text.shared'))
   return true
@@ -741,8 +810,12 @@ async function handleShareText({ content, done }) {
 async function handleRemoveText(textId) {
   if (roomManager.roomIds.value.length === 0) return
 
+  const target = textShare.sharedTexts.value.find((x) => x.id === textId)
+  if (!target) return
+  // 보관 중이면 서버 대기열에서도 지운다. 지울 증명이 없으면(남이 잠근 텍스트) 이 기기 목록에서만 뺀다
+  const res = await textQueue.removeFromServer(target.roomId, { textIds: [textId] })
   const removed = textShare.removeText(textId)
-  if (!removed) return
+  if (!removed || res?.forbidden?.includes(textId)) return
 
   const targetScope = publishTargetForRoom(removed.roomId)
 
@@ -753,6 +826,47 @@ async function handleRemoveText(textId) {
   }, targetScope)
 }
 
+/** 보관 취소: 서버에서 지우고 다른 기기 목록에서도 사라지게 한다 */
+async function handleCancelQueuedText(textId) {
+  const target = textShare.sharedTexts.value.find((x) => x.id === textId)
+  if (!target) return
+  const res = await textQueue.removeFromServer(target.roomId, { textIds: [textId] })
+  if (!res?.deleted?.includes(textId)) {
+    notification.showError(t('text.cancelFailed'))
+    return
+  }
+  textShare.removeText(textId)
+  try {
+    socket.publishMessage({ type: 'text-removed', textId, roomId: target.roomId }, publishTargetForRoom(target.roomId))
+  } catch (error) {
+    console.warn('[App] 보관 취소 알림 전송 실패 (서버에서는 삭제됨):', error)
+  }
+  trackEvent('text_queue_cancel')
+  notification.showInfo(t('text.keepCancelled'))
+}
+
+/** 보관되지 않은(너무 큰) 텍스트를 .txt 파일로 올린다. 파일은 하루 보관된다 */
+async function handleSendTextAsFile(textId) {
+  const target = textShare.sharedTexts.value.find((x) => x.id === textId)
+  if (!target || typeof target.content !== 'string') return
+  const d = new Date(target.timestamp || Date.now())
+  const pad = (n) => String(n).padStart(2, '0')
+  const name = `text-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.txt`
+  trackEvent('text_as_file')
+  await uploadFiles([new File([target.content], name, { type: 'text/plain' })])
+}
+
+/** 잠긴 텍스트를 비밀번호로 푼다. 결과는 done({ok, code?, remaining?})으로 카드에 돌려준다 */
+async function handleUnlockText({ id, password, done }) {
+  try {
+    await textQueue.unlockWithPassword(id, password)
+    trackEvent('text_unlock')
+    done?.({ ok: true })
+  } catch (error) {
+    done?.({ ok: false, code: error?.code, remaining: error?.remaining })
+  }
+}
+
 async function handleClearAllTexts() {
   if (roomManager.roomIds.value.length === 0) return
 
@@ -760,6 +874,8 @@ async function handleClearAllTexts() {
   const targetRoomId = activeRoomId.value
   if (!targetRoomId) return
 
+  // 서버 대기열도 함께 지운다 (1:1 방은 모두, 공개 범위는 지울 증명이 있는 잠긴 텍스트만)
+  await textQueue.removeFromServer(targetRoomId, { all: true })
   textShare.clearTextsForRoom(targetRoomId)
 
   socket.publishMessage({
@@ -1008,6 +1124,12 @@ onMounted(async () => {
 
   window.addEventListener('cs-send-link', onSendLinkEvent)
 
+  // 보관 남은 시간 갱신 + 만료된 잠긴 텍스트 정리
+  nowTimer = setInterval(() => {
+    nowTick.value = Date.now()
+    textQueue.expire(nowTick.value)
+  }, 15000)
+
   // 공유 룸에 연결
   await connectToRoom()
 
@@ -1029,6 +1151,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  clearInterval(nowTimer)
   if (cleanupUserLeft) cleanupUserLeft()
   if (cleanupOnMessage) cleanupOnMessage()
   document.removeEventListener('paste', handlePaste)
@@ -1061,6 +1184,8 @@ onUnmounted(() => {
         :room-id="activeRoomId"
         :files="visibleFiles"
         :texts="visibleTexts"
+        :text-receiver-count="textReceiverCount"
+        :text-storage-mode="textStorageMode"
         :is-loading="fileManager.isLoading.value || isConnecting"
         :user-count="socket.usersInRoom.value"
         :scope="shareScope.scope.value"
@@ -1091,6 +1216,9 @@ onUnmounted(() => {
         @delete-selected="handleDeleteSelected"
         @clear-storage="handleClearStorage"
         @remove-text="handleRemoveText"
+        @cancel-text="handleCancelQueuedText"
+        @unlock-text="handleUnlockText"
+        @send-text-as-file="handleSendTextAsFile"
         @clear-all-texts="handleClearAllTexts"
         @copy-text="handleCopyText"
         @paste-content="handlePasteContent"

@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated: 2026-01-14
+Last updated: 2026-10-26
 
 ## Overview
 
@@ -10,7 +10,7 @@ This Privacy Policy describes how we collect, use, and handle your information w
 
 ### Temporary Storage
 - **Files and Images**: Files you upload are temporarily stored in our system and are accessible via a unique room code.
-- **Text Content**: Text you share is temporarily stored and synchronized with other users in the same room.
+- **Text Content**: Text you share is delivered to the other devices in the same sharing scope and kept on the server for up to 10 minutes, so devices that join or reload within that time still receive it. Unless you turn on the password lock, text in the "Same network" and "Everyone" scopes is kept as plain text and anyone in that scope can read it. With the lock on, or in a 1:1 room, it is encrypted in your browser and only the ciphertext is kept. Text content is never written to server logs or analytics.
 - **Room Codes**: Unique identifiers used to connect users to shared rooms.
 
 ### Automatic Information
@@ -27,7 +27,7 @@ We use the collected information to:
 
 ## Data Storage and Retention
 
-- **Temporary Storage**: All uploaded files and shared content are temporary. We do not permanently store your files.
+- **Temporary Storage**: All uploaded files and shared content are temporary. We do not permanently store your files. Shared text is deleted from the server 10 minutes after it is sent.
 - **Automatic Deletion**: Files and data may be automatically deleted after a certain period of inactivity.
 - **No Long-term Storage**: We do not maintain long-term archives of your shared content.
 

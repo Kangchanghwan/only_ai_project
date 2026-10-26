@@ -14,6 +14,9 @@ import { requireRoomToken } from './middleware/roomAuth';
 import { registerMultipartRoutes, LOCKED_MULTIPART } from './routes/multipart';
 import { rejectPrivateRoom } from './middleware/rejectPrivateRoom';
 import { registerLockedRoutes } from './routes/locked';
+import { registerTextRoutes } from './routes/texts';
+import { getTextQueue } from './utils/textQueue';
+import { r2TextQueueStore } from './services/textQueueStore';
 import { reservedBytesForRoom } from './utils/multipartStore';
 import { recordUploader, getUploader, deleteUploader, deleteUploadersForRoom, toSender, Sender } from './utils/uploaderStore';
 import { quotaKeyFromRequest, reserveDailyQuota, releaseDailyQuota, dailyQuotaFailureBody } from './utils/dailyQuota';
@@ -144,6 +147,9 @@ registerMultipartRoutes(app, roomIdFromBody, resolveUploader);
 // 비밀번호 잠금 업로드(비공개 버킷) + 해제/삭제. R2_LOCKED_BUCKET_NAME이 없으면 503
 registerMultipartRoutes(app, roomIdFromBody, resolveUploader, LOCKED_MULTIPART);
 registerLockedRoutes(app, roomIdFromBody);
+
+// 텍스트 대기열(10분 보관): 목록·풀기·삭제. 보관은 소켓 publish에서 한다
+registerTextRoutes(app, roomIdFromParams, roomIdFromBody);
 
 /**
  * presign 요청 파일들의 크기를 검증한다 (파일당 한도 + 룸 총량 한도).
@@ -475,6 +481,13 @@ if (!process.env.ROOM_ID_SECRET) {
 }
 
 if (process.env.NODE_ENV !== 'test') {
+    // 텍스트 대기열을 비공개 버킷에 따라 쓰고, 재시작 전 보관분(10분 이내)을 다시 불러온다
+    const textQueue = getTextQueue();
+    textQueue.setStore(r2TextQueueStore);
+    textQueue.hydrate()
+        .then((n) => { if (n > 0) logger.info(`[TextQueue] 보관 텍스트 ${n}개 복원`); })
+        .catch((error) => logger.error('[TextQueue] 복원 실패:', error instanceof Error ? error.message : error));
+
     httpServer.listen(PORT, () => {
         logger.info(`서버 시작: 포트 ${PORT}`);
         logger.info(`환경: ${process.env.NODE_ENV || 'development'}`);

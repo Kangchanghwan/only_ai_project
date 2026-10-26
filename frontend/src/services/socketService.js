@@ -444,6 +444,26 @@ class SocketService {
   }
 
   /**
+   * 메시지를 보내고 서버 응답(ack)을 기다린다. 텍스트 보관 결과(만료 시각, 보관 안 한 이유,
+   * 밀려난 내 보관분)와 속도 제한(code: RATE_LIMITED)을 알 수 있다.
+   * 5초 안에 응답이 없으면 {success: true, timeout: true} (보낸 것으로 본다).
+   * @returns {Promise<{success: boolean, code?: string, expiresAt?: number, evicted?: string[], notStored?: string, timeout?: boolean}>}
+   */
+  publishWithAck(message, target) {
+    if (!this.socket?.connected) {
+      console.error('[SocketService] 소켓이 연결되지 않았습니다')
+      return Promise.reject(new Error('Socket not connected'))
+    }
+    return new Promise((resolve) => {
+      this.socket.timeout(PAIR_ACK_TIMEOUT_MS).emit('publish', message, target, (timeoutErr, error, response) => {
+        if (timeoutErr) return resolve({ success: true, timeout: true })
+        if (error) return resolve({ success: false, code: 'PUBLISH_ERROR' })
+        resolve(response && typeof response === 'object' ? response : { success: true })
+      })
+    })
+  }
+
+  /**
    * 소켓으로 룸 토큰 재발급을 요청합니다.
    * @returns {Promise<{roomTokens: Record<string,string>, roomTokenTtlSec: number}>}
    */

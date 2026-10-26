@@ -626,6 +626,43 @@ class R2Service {
     await this.deleteKeys([`${roomId}/${id}`], this.getLockedBucket());
   }
 
+  // === 작은 JSON 객체 (비공개 버킷, 텍스트 대기열 등) ===
+
+  /** 비공개 버킷에 작은 JSON 객체를 쓴다 */
+  async putLockedJson(key: string, value: unknown): Promise<void> {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.getLockedBucket(),
+        Key: key,
+        Body: JSON.stringify(value),
+        ContentType: 'application/json',
+      })
+    );
+  }
+
+  /** 비공개 버킷의 JSON 객체를 읽는다. 없으면 null */
+  async getLockedJson(key: string): Promise<unknown> {
+    try {
+      const res = await this.client.send(new GetObjectCommand({ Bucket: this.getLockedBucket(), Key: key }));
+      const text = await res.Body?.transformToString();
+      return text ? JSON.parse(text) : null;
+    } catch (error) {
+      const name = (error as { name?: string }).name;
+      if (name === 'NotFound' || name === 'NoSuchKey') return null;
+      throw error;
+    }
+  }
+
+  /** 비공개 버킷에서 프리픽스 아래 키 목록 */
+  async listLockedKeys(prefix: string): Promise<string[]> {
+    return this.listAllKeys(prefix, this.getLockedBucket());
+  }
+
+  /** 비공개 버킷의 키들을 지운다 */
+  async deleteLockedKeys(keys: string[]): Promise<void> {
+    if (keys.length > 0) await this.deleteKeys(keys, this.getLockedBucket());
+  }
+
   /** 룸의 잠금 파일·진행 중 잠금 멀티파트를 모두 정리한다. 삭제한 파일 수 반환 (꺼져 있으면 0) */
   async deleteAllLockedFiles(roomId: string): Promise<number> {
     if (!this.lockedBucketName) return 0;

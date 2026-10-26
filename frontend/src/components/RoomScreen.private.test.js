@@ -27,6 +27,13 @@ describe('RoomScreen 1:1 상태별 화면', () => {
     expect(w.find('[data-testid="peer-left-notice"]').exists()).toBe(false)
   })
 
+  it('오프라인이어도 텍스트가 10분 보관되면 입력할 수 있고 보관 안내를 보여 준다', () => {
+    const w = mountWith({ privateRooms: roomWith('offline'), textStorageMode: 'private', textReceiverCount: 0 })
+    expect(w.find('[data-testid="text-input"]').attributes('disabled')).toBeUndefined()
+    expect(w.find('[data-testid="text-compose-note"]').exists()).toBe(false)
+    expect(w.find('[data-testid="text-receivers"]').attributes('data-state')).toBe('queued')
+  })
+
   it('접속 중이면 안내 없이 입력 가능, 연결 중이면 입력만 막는다', () => {
     const on = mountWith({ privateRooms: roomWith('online') })
     expect(on.find('[data-testid="peer-offline-upload-note"]').exists()).toBe(false)

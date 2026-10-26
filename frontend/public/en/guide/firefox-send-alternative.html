@@ -146,7 +146,7 @@
         "name": "Is it end-to-end encrypted?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text, device labels, file size and send time are not locked."
+          "text": "Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text sent while the lock is on is encrypted too and kept for 10 minutes; device labels, file size and send time are not locked."
         }
       },
       {
@@ -312,7 +312,7 @@
           <h3>Wormhole</h3>
           <p>Encrypts files in the browser before they leave it and puts the key after the # in the share link. Files are deleted from its servers after 24 hours. Good when you want to send one link to someone far away.</p>
           <h3>Clipboard Share</h3>
-          <p>Not a link-sharing service first. Devices on the same Wi-Fi share one space in the browser, and you can lock only the files that need a password. Text you paste also goes across, but text is not locked.</p>
+          <p>Not a link-sharing service first. Devices on the same Wi-Fi share one space in the browser, and you can lock only the files that need a password. Text you paste also goes across and is kept for 10 minutes for devices that join later; it is encrypted only while the password lock is on, otherwise it is kept as plain text.</p>
         </div>
 
         <h2>When Clipboard Share fits</h2>
@@ -353,7 +353,7 @@
 
         <h2>Questions</h2>
         <h3>Is it end-to-end encrypted?</h3>
-        <p>Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text, device labels, file size and send time are not locked.</p>
+        <p>Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text sent while the lock is on is encrypted too and kept for 10 minutes; device labels, file size and send time are not locked.</p>
         <h3>Can I send to someone who is not on my Wi-Fi?</h3>
         <p>Yes. Switch to the Everyone tab, which is visible to anyone with the service open, and lock the file before sending. The confirmation that appears the first time you send there also has an optional password field. You can also show the recipient a QR code for one locked file.</p>
         <h3>What if I forget the password?</h3>
