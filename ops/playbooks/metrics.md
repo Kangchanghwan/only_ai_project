@@ -32,3 +32,11 @@ GA4 속성: `a215937843p519550737` (Clipboard Share - Production).
 - 네이버 서치어드바이저: 유입 키워드, 상위 웹문서, 사이트 진단 이슈
 - 블로그 조회수: 네이버 lgodl1598 관리자 통계, velog @ch_kang 통계 (clipboardapp 관련 글)
 - 지난주 배포한 intent들의 7일 결과
+
+## 보정 28일 사용자 (owner 결정 2026-10-27, 매일)
+자동화·크롤러 접속이 섞여 au28이 부풀 수 있어, 원본 au28 옆에 보정 수치를 같이 적는다. GA 원본·bands.mjs 입력(daily.csv)은 건드리지 않는다. **목표 1,000 판단과 보고의 "페이스"는 보정 수치 기준으로도 함께 적는다.**
+- 출처: GA4 인구통계 세부정보(국가), au28과 같은 28일 범위. URL `explorer?params=_u..nav%3Dmaui%26_u.date00%3DA%26_u.date01%3DB%26_r.explorerCard..seldim%3D%5B%22country%22%5D%26_r.explorerCard..rowShow%3D50&r=user-demographics-detail`, `table` innerText.
+- **제외 국가** = 한국이 아니고, 28일 활성 사용자 10명 이상이고, 주요 이벤트 비율(세션 기준 "주요 이벤트 발생률") 10% 미만인 국가. 보정 au28 = 원본 au28 − 제외 국가 활성 사용자 합.
+- **관찰 국가**(제외하지 않고 note만): 한국 외, 사용자 10명 이상, 사용자당 이벤트 수가 전체 평균의 3배 이상. 실제 단체 사용(학교·회사)일 수도 있어 빼지 않는다.
+- 기록: `ops/metrics/adjusted.csv` 1행 (date,range,au28_raw,au28_adj,excluded,watch,note). 보고 "지표" 줄: "28일 사용자 N (보정 M)".
+- 규칙을 바꾸려면 owner 승인. 바꾸면 이전 행도 새 규칙으로 다시 계산해 note에 표시.
