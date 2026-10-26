@@ -36,6 +36,10 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  /** 현재 범위에서 텍스트를 받을 수 있는 다른 기기 수 */
+  textReceiverCount: { type: Number, default: null },
+  /** 지금 범위로 보내는 텍스트가 10분 보관되는지 (1:1 방 또는 범위 잠금) */
+  textWillQueue: { type: Boolean, default: false },
   isLoading: {
     type: Boolean,
     default: false
@@ -101,6 +105,8 @@ const emit = defineEmits([
   'delete-selected',
   'clear-storage',
   'remove-text',
+  'cancel-text',
+  'unlock-text',
   'clear-all-texts',
   'copy-text',
   'paste-content',
@@ -139,7 +145,8 @@ const activeDevices = computed(() => {
 
 // 상대가 나갔을 때 "다시 연결": 같은 상대가 ip/전체 공유 목록에 보이면 다시 초대할 수 있다
 const peerLeft = computed(() => currentRoom.value?.status === 'left')
-// 상대 오프라인: 파일은 올릴 수 있고(상대가 나중에 받음), 텍스트는 접속 중인 상대에게만 가므로 막는다
+// 상대 오프라인: 파일은 올릴 수 있고(상대가 나중에 받음), 텍스트도 10분 보관되므로 보낼 수 있다
+// (보관을 지원하지 않는 구버전 서버면 접속 중인 상대에게만 가므로 막는다)
 const peerOffline = computed(() => currentRoom.value?.status === 'offline')
 const peerConnecting = computed(() => currentRoom.value?.status === 'connecting')
 
@@ -297,9 +304,13 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 :texts="texts"
                 :scope="scope"
                 :prefill="prefillText"
-                :compose-disabled="peerLeft || peerOffline || peerConnecting"
-                :compose-note="peerOffline ? t('pair.offlineTextNote') : ''"
+                :receiver-count="textReceiverCount"
+                :will-queue="textWillQueue"
+                :compose-disabled="peerLeft || (peerOffline && !textWillQueue) || peerConnecting"
+                :compose-note="peerOffline && !textWillQueue ? t('pair.offlineTextNote') : ''"
                 @remove-text="$emit('remove-text', $event)"
+                @cancel-text="$emit('cancel-text', $event)"
+                @unlock-text="$emit('unlock-text', $event)"
                 @clear-all="$emit('clear-all-texts')"
                 @copy-text="$emit('copy-text', $event)"
                 @share-text="$emit('share-text', $event)"

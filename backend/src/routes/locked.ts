@@ -1,11 +1,11 @@
 import type { Express, RequestHandler, Response } from 'express';
-import { createHash, timingSafeEqual } from 'crypto';
 import { getR2Service } from '../services/r2Service';
 import logger from '../utils/logger';
 import { deleteUploader } from '../utils/uploaderStore';
 import { quotaKeyFromRequest } from '../utils/dailyQuota';
-import { LOCK_RECORD_SIZE, LOCK_VERSION, LockObjectMetadata, isLockId, isVerifier, isDeleteKey } from '../utils/lockFormat';
-import { recordUnlockFailure, unlockRemaining } from '../utils/unlockLimiter';
+import { LOCK_RECORD_SIZE, LOCK_VERSION, isLockId, isVerifier, isDeleteKey } from '../utils/lockFormat';
+import { unlockRemaining } from '../utils/unlockLimiter';
+import { checkVerifier, hashMatches } from '../utils/lockProof';
 
 /** 다운로드 URL 유효 시간(초). 새어도 암호문뿐이지만 짧게 둔다 */
 export const LOCKED_DOWNLOAD_EXPIRES_SEC = 60;
@@ -15,31 +15,6 @@ const isRoomId = (v: unknown): v is string => typeof v === 'string' && /^[A-Za-z
 
 function fail(res: Response, status: number, error: string, code: string, extra: object = {}): void {
     res.status(status).json({ error, code, ...extra });
-}
-
-const fromB64url = (s: string): Buffer => Buffer.from(s.replace(/-/g, '+').replace(/_/g, '/'), 'base64');
-
-/** SHA-256(base64url 값의 바이트)이 저장된 hex 해시와 같은지 (상수 시간 비교) */
-const hashMatches = (b64: string, hexHash: string | undefined): boolean => {
-    if (!hexHash) return false;
-    const actual = createHash('sha256').update(fromB64url(b64)).digest();
-    const expected = Buffer.from(hexHash, 'hex');
-    return actual.length === expected.length && timingSafeEqual(actual, expected);
-};
-
-type VerifyResult = { ok: true } | { ok: false; status: 403 | 429; code: 'WRONG_PASSWORD' | 'LOCKED_OUT'; remaining: number };
-
-/**
- * 비밀번호 확인값 검증 + 시도 제한. 풀기와 삭제가 같은 카운터를 쓴다
- * (삭제 API가 횟수 제한 없는 비밀번호 대입 통로가 되지 않게).
- */
-function checkVerifier(meta: LockObjectMetadata, verifier: string, ipKey: string): VerifyResult {
-    if (unlockRemaining(meta.vh, ipKey) <= 0) return { ok: false, status: 429, code: 'LOCKED_OUT', remaining: 0 };
-    if (hashMatches(verifier, meta.vh)) return { ok: true };
-    const remaining = recordUnlockFailure(meta.vh, ipKey);
-    return remaining <= 0
-        ? { ok: false, status: 429, code: 'LOCKED_OUT', remaining: 0 }
-        : { ok: false, status: 403, code: 'WRONG_PASSWORD', remaining };
 }
 
 /**
@@ -101,7 +76,7 @@ export function registerLockedRoutes(app: Express, roomAuthFromBody: RequestHand
             const { meta, ctSize } = obj;
             res.setHeader('Cache-Control', 'no-store');
 
-            const check = checkVerifier(meta, verifier, quotaKeyFromRequest(req));
+            const check = checkVerifier(meta.vh, verifier, quotaKeyFromRequest(req));
             if (!check.ok) {
                 const msg = check.code === 'LOCKED_OUT' ? '시도 횟수를 모두 썼습니다' : '비밀번호가 맞지 않습니다';
                 fail(res, check.status, msg, check.code, { remaining: check.remaining });
@@ -156,7 +131,7 @@ export function registerLockedRoutes(app: Express, roomAuthFromBody: RequestHand
                     fail(res, 403, '비밀번호가 필요합니다', 'DELETE_FORBIDDEN');
                     return;
                 }
-                const check = checkVerifier(obj.meta, verifier, quotaKeyFromRequest(req));
+                const check = checkVerifier(obj.meta.vh, verifier, quotaKeyFromRequest(req));
                 if (!check.ok) {
                     const msg = check.code === 'LOCKED_OUT' ? '시도 횟수를 모두 썼습니다' : '비밀번호가 맞지 않습니다';
                     fail(res, check.status, msg, check.code, { remaining: check.remaining });

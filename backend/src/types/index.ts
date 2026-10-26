@@ -37,6 +37,8 @@ export interface ErrorResponse {
 /** 메시지 발행 응답 */
 export interface PublishResponse {
     success: boolean;
+    /** text-shared가 대기열에 보관됐으면 만료 시각(epoch ms) */
+    expiresAt?: number;
 }
 
 // === Socket.IO 이벤트 타입 정의 ===

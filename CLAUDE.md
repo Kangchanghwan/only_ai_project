@@ -84,12 +84,16 @@ Components (UI) → Composables (Logic) → Services (API)
 - `GET /api/r2/size/:roomId` — Room total size in bytes
 - `DELETE /api/r2/files/:roomId` — Delete all room files
 - `DELETE /api/r2/files/:roomId/:fileName` — Delete single file
+- `GET /api/texts/:roomId` — Queued texts (10-minute text queue; locked texts carry only `lock.salt`, no ciphertext)
+- `POST /api/texts/unlock` — Ciphertext of locked queued texts (body: roomId, textIds, verifier; shares the locked-file attempt limiter)
+- `POST /api/texts/delete` — Delete queued texts (body: roomId, textIds | all, deleteKeys?, proofs?[{salt, verifier}]; 1:1 rooms need membership only)
 
 ### Storage
 - **Primary**: CloudFlare R2 via AWS S3 SDK. Files stored as `{roomId}/{fileName}`.
 - Files <1MB upload directly through server; >1MB use presigned URLs for direct R2 upload.
 - File size limits via env vars: `VITE_MAX_FILE_SIZE_MB` (default 5120MB), `VITE_MAX_ROOM_SIZE_MB` (default 10240MB).
 - Files auto-deleted when room empties (grace period configurable via `ROOM_GRACE_PERIOD_SEC`).
+- **Text queue** (`backend/src/utils/textQueue.ts`, frontend `useTextQueue`): `text-shared` messages that carry only ciphertext are kept 10 minutes per room so devices that join/reload later receive them — 1:1 rooms (room key `enc`) always, ip/global only when the scope password lock is on (`locked: true`, `lock: {salt, vh, dh}`). Messages with a plaintext `content` field are never queued. In-memory, written through to the private locked bucket under `_texts/<roomId>/<textId>.json` and rehydrated on start (memory-only when `R2_LOCKED_BUCKET_NAME` is unset). Expiry is enforced on read and by a 60s sweep.
 
 ### Internationalization
 21 languages in `frontend/src/i18n/locales/`. Browser language auto-detected, persisted to localStorage. Fallback language: Korean (`ko`). When adding UI text, add keys to all locale files.

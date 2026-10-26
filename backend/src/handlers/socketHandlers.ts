@@ -10,6 +10,7 @@ import { PairSessionManager, PairSession } from '../managers/PairSessionManager'
 import { newPrivateRoomId, isPrivateRoomId } from '../utils/privateRoom';
 import { issueTicket, verifyTicket } from '../utils/privateTicket';
 import { TokenBucket } from '../utils/tokenBucket';
+import { TextQueue, getTextQueue, toPublicText } from '../utils/textQueue';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -378,8 +379,10 @@ const handleIdentityReroll = (
 
 // === 메인 핸들러 설정 ===
 
-export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
+export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQueue: TextQueue = getTextQueue()) => {
     const pairs = new PairSessionManager();
+    // 보관 텍스트 10분 만료 주기 정리 (목록 조회 때도 만료분을 거른다)
+    textQueue.startSweeper();
     // 만료된 연결 세션 정리 (요청 60초 미응답, 수락 후 확인 2분)
     const sweeper = setInterval(() => {
         for (const s of pairs.expireDue()) endSession(io, s, 'expired', [s.initiator, s.responder]);
@@ -396,7 +399,7 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager) => {
         setupPairHandlers(socket, io, roomManager, pairs);
 
         socket.on('publish', (msg: any, target: PublishTarget, ack?: (error: Error | null, response?: PublishResponse) => void) =>
-            handlePublish(socket, io, roomManager, msg, target, ack)
+            handlePublish(socket, io, roomManager, textQueue, msg, target, ack)
         );
 
         // 이름표 다시 뽑기 (소켓당 3초 쿨다운)
@@ -513,11 +516,26 @@ const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager:
     }
 };
 
+/**
+ * text-shared 메시지를 방에 중계할 형태로 바꾼다.
+ * - 보관했으면 보관 항목 그대로(잠긴 텍스트는 암호문 없이 salt만, 만료 시각 포함)
+ * - 보관하지 않았으면 원래 메시지에서 잠금 확인값(vh)·삭제 키 해시(dh)만 뺀다
+ */
+export const relayTextShared = (stamped: unknown, queued: ReturnType<TextQueue['offer']>): unknown => {
+    if (queued) return toPublicText(queued);
+    if (!stamped || typeof stamped !== 'object') return stamped;
+    const m = stamped as Record<string, unknown>;
+    if (!m.lock || typeof m.lock !== 'object') return stamped;
+    const salt = (m.lock as { salt?: unknown }).salt;
+    return { ...m, lock: typeof salt === 'string' ? { salt } : {} };
+};
+
 /** 메시지 발행 처리: target이 소켓이 속한 방인지 검증 후 해당 방에만 브로드캐스트 */
 const handlePublish = (
     socket: ExtendedSocket,
     io: Server,
     roomManager: RoomManager,
+    textQueue: TextQueue,
     msg: any,
     target: PublishTarget,
     ack?: (error: Error | null, response?: PublishResponse) => void
@@ -544,9 +562,19 @@ const handlePublish = (
             return;
         }
 
-        io.to(targetRoomId).emit('message', stampSender(msg, roomManager.getUser(targetRoomId, socket.id)));
+        const device = roomManager.getUser(targetRoomId, socket.id);
+        let outgoing = stampSender(msg, device);
+        let expiresAt: number | undefined;
+        if (msg && typeof msg === 'object' && msg.type === 'text-shared') {
+            // 암호문 텍스트만 대기열에 들어간다 (평문 content는 queuedTextFromMessage가 거른다)
+            const queued = textQueue.offer(msg, targetRoomId, device ? toSender(device) : undefined);
+            outgoing = relayTextShared(outgoing, queued);
+            expiresAt = queued?.expiresAt;
+        }
 
-        if (ack) ack(null, { success: true });
+        io.to(targetRoomId).emit('message', outgoing);
+
+        if (ack) ack(null, { success: true, ...(expiresAt ? { expiresAt } : {}) });
 
         logger.log(`메시지 발행 [${socket.id}] @ ${targetRoomId} (target=${target})`);
     } catch (error) {
