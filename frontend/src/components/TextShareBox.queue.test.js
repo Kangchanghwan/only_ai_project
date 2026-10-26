@@ -13,44 +13,59 @@ describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
 
   it('잠금 꺼짐(평문): 같은 네트워크·전체 공유 각각 누가 볼 수 있는지와 잠금 칩을 보여 준다', () => {
     const ip = mountBox({ storageMode: 'plain', scope: 'ip' })
-    expect(label(ip)).toBe('평문으로 10분 보관 · 같은 네트워크의 누구나 볼 수 있어요')
+    expect(label(ip)).toBe('평문 10분 보관 · 같은 네트워크 누구나 볼 수 있어요')
     expect(ip.find('[data-testid="lock-start"]').exists()).toBe(true)
     const global = mountBox({ storageMode: 'plain', scope: 'global' })
-    expect(label(global)).toBe('평문으로 10분 보관 · 전체 공유라 모르는 사람도 누구나 볼 수 있어요')
+    expect(label(global)).toBe('평문 10분 보관 · 모르는 사람도 누구나 볼 수 있어요')
     expect(global.find('[data-testid="text-storage-label"]').classes()).toContain('font-semibold')
   })
 
   it('잠금 켜짐·1:1 방·보관 안 함(구버전 서버) 문구, 칩은 공개 범위에만', () => {
-    expect(label(mountBox({ storageMode: 'locked', scope: 'ip' }))).toBe('암호화해서 10분 보관 · 비밀번호를 아는 기기만 볼 수 있어요')
+    expect(label(mountBox({ storageMode: 'locked', scope: 'ip' }))).toBe('암호화해서 10분 보관 · 비밀번호 아는 기기만 봐요')
     const prv = mountBox({ storageMode: 'private', scope: 'prv:prv-1' })
-    expect(label(prv)).toContain('1:1 방 키로 암호화해서 10분 보관')
+    expect(label(prv)).toBe('1:1 방 키로 암호화해서 10분 보관')
     expect(prv.find('[data-testid="lock-chip"]').exists()).toBe(false)
     const none = mountBox({ storageMode: 'none' })
-    expect(label(none)).toBe('보관하지 않아요 · 지금 열린 기기에만 전달돼요')
+    expect(label(none)).toBe('보관 안 함 · 지금 열린 기기에만 전달')
     expect(none.find('[data-testid="lock-chip"]').exists()).toBe(false)
   })
 
-  it('받을 기기 대수, 0대면 보관했다가 전달한다고(보관 안 하면 전달 안 된다고) 알린다', () => {
-    expect(mountBox({ receiverCount: 2, storageMode: 'plain' }).find('[data-testid="text-receivers"]').text()).toBe('지금 받을 수 있는 다른 기기 2대')
+  it('받을 기기 수는 보관 방식 박스 안에 짧게: 0대면 들어오면 전달(보관 안 하면 전달 안 됨)', () => {
+    const many = mountBox({ receiverCount: 2, storageMode: 'plain' })
+    expect(many.find('[data-testid="text-storage"] [data-testid="text-receivers"]').text()).toBe('받을 기기 2대')
     const queued = mountBox({ receiverCount: 0, storageMode: 'plain' }).find('[data-testid="text-receivers"]')
     expect(queued.attributes('data-state')).toBe('queued')
-    expect(queued.text()).toBe('지금 받을 기기가 없어요. 10분 동안 보관했다가 들어오는 기기에 전달돼요.')
+    expect(queued.text()).toBe('받을 기기 0대 · 들어오면 전달')
     const live = mountBox({ receiverCount: 0, storageMode: 'none' }).find('[data-testid="text-receivers"]')
     expect(live.attributes('data-state')).toBe('nobody')
-    expect(live.text()).toBe('지금 받을 기기가 없어 전달되지 않아요.')
+    expect(live.text()).toBe('받을 기기 0대 · 전달 안 됨')
   })
 
   it('수를 모르면(null) 표시하지 않는다', () => {
     expect(mountBox().find('[data-testid="text-receivers"]').exists()).toBe(false)
   })
 
-  it('보관 범위에서 공유에 성공하면 보관했다고 알린다', async () => {
+  it('보낸 직후 성공 문장은 화면에 고정하지 않고(보조기술용으로만) 실패는 보인다', async () => {
     const w = mountBox({ receiverCount: 0, storageMode: 'plain' })
     await w.find('[data-testid="text-input"]').setValue('hi')
     await w.find('[data-testid="text-compose"]').trigger('submit')
     w.emitted('share-text')[0][0].done(true)
     await w.vm.$nextTick()
-    expect(w.find('[data-testid="text-share-result"]').text()).toBe('공유했어요. 10분 동안 보관해 나중에 들어온 기기도 받아요.')
+    const status = w.find('[data-testid="text-share-result"]')
+    expect(status.classes()).toContain('sr-only')
+    await w.find('[data-testid="text-input"]').setValue('again')
+    await w.find('[data-testid="text-compose"]').trigger('submit')
+    w.emitted('share-text')[1][0].done(false)
+    await w.vm.$nextTick()
+    expect(status.classes()).not.toContain('sr-only')
+    expect(status.text()).toBe('공유하지 못했어요. 다시 시도해 주세요.')
+  })
+
+  it('붙여넣기 자동 공유 도움말은 키보드·마우스 기기에서만 한 줄, 붙여넣기 버튼 툴팁에도', () => {
+    const w = mountBox()
+    const hint = w.find('[data-testid="text-autoshare-hint"]')
+    expect(hint.classes()).toEqual(expect.arrayContaining(['hidden', 'pointer-fine:block', 'truncate']))
+    expect(w.find('[data-testid="text-paste-button"]').attributes('title')).toContain('Ctrl+V')
   })
 
   it('잠금 칩의 비밀번호 입력 제출은 텍스트 공유로 번지지 않는다', async () => {

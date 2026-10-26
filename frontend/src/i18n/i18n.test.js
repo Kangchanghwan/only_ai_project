@@ -275,7 +275,7 @@ describe('i18n 반응형 작업 영역 신규 문구', () => {
     'identity.ipNotice', 'identity.manage', 'identity.notAuth', 'identity.globalWarning',
     'room.otherDevices', 'room.waiting',
     'file.chooseFiles', 'file.dropHint', 'file.limitResume', 'file.receive', 'file.copyImage', 'file.selectFile',
-    'text.composePlaceholder', 'text.inputPasteHint',
+    'text.composePlaceholder',
     'publicConfirm.title', 'publicConfirm.body', 'publicConfirm.confirm',
     'guide.title', 'guide.retention'
   ]

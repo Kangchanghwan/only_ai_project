@@ -4,8 +4,8 @@
  * - 직접 입력(textarea) + 공유 버튼, 보이는 붙여넣기 버튼
  * - 입력 중인 textarea에 붙여넣은 내용은 자동 전송되지 않고 일반 입력으로 남는다(App의 전역 paste 핸들러가 편집 가능 요소는 무시)
  * - 모든 본문은 텍스트 노드로만 렌더링한다 (v-html 사용 금지)
- * - 보관 방식: 지금 범위로 보내는 텍스트를 평문/암호문 중 무엇으로 10분 보관하는지와, 바로 잠금을 켜는 칩
- * - 받는 기기 수: 지금 범위에서 받을 수 있는 다른 기기 수. 0대면 보관했다가 전달한다고(보관 안 하면 전달 안 된다고) 알린다
+ * - 보관 방식 박스 하나: 평문/암호문 중 무엇으로 10분 보관하는지 + 받을 기기 수(0대면 들어오면 전달/전달 안 됨)
+ *   + 바로 잠금을 켜는 칩. 보낸 직후 성공 문장은 화면에 고정하지 않는다(토스트·카드의 남은 시간으로 충분)
  * - 보관 중(10분) 텍스트: 남은 시간과, 지울 증명이 있으면 "보관 취소" 버튼
  * - 잠긴 텍스트: 이 범위 비밀번호를 확인하지 않은 기기에는 내용 대신 "잠긴 텍스트"와 풀기 입력을 보여 준다
  * - 보관 안 된 내 텍스트(96KB 초과 등): 지금 열린 기기에만 갔다고 표시하고 .txt 파일로 보내기를 제안한다
@@ -163,34 +163,41 @@ function formatTime(timestamp) {
         <button
           type="button"
           class="min-h-[44px] px-4 rounded-full border border-border bg-background text-sm font-semibold text-text-primary"
+          :title="t('text.autoShareHint')"
           data-testid="text-paste-button"
           @click="emit('paste-content')"
         >📋 {{ t('clipboard.pasteTitle') }}</button>
       </div>
+      <!-- 페이지 어디서나 붙여넣기 자동 공유: 키보드·마우스 기기에서만 한 줄로 -->
+      <p class="hidden pointer-fine:block m-0 text-[11px] leading-4 text-text-secondary truncate" :title="t('text.autoShareHint')" data-testid="text-autoshare-hint">{{ t('text.autoShareHint') }}</p>
       <p v-if="fromLink" class="m-0 text-xs font-semibold text-text-primary" data-testid="text-prefill-note">{{ t('text.prefillNote') }}</p>
-      <!-- 받는 기기 수: 0대면 보관했다가 전달한다고, 보관하지 않으면 전달되지 않는다고 미리 알린다 -->
+      <!-- 결과는 보조기술·브라우저 에이전트용으로 남긴다. 성공은 토스트로 보이므로 화면에는 실패만 -->
       <p
-        v-if="receiverCount !== null && !composeDisabled"
-        class="m-0 text-xs"
-        :class="receiverCount === 0 && !willQueue ? 'font-semibold text-text-primary' : 'text-text-secondary'"
-        data-testid="text-receivers"
-        :data-state="receiverCount === 0 ? (willQueue ? 'queued' : 'nobody') : 'live'"
-      >
-        <template v-if="receiverCount === 0">{{ willQueue ? t('text.noReceiversQueued') : t('text.noReceiversLive') }}</template>
-        <template v-else>{{ t('text.receivers', { count: receiverCount }) }}</template>
-      </p>
-      <p class="m-0 text-xs text-text-secondary" role="status" aria-live="polite" data-testid="text-share-result">{{ lastResult === 'ok' ? (willQueue ? t('text.queuedStatus') : t('text.sentStatus')) : lastResult === 'fail' ? t('text.sendFailedStatus') : '' }}</p>
-      <p class="text-xs text-text-secondary m-0">{{ t('text.autoShareHint') }} {{ t('text.inputPasteHint') }}</p>
+        class="m-0 text-xs text-text-secondary"
+        :class="{ 'sr-only': lastResult !== 'fail' }"
+        role="status"
+        aria-live="polite"
+        data-testid="text-share-result"
+      >{{ lastResult === 'ok' ? t('text.sentStatus') : lastResult === 'fail' ? t('text.sendFailedStatus') : '' }}</p>
     </form>
     <!-- 보관 방식: 평문이면 이 범위 누구나 볼 수 있다고 알리고, 바로 잠금(암호화)을 켤 수 있게 한다.
          잠금 칩은 자체 form이 있어 입력 form 밖에 둔다 (submit이 공유로 번지지 않게) -->
     <div v-if="!composeDisabled" class="flex items-center justify-between gap-2 flex-wrap -mt-3 mb-6 rounded-xl border border-border px-3 py-2" data-testid="text-storage" :data-mode="storageMode">
-      <p
-        class="m-0 text-xs"
-        :class="storageMode === 'plain' && scope === 'global' ? 'font-semibold text-text-primary' : 'text-text-secondary'"
-        data-testid="text-storage-label"
-      >{{ storageLabel }}</p>
-      <LockChip v-if="storageMode === 'plain' || storageMode === 'locked'" :scope="scope" />
+      <div class="basis-0 grow min-w-[10rem] flex flex-col gap-0.5">
+        <p
+          class="m-0 text-xs"
+          :class="storageMode === 'plain' && scope === 'global' ? 'font-semibold text-text-primary' : 'text-text-secondary'"
+          data-testid="text-storage-label"
+        >{{ storageLabel }}</p>
+        <p
+          v-if="receiverCount !== null"
+          class="m-0 text-[11px] leading-4 text-text-secondary tabular-nums"
+          :class="{ 'font-semibold text-text-primary': receiverCount === 0 && !willQueue }"
+          data-testid="text-receivers"
+          :data-state="receiverCount === 0 ? (willQueue ? 'queued' : 'nobody') : 'live'"
+        >{{ t('text.receiversCount', { count: receiverCount }) }}<template v-if="receiverCount === 0"> · {{ willQueue ? t('text.deliverOnJoin') : t('text.notDelivered') }}</template></p>
+      </div>
+      <LockChip v-if="storageMode === 'plain' || storageMode === 'locked'" :scope="scope" class="shrink-0" />
     </div>
 
     <!-- 받은 텍스트 -->
