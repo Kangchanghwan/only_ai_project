@@ -196,10 +196,20 @@
     "keepCancelled": "Text se už neuchovává.",
     "cancelFailed": "Uchovávání se nepodařilo zrušit. Zkuste to znovu.",
     "receivers": "Další zařízení, která ho teď mohou přijmout: {count}",
-    "keptFor": "uchováno 10 minut",
-    "noReceiversLive": "Teď ho nemůže přijmout žádné zařízení, takže nedorazí. Zapněte zámek a uchová se 10 minut.",
+    "noReceiversLive": "Teď ho nemůže přijmout žádné zařízení, takže nedorazí.",
     "noReceiversQueued": "Teď ho nemůže přijmout žádné zařízení. Uchová se 10 minut a doručí se zařízením, která se připojí.",
-    "queuedStatus": "Sdíleno. Uchová se 10 minut, takže ho dostanou i zařízení, která se připojí později."
+    "queuedStatus": "Sdíleno. Uchová se 10 minut, takže ho dostanou i zařízení, která se připojí později.",
+    "storagePlainIp": "Uchová se jako prostý text na 10 minut · vidí ho kdokoli v této síti",
+    "storagePlainGlobal": "Uchová se jako prostý text na 10 minut · jde o „Všichni“, takže ho vidí i cizí lidé",
+    "storageLocked": "Uchová se zašifrovaný na 10 minut · vidí ho jen zařízení, která znají heslo",
+    "storagePrivate": "Zašifrováno klíčem místnosti 1:1 a uchováno na 10 minut · vidí ho jen obě zařízení",
+    "storageNone": "Neuchovává se · dostanou ho jen zařízení otevřená teď",
+    "notKeptTooLarge": "Přes 96 KB, neuloženo · dostala ho jen zařízení otevřená teď",
+    "notKeptFull": "Úložiště serveru je plné, neuloženo · dostala ho jen zařízení otevřená teď",
+    "sendAsFile": "Poslat jako soubor .txt · uchová se den",
+    "tooLargeToast": "Text přes 96 KB se neuchovává, dostala ho jen zařízení otevřená teď. Nahrajte ho jako soubor .txt a uchová se den.",
+    "rateLimited": "Posíláte příliš rychle. Chvíli počkejte a zkuste to znovu.",
+    "quotaEvicted": "Každé zařízení uchovává nejvýše {count} posledních textů. Ten nejstarší už nedorazí k novým zařízením."
   },
   "notification": {
     "uploading": "Nahrávání...",

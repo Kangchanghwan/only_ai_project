@@ -10,7 +10,7 @@ import { PairSessionManager, PairSession } from '../managers/PairSessionManager'
 import { newPrivateRoomId, isPrivateRoomId } from '../utils/privateRoom';
 import { issueTicket, verifyTicket } from '../utils/privateTicket';
 import { TokenBucket } from '../utils/tokenBucket';
-import { TextQueue, getTextQueue, toPublicText } from '../utils/textQueue';
+import { TextQueue, QueuedText, getTextQueue, toPublicText } from '../utils/textQueue';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -521,13 +521,39 @@ const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager:
  * - 보관했으면 보관 항목 그대로(잠긴 텍스트는 암호문 없이 salt만, 만료 시각 포함)
  * - 보관하지 않았으면 원래 메시지에서 잠금 확인값(vh)·삭제 키 해시(dh)만 뺀다
  */
-export const relayTextShared = (stamped: unknown, queued: ReturnType<TextQueue['offer']>): unknown => {
+export const relayTextShared = (stamped: unknown, queued: QueuedText | null): unknown => {
     if (queued) return toPublicText(queued);
     if (!stamped || typeof stamped !== 'object') return stamped;
     const m = stamped as Record<string, unknown>;
     if (!m.lock || typeof m.lock !== 'object') return stamped;
     const salt = (m.lock as { salt?: unknown }).salt;
     return { ...m, lock: typeof salt === 'string' ? { salt } : {} };
+};
+
+// === publish 속도 제한 (소켓당) ===
+
+/**
+ * text-shared: 연속 10개까지 바로 보내고, 그 뒤로는 3초에 1개(분당 20개)씩 충전.
+ * 사람이 몇 개를 연달아 붙여넣는 것은 막히지 않고, 스크립트로 대기열을 밀어내는 것은 느려진다.
+ */
+export const TEXT_PUBLISH_BUCKET_CAPACITY = 10;
+export const TEXT_PUBLISH_REFILL_PER_SEC = 1 / 3;
+/**
+ * 그 밖의 publish(파일 업로드·삭제 알림 등): 파일 수십 개를 한 번에 올리거나 지울 때 파일마다 하나씩 나가므로 넉넉히.
+ */
+export const PUBLISH_BUCKET_CAPACITY = 300;
+export const PUBLISH_REFILL_PER_SEC = 50;
+
+const textBuckets = new WeakMap<object, TokenBucket>();
+const publishBuckets = new WeakMap<object, TokenBucket>();
+
+const takeToken = (map: WeakMap<object, TokenBucket>, socket: object, capacity: number, refill: number): boolean => {
+    let bucket = map.get(socket);
+    if (!bucket) {
+        bucket = new TokenBucket(capacity, refill);
+        map.set(socket, bucket);
+    }
+    return bucket.tryConsume();
 };
 
 /** 메시지 발행 처리: target이 소켓이 속한 방인지 검증 후 해당 방에만 브로드캐스트 */
@@ -562,19 +588,35 @@ const handlePublish = (
             return;
         }
 
+        const isText = typeof msg === 'object' && msg.type === 'text-shared';
+        const allowed = isText
+            ? takeToken(textBuckets, socket, TEXT_PUBLISH_BUCKET_CAPACITY, TEXT_PUBLISH_REFILL_PER_SEC)
+            : takeToken(publishBuckets, socket, PUBLISH_BUCKET_CAPACITY, PUBLISH_REFILL_PER_SEC);
+        if (!allowed) {
+            // 중계도 보관도 하지 않는다. 보낸 쪽만 안다
+            if (ack) ack(null, { success: false, code: 'RATE_LIMITED' });
+            else socket.emit('error', createError('너무 빠르게 보내고 있습니다', 'RATE_LIMITED'));
+            return;
+        }
+
         const device = roomManager.getUser(targetRoomId, socket.id);
         let outgoing = stampSender(msg, device);
-        let expiresAt: number | undefined;
-        if (msg && typeof msg === 'object' && msg.type === 'text-shared') {
-            // 암호문 텍스트만 대기열에 들어간다 (평문 content는 queuedTextFromMessage가 거른다)
-            const queued = textQueue.offer(msg, targetRoomId, device ? toSender(device) : undefined);
-            outgoing = relayTextShared(outgoing, queued);
-            expiresAt = queued?.expiresAt;
+        let response: PublishResponse = { success: true };
+        if (isText) {
+            // 1:1 방은 암호문, 공개 범위는 잠금 여부에 따라 평문 또는 암호문으로 보관한다
+            const owner = { sid: socket.id, net: socket.ipRoomId ?? socket.id };
+            const r = textQueue.offer(msg, targetRoomId, device ? toSender(device) : undefined, owner);
+            outgoing = relayTextShared(outgoing, r.stored ? r.entry : null);
+            if (r.stored) {
+                response = { success: true, expiresAt: r.entry.expiresAt, ...(r.evictedOwn.length ? { evicted: r.evictedOwn } : {}) };
+            } else if (r.reason === 'TOO_LARGE' || r.reason === 'FULL') {
+                response = { success: true, notStored: r.reason };
+            }
         }
 
         io.to(targetRoomId).emit('message', outgoing);
 
-        if (ack) ack(null, { success: true, ...(expiresAt ? { expiresAt } : {}) });
+        if (ack) ack(null, response);
 
         logger.log(`메시지 발행 [${socket.id}] @ ${targetRoomId} (target=${target})`);
     } catch (error) {

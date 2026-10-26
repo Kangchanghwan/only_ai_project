@@ -38,8 +38,8 @@ const props = defineProps({
   },
   /** 현재 범위에서 텍스트를 받을 수 있는 다른 기기 수 */
   textReceiverCount: { type: Number, default: null },
-  /** 지금 범위로 보내는 텍스트가 10분 보관되는지 (1:1 방 또는 범위 잠금) */
-  textWillQueue: { type: Boolean, default: false },
+  /** 지금 범위로 보내는 텍스트의 보관 방식: private | locked | plain | none(보관 안 함) */
+  textStorageMode: { type: String, default: 'none' },
   isLoading: {
     type: Boolean,
     default: false
@@ -107,6 +107,7 @@ const emit = defineEmits([
   'remove-text',
   'cancel-text',
   'unlock-text',
+  'send-text-as-file',
   'clear-all-texts',
   'copy-text',
   'paste-content',
@@ -305,12 +306,13 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 :scope="scope"
                 :prefill="prefillText"
                 :receiver-count="textReceiverCount"
-                :will-queue="textWillQueue"
-                :compose-disabled="peerLeft || (peerOffline && !textWillQueue) || peerConnecting"
-                :compose-note="peerOffline && !textWillQueue ? t('pair.offlineTextNote') : ''"
+                :storage-mode="textStorageMode"
+                :compose-disabled="peerLeft || (peerOffline && textStorageMode === 'none') || peerConnecting"
+                :compose-note="peerOffline && textStorageMode === 'none' ? t('pair.offlineTextNote') : ''"
                 @remove-text="$emit('remove-text', $event)"
                 @cancel-text="$emit('cancel-text', $event)"
                 @unlock-text="$emit('unlock-text', $event)"
+                @send-as-file="$emit('send-text-as-file', $event)"
                 @clear-all="$emit('clear-all-texts')"
                 @copy-text="$emit('copy-text', $event)"
                 @share-text="$emit('share-text', $event)"

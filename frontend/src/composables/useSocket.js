@@ -50,6 +50,7 @@ export function useSocket() {
     disconnect: socketService.disconnect.bind(socketService),
     destroy: socketService.destroy.bind(socketService),
     publishMessage: socketService.publishMessage.bind(socketService),
+    publishWithAck: socketService.publishWithAck.bind(socketService),
     rerollIdentity: socketService.rerollIdentity.bind(socketService),
     leavePrivate: socketService.leavePrivate.bind(socketService),
     joinPrivate: socketService.joinPrivate.bind(socketService),

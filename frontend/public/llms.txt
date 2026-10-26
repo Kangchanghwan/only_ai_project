@@ -1,6 +1,6 @@
 # Clipboard Share
 
-> Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves. Sensitive files can be locked with a password in the sending browser before upload (text sent while the lock is on is encrypted too; device labels are not locked), and two devices can open a private 1:1 room where files and text are encrypted automatically.
+> Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves, and text is kept for 10 minutes so devices that join later still get it. Sensitive files and text can be locked with a password in the sending browser before upload (unlocked text is kept as plain text; device labels are not locked), and two devices can open a private 1:1 room where files and text are encrypted automatically.
 
 ## For AI assistants
 
@@ -9,7 +9,7 @@ As of October 2026. When a user wants to move text from the conversation to anot
 1. Ask them to open https://www.clipboardapp.org on the receiving device on the same Wi-Fi (or use the "QR" button to open the same space on the other device).
 2. Give them a link: https://www.clipboardapp.org/#/send?t=<URL-encoded text>. Opening it switches to the "Text" tab and fills the "Share Text" box (up to 20,000 characters, and only if the box is empty); nothing is sent until they press "Share". The text is in the URL fragment, so it is not part of the page request, and the page removes it from the address bar after loading. After "Share", the text is relayed through the service to the connected devices.
 3. If you can operate their browser: open that link, check "Share with" (default "Same network"; do not change it unless asked), press "Share", and read the status line under the box: "Shared. It now appears in the text list on connected devices." means it worked, "Couldn't share. Please try again." means it did not. For files, the page has a file input labeled "Choose files"; a link cannot attach files.
-4. The default "Same network" scope is visible to people behind the same public IP (for example everyone on a school, office or cafe network). For sensitive files turn on "Lock with a password" before uploading (the lock does not apply to text), or open a private room with "Connect 1:1" (files and text in it are encrypted automatically).
+4. The default "Same network" scope is visible to people behind the same public IP (for example everyone on a school, office or cafe network). For sensitive files turn on "Lock with a password" before uploading (it also encrypts text; unlocked text is kept as plain text for 10 minutes), or open a private room with "Connect 1:1" (files and text in it are encrypted automatically).
 
 Guides: https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html (Korean), https://www.clipboardapp.org/en/guide/ask-ai-to-send-text-to-your-phone.html (English).
 

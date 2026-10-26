@@ -3,20 +3,30 @@ import { encryptText, decryptText } from '../utils/privateText.js'
 import { deriveLock, b64u, randomBytes } from '../utils/lockCrypto.js'
 import { textQueueService } from '../services/textQueueService.js'
 
+/** 서버 보관 크기 상한 (평문 UTF-8, 서버 TEXT_QUEUE_MAX_BYTES와 같다). 넘으면 지금 열린 기기에만 간다 */
+export const TEXT_QUEUE_MAX_BYTES = 96 * 1024
+/** 같은 네트워크·전체 공유에서 보낸 쪽 하나가 보관할 수 있는 개수 (서버 TEXT_QUEUE_SENDER_QUOTA) */
+export const TEXT_QUEUE_SENDER_QUOTA = 5
+
+const utf8 = new TextEncoder()
+/** 텍스트의 UTF-8 바이트 수 */
+export const textBytes = (s) => utf8.encode(String(s ?? '')).length
+
 /**
  * @composable useTextQueue
  * @description 텍스트 10분 보관(받는 기기가 없을 때 대기열)의 클라이언트 쪽.
  *
- * - 서버는 암호문만 보관한다. 1:1 방은 방 키로, 같은 네트워크·전체 공유는 그 범위의 비밀번호 잠금으로
- *   이 기기에서 암호화한 텍스트만 보관된다. 잠금이 꺼진 범위의 텍스트는 지금처럼 실시간 전달만 한다.
+ * - 서버는 보낸 텍스트를 10분 보관한다. 1:1 방은 방 키 암호문, 같은 네트워크·전체 공유는
+ *   잠금 꺼짐이면 평문 그대로, 잠금 켜짐이면 그 범위 비밀번호로 이 기기에서 암호화한 암호문으로.
  * - 잠긴 텍스트는 같은 비밀번호 묶음(salt)을 이번 접속에서 풀었거나 내가 잠갔으면 자동으로 풀고,
  *   아니면 "잠긴 텍스트" 카드로 둔다. 암호문은 서버가 비밀번호 확인값을 맞힌 기기에만 준다.
- * - 목록 항목: { id, content(string|null), timestamp, roomId, sender?, expiresAt?, locked?, salt?, enc? }
+ * - 목록 항목: { id, content(string|null), timestamp, roomId, sender?, expiresAt?, locked?, salt?, enc?, notStored? }
  *   enc는 서버가 암호문을 실어 보낸 경우(구버전 백엔드 등)에만 있고, 풀면 지운다.
+ *   notStored('TOO_LARGE'|'FULL')는 내가 보냈지만 보관되지 않아 지금 열린 기기에만 간 텍스트.
  *
- * @param {{textShare, privateRooms, lockState, t: Function, service?: typeof textQueueService}} deps
+ * @param {{textShare, privateRooms, lockState, t: Function, getMySocketId?: () => string|null, service?: typeof textQueueService}} deps
  */
-export function useTextQueue({ textShare, privateRooms, lockState, t, service = textQueueService }) {
+export function useTextQueue({ textShare, privateRooms, lockState, t, getMySocketId = () => null, service = textQueueService }) {
   /** 서버가 대기열을 지원하는지: null 아직 모름, false 구버전 백엔드(목록 404) */
   const supported = ref(null)
   const texts = textShare.sharedTexts
@@ -172,11 +182,31 @@ export function useTextQueue({ textShare, privateRooms, lockState, t, service = 
   /** 서버에 보관 중인지 (만료 시각이 남아 있는지) */
   const isQueued = (x, now = Date.now()) => typeof x?.expiresAt === 'number' && x.expiresAt > now
 
-  /** 보관 취소 버튼: 지울 증명이 있는 보관 중 텍스트에만 (1:1 방 멤버, 보낸 기기, 같은 비밀번호를 확인한 기기) */
+  /**
+   * 보관 취소 버튼: 1:1 방, 잠긴 텍스트는 지울 증명이 있을 때(보낸 기기·같은 비밀번호를 확인한 기기),
+   * 평문 텍스트는 내가 보낸 것에만 보인다 (서버는 방 멤버면 지울 수 있다).
+   */
   function canCancel(x, now = Date.now()) {
     if (!isQueued(x, now)) return false
     if (privateRooms.has(x.roomId)) return true
+    if (!x.locked) return !!x.sender?.socketId && x.sender.socketId === getMySocketId()
     return !!lockState.deleteKeyFor(x.roomId, x.id) || (!!x.salt && !!lockState.keyFor(x.salt))
+  }
+
+  /** 내가 보낸 텍스트가 보관되지 않았음을 표시한다 (지금 열린 기기에만 전달됨) */
+  function markNotStored(id, reason) {
+    const x = find(id)
+    if (!x) return
+    x.notStored = reason
+    delete x.expiresAt
+  }
+
+  /** 보낸 쪽 몫을 넘어 서버에서 밀려난 내 보관분: 화면에는 남기고 보관 표시만 지운다 */
+  function markEvicted(ids) {
+    for (const id of ids || []) {
+      const x = find(id)
+      if (x) delete x.expiresAt
+    }
   }
 
   function proofsFor(roomId, entries) {
@@ -227,6 +257,8 @@ export function useTextQueue({ textShare, privateRooms, lockState, t, service = 
     isQueued,
     canCancel,
     removeFromServer,
+    markNotStored,
+    markEvicted,
     expire
   }
 }

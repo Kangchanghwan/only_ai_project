@@ -196,10 +196,20 @@
     "keepCancelled": "Đã ngừng lưu giữ văn bản này.",
     "cancelFailed": "Không thể ngừng lưu giữ. Vui lòng thử lại.",
     "receivers": "Thiết bị khác có thể nhận ngay: {count}",
-    "keptFor": "lưu giữ 10 phút",
-    "noReceiversLive": "Hiện không có thiết bị nào nhận được nên văn bản sẽ không được gửi tới. Bật khóa để lưu giữ trong 10 phút.",
+    "noReceiversLive": "Hiện không có thiết bị nào nhận được nên văn bản sẽ không được gửi tới.",
     "noReceiversQueued": "Hiện không có thiết bị nào nhận được. Văn bản được lưu giữ 10 phút và gửi tới các thiết bị tham gia sau.",
-    "queuedStatus": "Đã chia sẻ. Văn bản được lưu giữ 10 phút nên thiết bị tham gia sau cũng nhận được."
+    "queuedStatus": "Đã chia sẻ. Văn bản được lưu giữ 10 phút nên thiết bị tham gia sau cũng nhận được.",
+    "storagePlainIp": "Lưu dạng văn bản thường trong 10 phút · ai trong mạng này cũng xem được",
+    "storagePlainGlobal": "Lưu dạng văn bản thường trong 10 phút · đây là “Mọi người”, người lạ cũng xem được",
+    "storageLocked": "Mã hóa và lưu trong 10 phút · chỉ thiết bị biết mật khẩu mới xem được",
+    "storagePrivate": "Mã hóa bằng khóa phòng 1:1 và lưu trong 10 phút · chỉ hai thiết bị xem được",
+    "storageNone": "Không lưu · chỉ thiết bị đang mở mới nhận được",
+    "notKeptTooLarge": "Quá 96KB nên không lưu · chỉ thiết bị đang mở đã nhận được",
+    "notKeptFull": "Bộ nhớ máy chủ đã đầy nên không lưu · chỉ thiết bị đang mở đã nhận được",
+    "sendAsFile": "Gửi dưới dạng tệp .txt · lưu một ngày",
+    "tooLargeToast": "Văn bản quá 96KB không được lưu, chỉ thiết bị đang mở đã nhận được. Tải lên dưới dạng tệp .txt để lưu trong một ngày.",
+    "rateLimited": "Bạn đang gửi quá nhanh. Vui lòng đợi một lát rồi thử lại.",
+    "quotaEvicted": "Mỗi thiết bị chỉ lưu tối đa {count} văn bản gần nhất. Văn bản cũ nhất sẽ không còn được gửi tới thiết bị tham gia sau."
   },
   "notification": {
     "uploading": "Đang tải lên...",

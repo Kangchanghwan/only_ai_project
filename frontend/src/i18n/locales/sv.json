@@ -196,10 +196,20 @@
     "keepCancelled": "Texten sparas inte längre.",
     "cancelFailed": "Det gick inte att sluta spara. Försök igen.",
     "receivers": "Andra enheter som kan ta emot nu: {count}",
-    "keptFor": "sparas i 10 minuter",
-    "noReceiversLive": "Ingen enhet kan ta emot just nu, så den levereras inte. Slå på låset så sparas den i 10 minuter.",
+    "noReceiversLive": "Ingen enhet kan ta emot just nu, så den levereras inte.",
     "noReceiversQueued": "Ingen enhet kan ta emot just nu. Den sparas i 10 minuter och levereras till enheter som ansluter.",
-    "queuedStatus": "Delat. Den sparas i 10 minuter, så enheter som ansluter senare får den också."
+    "queuedStatus": "Delat. Den sparas i 10 minuter, så enheter som ansluter senare får den också.",
+    "storagePlainIp": "Sparas som klartext i 10 minuter · alla på det här nätverket kan se den",
+    "storagePlainGlobal": "Sparas som klartext i 10 minuter · det här är ”Alla”, så även okända kan se den",
+    "storageLocked": "Krypteras och sparas i 10 minuter · bara enheter som kan lösenordet ser den",
+    "storagePrivate": "Krypteras med 1:1-rummets nyckel och sparas i 10 minuter · bara de två enheterna ser den",
+    "storageNone": "Sparas inte · bara enheter som är öppna nu får den",
+    "notKeptTooLarge": "Över 96 KB, sparades inte · bara enheter som är öppna nu fick den",
+    "notKeptFull": "Serverns lagring är full, sparades inte · bara enheter som är öppna nu fick den",
+    "sendAsFile": "Skicka som .txt-fil · sparas en dag",
+    "tooLargeToast": "Text över 96 KB sparas inte, bara enheter som är öppna nu fick den. Ladda upp den som .txt-fil så sparas den en dag.",
+    "rateLimited": "Du skickar för snabbt. Vänta en stund och försök igen.",
+    "quotaEvicted": "Varje enhet sparar högst sina {count} senaste texter. Den äldsta når inte längre enheter som ansluter."
   },
   "notification": {
     "uploading": "Laddar upp...",

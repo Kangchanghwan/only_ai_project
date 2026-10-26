@@ -28,7 +28,7 @@ describe('RoomScreen 1:1 상태별 화면', () => {
   })
 
   it('오프라인이어도 텍스트가 10분 보관되면 입력할 수 있고 보관 안내를 보여 준다', () => {
-    const w = mountWith({ privateRooms: roomWith('offline'), textWillQueue: true, textReceiverCount: 0 })
+    const w = mountWith({ privateRooms: roomWith('offline'), textStorageMode: 'private', textReceiverCount: 0 })
     expect(w.find('[data-testid="text-input"]').attributes('disabled')).toBeUndefined()
     expect(w.find('[data-testid="text-compose-note"]').exists()).toBe(false)
     expect(w.find('[data-testid="text-receivers"]').attributes('data-state')).toBe('queued')

@@ -4,14 +4,17 @@
  * - 직접 입력(textarea) + 공유 버튼, 보이는 붙여넣기 버튼
  * - 입력 중인 textarea에 붙여넣은 내용은 자동 전송되지 않고 일반 입력으로 남는다(App의 전역 paste 핸들러가 편집 가능 요소는 무시)
  * - 모든 본문은 텍스트 노드로만 렌더링한다 (v-html 사용 금지)
- * - 받는 기기 수: 지금 범위에서 받을 수 있는 다른 기기 수. 0대이고 보관되지 않는 범위면 전달되지 않는다고 미리 알린다
+ * - 보관 방식: 지금 범위로 보내는 텍스트를 평문/암호문 중 무엇으로 10분 보관하는지와, 바로 잠금을 켜는 칩
+ * - 받는 기기 수: 지금 범위에서 받을 수 있는 다른 기기 수. 0대면 보관했다가 전달한다고(보관 안 하면 전달 안 된다고) 알린다
  * - 보관 중(10분) 텍스트: 남은 시간과, 지울 증명이 있으면 "보관 취소" 버튼
  * - 잠긴 텍스트: 이 범위 비밀번호를 확인하지 않은 기기에는 내용 대신 "잠긴 텍스트"와 풀기 입력을 보여 준다
+ * - 보관 안 된 내 텍스트(96KB 초과 등): 지금 열린 기기에만 갔다고 표시하고 .txt 파일로 보내기를 제안한다
  */
-import { ref, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import SenderLabel from './SenderLabel.vue'
+import LockChip from './LockChip.vue'
 
 const { t } = useI18n()
 
@@ -26,11 +29,19 @@ const props = defineProps({
   prefill: { type: String, default: '' },
   /** 지금 범위에서 받을 수 있는 다른 기기 수 (null이면 표시하지 않음) */
   receiverCount: { type: Number, default: null },
-  /** 보내는 텍스트가 10분 보관되는지 (1:1 방 또는 범위 잠금) */
-  willQueue: { type: Boolean, default: false }
+  /** 보내는 텍스트의 보관 방식: private(1:1 방 키) | locked(범위 잠금) | plain(평문) | none(보관 안 함) */
+  storageMode: { type: String, default: 'none' }
 })
 
-const emit = defineEmits(['remove-text', 'clear-all', 'copy-text', 'share-text', 'paste-content', 'cancel-text', 'unlock-text'])
+const emit = defineEmits(['remove-text', 'clear-all', 'copy-text', 'share-text', 'paste-content', 'cancel-text', 'unlock-text', 'send-as-file'])
+
+const willQueue = computed(() => props.storageMode !== 'none')
+const storageLabel = computed(() => {
+  if (props.storageMode === 'plain') return props.scope === 'global' ? t('text.storagePlainGlobal') : t('text.storagePlainIp')
+  if (props.storageMode === 'locked') return t('text.storageLocked')
+  if (props.storageMode === 'private') return t('text.storagePrivate')
+  return t('text.storageNone')
+})
 
 const { bg: accentBg, hoverText: accentHoverText, hoverBorder50: accentHoverBorder50 } = useScopeAccent(() => props.scope)
 
@@ -157,7 +168,7 @@ function formatTime(timestamp) {
         >📋 {{ t('clipboard.pasteTitle') }}</button>
       </div>
       <p v-if="fromLink" class="m-0 text-xs font-semibold text-text-primary" data-testid="text-prefill-note">{{ t('text.prefillNote') }}</p>
-      <!-- 받는 기기 수: 0대이고 보관되지 않으면 보내도 아무에게도 가지 않는다고 미리 알린다 -->
+      <!-- 받는 기기 수: 0대면 보관했다가 전달한다고, 보관하지 않으면 전달되지 않는다고 미리 알린다 -->
       <p
         v-if="receiverCount !== null && !composeDisabled"
         class="m-0 text-xs"
@@ -166,11 +177,21 @@ function formatTime(timestamp) {
         :data-state="receiverCount === 0 ? (willQueue ? 'queued' : 'nobody') : 'live'"
       >
         <template v-if="receiverCount === 0">{{ willQueue ? t('text.noReceiversQueued') : t('text.noReceiversLive') }}</template>
-        <template v-else>{{ t('text.receivers', { count: receiverCount }) }}<template v-if="willQueue"> · {{ t('text.keptFor') }}</template></template>
+        <template v-else>{{ t('text.receivers', { count: receiverCount }) }}</template>
       </p>
       <p class="m-0 text-xs text-text-secondary" role="status" aria-live="polite" data-testid="text-share-result">{{ lastResult === 'ok' ? (willQueue ? t('text.queuedStatus') : t('text.sentStatus')) : lastResult === 'fail' ? t('text.sendFailedStatus') : '' }}</p>
       <p class="text-xs text-text-secondary m-0">{{ t('text.autoShareHint') }} {{ t('text.inputPasteHint') }}</p>
     </form>
+    <!-- 보관 방식: 평문이면 이 범위 누구나 볼 수 있다고 알리고, 바로 잠금(암호화)을 켤 수 있게 한다.
+         잠금 칩은 자체 form이 있어 입력 form 밖에 둔다 (submit이 공유로 번지지 않게) -->
+    <div v-if="!composeDisabled" class="flex items-center justify-between gap-2 flex-wrap -mt-3 mb-6 rounded-xl border border-border px-3 py-2" data-testid="text-storage" :data-mode="storageMode">
+      <p
+        class="m-0 text-xs"
+        :class="storageMode === 'plain' && scope === 'global' ? 'font-semibold text-text-primary' : 'text-text-secondary'"
+        data-testid="text-storage-label"
+      >{{ storageLabel }}</p>
+      <LockChip v-if="storageMode === 'plain' || storageMode === 'locked'" :scope="scope" />
+    </div>
 
     <!-- 받은 텍스트 -->
     <div class="flex items-center justify-between mb-3 gap-2">
@@ -280,6 +301,17 @@ function formatTime(timestamp) {
             data-testid="text-cancel-keep"
             @click="$emit('cancel-text', text.id)"
           >{{ t('text.cancelKeep') }}</button>
+        </footer>
+        <!-- 내가 보냈지만 보관되지 않은 텍스트: 지금 열린 기기에만 갔다 -->
+        <footer v-else-if="text.notStored" class="flex items-center justify-between gap-2 mt-2 flex-wrap" data-testid="text-not-kept">
+          <span class="text-xs font-semibold text-text-primary">{{ text.notStored === 'TOO_LARGE' ? t('text.notKeptTooLarge') : t('text.notKeptFull') }}</span>
+          <button
+            v-if="text.notStored === 'TOO_LARGE' && text.content != null"
+            type="button"
+            class="min-h-[44px] px-3 rounded-full border border-border text-xs font-semibold text-text-primary"
+            data-testid="text-send-as-file"
+            @click="$emit('send-as-file', text.id)"
+          >{{ t('text.sendAsFile') }}</button>
         </footer>
       </article>
     </div>

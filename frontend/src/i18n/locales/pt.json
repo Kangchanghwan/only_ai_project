@@ -196,10 +196,20 @@
     "keepCancelled": "Este texto não está mais guardado.",
     "cancelFailed": "Não foi possível parar de guardar. Tente novamente.",
     "receivers": "Outros dispositivos que podem receber agora: {count}",
-    "keptFor": "guardado por 10 minutos",
-    "noReceiversLive": "Nenhum dispositivo pode receber agora, então não será entregue. Ative o bloqueio para guardar por 10 minutos.",
+    "noReceiversLive": "Nenhum dispositivo pode receber agora, então não será entregue.",
     "noReceiversQueued": "Nenhum dispositivo pode receber agora. Fica guardado por 10 minutos e é entregue aos dispositivos que entrarem.",
-    "queuedStatus": "Compartilhado. Fica guardado por 10 minutos, então dispositivos que entrarem depois também recebem."
+    "queuedStatus": "Compartilhado. Fica guardado por 10 minutos, então dispositivos que entrarem depois também recebem.",
+    "storagePlainIp": "Guardado como texto simples por 10 minutos · qualquer pessoa nesta rede pode ver",
+    "storagePlainGlobal": "Guardado como texto simples por 10 minutos · é «Todos», então desconhecidos também veem",
+    "storageLocked": "Criptografado e guardado por 10 minutos · só dispositivos com a senha podem ver",
+    "storagePrivate": "Criptografado com a chave da sala 1:1 e guardado por 10 minutos · só os dois dispositivos podem ver",
+    "storageNone": "Não é guardado · só os dispositivos abertos agora recebem",
+    "notKeptTooLarge": "Passou de 96 KB, não foi guardado · só os dispositivos abertos agora receberam",
+    "notKeptFull": "O armazenamento do servidor está cheio, não foi guardado · só os dispositivos abertos agora receberam",
+    "sendAsFile": "Enviar como arquivo .txt · guardado por um dia",
+    "tooLargeToast": "Textos com mais de 96 KB não são guardados; só os dispositivos abertos agora receberam. Envie como arquivo .txt para guardar por um dia.",
+    "rateLimited": "Você está enviando rápido demais. Espere um pouco e tente de novo.",
+    "quotaEvicted": "Cada dispositivo guarda no máximo seus {count} textos mais recentes. O mais antigo não chegará mais aos dispositivos que entrarem."
   },
   "notification": {
     "uploading": "Enviando...",

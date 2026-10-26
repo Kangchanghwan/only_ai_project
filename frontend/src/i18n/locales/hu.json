@@ -196,10 +196,20 @@
     "keepCancelled": "A szöveget már nem őrizzük.",
     "cancelFailed": "Nem sikerült leállítani a megőrzést. Próbáld újra.",
     "receivers": "Most fogadni tudó további eszközök: {count}",
-    "keptFor": "10 percig megőrizve",
-    "noReceiversLive": "Most egy eszköz sem tudja fogadni, ezért nem érkezik meg. Kapcsold be a zárolást, és 10 percig megőrizzük.",
+    "noReceiversLive": "Most egy eszköz sem tudja fogadni, ezért nem érkezik meg.",
     "noReceiversQueued": "Most egy eszköz sem tudja fogadni. 10 percig megőrizzük, és átadjuk a belépő eszközöknek.",
-    "queuedStatus": "Megosztva. 10 percig megőrizzük, így a később belépő eszközök is megkapják."
+    "queuedStatus": "Megosztva. 10 percig megőrizzük, így a később belépő eszközök is megkapják.",
+    "storagePlainIp": "Egyszerű szövegként 10 percig megőrizzük · ezen a hálózaton bárki láthatja",
+    "storagePlainGlobal": "Egyszerű szövegként 10 percig megőrizzük · ez a „Mindenki”, így idegenek is láthatják",
+    "storageLocked": "Titkosítva 10 percig megőrizzük · csak a jelszót ismerő eszközök látják",
+    "storagePrivate": "Az 1:1 szoba kulcsával titkosítva 10 percig megőrizzük · csak a két eszköz látja",
+    "storageNone": "Nem őrizzük meg · csak a most nyitott eszközök kapják meg",
+    "notKeptTooLarge": "96 KB fölött van, nem őriztük meg · csak a most nyitott eszközök kapták meg",
+    "notKeptFull": "A szerver tárhelye megtelt, nem őriztük meg · csak a most nyitott eszközök kapták meg",
+    "sendAsFile": "Küldés .txt fájlként · egy napig megőrizve",
+    "tooLargeToast": "A 96 KB-nál nagyobb szöveget nem őrizzük meg, csak a most nyitott eszközök kapták meg. Töltsd fel .txt fájlként, és egy napig megmarad.",
+    "rateLimited": "Túl gyorsan küldesz. Várj egy kicsit, és próbáld újra.",
+    "quotaEvicted": "Eszközönként legfeljebb a legutóbbi {count} szöveget őrizzük meg. A legrégebbi már nem jut el a belépő eszközökhöz."
   },
   "notification": {
     "uploading": "Feltöltés...",

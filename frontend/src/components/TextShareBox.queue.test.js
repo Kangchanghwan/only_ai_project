@@ -8,19 +8,36 @@ import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 const provide = { [SENDER_CONTEXT_KEY]: { mySocketId: ref('me'), myIdentity: ref(null), devices: ref([]) } }
 const mountBox = (props = {}) => mount(TextShareBox, { props: { texts: [], ...props }, global: { plugins: [i18n], provide } })
 
-describe('TextShareBox 받는 기기 수 안내', () => {
-  it('받을 기기가 있으면 대수를, 보관 범위면 "10분 동안 보관"을 덧붙인다', () => {
-    expect(mountBox({ receiverCount: 2 }).find('[data-testid="text-receivers"]').text()).toBe('지금 받을 수 있는 다른 기기 2대')
-    expect(mountBox({ receiverCount: 1, willQueue: true }).find('[data-testid="text-receivers"]').text()).toBe('지금 받을 수 있는 다른 기기 1대 · 10분 동안 보관')
+describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
+  const label = (w) => w.find('[data-testid="text-storage-label"]').text()
+
+  it('잠금 꺼짐(평문): 같은 네트워크·전체 공유 각각 누가 볼 수 있는지와 잠금 칩을 보여 준다', () => {
+    const ip = mountBox({ storageMode: 'plain', scope: 'ip' })
+    expect(label(ip)).toBe('평문으로 10분 보관 · 같은 네트워크의 누구나 볼 수 있어요')
+    expect(ip.find('[data-testid="lock-start"]').exists()).toBe(true)
+    const global = mountBox({ storageMode: 'plain', scope: 'global' })
+    expect(label(global)).toBe('평문으로 10분 보관 · 전체 공유라 모르는 사람도 누구나 볼 수 있어요')
+    expect(global.find('[data-testid="text-storage-label"]').classes()).toContain('font-semibold')
   })
 
-  it('0대이고 보관 대상이 아니면 전달되지 않는다고, 보관 대상이면 보관한다고 미리 알린다', () => {
-    const live = mountBox({ receiverCount: 0 }).find('[data-testid="text-receivers"]')
-    expect(live.attributes('data-state')).toBe('nobody')
-    expect(live.text()).toBe('지금 받을 기기가 없어 전달되지 않아요. 잠금을 켜면 10분 동안 보관돼요.')
-    const queued = mountBox({ receiverCount: 0, willQueue: true }).find('[data-testid="text-receivers"]')
+  it('잠금 켜짐·1:1 방·보관 안 함(구버전 서버) 문구, 칩은 공개 범위에만', () => {
+    expect(label(mountBox({ storageMode: 'locked', scope: 'ip' }))).toBe('암호화해서 10분 보관 · 비밀번호를 아는 기기만 볼 수 있어요')
+    const prv = mountBox({ storageMode: 'private', scope: 'prv:prv-1' })
+    expect(label(prv)).toContain('1:1 방 키로 암호화해서 10분 보관')
+    expect(prv.find('[data-testid="lock-chip"]').exists()).toBe(false)
+    const none = mountBox({ storageMode: 'none' })
+    expect(label(none)).toBe('보관하지 않아요 · 지금 열린 기기에만 전달돼요')
+    expect(none.find('[data-testid="lock-chip"]').exists()).toBe(false)
+  })
+
+  it('받을 기기 대수, 0대면 보관했다가 전달한다고(보관 안 하면 전달 안 된다고) 알린다', () => {
+    expect(mountBox({ receiverCount: 2, storageMode: 'plain' }).find('[data-testid="text-receivers"]').text()).toBe('지금 받을 수 있는 다른 기기 2대')
+    const queued = mountBox({ receiverCount: 0, storageMode: 'plain' }).find('[data-testid="text-receivers"]')
     expect(queued.attributes('data-state')).toBe('queued')
-    expect(queued.text()).toContain('10분 동안 보관했다가')
+    expect(queued.text()).toBe('지금 받을 기기가 없어요. 10분 동안 보관했다가 들어오는 기기에 전달돼요.')
+    const live = mountBox({ receiverCount: 0, storageMode: 'none' }).find('[data-testid="text-receivers"]')
+    expect(live.attributes('data-state')).toBe('nobody')
+    expect(live.text()).toBe('지금 받을 기기가 없어 전달되지 않아요.')
   })
 
   it('수를 모르면(null) 표시하지 않는다', () => {
@@ -28,12 +45,21 @@ describe('TextShareBox 받는 기기 수 안내', () => {
   })
 
   it('보관 범위에서 공유에 성공하면 보관했다고 알린다', async () => {
-    const w = mountBox({ receiverCount: 0, willQueue: true })
+    const w = mountBox({ receiverCount: 0, storageMode: 'plain' })
     await w.find('[data-testid="text-input"]').setValue('hi')
     await w.find('[data-testid="text-compose"]').trigger('submit')
     w.emitted('share-text')[0][0].done(true)
     await w.vm.$nextTick()
     expect(w.find('[data-testid="text-share-result"]').text()).toBe('공유했어요. 10분 동안 보관해 나중에 들어온 기기도 받아요.')
+  })
+
+  it('잠금 칩의 비밀번호 입력 제출은 텍스트 공유로 번지지 않는다', async () => {
+    const w = mountBox({ storageMode: 'plain', scope: 'ip' })
+    await w.find('[data-testid="text-input"]').setValue('draft')
+    await w.find('[data-testid="lock-start"]').trigger('click')
+    await w.find('[data-testid="lock-password"]').setValue('ab')
+    await w.find('form.lock-form').trigger('submit')
+    expect(w.emitted('share-text')).toBeFalsy()
   })
 })
 
@@ -74,6 +100,16 @@ describe('TextShareBox 보관 중·잠긴 텍스트 카드', () => {
     w.emitted('unlock-text')[1][0].done({ ok: false, code: 'TEXT_NOT_FOUND' })
     await w.vm.$nextTick()
     expect(w.find('[data-testid="text-unlock-message"]').text()).toBe('보관 시간(10분)이 지나 열 수 없어요.')
+  })
+
+  it('96KB를 넘어 보관되지 않은 내 텍스트는 지금 열린 기기에만 갔다고 알리고 .txt로 보내기를 제안한다', async () => {
+    const w = mountBox({ texts: [{ id: 'big', content: 'x', timestamp: 0, roomId: 'r', notStored: 'TOO_LARGE' }] })
+    expect(w.find('[data-testid="text-not-kept"]').text()).toContain('96KB가 넘어 보관하지 않았어요 · 지금 열린 기기에만 전달됐어요')
+    await w.find('[data-testid="text-send-as-file"]').trigger('click')
+    expect(w.emitted('send-as-file')[0]).toEqual(['big'])
+    const full = mountBox({ texts: [{ id: 'f', content: 'x', timestamp: 0, roomId: 'r', notStored: 'FULL' }] })
+    expect(full.find('[data-testid="text-not-kept"]').text()).toContain('서버 보관함이 가득 차')
+    expect(full.find('[data-testid="text-send-as-file"]').exists()).toBe(false)
   })
 
   it('풀린 잠긴 텍스트는 일반 카드처럼 내용과 복사 버튼이 보인다', () => {

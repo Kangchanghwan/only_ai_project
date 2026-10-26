@@ -13,7 +13,7 @@ import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
 import { useTextShare } from './composables/useTextShare'
-import { useTextQueue } from './composables/useTextQueue'
+import { useTextQueue, textBytes, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA } from './composables/useTextQueue'
 import { useShareScope, isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from './composables/useShareScope'
 import { usePrivateRooms } from './composables/usePrivateRooms'
 import { usePairFlow } from './composables/usePairFlow'
@@ -65,8 +65,8 @@ const lockState = useLockState()
 useSeoMeta()
 const isConnecting = ref(false)
 const privateRooms = usePrivateRooms()
-// 텍스트 10분 보관: 1:1 방과 잠금이 켜진 범위의 암호문 텍스트만 서버에 보관된다
-const textQueue = useTextQueue({ textShare, privateRooms, lockState, t })
+// 텍스트 10분 보관: 1:1 방은 방 키 암호문, 같은 네트워크·전체 공유는 잠금 꺼짐이면 평문, 켜짐이면 암호문
+const textQueue = useTextQueue({ textShare, privateRooms, lockState, t, getMySocketId: () => socket.mySocketId?.value ?? null })
 
 // 같은 네트워크(ipRoom)에 새 기기가 들어오면 토스트로 알린다.
 // 내 접속 직후의 초기 목록, 이미 본 기기의 재접속(연결 복구), 내 기기, 전체 공유 방은 알리지 않는다.
@@ -269,11 +269,15 @@ const textReceiverCount = computed(() => {
   return (devices || []).filter((d) => d.socketId !== me).length
 })
 
-/** 지금 범위로 보내는 텍스트가 10분 보관되는지: 1:1 방이거나 그 범위 잠금이 켜져 있을 때 (구버전 백엔드 제외) */
-const textWillQueue = computed(() => {
-  if (textQueue.supported.value === false) return false
+/**
+ * 지금 범위로 보내는 텍스트를 어떻게 보관하는지:
+ * 'private' 1:1 방 키 암호문 | 'locked' 범위 잠금 암호문 | 'plain' 평문 | 'none' 보관 안 함(구버전 백엔드)
+ */
+const textStorageMode = computed(() => {
+  if (textQueue.supported.value === false) return 'none'
   const scope = shareScope.scope.value
-  return isPrivateScope(scope) || lockState.isLocked(scope)
+  if (isPrivateScope(scope)) return 'private'
+  return lockState.isLocked(scope) ? 'locked' : 'plain'
 })
 
 // 비밀번호를 확인하면(잠긴 파일을 풀었거나 잠금을 켬) 같은 묶음의 잠긴 텍스트도 푼다
@@ -721,22 +725,50 @@ async function handleAddText(content, scopeOverride) {
   if (self) newText.sender = self
 
   const base = { type: 'text-shared', textId: newText.id, timestamp: newText.timestamp, roomId: targetRoomId }
+  const message = isPrv
+    ? { ...base, enc }
+    : sealed
+      ? { ...base, locked: true, lock: sealed.lock, enc: sealed.enc }
+      : { ...base, content: newText.content }
+  const target = publishTargetForScope(targetScope)
+  let res = { success: true }
   try {
-    socket.publishMessage(isPrv
-      ? { ...base, enc }
-      : sealed
-        ? { ...base, locked: true, lock: sealed.lock, enc: sealed.enc }
-        : { ...base, content: newText.content },
-    publishTargetForScope(targetScope))
+    if (typeof socket.publishWithAck === 'function') res = await socket.publishWithAck(message, target)
+    else socket.publishMessage(message, target)
   } catch (error) {
     console.warn('[App] 텍스트 전송 실패:', error)
     textShare.removeText(newText.id)
     notification.showError(t('notification.connectFailed'))
     return false
   }
+  if (res?.success === false) {
+    // 속도 제한 등으로 서버가 받지 않았다: 아무에게도 가지 않았으므로 입력을 남긴다
+    textShare.removeText(newText.id)
+    notification.showError(res.code === 'RATE_LIMITED' ? t('text.rateLimited') : t('notification.connectFailed'))
+    return false
+  }
 
   if (isPrv) trackEvent('private_text')
   else trackEvent('text_share', { scope: targetScope, locked: !!sealed })
+
+  // 보관 결과: 크기 초과·서버 보관함 가득이면 지금 열린 기기에만 갔다고 알린다 (구버전 백엔드는 이유가 없어 크기로 판단)
+  const tooLarge = res?.notStored === 'TOO_LARGE' ||
+    (!res?.expiresAt && textQueue.supported.value !== false && textBytes(newText.content) > TEXT_QUEUE_MAX_BYTES)
+  if (tooLarge || res?.notStored === 'FULL') {
+    textQueue.markNotStored(newText.id, tooLarge ? 'TOO_LARGE' : 'FULL')
+    notification.showInfo(tooLarge ? t('text.tooLargeToast') : t('text.notKeptFull'))
+    return true
+  }
+  if (res?.expiresAt) {
+    const entry = textShare.sharedTexts.value.find((x) => x.id === newText.id)
+    if (entry && !entry.expiresAt) entry.expiresAt = res.expiresAt
+  }
+  if (res?.evicted?.length) {
+    // 보낸 쪽 몫을 넘어 내 가장 오래된 보관분이 밀려났다
+    textQueue.markEvicted(res.evicted)
+    notification.showInfo(t('text.quotaEvicted', { count: isPrv ? TEXT_QUEUE_SENDER_QUOTA * 2 : TEXT_QUEUE_SENDER_QUOTA }))
+    return true
+  }
 
   notification.showSuccess(t('text.shared'))
   return true
@@ -811,6 +843,17 @@ async function handleCancelQueuedText(textId) {
   }
   trackEvent('text_queue_cancel')
   notification.showInfo(t('text.keepCancelled'))
+}
+
+/** 보관되지 않은(너무 큰) 텍스트를 .txt 파일로 올린다. 파일은 하루 보관된다 */
+async function handleSendTextAsFile(textId) {
+  const target = textShare.sharedTexts.value.find((x) => x.id === textId)
+  if (!target || typeof target.content !== 'string') return
+  const d = new Date(target.timestamp || Date.now())
+  const pad = (n) => String(n).padStart(2, '0')
+  const name = `text-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.txt`
+  trackEvent('text_as_file')
+  await uploadFiles([new File([target.content], name, { type: 'text/plain' })])
 }
 
 /** 잠긴 텍스트를 비밀번호로 푼다. 결과는 done({ok, code?, remaining?})으로 카드에 돌려준다 */
@@ -1142,7 +1185,7 @@ onUnmounted(() => {
         :files="visibleFiles"
         :texts="visibleTexts"
         :text-receiver-count="textReceiverCount"
-        :text-will-queue="textWillQueue"
+        :text-storage-mode="textStorageMode"
         :is-loading="fileManager.isLoading.value || isConnecting"
         :user-count="socket.usersInRoom.value"
         :scope="shareScope.scope.value"
@@ -1175,6 +1218,7 @@ onUnmounted(() => {
         @remove-text="handleRemoveText"
         @cancel-text="handleCancelQueuedText"
         @unlock-text="handleUnlockText"
+        @send-text-as-file="handleSendTextAsFile"
         @clear-all-texts="handleClearAllTexts"
         @copy-text="handleCopyText"
         @paste-content="handlePasteContent"

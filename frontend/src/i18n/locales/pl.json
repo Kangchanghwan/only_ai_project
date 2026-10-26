@@ -196,10 +196,20 @@
     "keepCancelled": "Tekst nie jest już przechowywany.",
     "cancelFailed": "Nie udało się zakończyć przechowywania. Spróbuj ponownie.",
     "receivers": "Inne urządzenia, które mogą teraz odebrać: {count}",
-    "keptFor": "przechowywany 10 minut",
-    "noReceiversLive": "Teraz żadne urządzenie nie może odebrać, więc tekst nie dotrze. Włącz blokadę, aby przechować go przez 10 minut.",
+    "noReceiversLive": "Teraz żadne urządzenie nie może odebrać, więc tekst nie dotrze.",
     "noReceiversQueued": "Teraz żadne urządzenie nie może odebrać. Tekst jest przechowywany 10 minut i trafi do urządzeń, które dołączą.",
-    "queuedStatus": "Udostępniono. Tekst jest przechowywany 10 minut, więc urządzenia, które dołączą później, też go dostaną."
+    "queuedStatus": "Udostępniono. Tekst jest przechowywany 10 minut, więc urządzenia, które dołączą później, też go dostaną.",
+    "storagePlainIp": "Przechowywany jako zwykły tekst przez 10 minut · każdy w tej sieci może go zobaczyć",
+    "storagePlainGlobal": "Przechowywany jako zwykły tekst przez 10 minut · to „Wszyscy”, więc widzą go też obcy",
+    "storageLocked": "Zaszyfrowany i przechowywany przez 10 minut · widzą go tylko urządzenia znające hasło",
+    "storagePrivate": "Zaszyfrowany kluczem pokoju 1:1 i przechowywany przez 10 minut · widzą go tylko dwa urządzenia",
+    "storageNone": "Nie jest przechowywany · dostaną go tylko urządzenia otwarte teraz",
+    "notKeptTooLarge": "Ponad 96 KB, nie zapisano · dostały go tylko urządzenia otwarte teraz",
+    "notKeptFull": "Magazyn serwera jest pełny, nie zapisano · dostały go tylko urządzenia otwarte teraz",
+    "sendAsFile": "Wyślij jako plik .txt · przechowywany dzień",
+    "tooLargeToast": "Teksty powyżej 96 KB nie są przechowywane; dostały go tylko urządzenia otwarte teraz. Prześlij go jako plik .txt, aby był przechowywany dzień.",
+    "rateLimited": "Wysyłasz za szybko. Poczekaj chwilę i spróbuj ponownie.",
+    "quotaEvicted": "Każde urządzenie przechowuje najwyżej {count} ostatnich tekstów. Najstarszy nie trafi już do nowych urządzeń."
   },
   "notification": {
     "uploading": "Przesyłanie...",

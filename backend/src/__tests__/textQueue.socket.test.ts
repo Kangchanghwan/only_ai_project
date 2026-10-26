@@ -2,7 +2,9 @@ import { httpServer } from '../server';
 import ioClient from 'socket.io-client';
 import { AddressInfo } from 'net';
 import { createHash, randomBytes } from 'crypto';
-import { getTextQueue, TEXT_QUEUE_TTL_MS } from '../utils/textQueue';
+import { getTextQueue, TEXT_QUEUE_TTL_MS, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA } from '../utils/textQueue';
+import { TEXT_PUBLISH_BUCKET_CAPACITY } from '../handlers/socketHandlers';
+import logger from '../utils/logger';
 import { resetUnlockLimiter } from '../utils/unlockLimiter';
 import { issueRoomToken } from '../utils/roomToken';
 
@@ -164,22 +166,116 @@ describe('텍스트 대기열 (10분 보관) — 소켓 + API', () => {
         expect(res.status).toBe(404);
     });
 
-    test('잠금 없는 같은 네트워크·전체 공유 텍스트는 실시간 전달만 하고 보관하지 않는다', async () => {
+    test('잠금 꺼진 같은 네트워크·전체 공유 평문도 10분 보관해 늦게 들어온 기기가 그대로 받는다', async () => {
         const ip = freshIp();
         const A = await connect(ip);
         const B = await connect(ip);
         const plain = { type: 'text-shared', textId: `${Date.now()}-plain`, content: '안녕', timestamp: 1, roomId: A.reg.ipRoomId };
         const { res } = await publish(A.c, plain, 'ip');
-        expect(res.expiresAt).toBeUndefined();
+        expect(res).toEqual({ success: true, expiresAt: now + TEXT_QUEUE_TTL_MS });
         const globalPlain = { ...plain, textId: `${Date.now()}-g`, roomId: A.reg.globalRoomId };
         await publish(A.c, globalPlain, 'global');
-        // 잠금 정보 없이 암호문만 보낸 것도 보관하지 않는다
+        // 잠금 표시 없이 암호문만 보낸 것은 보관하지 않는다
         await publish(A.c, { type: 'text-shared', textId: `${Date.now()}-e`, enc: enc(), roomId: A.reg.ipRoomId }, 'ip');
         await wait();
-        expect(B.messages.find((m) => m.textId === plain.textId)).toMatchObject({ content: '안녕' });
+        // 실시간 중계: 방 안의 기기에 평문 그대로 + 만료 시각
+        expect(B.messages.find((m) => m.textId === plain.textId)).toMatchObject({ content: '안녕', expiresAt: now + TEXT_QUEUE_TTL_MS });
+
+        // 늦게 들어온 같은 네트워크 기기 C, 다른 네트워크 기기 D
+        const C = await connect(ip);
+        const ipTexts = await list(C.reg.ipRoomId, C.reg.roomTokens[C.reg.ipRoomId]);
+        expect(ipTexts).toEqual([expect.objectContaining({ textId: plain.textId, content: '안녕', sender: expect.objectContaining({ socketId: A.c.id }) })]);
+        expect(JSON.stringify(ipTexts)).not.toContain('"owner"');
+        const D = await connect(freshIp());
+        const globalTexts = await list(D.reg.globalRoomId, D.reg.roomTokens[D.reg.globalRoomId]);
+        expect(globalTexts.map((t) => t.textId)).toContain(globalPlain.textId);
+        // 다른 네트워크 기기는 그 IP 방 토큰이 없어 같은 네트워크 보관분을 못 본다
+        expect((await api(`/api/texts/${A.reg.ipRoomId}`, A.reg.ipRoomId, undefined, D.reg.roomTokens[D.reg.ipRoomId])).status).toBe(401);
+        expect(getTextQueue().size()).toBe(2);
+    });
+
+    test('평문 내용은 로그·에러 메시지 어디에도 남지 않는다', async () => {
+        const secret = `평문-비밀-${randomBytes(6).toString('hex')}`;
+        const spies = [
+            ...(['log', 'info', 'warn', 'error', 'debug'] as const).map((m) => jest.spyOn(logger, m)),
+            ...(['log', 'info', 'warn', 'error', 'debug'] as const).map((m) => jest.spyOn(console, m).mockImplementation(() => {})),
+        ];
+        try {
+            const ip = freshIp();
+            const A = await connect(ip);
+            const errors: unknown[] = [];
+            A.c.on('error', (e: unknown) => errors.push(e));
+            const msg = { type: 'text-shared', textId: `${Date.now()}-s`, content: secret, timestamp: 1, roomId: A.reg.ipRoomId };
+            await publish(A.c, msg, 'ip');
+            await publish(A.c, { ...msg, textId: `${Date.now()}-s2`, roomId: A.reg.globalRoomId }, 'global');
+            await publish(A.c, { ...msg, textId: `${Date.now()}-big`, content: secret + 'x'.repeat(TEXT_QUEUE_MAX_BYTES) }, 'ip');
+            await publish(A.c, { ...msg, textId: 'bad/id' }, 'ip');
+            await publish(A.c, msg, 'prv-ffffffffffffffffffffffff');
+            const B = await connect(ip);
+            await list(B.reg.ipRoomId, B.reg.roomTokens[B.reg.ipRoomId]);
+            await api('/api/texts/delete', B.reg.ipRoomId, { roomId: B.reg.ipRoomId, textIds: [msg.textId] });
+            await api('/api/texts/unlock', B.reg.ipRoomId, { roomId: B.reg.ipRoomId, textIds: [msg.textId], verifier: secret });
+            await wait();
+            const logged = JSON.stringify(spies.flatMap((s) => s.mock.calls), (_k, v) => (v instanceof Error ? `${v.name}:${v.message}` : v));
+            expect(logged).not.toContain(secret);
+            expect(JSON.stringify(errors)).not.toContain(secret);
+        } finally {
+            spies.forEach((s) => s.mockRestore());
+        }
+    });
+
+    test('96KiB를 넘는 텍스트는 실시간 전달만 하고 보관하지 않으며, 보낸 쪽 ack에 이유를 준다', async () => {
+        const ip = freshIp();
+        const A = await connect(ip);
+        const B = await connect(ip);
+        const big = { type: 'text-shared', textId: `${Date.now()}-big`, content: 'x'.repeat(TEXT_QUEUE_MAX_BYTES + 1), timestamp: 1, roomId: A.reg.ipRoomId };
+        const { res } = await publish(A.c, big, 'ip');
+        expect(res).toEqual({ success: true, notStored: 'TOO_LARGE' });
+        await wait();
+        expect(B.messages.find((m) => m.textId === big.textId)?.content).toHaveLength(TEXT_QUEUE_MAX_BYTES + 1);
         expect(await list(A.reg.ipRoomId)).toHaveLength(0);
-        expect(await list(A.reg.globalRoomId)).toHaveLength(0);
-        expect(getTextQueue().size()).toBe(0);
+    });
+
+    test('text-shared는 소켓당 속도 제한: 연속 10개까지 통과, 넘으면 중계·보관 없이 RATE_LIMITED', async () => {
+        const ip = freshIp();
+        const A = await connect(ip);
+        const B = await connect(ip);
+        const results: any[] = [];
+        for (let i = 0; i < TEXT_PUBLISH_BUCKET_CAPACITY + 2; i++) {
+            results.push((await publish(A.c, { type: 'text-shared', textId: `${Date.now()}-r${i}`, content: `m${i}`, timestamp: 1, roomId: A.reg.ipRoomId }, 'ip')).res);
+        }
+        expect(results.slice(0, TEXT_PUBLISH_BUCKET_CAPACITY).every((r) => r.success === true)).toBe(true);
+        expect(results.slice(TEXT_PUBLISH_BUCKET_CAPACITY)).toEqual([
+            { success: false, code: 'RATE_LIMITED' },
+            { success: false, code: 'RATE_LIMITED' },
+        ]);
+        await wait();
+        expect(B.messages.filter((m) => m.type === 'text-shared')).toHaveLength(TEXT_PUBLISH_BUCKET_CAPACITY);
+        // 다른 소켓은 영향받지 않고, 파일 알림 같은 다른 publish도 막히지 않는다
+        expect((await publish(B.c, { type: 'text-shared', textId: `${Date.now()}-other`, content: 'ok', roomId: B.reg.ipRoomId }, 'ip')).res.success).toBe(true);
+        expect((await publish(A.c, { type: 'file-deleted', fileName: 'a.txt', roomId: A.reg.ipRoomId }, 'ip')).res.success).toBe(true);
+    });
+
+    test('보낸 쪽 몫(5개)을 넘으면 자기 가장 오래된 보관분만 밀려나고(ack로 알림) 남의 보관분은 남는다', async () => {
+        const ip = freshIp();
+        const victim = await connect(ip);
+        const spammer = await connect(ip);
+        const room = victim.reg.ipRoomId;
+        const theirs = { type: 'text-shared', textId: `${Date.now()}-victim`, content: '남의 글', timestamp: 1, roomId: room };
+        await publish(victim.c, theirs, 'ip');
+        const mine: string[] = [];
+        const evicted: string[] = [];
+        for (let i = 0; i < TEXT_QUEUE_SENDER_QUOTA + 2; i++) {
+            now += 1;
+            const id = `${Date.now()}-spam${i}`;
+            mine.push(id);
+            const { res } = await publish(spammer.c, { type: 'text-shared', textId: id, content: `spam ${i}`, timestamp: 1, roomId: room }, 'ip');
+            evicted.push(...(res.evicted ?? []));
+        }
+        expect(evicted).toEqual(mine.slice(0, 2));
+        const left = (await list(room)).map((t) => t.textId);
+        expect(left).toContain(theirs.textId);
+        expect(left.filter((id) => mine.includes(id))).toEqual(mine.slice(2));
     });
 
     test('평문 content가 실린 메시지는 잠금 정보가 있어도 대기열에 들어가지 않는다', async () => {
@@ -267,7 +363,8 @@ describe('텍스트 대기열 (10분 보관) — 소켓 + API', () => {
 
     test('1:1 방에 평문 content를 보내면 보관하지 않는다', async () => {
         const roomId = 'prv-0123456789abcdef01234567';
-        expect(getTextQueue().offer({ type: 'text-shared', textId: 'x1', content: '평문', enc: enc(), roomId }, roomId)).toBeNull();
+        expect(getTextQueue().offer({ type: 'text-shared', textId: 'x1', content: '평문', enc: enc(), roomId }, roomId).stored).toBe(false);
+        expect(getTextQueue().offer({ type: 'text-shared', textId: 'x2', content: '평문', roomId }, roomId).stored).toBe(false);
         expect(getTextQueue().size()).toBe(0);
     });
 
