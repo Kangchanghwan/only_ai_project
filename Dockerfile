@@ -1,7 +1,9 @@
 # ============================================
 # Build Stage
 # ============================================
-FROM node:22-alpine AS builder
+# 2026-10-27: Node.js 2026-10-21 보안 릴리스(CVE-2026-111497 Brotli RCE 등) 반영 최소 버전으로 고정.
+# express.json()이 Content-Encoding: br 본문을 풀기 때문에 22.23.4 미만이면 인증 없이 도달 가능하다. 내릴 때는 패치 버전 확인 후에만.
+FROM node:22.23.4-alpine AS builder
 
 # Set working directory
 WORKDIR /usr/src/app
@@ -22,7 +24,7 @@ RUN npm run build:prod
 # ============================================
 # Production Stage
 # ============================================
-FROM node:22-alpine AS production
+FROM node:22.23.4-alpine AS production
 
 # Set production environment
 ENV NODE_ENV=production
