@@ -23,8 +23,9 @@ describe('전역 에러 핸들러', () => {
   afterAll((done) => { server.close(() => done()); });
   afterEach(() => { jest.restoreAllMocks(); });
 
-  test('잘못된 JSON 본문은 400 + { error }', async () => {
-    const spy = jest.spyOn(logger, 'error').mockImplementation(() => {});
+  test('잘못된 JSON 본문은 400 + { error }, error가 아니라 warn으로 남는다', async () => {
+    const errSpy = jest.spyOn(logger, 'error').mockImplementation(() => {});
+    const spy = jest.spyOn(logger, 'warn').mockImplementation(() => {});
     const res = await fetch(`${baseUrl}/echo`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -33,6 +34,19 @@ describe('전역 에러 핸들러', () => {
     expect(res.status).toBe(400);
     expect(typeof ((await res.json()) as { error: unknown }).error).toBe('string');
     expect(spy).toHaveBeenCalled();
+    expect(errSpy).not.toHaveBeenCalled();
+    expect(JSON.stringify(spy.mock.calls)).not.toContain('bad json');
+  });
+
+  test('본문 크기 초과는 500이 아니라 413을 그대로 돌려준다', async () => {
+    jest.spyOn(logger, 'warn').mockImplementation(() => {});
+    const res = await fetch(`${baseUrl}/echo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pad: 'x'.repeat(200 * 1024) }),
+    });
+    expect(res.status).toBe(413);
+    expect(((await res.json()) as { error: unknown }).error).toBe('요청 본문이 너무 큽니다');
   });
 
   test('예외는 500 + 일반 메시지, 스택·내부 메시지는 응답에 없고 method/path는 로그에 남는다', async () => {
