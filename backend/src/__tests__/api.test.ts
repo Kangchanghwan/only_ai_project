@@ -165,5 +165,29 @@ describe('REST API - upload/download presign', () => {
       });
       expect(res.status).toBe(400);
     });
+
+    const postNames = (fileNames: string[]) =>
+      fetch(`${baseUrl}/api/r2/download-urls`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roomId: 'room-x', fileNames }),
+      });
+
+    test('짝 없는 surrogate 파일명은 500이 아니라 400을 반환한다', async () => {
+      expect((await postNames(['\uD800'])).status).toBe(400);
+    });
+
+    test('한글/이모지 파일명은 200을 반환한다', async () => {
+      expect((await postNames(['사진.png', '😀.txt'])).status).toBe(200);
+    });
+
+    test('정상과 비정상 파일명이 섞이면 전체가 400이다', async () => {
+      expect((await postNames(['a.png', 'bad\uDC00.png'])).status).toBe(400);
+    });
+
+    test('빈 문자열이거나 길이 상한을 넘는 파일명은 400이다', async () => {
+      expect((await postNames([''])).status).toBe(400);
+      expect((await postNames(['a'.repeat(1025)])).status).toBe(400);
+    });
   });
 });

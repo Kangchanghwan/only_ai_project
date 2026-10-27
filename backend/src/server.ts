@@ -297,10 +297,25 @@ app.post('/api/r2/presigned-urls', rejectPrivateRoom, roomIdFromBody, async (req
     }
 });
 
+const MAX_DOWNLOAD_FILE_NAME_LENGTH = 1024;
+const LONE_SURROGATE = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/;
+
+/** 다운로드 URL 서명에 쓸 수 있는 파일명인지 (비어 있지 않고, 길이 상한 이내, 짝 없는 surrogate 없음) */
+function isValidDownloadFileName(fileName: string): boolean {
+    return fileName.length > 0
+        && fileName.length <= MAX_DOWNLOAD_FILE_NAME_LENGTH
+        && !LONE_SURROGATE.test(fileName);
+}
+
 /** 네이티브 다운로드용 Presigned URL (Content-Disposition: attachment 서명) */
 app.get('/api/r2/download-url/:roomId/:fileName', async (req, res) => {
     try {
         const { roomId, fileName } = req.params;
+
+        if (!isValidDownloadFileName(fileName)) {
+            res.status(400).json({ error: '잘못된 파일명' });
+            return;
+        }
 
         const r2Service = getR2Service();
         const url = await r2Service.getDownloadPresignedUrl(roomId, fileName);
@@ -324,6 +339,11 @@ app.post('/api/r2/download-urls', async (req, res) => {
 
         if (fileNames.length > MAX_DOWNLOAD_BATCH || fileNames.some((n: unknown) => typeof n !== 'string')) {
             res.status(400).json({ error: `fileNames는 문자열 최대 ${MAX_DOWNLOAD_BATCH}개까지 가능합니다` });
+            return;
+        }
+
+        if (!fileNames.every(isValidDownloadFileName)) {
+            res.status(400).json({ error: '잘못된 파일명' });
             return;
         }
 
