@@ -8,6 +8,7 @@ import { setupSocketHandlers } from './handlers/socketHandlers';
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './types';
 import logger from './utils/logger';
 import requestLogger from './middleware/requestLogger';
+import errorHandler from './middleware/errorHandler';
 import { getR2Service } from './services/r2Service';
 import { checkFileSize, checkRoomSize, SizeCheckFailure } from './utils/uploadLimits';
 import { requireRoomToken } from './middleware/roomAuth';
@@ -473,6 +474,9 @@ app.delete('/api/r2/files/:roomId', roomIdFromParams, async (req, res) => {
         res.status(500).json({ error: '전체 파일 삭제 실패' });
     }
 });
+
+// 전역 에러 핸들러 (모든 라우트 뒤에 등록)
+app.use(errorHandler);
 
 // === 서버 시작 ===
 
