@@ -1328,7 +1328,7 @@ This is a comparison to help you choose. If you already know you want Clipboard 
 
 Service | Sign-up needed | File size limit | How long items are kept | Same Wi-Fi auto-connect | Open source | Password-lock files |
 
-**Clipboard Share** | No | 5GB per file | Files up to about 1 day | Yes | Yes (public repo, ISC per README) | Yes, for the files you choose |
+**Clipboard Share** | No | 5GB per file | Files up to about 1 day | Yes | Yes (MIT license, public repo) | Yes, for the files you choose |
 
 **cl1p.net** | Not stated | Not stated | Destroyed when read; up to a month if kept | Not stated | Not stated | Not stated |
 
