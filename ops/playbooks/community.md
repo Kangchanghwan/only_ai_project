@@ -67,6 +67,7 @@
 | 1 | AlternativeTo | Snapdrop·PairDrop·AirDrop·LocalSend의 대체 앱으로 등록 | 제출 완료 (2026-10-02, 심사 대기, 10-05 재확인 여전히 대기) | 월요일마다 My submissions 상태 확인 |
 | 2 | GeekNews (news.hada.io) | Show GN 글 (레포 또는 사이트 중 하나만, 같은 프로젝트 재등록 불가) | 게시 (2026-10-09, owner 승인 후) | https://news.hada.io/topic?id=35068 · 월요일 댓글 확인. 10-12 기준 2포인트, 댓글 0, GA 유입 12세션 |
 | 4 | SaaSHub / Toolify 류 무료 디렉터리 | 무료 등록만 (유료 리스팅 금지) | SaaSHub 제출 (2026-10-21, 무료 큐 1~12주) | https://www.saashub.com/clipboard-share (승인 전 비공개). 영어만 받아서 URL은 /en/. 카테고리 Cross-platform Clipboard·File Sharing·File Transfer·Productivity·Secure File Sharing, 경쟁 Snapdrop·PairDrop·LocalSend·AirDrop·ShareDrop·Snap-Drop.net·Clipcroft, 가격 Free, 로고 icon-512. 제품 인증은 제품 도메인 이메일이 필요해 못 함. 유료 우선심사($75/$99) 안 함. 월요일 승인 확인. Toolify 등은 다음 차례 |
+| 4-1 | nologin.tools (awesome-nologin-tools 목록) | 가입 없는 도구 디렉터리, 무료 등록 폼(URL만, 이메일 비움) | 제출 (2026-10-28, 일반 큐 #774, 약 78일) | 상태 확인 https://nologin.tools/submit 의 Check Status에 clipboardapp.org. 승인되면 GitHub nologin-tools/awesome-nologin-tools README Communication 절에 자동 반영. 배지 우선 심사(사이트에 배지 삽입)는 하지 않음. |
 | 5 | Reddit r/SideProject | 런칭 글 (규칙 확인). 각도: 같은 와이파이 자동 연결 + 필요한 파일만 브라우저에서 비밀번호 잠금 | 대기 (10-16 이후 가능) | |
 | 6 | Reddit r/InternetIsBeautiful | 규칙이 엄격함, 조건 맞을 때만 | 대기 | |
 | 7 | Product Hunt | 런칭 (화~목 00:01 PT 권장, 준비물 많음, 1주 전 owner에게 예고) | 런칭 (2026-10-20 00:01 PT) | https://www.producthunt.com/products/clipboard-share · 10-21 08시 확인: 업보트 2(메이커 포함 표시 1 points), 댓글은 메이커 첫 댓글뿐이라 답글 없음 |
