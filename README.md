@@ -366,7 +366,7 @@ lsof -ti:5174 | xargs kill -9
 
 ## 📄 라이선스
 
-ISC
+[MIT](LICENSE)
 
 ## 👥 기여
 
