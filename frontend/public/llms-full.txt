@@ -71,18 +71,40 @@ Source: https://www.clipboardapp.org/guide/clipboard-share-video.html
 
 # 영상으로 보는 Clipboard Share 사용법
 
-폰에서 고른 사진이 PC에 나타나고, PC에서 붙여넣은 링크가 폰에 도착하기까지 영상에서는 1~2초가 걸렸습니다. 앱을 설치하거나 계정을 만드는 단계가 없어서, 영상에 나오는 동작이 처음 쓰는 날에도 그대로입니다.
+폰에서 고른 사진이 PC에 나타나고, PC에서 붙여넣은 링크가 폰에 도착하기까지 영상에서는 1~2초가 걸렸습니다. 앱을 설치하거나 계정을 만드는 단계가 없어서, 영상에 나오는 동작이 처음 쓰는 날에도 그대로입니다. 이 페이지는 52초 영상, 장면별 요약 표, 대본 전문으로 구성했습니다.
 
 영상은 실제 사이트를 녹화했습니다. 폰은 Mac에서 돌린 Android 에뮬레이터, PC는 Mac 크롬입니다. 상태바와 주소창, 기기 테두리만 영상용으로 다시 그렸습니다.
 
-## 영상에 나오는 장면
-- 0:06**같은 와이파이면 자동 연결.** 폰에서 페이지를 열면 PC 목록에 폰의 동물 이름표가 바로 뜹니다. 코드를 입력하거나 QR을 찍지 않아도 됩니다.
-- 0:14**폰 사진을 PC로.** "파일 선택"으로 사진을 고르면 업로드 막대가 차고, PC 쪽에 썸네일이 달린 카드가 나타납니다.
-- 0:19**PC에서 복사한 링크를 폰으로.** 텍스트 탭에 붙여넣고 "공유"를 누르면 폰의 "수신한 텍스트"에 도착하고, "복사"로 폰 클립보드에 담깁니다.
-- 0:24**큰 파일.** 2.48GB 동영상을 올리는 장면입니다. 파일 하나에 5GB까지 올릴 수 있고, 연결이 끊기면 이어서 올립니다.
-- 0:30**비밀번호로 잠근 파일.** 잠금을 켜고 PDF를 보내면 PC에는 이름이 가려진 잠긴 카드가 보이고, 비밀번호를 넣어야 "계약서_서명본.pdf"라는 원래 이름이 드러납니다.
-- 0:38**1:1 연결.** PC에서 폰 옆의 "1:1"을 누르면 두 화면에 같은 그림 4개가 뜹니다. 그림이 같은지 확인하고 수락하면 두 기기만 쓰는 방이 열립니다.
-- 0:43**남기지 않습니다.** 올린 파일은 최대 하루 뒤 자동으로 정리됩니다.
+## 장면별 요약 (52초)
+
+시간 | 장면과 화면 |
+
+0:06 | **같은 와이파이면 자동 연결**
+폰에서 페이지를 열면 PC 목록에 폰의 동물 이름표가 바로 뜹니다. 코드 입력이나 QR 촬영이 없습니다.
+자세히: [사용법: 처음부터 끝까지](https://www.clipboardapp.org/how-to-use.html) |
+
+0:14 | **폰 사진을 PC로**
+"파일 선택"으로 사진을 고르면 업로드 막대가 차고, PC에 썸네일이 달린 카드가 나타납니다.
+자세히: [아이폰 사진 윈도우 PC로 옮기기](https://www.clipboardapp.org/guide/iphone-to-windows-photo-transfer.html) · [갤럭시 사진 윈도우 컴퓨터로 옮기기](https://www.clipboardapp.org/guide/galaxy-photo-to-pc-transfer.html) |
+
+0:19 | **PC에서 복사한 링크를 폰으로**
+텍스트 탭에 붙여넣고 "공유"를 누르면 폰의 "수신한 텍스트"에 도착하고, "복사"로 폰 클립보드에 담깁니다.
+자세히: [PC 링크 폰으로 보내기](https://www.clipboardapp.org/guide/send-link-from-pc-to-phone.html) · [폰에서 복사한 텍스트를 PC에 붙여넣기](https://www.clipboardapp.org/guide/copy-text-phone-to-pc.html) |
+
+0:24 | **큰 파일**
+2.48GB 동영상을 올립니다. 파일 하나에 5GB까지 올릴 수 있고, 연결이 끊기면 이어서 올립니다.
+자세히: [대용량 파일, 회원가입 없이 무료로 보내기](https://www.clipboardapp.org/guide/large-file-transfer-free-no-signup.html) |
+
+0:30 | **비밀번호로 잠근 파일**
+잠금을 켜고 PDF를 보내면 PC에는 이름이 가려진 잠긴 카드가 보이고, 비밀번호를 넣어야 "계약서_서명본.pdf"라는 원래 이름이 드러납니다.
+자세히: [파일 비밀번호 걸어서 보내기](https://www.clipboardapp.org/guide/send-file-with-password.html) |
+
+0:38 | **1:1 연결**
+PC에서 폰 옆의 "1:1"을 누르면 두 화면에 같은 그림 4개가 뜹니다. 그림이 같은지 확인하고 수락하면 두 기기만 쓰는 방이 열립니다.
+자세히: [사용법: 처음부터 끝까지](https://www.clipboardapp.org/how-to-use.html) |
+
+0:43 | **남기지 않습니다**
+올린 파일은 최대 하루 뒤 자동으로 정리됩니다. |
 
 ## 영상 대본
 
@@ -107,12 +129,6 @@ PC에서 복사한 링크도, 탭 한 번이면 폰으로.
 Clipboard Share.
 
 나레이션은 AI 합성 음성입니다.
-
-## 장면별로 더 자세히
-- 사진: [아이폰 사진 윈도우 PC로 옮기기](https://www.clipboardapp.org/guide/iphone-to-windows-photo-transfer.html), [갤럭시 사진 윈도우 컴퓨터로 옮기기](https://www.clipboardapp.org/guide/galaxy-photo-to-pc-transfer.html)
-- 링크·텍스트: [PC 링크 폰으로 보내기](https://www.clipboardapp.org/guide/send-link-from-pc-to-phone.html), [폰에서 복사한 텍스트를 PC에 붙여넣기](https://www.clipboardapp.org/guide/copy-text-phone-to-pc.html)
-- 큰 파일: [대용량 파일, 회원가입 없이 무료로 보내기](https://www.clipboardapp.org/guide/large-file-transfer-free-no-signup.html)
-- 잠금: [파일 비밀번호 걸어서 보내기](https://www.clipboardapp.org/guide/send-file-with-password.html)
 
 ## 자주 묻는 질문
 
