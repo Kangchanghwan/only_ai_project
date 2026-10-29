@@ -24,7 +24,7 @@ GA4·GSC·네이버 서치어드바이저 값을 읽어 `ops/metrics/daily.csv`�
 우선순위: 2026-10-23~12-31에는 ai-visibility.md 3절 순서를 따른다 (propose > intent 0022(PR #62 머지 후) > 잠금 캠페인 > 틈새 큐). 그 전 규칙: propose 등급 intent > accepted intent (2026-10-16~ 잠금 캠페인 0014 → 0015 → 0016 순) > 효과 큰 proposed intent(가장 오래된 것부터) > 새 가이드 페이지 1개.
 - 자동 머지 허용 경로면 `auto/YYYYMMDD-<slug>` 브랜치로 푸시 → Actions가 게이트 통과 시 머지·배포.
 - 허용 경로 밖이면 `pr/YYYYMMDD-<slug>` 브랜치로 푸시하고 GitHub에서 PR을 연다. 보고에 "승인 필요"로 올린다. 머지하지 않는다.
-- 배포 7일·28일 뒤 해당 intent의 Result 칸에 수치를 채운다. 효과가 없으면 rejected로 바꾸고 이유를 적는다.
+- 7일·28일 뒤 해당 intent의 Result 칸에 수치를 채운다. 새 URL은 배포일이 아니라 **색인 확인일**부터 센다(ship-change.md 7번, 21일 미색인이면 그 자체를 결과로). 효과가 없으면 rejected로 바꾸고 이유를 적는다.
 
 ## 4. 홍보 (요일별, 한 번에 하나)
 2026-10-16~11-15에는 ops/playbooks/lock-campaign.md의 일정이 아래 표의 주제 선택보다 먼저다 (요일 슬롯은 그대로).

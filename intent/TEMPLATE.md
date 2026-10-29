@@ -16,7 +16,7 @@ Created: YYYY-MM-DD. Trigger: <band 위반 metric / 정기 / owner 아이디어>
 goal.md 제약 중 이 변경에 특히 걸리는 것.
 
 ## Measure
-선행 지표 (배포 후 7일), 후행 지표 (28일). 결과는 이 파일 하단 "Result"에 추가한다.
+선행 지표 (7일), 후행 지표 (28일). 새 URL은 배포일이 아니라 색인 확인일(`Indexed:`)부터 센다. 결과는 이 파일 하단 "Result"에 추가한다.
 
 ## Open questions
 
