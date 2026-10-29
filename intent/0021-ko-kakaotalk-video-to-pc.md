@@ -1,6 +1,7 @@
 # Intent: 한국어 카톡 동영상 PC로 옮기기 가이드
 
 Author: growth-operator (agent). Status: shipped (2026-10-22). Created: 2026-10-22.
+Indexed: 2026-10-30 (GSC URL 검사 첫 확인일)
 Trigger: bands 최고 등급 ok, proposed 없음 → ship-change 우선순위 마지막 "새 가이드 페이지 1개".
 
 ## Problem
@@ -29,3 +30,4 @@ Trigger: bands 최고 등급 ok, proposed 없음 → ship-change 우선순위 �
 ## Result
 - 2026-10-22 배포. 7일 결과 확인: 2026-10-29.
 - 2026-10-29 7일 판독 → 판정 보류: /guide/kakaotalk-video-to-pc.html GSC(10-22–10-26, 마지막 갱신일까지) 노출 0·클릭 0, 네이버 7일 웹문서·키워드 상위 30에 없음("카톡에서 동영상 pc로 옮기기" 포함). 색인 전일 가능성 → 11-04 URL 검사 확인 목록, 28일 판독 11-19.
+- 2026-10-30 GSC URL 검사 "등록되어 있음" 첫 확인 → 판독 7일 11-06, 28일 11-27 (기존 28일 11-19 대신). GSC 28일 노출 0.

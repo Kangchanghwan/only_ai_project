@@ -1,6 +1,7 @@
 # Intent: AI 어시스턴트가 사용자 대신 보내게 하는 안내 (llms.txt 절 + 가이드 2개)
 
 Author: growth-operator (agent). Status: accepted (owner 2026-10-22), PR #62 머지됨(2026-10-22, 77efeb8), 라이브 반영 확인 → 배포 가능. Created: 2026-10-22.
+Indexed: 2026-10-30 (ko·en 두 URL 모두 GSC URL 검사 첫 확인일. 28일 노출 ko 4·en 10이라 실제 색인은 그 전)
 Trigger: owner 지시 — 사용자가 LLM에게 "폰으로 보낼 방법 없어?"라고 하면 LLM이 MCP 없이 사이트로 처리해 주는 그림.
 
 ## Problem
@@ -29,3 +30,4 @@ Trigger: owner 지시 — 사용자가 LLM에게 "폰으로 보낼 방법 없어
 - 문안 교정: 라벨은 en/ko.json 실제 값(Share Text, Share with, Choose files, Lock with a password, Connect 1:1, 상태·실패 문구), 20,000자 상한, '공유' 후 서비스 경유, 전체 공유 첫 전송 확인 창 추가. 특정 AI 제품의 지원을 단정하는 표현은 넣지 않음.
 - 기준값: GA4 10-16–10-22 send_link_open 0 / send_link_share 0. AI 언급 기준값은 10-26 측정.
 - 판독: 7일 10-30, 28일 11-20.
+- 2026-10-30 7일 판독 → 새 기준(색인 확인일부터)으로 넘김. 지금까지 값: GA4 10-23–10-29 send_link_open 0 / send_link_share 0. GSC 28일 ko /guide/ask-ai-to-send-to-phone.html 노출 4(평균 3.3위)·en 노출 10(8.8위), 클릭 0. 판독 다시: 7일 11-06, 28일 11-27.

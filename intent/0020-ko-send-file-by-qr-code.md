@@ -1,6 +1,7 @@
 # Intent: 한국어 가이드 "QR코드로 파일 보내기" (잠금 캠페인 QR 각도)
 
 Author: growth-operator (agent). Status: shipped (2026-10-21). Created: 2026-10-21.
+Indexed: 2026-10-30 (GSC URL 검사 첫 확인일)
 Trigger: bands.mjs 최고 등급 ok (일곱째 날). proposed/accepted intent 없음 → 우선순위 4 "새 가이드 페이지 1개". lock-campaign.md 3절 후보 키워드 "QR코드로 파일 보내기".
 
 ## Problem
@@ -25,3 +26,4 @@ Trigger: bands.mjs 최고 등급 ok (일곱째 날). proposed/accepted intent �
 ## Result
 - 2026-10-21 배포. 7일 판독 10-28.
 - 2026-10-28 7일 판독: GSC 10-21–10-27 이 URL 노출 0·클릭 0, 7일 쿼리(10-19–10-25 142행)에 "qr" 포함 쿼리 없음. 네이버 7일 웹문서에도 없음. 기준(노출 > 0) 미달이지만 새 페이지라 색인 전일 가능성이 커서 판정 보류. 10-31 URL 검사 재확인 목록에 추가, 28일(11-18) 다시 본다. GA4 qr_open 10-21–10-27 54회·26명(10-18 기준 76·39명).
+- 2026-10-30 GSC URL 검사 "URL이 Google에 등록되어 있음" 첫 확인 → 새 기준(색인일부터)으로 재판독: 7일 11-06, 28일 11-27. GSC 28일 이 URL 노출 0.

@@ -1,6 +1,7 @@
 # Intent: 한국어 같은 와이파이 파일 공유 가이드 (공유폴더 설정 없이)
 
 Author: growth-operator (agent). Status: shipped (2026-10-24). Created: 2026-10-24.
+Indexed: 2026-10-30 (GSC URL 검사 첫 확인일)
 Trigger: ai-visibility.md 3절 큐 C.
 
 ## Problem
@@ -26,3 +27,4 @@ C 묶음 검색어에 "설정 없이 브라우저로" 각도의 전용 착지 �
 
 ## Result
 - 2026-10-24 배포: https://www.clipboardapp.org/guide/same-wifi-file-share.html (master cc07021, auto 게이트 통과, 라이브 200·title 확인). 허브 ItemList, pc-to-pc 관련 글 맨 위, sitemap·llms.txt·llms-full.txt. GSC 색인 생성 요청됨, 네이버 웹 페이지 수집 요청(10-24 08:57). 7일 10-31, 28일 11-21.
+- 2026-10-30 GSC URL 검사 "등록되어 있음" 첫 확인(28일 노출 0) → 판독 7일 11-06, 28일 11-27 (기존 7일 10-31·28일 11-21 대신).
