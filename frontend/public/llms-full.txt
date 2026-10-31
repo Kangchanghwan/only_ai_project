@@ -395,7 +395,7 @@ Source: https://www.clipboardapp.org/en/guide/airdrop-alternative-android-window
 
 # An AirDrop Alternative for Android, Windows and Mac
 
-AirDrop only talks to other Apple devices, and Quick Share stops at Android and Windows. The moment you try to move a photo from an Android phone to a Mac, there is nothing between the two.
+As of October 2026, one way to move files between mixed devices is a browser tab on the same Wi-Fi: no sign-up or install, files up to 5GB each, kept for at most about 1 day. AirDrop only talks to other Apple devices, and Quick Share stops at Android and Windows. The moment you try to move a photo from an Android phone to a Mac, there is nothing between the two.
 
 So people dig out a cable, install a transfer app, or mail the file to themselves. A browser tab skips all three: every device on the same Wi-Fi lands in the same place, whatever brand it is.
 
@@ -405,6 +405,29 @@ So people dig out a cable, install a transfer app, or mail the file to themselve
 - On a phone, tap the **Upload File** card and pick the photos you want to send. On a laptop, drag the files onto the page.
 - For something already on your clipboard, one paste is enough. On the phone, tap the "Paste" card once and allow clipboard access; whatever you copied (text or an image) is shared right away. On a PC, press Ctrl+V / Cmd+V anywhere on the page.
 - Tap the item on the receiving device to copy it, or download it to save it. You can select several items and take them all at once.
+
+## AirDrop alternatives compared (2026)
+
+Tool | Works on | Install or sign-up | Network and connection | Files kept for later? |
+
+**AirDrop** | Nearby Apple devices | Not stated | Both people nearby with Wi-Fi and Bluetooth on; the receiver taps Accept | Not stated |
+
+**Quick Share** | Android and Windows PCs (64-bit Windows 10 or later; Windows 11 or later on ARM) | Windows: download the Quick Share app (Samsung PCs use Samsung's version). Android: Not stated | Wi-Fi, Bluetooth and location on, devices close together | Not stated |
+
+**LocalSend** | Windows, macOS, Linux, Android and iOS | Install on every device; no account or login | Local Wi-Fi network; no internet required | Saved to the device's Downloads folder by default |
+
+**PairDrop** | In a browser; installable as a PWA | Not stated | WebRTC direct connection; paired devices behind a NAT can be routed through its TURN server | Not kept (direct transfer, no database) |
+
+**Clipboard Share** | Any device with a browser | No sign-up or install | Devices on the same Wi-Fi connect automatically in the browser; 1:1 rooms are encrypted automatically and can also connect devices on other networks | Files up to about 1 day, 5GB per file; lock only the files that need it with a password |
+
+Checked on October 31, 2026. Sources: AirDrop, [Apple Support](https://support.apple.com/en-us/119857); Quick Share, [Google's Quick Share page](https://www.android.com/better-together/quick-share-app/); LocalSend, [localsend.org](https://localsend.org/); PairDrop, [its FAQ](https://github.com/schlagmichdoch/PairDrop/blob/master/docs/faq.md); Clipboard Share's [public repository](https://github.com/Kangchanghwan/only_ai_project). "Not stated" means the page checked does not say. Features change, so check the tool before relying on a detail.
+
+## When another option is better
+- **AirDrop:** everyone involved has Apple devices and is nearby. Apple's page describes it as sharing with nearby Apple devices.
+- **Quick Share:** you move files between Android phones and Windows PCs. Google's page covers sending from Android to a Windows laptop and back.
+- **LocalSend:** you are happy to install an app on every device and want files kept on the device itself, with no internet needed.
+- **PairDrop:** you want a direct transfer with no database, and the other device is open at the same time.
+- **Clipboard Share:** you want a phone, a Mac and a PC to connect in the browser with no sign-up or install, and the receiver may open the file later (kept for at most about 1 day).
 
 ## Good to know
 - On different networks, the **Everyone** tab still gets the file across, but items there are visible to anyone with the service open. Keep anything private on the same network.
@@ -421,6 +444,10 @@ Those connect devices directly but only inside one ecosystem. This works in the 
 ### Do I need to install anything on the Mac?
 
 No. Safari, Chrome or any current browser is enough, and there is nothing to install on the Android side either. No account, no sign-in.
+
+### What is the difference between AirDrop, Quick Share, LocalSend, PairDrop and Clipboard Share?
+
+As of October 2026: AirDrop is for nearby Apple devices, Quick Share covers Android and Windows PCs, LocalSend needs an app on every device, and PairDrop sends directly between devices in a browser. Clipboard Share connects devices on the same Wi-Fi in the browser with no sign-up or install, allows 5GB per file and keeps files for at most about 1 day. The table above lists the sources checked on October 31, 2026.
 
 [Open Clipboard Share](https://www.clipboardapp.org/en/)
 
