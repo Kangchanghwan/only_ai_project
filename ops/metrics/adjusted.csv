@@ -3,3 +3,4 @@ date,range,au28_raw,au28_adj,excluded,watch,note
 2026-10-28,09-30~10-27,698,637,United States 61 (key-event rate 6.6% user-based / engaged 38.2%),Madagascar 44 (75 events/user vs avg 20.8; key-event rate 52.3%),GA 표의 주요 이벤트 비율은 사용자 기준 열
 2026-10-29,10-01~10-28,714,651,United States 63 (key-event rate 7.9% user-based / engaged 40%),Madagascar 44 (75 events/user vs avg 20.6; key-event rate 52.3%),GA 표의 주요 이벤트 비율은 사용자 기준 열; UK 10명은 비율 10.0%라 제외 아님
 2026-10-30,10-02~10-29,729,666,United States 63 (key-event rate 7.9% user-based),Madagascar 44 (75 events/user vs avg 20.3; key-event rate 52.3%),GA 표의 주요 이벤트 비율은 사용자 기준 열
+2026-10-31,10-03~10-30,736,667,United States 69 (key-event rate 8.7% user-based),Madagascar 44 (75.1 events/user vs avg 20.3; key-event rate 52.3%),GA 표 상위 10개국만 표시(rowShow 미적용); 10명 이상 국가는 모두 표 안에서 판정
