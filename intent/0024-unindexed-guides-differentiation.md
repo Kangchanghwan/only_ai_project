@@ -30,3 +30,10 @@ Trigger: intent 0009 14일 판독, intent 0017 7일 판독
 - 2026-10-30 (4/4): clipboard-share-video 의 장면 목록을 장면별 요약 표(시간 | 장면·화면·관련 가이드, 모바일 390px 넘침 없음)로 바꾸고 "장면별로 더 자세히" 링크를 표로 합침, 첫 문단·description에 영상+표+대본 구성 명시, VideoObject hasPart Clip 7개(키 모먼트), sitemap lastmod 10-30, llms-full.txt 갱신. 다음: 10-31 URL 검사 후 4개 페이지 합치기 여부 owner 질문 판단.
 - 2026-10-30 URL 검사: iphone-galaxy-photo-transfer **색인 생성됨**(2/4 수정 10-27 후 3일). large-file-transfer(1/4)·airdrop-not-working(3/4)·clipboard-share-video(4/4)는 "발견됨 - 현재 색인이 생성되지 않음". video는 오늘 수정 후 색인 요청·네이버 수집 요청.
 - 2026-10-31 URL 검사(재요청 없음): large-file-transfer "발견됨 - 현재 색인이 생성되지 않음"(수정 후 5일), clipboard-share-video 같은 상태(수정 후 1일), airdrop-not-working 은 "Google에 아직 알려지지 않은 URL"(10-30 '발견됨'에서 다르게 표시, 수정 후 2일). 4개 중 1개 색인(iphone-galaxy). 수정 후 1주가 안 된 페이지가 2개라 11-06(목, 4/4 수정 1주)까지 하루 1회 상태만 확인하고, 그때도 미색인이면 합치기 안을 실행한다. owner 질문(10-31 보고): 11-06에도 미색인이면 (1) 영상 페이지 → how-to-use.html 로 canonical, (2) 한국어 대용량 가이드 ↔ 영어 send-large-files 는 합치지 않고 hreflang 짝 연결, (3) 에어드롭 안 될 때는 android-mac-airdrop-alternative 로 canonical — 이 순서로 진행해도 되는지.
+
+## 2단계: 합치기 (owner 사전 승인 2026-10-31, 11-06 실행 조건부)
+11-06 실행 때 GSC URL 검사로 다시 확인해, **여전히 색인 안 된 페이지만** 아래대로 바꾼다(그날 개선 슬롯 1건으로, 3개를 한 브랜치에). 이미 색인됐으면 그 페이지는 건드리지 않는다.
+- /guide/clipboard-share-video.html → `<link rel="canonical" href="https://www.clipboardapp.org/how-to-use.html">`. sitemap에서 이 URL 제거, how-to-use에서 영상 링크는 유지.
+- /guide/large-file-transfer-free-no-signup.html ↔ /en/guide/send-large-files-free-no-sign-up.html → 서로 hreflang(ko, en, x-default=en) 연결, 각자 self-canonical 유지.
+- /guide/airdrop-not-working-iphone-mac.html → canonical을 /guide/android-mac-airdrop-alternative.html로. sitemap에서 제거, 대표 페이지에 "에어드롭이 안 될 때" 짧은 절 + 링크.
+- 페이지는 삭제하지 않는다(되돌리기 쉬움). 바꾼 뒤 llms.txt·llms-full.txt에서 canonical을 넘긴 2개는 대표 페이지 설명으로 정리. 판독: 28일 뒤 대표 페이지 노출 변화.
