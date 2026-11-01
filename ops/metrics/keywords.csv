@@ -13,3 +13,13 @@ date,group,query,engine,impressions,clicks,position,serp_rank,url
 2026-10-26,C,같은 와이파이 파일 공유,naver,,,,,서치어드바이저 7일 키워드 표 1쪽에 없음
 2026-10-26,D,share files on same wifi,google,0,0,,,GSC 10-17~10-23
 2026-10-26,D,file share phone to pc without app,google,0,0,,,GSC 10-17~10-23
+2026-11-02,A,online clipboard file share,google,1,0,18.0,,GSC 10-24~10-30; 3개월 착지 /en/ 33노출 9.7위
+2026-11-02,A,clipboard file transfer,google,0,0,,,GSC 10-24~10-30
+2026-11-02,A,online clipboard file transfer,google,0,0,,,GSC 10-24~10-30
+2026-11-02,B,online clipboard,google,223,1,15.2,,/en/guide/online-clipboard-copy-paste-between-devices.html 157노출 11.2위 (GSC 10-24~10-30)
+2026-11-02,C,같은 와이파이 파일 공유,google,0,0,,,GSC 10-24~10-30; SERP gl=kr 1~10위 밖
+2026-11-02,C,폰 pc 파일 공유,google,0,0,,,GSC 10-24~10-30; SERP gl=kr 1~10위 밖
+2026-11-02,C,폰 컴퓨터 파일 옮기기 앱 없이,google,0,0,,,GSC 10-24~10-30; SERP gl=kr 1~10위 밖
+2026-11-02,C,같은 와이파이 파일 공유,naver,,,,,서치어드바이저 7일 키워드 표 1쪽에 없음
+2026-11-02,D,share files on same wifi,google,0,0,,,GSC 10-24~10-30
+2026-11-02,D,file share phone to pc without app,google,0,0,,,GSC 10-24~10-30
