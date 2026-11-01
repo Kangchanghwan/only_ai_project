@@ -22,6 +22,13 @@ owner 요청(2026-10-27): 외국에도 짧은 주소를 도입할지 결정하�
 | note | 스캐너 의심(같은 날 몰림·해외 국가·이벤트 0), 테스트 여부 등 |
 - 비교용(이미 주간 리포트에 있는 값 재사용): 방문 페이지 `/en` 세션, `/` 세션, 국가별 활성 사용자 상위 5.
 
+
+### Cloudflare 측정 방법 (2026-11-02 확정)
+대시보드 그래프의 원시 요청 수는 봇이 대부분이라 쓰지 않는다. 로그인된 대시보드 탭에서 `fetch('/api/v4/graphql', {method:'POST', credentials:'include', ...})`로 zoneTag `7cf14458610ff1a6f6c70d9d6317748f`의 `httpRequestsAdaptiveGroups`를 조회한다(무료 플랜, ASN 필드는 권한 없음).
+- **cf_kr** = count, filter `clientCountryName:"KR"`, `clientRequestPath_in:["/","/%EB%B3%B4%EB%93%9C"]`, `clientRequestHTTPProtocol_in:["HTTP/2","HTTP/3"]`, 지난 7일. dimensions `date clientDeviceType`로 일별·기기별도 note에.
+- **cf_total** = 같은 조건에서 국가 필터만 뺀 값.
+- 제외 근거: 실제 브라우저는 HTTP/2·3으로 접속한다. KR 데스크톱 Chrome **HTTP/1.1** 요청이 하루 25~31건 24시간 균일하게 오는 것은 모니터링 봇, `/.env`·`/info.php.bak` 같은 경로는 취약점 스캐너다.
+
 ## 판단 기준 (11-23, 4주 누적)
 - **도입 검토로 진행**: 핑.한국 한국 접속(cf_kr) 4주 합계 30 이상 **그리고** GA 한국 ping 세션 4주 합계 20 이상(접속이 실제 방문으로 이어졌는지 교차 확인). peer_joined·empty_state_view는 참고만.
 - **보류**: 위에 못 미치면 해외는 QR(빈 화면)로 충분하다고 보고, 4주 연장 여부만 owner에게 묻는다.
