@@ -1328,6 +1328,8 @@ Snapdrop and PairDrop are good at one thing: pushing a file from one device to a
 
 Clipboard Share covers that gap. Devices on the same Wi-Fi share one space in the browser, so anything you paste or upload stays there until everyone leaves, and picking it up is a tap rather than an accept dialog. It is a shared clipboard first, and a file drop second.
 
+As of November 2026, all it takes is a browser: no app and no account. Open the same address on each device on the same Wi-Fi and they connect on their own. Each file can be up to 5GB, files are kept for at most about a day, and you can lock only the files that need it with a password.
+
 ## How to do it
 - Put both devices on the same Wi-Fi network. A desktop on Ethernet counts as long as it is behind the same router.
 - Open [https://www.clipboardapp.org/en/](https://www.clipboardapp.org/en/) in a browser on each device. Devices on the same network are grouped automatically under the **Same network** tab. There is no code to type and no invite to send.
