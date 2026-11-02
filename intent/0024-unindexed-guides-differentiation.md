@@ -38,3 +38,4 @@ Trigger: intent 0009 14일 판독, intent 0017 7일 판독
 - /guide/large-file-transfer-free-no-signup.html ↔ /en/guide/send-large-files-free-no-sign-up.html → 서로 hreflang(ko, en, x-default=en) 연결, 각자 self-canonical 유지.
 - /guide/airdrop-not-working-iphone-mac.html → canonical을 /guide/android-mac-airdrop-alternative.html로. sitemap에서 제거, 대표 페이지에 "에어드롭이 안 될 때" 짧은 절 + 링크.
 - 페이지는 삭제하지 않는다(되돌리기 쉬움). 바꾼 뒤 llms.txt·llms-full.txt에서 canonical을 넘긴 2개는 대표 페이지 설명으로 정리. 판독: 28일 뒤 대표 페이지 노출 변화.
+- 2026-11-03 URL 검사(상태만, 재요청 없음): large-file, airdrop-not-working, video, best-online-clipboards(0025) 4개 모두 "Google에 아직 알려지지 않은 URL"(11-02에는 3개가 "발견됨"이었는데 표시가 후퇴). 11-06 2단계 판단은 그대로.
