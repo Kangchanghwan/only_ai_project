@@ -24,3 +24,7 @@ Trigger: bands.mjs diagnose — 7일 추천 유입 세션 0 (-100%, 7일 전 11)
 선행: 매일 referral7 (네이버 제외 출처). 후행: 4주 뒤(11-30) Referral 채널 7일 세션.
 
 ## Result
+
+### 진행
+- 2026-11-03: bands log (referral7 0).
+- 2026-11-04: bands **diagnose** 재진입 (referral7 2, -78%, 3주 연속 악화). 2건 모두 m.search.naver.com(네이버 검색 앱 유입이 referral로 잡힘), 네이버 cafe 6·blog 3은 Organic Social 10. 제3자 링크는 여전히 0. Change 1 실행: hemanth/awesome-pwa PR #603 https://github.com/hemanth/awesome-pwa/pull/603 ("Tools and Utilities", ChipBreaker와 Emoji Log 사이 1줄, CONTRIBUTING·PR 템플릿 없음, star 약 4,900, 마지막 병합 2026-08-10 일괄 33건+). 병합 여부는 다음 월요일(11-09) 확인, 거절되면 재시도 안 함.
