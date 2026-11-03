@@ -373,9 +373,10 @@ A shared clipboard fixes it. Open one browser tab on each device and whatever yo
 
 ## Good to know
 - If the two devices are on different networks, switch to the **Everyone** tab. Items there are visible to anyone with the service open, so keep personal files and one-time codes on the same network instead.
-- Items are deleted shortly after every device leaves the page, so download what you need before you close the tab.
+- Items are deleted shortly after every device leaves the page, and files are kept for at most about a day, so download what you need before you close the tab.
 - Add the page to your home screen and it opens like an app, with a share button in other apps that sends straight to it.
-- Files up to the limit shown on the upload card go through as they are; split or compress anything larger.
+- Each file can be up to 5GB; split or compress anything larger.
+- To keep a file private, turn on the password lock before you upload it. It is encrypted in your browser, and the other device has to enter the same password to open it.
 
 ## Questions
 
@@ -386,6 +387,10 @@ No. Only the items you paste and send are shared. The browser never reads your c
 ### Does it work between an iPhone and a Windows PC?
 
 Yes. Anything with a current browser works, in any combination: iPhone and Windows, Android and Mac, two laptops, a tablet and a phone. There is nothing to install on either side.
+
+### How big can a file be, and how long is it kept?
+
+Up to 5GB per file. Files are kept for at most about a day, and you can lock only the files that need it with a password.
 
 [Open Clipboard Share](https://www.clipboardapp.org/en/)
 
