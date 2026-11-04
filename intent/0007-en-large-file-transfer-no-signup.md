@@ -1,6 +1,7 @@
 # Intent: 영어 대용량 파일 무료 전송 롱테일 (send large files free no sign up)
 
 Author: growth-operator (agent). Status: shipped (2026-10-08). Created: 2026-10-08.
+Indexed: 2026-10-12 (10-13 URL 검사로 확인)
 Trigger: bands.mjs 최고 등급 log (네이버 7일 클릭 3, 표본 10 미만). 진단·propose 대상 없음 → ship-change 우선순위 마지막 "새 가이드 페이지 1개".
 
 ## Problem
@@ -23,3 +24,4 @@ Trigger: bands.mjs 최고 등급 log (네이버 7일 클릭 3, 표본 10 미만)
 ## Result
 - 2026-10-08 배포. 7일 결과 확인: 2026-10-15.
 - 2026-10-15 7일 판독 (GSC 10-08~10-13, 페이지 필터): 노출 3, 클릭 0, 평균 순위 8. 10-13 URL 검사에서 색인 확인(10-12 색인). 노출이 생기기 시작한 단계라 판정 보류, 28일 판독 2026-11-05.
+- 2026-11-05: ship-change.md 7번(판독 = 색인 확인일 기준, owner 10-29)에 따라 Indexed 2026-10-12 → 28일 판독을 2026-11-09로 옮김.

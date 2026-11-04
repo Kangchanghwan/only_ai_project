@@ -17,3 +17,5 @@ Trigger: bands.mjs 최고 등급 diagnose(referral7 3, intent 0028에서 홍보 
 
 ## Result
 - 2026-11-05 배포.
+- 2026-11-05 정정: 선정 근거 "GSC 28일 196/3"은 page=* 부분일치 값으로, 실제로는 영어 /en/guide/transfer-photos-iphone-to-windows-without-cable.html(196/3, 17.9위)의 것이었다. 이 한국어 페이지는 GSC 28일 노출 0(정확일치 page=!), URL 검사 "Google에 등록되어 있지 않음". 네이버 7일 상위 10 웹문서에도 없음. 변경 자체는 사실 보강이라 유지. 오늘 GSC 색인 요청·네이버 수집 요청.
+- 판독 기준 변경: 7일(11-12) = GSC 색인 여부 + 네이버 웹문서 노출, 28일(12-03) = 네이버·GSC 노출·클릭. 노출 0이 이어지면 효과 판정 대신 "미색인"으로 기록.
