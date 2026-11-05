@@ -18,7 +18,8 @@ import { trackEvent } from '../utils/analytics'
 import { isMobileUa } from '../services/p2pProbe'
 
 import { EMPTY_STATE_QR_URL } from '../utils/emptyState'
-const PING_ADDRESS = '핑.한국'
+// 끝의 '/'는 필수: Safari(및 일부 Chrome)는 한글 최상위 도메인만 치면 검색어로 처리한다. '/'를 붙이면 주소로 연다.
+const PING_ADDRESS = '핑.한국/'
 const SITE_ADDRESS = 'clipboardapp.org'
 const VIEW_FLAG = 'cs_empty_state_view'
 const JOINED_FLAG = 'cs_peer_joined'
