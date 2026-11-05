@@ -31,3 +31,4 @@ Trigger: owner 지시 — 사용자가 LLM에게 "폰으로 보낼 방법 없어
 - 기준값: GA4 10-16–10-22 send_link_open 0 / send_link_share 0. AI 언급 기준값은 10-26 측정.
 - 판독: 7일 10-30, 28일 11-20.
 - 2026-10-30 7일 판독 → 새 기준(색인 확인일부터)으로 넘김. 지금까지 값: GA4 10-23–10-29 send_link_open 0 / send_link_share 0. GSC 28일 ko /guide/ask-ai-to-send-to-phone.html 노출 4(평균 3.3위)·en 노출 10(8.8위), 클릭 0. 판독 다시: 7일 11-06, 28일 11-27.
+- 2026-11-06 판독(색인 10-30 기준 7일): GA4 10-30–11-05 send_link_open 0 / send_link_share 0. GSC 정확일치 7일(10-28–11-03) ko 3/0·en 9/0, 28일 ko 7/0·en 19/0. 네이버 7일 ko 7/0. 목표(send_link_open 10+)까지 0. 28일 판독 11-27, ai-mentions는 11-09 측정에서 확인.
