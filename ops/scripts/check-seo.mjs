@@ -39,7 +39,12 @@ for (const url of sitemapUrls) {
 for (const dir of ['guide', 'en/guide']) {
   for (const f of readdirSync(join(PUB, dir)).filter(f => f.endsWith('.html'))) {
     const url = `${ORIGIN}/${dir}/${f === 'index.html' ? '' : f}`
-    if (!sitemapUrls.includes(url)) err(`sitemap에 없는 가이드 페이지: ${url}`)
+    if (sitemapUrls.includes(url)) continue
+    // 합친 페이지(canonical이 sitemap의 다른 URL을 가리킴)는 sitemap에서 빼도 된다 (intent 0024 2단계)
+    const html = readFileSync(join(PUB, dir, f), 'utf8')
+    const canon = html.match(/<link rel="canonical" href="([^"]*)"/)
+    if (canon && canon[1] !== url && sitemapUrls.includes(canon[1])) continue
+    err(`sitemap에 없는 가이드 페이지: ${url}`)
   }
 }
 
