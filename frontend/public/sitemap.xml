@@ -14,7 +14,18 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.clipboardapp.org/en/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.clipboardapp.org/" />
   </url>
-  <url><loc>https://www.clipboardapp.org/how-to-use.html</loc><lastmod>2026-10-18</lastmod></url>
+  <url>
+    <loc>https://www.clipboardapp.org/how-to-use.html</loc>
+    <lastmod>2026-11-07</lastmod>
+    <video:video>
+      <video:thumbnail_loc>https://i.ytimg.com/vi/DqPto5orZ1s/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>PC와 스마트폰 사이 파일·텍스트 바로 옮기기 | Clipboard Share</video:title>
+      <video:description>설치도 가입도 없이 같은 와이파이의 폰과 PC가 자동으로 연결되어 사진, 링크, 큰 파일을 주고받는 모습을 52초에 담았습니다.</video:description>
+      <video:player_loc>https://www.youtube.com/embed/DqPto5orZ1s</video:player_loc>
+      <video:duration>52</video:duration>
+      <video:publication_date>2026-10-17T14:20:00+09:00</video:publication_date>
+    </video:video>
+  </url>
   <url><loc>https://www.clipboardapp.org/faq.html</loc><lastmod>2026-10-19</lastmod></url>
   <url><loc>https://www.clipboardapp.org/guide/iphone-to-windows-photo-transfer.html</loc><lastmod>2026-11-05</lastmod></url>
   <url><loc>https://www.clipboardapp.org/guide/pc-bang-file-transfer.html</loc><lastmod>2026-10-21</lastmod></url>
