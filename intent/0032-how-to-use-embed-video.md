@@ -16,3 +16,4 @@ Trigger: PR #70 머지로 /guide/clipboard-share-video.html이 canonical → /ho
 (색인 확인일부터 7일·28일)
 - 2026-11-07 배포(auto/20261107-how-to-use-video, master 2a29cd7): '준비' 절 아래 "52초 영상으로 먼저 보기" 절(youtube-nocookie 임베드 lazy, 16:9 인라인 스타일, 장면 4개 요약 다시 씀, 영상 페이지 링크), VideoObject JSON-LD(contentUrl watch, embedUrl youtube.com/embed), sitemap how-to-use에 video:video 이전·lastmod 11-07, llms.txt 설명 "embedded", llms-full 재생성. check-seo 통과, 390px 렌더 가로 넘침 없음, 라이브에서 플레이어 정상 표시 확인.
 - 기준값: how-to-use GSC 정확일치 28일 0/0, 네이버 7일 상위 10 웹문서 밖. URL 검사 "발견됨 - 현재 색인이 생성되지 않음"(크롤링 기록 없음) → 오늘 GSC 색인 요청·네이버 수집 요청. 기존 페이지 수정이라 판독은 배포일 기준 7일 11-14·28일 12-05, 단 구글 영상 색인은 페이지 색인 뒤에야 가능하니 11-14에 색인 여부부터 적는다.
+- 2026-11-08 GSC URL 검사(직접 확인): how-to-use "URL이 Google에 등록되어 있음", 동영상 색인 생성 "색인 생성된 동영상 없음". 11-07 "발견됨-미색인"에서 하루 만에 색인. 7일 판독 11-14(동영상 색인 여부 포함).
