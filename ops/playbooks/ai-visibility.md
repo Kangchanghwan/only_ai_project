@@ -21,6 +21,7 @@ lock-campaign.md 기간(~11-15)과 겹치면 요일 슬롯은 그대로 두고, 
 - 열: date,group,query,engine,impressions,clicks,position,serp_rank,url
 
 ### 2-2. AI 언급 → `ops/metrics/ai-mentions.csv`
+Gemini는 2026-11-16부터 "임시 채팅"으로 묻는다(11-09 로그인 일반 대화에서 6/10 언급, 같은 q6을 임시 채팅으로 다시 물으면 언급 0 → 계정 대화 기록 개인화 의심. 11-09 Gemini 값은 비교에서 표시만 하고 추세에 쓰지 않는다).
 엔진: Perplexity(owner 계정 로그인 상태로, 2026-10-27~. 무료 요금제 기본 검색만, Pro·Computer 쓰지 않음. 새 질문은 홈에서 새로 시작), ChatGPT(chatgpt.com), Gemini(lgodl3512), Brave 검색 AI 요약(Claude가 쓰는 Brave 인덱스 대용). 로그인 막히면 그 엔진만 빈칸, 보고에 "접근 불가".
 새 대화에서 질문만 그대로 입력(우리 이름·URL 언급 금지, 후속 질문 금지). 엔진당 질문 10개 = 주 1회 최대 40번 질의.
 | id | 질문 |

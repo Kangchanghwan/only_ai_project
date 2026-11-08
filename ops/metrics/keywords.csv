@@ -23,3 +23,13 @@ date,group,query,engine,impressions,clicks,position,serp_rank,url
 2026-11-02,C,같은 와이파이 파일 공유,naver,,,,,서치어드바이저 7일 키워드 표 1쪽에 없음
 2026-11-02,D,share files on same wifi,google,0,0,,,GSC 10-24~10-30
 2026-11-02,D,file share phone to pc without app,google,0,0,,,GSC 10-24~10-30
+2026-11-09,A,online clipboard file share,google,0,0,,,GSC 10-31~11-06
+2026-11-09,A,clipboard file transfer,google,0,0,,,GSC 10-31~11-06
+2026-11-09,A,online clipboard file transfer,google,0,0,,,GSC 10-31~11-06
+2026-11-09,B,online clipboard,google,108,4,30.5,밖(gl=us 읽힌 8개),착지 /en/ 87노출 28.0위 · copy-paste 가이드 27 38.9위 (GSC 10-31~11-06); SERP 1~7위 도구 사이트
+2026-11-09,C,같은 와이파이 파일 공유,google,0,0,,밖,GSC 10-31~11-06; SERP gl=kr 상위 imzm.tistory·m.blog.naver·studyforus.tistory
+2026-11-09,C,폰 pc 파일 공유,google,0,0,,밖,GSC 10-31~11-06; SERP gl=kr 상위 m.blog.naver·support.microsoft·support.google
+2026-11-09,C,폰 컴퓨터 파일 옮기기 앱 없이,google,0,0,,밖,GSC 10-31~11-06; SERP gl=kr 상위 qrtransfer.io·m.blog.naver·reddit
+2026-11-09,C,같은 와이파이 파일 공유,naver,,,,,서치어드바이저 7일 키워드 표 1쪽에 없음
+2026-11-09,D,share files on same wifi,google,0,0,,,GSC 10-31~11-06
+2026-11-09,D,file share phone to pc without app,google,0,0,,,GSC 10-31~11-06
