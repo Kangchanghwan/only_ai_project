@@ -23,7 +23,7 @@ Full text of every guide below, as Markdown: https://www.clipboardapp.org/llms-f
 - [Microsoft Store app](https://apps.microsoft.com/detail/9N2BTKVCPCC5): The same web app packaged for Windows (PWA), listed as "Clipboard Share - 온라인 클립보드"; it opens the site in its own app window from the Start menu.
 - [iPhone to Windows photo transfer](https://www.clipboardapp.org/guide/iphone-to-windows-photo-transfer.html): Moving photos from an iPhone to a Windows PC without a cable or iCloud (Korean).
 - [PC bang file transfer](https://www.clipboardapp.org/guide/pc-bang-file-transfer.html): Getting files onto a shared or public PC without logging into anything (Korean).
-- [AirDrop alternative for Android and Mac](https://www.clipboardapp.org/guide/android-mac-airdrop-alternative.html): Sending files between Android and macOS, which AirDrop does not support (Korean).
+- [AirDrop alternative for Android and Mac](https://www.clipboardapp.org/guide/android-mac-airdrop-alternative.html): Sending files between Android and macOS in the browser, for phones without Quick Share's AirDrop support or when a Windows PC is also in the mix (Korean).
 - [Copy text from phone to PC](https://www.clipboardapp.org/guide/copy-text-phone-to-pc.html): Moving copied text and links between a phone and a computer (Korean).
 - [Share your clipboard between phone and PC](https://www.clipboardapp.org/en/guide/share-clipboard-between-phone-and-pc.html): How to sync clipboard text and images across devices in the browser (English).
 - [AirDrop alternative for Android, Windows and Mac](https://www.clipboardapp.org/en/guide/airdrop-alternative-android-windows-mac.html): Cross-platform file sending for devices AirDrop leaves out (English).
