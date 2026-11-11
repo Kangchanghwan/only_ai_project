@@ -29,6 +29,14 @@
       "iosShortcut": "Envía desde el menú Compartir del iPhone/iPad (añade el atajo)"
     }
   },
+  "nextTime": {
+    "iosText": "La próxima vez, envía directamente desde el botón Compartir de Fotos",
+    "iosAction": "Añadir atajo",
+    "installText": "Instálala como app y la abrirás más rápido la próxima vez",
+    "installAction": "Instalar",
+    "bookmarkText": "Añade esta página a marcadores con {key} y ábrela al instante la próxima vez",
+    "close": "Cerrar"
+  },
   "identity": {
     "adj": [
       "Dormilón/Dormilona",

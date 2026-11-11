@@ -17,14 +17,13 @@ import QRCode from 'qrcode'
 import { trackEvent } from '../utils/analytics'
 import { isMobileUa } from '../services/p2pProbe'
 import { isIOS } from '../composables/usePWAInstall'
+import { IOS_SHORTCUT_GUIDE, IOS_SHORTCUT_FILE_LINK } from '../utils/iosShortcut'
 
 import { EMPTY_STATE_QR_URL } from '../utils/emptyState'
 // 끝의 '/'는 필수: Safari(및 일부 Chrome)는 한글 최상위 도메인만 치면 검색어로 처리한다. '/'를 붙이면 주소로 연다.
 const PING_ADDRESS = '핑.한국/'
 const SITE_ADDRESS = 'clipboardapp.org'
 // iOS는 PWA 공유 대상(Web Share Target)을 지원하지 않는다. 공유 메뉴로 보내려면 iOS 단축어(quick-send API)를 쓴다.
-const IOS_SHORTCUT_GUIDE = '/how-to-use.html#ios-shortcut'
-const IOS_SHORTCUT_FILE_LINK = 'https://www.icloud.com/shortcuts/feee389a0a124572bbdf641802930de1'
 const VIEW_FLAG = 'cs_empty_state_view'
 const JOINED_FLAG = 'cs_peer_joined'
 

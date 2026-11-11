@@ -29,6 +29,14 @@
       "iosShortcut": "iPhone・iPadの共有メニューから送る(ショートカットを追加)"
     }
   },
+  "nextTime": {
+    "iosText": "次回は写真アプリの共有ボタンからすぐ送れます",
+    "iosAction": "ショートカットを追加",
+    "installText": "アプリとしてインストールすると、次回からすばやく開けます",
+    "installAction": "インストール",
+    "bookmarkText": "{key}でブックマークに追加すると、次回すぐ開けます",
+    "close": "閉じる"
+  },
   "identity": {
     "adj": [
       "眠たい",

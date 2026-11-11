@@ -29,6 +29,14 @@
       "iosShortcut": "Direkt aus dem Teilen-Menü von iPhone/iPad senden (Kurzbefehl hinzufügen)"
     }
   },
+  "nextTime": {
+    "iosText": "Beim nächsten Mal direkt über die Teilen-Taste in Fotos senden",
+    "iosAction": "Kurzbefehl hinzufügen",
+    "installText": "Als App installiert öffnet sich Clipboard Share beim nächsten Mal schneller",
+    "installAction": "Installieren",
+    "bookmarkText": "Mit {key} als Lesezeichen speichern und beim nächsten Mal direkt öffnen",
+    "close": "Schließen"
+  },
   "identity": {
     "adj": [
       "Schläfriger/Schläfrige/Schläfriges",

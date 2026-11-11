@@ -29,6 +29,14 @@
       "iosShortcut": "Skicka från delningsmenyn på iPhone/iPad (lägg till genvägen)"
     }
   },
+  "nextTime": {
+    "iosText": "Nästa gång kan du skicka direkt från Dela-knappen i Bilder",
+    "iosAction": "Lägg till genväg",
+    "installText": "Installera som app så öppnas den snabbare nästa gång",
+    "installAction": "Installera",
+    "bookmarkText": "Lägg till som bokmärke med {key} så öppnas sidan direkt nästa gång",
+    "close": "Stäng"
+  },
   "identity": {
     "adj": [
       "Sömnig/Sömnig/Sömnigt",

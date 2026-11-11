@@ -29,6 +29,14 @@
       "iosShortcut": "Envoyer depuis le menu Partager de l’iPhone/iPad (ajouter le raccourci)"
     }
   },
+  "nextTime": {
+    "iosText": "La prochaine fois, envoyez directement depuis le bouton Partager de Photos",
+    "iosAction": "Ajouter le raccourci",
+    "installText": "Installez l'appli pour l'ouvrir plus vite la prochaine fois",
+    "installAction": "Installer",
+    "bookmarkText": "Ajoutez cette page aux favoris avec {key} pour l'ouvrir directement la prochaine fois",
+    "close": "Fermer"
+  },
   "identity": {
     "adj": [
       "Endormi/Endormie",

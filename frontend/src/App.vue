@@ -26,6 +26,8 @@ import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
 import { useArrivalBadge } from './composables/useArrivalBadge'
 import ArrivalNotifyPrompt from './components/ArrivalNotifyPrompt.vue'
+import NextTimeHint from './components/NextTimeHint.vue'
+import { useNextTimeHint } from './composables/useNextTimeHint'
 import WindowDropOverlay from './components/WindowDropOverlay.vue'
 import { parseSendLink, consumePendingSendLink } from './utils/sendLink'
 import { formatSizeMB } from './utils/fileUtils'
@@ -366,6 +368,7 @@ async function connectToRoom() {
 // 탭이 뒤에 있을 때 도착 표시 (제목 숫자·파비콘 점·선택 알림)
 const isMobile = /iPhone|iPad|iPod|Android|Mobi/i.test(typeof navigator !== 'undefined' ? navigator.userAgent || '' : '')
 const arrival = useArrivalBadge({ getMySocketId: () => socket.mySocketId?.value, isMobile })
+const nextTime = useNextTimeHint({ isBlocked: () => arrival.promptVisible.value })
 
 /**
  * 받은 텍스트를 목록에 넣는다. 1:1 방은 암호문(enc)만 오며 평문 content는 쓰지 않는다.
@@ -547,6 +550,7 @@ async function uploadFiles(files, scopeOverride) {
     if (isPrv) trackEvent('private_upload', { file_count: summary.successCount })
     else trackEvent('file_upload', { file_count: summary.successCount, scope: targetScope })
     notification.showSuccess(t('notification.uploadComplete', { count: summary.successCount }))
+    nextTime.markSuccess('upload')
   }
 }
 
@@ -593,6 +597,7 @@ async function handleDownloadFile(file) {
     }, 1500)
     trackEvent('file_download', { file_count: 1 })
     notification.showSuccess(t('file.downloadComplete'))
+    nextTime.markSuccess('download')
   } else {
     notification.failUpload(downloadId, result.error?.message || t('file.downloadFailed'))
     setTimeout(() => {
@@ -638,6 +643,7 @@ async function handleDownloadParallel(files) {
   // GA4 주요 이벤트: 실제로 받아진 파일 수만 집계한다 (실패분 제외)
   if (result.success && result.successCount > 0) {
     trackEvent('file_download', { file_count: result.successCount })
+    nextTime.markSuccess('download')
   }
 
   if (result.success) {
@@ -750,6 +756,7 @@ async function handleAddText(content, scopeOverride) {
 
   if (isPrv) trackEvent('private_text')
   else trackEvent('text_share', { scope: targetScope, locked: !!sealed })
+  nextTime.markSuccess('text')
 
   // 보관 결과: 크기 초과·서버 보관함 가득이면 지금 열린 기기에만 갔다고 알린다 (구버전 백엔드는 이유가 없어 크기로 판단)
   const tooLarge = res?.notStored === 'TOO_LARGE' ||
@@ -890,6 +897,7 @@ async function handleCopyText(textId) {
   const result = await textShare.copyTextToClipboard(textId)
   if (result.success) {
     notification.showSuccess(t('file.copied'))
+    nextTime.markSuccess('copy')
   } else {
     notification.showError(t('file.copyFailed'))
   }
@@ -1231,6 +1239,7 @@ onUnmounted(() => {
       />
 
       <ArrivalNotifyPrompt :visible="arrival.promptVisible.value" @enable="arrival.enableNotifications" @dismiss="arrival.dismissPrompt" />
+      <NextTimeHint :visible="nextTime.visible.value" :variant="nextTime.variant.value" @action="nextTime.act" @dismiss="nextTime.dismiss" />
 
       <!-- 창 전체 드롭 -->
       <WindowDropOverlay

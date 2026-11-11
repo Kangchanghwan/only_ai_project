@@ -29,6 +29,14 @@
       "iosShortcut": "Kirim dari menu bagikan iPhone/iPad (tambahkan Pintasan)"
     }
   },
+  "nextTime": {
+    "iosText": "Lain kali, kirim langsung dari tombol Bagikan di aplikasi Foto",
+    "iosAction": "Tambah pintasan",
+    "installText": "Pasang sebagai aplikasi agar lebih cepat dibuka lain kali",
+    "installAction": "Pasang",
+    "bookmarkText": "Tekan {key} untuk menambahkan ke bookmark dan buka langsung lain kali",
+    "close": "Tutup"
+  },
   "identity": {
     "adj": [
       "Mengantuk",

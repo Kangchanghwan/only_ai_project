@@ -29,6 +29,14 @@
       "iosShortcut": "아이폰·아이패드 공유 메뉴에서 바로 보내기 (단축어 추가)"
     }
   },
+  "nextTime": {
+    "iosText": "다음엔 사진 앱 공유 버튼에서 바로 보낼 수 있어요",
+    "iosAction": "단축어 추가",
+    "installText": "앱으로 설치하면 다음엔 더 빨리 열 수 있어요",
+    "installAction": "설치",
+    "bookmarkText": "{key}로 즐겨찾기에 추가하면 다음에 바로 열 수 있어요",
+    "close": "닫기"
+  },
   "identity": {
     "adj": [
       "졸린",

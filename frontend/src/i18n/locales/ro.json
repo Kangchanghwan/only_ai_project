@@ -29,6 +29,14 @@
       "iosShortcut": "Trimite din meniul de partajare al iPhone/iPad (adaugă scurtătura)"
     }
   },
+  "nextTime": {
+    "iosText": "Data viitoare poți trimite direct din butonul Partajare din aplicația Poze",
+    "iosAction": "Adaugă comanda rapidă",
+    "installText": "Instalează ca aplicație ca să o deschizi mai repede data viitoare",
+    "installAction": "Instalează",
+    "bookmarkText": "Adaugă la favorite cu {key} și deschide pagina direct data viitoare",
+    "close": "Închide"
+  },
   "identity": {
     "adj": [
       "Somnoros/Somnoroasă",

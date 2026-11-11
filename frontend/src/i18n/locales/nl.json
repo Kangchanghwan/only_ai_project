@@ -29,6 +29,14 @@
       "iosShortcut": "Versturen vanuit het deelmenu van iPhone/iPad (opdracht toevoegen)"
     }
   },
+  "nextTime": {
+    "iosText": "Verstuur de volgende keer direct via de deelknop in Foto's",
+    "iosAction": "Snelkoppeling toevoegen",
+    "installText": "Installeer als app om hem de volgende keer sneller te openen",
+    "installAction": "Installeren",
+    "bookmarkText": "Voeg toe aan je favorieten met {key} en open de pagina de volgende keer direct",
+    "close": "Sluiten"
+  },
   "identity": {
     "adj": [
       "Slaperige/Slaperige/Slaperig",

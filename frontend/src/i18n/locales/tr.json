@@ -29,6 +29,14 @@
       "iosShortcut": "iPhone/iPad paylaşım menüsünden gönder (Kestirmeyi ekle)"
     }
   },
+  "nextTime": {
+    "iosText": "Bir dahaki sefere doğrudan Fotoğraflar'daki paylaş düğmesinden gönderebilirsiniz",
+    "iosAction": "Kısayol ekle",
+    "installText": "Uygulama olarak yüklerseniz bir dahaki sefere daha hızlı açılır",
+    "installAction": "Yükle",
+    "bookmarkText": "{key} ile yer imlerine ekleyin, bir dahaki sefere hemen açın",
+    "close": "Kapat"
+  },
   "identity": {
     "adj": [
       "Uykulu",

@@ -29,6 +29,14 @@
       "iosShortcut": "Envie pelo menu Compartilhar do iPhone/iPad (adicione o atalho)"
     }
   },
+  "nextTime": {
+    "iosText": "Da próxima vez, envie direto pelo botão Compartilhar do app Fotos",
+    "iosAction": "Adicionar atalho",
+    "installText": "Instale como app para abrir mais rápido da próxima vez",
+    "installAction": "Instalar",
+    "bookmarkText": "Adicione aos favoritos com {key} para abrir direto da próxima vez",
+    "close": "Fechar"
+  },
   "identity": {
     "adj": [
       "Sonolento/Sonolenta",
