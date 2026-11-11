@@ -10,6 +10,7 @@
  *   - file: 파일 1개 이상 (합계 QUICK_SEND_MAX_BYTES 이하. Cloudflare 요청 한도 100MB 때문)
  *   - text: 텍스트 (선택)
  *   - device: 'iphone' | 'ipad' (선택, 이름표 표시용)
+ *   - count: 단축어가 파일을 1개씩 나눠 보낼 때 전체 개수 (선택, 응답 문구용)
  * - 응답: { ok, files, text, receivers, message }  message는 단축어가 그대로 보여 준다
  */
 import type { Express, Request, Response, NextFunction } from 'express';
@@ -220,7 +221,10 @@ export const registerQuickSendRoutes = (app: Express, deps: QuickSendDeps): void
             }
 
             const receivers = deps.countUsers(roomId);
-            const what = files.length > 0 && hasText ? M.both(files.length) : files.length > 0 ? M.files(files.length) : M.text;
+            // 단축어는 파일을 1개씩 보내고 마지막 응답의 문구만 보여 준다: 전체 개수를 count로 받는다
+            const declared = Number.parseInt(String(req.body?.count ?? ''), 10);
+            const shown = files.length > 0 && Number.isFinite(declared) && declared >= files.length && declared <= 500 ? declared : files.length;
+            const what = files.length > 0 && hasText ? M.both(shown) : files.length > 0 ? M.files(shown) : M.text;
             logger.info(`[QuickSend] ${roomId} files=${files.length} text=${hasText} receivers=${receivers}`);
             res.json({ ok: true, files: files.length, text: hasText, receivers, message: M.sent(what, receivers) });
         } catch (error) {

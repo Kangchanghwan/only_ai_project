@@ -117,6 +117,15 @@ describe('POST /api/quick-send', () => {
         expect(getTextQueue().list(pc.ipRoomId)).toHaveLength(1);
     });
 
+    test('count가 있으면 전체 개수로 알린다 (단축어가 1개씩 보낼 때)', async () => {
+        const form = new FormData();
+        form.append('file', new Blob([Buffer.from('a')]), 'a.jpg');
+        form.append('count', '12');
+        const body = await readJson(await send(freshIp(), form));
+        expect(body.files).toBe(1);
+        expect(body.message).toContain('파일 12개를');
+    });
+
     test('열린 기기가 없어도 보내고, 그렇다고 알려 준다', async () => {
         const form = new FormData();
         form.append('text', 'hi');
