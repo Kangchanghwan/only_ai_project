@@ -84,6 +84,8 @@ export interface ClientToServerEvents {
     'p2p:signal': (payload: { to: string; data: unknown }) => void;
     /** 이름표(동물+형용사) 다시 뽑기. 소켓당 3초 쿨다운 */
     'identity:reroll': (callback?: (res: RerollResponse) => void) => void;
+    /** 도착 알림 기기 ID 묶기 (접속 중인 기기에는 푸시를 보내지 않는다) */
+    'push:bind': (payload: { pid: string }) => void;
 }
 
 /** 서버 → 클라이언트 이벤트 */
@@ -117,4 +119,6 @@ export interface SocketData {
     lastRerollAt?: number;
     /** 들어가 있는 1:1 비공개 방 ID 목록 (연결 복구 직렬화를 위해 배열) */
     privateRooms?: string[];
+    /** 도착 알림(Web Push) 구독 기기 ID. 접속 중인 기기를 푸시 대상에서 빼는 데 쓴다 */
+    pushId?: string;
 }
