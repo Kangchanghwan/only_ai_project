@@ -50,11 +50,16 @@ const reply = (ack: Ack, res: Record<string, unknown>) => {
 const asObject = (payload: unknown): Record<string, unknown> =>
     payload && typeof payload === 'object' ? (payload as Record<string, unknown>) : {};
 
-const failKeys = (socket: ExtendedSocket, joinerId: string): string[] => {
-    const keys = [`s:${joinerId}`];
+/**
+ * 실패 제한 키: 소켓 id(5회) / IP(기본 30회, 교실처럼 한 IP를 여럿이 쓰는 경우를 위해 따로 높게).
+ * 소켓 등록에는 믿을 만한 기기 고유 id가 없다(identity는 클라이언트가 저장한 이름표, pid는 선택 값이라 둘 다 꾸밀 수 있다).
+ * 그래서 소켓 카운터는 소켓 id 기준이고, 재접속으로 소켓만 바꾸는 시도는 IP 한도가 막는다.
+ */
+const failKeys = (socket: ExtendedSocket, joinerId: string): { socketKey: string; ipKey?: string; all: string[] } => {
+    const socketKey = `s:${joinerId}`;
     const ip = extractClientIp(socket.handshake);
-    if (ip) keys.push(`i:${ip}`);
-    return keys;
+    const ipKey = ip ? `i:${ip}` : undefined;
+    return { socketKey, ipKey, all: ipKey ? [socketKey, ipKey] : [socketKey] };
 };
 
 /** 활성 코드 레지스트리는 서버(io)당 하나 */
@@ -140,14 +145,14 @@ export const setupCodeHandlers = (socket: ExtendedSocket, io: Server, roomManage
             if (!isRoute(route)) return reply(ack, { ok: false, error: 'INVALID_PAYLOAD' });
 
             const keys = failKeys(socket, socket.id);
-            const wait = reg.lockedFor(keys);
+            const wait = reg.lockedFor(keys.all);
             if (wait > 0) return reply(ack, { ok: false, error: 'WAIT', retryAfterSec: wait });
             if (reg.hasSessionAsJoiner(socket.id)) return reply(ack, { ok: false, error: 'BUSY' });
 
             const code = reg.find(route);
             const host = code ? (io.sockets.sockets.get(code.hostId) as ExtendedSocket | undefined) : undefined;
             if (!code || !host) {
-                const f = reg.recordFail(keys);
+                const f = reg.recordFail(keys.socketKey, keys.ipKey);
                 return reply(ack, {
                     ok: false,
                     error: 'NOT_FOUND',
@@ -212,7 +217,8 @@ export const setupCodeHandlers = (socket: ExtendedSocket, io: Server, roomManage
             if (!s || s.state !== 'open') return reply(ack, { ok: false, error: 'NOT_FOUND' });
             reg.removeSession(s.id);
             const joiner = io.sockets.sockets.get(s.joinerId) as ExtendedSocket | undefined;
-            const f = reg.recordFail(joiner ? failKeys(joiner, s.joinerId) : [`s:${s.joinerId}`]);
+            const fk = joiner ? failKeys(joiner, s.joinerId) : { socketKey: `s:${s.joinerId}`, ipKey: undefined };
+            const f = reg.recordFail(fk.socketKey, fk.ipKey);
             emitEnd(io, s.joinerId, s.id, 'wrong', {
                 ...(f.warn ? { warn: true } : {}),
                 ...(f.retryAfterSec > 0 ? { retryAfterSec: f.retryAfterSec } : {}),

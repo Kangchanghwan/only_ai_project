@@ -165,14 +165,38 @@ describe('Socket.IO - 그림 코드 입장', () => {
     expect(after.ok).toBe(true);
   });
 
-  test('같은 IP의 다른 소켓도 실패가 합산된다', async () => {
+  test('같은 IP의 소켓 5개가 각각 4번 틀려도 잠기지 않는다(교실), 한 소켓이 5번 틀리면 그 소켓만 잠긴다', async () => {
     const ip = freshIp();
     const { route } = await openHost();
-    const a = await connect(ip);
-    const b = await connect(ip);
     const bad = freshRoute();
-    for (let i = 0; i < 5; i++) await ask(a, 'code:join', { route: bad });
-    expect(await ask(b, 'code:join', { route })).toMatchObject({ ok: false, error: 'WAIT' });
+    const students: Client[] = [];
+    for (let i = 0; i < 5; i++) students.push(await connect(ip));
+    for (const c of students) for (let i = 0; i < 4; i++) await ask(c, 'code:join', { route: bad });
+    // 5명 모두 아직 잠기지 않았다(4번째 응답은 warn)
+    const another = await connect(ip);
+    expect((await ask(another, 'code:join', { route })).ok).toBe(true);
+    expect((await ask(students[0], 'code:join', { route: bad })).error).toBe('NOT_FOUND'); // 5번째 실패
+    expect(await ask(students[0], 'code:join', { route })).toMatchObject({ ok: false, error: 'WAIT' });
+    // 다른 학생은 여전히 들어올 수 있다
+    expect((await ask(students[1], 'code:join', { route })).ok).toBe(true);
+  });
+
+  test('같은 IP에서 소켓을 바꿔 가며 30번 틀리면 그 IP가 잠긴다', async () => {
+    const ip = freshIp();
+    const { route } = await openHost();
+    const bad = freshRoute();
+    for (let s = 0; s < 8; s++) {
+      const c = await connect(ip);
+      for (let i = 0; i < 4; i++) {
+        const r = await ask(c, 'code:join', { route: bad });
+        if (r.error === 'WAIT') break;
+      }
+    }
+    const fresh = await connect(ip);
+    expect(await ask(fresh, 'code:join', { route })).toMatchObject({ ok: false, error: 'WAIT' });
+    // 다른 IP는 영향 없음
+    const other = await connect();
+    expect((await ask(other, 'code:join', { route })).ok).toBe(true);
   });
 
   test('code:fail은 들어오는 쪽 실패 1회로 세고 wrong을 보낸다 (확인 실패 시 호스트에는 request 없음)', async () => {
@@ -287,12 +311,24 @@ describe('CodeRegistry (주입 시계)', () => {
     let t = 1_000_000;
     const reg = new CodeRegistry(() => t);
     const keys = ['s:a', 'i:1.1.1.1'];
-    for (let i = 0; i < 5; i++) reg.recordFail(keys);
+    for (let i = 0; i < 5; i++) reg.recordFail('s:a', 'i:1.1.1.1');
     expect(reg.lockedFor(keys)).toBe(180);
+    expect(reg.lockedFor(['i:1.1.1.1'])).toBe(0); // IP는 5회로는 안 잠긴다
     t += 181_000;
     expect(reg.lockedFor(keys)).toBe(0);
     t += 10 * 60 * 1000;
-    expect(reg.recordFail(keys)).toMatchObject({ count: 1, warn: false, retryAfterSec: 0 });
+    expect(reg.recordFail('s:a', 'i:1.1.1.1')).toMatchObject({ count: 1, warn: false, retryAfterSec: 0 });
+  });
+
+  test('IP는 10분 안에 30회부터 잠기고 시간이 지나면 풀린다', () => {
+    let t = 5_000_000;
+    const reg = new CodeRegistry(() => t);
+    for (let i = 0; i < 29; i++) reg.recordFail(`s:${i}`, 'i:9.9.9.9');
+    expect(reg.lockedFor(['i:9.9.9.9'])).toBe(0);
+    reg.recordFail('s:x', 'i:9.9.9.9');
+    expect(reg.lockedFor(['i:9.9.9.9'])).toBe(180);
+    t += 181_000;
+    expect(reg.lockedFor(['i:9.9.9.9'])).toBe(0);
   });
 
   test('동시 활성 코드 상한 500을 넘으면 BUSY', () => {

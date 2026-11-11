@@ -22,6 +22,8 @@ const envInt = (name: string, fallback: number): number => {
 
 export const getCodeTtlSec = (): number => envInt('CODE_TTL_SEC', 300);
 export const getCodeMaxFails = (): number => envInt('CODE_MAX_FAILS', 5);
+/** IP 기준 한도: 같은 공유기를 쓰는 교실 전체가 서로 잠그지 않도록 소켓 기준보다 훨씬 높게 둔다 */
+export const getCodeMaxFailsIp = (): number => envInt('CODE_MAX_FAILS_IP', 30);
 export const getCodeLockSec = (): number => envInt('CODE_LOCK_SEC', 180);
 /** 이 횟수부터 응답에 warn:true */
 export const getCodeWarnFails = (): number => Math.min(3, getCodeMaxFails());
@@ -213,20 +215,28 @@ export class CodeRegistry {
         return wait;
     }
 
-    /** 틀린 시도 1회 기록. 키 중 가장 큰 횟수 기준으로 warn 여부와 잠금 남은 초를 돌려준다 */
-    recordFail(keys: string[]): { count: number; warn: boolean; retryAfterSec: number } {
+    /**
+     * 틀린 시도 1회 기록. 소켓 키와 IP 키를 따로 센다(한도가 다르다).
+     * warn과 count는 소켓 기준이고, retryAfterSec는 둘 중 잠긴 쪽의 남은 초다.
+     */
+    recordFail(socketKey: string, ipKey?: string): { count: number; warn: boolean; retryAfterSec: number } {
         const t = this.now();
-        let max = 0;
-        for (const k of keys) {
-            let f = this.failEntry(k);
+        const bump = (key: string, max: number): number => {
+            let f = this.failEntry(key);
             if (!f) {
                 f = { count: 0, first: t, lockedUntil: 0 };
-                this.fails.set(k, f);
+                this.fails.set(key, f);
             }
             f.count += 1;
-            if (f.count >= getCodeMaxFails() && f.lockedUntil <= t) f.lockedUntil = t + getCodeLockSec() * 1000;
-            max = Math.max(max, f.count);
-        }
-        return { count: max, warn: max >= getCodeWarnFails(), retryAfterSec: this.lockedFor(keys) };
+            if (f.count >= max && f.lockedUntil <= t) f.lockedUntil = t + getCodeLockSec() * 1000;
+            return f.count;
+        };
+        const count = bump(socketKey, getCodeMaxFails());
+        if (ipKey) bump(ipKey, getCodeMaxFailsIp());
+        return {
+            count,
+            warn: count >= getCodeWarnFails(),
+            retryAfterSec: this.lockedFor(ipKey ? [socketKey, ipKey] : [socketKey]),
+        };
     }
 }
