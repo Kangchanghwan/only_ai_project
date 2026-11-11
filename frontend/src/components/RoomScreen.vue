@@ -18,6 +18,7 @@ import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../co
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
 import { isMeDevice } from '../utils/devices'
 import { sameIdentity } from '../utils/identity'
+import { isGroupRoomId } from '../utils/groupRoom'
 
 const { t } = useI18n()
 
@@ -120,7 +121,9 @@ const emit = defineEmits([
   'pair-invite',
   'pair-cancel',
   'pair-confirm',
-  'leave-private'
+  'leave-private',
+  'group-create',
+  'group-invite'
 ])
 
 const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120
@@ -144,11 +147,18 @@ const activeDevices = computed(() => {
   return props.scope === 'global' ? props.globalRoomDevices : props.ipRoomDevices
 })
 
+// 그룹 방은 "상대" 한 명이 없다: 나갔어요/오프라인/다시 연결 안내를 쓰지 않는다
+const isGroupRoom = computed(() => isGroupRoomId(currentRoom.value?.roomId))
+const groupMemberCount = computed(() => {
+  const id = currentRoom.value?.roomId
+  const devs = id ? props.privateDevices[id] : null
+  return Array.isArray(devs) ? devs.length : null
+})
 // 상대가 나갔을 때 "다시 연결": 같은 상대가 ip/전체 공유 목록에 보이면 다시 초대할 수 있다
-const peerLeft = computed(() => currentRoom.value?.status === 'left')
+const peerLeft = computed(() => !isGroupRoom.value && currentRoom.value?.status === 'left')
 // 상대 오프라인: 파일은 올릴 수 있고(상대가 나중에 받음), 텍스트도 10분 보관되므로 보낼 수 있다
 // (보관을 지원하지 않는 구버전 서버면 접속 중인 상대에게만 가므로 막는다)
-const peerOffline = computed(() => currentRoom.value?.status === 'offline')
+const peerOffline = computed(() => !isGroupRoom.value && currentRoom.value?.status === 'offline')
 const peerConnecting = computed(() => currentRoom.value?.status === 'connecting')
 
 // 다른 네트워크 기기: 전체 공유 방에는 있고 내 IP 방에는 없는 기기 (socketId 기준)
@@ -157,7 +167,7 @@ const otherNetworkDevices = computed(() => {
   return props.globalRoomDevices.filter((d) => !inIp.has(d.socketId) && !isMeDevice(d, props.mySocketId, props.myIdentity))
 })
 const reinviteDevice = computed(() => {
-  const peer = currentRoom.value?.peer
+  const peer = isGroupRoom.value ? null : currentRoom.value?.peer
   if (!peer || !peerLeft.value) return null
   return [...props.ipRoomDevices, ...props.globalRoomDevices].find((d) =>
     !isMeDevice(d, props.mySocketId, props.myIdentity) &&
@@ -196,7 +206,9 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
         :scope="scope"
         :private-rooms="privateRooms"
         :highlight-room-id="highlightRoomId"
+        :group-create="pairEnabled"
         @select="$emit('select-scope', $event)"
+        @group-create="$emit('group-create')"
       />
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->
@@ -213,7 +225,9 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       <PrivateRoomStrip
         v-if="currentRoom"
         :room="currentRoom"
+        :member-count="groupMemberCount"
         @leave="$emit('leave-private', $event)"
+        @invite="$emit('group-invite', $event)"
       />
 
       <div class="workspace">
@@ -229,6 +243,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
             :wide="isWide"
             @reroll="$emit('reroll-identity')"
             @hint-copied="$emit('hint-copied', $event)"
+            @group-create="$emit('group-create')"
           />
         </div>
 

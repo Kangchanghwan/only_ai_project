@@ -117,3 +117,35 @@ describe('privateRoomDb (IndexedDB 저장소)', () => {
     expect(b.verifier).toBe(a.verifier)
   })
 })
+
+describe('그룹 방 필드(inviteSecret·name)와 get', () => {
+  const rec = (over = {}) => ({ roomId: 'prv-g-' + 'ab12'.repeat(6), ticket: 't', peer: {}, createdAt: 1, lastUsedAt: 1, expiresAt: Date.now() + 100000, inviteSecret: new Uint8Array(32).fill(7), name: '방', ...over })
+
+  it('메모리 저장소: get은 한 방을 돌려주고 만료·없음은 null, 입장권 갱신 후에도 inviteSecret이 남는다', async () => {
+    const s = createMemoryPrivateRoomStore()
+    await s.save(rec())
+    const r = await s.get(rec().roomId)
+    expect(r.name).toBe('방')
+    expect(Array.from(r.inviteSecret)).toEqual(Array(32).fill(7))
+    expect(await s.get('nope')).toBeNull()
+    await s.updateTicket(rec().roomId, 'new')
+    expect(Array.from((await s.get(rec().roomId)).inviteSecret)).toEqual(Array(32).fill(7))
+    await s.save(rec({ roomId: 'old', expiresAt: Date.now() - 1 }))
+    expect(await s.get('old')).toBeNull()
+  })
+
+  it('IDB 저장소: get이 한 방 레코드를 읽는다 (DB 버전은 그대로)', async () => {
+    const calls = []
+    const rows = new Map()
+    const req = (fn) => { const r = {}; setTimeout(() => { r.result = fn(); r.onsuccess?.() }, 0); return r }
+    const os = { put: (v) => req(() => { rows.set(v.roomId, v) }), get: (k) => req(() => rows.get(k)), getAll: () => req(() => [...rows.values()]), delete: (k) => req(() => { rows.delete(k) }), clear: () => req(() => rows.clear()) }
+    const idb = { open: (name, version) => { calls.push([name, version]); const r = {}; setTimeout(() => { r.result = { objectStoreNames: { contains: () => true }, transaction: () => { const t = { objectStore: () => os }; setTimeout(() => t.oncomplete?.(), 10); return t } }; r.onsuccess?.() }, 0); return r } }
+    const s = createIdbPrivateRoomStore(idb)
+    await s.save(rec())
+    const got = await s.get(rec().roomId)
+    expect(got.name).toBe('방')
+    expect(got.inviteSecret).toHaveLength(32)
+    expect(await s.get('nope')).toBeNull()
+    expect(calls[0]).toEqual([DB_NAME, 1])
+  })
+})

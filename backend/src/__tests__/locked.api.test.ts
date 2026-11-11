@@ -152,6 +152,18 @@ describe('비밀번호 잠금 API', () => {
         expect((await fetch(`${baseUrl}/api/r2/locked/meta/room-a/not-an-id`)).status).toBe(400);
     });
 
+    test('그룹 방 ID(prv-g-…)도 잠금 create·meta 경로가 받는다', async () => {
+        const room = 'prv-g-' + 'ab12'.repeat(6);
+        const res = await post('/api/r2/locked/multipart/create', { roomId: room, size: 10, lock }, room);
+        expect(res.status).toBe(200);
+        const body = await readJson(res);
+        expect(body.key).toBe(`${room}/${body.id}`);
+        // 룸 토큰이 다른 방 것이면 거부
+        expect((await post('/api/r2/locked/multipart/create', { roomId: room, size: 10, lock }, 'prv-g-' + 'cd34'.repeat(6))).status).toBe(401);
+        spies.obj.mockResolvedValue({ meta: storedMeta(10), ctSize: ctSizeOf(10) });
+        expect((await fetch(`${baseUrl}/api/r2/locked/meta/${room}/${'a'.repeat(32)}`)).status).toBe(200);
+    });
+
     test('unlock: 확인값이 맞으면 60초 URL과 감싼 키를 준다', async () => {
         const id = 'b'.repeat(32);
         spies.obj.mockResolvedValue({ meta: storedMeta(500), ctSize: ctSizeOf(500) });

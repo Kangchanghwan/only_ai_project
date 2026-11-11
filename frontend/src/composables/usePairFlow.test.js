@@ -118,4 +118,18 @@ describe('usePairFlow', () => {
     expect(notify.showError).toHaveBeenCalledWith('pair.ended.mismatch')
     expect(track).toHaveBeenCalledWith('pair_mismatch')
   })
+
+  it('그룹 방(peer 없음)이 있어도 기기 행 상태·완료 처리가 예외 없이 동작한다', async () => {
+    const pr = usePrivateRooms()
+    const secret = new Uint8Array(32).fill(3)
+    await pr.addRoom({ roomId: 'prv-g-' + 'ab12'.repeat(6), roomSecret: secret, ticket: 't', name: '방' })
+    expect(pr.rooms[0].status).toBe('online')
+    expect(pr.rooms[0].peer).toBeNull()
+    expect(flow.pairStates.value).toEqual({}) // 그룹 방은 기기 행을 "연결됨"으로 만들지 않는다
+    // 같은 자리의 1:1 방과 섞여 있어도 1:1 기기만 paired
+    await pr.addRoom({ roomId: 'prv-' + 'cd34'.repeat(6), peer, roomSecret: new Uint8Array(32).fill(4), ticket: 'u' })
+    expect(flow.pairStates.value.B).toMatchObject({ state: 'paired' })
+    pr.setStatus('prv-g-' + 'ab12'.repeat(6), 'offline')
+    expect(Object.keys(flow.pairStates.value)).toEqual(['B'])
+  })
 })

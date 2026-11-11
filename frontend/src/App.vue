@@ -17,11 +17,14 @@ import { useTextQueue, textBytes, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA 
 import { useShareScope, isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from './composables/useShareScope'
 import { usePrivateRooms } from './composables/usePrivateRooms'
 import { usePairFlow } from './composables/usePairFlow'
+import { useGroupRooms } from './composables/useGroupRooms'
 import { useSeoMeta } from './composables/useSeoMeta'
 import { usePublicShareGuard } from './composables/usePublicShareGuard'
 import { useLockState } from './composables/useLockState'
 import { isEditableTarget } from './utils/editable'
 import { parseRoute } from './utils/router'
+import { parseInvite } from './utils/groupInvite'
+import { isGroupRoomId } from './utils/groupRoom'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
 import { useArrivalBadge } from './composables/useArrivalBadge'
@@ -36,7 +39,7 @@ import { startP2pProbe } from './services/p2pProbe'
 import { openFileInNewTab } from './utils/openFile'
 import { createUploadProgress, cancelUpload, cancelAllUploads } from './utils/uploadProgress'
 import { createNewDeviceTracker } from './utils/newDevices'
-import { isValidIdentity, describeJoined, sameIdentity } from './utils/identity'
+import { isValidIdentity, describeJoined, sameIdentity, identityName } from './utils/identity'
 import { t } from './i18n/translate'
 
 import RoomScreen from './components/RoomScreen.vue'
@@ -47,6 +50,8 @@ import ShareConfirmSheet from './components/ShareConfirmSheet.vue'
 import PublicShareConfirm from './components/PublicShareConfirm.vue'
 import PairRequestSheet from './components/PairRequestSheet.vue'
 import PairConfirmSheet from './components/PairConfirmSheet.vue'
+import GroupInviteSheet from './components/GroupInviteSheet.vue'
+import GroupJoinSheet from './components/GroupJoinSheet.vue'
 
 // ========================================
 // Composables 초기화
@@ -132,6 +137,33 @@ const incomingSession = computed(() =>
   pairFlow.confirming.value ? null : pairFlow.incoming.value || pairFlow.respondedWaiting.value
 )
 
+// 그룹 방: 만들기·초대 QR·초대 링크로 들어오기(확인 시트를 거친다). 초대 링크/입장권/방 비밀은 분석 이벤트에 싣지 않는다
+async function waitSocketRegistered() {
+  for (let i = 0; i < 150; i++) {
+    if (socket.isConnected?.value && socket.mySocketId?.value) return true
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+  return false
+}
+const groupRooms = useGroupRooms({
+  privateRooms,
+  socket,
+  notify: notification,
+  track: trackEvent,
+  t,
+  getMyName: () => {
+    const id = socket.myIdentity?.value
+    return isValidIdentity(id) ? identityName(id, t) : ''
+  },
+  waitRegistered: waitSocketRegistered,
+  onAlreadyIn: (roomId) => shareScope.setScope(scopeForPrivateRoom(roomId)),
+  onRoomReady: async (roomId) => {
+    shareScope.setScope(scopeForPrivateRoom(roomId))
+    textQueue.loadRooms([roomId])
+    await fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
+  }
+})
+
 const deviceIsPeer = (d, peer) =>
   !!peer && (peer.socketId ? d.socketId === peer.socketId : sameIdentity(d.identity, peer.identity))
 
@@ -151,6 +183,12 @@ watch(
       if (r.status === 'left' || r.status === 'connecting') continue
       const devs = byRoom[r.roomId]
       if (!Array.isArray(devs)) continue
+      if (isGroupRoomId(r.roomId)) {
+        // 그룹 방은 상대가 한 명이 아니다: 다른 기기가 하나라도 있으면 접속 중
+        const me = socket.mySocketId?.value
+        privateRooms.setStatus(r.roomId, devs.some((d) => d.socketId !== me) ? 'online' : 'offline')
+        continue
+      }
       const peerDev = findPeerDevice(devs, r.peer)
       if (peerDev) privateRooms.setPeer(r.roomId, peerDev)
       privateRooms.setStatus(r.roomId, peerDev ? 'online' : 'offline')
@@ -172,6 +210,8 @@ watch(
 privateRooms.hydrate()
 
 let rejoinRunning = null
+/** 정원이 찬 그룹 방 안내는 방마다 한 번만 */
+const fullNotified = new Set()
 /** 저장된 입장권으로 1:1 방에 다시 들어간다 (registered/재연결/연결 복구 뒤) */
 function rejoinPrivateRooms() {
   if (!rejoinRunning) {
@@ -195,19 +235,36 @@ async function doRejoinPrivateRooms() {
     privateRooms.setTicket(entry.roomId, entry.ticket)
     const devs = Array.isArray(entry.devices) ? entry.devices : []
     const peerDev = devs.find((d) => d.socketId !== me) || null
+    if (isGroupRoomId(entry.roomId)) {
+      privateRooms.setStatus(entry.roomId, peerDev ? 'online' : 'offline')
+      joined.push(entry.roomId)
+      continue
+    }
     if (peerDev) privateRooms.setPeer(entry.roomId, peerDev)
     privateRooms.setStatus(entry.roomId, peerDev ? 'online' : 'offline')
     joined.push(entry.roomId)
   }
+  // 정원이 찬 그룹 방: 방 기록은 지우지 않고 오프라인으로 둔다 (다음 재접속 때 다시 들어가 본다)
+  let fullNew = false
+  for (const roomId of res.full || []) {
+    if (!privateRooms.has(roomId)) continue
+    privateRooms.setStatus(roomId, 'offline')
+    if (!fullNotified.has(roomId)) { fullNotified.add(roomId); fullNew = true }
+  }
+  if (fullNew) notification.showInfo(t('group.full'))
   let expired = 0
+  let expiredGroup = 0
   for (const ticket of res.invalid || []) {
     const r = targets.find((x) => x.ticket === ticket)
     if (!r) continue
     if (shareScope.scope.value === scopeForPrivateRoom(r.roomId)) shareScope.setScope('ip')
     privateRooms.removeRoom(r.roomId)
-    expired++
+    if (isGroupRoomId(r.roomId)) expiredGroup++
+    else expired++
   }
+  // 1:1 방이 하나라도 만료됐으면 1:1 문구, 그룹 방만 만료됐으면 그룹 문구
   if (expired > 0) notification.showInfo(t('pair.expired'))
+  else if (expiredGroup > 0) notification.showInfo(t('group.expired'))
   if (joined.length > 0) {
     trackEvent('pair_rejoin', { count: joined.length })
     textQueue.loadRooms(joined)
@@ -219,10 +276,10 @@ async function handlePrivateLeave(roomId) {
   if (!privateRooms.has(roomId)) return
   const res = await socket.leavePrivate?.(roomId)
   if (res && !res.ok && res.code !== 'NOT_MEMBER') {
-    notification.showError(t('pair.errors.leaveFailed'))
+    notification.showError(t(isGroupRoomId(roomId) ? 'group.leaveFailed' : 'pair.errors.leaveFailed'))
     return
   }
-  trackEvent('pair_leave')
+  trackEvent(isGroupRoomId(roomId) ? 'group_leave' : 'pair_leave')
   if (shareScope.scope.value === scopeForPrivateRoom(roomId)) shareScope.setScope('ip')
   privateRooms.removeRoom(roomId)
   fileManager.clearRoomFiles?.(roomId)
@@ -231,6 +288,8 @@ async function handlePrivateLeave(roomId) {
 
 function handlePrivateLeftMessage(message) {
   if (!privateRooms.has(message.roomId)) return
+  // 그룹 방은 다른 기기가 나가도 방은 그대로다 (기기 목록은 room-users로 갱신된다)
+  if (isGroupRoomId(message.roomId)) return
   // 상대가 연결을 끊음: 화면에는 안내용으로 남기고 내 저장소에서는 지운다(setStatus가 처리)
   privateRooms.setStatus(message.roomId, 'left')
   notification.showInfo(t('pair.peerLeftToast'))
@@ -490,7 +549,7 @@ async function uploadFiles(files, scopeOverride) {
   const isPrv = isPrivateScope(targetScope)
   const lock = isPrv ? privateRooms.lockFor(targetRoomId) : lockState.getLock(targetScope)
   if (isPrv && !lock) {
-    notification.showError(t('pair.errors.noRoom'))
+    notification.showError(t(isGroupRoomId(targetRoomId) ? 'group.noRoom' : 'pair.errors.noRoom'))
     return
   }
   const target = publishTargetForScope(targetScope)
@@ -713,7 +772,7 @@ async function handleAddText(content, scopeOverride) {
     else if (scopeLock) sealed = await textQueue.sealForScope(scopeLock, targetRoomId, content.trim())
   } catch (error) {
     console.warn('[App] 텍스트 암호화 실패:', error)
-    notification.showError(isPrv ? t('pair.errors.noRoom') : t('lock.errors.setFailed'))
+    notification.showError(isPrv ? t(isGroupRoomId(targetRoomId) ? 'group.noRoom' : 'pair.errors.noRoom') : t('lock.errors.setFailed'))
     return false
   }
 
@@ -1104,6 +1163,13 @@ async function handleShareTargetData() {
   }
 }
 
+/** 이미 열린 탭에서 주소의 # 뒤만 #/pv?... 로 바뀐 경우 (index.html이 옮겨 두고 이벤트로 알린다) */
+function onGroupInviteEvent() {
+  const h = window.__csGroupInvite
+  window.__csGroupInvite = undefined
+  if (h) groupRooms.acceptInvite(parseInvite(h))
+}
+
 onMounted(async () => {
   // 잠긴 파일 링크는 index.html이 주소창에서 미리 지우고 window.__csLockedLink에 옮겨 둔다
   const hash = window.__csLockedLink || window.location.hash
@@ -1112,6 +1178,9 @@ onMounted(async () => {
   const sendHash = window.__csSendLink || hash
   window.__csSendLink = undefined
   const sendText = parseSendLink(sendHash)
+  // 그룹 방 초대 링크(#/pv?...)도 index.html이 주소창에서 미리 지우고 window.__csGroupInvite에 옮겨 둔다. 열어도 자동 입장하지 않는다
+  const inviteHash = window.__csGroupInvite || (hash.startsWith('#/pv?') ? hash : undefined)
+  window.__csGroupInvite = undefined
 
   console.log('[App] 라우트 파싱 결과:', currentRoute.value)
 
@@ -1131,6 +1200,9 @@ onMounted(async () => {
   if (window.__PRERENDER__) return
 
   window.addEventListener('cs-send-link', onSendLinkEvent)
+  window.addEventListener('cs-group-invite', onGroupInviteEvent)
+  // 확인 시트를 먼저 띄운다 (소켓 등록은 "들어가기"를 누른 뒤 기다린다)
+  if (inviteHash) groupRooms.acceptInvite(parseInvite(inviteHash))
 
   // 보관 남은 시간 갱신 + 만료된 잠긴 텍스트 정리
   nowTimer = setInterval(() => {
@@ -1164,6 +1236,7 @@ onUnmounted(() => {
   if (cleanupOnMessage) cleanupOnMessage()
   document.removeEventListener('paste', handlePaste)
   window.removeEventListener('cs-send-link', onSendLinkEvent)
+  window.removeEventListener('cs-group-invite', onGroupInviteEvent)
   pairFlow.destroy()
   socket.destroy()
 })
@@ -1211,6 +1284,8 @@ onUnmounted(() => {
         @pair-cancel="pairFlow.cancel"
         @pair-confirm="pairFlow.confirmInvite"
         @leave-private="handlePrivateLeave"
+        @group-create="groupRooms.createRoom"
+        @group-invite="groupRooms.openInvite"
         @reroll-identity="handleRerollIdentity"
         @hint-copied="notification.showSuccess(t('file.copied'))"
         :has-more="fileManager.hasMoreForRoom(activeRoomId)"
@@ -1245,8 +1320,8 @@ onUnmounted(() => {
       <WindowDropOverlay
         :disabled="isMobile"
         :enabled="roomManager.roomIds.value.length > 0"
-        :blocked="isShareConfirmOpen || publicGuard.isOpen.value || !!pairFlow.confirming.value || !!incomingSession"
-        :scope-kind="isPrivateScope(shareScope.scope.value) ? 'private' : shareScope.scope.value"
+        :blocked="isShareConfirmOpen || publicGuard.isOpen.value || !!pairFlow.confirming.value || !!incomingSession || !!groupRooms.inviteSheet.value || !!groupRooms.joinSheet.value"
+        :scope-kind="isGroupRoomId(privateRoomIdOfScope(shareScope.scope.value)) ? 'group' : isPrivateScope(shareScope.scope.value) ? 'private' : shareScope.scope.value"
         @drop-files="handleUploadFiles"
       />
 
@@ -1272,6 +1347,10 @@ onUnmounted(() => {
         @confirm="pairFlow.confirm"
         @cancel="pairFlow.cancelConfirming"
       />
+
+      <!-- 그룹 방: 초대 QR / 입장 확인 (링크를 열어도 이 시트에서 "들어가기"를 눌러야 들어간다) -->
+      <GroupInviteSheet :sheet="groupRooms.inviteSheet.value" @close="groupRooms.closeInvite" @copy="groupRooms.copyInviteLink" />
+      <GroupJoinSheet :sheet="groupRooms.joinSheet.value" @confirm="groupRooms.confirmJoin" @cancel="groupRooms.cancelJoin" />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->
       <ShareConfirmSheet

@@ -2,6 +2,9 @@
  * 1:1 방 저장소 (IndexedDB). privateRoomStore 인터페이스:
  *   save(rec) | load() → rec[] (만료 항목은 지우고 제외) | remove(roomId) | updateTicket(roomId, ticket) | clear()
  * 레코드: { roomId, ticket, secretKey(HKDF CryptoKey, 비추출), peer, createdAt, lastUsedAt, expiresAt }
+ *   그룹 방(prv-g-…)은 초대 QR을 나중에도 만들어야 하므로 방 비밀 원본 `inviteSecret`(Uint8Array 32B)과 `name`도 함께 저장한다.
+ *   (같은 출처 스크립트는 비추출 키로도 deriveBits로 master를 얻을 수 있고 입장권도 같은 DB에 있어서, 원본 보관으로 새로 열리는 공격면은 없다고 본다)
+ *   필드만 늘어나므로 DB 버전은 그대로다. get(roomId)는 한 방 레코드를 읽는다(없으면 null).
  * 입장권은 쓸 때마다 갱신돼 30일이 슬라이딩된다.
  * IndexedDB를 못 쓰거나 예외가 나면 조용히 메모리 저장소로 넘어간다(이번 접속만 유지).
  */
@@ -18,6 +21,10 @@ export function createMemoryPrivateRoomStore() {
       const now = Date.now()
       for (const [id, r] of [...m]) if (r.expiresAt <= now) m.delete(id)
       return [...m.values()].map((r) => ({ ...r }))
+    },
+    get: async (id) => {
+      const r = m.get(id)
+      return r && r.expiresAt > Date.now() ? { ...r } : null
     },
     remove: async (id) => { m.delete(id) },
     updateTicket: async (id, ticket) => {
@@ -78,6 +85,11 @@ export function createIdbPrivateRoomStore(idb) {
       await done(tx)
       return alive
     },
+    async get(roomId) {
+      const tx = await store('readonly')
+      const r = await req(tx.objectStore(STORE_NAME).get(roomId))
+      return r && r.expiresAt > Date.now() ? r : null
+    },
     async remove(roomId) {
       const tx = await store('readwrite')
       tx.objectStore(STORE_NAME).delete(roomId)
@@ -119,6 +131,7 @@ export function createPrivateRoomStore(idb = globalThis.indexedDB) {
     get kind() { return primary ? 'idb' : 'memory' },
     save: (rec) => call('save', rec),
     load: () => call('load'),
+    get: (id) => call('get', id),
     remove: (id) => call('remove', id),
     updateTicket: (id, ticket) => call('updateTicket', id, ticket),
     clear: () => call('clear')
