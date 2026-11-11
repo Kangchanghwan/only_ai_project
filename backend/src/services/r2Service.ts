@@ -364,6 +364,29 @@ class R2Service {
   }
 
   /**
+   * 스트림으로 업로드합니다 (빠른 보내기: 서버 임시 파일 → R2). 크기를 알아야 한다
+   */
+  async uploadFileStream(
+    roomId: string,
+    fileName: string,
+    body: NodeJS.ReadableStream,
+    size: number,
+    contentType: string
+  ): Promise<{ fileUrl: string; fileName: string }> {
+    const key = `${roomId}/${fileName}`;
+    await this.client.send(new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: key,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Body: body as any,
+      ContentLength: size,
+      ContentType: contentType,
+    }));
+    logger.info(`[R2Service] 스트림 업로드 완료: ${key} (${size} bytes)`);
+    return { fileUrl: this.getFileUrl(roomId, fileName), fileName };
+  }
+
+  /**
    * 파일을 삭제합니다 (원본과 썸네일을 한 번의 요청으로 함께 삭제)
    */
   async deleteFile(roomId: string, fileName: string): Promise<void> {

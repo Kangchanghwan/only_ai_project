@@ -11,6 +11,7 @@ import requestLogger from './middleware/requestLogger';
 import errorHandler from './middleware/errorHandler';
 import { getR2Service } from './services/r2Service';
 import { checkFileSize, checkRoomSize, SizeCheckFailure } from './utils/uploadLimits';
+import { registerQuickSendRoutes } from './routes/quickSend';
 import { requireRoomToken } from './middleware/roomAuth';
 import { registerMultipartRoutes, LOCKED_MULTIPART } from './routes/multipart';
 import { rejectPrivateRoom } from './middleware/rejectPrivateRoom';
@@ -148,6 +149,13 @@ registerMultipartRoutes(app, roomIdFromBody, resolveUploader);
 // 비밀번호 잠금 업로드(비공개 버킷) + 해제/삭제. R2_LOCKED_BUCKET_NAME이 없으면 503
 registerMultipartRoutes(app, roomIdFromBody, resolveUploader, LOCKED_MULTIPART);
 registerLockedRoutes(app, roomIdFromBody);
+
+// 빠른 보내기(iOS 단축어): 룸 토큰 없이 요청 IP의 같은 네트워크 방으로만 보낸다
+registerQuickSendRoutes(app, {
+    io,
+    getR2Service,
+    countUsers: (roomId) => roomManager.getRoomUsers(roomId).length,
+});
 
 // 텍스트 대기열(10분 보관): 목록·풀기·삭제. 보관은 소켓 publish에서 한다
 registerTextRoutes(app, roomIdFromParams, roomIdFromBody);
