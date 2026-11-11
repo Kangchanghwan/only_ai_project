@@ -32,3 +32,4 @@ Trigger: bands.mjs diagnose — GSC 7일 노출 1,210 (-20%, 7일 전 1,520), 3�
 - Change 2 (gl=us 상위 10): 11-09 1회 검색(gl=us, hl=en, pws=0, 읽힌 8개): 1~7위 모두 온라인 클립보드 도구 사이트(online-clipboard.online, onlinclipboard.com, goonlinetools.com, codeshack.io, clipboard-online.com, tmps.fyi, cl1p.net), 8위 Google Play 앱. 목록 글은 없음. clipboardapp.org는 읽힌 범위 밖. 단순 도구 페이지가 위를 차지해, 가이드(설명 글)로 이 쿼리를 되찾기는 어렵다는 근거.
 - 판단: Change 3대로 이 페이지 문구는 11-30까지 그대로, 주간 순위만 본다. 다음 확인 11-16 주간 리포트.
 - 2026-11-10: gsc_impr7 1,240(-14%, 11-01–11-07, 3주 연속) 여전히 diagnose. 클릭은 75(+14%)로 늘었다. 0029(en snapdrop) 7일도 노출 감소(하루 13.1 → 7.8, 순위 11.3 → 15.6)라 영어 페이지 전반의 순위 하락으로 본다. Change 3(문구 동결) 유지, 11-16 주간에 영어 페이지 쿼리별 순위 표로 다시.
+- 2026-11-11: gsc_impr7 1,270(-7%, 11-02–11-08, 3주 연속 드리프트) 여전히 diagnose. 클릭 76(+21%). 0030(en share-clipboard) 7일은 하루 노출 +45%·순위 7.6 → 6.5로 사이트 흐름과 반대라, 하락은 페이지 공통이 아니라 일부 영어 페이지에 몰린 것으로 본다. Change 3 유지, 11-16 주간에 영어 페이지 쿼리별 순위 표로 다시.
