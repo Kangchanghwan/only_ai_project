@@ -400,7 +400,13 @@
     "notifyDismiss": "نه، ممنون",
     "notifyFile": "{name} تعداد {count} فایل فرستاد",
     "notifyText": "{name} متنی فرستاد",
-    "someDevice": "دستگاه دیگر"
+    "someDevice": "دستگاه دیگر",
+    "pushEnable": "روشن کردن اعلان رسیدن",
+    "pushOn": "اعلان رسیدن روشن است",
+    "pushOff": "خاموش کردن",
+    "pushEnabled": "اعلان رسیدن روشن شد",
+    "pushDisabled": "اعلان رسیدن خاموش شد",
+    "pushError": "روشن کردن اعلان ممکن نشد. دوباره تلاش کنید."
   },
   "dropOverlay": {
     "title": "اینجا رها کنید تا فوراً آپلود شود",

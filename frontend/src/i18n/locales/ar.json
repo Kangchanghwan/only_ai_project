@@ -400,7 +400,13 @@
     "notifyDismiss": "لا، شكرًا",
     "notifyFile": "أرسل {name} {count} ملف(ات)",
     "notifyText": "أرسل {name} نصًا",
-    "someDevice": "جهاز آخر"
+    "someDevice": "جهاز آخر",
+    "pushEnable": "تفعيل إشعارات الوصول",
+    "pushOn": "إشعارات الوصول مفعّلة",
+    "pushOff": "إيقاف",
+    "pushEnabled": "تم تفعيل إشعارات الوصول",
+    "pushDisabled": "تم إيقاف إشعارات الوصول",
+    "pushError": "تعذّر تفعيل إشعارات الوصول. حاول مرة أخرى."
   },
   "dropOverlay": {
     "title": "أفلت هنا للرفع فورًا",

@@ -400,7 +400,13 @@
     "notifyDismiss": "Hayır, teşekkürler",
     "notifyFile": "{name} {count} dosya gönderdi",
     "notifyText": "{name} metin gönderdi",
-    "someDevice": "Başka bir cihaz"
+    "someDevice": "Başka bir cihaz",
+    "pushEnable": "Varış bildirimlerini aç",
+    "pushOn": "Varış bildirimleri açık",
+    "pushOff": "Kapat",
+    "pushEnabled": "Varış bildirimleri açıldı",
+    "pushDisabled": "Varış bildirimleri kapatıldı",
+    "pushError": "Varış bildirimleri açılamadı. Lütfen tekrar deneyin."
   },
   "dropOverlay": {
     "title": "Hemen yüklemek için buraya bırakın",

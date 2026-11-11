@@ -400,7 +400,13 @@
     "notifyDismiss": "Non merci",
     "notifyFile": "{name} a envoyé {count} fichier(s)",
     "notifyText": "{name} a envoyé du texte",
-    "someDevice": "Autre appareil"
+    "someDevice": "Autre appareil",
+    "pushEnable": "Activer les alertes d'arrivée",
+    "pushOn": "Alertes d'arrivée activées",
+    "pushOff": "Désactiver",
+    "pushEnabled": "Alertes d'arrivée activées",
+    "pushDisabled": "Alertes d'arrivée désactivées",
+    "pushError": "Impossible d'activer les alertes d'arrivée. Réessayez."
   },
   "dropOverlay": {
     "title": "Déposez ici pour envoyer tout de suite",

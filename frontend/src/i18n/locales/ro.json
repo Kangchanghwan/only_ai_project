@@ -400,7 +400,13 @@
     "notifyDismiss": "Nu, mulțumesc",
     "notifyFile": "{name} a trimis {count} fișier(e)",
     "notifyText": "{name} a trimis text",
-    "someDevice": "Alt dispozitiv"
+    "someDevice": "Alt dispozitiv",
+    "pushEnable": "Activează notificările de sosire",
+    "pushOn": "Notificările de sosire sunt active",
+    "pushOff": "Dezactivează",
+    "pushEnabled": "Notificările de sosire au fost activate",
+    "pushDisabled": "Notificările de sosire au fost dezactivate",
+    "pushError": "Nu s-au putut activa notificările. Încearcă din nou."
   },
   "dropOverlay": {
     "title": "Lasă aici pentru încărcare imediată",

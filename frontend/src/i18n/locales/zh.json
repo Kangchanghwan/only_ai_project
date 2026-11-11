@@ -400,7 +400,13 @@
     "notifyDismiss": "不用了",
     "notifyFile": "{name}发送了{count}个文件",
     "notifyText": "{name}发送了文本",
-    "someDevice": "另一台设备"
+    "someDevice": "另一台设备",
+    "pushEnable": "开启到达通知",
+    "pushOn": "到达通知已开启",
+    "pushOff": "关闭",
+    "pushEnabled": "已开启到达通知",
+    "pushDisabled": "已关闭到达通知",
+    "pushError": "无法开启到达通知，请重试。"
   },
   "dropOverlay": {
     "title": "拖到这里即可立即上传",

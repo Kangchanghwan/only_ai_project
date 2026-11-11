@@ -178,4 +178,102 @@ describe('useArrivalBadge', () => {
       expect(created).toHaveLength(0)
     })
   })
+
+  describe('도착 알림(푸시) 연결', () => {
+    function mockGranting(permission = 'default') {
+      const N = vi.fn()
+      N.permission = permission
+      N.requestPermission = vi.fn(async () => { N.permission = 'granted'; return 'granted' })
+      globalThis.Notification = N
+      return N
+    }
+    const fakePush = (supported = true) => ({
+      supported: { value: supported },
+      isSupported: vi.fn(async () => supported),
+      enable: vi.fn(async () => ({ ok: true })),
+    })
+
+    it('권한을 얻으면 푸시가 지원될 때 push.enable()도 한다', async () => {
+      mockGranting('default')
+      const push = fakePush(true)
+      badge = useArrivalBadge({ getMySocketId: () => 'me', push })
+      await badge.enableNotifications()
+      expect(push.enable).toHaveBeenCalledTimes(1)
+      expect(localStorage.getItem(NOTIFY_PREF_KEY)).toBe('granted')
+    })
+
+    it('푸시가 지원되지 않으면 enable을 부르지 않는다 (탭 알림만)', async () => {
+      mockGranting('default')
+      const push = fakePush(false)
+      badge = useArrivalBadge({ getMySocketId: () => 'me', push })
+      await badge.enableNotifications()
+      expect(push.enable).not.toHaveBeenCalled()
+      expect(localStorage.getItem(NOTIFY_PREF_KEY)).toBe('granted')
+    })
+
+    it('권한을 거부하면 push.enable을 부르지 않는다', async () => {
+      const N = mockGranting('default')
+      N.requestPermission = vi.fn(async () => { N.permission = 'denied'; return 'denied' })
+      const push = fakePush(true)
+      badge = useArrivalBadge({ getMySocketId: () => 'me', push })
+      await badge.enableNotifications()
+      expect(push.enable).not.toHaveBeenCalled()
+    })
+
+    it('push.enable이 예외를 던져도 알림 켜기는 끝까지 간다', async () => {
+      mockGranting('default')
+      const push = fakePush(true)
+      push.enable.mockRejectedValue(new Error('x'))
+      badge = useArrivalBadge({ getMySocketId: () => 'me', push })
+      await expect(badge.enableNotifications()).resolves.toBeUndefined()
+    })
+
+    it('모바일: 푸시가 지원되면 돌아왔을 때 안내를 보인다', () => {
+      mockGranting('default')
+      badge = useArrivalBadge({ getMySocketId: () => 'me', isMobile: true, push: fakePush(true) })
+      setAway(true)
+      badge.onArrival({ kind: 'file', count: 1, sender: OTHER })
+      returnToTab()
+      expect(badge.promptVisible.value).toBe(true)
+    })
+
+    it('모바일: 푸시가 지원되지 않으면 안내하지 않는다', () => {
+      mockGranting('default')
+      badge = useArrivalBadge({ getMySocketId: () => 'me', isMobile: true, push: fakePush(false) })
+      setAway(true)
+      badge.onArrival({ kind: 'file', count: 1, sender: OTHER })
+      returnToTab()
+      expect(badge.promptVisible.value).toBe(false)
+    })
+
+    it('모바일 자리 비움: new Notification 대신 registration.showNotification', async () => {
+      const N = mockGranting('granted')
+      const shown = []
+      Object.defineProperty(navigator, 'serviceWorker', {
+        configurable: true,
+        value: { ready: Promise.resolve({ showNotification: async (title, opts) => { shown.push({ title, opts }) } }) },
+      })
+      try {
+        badge = useArrivalBadge({ getMySocketId: () => 'me', isMobile: true, push: fakePush(true) })
+        setAway(true)
+        badge.onArrival({ kind: 'file', count: 2, sender: { ...OTHER, model: 'Pixel' }, fileName: 'secret.pdf' })
+        await new Promise((r) => setTimeout(r, 0))
+        expect(N).not.toHaveBeenCalled()
+        expect(shown).toHaveLength(1)
+        expect(shown[0].title).toBe('Clipboard Share')
+        expect(shown[0].opts).toMatchObject({ tag: 'cs-arrival', icon: '/icon-192.png' })
+        expect(shown[0].opts.body).not.toContain('secret.pdf')
+      } finally {
+        delete navigator.serviceWorker
+      }
+    })
+
+    it('데스크톱은 기존처럼 new Notification을 쓴다', () => {
+      const N = mockGranting('granted')
+      badge = useArrivalBadge({ getMySocketId: () => 'me', push: fakePush(true) })
+      setAway(true)
+      badge.onArrival({ kind: 'file', count: 1, sender: OTHER })
+      expect(N).toHaveBeenCalledTimes(1)
+    })
+  })
 })

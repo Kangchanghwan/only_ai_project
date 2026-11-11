@@ -346,6 +346,11 @@ class SocketService {
     })
   }
 
+  /** 도착 알림 기기 ID를 이 소켓에 묶는다 (접속 중인 기기에는 푸시를 보내지 않게). 연결 전이면 조용히 무시 */
+  pushBind(pid) {
+    if (this.socket?.connected) this.socket.emit('push:bind', { pid })
+  }
+
   /** pair:invite|respond|signal|confirm|cancel 전송 (pairing.js의 socket 어댑터 emit) */
   pairEmit(event, payload) {
     return this.emitWithAck(event, payload)

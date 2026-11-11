@@ -626,7 +626,13 @@
     "notifyDismiss": "괜찮아요",
     "notifyFile": "{name}이(가) 파일 {count}개를 보냈어요",
     "notifyText": "{name}이(가) 텍스트를 보냈어요",
-    "someDevice": "다른 기기"
+    "someDevice": "다른 기기",
+    "pushEnable": "도착 알림 켜기",
+    "pushOn": "도착 알림 켜짐",
+    "pushOff": "끄기",
+    "pushEnabled": "도착 알림을 켰어요",
+    "pushDisabled": "도착 알림을 껐어요",
+    "pushError": "도착 알림을 켜지 못했어요. 다시 시도해 주세요."
   },
   "dropOverlay": {
     "title": "여기에 놓으면 바로 올라가요",
