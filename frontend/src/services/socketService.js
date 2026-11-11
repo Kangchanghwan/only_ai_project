@@ -357,6 +357,29 @@ class SocketService {
   }
 
   /**
+   * 그룹 방 만들기 (서버가 방 ID를 만들고 나를 첫 멤버로 넣는다). 성공하면 방 토큰·접속 기기를 반영한다.
+   * @returns {Promise<{ok: true, roomId: string, ticket: string, devices: Array}|{ok: false, code: string}>}
+   */
+  async createPrivate() {
+    const res = await this.emitWithAck('private:create', {})
+    if (!res || res.ok === false || typeof res.roomId !== 'string') return { ok: false, code: res?.error || res?.code || 'FAILED' }
+    this._mergePairToken(res)
+    const devices = Array.isArray(res.devices) ? res.devices : []
+    this.privateRoomDevices.value = { ...this.privateRoomDevices.value, [res.roomId]: devices }
+    return { ok: true, roomId: res.roomId, ticket: res.ticket, devices }
+  }
+
+  /**
+   * 그룹 방 초대 입장권(짧은 만료) 요청. 멤버만 받을 수 있다.
+   * @returns {Promise<{ok: true, ticket: string, expiresAt: number}|{ok: false, code: string}>}
+   */
+  async invitePrivate(roomId) {
+    const res = await this.emitWithAck('private:invite', { roomId })
+    if (!res || res.ok === false || typeof res.ticket !== 'string') return { ok: false, code: res?.error || res?.code || 'FAILED' }
+    return { ok: true, ticket: res.ticket, expiresAt: res.expiresAt }
+  }
+
+  /**
    * 저장된 입장권으로 1:1 방에 다시 들어간다 (최대 10개씩). 등록(registered)/재연결 뒤에 부른다.
    * 성공하면 방 토큰을 합치고 방별 접속 기기를 반영한다.
    * @param {string[]} tickets
@@ -367,9 +390,12 @@ class SocketService {
     if (list.length === 0) return { ok: true, rooms: [], invalid: [] }
     const rooms = []
     const invalid = []
+    const full = []
+    // 그룹 방 정원이 찬 방(방 기록은 지우면 안 된다). 있을 때만 결과에 `full`을 넣는다
+    const result = () => ({ ok: true, rooms, invalid, ...(full.length ? { full } : {}) })
     for (let i = 0; i < list.length; i += 10) {
       const res = await this.emitWithAck('private:join', { tickets: list.slice(i, i + 10) })
-      if (!res?.ok) return rooms.length || invalid.length ? { ok: true, rooms, invalid } : { ok: false, code: res?.code || 'FAILED' }
+      if (!res?.ok) return rooms.length || invalid.length || full.length ? result() : { ok: false, code: res?.code || 'FAILED' }
       for (const r of Array.isArray(res.rooms) ? res.rooms : []) {
         if (!r || typeof r.roomId !== 'string') continue
         rooms.push(r)
@@ -379,8 +405,9 @@ class SocketService {
         }
       }
       for (const t of Array.isArray(res.invalid) ? res.invalid : []) invalid.push(t)
+      for (const id of Array.isArray(res.full) ? res.full : []) if (typeof id === 'string') full.push(id)
     }
-    return { ok: true, rooms, invalid }
+    return result()
   }
 
   /** pairing.js에 주입할 소켓 어댑터 */

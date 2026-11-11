@@ -121,12 +121,50 @@ describe('SocketService', () => {
       expect(await socketService.joinPrivate(['pv1.a'])).toEqual({ ok: false, code: 'TIMEOUT' })
     })
 
+    it('정원이 찬 그룹 방은 full로 돌려주고, full이 없으면 결과에 full 키가 없다', async () => {
+      const emit = vi.fn((event, payload, ack) => ack({ ok: true, rooms: [], invalid: [], full: ['prv-g-aa'] }))
+      socketService.socket = { connected: true, emit, on: vi.fn(), off: vi.fn(), disconnect: vi.fn() }
+      expect(await socketService.joinPrivate(['pv1.a'])).toEqual({ ok: true, rooms: [], invalid: [], full: ['prv-g-aa'] })
+      const emit2 = vi.fn((event, payload, ack) => ack({ ok: true, rooms: [], invalid: [] }))
+      socketService.socket = { connected: true, emit: emit2, on: vi.fn(), off: vi.fn(), disconnect: vi.fn() }
+      expect(await socketService.joinPrivate(['pv1.a'])).toEqual({ ok: true, rooms: [], invalid: [] })
+    })
+
     it('10개씩 나눠 보낸다', async () => {
       const emit = vi.fn((event, payload, ack) => ack({ ok: true, rooms: [], invalid: [] }))
       socketService.socket = { connected: true, emit, on: vi.fn(), off: vi.fn(), disconnect: vi.fn() }
       await socketService.joinPrivate(Array.from({ length: 12 }, (_, i) => 'pv1.' + i))
       expect(emit).toHaveBeenCalledTimes(2)
       expect(emit.mock.calls[1][1].tickets).toHaveLength(2)
+    })
+  })
+
+  describe('그룹 방 (createPrivate / invitePrivate)', () => {
+    it('createPrivate: private:create를 보내고 방 토큰·접속 기기를 반영한다', async () => {
+      const emit = vi.fn((event, payload, ack) => ack({ ok: true, roomId: 'prv-g-aa', ticket: 'pv1.own', roomToken: 'tok', roomTokenTtlSec: 3600, devices: [{ socketId: 'me' }] }))
+      socketService.socket = { connected: true, emit, on: vi.fn(), off: vi.fn(), disconnect: vi.fn() }
+      const res = await socketService.createPrivate()
+      expect(emit).toHaveBeenCalledWith('private:create', {}, expect.any(Function))
+      expect(res).toEqual({ ok: true, roomId: 'prv-g-aa', ticket: 'pv1.own', devices: [{ socketId: 'me' }] })
+      expect(socketService.privateRoomDevices.value['prv-g-aa']).toEqual([{ socketId: 'me' }])
+    })
+
+    it('createPrivate: 서버 오류 코드(TOO_MANY_ROOMS)와 연결 없음(TIMEOUT)을 돌려준다', async () => {
+      const emit = vi.fn((event, payload, ack) => ack({ ok: false, error: 'TOO_MANY_ROOMS' }))
+      socketService.socket = { connected: true, emit, on: vi.fn(), off: vi.fn(), disconnect: vi.fn() }
+      expect(await socketService.createPrivate()).toEqual({ ok: false, code: 'TOO_MANY_ROOMS' })
+      socketService.socket = null
+      expect(await socketService.createPrivate()).toEqual({ ok: false, code: 'TIMEOUT' })
+    })
+
+    it('invitePrivate: roomId를 보내 초대 입장권을 받고, 거부되면 코드를 돌려준다', async () => {
+      const emit = vi.fn((event, payload, ack) => ack({ ok: true, ticket: 'pv1.inv', expiresAt: 123 }))
+      socketService.socket = { connected: true, emit, on: vi.fn(), off: vi.fn(), disconnect: vi.fn() }
+      expect(await socketService.invitePrivate('prv-g-aa')).toEqual({ ok: true, ticket: 'pv1.inv', expiresAt: 123 })
+      expect(emit).toHaveBeenCalledWith('private:invite', { roomId: 'prv-g-aa' }, expect.any(Function))
+      const emit2 = vi.fn((event, payload, ack) => ack({ ok: false, error: 'NOT_ALLOWED' }))
+      socketService.socket = { connected: true, emit: emit2, on: vi.fn(), off: vi.fn(), disconnect: vi.fn() }
+      expect(await socketService.invitePrivate('prv-g-aa')).toEqual({ ok: false, code: 'NOT_ALLOWED' })
     })
   })
 })

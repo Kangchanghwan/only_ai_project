@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import PairPeerAvatar from './PairPeerAvatar.vue'
 import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
 import { isValidIdentity, identityName } from '../utils/identity'
+import { isGroupRoomId } from '../utils/groupRoom'
 
 const { t } = useI18n()
 
@@ -21,10 +22,15 @@ const props = defineProps({
   highlightRoomId: {
     type: String,
     default: null
+  },
+  /** 탭 줄 끝에 "＋ 방"(그룹 방 만들기) 버튼을 보인다 */
+  groupCreate: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'group-create'])
 
 const activeRoomId = computed(() => privateRoomIdOfScope(props.scope))
 const privateActive = computed(() => isPrivateScope(props.scope))
@@ -32,6 +38,15 @@ const single = computed(() => props.privateRooms.length === 1 ? props.privateRoo
 const highlighted = computed(() => !!props.highlightRoomId && props.privateRooms.some((r) => r.roomId === props.highlightRoomId))
 
 const peerName = (room) => (isValidIdentity(room.peer?.identity) ? identityName(room.peer.identity, t) : t('pair.unknownDevice'))
+// 그룹 방(prv-g-…)은 같은 목록에 넣되 이름과 아이콘만 다르다
+const isGroup = (room) => isGroupRoomId(room?.roomId)
+const groupName = (room) => room.name || t('group.unnamed')
+const roomLabel = (room) => (isGroup(room) ? groupName(room) : peerName(room))
+const manyLabel = computed(() =>
+  props.privateRooms.every(isGroup)
+    ? `${t('group.createShort')} (${props.privateRooms.length})`
+    : t('pair.tabMany', { n: props.privateRooms.length })
+)
 
 // 2개 이상일 때 상대 고르는 팝오버
 const open = ref(false)
@@ -96,13 +111,16 @@ function pick(roomId) {
       class="flex-1 flex items-center justify-center gap-2 px-3 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
       :class="[privateActive ? 'bg-scope-private text-white' : 'text-scope-private hover:bg-background', highlighted ? 'pair-tab-pulse' : '']"
       :aria-selected="privateActive"
-      :title="t('pair.tabTitle', { name: peerName(single) })"
-      :aria-label="t('pair.tabTitle', { name: peerName(single) })"
+      :title="isGroup(single) ? groupName(single) : t('pair.tabTitle', { name: peerName(single) })"
+      :aria-label="isGroup(single) ? groupName(single) : t('pair.tabTitle', { name: peerName(single) })"
       data-testid="private-tab"
       @click="pick(single.roomId)"
     >
-      <PairPeerAvatar :device="single.peer" size="sm" />
-      <span>{{ t('pair.tab') }}</span>
+      <svg v-if="isGroup(single)" class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="group-tab-icon">
+        <circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17" cy="9" r="2.5" /><path d="M17.5 14.2c2.4.3 4 2.1 4 4.8" />
+      </svg>
+      <PairPeerAvatar v-else :device="single.peer" size="sm" />
+      <span :class="isGroup(single) ? 'truncate max-w-[8rem]' : ''" :data-testid="isGroup(single) ? 'group-tab-name' : undefined">{{ isGroup(single) ? groupName(single) : t('pair.tab') }}</span>
     </button>
     <template v-else-if="privateRooms.length > 1">
       <button
@@ -116,7 +134,7 @@ function pick(roomId) {
         data-testid="private-tab"
         @click="open = !open"
       >
-        {{ t('pair.tabMany', { n: privateRooms.length }) }}
+        {{ manyLabel }}
       </button>
       <ul
         v-if="open"
@@ -134,12 +152,29 @@ function pick(roomId) {
             data-testid="private-tab-option"
             @click="pick(room.roomId)"
           >
-            <PairPeerAvatar :device="room.peer" size="sm" />
-            <span class="truncate">{{ peerName(room) }}</span>
+            <svg v-if="isGroup(room)" class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="group-tab-icon">
+              <circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17" cy="9" r="2.5" /><path d="M17.5 14.2c2.4.3 4 2.1 4 4.8" />
+            </svg>
+            <PairPeerAvatar v-else :device="room.peer" size="sm" />
+            <span class="truncate">{{ roomLabel(room) }}</span>
           </button>
         </li>
       </ul>
     </template>
+
+    <!-- 그룹 방 만들기 -->
+    <button
+      v-if="groupCreate"
+      type="button"
+      class="shrink-0 flex items-center justify-center gap-1 px-3 min-h-[44px] rounded-full text-sm font-semibold text-scope-private hover:bg-background transition-colors"
+      :aria-label="t('group.create')"
+      :title="t('group.create')"
+      data-testid="group-create"
+      @click="emit('group-create')"
+    >
+      <span aria-hidden="true">＋</span>
+      <span aria-hidden="true">{{ t('group.createShort') }}</span>
+    </button>
   </div>
 </template>
 

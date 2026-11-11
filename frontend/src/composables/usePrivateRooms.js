@@ -3,6 +3,8 @@ import { useLockState } from './useLockState.js'
 import { deriveRoomLock, importRoomSecretKey } from '../utils/pairCrypto.js'
 import { encryptText, decryptText } from '../utils/privateText.js'
 import { createPrivateRoomStore, createMemoryPrivateRoomStore, ROOM_TTL_MS } from '../utils/privateRoomDb.js'
+import { isGroupRoomId } from '../utils/groupRoom.js'
+import { sanitizeRoomName } from '../utils/groupInvite.js'
 
 export { createMemoryPrivateRoomStore }
 
@@ -12,7 +14,10 @@ const STATUSES = ['online', 'offline', 'connecting', 'left']
 /** 저장 계층: { save, load, remove, updateTicket, clear }. 기본은 IndexedDB(없거나 실패하면 메모리) */
 let privateRoomStore = createPrivateRoomStore()
 
-/** @type {Array<{roomId: string, peer: object, ticket: string|null, status: string, lock: {salt: string, encKey: CryptoKey, vh: string}}>} */
+/**
+ * 그룹 방(prv-g-…)은 peer가 null이고 name이 있다. 방 비밀 원본(inviteSecret)은 메모리 목록에 두지 않고 저장소에만 있다.
+ * @type {Array<{roomId: string, peer: object|null, name?: string, ticket: string|null, status: string, lock: {salt: string, encKey: CryptoKey, vh: string}}>}
+ */
 const rooms = reactive([])
 
 const find = (roomId) => rooms.find((r) => r.roomId === roomId)
@@ -34,15 +39,19 @@ function put(rec) {
   else rooms.push(rec)
 }
 
-async function addRoom({ roomId, peer, roomSecret, ticket = null }) {
+async function addRoom({ roomId, peer = null, roomSecret, ticket = null, name = '' }) {
   const secretKey = await importRoomSecretKey(roomSecret)
   const { salt, encKey, verifier, vh } = await deriveRoomLock(secretKey, roomId)
   useLockState().rememberKey(salt, encKey, verifier)
-  const rec = { roomId, peer, ticket, status: 'online', lock: { salt, encKey, vh } }
+  const group = isGroupRoomId(roomId)
+  const roomName = group ? sanitizeRoomName(name) : ''
+  const rec = { roomId, peer, ...(group ? { name: roomName } : {}), ticket, status: 'online', lock: { salt, encKey, vh } }
   put(rec)
   const now = Date.now()
   await safe(() => privateRoomStore.save({
-    roomId, ticket, secretKey, peer: plain(peer), createdAt: now, lastUsedAt: now, expiresAt: now + ROOM_TTL_MS
+    roomId, ticket, secretKey, peer: plain(peer), createdAt: now, lastUsedAt: now, expiresAt: now + ROOM_TTL_MS,
+    // 그룹 방만: 나중에 초대 QR을 만들 수 있도록 원본 비밀과 이름을 보관 (복사본: 호출자 버퍼와 분리)
+    ...(group ? { inviteSecret: new Uint8Array(roomSecret), name: roomName } : {})
   }))
   return find(roomId) || rec
 }
@@ -60,7 +69,15 @@ function hydrate(force = false) {
         try {
           const { salt, encKey, verifier, vh } = await deriveRoomLock(r.secretKey, r.roomId)
           useLockState().rememberKey(salt, encKey, verifier)
-          const rec = { roomId: r.roomId, peer: r.peer || {}, ticket: r.ticket || null, status: 'connecting', lock: { salt, encKey, vh } }
+          const group = isGroupRoomId(r.roomId)
+          const rec = {
+            roomId: r.roomId,
+            peer: group ? null : r.peer || {},
+            ...(group ? { name: typeof r.name === 'string' ? r.name : '' } : {}),
+            ticket: r.ticket || null,
+            status: 'connecting',
+            lock: { salt, encKey, vh }
+          }
           put(rec)
           out.push(rec)
         } catch {
@@ -82,6 +99,17 @@ function removeRoom(roomId) {
 const has = (roomId) => !!find(roomId)
 const lockFor = (roomId) => find(roomId)?.lock || null
 const peerFor = (roomId) => find(roomId)?.peer || null
+
+/** 그룹 방 초대 QR용 방 비밀 원본 (저장소에서 읽는다). 1:1 방이거나 없으면 null */
+async function inviteSecretFor(roomId) {
+  if (!isGroupRoomId(roomId)) return null
+  const rec = await safe(async () => {
+    if (typeof privateRoomStore.get === 'function') return privateRoomStore.get(roomId)
+    return (await privateRoomStore.load()).find((r) => r.roomId === roomId) || null
+  })
+  const s = rec?.inviteSecret
+  return s instanceof Uint8Array && s.length === 32 ? new Uint8Array(s) : null
+}
 
 function setStatus(roomId, status) {
   const r = find(roomId)
@@ -124,7 +152,7 @@ function resetPrivateRooms() {
 
 export function usePrivateRooms() {
   return {
-    rooms, addRoom, hydrate, removeRoom, has, lockFor, peerFor, setStatus, setPeer, setTicket,
+    rooms, addRoom, hydrate, removeRoom, has, lockFor, peerFor, setStatus, setPeer, setTicket, inviteSecretFor,
     encryptFor, decryptFor, setStore, resetPrivateRooms
   }
 }
