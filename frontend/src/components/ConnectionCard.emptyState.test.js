@@ -123,4 +123,24 @@ describe('ConnectionCard 빈 방 안내', () => {
     expect(w.find('[data-testid="empty-state"]').exists()).toBe(false)
     track.mockReset()
   })
+
+  it('iPhone에서만 단축어 안내가 보이고, ko는 사용법 절·en은 iCloud 링크로 간다', async () => {
+    vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) Mobile/15E148 Safari/604.1')
+    const w = mountCard(alone())
+    await flushPromises()
+    const a = w.find('[data-testid="empty-state-ios-shortcut"]')
+    expect(a.exists()).toBe(true)
+    expect(a.attributes('href')).toBe('/how-to-use.html#ios-shortcut')
+    await a.trigger('click')
+    expect(names()).toContain('ios_shortcut_click')
+    i18n.global.locale.value = 'en'
+    await flushPromises()
+    expect(w.find('[data-testid="empty-state-ios-shortcut"]').attributes('href')).toContain('icloud.com/shortcuts/')
+  })
+
+  it('PC(Mac)에서는 단축어 안내가 없다', async () => {
+    const w = mountCard(alone())
+    await flushPromises()
+    expect(w.find('[data-testid="empty-state-ios-shortcut"]').exists()).toBe(false)
+  })
 })

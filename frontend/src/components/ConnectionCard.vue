@@ -16,11 +16,15 @@ import { isPrivateScope } from '../composables/useShareScope'
 import QRCode from 'qrcode'
 import { trackEvent } from '../utils/analytics'
 import { isMobileUa } from '../services/p2pProbe'
+import { isIOS } from '../composables/usePWAInstall'
 
 import { EMPTY_STATE_QR_URL } from '../utils/emptyState'
 // 끝의 '/'는 필수: Safari(및 일부 Chrome)는 한글 최상위 도메인만 치면 검색어로 처리한다. '/'를 붙이면 주소로 연다.
 const PING_ADDRESS = '핑.한국/'
 const SITE_ADDRESS = 'clipboardapp.org'
+// iOS는 PWA 공유 대상(Web Share Target)을 지원하지 않는다. 공유 메뉴로 보내려면 iOS 단축어(quick-send API)를 쓴다.
+const IOS_SHORTCUT_GUIDE = '/how-to-use.html#ios-shortcut'
+const IOS_SHORTCUT_FILE_LINK = 'https://www.icloud.com/shortcuts/feee389a0a124572bbdf641802930de1'
 const VIEW_FLAG = 'cs_empty_state_view'
 const JOINED_FLAG = 'cs_peer_joined'
 
@@ -55,6 +59,12 @@ const otherCount = computed(() => countOtherDevices(props.devices, props.mySocke
 const isMobile = isMobileUa()
 const showEmpty = computed(() => props.scope === 'ip' && props.devices.length > 0 && otherCount.value === 0)
 const isKo = computed(() => locale.value === 'ko')
+const isIos = isIOS()
+// 한국어는 설명이 있는 사용법 절로, 그 외 언어는 단축어 추가 링크로 바로 보낸다 (영어 사용법 페이지가 없음)
+const iosShortcutHref = computed(() => (isKo.value ? IOS_SHORTCUT_GUIDE : IOS_SHORTCUT_FILE_LINK))
+function onIosShortcutClick() {
+  safeTrack('ios_shortcut_click', { locale: locale.value })
+}
 const qrDataUrl = ref('')
 function flagGet(k) { try { return sessionStorage.getItem(k) === '1' } catch { return false } }
 function flagSet(k) { try { sessionStorage.setItem(k, '1') } catch { /* 무시 */ } }
@@ -167,6 +177,13 @@ const shortcutName = computed(() => {
           <button type="button" class="font-bold text-text-primary bg-transparent border-0 p-0 cursor-pointer" data-testid="empty-state-copy-ping" @click="copyHint('ping')">{{ PING_ADDRESS }}</button>
         </template>
       </i18n-t>
+      <a
+        v-if="isIos"
+        :href="iosShortcutHref"
+        class="text-xs text-text-secondary underline underline-offset-2"
+        data-testid="empty-state-ios-shortcut"
+        @click="onIosShortcutClick"
+      >{{ t('room.emptyState.iosShortcut') }}</a>
     </div>
     <ul v-if="pendingDevices.length > 0" class="mt-3 pt-3 border-t border-border flex flex-col gap-2 list-none p-0 m-0" data-testid="pair-pending-rows">
       <DeviceRow v-for="d in pendingDevices" :key="d.socketId" :device="d" />

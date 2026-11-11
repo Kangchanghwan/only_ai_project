@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Scannez avec l'appareil photo de votre téléphone pour vous connecter",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Ouvrez {site} sur votre PC"
+      "mobile": "Ouvrez {site} sur votre PC",
+      "iosShortcut": "Envoyer depuis le menu Partager de l’iPhone/iPad (ajouter le raccourci)"
     }
   },
   "identity": {

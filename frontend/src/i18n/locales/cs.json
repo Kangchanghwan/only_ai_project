@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Naskenujte fotoaparátem telefonu a hned se připojíte",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Otevřete {site} na počítači"
+      "mobile": "Otevřete {site} na počítači",
+      "iosShortcut": "Posílejte z nabídky sdílení na iPhonu/iPadu (přidejte zkratku)"
     }
   },
   "identity": {

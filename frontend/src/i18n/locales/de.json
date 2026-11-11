@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Mit der Handykamera scannen und sofort verbinden",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Öffne {site} auf deinem PC"
+      "mobile": "Öffne {site} auf deinem PC",
+      "iosShortcut": "Direkt aus dem Teilen-Menü von iPhone/iPad senden (Kurzbefehl hinzufügen)"
     }
   },
   "identity": {

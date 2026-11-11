@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Telefon kameranla tara, anında bağlan",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Bilgisayarında {site} adresini aç"
+      "mobile": "Bilgisayarında {site} adresini aç",
+      "iosShortcut": "iPhone/iPad paylaşım menüsünden gönder (Kestirmeyi ekle)"
     }
   },
   "identity": {

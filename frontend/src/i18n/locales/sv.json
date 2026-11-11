@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Skanna med mobilkameran för att ansluta direkt",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Öppna {site} på din dator"
+      "mobile": "Öppna {site} på din dator",
+      "iosShortcut": "Skicka från delningsmenyn på iPhone/iPad (lägg till genvägen)"
     }
   },
   "identity": {

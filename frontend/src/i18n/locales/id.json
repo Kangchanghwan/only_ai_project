@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Pindai dengan kamera ponsel untuk langsung terhubung",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Buka {site} di PC kamu"
+      "mobile": "Buka {site} di PC kamu",
+      "iosShortcut": "Kirim dari menu bagikan iPhone/iPad (tambahkan Pintasan)"
     }
   },
   "identity": {
