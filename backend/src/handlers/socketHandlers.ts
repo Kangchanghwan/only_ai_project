@@ -7,7 +7,7 @@ import { assignIdentity, collectUsed, sanitizeIdentity, REROLL_COOLDOWN_MS } fro
 import { toSender } from '../utils/uploaderStore';
 import { issueRoomTokens, getRoomTokenTtlSec } from '../utils/roomToken';
 import { PairSessionManager, PairSession } from '../managers/PairSessionManager';
-import { newPrivateRoomId, newGroupRoomId, isPrivateRoomId, isGroupRoomId } from '../utils/privateRoom';
+import { newGroupRoomId, isPrivateRoomId, isGroupRoomId } from '../utils/privateRoom';
 import { issueTicket, verifyTicket, getPrivateInviteTtlSec } from '../utils/privateTicket';
 import { TokenBucket } from '../utils/tokenBucket';
 import { TextQueue, QueuedText, getTextQueue, toPublicText } from '../utils/textQueue';
@@ -147,7 +147,7 @@ const createPairRoom = (io: Server, roomManager: RoomManager, s: PairSession): b
         endSession(io, s, 'peer-left', members.filter((m) => m.sock).map((m) => m.id));
         return false;
     }
-    const roomId = newPrivateRoomId();
+    const roomId = newGroupRoomId();
     for (const m of members) {
         m.sock!.join(roomId);
         roomManager.addUserToRoom(roomId, m.id, m.info!);
@@ -160,7 +160,7 @@ const createPairRoom = (io: Server, roomManager: RoomManager, s: PairSession): b
         m.sock!.emit('pair:done', { sessionId: s.id, roomId, peer, roomToken: tokens[roomId], roomTokenTtlSec: ttl, ticket: issueTicket(roomId) });
     }
     broadcastUsers(io, roomManager, roomId);
-    logger.log(`1:1 방 생성 ${roomId} [${s.initiator} + ${s.responder}]`);
+    logger.log(`방 생성(연결) ${roomId} [${s.initiator} + ${s.responder}]`);
     return true;
 };
 
@@ -192,9 +192,10 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
 
             const target = io.sockets.sockets.get(to) as ExtendedSocket | undefined;
             const targetConnected = !!target && !!roomManager.getUser(SHARED_ROOM_ID, to);
-            // 1:1 방만 본다: 그룹 방을 같이 쓰는 기기끼리도 1:1 초대는 가능
-            const mine = new Set(getPrivateRooms(socket).filter((r): boolean => !isGroupRoomId(r)));
-            const alreadyPaired = !!target && getPrivateRooms(target).some((r) => mine.has(r));
+            // 예전 1:1 방(prv-)은 같이 쓰면 막는다. 새 방(prv-g-)은 접속 중인 멤버가 정확히 두 기기뿐일 때만 막는다
+            const mine = new Set(getPrivateRooms(socket));
+            const alreadyPaired = !!target && getPrivateRooms(target).some((r) => mine.has(r)
+                && (!isGroupRoomId(r) || roomManager.getRoomUserCount(r) === 2));
 
             const result = pairs.invite(socket.id, to, { targetConnected, alreadyPaired });
             if (!result.ok) return reply(ack, { ok: false, code: result.code });

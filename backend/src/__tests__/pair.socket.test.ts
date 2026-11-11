@@ -98,7 +98,7 @@ describe('Socket.IO - 1:1 연결 (비공개 방)', () => {
 
     const da = a['pair:done'][0];
     const db = b['pair:done'][0];
-    expect(da.roomId).toMatch(/^prv-[0-9a-f]{24}$/);
+    expect(da.roomId).toMatch(/^prv-g-[0-9a-f]{24}$/);
     expect(db.roomId).toBe(da.roomId);
     expect(da.peer.socketId).toBe(B.c.id);
     expect(db.peer.socketId).toBe(A.c.id);
@@ -210,6 +210,22 @@ describe('Socket.IO - 1:1 연결 (비공개 방)', () => {
   test('이미 같은 비공개 방을 공유하면 ALREADY_PAIRED', async () => {
     const { A, B } = await pairUp();
     expect(await ask(A.c, 'pair:invite', { to: B.c.id })).toEqual({ ok: false, code: 'ALREADY_PAIRED' });
+  });
+
+  test('연결로 만든 방은 초대 가능하고, 세 번째 기기가 초대 입장권으로 들어오면 3대가 된다', async () => {
+    const { A, B, roomId } = await pairUp();
+    const C = await connect(freshIp());
+    const inv = await ask(A.c, 'private:invite', { roomId });
+    expect(inv.ok).toBe(true);
+    const cr: Record<string, any[]> = {};
+    C.c.on('room-users', (p: any) => { (cr['ru'] ||= []).push(p); });
+    const joined = await ask(C.c, 'private:join', { tickets: [inv.ticket] });
+    expect(joined.rooms).toHaveLength(1);
+    await wait();
+    expect(cr['ru'][cr['ru'].length - 1].devices).toHaveLength(3);
+    // 두 기기 사이: 3대 방만 있으니 새 연결 요청은 막히지 않는다(접속 중 멤버가 정확히 둘인 방이 아님)
+    const res = await ask(A.c, 'pair:invite', { to: B.c.id });
+    expect(res.ok).toBe(true);
   });
 
   test('요청 동시 3개 초과는 TOO_MANY', async () => {
