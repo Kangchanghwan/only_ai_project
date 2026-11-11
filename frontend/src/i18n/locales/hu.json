@@ -442,7 +442,13 @@
     "notifyDismiss": "Nem, köszönöm",
     "notifyFile": "{name} {count} fájlt küldött",
     "notifyText": "{name} szöveget küldött",
-    "someDevice": "Másik eszköz"
+    "someDevice": "Másik eszköz",
+    "pushEnable": "Érkezési értesítések bekapcsolása",
+    "pushOn": "Érkezési értesítések bekapcsolva",
+    "pushOff": "Kikapcsolás",
+    "pushEnabled": "Érkezési értesítések bekapcsolva",
+    "pushDisabled": "Érkezési értesítések kikapcsolva",
+    "pushError": "Nem sikerült bekapcsolni az értesítéseket. Próbáld újra."
   },
   "dropOverlay": {
     "title": "Ide ejtve azonnal feltöltődik",

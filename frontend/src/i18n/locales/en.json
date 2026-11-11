@@ -668,7 +668,13 @@
     "notifyDismiss": "No thanks",
     "notifyFile": "{name} sent {count} file(s)",
     "notifyText": "{name} sent text",
-    "someDevice": "Another device"
+    "someDevice": "Another device",
+    "pushEnable": "Turn on arrival alerts",
+    "pushOn": "Arrival alerts on",
+    "pushOff": "Turn off",
+    "pushEnabled": "Arrival alerts turned on",
+    "pushDisabled": "Arrival alerts turned off",
+    "pushError": "Couldn't turn on arrival alerts. Please try again."
   },
   "dropOverlay": {
     "title": "Drop here to upload right away",

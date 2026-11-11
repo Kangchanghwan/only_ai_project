@@ -442,7 +442,13 @@
     "notifyDismiss": "Không, cảm ơn",
     "notifyFile": "{name} đã gửi {count} tệp",
     "notifyText": "{name} đã gửi văn bản",
-    "someDevice": "Thiết bị khác"
+    "someDevice": "Thiết bị khác",
+    "pushEnable": "Bật thông báo khi có tệp đến",
+    "pushOn": "Thông báo khi có tệp đến đang bật",
+    "pushOff": "Tắt",
+    "pushEnabled": "Đã bật thông báo khi có tệp đến",
+    "pushDisabled": "Đã tắt thông báo khi có tệp đến",
+    "pushError": "Không bật được thông báo. Vui lòng thử lại."
   },
   "dropOverlay": {
     "title": "Thả vào đây để tải lên ngay",

@@ -17,6 +17,9 @@ import { registerMultipartRoutes, LOCKED_MULTIPART } from './routes/multipart';
 import { rejectPrivateRoom } from './middleware/rejectPrivateRoom';
 import { registerLockedRoutes } from './routes/locked';
 import { registerTextRoutes } from './routes/texts';
+import { registerPushRoutes } from './routes/push';
+import { getPushStore, r2PushPersistence } from './services/pushStore';
+import { isPushEnabled } from './services/pushNotifier';
 import { getTextQueue } from './utils/textQueue';
 import { r2TextQueueStore } from './services/textQueueStore';
 import { reservedBytesForRoom } from './utils/multipartStore';
@@ -156,6 +159,9 @@ registerQuickSendRoutes(app, {
     getR2Service,
     countUsers: (roomId) => roomManager.getRoomUsers(roomId).length,
 });
+
+// 도착 알림(Web Push) 구독. VAPID 키가 없으면 GET /api/push/key가 404이고 나머지도 꺼진 상태로 동작한다
+registerPushRoutes(app);
 
 // 텍스트 대기열(10분 보관): 목록·풀기·삭제. 보관은 소켓 publish에서 한다
 registerTextRoutes(app, roomIdFromParams, roomIdFromBody);
@@ -519,6 +525,16 @@ if (process.env.NODE_ENV !== 'test') {
     textQueue.hydrate()
         .then((n) => { if (n > 0) logger.info(`[TextQueue] 보관 텍스트 ${n}개 복원`); })
         .catch((error) => logger.error('[TextQueue] 복원 실패:', error instanceof Error ? error.message : error));
+
+    // 도착 알림 구독: VAPID가 있을 때만 비공개 버킷에서 되살리고 정리·재기록 타이머를 돌린다
+    if (isPushEnabled()) {
+        const pushStore = getPushStore();
+        pushStore.setPersistence(r2PushPersistence);
+        pushStore.hydrate()
+            .then((n) => { if (n > 0) logger.info(`[Push] 구독 ${n}개 복원`); })
+            .catch((error) => logger.error('[Push] 복원 실패:', error instanceof Error ? error.message : 'error'));
+        pushStore.start();
+    }
 
     httpServer.listen(PORT, () => {
         logger.info(`서버 시작: 포트 ${PORT}`);

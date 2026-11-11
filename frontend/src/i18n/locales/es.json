@@ -442,7 +442,13 @@
     "notifyDismiss": "No, gracias",
     "notifyFile": "{name} envió {count} archivo(s)",
     "notifyText": "{name} envió texto",
-    "someDevice": "Otro dispositivo"
+    "someDevice": "Otro dispositivo",
+    "pushEnable": "Activar avisos de llegada",
+    "pushOn": "Avisos de llegada activados",
+    "pushOff": "Desactivar",
+    "pushEnabled": "Avisos de llegada activados",
+    "pushDisabled": "Avisos de llegada desactivados",
+    "pushError": "No se pudieron activar los avisos de llegada. Inténtalo de nuevo."
   },
   "dropOverlay": {
     "title": "Suelta aquí para subir al instante",

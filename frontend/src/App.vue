@@ -28,6 +28,7 @@ import { isGroupRoomId } from './utils/groupRoom'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
 import { useArrivalBadge } from './composables/useArrivalBadge'
+import { usePush } from './composables/usePush'
 import ArrivalNotifyPrompt from './components/ArrivalNotifyPrompt.vue'
 import NextTimeHint from './components/NextTimeHint.vue'
 import { useNextTimeHint } from './composables/useNextTimeHint'
@@ -374,6 +375,7 @@ socket.onReconnected(() => {
   textQueue.loadRooms(allRoomIds.value)
   // 1:1 방은 서버가 소켓별로 입장을 기억하므로 입장권으로 다시 들어간다 (끝나면 파일 목록도 다시 불러온다)
   rejoinPrivateRooms()
+  push.sync()
 
   notification.showSuccess(t('notification.reconnected'))
 })
@@ -409,6 +411,8 @@ async function connectToRoom() {
     notification.showSuccess(t('notification.connected'))
     // 저장된 1:1 방에 입장권으로 다시 들어간다 (백그라운드)
     rejoinPrivateRooms()
+    // 도착 알림을 켜 둔 기기는 구독을 서버에 다시 맞춘다 (꺼져 있으면 아무 일도 없다)
+    push.sync()
 
     // 새 이벤트 리스너 설정
     setupSocketListeners()
@@ -428,6 +432,51 @@ async function connectToRoom() {
 const isMobile = /iPhone|iPad|iPod|Android|Mobi/i.test(typeof navigator !== 'undefined' ? navigator.userAgent || '' : '')
 const arrival = useArrivalBadge({ getMySocketId: () => socket.mySocketId?.value, isMobile })
 const nextTime = useNextTimeHint({ isBlocked: () => arrival.promptVisible.value })
+
+// 도착 알림(Web Push): 비공개 방이 바뀌면 서버에 묶음을 다시 맞춘다
+const push = usePush()
+watch(
+  () => privateRooms.rooms.filter((r) => r.status !== 'left' && r.ticket).map((r) => `${r.roomId}:${r.ticket}`).join('|'),
+  () => push.syncSoon()
+)
+
+/** 알림을 눌러 들어왔을 때: 그 방의 탭으로 옮긴다. 방 ID는 분석 이벤트에 넣지 않는다 */
+async function handlePushTarget(target) {
+  if (typeof target !== 'string') return
+  if (target === 'ip') {
+    shareScope.setScope('ip')
+    trackEvent('push_open', { target_kind: 'ip' })
+  } else if (/^prv-(?:g-)?[0-9a-f]{24}$/.test(target)) {
+    await privateRooms.hydrate()
+    if (privateRooms.has(target)) shareScope.setScope(scopeForPrivateRoom(target))
+    trackEvent('push_open', { target_kind: 'prv' })
+  }
+}
+
+/** 서비스워커가 알림 클릭 때 맡겨 둔 target을 받아 온다 (창이 닫혀 있다가 열린 경우) */
+function askPushTarget() {
+  const controller = typeof navigator !== 'undefined' ? navigator.serviceWorker?.controller : null
+  if (!controller) return Promise.resolve(null)
+  return new Promise((resolve) => {
+    const channel = new MessageChannel()
+    const timer = setTimeout(() => resolve(null), 1500)
+    channel.port1.onmessage = (event) => {
+      clearTimeout(timer)
+      resolve(event.data?.target ?? null)
+    }
+    try {
+      controller.postMessage({ type: 'GET_PUSH_TARGET' }, [channel.port2])
+    } catch {
+      clearTimeout(timer)
+      resolve(null)
+    }
+  })
+}
+
+/** 창이 이미 열려 있을 때 알림을 누르면 서비스워커가 PUSH_OPEN을 보낸다 */
+function onServiceWorkerMessage(event) {
+  if (event.data?.type === 'PUSH_OPEN') handlePushTarget(event.data.target)
+}
 
 /**
  * 받은 텍스트를 목록에 넣는다. 1:1 방은 암호문(enc)만 오며 평문 content는 쓰지 않는다.
@@ -1210,8 +1259,13 @@ onMounted(async () => {
     textQueue.expire(nowTick.value)
   }, 15000)
 
+  // 도착 알림: 지원 여부 확인 + 구독 맞춤, 알림 클릭으로 열렸는지 확인
+  navigator.serviceWorker?.addEventListener('message', onServiceWorkerMessage)
+  push.init().then(() => push.sync()).catch(() => {})
+
   // 공유 룸에 연결
   await connectToRoom()
+  askPushTarget().then(handlePushTarget).catch(() => {})
 
   // Web Share Target으로 진입한 경우 공유 데이터 처리
   if (isShareTarget) {
@@ -1232,6 +1286,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearInterval(nowTimer)
+  navigator.serviceWorker?.removeEventListener('message', onServiceWorkerMessage)
   if (cleanupUserLeft) cleanupUserLeft()
   if (cleanupOnMessage) cleanupOnMessage()
   document.removeEventListener('paste', handlePaste)

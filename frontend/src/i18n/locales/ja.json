@@ -519,7 +519,13 @@
     "notifyDismiss": "いいえ",
     "notifyFile": "{name}がファイルを{count}件送りました",
     "notifyText": "{name}がテキストを送りました",
-    "someDevice": "別のデバイス"
+    "someDevice": "別のデバイス",
+    "pushEnable": "到着通知をオンにする",
+    "pushOn": "到着通知はオン",
+    "pushOff": "オフにする",
+    "pushEnabled": "到着通知をオンにしました",
+    "pushDisabled": "到着通知をオフにしました",
+    "pushError": "到着通知をオンにできませんでした。もう一度お試しください。"
   },
   "dropOverlay": {
     "title": "ここにドロップするとすぐアップロードされます",

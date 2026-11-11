@@ -119,6 +119,9 @@ ROOM_GRACE_PERIOD_SEC=300
 ROOM_ID_SECRET=<long-random-string>   # IP 격리 룸 ID 생성용 HMAC 시크릿. 운영 필수(미설정 시 추측 가능한 기본값으로 강등 + 시작 경고)
 R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL
 R2_LOCKED_BUCKET_NAME=clipboard-share-locked   # 비밀번호 잠금 파일용 비공개 버킷(공개 도메인 없음, 1일 수명 주기). 비우면 잠금 기능 꺼짐(503)
+VAPID_PUBLIC_KEY=   # 도착 알림(Web Push)용 VAPID 키쌍(web-push generate-vapid-keys). 둘 중 하나라도 비우면 기능 전체가 꺼짐(GET /api/push/key 404, 프론트 UI 숨김)
+VAPID_PRIVATE_KEY=
+VAPID_SUBJECT=https://www.clipboardapp.org   # 선택(기본값 동일)
 ```
 
 ### Frontend

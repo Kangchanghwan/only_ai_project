@@ -442,7 +442,13 @@
     "notifyDismiss": "Nee, bedankt",
     "notifyFile": "{name} heeft {count} bestand(en) gestuurd",
     "notifyText": "{name} heeft tekst gestuurd",
-    "someDevice": "Ander apparaat"
+    "someDevice": "Ander apparaat",
+    "pushEnable": "Aankomstmeldingen inschakelen",
+    "pushOn": "Aankomstmeldingen aan",
+    "pushOff": "Uitschakelen",
+    "pushEnabled": "Aankomstmeldingen ingeschakeld",
+    "pushDisabled": "Aankomstmeldingen uitgeschakeld",
+    "pushError": "Aankomstmeldingen inschakelen is niet gelukt. Probeer het opnieuw."
   },
   "dropOverlay": {
     "title": "Laat hier los om meteen te uploaden",

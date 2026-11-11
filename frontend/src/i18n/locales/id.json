@@ -442,7 +442,13 @@
     "notifyDismiss": "Tidak, terima kasih",
     "notifyFile": "{name} mengirim {count} file",
     "notifyText": "{name} mengirim teks",
-    "someDevice": "Perangkat lain"
+    "someDevice": "Perangkat lain",
+    "pushEnable": "Aktifkan notifikasi kedatangan",
+    "pushOn": "Notifikasi kedatangan aktif",
+    "pushOff": "Matikan",
+    "pushEnabled": "Notifikasi kedatangan diaktifkan",
+    "pushDisabled": "Notifikasi kedatangan dimatikan",
+    "pushError": "Notifikasi tidak dapat diaktifkan. Silakan coba lagi."
   },
   "dropOverlay": {
     "title": "Lepas di sini untuk langsung mengunggah",

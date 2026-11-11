@@ -442,7 +442,13 @@
     "notifyDismiss": "Nie, dziękuję",
     "notifyFile": "{name} wysłał(a) plików: {count}",
     "notifyText": "{name} wysłał(a) tekst",
-    "someDevice": "Inne urządzenie"
+    "someDevice": "Inne urządzenie",
+    "pushEnable": "Włącz powiadomienia o nowych plikach",
+    "pushOn": "Powiadomienia o nowych plikach włączone",
+    "pushOff": "Wyłącz",
+    "pushEnabled": "Włączono powiadomienia o nowych plikach",
+    "pushDisabled": "Wyłączono powiadomienia o nowych plikach",
+    "pushError": "Nie udało się włączyć powiadomień. Spróbuj ponownie."
   },
   "dropOverlay": {
     "title": "Upuść tutaj, aby od razu wysłać",

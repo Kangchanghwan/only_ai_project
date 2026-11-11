@@ -11,6 +11,8 @@ import { newPrivateRoomId, newGroupRoomId, isPrivateRoomId, isGroupRoomId } from
 import { issueTicket, verifyTicket, getPrivateInviteTtlSec } from '../utils/privateTicket';
 import { TokenBucket } from '../utils/tokenBucket';
 import { TextQueue, QueuedText, getTextQueue, toPublicText } from '../utils/textQueue';
+import { getPushNotifier } from '../services/pushNotifier';
+import { isValidPid } from '../services/pushStore';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -433,6 +435,8 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQu
     const pairs = new PairSessionManager();
     // 보관 텍스트 10분 만료 주기 정리 (목록 조회 때도 만료분을 거른다)
     textQueue.startSweeper();
+    // 도착 알림: 접속 중인 기기(pid)를 푸시 대상에서 빼기 위해 소켓 목록을 본다
+    getPushNotifier().attachIo(io);
     // 만료된 연결 세션 정리 (요청 60초 미응답, 수락 후 확인 2분)
     const sweeper = setInterval(() => {
         for (const s of pairs.expireDue()) endSession(io, s, 'expired', [s.initiator, s.responder]);
@@ -462,6 +466,12 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQu
         socket.on('room-tokens', (ack?: (payload: RoomTokensPayload) => void) => {
             if (typeof ack !== 'function') return;
             ack(buildRoomTokenPayload(socket));
+        });
+
+        // 도착 알림 기기 ID 묶기 (형식이 틀리면 조용히 무시)
+        socket.on('push:bind', (payload: unknown) => {
+            const pid = (payload as { pid?: unknown } | null)?.pid;
+            if (isValidPid(pid)) socket.data.pushId = pid;
         });
 
         // P2P 연결 사전 점검용 시그널링 중계 (구버전 클라이언트는 이 이벤트를 쓰지 않음)
@@ -665,6 +675,12 @@ const handlePublish = (
         }
 
         io.to(targetRoomId).emit('message', outgoing);
+
+        // 도착 알림(Web Push): 전체 공유 방은 보내지 않는다. 실패해도 공유에는 영향 없음
+        if (target !== 'global') {
+            const kind = isText ? 'text' : msg?.type === 'file-uploaded' ? 'file' : null;
+            if (kind) getPushNotifier().notifyArrival({ roomId: targetRoomId, scope: target === 'ip' ? 'ip' : 'prv', kind, senderSocketId: socket.id });
+        }
 
         if (ack) ack(null, response);
 

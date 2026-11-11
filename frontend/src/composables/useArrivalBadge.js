@@ -7,6 +7,7 @@ import { setTitleBadge } from './useTitleBadge'
 import { trackEvent } from '../utils/analytics'
 import { identityName } from '../utils/identity'
 import { t } from '../i18n/translate'
+import { usePush } from './usePush'
 
 export const NOTIFY_PREF_KEY = 'cs_arrival_notify'
 const MAX_HIDDEN_EVENTS = 20
@@ -34,9 +35,9 @@ export function senderName(sender) {
 }
 
 /**
- * @param {{ getMySocketId?: () => string|undefined, isMobile?: boolean }} opts
+ * @param {{ getMySocketId?: () => string|undefined, isMobile?: boolean, push?: ReturnType<typeof usePush> }} opts
  */
-export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = false } = {}) {
+export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = false, push = usePush() } = {}) {
   const count = ref(0)
   const promptVisible = ref(false)
   let hiddenSince = 0
@@ -45,6 +46,16 @@ export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = fa
   let iconState = null // { links: [{el, href, type}], token }
 
   const notifySupported = () => !isMobile && typeof Notification !== 'undefined'
+  // 모바일은 푸시를 쓸 수 있을 때만 안내한다 (푸시 지원 여부는 앱 시작 때 push.init()이 정한다)
+  const promptSupported = () => typeof Notification !== 'undefined' && (!isMobile || push.supported.value === true)
+
+  /** 모바일(안드로이드 크롬 등)에서는 new Notification이 예외라 서비스워커로 알림을 띄운다 */
+  async function showViaServiceWorker(body) {
+    try {
+      const reg = await navigator.serviceWorker.ready
+      await reg.showNotification('Clipboard Share', { body, tag: 'cs-arrival', icon: NOTIFY_ICON, renotify: true, data: { target: null } })
+    } catch { /* 무시 */ }
+  }
 
   // ── 파비콘 점 ──
   function setFaviconDot(on) {
@@ -112,7 +123,12 @@ export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = fa
         hiddenEvents += 1
         safeTrack('arrival_hidden', { kind, count: add })
       }
-      if (notifySupported() && Notification.permission === 'granted') {
+      const mobileNotify = isMobile && typeof Notification !== 'undefined' && Notification.permission === 'granted'
+        && typeof navigator !== 'undefined' && !!navigator.serviceWorker
+      if (mobileNotify) {
+        const name = senderName(sender)
+        showViaServiceWorker(kind === 'file' ? t('arrival.notifyFile', { name, count: add }) : t('arrival.notifyText', { name }))
+      } else if (notifySupported() && Notification.permission === 'granted') {
         const name = senderName(sender)
         const body = kind === 'file' ? t('arrival.notifyFile', { name, count: add }) : t('arrival.notifyText', { name })
         try {
@@ -140,7 +156,7 @@ export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = fa
   }
 
   function maybeShowPrompt() {
-    if (promptShown || !notifySupported()) return
+    if (promptShown || !promptSupported()) return
     if (prefGet()) return
     if (Notification.permission !== 'default') return
     promptShown = true
@@ -158,7 +174,11 @@ export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = fa
     } catch { /* 무시 */ }
     safeTrack('notify_permission', { result })
     if (result !== 'granted') prefSet(result === 'denied' ? 'denied' : 'dismissed')
-    else prefSet('granted')
+    else {
+      prefSet('granted')
+      // 탭이 닫혀 있어도 받도록 푸시도 함께 켠다 (지원되지 않으면 건너뜀. 실패해도 탭 알림은 그대로)
+      try { if (await push.isSupported()) await push.enable() } catch { /* 무시 */ }
+    }
   }
 
   function dismissPrompt() {

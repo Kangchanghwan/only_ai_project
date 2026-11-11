@@ -26,6 +26,7 @@ import { quotaKeyFromRequest, reserveDailyQuota, releaseDailyQuota } from '../ut
 import { recordUploader, Sender } from '../utils/uploaderStore';
 import { getTextQueue, TextQueue } from '../utils/textQueue';
 import { relayTextShared } from '../handlers/socketHandlers';
+import { getPushNotifier } from '../services/pushNotifier';
 import { TokenBucket } from '../utils/tokenBucket';
 import type { R2Service } from '../services/r2Service';
 import type { DeviceLabel } from '../utils/deviceInfo';
@@ -204,6 +205,7 @@ export const registerQuickSendRoutes = (app: Express, deps: QuickSendDeps): void
                         roomId,
                         sender,
                     });
+                    getPushNotifier().notifyArrival({ roomId, scope: 'ip', kind: 'file' });
                 }
                 quotaHold = null;
             }
@@ -218,6 +220,7 @@ export const registerQuickSendRoutes = (app: Express, deps: QuickSendDeps): void
                 };
                 const r = textQueue.offer(msg, roomId, sender, { sid: sender.socketId, net: roomId });
                 deps.io.to(roomId).emit('message', relayTextShared({ ...msg, sender }, r.stored ? r.entry : null));
+                getPushNotifier().notifyArrival({ roomId, scope: 'ip', kind: 'text' });
             }
 
             const receivers = deps.countUsers(roomId);

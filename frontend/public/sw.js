@@ -238,12 +238,79 @@ async function handleLockedDownload(token) {
   });
 }
 
+// === 도착 알림 (Web Push) ===
+// 서버가 보내는 페이로드: { v:1, title, body, tag, target }. 파일 이름·텍스트·보낸 사람 정보는 들어 있지 않다.
+// target은 'ip'(같은 네트워크) 또는 비공개 방 ID. 방 ID는 주소(URL)에 넣지 않는다(분석 도구로 새지 않게).
+
+let pendingPushTarget = null;
+
+function cleanPushTarget(v) {
+  return typeof v === 'string' && /^(ip|prv-(?:g-)?[0-9a-f]{24})$/.test(v) ? v : null;
+}
+
+function cleanPushText(v, fallback) {
+  return typeof v === 'string' && v.length > 0 && v.length <= 200 ? v : fallback;
+}
+
+self.addEventListener('push', (event) => {
+  let payload = null;
+  try {
+    payload = event.data ? event.data.json() : null;
+  } catch {
+    payload = null;
+  }
+  if (!payload || typeof payload !== 'object') payload = {};
+  const ko = !!(self.navigator && /^ko/i.test(self.navigator.language || ''));
+  const title = cleanPushText(payload.title, 'Clipboard Share');
+  const body = cleanPushText(payload.body, ko ? '새 항목이 도착했어요' : 'Something new arrived');
+  const tag = cleanPushText(payload.tag, 'cs-arrival');
+  // 푸시를 받으면 반드시 알림을 보여 준다 (보여 주지 않으면 브라우저가 구독을 끊을 수 있다)
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      tag,
+      renotify: true,
+      icon: '/icon-192.png',
+      data: { target: cleanPushTarget(payload.target) },
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = cleanPushTarget(event.notification.data && event.notification.data.target);
+  event.waitUntil(
+    (async () => {
+      const list = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      const open = list.find((c) => 'focus' in c);
+      if (open) {
+        try {
+          await open.focus();
+        } catch {
+          /* 포커스를 못 줘도 메시지는 보낸다 */
+        }
+        open.postMessage({ type: 'PUSH_OPEN', target });
+        return;
+      }
+      pendingPushTarget = target;
+      await self.clients.openWindow('/?utm_source=push&utm_medium=notification');
+    })()
+  );
+});
+
 self.addEventListener('message', (event) => {
   const data = event.data;
   if (data && data.type === 'GET_SHARE_DATA') {
     const shared = pendingShareData;
     pendingShareData = null;
     event.ports[0].postMessage({ type: 'SHARE_DATA', data: shared });
+    return;
+  }
+
+  if (data && data.type === 'GET_PUSH_TARGET') {
+    const target = pendingPushTarget;
+    pendingPushTarget = null;
+    if (event.ports && event.ports[0]) event.ports[0].postMessage({ type: 'PUSH_TARGET', target });
     return;
   }
 

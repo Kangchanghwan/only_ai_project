@@ -442,7 +442,13 @@
     "notifyDismiss": "Nej tack",
     "notifyFile": "{name} skickade {count} fil(er)",
     "notifyText": "{name} skickade text",
-    "someDevice": "Annan enhet"
+    "someDevice": "Annan enhet",
+    "pushEnable": "Aktivera ankomstaviseringar",
+    "pushOn": "Ankomstaviseringar på",
+    "pushOff": "Stäng av",
+    "pushEnabled": "Ankomstaviseringar aktiverade",
+    "pushDisabled": "Ankomstaviseringar avstängda",
+    "pushError": "Det gick inte att aktivera aviseringarna. Försök igen."
   },
   "dropOverlay": {
     "title": "Släpp här för att ladda upp direkt",

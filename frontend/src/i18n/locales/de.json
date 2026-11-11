@@ -442,7 +442,13 @@
     "notifyDismiss": "Nein, danke",
     "notifyFile": "{name} hat {count} Datei(en) gesendet",
     "notifyText": "{name} hat Text gesendet",
-    "someDevice": "Anderes Gerät"
+    "someDevice": "Anderes Gerät",
+    "pushEnable": "Ankunftsbenachrichtigung aktivieren",
+    "pushOn": "Ankunftsbenachrichtigung an",
+    "pushOff": "Ausschalten",
+    "pushEnabled": "Ankunftsbenachrichtigung aktiviert",
+    "pushDisabled": "Ankunftsbenachrichtigung deaktiviert",
+    "pushError": "Ankunftsbenachrichtigung konnte nicht aktiviert werden. Bitte erneut versuchen."
   },
   "dropOverlay": {
     "title": "Hier ablegen, um sofort hochzuladen",

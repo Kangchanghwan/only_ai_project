@@ -442,7 +442,13 @@
     "notifyDismiss": "Não, obrigado",
     "notifyFile": "{name} enviou {count} arquivo(s)",
     "notifyText": "{name} enviou texto",
-    "someDevice": "Outro dispositivo"
+    "someDevice": "Outro dispositivo",
+    "pushEnable": "Ativar avisos de chegada",
+    "pushOn": "Avisos de chegada ativados",
+    "pushOff": "Desativar",
+    "pushEnabled": "Avisos de chegada ativados",
+    "pushDisabled": "Avisos de chegada desativados",
+    "pushError": "Não foi possível ativar os avisos de chegada. Tente novamente."
   },
   "dropOverlay": {
     "title": "Solte aqui para enviar na hora",

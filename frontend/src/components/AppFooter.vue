@@ -1,11 +1,40 @@
 <script setup>
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { usePWAInstall } from '../composables/usePWAInstall.js'
+import { usePush } from '../composables/usePush.js'
+import { useNotification } from '../composables/useNotification.js'
 import { FEEDBACK_FORM_URL } from '../constants/feedback.js'
 import { trackEvent } from '../utils/analytics.js'
 
 const { t } = useI18n()
 const { canInstall, isInstalled, promptInstall } = usePWAInstall()
+const push = usePush()
+const notification = useNotification()
+const pushBusy = ref(false)
+
+async function onPushEnable() {
+  if (pushBusy.value) return
+  pushBusy.value = true
+  try {
+    const r = await push.enable()
+    if (r.ok) notification.showSuccess(t('arrival.pushEnabled'))
+    else if (r.reason === 'error') notification.showError(t('arrival.pushError'))
+  } finally {
+    pushBusy.value = false
+  }
+}
+
+async function onPushDisable() {
+  if (pushBusy.value) return
+  pushBusy.value = true
+  try {
+    await push.disable()
+    notification.showInfo(t('arrival.pushDisabled'))
+  } finally {
+    pushBusy.value = false
+  }
+}
 
 const currentYear = new Date().getFullYear()
 </script>
@@ -26,6 +55,35 @@ const currentYear = new Date().getFullYear()
       >
         {{ t('footer.installButton') }}
       </button>
+    </div>
+    <div
+      v-if="push.supported.value && push.permission.value !== 'denied'"
+      data-testid="push-row"
+      class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-text-secondary mb-3"
+    >
+      <button
+        v-if="!push.enabled.value"
+        type="button"
+        data-testid="push-enable"
+        :disabled="pushBusy"
+        class="px-3 py-1 rounded-full bg-primary text-white text-xs font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
+        @click="onPushEnable"
+      >
+        {{ t('arrival.pushEnable') }}
+      </button>
+      <template v-else>
+        <span>{{ t('arrival.pushOn') }}</span>
+        <span class="text-text-secondary/50">·</span>
+        <button
+          type="button"
+          data-testid="push-disable"
+          :disabled="pushBusy"
+          class="text-primary hover:underline disabled:opacity-60"
+          @click="onPushDisable"
+        >
+          {{ t('arrival.pushOff') }}
+        </button>
+      </template>
     </div>
     <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-text-secondary">
       <a

@@ -442,7 +442,13 @@
     "notifyDismiss": "Ne, děkuji",
     "notifyFile": "{name} poslal(a) soubory: {count}",
     "notifyText": "{name} poslal(a) text",
-    "someDevice": "Jiné zařízení"
+    "someDevice": "Jiné zařízení",
+    "pushEnable": "Zapnout oznámení o příchozích datech",
+    "pushOn": "Oznámení o příchozích datech zapnuta",
+    "pushOff": "Vypnout",
+    "pushEnabled": "Oznámení o příchozích datech zapnuta",
+    "pushDisabled": "Oznámení o příchozích datech vypnuta",
+    "pushError": "Oznámení se nepodařilo zapnout. Zkuste to znovu."
   },
   "dropOverlay": {
     "title": "Pusťte sem a nahraje se to hned",
