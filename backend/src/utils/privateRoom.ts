@@ -3,12 +3,21 @@ import { randomBytes } from 'crypto';
 /** 1:1 비공개 방 ID 접두사 */
 export const PRIVATE_ROOM_PREFIX = 'prv-';
 
-const PRIVATE_ROOM_RE = /^prv-[0-9a-f]{24}$/;
+/** 1:1 방 `prv-<hex24>`, 그룹 방 `prv-g-<hex24>` */
+const PRIVATE_ROOM_RE = /^prv-(g-)?[0-9a-f]{24}$/;
+const GROUP_ROOM_RE = /^prv-g-[0-9a-f]{24}$/;
 
 /** 새 비공개 방 ID: `prv-` + 소문자 hex 24자 (12바이트 무작위) */
 export const newPrivateRoomId = (): string => `${PRIVATE_ROOM_PREFIX}${randomBytes(12).toString('hex')}`;
 
-/** 비공개 방 ID 형식인지 */
+/** 새 그룹 방 ID: `prv-g-` + 소문자 hex 24자 */
+export const newGroupRoomId = (): string => `${PRIVATE_ROOM_PREFIX}g-${randomBytes(12).toString('hex')}`;
+
+/** 그룹 방 ID 형식인지 */
+export const isGroupRoomId = (value: unknown): value is string =>
+    typeof value === 'string' && GROUP_ROOM_RE.test(value);
+
+/** 비공개 방(1:1·그룹) ID 형식인지 */
 export const isPrivateRoomId = (value: unknown): value is string =>
     typeof value === 'string' && PRIVATE_ROOM_RE.test(value);
 

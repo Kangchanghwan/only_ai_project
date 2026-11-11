@@ -7,8 +7,8 @@ import { assignIdentity, collectUsed, sanitizeIdentity, REROLL_COOLDOWN_MS } fro
 import { toSender } from '../utils/uploaderStore';
 import { issueRoomTokens, getRoomTokenTtlSec } from '../utils/roomToken';
 import { PairSessionManager, PairSession } from '../managers/PairSessionManager';
-import { newPrivateRoomId, isPrivateRoomId } from '../utils/privateRoom';
-import { issueTicket, verifyTicket } from '../utils/privateTicket';
+import { newPrivateRoomId, newGroupRoomId, isPrivateRoomId, isGroupRoomId } from '../utils/privateRoom';
+import { issueTicket, verifyTicket, getPrivateInviteTtlSec } from '../utils/privateTicket';
 import { TokenBucket } from '../utils/tokenBucket';
 import { TextQueue, QueuedText, getTextQueue, toPublicText } from '../utils/textQueue';
 import logger from '../utils/logger';
@@ -99,6 +99,13 @@ export const PAIR_PK_MAX_CHARS = 200;
 /** 소켓당 비공개 방 최대 개수 / private:join 한 번에 받는 입장권 수 */
 export const MAX_PRIVATE_ROOMS_PER_SOCKET = 10;
 export const MAX_TICKETS_PER_JOIN = 10;
+/** 그룹 방 동시 접속 기기 상한 기본값 (env PRIVATE_GROUP_MAX_MEMBERS 로 조정) */
+export const DEFAULT_GROUP_MAX_MEMBERS = 10;
+
+const getGroupMaxMembers = (): number => {
+    const parsed = parseInt(process.env.PRIVATE_GROUP_MAX_MEMBERS || '', 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_GROUP_MAX_MEMBERS;
+};
 
 type Ack = ((res: Record<string, unknown>) => void) | undefined;
 
@@ -155,6 +162,22 @@ const createPairRoom = (io: Server, roomManager: RoomManager, s: PairSession): b
     return true;
 };
 
+/** 소켓을 비공개 방(1:1·그룹 공통)에 넣고 서버 메모리 멤버십·소켓 룸·room-users를 갱신한다 */
+const enterPrivateRoom = (socket: ExtendedSocket, io: Server, roomManager: RoomManager, roomId: string, info: DeviceInfo) => {
+    const current = getPrivateRooms(socket);
+    socket.join(roomId);
+    roomManager.addUserToRoom(roomId, socket.id, info);
+    if (!current.includes(roomId)) socket.data.privateRooms = [...current, roomId];
+    broadcastUsers(io, roomManager, roomId);
+    return {
+        roomId,
+        ticket: issueTicket(roomId),
+        roomToken: issueRoomTokens([roomId])[roomId],
+        roomTokenTtlSec: getRoomTokenTtlSec(),
+        devices: roomManager.getRoomUsers(roomId),
+    };
+};
+
 const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: RoomManager, pairs: PairSessionManager) => {
     socket.on('pair:invite', (payload: unknown, ack?: Ack) => {
         try {
@@ -167,7 +190,8 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
 
             const target = io.sockets.sockets.get(to) as ExtendedSocket | undefined;
             const targetConnected = !!target && !!roomManager.getUser(SHARED_ROOM_ID, to);
-            const mine = new Set(getPrivateRooms(socket));
+            // 1:1 방만 본다: 그룹 방을 같이 쓰는 기기끼리도 1:1 초대는 가능
+            const mine = new Set(getPrivateRooms(socket).filter((r): boolean => !isGroupRoomId(r)));
             const alreadyPaired = !!target && getPrivateRooms(target).some((r) => mine.has(r));
 
             const result = pairs.invite(socket.id, to, { targetConnected, alreadyPaired });
@@ -277,6 +301,7 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
             const info = roomManager.getUser(SHARED_ROOM_ID, socket.id);
             const rooms: Array<Record<string, unknown>> = [];
             const invalid: unknown[] = [];
+            const full: string[] = [];
             const seen = new Set<string>();
             for (const t of tickets) {
                 const v = verifyTicket(t);
@@ -285,21 +310,46 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
                 const current = getPrivateRooms(socket);
                 if (!current.includes(v.roomId) && current.length >= MAX_PRIVATE_ROOMS_PER_SOCKET) { invalid.push(t); continue; }
                 seen.add(v.roomId);
-                socket.join(v.roomId);
-                roomManager.addUserToRoom(v.roomId, socket.id, info);
-                if (!current.includes(v.roomId)) socket.data.privateRooms = [...current, v.roomId];
-                broadcastUsers(io, roomManager, v.roomId);
-                rooms.push({
-                    roomId: v.roomId,
-                    ticket: issueTicket(v.roomId),
-                    roomToken: issueRoomTokens([v.roomId])[v.roomId],
-                    roomTokenTtlSec: getRoomTokenTtlSec(),
-                    devices: roomManager.getRoomUsers(v.roomId),
-                });
+                // 그룹 방 상한: 이미 멤버인 소켓(재접속 복구 등)은 막지 않는다. 가득 찬 방은 invalid가 아니라 full로 알린다
+                if (isGroupRoomId(v.roomId) && !current.includes(v.roomId) && roomManager.getRoomUserCount(v.roomId) >= getGroupMaxMembers()) {
+                    full.push(v.roomId);
+                    continue;
+                }
+                rooms.push(enterPrivateRoom(socket, io, roomManager, v.roomId, info));
             }
-            reply(ack, { ok: true, rooms, invalid });
+            reply(ack, { ok: true, rooms, invalid, full });
         } catch (error) {
             logger.error(`private:join 처리 에러 [${socket.id}]:`, error);
+        }
+    });
+
+    // 그룹 방 만들기: 방 ID는 서버가 만들고 만든 소켓이 첫 멤버가 된다
+    socket.on('private:create', (payloadOrAck?: unknown, maybeAck?: Ack) => {
+        const ack: Ack = typeof payloadOrAck === 'function' ? (payloadOrAck as Ack) : maybeAck;
+        try {
+            if (!pairAllowed(socket, ack)) return;
+            const info = roomManager.getUser(SHARED_ROOM_ID, socket.id);
+            if (!info) return reply(ack, { ok: false, error: 'NOT_REGISTERED' });
+            if (getPrivateRooms(socket).length >= MAX_PRIVATE_ROOMS_PER_SOCKET) return reply(ack, { ok: false, error: 'TOO_MANY_ROOMS' });
+            const room = enterPrivateRoom(socket, io, roomManager, newGroupRoomId(), info);
+            logger.log(`그룹 방 생성 ${room.roomId} [${socket.id}]`);
+            reply(ack, { ok: true, ...room });
+        } catch (error) {
+            logger.error(`private:create 처리 에러 [${socket.id}]:`, error);
+        }
+    });
+
+    // 초대 입장권 발급: 그룹 방의 멤버만 (짧은 만료). 입장권 값은 로그에 남기지 않는다
+    socket.on('private:invite', (payload: unknown, ack?: Ack) => {
+        try {
+            if (!pairAllowed(socket, ack)) return;
+            const roomId = payload && typeof payload === 'object' ? (payload as { roomId?: unknown }).roomId : undefined;
+            if (!isGroupRoomId(roomId) || !getPrivateRooms(socket).includes(roomId)) return reply(ack, { ok: false, error: 'NOT_ALLOWED' });
+            const ttl = getPrivateInviteTtlSec();
+            const nowSec = Math.floor(Date.now() / 1000);
+            reply(ack, { ok: true, ticket: issueTicket(roomId, nowSec, ttl), expiresAt: (nowSec + ttl) * 1000 });
+        } catch (error) {
+            logger.error(`private:invite 처리 에러 [${socket.id}]:`, error);
         }
     });
 

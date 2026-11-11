@@ -23,8 +23,18 @@ export const getPrivateTicketTtlSec = (): number => {
 const sign = (roomId: string, exp: number): string =>
     createHmac('sha256', getSecret()).update(`private-ticket:v1:${roomId}:${exp}`).digest('base64url');
 
-export const issueTicket = (roomId: string, nowSec: number = Math.floor(Date.now() / 1000)): string => {
-    const exp = nowSec + getPrivateTicketTtlSec();
+/** 그룹 방 초대 입장권 유효 시간(초). 기본 10분, PRIVATE_INVITE_TTL_SEC 로 조정 */
+export const getPrivateInviteTtlSec = (): number => {
+    const parsed = parseInt(process.env.PRIVATE_INVITE_TTL_SEC || '', 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 600;
+};
+
+export const issueTicket = (
+    roomId: string,
+    nowSec: number = Math.floor(Date.now() / 1000),
+    ttlSec: number = getPrivateTicketTtlSec()
+): string => {
+    const exp = nowSec + ttlSec;
     return `${PREFIX}.${roomId}.${exp}.${sign(roomId, exp)}`;
 };
 
