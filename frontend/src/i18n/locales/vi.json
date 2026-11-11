@@ -29,6 +29,14 @@
       "iosShortcut": "Gửi từ menu chia sẻ trên iPhone/iPad (thêm Phím tắt)"
     }
   },
+  "nextTime": {
+    "iosText": "Lần sau, bạn có thể gửi thẳng từ nút Chia sẻ trong ứng dụng Ảnh",
+    "iosAction": "Thêm phím tắt",
+    "installText": "Cài đặt thành ứng dụng để lần sau mở nhanh hơn",
+    "installAction": "Cài đặt",
+    "bookmarkText": "Nhấn {key} để thêm vào dấu trang và mở ngay lần sau",
+    "close": "Đóng"
+  },
   "identity": {
     "adj": [
       "buồn ngủ",

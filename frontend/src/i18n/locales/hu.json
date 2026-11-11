@@ -29,6 +29,14 @@
       "iosShortcut": "Küldés az iPhone/iPad megosztás menüjéből (parancs hozzáadása)"
     }
   },
+  "nextTime": {
+    "iosText": "Legközelebb közvetlenül a Fotók megosztás gombjával küldhet",
+    "iosAction": "Parancsikon hozzáadása",
+    "installText": "Telepítse alkalmazásként, így legközelebb gyorsabban megnyílik",
+    "installAction": "Telepítés",
+    "bookmarkText": "A(z) {key} billentyűkombinációval könyvjelzőzze, és legközelebb azonnal megnyithatja",
+    "close": "Bezárás"
+  },
   "identity": {
     "adj": [
       "Álmos",

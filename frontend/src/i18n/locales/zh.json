@@ -29,6 +29,14 @@
       "iosShortcut": "从 iPhone/iPad 的共享菜单直接发送(添加快捷指令)"
     }
   },
+  "nextTime": {
+    "iosText": "下次可以直接从相册的分享按钮发送",
+    "iosAction": "添加快捷指令",
+    "installText": "安装为应用后，下次可以更快打开",
+    "installAction": "安装",
+    "bookmarkText": "按 {key} 添加书签，下次可以直接打开",
+    "close": "关闭"
+  },
   "identity": {
     "adj": [
       "困困的",

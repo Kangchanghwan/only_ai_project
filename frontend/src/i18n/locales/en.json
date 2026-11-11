@@ -29,6 +29,14 @@
       "iosShortcut": "Send from the iPhone/iPad share menu (add the Shortcut)"
     }
   },
+  "nextTime": {
+    "iosText": "Next time, send straight from the Photos share button",
+    "iosAction": "Add shortcut",
+    "installText": "Install it as an app to open it faster next time",
+    "installAction": "Install",
+    "bookmarkText": "Press {key} to bookmark this page and open it right away next time",
+    "close": "Close"
+  },
   "identity": {
     "adj": [
       "Sleepy",

@@ -29,6 +29,14 @@
       "iosShortcut": "Wysyłaj z menu udostępniania iPhone’a/iPada (dodaj skrót)"
     }
   },
+  "nextTime": {
+    "iosText": "Następnym razem wyślesz prosto z przycisku Udostępnij w aplikacji Zdjęcia",
+    "iosAction": "Dodaj skrót",
+    "installText": "Zainstaluj jako aplikację, by następnym razem otworzyć ją szybciej",
+    "installAction": "Zainstaluj",
+    "bookmarkText": "Dodaj do zakładek skrótem {key}, a następnym razem otworzysz stronę od razu",
+    "close": "Zamknij"
+  },
   "identity": {
     "adj": [
       "Śpiący/Śpiąca",

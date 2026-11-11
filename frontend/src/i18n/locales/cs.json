@@ -29,6 +29,14 @@
       "iosShortcut": "Posílejte z nabídky sdílení na iPhonu/iPadu (přidejte zkratku)"
     }
   },
+  "nextTime": {
+    "iosText": "Příště můžete odesílat rovnou tlačítkem Sdílet v aplikaci Fotky",
+    "iosAction": "Přidat zkratku",
+    "installText": "Nainstalujte si ji jako aplikaci a příště se otevře rychleji",
+    "installAction": "Instalovat",
+    "bookmarkText": "Přidejte stránku do záložek pomocí {key} a příště ji otevřete hned",
+    "close": "Zavřít"
+  },
   "identity": {
     "adj": [
       "Ospalý/Ospalá/Ospalé",
