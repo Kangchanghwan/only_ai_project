@@ -491,7 +491,11 @@
       "scissors": "Schaar",
       "balloon": "Ballon",
       "carrot": "Wortel"
-    }
+    },
+    "addTitle": "Ruimte toevoegen",
+    "addCreateTitle": "Nieuwe ruimte maken",
+    "addCreateDesc": "Maak een ruimte en nodig andere apparaten uit met een QR of plaatjes",
+    "addEnterDesc": "Doe mee met een ruimte via de 4 plaatjes op een van de apparaten daarin"
   },
   "arrival": {
     "notifyPrompt": "Een melding krijgen als er iets binnenkomt terwijl dit tabblad op de achtergrond staat?",

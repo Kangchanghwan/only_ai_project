@@ -491,7 +491,11 @@
       "scissors": "Sax",
       "balloon": "Ballong",
       "carrot": "Morot"
-    }
+    },
+    "addTitle": "Lägg till rum",
+    "addCreateTitle": "Skapa ett nytt rum",
+    "addCreateDesc": "Skapa ett rum och bjud in andra enheter med QR eller bilder",
+    "addEnterDesc": "Gå med i ett rum med de 4 bilder som visas på en av dess enheter"
   },
   "arrival": {
     "notifyPrompt": "Vill du få en avisering när något kommer medan fliken ligger i bakgrunden?",

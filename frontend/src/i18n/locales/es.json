@@ -491,7 +491,11 @@
       "scissors": "Tijeras",
       "balloon": "Globo",
       "carrot": "Zanahoria"
-    }
+    },
+    "addTitle": "Añadir una sala",
+    "addCreateTitle": "Crear una sala nueva",
+    "addCreateDesc": "Crea una sala e invita a otros dispositivos con un QR o con imágenes",
+    "addEnterDesc": "Entra en una sala con las 4 imágenes que se ven en uno de sus dispositivos"
   },
   "arrival": {
     "notifyPrompt": "¿Quieres recibir un aviso cuando llegue algo con la pestaña en segundo plano?",

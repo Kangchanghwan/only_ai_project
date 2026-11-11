@@ -491,7 +491,11 @@
       "scissors": "Tesoura",
       "balloon": "Balão",
       "carrot": "Cenoura"
-    }
+    },
+    "addTitle": "Adicionar uma sala",
+    "addCreateTitle": "Criar uma nova sala",
+    "addCreateDesc": "Crie uma sala e convide outros dispositivos com um QR ou com imagens",
+    "addEnterDesc": "Entre em uma sala com as 4 imagens mostradas em um dos dispositivos dela"
   },
   "arrival": {
     "notifyPrompt": "Receber aviso quando algo chegar com a aba em segundo plano?",

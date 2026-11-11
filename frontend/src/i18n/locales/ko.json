@@ -706,7 +706,11 @@
       "scissors": "가위",
       "balloon": "풍선",
       "carrot": "당근"
-    }
+    },
+    "addTitle": "방 추가",
+    "addCreateTitle": "새 방 만들기",
+    "addCreateDesc": "방을 만들고 QR이나 그림으로 다른 기기를 불러요",
+    "addEnterDesc": "방에 있는 기기에 보이는 그림 4개로 들어가요"
   },
   "pwa": {
     "installLabel": "앱 설치",

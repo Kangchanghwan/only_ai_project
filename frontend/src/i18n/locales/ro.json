@@ -491,7 +491,11 @@
       "scissors": "Foarfece",
       "balloon": "Balon",
       "carrot": "Morcov"
-    }
+    },
+    "addTitle": "Adaugă o cameră",
+    "addCreateTitle": "Creează o cameră nouă",
+    "addCreateDesc": "Creează o cameră și invită alte dispozitive cu un QR sau cu imagini",
+    "addEnterDesc": "Intră într-o cameră cu cele 4 imagini afișate pe unul dintre dispozitivele ei"
   },
   "arrival": {
     "notifyPrompt": "Vrei să fii notificat când sosește ceva cât timp fila este în fundal?",

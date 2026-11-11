@@ -491,7 +491,11 @@
       "scissors": "Olló",
       "balloon": "Léggömb",
       "carrot": "Sárgarépa"
-    }
+    },
+    "addTitle": "Szoba hozzáadása",
+    "addCreateTitle": "Új szoba létrehozása",
+    "addCreateDesc": "Hozz létre egy szobát, és hívj meg más eszközöket QR-kóddal vagy képekkel",
+    "addEnterDesc": "Csatlakozz egy szobához a benne lévő egyik eszközön látható 4 képpel"
   },
   "arrival": {
     "notifyPrompt": "Értesítést kér, ha valami megérkezik, miközben a lap a háttérben van?",

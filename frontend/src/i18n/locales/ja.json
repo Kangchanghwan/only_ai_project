@@ -568,7 +568,11 @@
       "scissors": "はさみ",
       "balloon": "風船",
       "carrot": "にんじん"
-    }
+    },
+    "addTitle": "部屋を追加",
+    "addCreateTitle": "新しい部屋を作る",
+    "addCreateDesc": "部屋を作って、QRや絵で他の端末を呼びます",
+    "addEnterDesc": "部屋にいる端末に表示された4つの絵で入ります"
   },
   "arrival": {
     "notifyPrompt": "タブが裏にあるときも到着を通知しますか？",

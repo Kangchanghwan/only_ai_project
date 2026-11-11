@@ -491,7 +491,11 @@
       "scissors": "Nůžky",
       "balloon": "Balonek",
       "carrot": "Mrkev"
-    }
+    },
+    "addTitle": "Přidat místnost",
+    "addCreateTitle": "Vytvořit novou místnost",
+    "addCreateDesc": "Vytvořte místnost a pozvěte další zařízení pomocí QR nebo obrázků",
+    "addEnterDesc": "Připojte se k místnosti pomocí 4 obrázků zobrazených na jednom z jejích zařízení"
   },
   "arrival": {
     "notifyPrompt": "Chcete dostávat upozornění, když něco dorazí a karta je na pozadí?",

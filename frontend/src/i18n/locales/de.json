@@ -491,7 +491,11 @@
       "scissors": "Schere",
       "balloon": "Luftballon",
       "carrot": "Karotte"
-    }
+    },
+    "addTitle": "Raum hinzufügen",
+    "addCreateTitle": "Neuen Raum erstellen",
+    "addCreateDesc": "Erstelle einen Raum und lade andere Geräte per QR oder Bildern ein",
+    "addEnterDesc": "Tritt einem Raum über die 4 Bilder bei, die auf einem seiner Geräte angezeigt werden"
   },
   "arrival": {
     "notifyPrompt": "Benachrichtigen, wenn etwas ankommt, während dieser Tab im Hintergrund ist?",

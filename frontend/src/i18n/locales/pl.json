@@ -491,7 +491,11 @@
       "scissors": "Nożyczki",
       "balloon": "Balon",
       "carrot": "Marchewka"
-    }
+    },
+    "addTitle": "Dodaj pokój",
+    "addCreateTitle": "Utwórz nowy pokój",
+    "addCreateDesc": "Utwórz pokój i zaproś inne urządzenia kodem QR lub obrazkami",
+    "addEnterDesc": "Dołącz do pokoju za pomocą 4 obrazków widocznych na jednym z jego urządzeń"
   },
   "arrival": {
     "notifyPrompt": "Powiadamiać, gdy coś dotrze, a karta jest w tle?",

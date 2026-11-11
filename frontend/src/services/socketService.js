@@ -11,7 +11,9 @@ export const REROLL_COOLDOWN_MS = 3000
 const PAIR_ACK_TIMEOUT_MS = 5000
 
 /** 1:1 연결 서버 이벤트 */
-const PAIR_EVENTS = ['pair:incoming', 'pair:accepted', 'pair:signal', 'pair:ended', 'pair:done']
+const PAIR_EVENTS = ['pair:incoming', 'pair:accepted', 'pair:signal', 'pair:ended', 'pair:done',
+  // 그림 코드 입장(code:*)도 같은 등록 방식을 쓴다. 'connect'는 재연결 뒤 코드를 다시 열 때 쓴다
+  'code:incoming', 'code:signal', 'code:request', 'code:end', 'connect']
 
 /** 룸 토큰 재발급 ack 대기 시간 */
 const ROOM_TOKEN_REQUEST_TIMEOUT_MS = 5000
@@ -419,6 +421,15 @@ class SocketService {
   getPairAdapter() {
     return {
       emit: (event, payload) => this.pairEmit(event, payload),
+      on: (event, fn) => this.onPair(event, fn),
+      off: (event, fn) => this.offPair(event, fn)
+    }
+  }
+
+  /** codeJoin.js에 주입할 소켓 어댑터 (code:open|join|signal|confirmed|fail|decide|cancel|close 전송) */
+  getCodeAdapter() {
+    return {
+      emit: (event, payload) => this.emitWithAck(event, payload),
       on: (event, fn) => this.onPair(event, fn),
       off: (event, fn) => this.offPair(event, fn)
     }

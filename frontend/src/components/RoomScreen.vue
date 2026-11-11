@@ -123,6 +123,8 @@ const emit = defineEmits([
   'pair-confirm',
   'leave-private',
   'group-create',
+  'group-add',
+  'code-enter',
   'group-invite'
 ])
 
@@ -213,7 +215,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
         :highlight-room-id="highlightRoomId"
         :group-create="pairEnabled"
         @select="$emit('select-scope', $event)"
-        @group-create="$emit('group-create')"
+        @group-create="$emit('group-add')"
       />
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->
@@ -250,6 +252,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
             @reroll="$emit('reroll-identity')"
             @hint-copied="$emit('hint-copied', $event)"
             @group-create="$emit('group-create')"
+            @code-enter="$emit('code-enter')"
           />
         </div>
 

@@ -491,7 +491,11 @@
       "scissors": "剪刀",
       "balloon": "气球",
       "carrot": "胡萝卜"
-    }
+    },
+    "addTitle": "添加房间",
+    "addCreateTitle": "新建房间",
+    "addCreateDesc": "新建房间，用二维码或图片邀请其他设备",
+    "addEnterDesc": "用房间内某台设备上显示的 4 张图片加入"
   },
   "arrival": {
     "notifyPrompt": "标签页在后台时，有内容到达要通知您吗？",

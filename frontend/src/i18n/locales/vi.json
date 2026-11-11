@@ -491,7 +491,11 @@
       "scissors": "Kéo",
       "balloon": "Bóng bay",
       "carrot": "Cà rốt"
-    }
+    },
+    "addTitle": "Thêm phòng",
+    "addCreateTitle": "Tạo phòng mới",
+    "addCreateDesc": "Tạo phòng rồi mời thiết bị khác bằng QR hoặc hình",
+    "addEnterDesc": "Vào phòng bằng 4 hình hiển thị trên một thiết bị trong phòng"
   },
   "arrival": {
     "notifyPrompt": "Nhận thông báo khi có nội dung đến lúc tab đang chạy nền?",

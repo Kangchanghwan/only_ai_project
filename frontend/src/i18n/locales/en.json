@@ -706,7 +706,11 @@
       "scissors": "Scissors",
       "balloon": "Balloon",
       "carrot": "Carrot"
-    }
+    },
+    "addTitle": "Add a room",
+    "addCreateTitle": "Create a new room",
+    "addCreateDesc": "Make a room and invite other devices with a QR or pictures",
+    "addEnterDesc": "Join a room using the 4 pictures shown on one of its devices"
   },
   "pwa": {
     "installLabel": "Install app",
