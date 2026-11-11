@@ -50,6 +50,8 @@ export function parseInvite(hash) {
   const k = q.get('k') || ''
   if (!isGroupRoomId(roomId)) return null
   if (!ticket.startsWith('pv1.') || ticket.length > TICKET_MAX) return null
+  // 입장권은 pv1.<roomId>.<만료>.<서명> 형식이다. 다른 방의 입장권을 끼워 넣은 링크는 받지 않는다(엉뚱한 방에 입장 요청이 가지 않게)
+  if (ticket.split('.')[1] !== roomId) return null
   if (!B64U_32.test(k)) return null
   let secret
   try { secret = fromB64u(k) } catch { return null }

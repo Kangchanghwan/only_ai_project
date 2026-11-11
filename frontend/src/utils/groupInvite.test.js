@@ -50,6 +50,13 @@ describe('그룹 방 초대 링크', () => {
   const base = () => ({ r: ROOM, t: TICKET, k: b64u(secret()) })
   const hash = (o) => GROUP_INVITE_PREFIX + new URLSearchParams(o).toString()
 
+  it('입장권의 방 ID가 r과 다르면 null (다른 방 입장권을 끼운 링크)', () => {
+    const other = 'prv-g-' + 'cd34'.repeat(6)
+    const url = buildInviteUrl('https://x.test', { roomId: ROOM, ticket: 'pv1.' + other + '.1800000000.' + 'A'.repeat(43), secret: secret() })
+    expect(parseInvite(hashOf(url))).toBeNull()
+    expect(parseInvite(hashOf(buildInviteUrl('https://x.test', { roomId: ROOM, ticket: TICKET, secret: secret() })))).not.toBeNull()
+  })
+
   it('형식이 하나라도 틀리면 null', () => {
     expect(parseInvite(hash(base()))).not.toBeNull()
     expect(parseInvite(undefined)).toBeNull()
