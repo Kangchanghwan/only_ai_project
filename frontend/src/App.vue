@@ -384,7 +384,7 @@ async function handlePushTarget(target) {
   if (target === 'ip') {
     shareScope.setScope('ip')
     trackEvent('push_open', { target_kind: 'ip' })
-  } else if (/^prv-[0-9a-f]{24}$/.test(target)) {
+  } else if (/^prv-(?:g-)?[0-9a-f]{24}$/.test(target)) {
     await privateRooms.hydrate()
     if (privateRooms.has(target)) shareScope.setScope(scopeForPrivateRoom(target))
     trackEvent('push_open', { target_kind: 'prv' })

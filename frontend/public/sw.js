@@ -245,7 +245,7 @@ async function handleLockedDownload(token) {
 let pendingPushTarget = null;
 
 function cleanPushTarget(v) {
-  return typeof v === 'string' && /^(ip|prv-[0-9a-f]{24})$/.test(v) ? v : null;
+  return typeof v === 'string' && /^(ip|prv-(?:g-)?[0-9a-f]{24})$/.test(v) ? v : null;
 }
 
 function cleanPushText(v, fallback) {

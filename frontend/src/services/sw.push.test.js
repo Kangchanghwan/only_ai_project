@@ -77,6 +77,17 @@ describe('서비스워커 도착 알림', () => {
     expect(shown[0].opts.data.target).toBeNull()
   })
 
+  it('notificationclick: 그룹 방 ID(prv-g-…)도 target으로 전달한다', async () => {
+    const calls = []
+    const win = { focus: async () => {}, postMessage: (m) => calls.push(m) }
+    const { listeners } = loadSw({ windows: [win] })
+    const group = 'prv-g-0123456789abcdef01234567'
+    const { event, done } = makeEvent({ notification: { close: () => {}, data: { target: group } } })
+    listeners.notificationclick(event)
+    await done()
+    expect(calls).toEqual([{ type: 'PUSH_OPEN', target: group }])
+  })
+
   it('notificationclick: 열린 창이 있으면 focus하고 PUSH_OPEN을 보낸다', async () => {
     const calls = []
     const win = { focus: async () => { calls.push('focus') }, postMessage: (m) => calls.push(m) }
