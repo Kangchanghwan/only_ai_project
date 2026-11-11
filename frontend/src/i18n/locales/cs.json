@@ -420,7 +420,13 @@
     "alone": "Zatím jen vy",
     "leave": "Opustit místnost",
     "leaveConfirm": "Místnost se odstraní jen z tohoto zařízení. Ostatní zařízení ji mohou dál používat",
-    "unnamed": "Nepojmenovaná místnost"
+    "unnamed": "Nepojmenovaná místnost",
+    "textNote": "Zašifrováno klíčem místnosti, 10 min",
+    "expired": "Platnost vstupu do místnosti vypršela. Požádejte o novou pozvánku",
+    "noRoom": "Místnost nenalezena",
+    "leaveFailed": "Místnost se nepodařilo opustit. Zkuste to znovu",
+    "failed": "Něco se nepovedlo. Zkuste to znovu",
+    "dropTo": "Odešle se zařízením v místnosti"
   },
   "arrival": {
     "notifyPrompt": "Chcete dostávat upozornění, když něco dorazí a karta je na pozadí?",

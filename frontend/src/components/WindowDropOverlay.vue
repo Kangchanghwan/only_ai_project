@@ -28,6 +28,7 @@ let depth = 0
 const scopeText = computed(() =>
   props.scopeKind === 'global' ? t('dropOverlay.toGlobal')
     : props.scopeKind === 'private' ? t('dropOverlay.toPair')
+    : props.scopeKind === 'group' ? t('group.dropTo')
       : t('dropOverlay.toIp')
 )
 

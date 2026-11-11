@@ -420,7 +420,13 @@
     "alone": "Só você por enquanto",
     "leave": "Sair da sala",
     "leaveConfirm": "Isso remove a sala só deste dispositivo. Os outros podem continuar usando",
-    "unnamed": "Sala sem nome"
+    "unnamed": "Sala sem nome",
+    "textNote": "Criptografado com a chave da sala, 10 min",
+    "expired": "O acesso à sala expirou. Peça um novo convite",
+    "noRoom": "Sala não encontrada",
+    "leaveFailed": "Não foi possível sair da sala. Tente de novo",
+    "failed": "Algo deu errado. Tente de novo",
+    "dropTo": "Enviado para os dispositivos da sala"
   },
   "arrival": {
     "notifyPrompt": "Receber aviso quando algo chegar com a aba em segundo plano?",

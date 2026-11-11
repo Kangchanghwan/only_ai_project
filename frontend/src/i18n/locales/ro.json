@@ -420,7 +420,13 @@
     "alone": "Deocamdată doar tu",
     "leave": "Ieși din cameră",
     "leaveConfirm": "Camera se șterge doar de pe acest dispozitiv. Celelalte dispozitive o pot folosi în continuare",
-    "unnamed": "Cameră fără nume"
+    "unnamed": "Cameră fără nume",
+    "textNote": "Criptat cu cheia camerei, 10 min",
+    "expired": "Accesul în cameră a expirat. Cere o invitație nouă",
+    "noRoom": "Camera nu a fost găsită",
+    "leaveFailed": "Nu s-a putut ieși din cameră. Încearcă din nou",
+    "failed": "Ceva nu a mers. Încearcă din nou",
+    "dropTo": "Trimis dispozitivelor din cameră"
   },
   "arrival": {
     "notifyPrompt": "Vrei să fii notificat când sosește ceva cât timp fila este în fundal?",

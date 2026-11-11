@@ -420,7 +420,13 @@
     "alone": "目前只有你",
     "leave": "退出房间",
     "leaveConfirm": "只会在这台设备上删除房间，其他设备仍可继续使用",
-    "unnamed": "未命名房间"
+    "unnamed": "未命名房间",
+    "textNote": "用房间密钥加密，保存 10 分钟",
+    "expired": "房间入场券已过期，请重新获取邀请",
+    "noRoom": "找不到房间",
+    "leaveFailed": "无法退出房间，请重试",
+    "failed": "操作失败，请重试",
+    "dropTo": "发送给房间里的设备"
   },
   "arrival": {
     "notifyPrompt": "标签页在后台时，有内容到达要通知您吗？",

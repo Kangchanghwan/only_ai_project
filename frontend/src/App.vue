@@ -251,14 +251,18 @@ async function doRejoinPrivateRooms() {
   }
   if (fullNew) notification.showInfo(t('group.full'))
   let expired = 0
+  let expiredGroup = 0
   for (const ticket of res.invalid || []) {
     const r = targets.find((x) => x.ticket === ticket)
     if (!r) continue
     if (shareScope.scope.value === scopeForPrivateRoom(r.roomId)) shareScope.setScope('ip')
     privateRooms.removeRoom(r.roomId)
-    expired++
+    if (isGroupRoomId(r.roomId)) expiredGroup++
+    else expired++
   }
+  // 1:1 방이 하나라도 만료됐으면 1:1 문구, 그룹 방만 만료됐으면 그룹 문구
   if (expired > 0) notification.showInfo(t('pair.expired'))
+  else if (expiredGroup > 0) notification.showInfo(t('group.expired'))
   if (joined.length > 0) {
     trackEvent('pair_rejoin', { count: joined.length })
     textQueue.loadRooms(joined)
@@ -270,7 +274,7 @@ async function handlePrivateLeave(roomId) {
   if (!privateRooms.has(roomId)) return
   const res = await socket.leavePrivate?.(roomId)
   if (res && !res.ok && res.code !== 'NOT_MEMBER') {
-    notification.showError(t('pair.errors.leaveFailed'))
+    notification.showError(t(isGroupRoomId(roomId) ? 'group.leaveFailed' : 'pair.errors.leaveFailed'))
     return
   }
   trackEvent(isGroupRoomId(roomId) ? 'group_leave' : 'pair_leave')
@@ -542,7 +546,7 @@ async function uploadFiles(files, scopeOverride) {
   const isPrv = isPrivateScope(targetScope)
   const lock = isPrv ? privateRooms.lockFor(targetRoomId) : lockState.getLock(targetScope)
   if (isPrv && !lock) {
-    notification.showError(t('pair.errors.noRoom'))
+    notification.showError(t(isGroupRoomId(targetRoomId) ? 'group.noRoom' : 'pair.errors.noRoom'))
     return
   }
   const target = publishTargetForScope(targetScope)
@@ -762,7 +766,7 @@ async function handleAddText(content, scopeOverride) {
     else if (scopeLock) sealed = await textQueue.sealForScope(scopeLock, targetRoomId, content.trim())
   } catch (error) {
     console.warn('[App] 텍스트 암호화 실패:', error)
-    notification.showError(isPrv ? t('pair.errors.noRoom') : t('lock.errors.setFailed'))
+    notification.showError(isPrv ? t(isGroupRoomId(targetRoomId) ? 'group.noRoom' : 'pair.errors.noRoom') : t('lock.errors.setFailed'))
     return false
   }
 
@@ -1307,8 +1311,8 @@ onUnmounted(() => {
       <WindowDropOverlay
         :disabled="isMobile"
         :enabled="roomManager.roomIds.value.length > 0"
-        :blocked="isShareConfirmOpen || publicGuard.isOpen.value || !!pairFlow.confirming.value || !!incomingSession"
-        :scope-kind="isPrivateScope(shareScope.scope.value) ? 'private' : shareScope.scope.value"
+        :blocked="isShareConfirmOpen || publicGuard.isOpen.value || !!pairFlow.confirming.value || !!incomingSession || !!groupRooms.inviteSheet.value || !!groupRooms.joinSheet.value"
+        :scope-kind="isGroupRoomId(privateRoomIdOfScope(shareScope.scope.value)) ? 'group' : isPrivateScope(shareScope.scope.value) ? 'private' : shareScope.scope.value"
         @drop-files="handleUploadFiles"
       />
 

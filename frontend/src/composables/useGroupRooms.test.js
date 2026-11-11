@@ -70,7 +70,7 @@ describe('useGroupRooms', () => {
     it('연결 실패면 일반 오류 안내', async () => {
       socket.createPrivate.mockResolvedValue({ ok: false, code: 'TIMEOUT' })
       await g.createRoom()
-      expect(notify.showError).toHaveBeenCalledWith('pair.errors.generic')
+      expect(notify.showError).toHaveBeenCalledWith('group.failed')
     })
 
     it('분석 이벤트에 방 ID·입장권·키·이름이 들어가지 않는다', async () => {
@@ -114,7 +114,7 @@ describe('useGroupRooms', () => {
       socket.invitePrivate.mockResolvedValue({ ok: false, code: 'NOT_ALLOWED' })
       await g.openInvite(G)
       expect(g.inviteSheet.value).toBeNull()
-      expect(notify.showError).toHaveBeenCalledWith('pair.errors.generic')
+      expect(notify.showError).toHaveBeenCalledWith('group.failed')
     })
 
     it('모르는 방이면 아무것도 하지 않는다', async () => {
@@ -235,7 +235,7 @@ describe('useGroupRooms', () => {
       socket.joinPrivate.mockResolvedValue({ ok: false, code: 'TIMEOUT' })
       await g.acceptInvite(invite())
       await g.confirmJoin()
-      expect(notify.showError).toHaveBeenCalledWith('pair.errors.generic')
+      expect(notify.showError).toHaveBeenCalledWith('group.failed')
       expect(pr.has(G2)).toBe(false)
     })
 

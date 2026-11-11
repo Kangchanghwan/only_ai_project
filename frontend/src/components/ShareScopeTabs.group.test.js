@@ -61,4 +61,40 @@ describe('ShareScopeTabs 그룹 방', () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [grp(G, '')] } })
     expect(w.find('[data-testid="group-tab-name"]').text()).toBe('이름 없는 방')
   })
+
+  describe('좁은 화면: 긴 방 이름', () => {
+    const LONG = '수줍은 부엉이의 아주아주 긴 방 이름입니다'
+
+    it('그룹 탭 이름은 말줄임(truncate, min-w-0, max-w, nowrap)이고 전체 이름은 title/aria-label에 남는다', () => {
+      const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [grp(G, LONG)], groupCreate: true } })
+      const tab = w.find('[data-testid="private-tab"]')
+      const name = w.find('[data-testid="group-tab-name"]')
+      expect(name.text()).toBe(LONG)
+      for (const c of ['min-w-0', 'truncate', 'whitespace-nowrap', 'overflow-hidden', 'text-ellipsis']) expect(name.classes(), c).toContain(c)
+      expect(name.classes().some((c) => c.startsWith('max-w-'))).toBe(true)
+      expect(tab.classes()).toContain('min-w-0')
+      expect(tab.classes()).toContain('overflow-hidden')
+      expect(tab.attributes('title')).toBe(LONG)
+      expect(tab.attributes('aria-label')).toBe(LONG)
+    })
+
+    it('기본 두 탭은 한 줄(whitespace-nowrap)을 유지하고 "＋ 방" 버튼도 그대로 보인다', () => {
+      const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [grp(G, LONG)], groupCreate: true } })
+      const [ip, global] = w.findAll('[role="tab"]')
+      expect(ip.classes()).toContain('whitespace-nowrap')
+      expect(global.classes()).toContain('whitespace-nowrap')
+      const create = w.find('[data-testid="group-create"]')
+      expect(create.exists()).toBe(true)
+      expect(create.classes()).toContain('shrink-0')
+    })
+
+    it('방이 없을 때는 지금과 같은 모양(px-4, nowrap 클래스 없음)', () => {
+      const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', groupCreate: true } })
+      for (const tab of w.findAll('[role="tab"]')) {
+        expect(tab.classes()).toContain('px-4')
+        expect(tab.classes()).not.toContain('whitespace-nowrap')
+        expect(tab.classes()).not.toContain('px-2')
+      }
+    })
+  })
 })

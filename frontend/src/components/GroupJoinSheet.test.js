@@ -15,7 +15,7 @@ describe('GroupJoinSheet (입장 확인)', () => {
 
   it('제목에 방 이름, 본문 경고, 들어가기/취소 버튼', () => {
     const w = mount(GroupJoinSheet, { ...opts, props: { sheet: { roomId: 'r', name: '친구 방', busy: false } } })
-    expect(q('group-join-title').textContent).toBe("'친구 방' 방에 들어갈까요?")
+    expect(q('group-join-title').textContent).toBe("'친구 방'에 들어갈까요?")
     expect(document.body.textContent).toContain('이 방에 올린 파일과 텍스트는 방에 있는 모든 기기가 볼 수 있어요')
     expect(q('group-join-confirm').textContent.trim()).toBe('들어가기')
     expect(q('group-join-cancel').textContent.trim()).toBe('취소')

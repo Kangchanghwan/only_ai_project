@@ -13,6 +13,8 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
+import { privateRoomIdOfScope } from '../composables/useShareScope'
+import { isGroupRoomId } from '../utils/groupRoom'
 import SenderLabel from './SenderLabel.vue'
 import LockChip from './LockChip.vue'
 
@@ -39,7 +41,7 @@ const willQueue = computed(() => props.storageMode !== 'none')
 const storageLabel = computed(() => {
   if (props.storageMode === 'plain') return props.scope === 'global' ? t('text.storagePlainGlobal') : t('text.storagePlainIp')
   if (props.storageMode === 'locked') return t('text.storageLocked')
-  if (props.storageMode === 'private') return t('text.storagePrivate')
+  if (props.storageMode === 'private') return isGroupRoomId(privateRoomIdOfScope(props.scope)) ? t('group.textNote') : t('text.storagePrivate')
   return t('text.storageNone')
 })
 

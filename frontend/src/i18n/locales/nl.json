@@ -420,7 +420,13 @@
     "alone": "Voorlopig alleen jij",
     "leave": "Ruimte verlaten",
     "leaveConfirm": "Hiermee verdwijnt de ruimte alleen van dit apparaat. Andere apparaten kunnen hem blijven gebruiken",
-    "unnamed": "Naamloze ruimte"
+    "unnamed": "Naamloze ruimte",
+    "textNote": "Versleuteld met de kamersleutel, 10 min",
+    "expired": "Je toegang tot de ruimte is verlopen. Vraag een nieuwe uitnodiging",
+    "noRoom": "Ruimte niet gevonden",
+    "leaveFailed": "Je kon de ruimte niet verlaten. Probeer het opnieuw",
+    "failed": "Er ging iets mis. Probeer het opnieuw",
+    "dropTo": "Wordt naar de apparaten in de ruimte gestuurd"
   },
   "arrival": {
     "notifyPrompt": "Een melding krijgen als er iets binnenkomt terwijl dit tabblad op de achtergrond staat?",

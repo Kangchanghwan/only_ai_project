@@ -635,7 +635,13 @@
     "alone": "Only you so far",
     "leave": "Leave room",
     "leaveConfirm": "This only removes the room from this device. Other devices can keep using it",
-    "unnamed": "Unnamed room"
+    "unnamed": "Unnamed room",
+    "textNote": "Encrypted with the room key, kept 10 min",
+    "expired": "Your room pass has expired. Ask for a new invite",
+    "noRoom": "Room not found",
+    "leaveFailed": "Couldn't leave the room. Please try again",
+    "failed": "Something went wrong. Please try again",
+    "dropTo": "Sent to the devices in this room"
   },
   "pwa": {
     "installLabel": "Install app",

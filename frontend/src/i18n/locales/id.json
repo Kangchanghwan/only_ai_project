@@ -420,7 +420,13 @@
     "alone": "Baru Anda sendiri",
     "leave": "Keluar dari ruang",
     "leaveConfirm": "Ini hanya menghapus ruang dari perangkat ini. Perangkat lain tetap bisa memakainya",
-    "unnamed": "Ruang tanpa nama"
+    "unnamed": "Ruang tanpa nama",
+    "textNote": "Dienkripsi dengan kunci ruang, 10 menit",
+    "expired": "Akses ruang sudah kedaluwarsa. Minta undangan baru",
+    "noRoom": "Ruang tidak ditemukan",
+    "leaveFailed": "Gagal keluar dari ruang. Coba lagi",
+    "failed": "Terjadi kesalahan. Coba lagi",
+    "dropTo": "Dikirim ke perangkat di ruang ini"
   },
   "arrival": {
     "notifyPrompt": "Dapatkan pemberitahuan saat ada yang masuk ketika tab di latar belakang?",

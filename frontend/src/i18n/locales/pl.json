@@ -420,7 +420,13 @@
     "alone": "Na razie tylko ty",
     "leave": "Opuść pokój",
     "leaveConfirm": "Pokój zostanie usunięty tylko z tego urządzenia. Inne urządzenia mogą dalej z niego korzystać",
-    "unnamed": "Pokój bez nazwy"
+    "unnamed": "Pokój bez nazwy",
+    "textNote": "Zaszyfrowany kluczem pokoju, 10 min",
+    "expired": "Dostęp do pokoju wygasł. Poproś o nowe zaproszenie",
+    "noRoom": "Nie znaleziono pokoju",
+    "leaveFailed": "Nie udało się opuścić pokoju. Spróbuj ponownie",
+    "failed": "Coś poszło nie tak. Spróbuj ponownie",
+    "dropTo": "Wysyłane do urządzeń w pokoju"
   },
   "arrival": {
     "notifyPrompt": "Powiadamiać, gdy coś dotrze, a karta jest w tle?",

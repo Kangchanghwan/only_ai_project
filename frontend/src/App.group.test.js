@@ -86,7 +86,7 @@ describe('App 그룹 방', () => {
       w = await mountApp()
       expect(window.__csGroupInvite).toBeUndefined()
       expect(q('group-join-sheet')).not.toBeNull()
-      expect(q('group-join-title').textContent).toBe("'친구 방' 방에 들어갈까요?")
+      expect(q('group-join-title').textContent).toBe("'친구 방'에 들어갈까요?")
       expect(joinPrivate).not.toHaveBeenCalled()
       expect(pr.has(G2)).toBe(false)
       expect(JSON.stringify(track.mock.calls)).not.toContain('pv1')
@@ -115,6 +115,26 @@ describe('App 그룹 방', () => {
       expect(joinPrivate).not.toHaveBeenCalled()
       expect(q('group-join-sheet')).toBeNull()
       expect(track).toHaveBeenCalledWith('group_join', { result: 'cancel' })
+    })
+
+    it('그룹 시트(입장 확인·초대)가 열려 있는 동안 창 드롭 오버레이는 막힌다', async () => {
+      window.__csGroupInvite = inviteHash()
+      w = await mountApp()
+      const overlay = () => w.findComponent({ name: 'WindowDropOverlay' })
+      expect(q('group-join-sheet')).not.toBeNull()
+      expect(overlay().props('blocked')).toBe(true)
+      q('group-join-cancel').click()
+      await flush()
+      expect(overlay().props('blocked')).toBe(false)
+      invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.inv', expiresAt: Date.now() + 600000 })
+      createPrivate.mockResolvedValue({ ok: true, roomId: G, ticket: 'pv1.own', devices: [{ socketId: 'me' }] })
+      room(w).vm.$emit('group-create')
+      await vi.waitFor(() => expect(q('group-invite-qr')).not.toBeNull())
+      expect(overlay().props('blocked')).toBe(true)
+      expect(overlay().props('scopeKind')).toBe('group')
+      q('group-invite-close').click()
+      await flush()
+      expect(overlay().props('blocked')).toBe(false)
     })
 
     it('형식이 틀린 링크는 시트 없이 안내만 한다', async () => {
@@ -236,6 +256,8 @@ describe('App 그룹 방', () => {
       joinPrivate.mockResolvedValue({ ok: true, rooms: [], invalid: ['T'] })
       w = await mountApp()
       expect(pr.has(G)).toBe(false)
+      expect(toasts('방 입장권이 만료됐어요')).toBe(1)
+      expect(toasts('1:1')).toBe(0)
     })
 
     it('"방 나가기"는 group_leave 이벤트를 남기고 방을 지운다', async () => {

@@ -39,6 +39,17 @@ describe('WindowDropOverlay', () => {
     expect(w.text()).toContain('전체 공유로 보내요')
   })
 
+  it('그룹 방 범위는 1:1이 아닌 "방에 있는 기기" 문구, blocked면 아예 뜨지 않는다', async () => {
+    mountIt({ scopeKind: 'group' })
+    dragEvent('dragenter'); await nextTick()
+    expect(w.text()).toContain('방에 있는 기기에게 보내요')
+    expect(w.text()).not.toContain('1:1')
+    dragEvent('dragleave', { target: document.body }); dragEvent('drop'); await nextTick()
+    await w.setProps({ blocked: true })
+    dragEvent('dragenter'); await nextTick()
+    expect(w.find('[data-testid="window-drop-overlay"]').exists()).toBe(false)
+  })
+
   it('drop 시 업로드를 한 번 emit하고 닫힌다', async () => {
     mountIt()
     dragEvent('dragenter'); await nextTick()

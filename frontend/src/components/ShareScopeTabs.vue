@@ -42,6 +42,7 @@ const peerName = (room) => (isValidIdentity(room.peer?.identity) ? identityName(
 const isGroup = (room) => isGroupRoomId(room?.roomId)
 const groupName = (room) => room.name || t('group.unnamed')
 const roomLabel = (room) => (isGroup(room) ? groupName(room) : peerName(room))
+const hasPrivate = computed(() => props.privateRooms.length > 0)
 const manyLabel = computed(() =>
   props.privateRooms.every(isGroup)
     ? `${t('group.createShort')} (${props.privateRooms.length})`
@@ -83,8 +84,8 @@ function pick(roomId) {
     <button
       type="button"
       role="tab"
-      class="flex-1 flex items-center justify-center gap-2 px-4 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
-      :class="scope === 'ip' ? 'bg-primary text-white' : 'text-text-secondary hover:bg-background'"
+      class="flex-1 flex items-center justify-center gap-2 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
+      :class="[hasPrivate ? 'px-2 whitespace-nowrap' : 'px-4', scope === 'ip' ? 'bg-primary text-white' : 'text-text-secondary hover:bg-background']"
       :aria-selected="scope === 'ip'"
       :title="t('shareScope.ipDescription')"
       @click="emit('select', 'ip')"
@@ -94,8 +95,8 @@ function pick(roomId) {
     <button
       type="button"
       role="tab"
-      class="flex-1 flex items-center justify-center gap-2 px-4 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
-      :class="scope === 'global' ? 'bg-scope-global text-white' : 'text-text-secondary hover:bg-background'"
+      class="flex-1 flex items-center justify-center gap-2 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
+      :class="[hasPrivate ? 'px-2 whitespace-nowrap' : 'px-4', scope === 'global' ? 'bg-scope-global text-white' : 'text-text-secondary hover:bg-background']"
       :aria-selected="scope === 'global'"
       :title="t('shareScope.globalDescription')"
       @click="emit('select', 'global')"
@@ -108,8 +109,8 @@ function pick(roomId) {
       v-if="single"
       type="button"
       role="tab"
-      class="flex-1 flex items-center justify-center gap-2 px-3 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
-      :class="[privateActive ? 'bg-scope-private text-white' : 'text-scope-private hover:bg-background', highlighted ? 'pair-tab-pulse' : '']"
+      class="flex-1 flex items-center justify-center min-h-[44px] rounded-full text-sm font-semibold transition-colors"
+      :class="[isGroup(single) ? 'min-w-0 overflow-hidden gap-1 px-2' : 'gap-2 px-3', privateActive ? 'bg-scope-private text-white' : 'text-scope-private hover:bg-background', highlighted ? 'pair-tab-pulse' : '']"
       :aria-selected="privateActive"
       :title="isGroup(single) ? groupName(single) : t('pair.tabTitle', { name: peerName(single) })"
       :aria-label="isGroup(single) ? groupName(single) : t('pair.tabTitle', { name: peerName(single) })"
@@ -120,7 +121,7 @@ function pick(roomId) {
         <circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17" cy="9" r="2.5" /><path d="M17.5 14.2c2.4.3 4 2.1 4 4.8" />
       </svg>
       <PairPeerAvatar v-else :device="single.peer" size="sm" />
-      <span :class="isGroup(single) ? 'truncate max-w-[8rem]' : ''" :data-testid="isGroup(single) ? 'group-tab-name' : undefined">{{ isGroup(single) ? groupName(single) : t('pair.tab') }}</span>
+      <span :class="isGroup(single) ? 'min-w-0 max-w-[10rem] truncate whitespace-nowrap overflow-hidden text-ellipsis' : ''" :data-testid="isGroup(single) ? 'group-tab-name' : undefined">{{ isGroup(single) ? groupName(single) : t('pair.tab') }}</span>
     </button>
     <template v-else-if="privateRooms.length > 1">
       <button
@@ -166,7 +167,8 @@ function pick(roomId) {
     <button
       v-if="groupCreate"
       type="button"
-      class="shrink-0 flex items-center justify-center gap-1 px-3 min-h-[44px] rounded-full text-sm font-semibold text-scope-private hover:bg-background transition-colors"
+      class="shrink-0 flex items-center justify-center gap-1 min-h-[44px] rounded-full text-sm font-semibold text-scope-private hover:bg-background transition-colors whitespace-nowrap"
+      :class="hasPrivate ? 'px-2' : 'px-3'"
       :aria-label="t('group.create')"
       :title="t('group.create')"
       data-testid="group-create"

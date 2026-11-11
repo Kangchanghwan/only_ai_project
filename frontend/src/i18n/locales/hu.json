@@ -420,7 +420,13 @@
     "alone": "Egyelőre csak te vagy itt",
     "leave": "Kilépés a szobából",
     "leaveConfirm": "Csak erről az eszközről törli a szobát. A többi eszköz tovább használhatja",
-    "unnamed": "Névtelen szoba"
+    "unnamed": "Névtelen szoba",
+    "textNote": "A szoba kulcsával titkosítva, 10 perc",
+    "expired": "A szobabelépő lejárt. Kérj új meghívót",
+    "noRoom": "A szoba nem található",
+    "leaveFailed": "Nem sikerült kilépni a szobából. Próbáld újra",
+    "failed": "Valami nem sikerült. Próbáld újra",
+    "dropTo": "A szoba eszközeinek küldi"
   },
   "arrival": {
     "notifyPrompt": "Értesítést kér, ha valami megérkezik, miközben a lap a háttérben van?",

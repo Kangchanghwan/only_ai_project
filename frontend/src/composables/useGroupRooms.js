@@ -48,7 +48,7 @@ export function useGroupRooms({
       const secret = newRoomSecret()
       const res = await socket.createPrivate?.()
       if (!res?.ok) {
-        notify.showError(res?.code === 'TOO_MANY_ROOMS' ? t('group.tooMany') : t('pair.errors.generic'))
+        notify.showError(res?.code === 'TOO_MANY_ROOMS' ? t('group.tooMany') : t('group.failed'))
         return null
       }
       const name = defaultName()
@@ -79,7 +79,7 @@ export function useGroupRooms({
       safeTrack('group_invite_open')
     } catch {
       inviteSheet.value = null
-      notify.showError(t('pair.errors.generic'))
+      notify.showError(t('group.failed'))
     }
   }
 
@@ -95,7 +95,7 @@ export function useGroupRooms({
       safeTrack('group_invite_copy')
       notify.showSuccess(t('group.inviteCopied'))
     } catch {
-      notify.showError(t('pair.errors.generic'))
+      notify.showError(t('group.failed'))
     }
   }
 
@@ -160,7 +160,7 @@ export function useGroupRooms({
       }
       const res = await socket.joinPrivate?.([p.ticket])
       if (!res?.ok) {
-        notify.showError(t('pair.errors.generic'))
+        notify.showError(t('group.failed'))
         finishJoin('invalid')
         return
       }
@@ -181,7 +181,7 @@ export function useGroupRooms({
       await onRoomReady?.(p.roomId)
     } catch (e) {
       console.warn('[group] 입장 실패:', e?.message || e)
-      notify.showError(t('pair.errors.generic'))
+      notify.showError(t('group.failed'))
       finishJoin('invalid')
     }
   }

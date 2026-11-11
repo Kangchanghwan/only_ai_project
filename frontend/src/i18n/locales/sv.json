@@ -420,7 +420,13 @@
     "alone": "Bara du hittills",
     "leave": "Lämna rummet",
     "leaveConfirm": "Rummet tas bara bort från den här enheten. Andra enheter kan fortsätta använda det",
-    "unnamed": "Rum utan namn"
+    "unnamed": "Rum utan namn",
+    "textNote": "Krypterad med rummets nyckel, 10 min",
+    "expired": "Din åtkomst till rummet har gått ut. Be om en ny inbjudan",
+    "noRoom": "Rummet hittades inte",
+    "leaveFailed": "Det gick inte att lämna rummet. Försök igen",
+    "failed": "Något gick fel. Försök igen",
+    "dropTo": "Skickas till enheterna i rummet"
   },
   "arrival": {
     "notifyPrompt": "Vill du få en avisering när något kommer medan fliken ligger i bakgrunden?",

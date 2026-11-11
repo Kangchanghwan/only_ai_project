@@ -420,7 +420,13 @@
     "alone": "Vous êtes seul pour l'instant",
     "leave": "Quitter la salle",
     "leaveConfirm": "Cela supprime la salle uniquement de cet appareil. Les autres appareils peuvent continuer à l'utiliser",
-    "unnamed": "Salle sans nom"
+    "unnamed": "Salle sans nom",
+    "textNote": "Chiffré avec la clé de la salle, conservé 10 min",
+    "expired": "Votre accès à la salle a expiré. Demandez une nouvelle invitation",
+    "noRoom": "Salle introuvable",
+    "leaveFailed": "Impossible de quitter la salle. Réessayez",
+    "failed": "Une erreur s'est produite. Réessayez",
+    "dropTo": "Envoyé aux appareils de la salle"
   },
   "arrival": {
     "notifyPrompt": "Être averti quand quelque chose arrive alors que l'onglet est en arrière-plan ?",

@@ -420,7 +420,13 @@
     "alone": "Bisher nur du",
     "leave": "Raum verlassen",
     "leaveConfirm": "Der Raum wird nur von diesem Gerät entfernt. Andere Geräte können ihn weiter nutzen",
-    "unnamed": "Unbenannter Raum"
+    "unnamed": "Unbenannter Raum",
+    "textNote": "Mit dem Raumschlüssel verschlüsselt, 10 Min. aufbewahrt",
+    "expired": "Dein Raumzugang ist abgelaufen. Lass dich erneut einladen",
+    "noRoom": "Raum nicht gefunden",
+    "leaveFailed": "Der Raum konnte nicht verlassen werden. Bitte versuche es erneut",
+    "failed": "Etwas ist schiefgelaufen. Bitte versuche es erneut",
+    "dropTo": "Wird an die Geräte im Raum gesendet"
   },
   "arrival": {
     "notifyPrompt": "Benachrichtigen, wenn etwas ankommt, während dieser Tab im Hintergrund ist?",
