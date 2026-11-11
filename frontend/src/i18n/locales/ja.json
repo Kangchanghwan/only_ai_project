@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "スマホのカメラで読み取るとすぐつながります",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "PCで{site}を開いてください"
+      "mobile": "PCで{site}を開いてください",
+      "iosShortcut": "iPhone・iPadの共有メニューから送る(ショートカットを追加)"
     }
   },
   "identity": {

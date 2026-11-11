@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Scan with your phone camera to connect instantly",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Open {site} on your PC"
+      "mobile": "Open {site} on your PC",
+      "iosShortcut": "Send from the iPhone/iPad share menu (add the Shortcut)"
     }
   },
   "identity": {

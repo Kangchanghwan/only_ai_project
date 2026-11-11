@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "用手机相机扫一扫即可连接",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "请在电脑上打开 {site}"
+      "mobile": "请在电脑上打开 {site}",
+      "iosShortcut": "从 iPhone/iPad 的共享菜单直接发送(添加快捷指令)"
     }
   },
   "identity": {

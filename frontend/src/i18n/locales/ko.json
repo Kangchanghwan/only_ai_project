@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "폰 카메라로 찍으면 바로 연결돼요",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "PC에서 {site} 또는 {ping}를 여세요"
+      "mobile": "PC에서 {site} 또는 {ping}를 여세요",
+      "iosShortcut": "아이폰·아이패드 공유 메뉴에서 바로 보내기 (단축어 추가)"
     }
   },
   "identity": {

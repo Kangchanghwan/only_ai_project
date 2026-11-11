@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "امسح الرمز بكاميرا هاتفك للاتصال فورًا",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "افتح {site} على جهاز الكمبيوتر"
+      "mobile": "افتح {site} على جهاز الكمبيوتر",
+      "iosShortcut": "أرسل من قائمة المشاركة في iPhone/iPad (أضف الاختصار)"
     }
   },
   "identity": {

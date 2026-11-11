@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Scanează cu camera telefonului pentru a te conecta imediat",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Deschide {site} pe PC"
+      "mobile": "Deschide {site} pe PC",
+      "iosShortcut": "Trimite din meniul de partajare al iPhone/iPad (adaugă scurtătura)"
     }
   },
   "identity": {

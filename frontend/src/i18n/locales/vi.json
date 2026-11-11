@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Quét bằng camera điện thoại để kết nối ngay",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Mở {site} trên máy tính của bạn"
+      "mobile": "Mở {site} trên máy tính của bạn",
+      "iosShortcut": "Gửi từ menu chia sẻ trên iPhone/iPad (thêm Phím tắt)"
     }
   },
   "identity": {

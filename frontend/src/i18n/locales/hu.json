@@ -25,7 +25,8 @@
     "emptyState": {
       "qrLine": "Olvasd be a telefon kamerájával, és azonnal csatlakozol",
       "pingLine": "또는 폰 주소창에 {ping}",
-      "mobile": "Nyisd meg a {site} oldalt a számítógépeden"
+      "mobile": "Nyisd meg a {site} oldalt a számítógépeden",
+      "iosShortcut": "Küldés az iPhone/iPad megosztás menüjéből (parancs hozzáadása)"
     }
   },
   "identity": {
