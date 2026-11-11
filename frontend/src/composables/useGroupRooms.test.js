@@ -36,7 +36,7 @@ describe('useGroupRooms', () => {
     Object.defineProperty(globalThis, 'navigator', { value: { clipboard: { writeText: vi.fn(async (v) => { written.push(v) }) } }, configurable: true })
     socket = {
       createPrivate: vi.fn(async () => ({ ok: true, roomId: G, ticket: 'pv1.own', devices: [{ socketId: 'me' }] })),
-      invitePrivate: vi.fn(async () => ({ ok: true, ticket: 'pv1.inv.' + G, expiresAt: Date.now() + 600000 })),
+      invitePrivate: vi.fn(async () => ({ ok: true, ticket: 'pv1.' + G + '.inv', expiresAt: Date.now() + 600000 })),
       joinPrivate: vi.fn(async () => ({ ok: true, rooms: [], invalid: [] }))
     }
     notify = { showInfo: vi.fn(), showSuccess: vi.fn(), showError: vi.fn() }
@@ -87,7 +87,7 @@ describe('useGroupRooms', () => {
   describe('초대 시트', () => {
     it('열 때마다 새 초대 입장권을 받고, QR에는 초대 링크(#/pv?)가 들어간다', async () => {
       await g.createRoom()
-      socket.invitePrivate.mockResolvedValueOnce({ ok: true, ticket: 'pv1.second', expiresAt: 1 })
+      socket.invitePrivate.mockResolvedValueOnce({ ok: true, ticket: 'pv1.' + G + '.second', expiresAt: 1 })
       await g.openInvite(G)
       expect(socket.invitePrivate).toHaveBeenCalledTimes(2)
       const url = toDataURL.mock.calls.at(-1)[0]
@@ -95,7 +95,7 @@ describe('useGroupRooms', () => {
       expect(g.inviteSheet.value.url).toBe(url)
       const parsed = parseInvite(hashOf(url))
       expect(parsed.roomId).toBe(G)
-      expect(parsed.ticket).toBe('pv1.second')
+      expect(parsed.ticket).toBe('pv1.' + G + '.second')
       // 링크의 비밀은 저장된 방 비밀과 같다
       expect(Array.from(parsed.secret)).toEqual(Array.from(await pr.inviteSecretFor(G)))
     })
@@ -273,7 +273,7 @@ describe('useGroupRooms', () => {
   })
 
   it('buildInviteUrl을 쓰지 않는 보조 확인: 링크에는 서버로 가는 쿼리가 없다', () => {
-    const url = buildInviteUrl('https://app.test', { roomId: G, ticket: 'pv1.x', secret: newRoomSecret(), name: 'a' })
+    const url = buildInviteUrl('https://app.test', { roomId: G, ticket: 'pv1.' + G + '.x', secret: newRoomSecret(), name: 'a' })
     expect(new URL(url).search).toBe('')
     expect(new URL(url).pathname).toBe('/')
   })

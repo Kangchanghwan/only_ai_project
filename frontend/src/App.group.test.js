@@ -50,7 +50,7 @@ const room = (w) => w.findComponent({ name: 'RoomScreen' })
 const hashOf = (url) => url.slice(url.indexOf('#'))
 const q = (id) => document.body.querySelector(`[data-testid="${id}"]`)
 const peerDev = { socketId: 'other', identity: { adj: 2, animal: 2 }, deviceType: 'mobile', browser: 'Safari', os: 'iOS' }
-const inviteHash = (over = {}) => hashOf(buildInviteUrl('https://app.test', { roomId: G2, ticket: 'pv1.invite', secret: newRoomSecret(), name: '친구 방', ...over }))
+const inviteHash = (over = {}) => hashOf(buildInviteUrl('https://app.test', { roomId: G2, ticket: 'pv1.' + G2 + '.invite', secret: newRoomSecret(), name: '친구 방', ...over }))
 
 async function mountApp() {
   localStorage.setItem('share-scope', 'ip')
@@ -100,7 +100,7 @@ describe('App 그룹 방', () => {
       q('group-join-confirm').click()
       await vi.waitFor(() => expect(pr.has(G2)).toBe(true))
       await flush()
-      expect(joinPrivate).toHaveBeenCalledWith(['pv1.invite'])
+      expect(joinPrivate).toHaveBeenCalledWith(['pv1.' + G2 + '.invite'])
       expect(pr.rooms.find((r) => r.roomId === G2)).toMatchObject({ name: '친구 방', ticket: 'pv1.long', peer: null })
       expect(room(w).props('scope')).toBe('prv:' + G2)
       expect(q('group-join-sheet')).toBeNull()
@@ -154,7 +154,7 @@ describe('App 그룹 방', () => {
   describe('방 만들기·초대', () => {
     it('"＋ 방" → 서버에 방 만들기 → 그 방 탭 + 초대 시트(QR)', async () => {
       createPrivate.mockResolvedValue({ ok: true, roomId: G, ticket: 'pv1.own', devices: [{ socketId: 'me' }] })
-      invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.inv', expiresAt: Date.now() + 600000 })
+      invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.' + G + '.inv', expiresAt: Date.now() + 600000 })
       w = await mountApp()
       room(w).vm.$emit('group-create')
       await vi.waitFor(() => expect(q('group-invite-qr')).not.toBeNull())
@@ -171,7 +171,7 @@ describe('App 그룹 방', () => {
       await pr.addRoom({ roomId: G, roomSecret: newRoomSecret(), ticket: 'T', name: '내 방' })
       joinPrivate.mockResolvedValue({ ok: true, rooms: [{ roomId: G, ticket: 'T2', devices: [{ socketId: 'me' }] }], invalid: [] })
       pr.rooms.splice(0, pr.rooms.length)
-      invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.inv2', expiresAt: 1 })
+      invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.' + G + '.inv2', expiresAt: 1 })
       w = await mountApp()
       room(w).vm.$emit('group-invite', G)
       await flush()
