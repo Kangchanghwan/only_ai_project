@@ -1206,11 +1206,11 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearInterval(nowTimer)
+  navigator.serviceWorker?.removeEventListener('message', onServiceWorkerMessage)
   if (cleanupUserLeft) cleanupUserLeft()
   if (cleanupOnMessage) cleanupOnMessage()
   document.removeEventListener('paste', handlePaste)
   window.removeEventListener('cs-send-link', onSendLinkEvent)
-  navigator.serviceWorker?.removeEventListener('message', onServiceWorkerMessage)
   pairFlow.destroy()
   socket.destroy()
 })
