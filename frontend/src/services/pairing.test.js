@@ -103,6 +103,9 @@ describe('pairing 컨트롤러', () => {
     expect(B.getSessions()[0].state).toBe('done')
     expect(paired.A.roomSecret).toHaveLength(32)
     expect(paired.A.roomSecret).toEqual(paired.B.roomSecret)
+    // 방 이름을 양쪽이 같게 정하려고 완료 정보에 내 역할이 들어 있다
+    expect(paired.A.role).toBe('initiator')
+    expect(paired.B.role).toBe('responder')
     expect(paired.A.roomId).toBe(paired.B.roomId)
     expect(paired.A.roomToken).toBe('tok-A')
     expect(paired.A.ticket).toBe('pv1.tk-A')

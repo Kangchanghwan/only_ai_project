@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Otwórz {site} na komputerze",
       "iosShortcut": "Wysyłaj z menu udostępniania iPhone’a/iPada (dodaj skrót)"
-    }
+    },
+    "legacyInviteTitle": "Ten pokój utworzono starą metodą, więc nie można do niego zapraszać",
+    "legacyInviteBody": "Utwórz nowy pokój i dodaj do niego to urządzenie oraz pozostałe",
+    "legacyInviteCreate": "Utwórz nowy pokój"
   },
   "nextTime": {
     "iosText": "Następnym razem wyślesz prosto z przycisku Udostępnij w aplikacji Zdjęcia",

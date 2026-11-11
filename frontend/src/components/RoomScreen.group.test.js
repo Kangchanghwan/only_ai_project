@@ -22,7 +22,7 @@ describe('RoomScreen 그룹 방', () => {
   it('Strip이 방 이름과 기기 수를 보여 주고, 기기 목록은 그 방의 접속 기기다 (room.peer 대체 목록 없음)', () => {
     const w = mountWith({ privateRooms: room(), privateDevices: { [G]: [me, other, { socketId: 'x' }] } })
     expect(w.find('[data-testid="private-strip-title"]').text()).toBe('우리 방')
-    expect(w.find('[data-testid="group-members"]').text()).toBe('기기 3대')
+    expect(w.find('[data-testid="group-members"]').text()).toMatch(/^기기 3대/)
     expect(w.findComponent({ name: 'ConnectionCard' }).props('devices')).toHaveLength(3)
   })
 

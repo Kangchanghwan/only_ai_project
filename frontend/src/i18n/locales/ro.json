@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Deschide {site} pe PC",
       "iosShortcut": "Trimite din meniul de partajare al iPhone/iPad (adaugă scurtătura)"
-    }
+    },
+    "legacyInviteTitle": "Această cameră a fost creată în modul vechi, deci nu se poate invita",
+    "legacyInviteBody": "Creează o cameră nouă și adaugă în ea acest dispozitiv și pe celelalte",
+    "legacyInviteCreate": "Creează o cameră nouă"
   },
   "nextTime": {
     "iosText": "Data viitoare poți trimite direct din butonul Partajare din aplicația Poze",

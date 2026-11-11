@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Öffne {site} auf deinem PC",
       "iosShortcut": "Direkt aus dem Teilen-Menü von iPhone/iPad senden (Kurzbefehl hinzufügen)"
-    }
+    },
+    "legacyInviteTitle": "Dieser Raum wurde auf die alte Art erstellt, daher kann man niemanden einladen",
+    "legacyInviteBody": "Erstelle einen neuen Raum und füge dieses und die anderen Geräte hinzu",
+    "legacyInviteCreate": "Neuen Raum erstellen"
   },
   "nextTime": {
     "iosText": "Beim nächsten Mal direkt über die Teilen-Taste in Fotos senden",

@@ -277,4 +277,25 @@ describe('useGroupRooms', () => {
     expect(new URL(url).search).toBe('')
     expect(new URL(url).pathname).toBe('/')
   })
+
+  describe('예전 방(prv-…) 초대 시도', () => {
+    const LEGACY = 'prv-' + 'ef56'.repeat(6)
+    it('초대 시트 대신 안내 시트를 열고 서버 invite를 부르지 않으며 room_legacy_invite만 기록한다', async () => {
+      await pr.addRoom({ roomId: LEGACY, peer: { socketId: 'B' }, roomSecret: newRoomSecret(), ticket: 't' })
+      await g.openInvite(LEGACY)
+      expect(g.legacySheet.value).toEqual({ roomId: LEGACY })
+      expect(g.inviteSheet.value).toBeNull()
+      expect(socket.invitePrivate).not.toHaveBeenCalled()
+      expect(track).toHaveBeenCalledWith('room_legacy_invite')
+      expect(JSON.stringify(track.mock.calls)).not.toContain(LEGACY)
+    })
+    it('"새 방 만들기"는 안내 시트를 닫고 기존 createRoom 으로 이어진다', async () => {
+      await pr.addRoom({ roomId: LEGACY, peer: { socketId: 'B' }, roomSecret: newRoomSecret(), ticket: 't' })
+      await g.openInvite(LEGACY)
+      await g.createFromLegacy()
+      expect(g.legacySheet.value).toBeNull()
+      expect(socket.createPrivate).toHaveBeenCalledTimes(1)
+      expect(pr.rooms.some((r) => r.roomId === G)).toBe(true)
+    })
+  })
 })

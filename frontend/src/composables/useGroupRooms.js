@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import QRCode from 'qrcode'
 import { newRoomSecret } from '../utils/pairCrypto.js'
 import { buildInviteUrl, sanitizeRoomName } from '../utils/groupInvite.js'
+import { isGroupRoomId } from '../utils/groupRoom.js'
 
 /**
  * 그룹 방: 만든 사람이 QR/링크를 보여 주면 다른 기기가 들어오는 비공개 방. 규격: docs/superpowers/specs/2026-11-12-group-rooms-design.md
@@ -29,6 +30,8 @@ export function useGroupRooms({
   const inviteSheet = ref(null)
   /** 확인 시트: { roomId, name, busy } | null (방 비밀은 반응형 상태에 두지 않는다) */
   const joinSheet = ref(null)
+  /** 예전 방(prv-…)에서 초대를 눌렀을 때 안내 시트: { roomId } | null */
+  const legacySheet = ref(null)
   const creating = ref(false)
 
   let pending = null // { roomId, ticket, secret, name }
@@ -66,6 +69,12 @@ export function useGroupRooms({
   async function openInvite(roomId) {
     const room = privateRooms.rooms.find((r) => r.roomId === roomId)
     if (!room) return
+    if (!isGroupRoomId(roomId)) {
+      // 예전 방식으로 만든 방은 초대할 수 없다: 안내만 보여 준다
+      legacySheet.value = { roomId }
+      safeTrack('room_legacy_invite')
+      return
+    }
     const name = displayName(room.name)
     inviteSheet.value = { roomId, name, url: '', qrDataUrl: '', loading: true }
     try {
@@ -81,6 +90,16 @@ export function useGroupRooms({
       inviteSheet.value = null
       notify.showError(t('group.failed'))
     }
+  }
+
+  function closeLegacy() {
+    legacySheet.value = null
+  }
+
+  /** 안내 시트의 "새 방 만들기" */
+  async function createFromLegacy() {
+    legacySheet.value = null
+    return createRoom()
   }
 
   function closeInvite() {
@@ -186,5 +205,5 @@ export function useGroupRooms({
     }
   }
 
-  return { inviteSheet, joinSheet, creating, createRoom, openInvite, closeInvite, copyInviteLink, acceptInvite, cancelJoin, confirmJoin, defaultName }
+  return { inviteSheet, joinSheet, legacySheet, creating, createRoom, openInvite, closeInvite, closeLegacy, createFromLegacy, copyInviteLink, acceptInvite, cancelJoin, confirmJoin, defaultName }
 }

@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "PC에서 {site} 또는 {ping}를 여세요",
       "iosShortcut": "아이폰·아이패드 공유 메뉴에서 바로 보내기 (단축어 추가)"
-    }
+    },
+    "legacyInviteTitle": "예전 방식으로 만든 방이라 초대할 수 없어요",
+    "legacyInviteBody": "새 방을 만들어 이 기기와 다른 기기를 함께 넣어 주세요",
+    "legacyInviteCreate": "새 방 만들기"
   },
   "nextTime": {
     "iosText": "다음엔 사진 앱 공유 버튼에서 바로 보낼 수 있어요",
@@ -213,7 +216,7 @@
     "storagePlainIp": "평문 10분 보관 · 같은 네트워크 누구나 볼 수 있어요",
     "storagePlainGlobal": "평문 10분 보관 · 모르는 사람도 누구나 볼 수 있어요",
     "storageLocked": "암호화해서 10분 보관 · 비밀번호 아는 기기만 봐요",
-    "storagePrivate": "1:1 방 키로 암호화해서 10분 보관",
+    "storagePrivate": "방 키로 암호화해서 10분 보관",
     "storageNone": "보관 안 함 · 지금 열린 기기에만 전달",
     "notKeptTooLarge": "96KB가 넘어 보관하지 않았어요 · 지금 열린 기기에만 전달됐어요",
     "notKeptFull": "서버 보관함이 가득 차 보관하지 않았어요 · 지금 열린 기기에만 전달됐어요",
@@ -535,27 +538,27 @@
     }
   },
   "pair": {
-    "button": "1:1 연결",
-    "buttonShort": "1:1",
-    "paired": "1:1 중",
+    "button": "방으로 연결",
+    "buttonShort": "연결",
+    "paired": "같은 방",
     "connecting": "연결 중…",
-    "openWith": "{name}와 둘만 쓰는 방 열기",
-    "openRoom": "{name}와 1:1 방으로 이동",
+    "openWith": "{name}와 둘이 쓰는 방 열기",
+    "openRoom": "{name}와 쓰는 방으로 이동",
     "pending": "수락 기다리는 중",
     "pendingSeconds": "{n}초",
     "cancel": "취소",
-    "hint": "기기를 눌러 둘만 쓰는 1:1 방을 열 수 있어요",
+    "hint": "기기를 누르면 둘이 쓰는 방을 만들 수 있어요. 나중에 다른 기기도 초대할 수 있어요",
     "hintClose": "안내 닫기",
     "unknownDevice": "알 수 없는 기기",
     "request": {
-      "title": "1:1 연결 요청",
+      "title": "방 연결 요청",
       "body": "수락하면 두 기기에서 그림을 확인한 뒤, 둘만 쓰는 방이 열려요.",
       "sameNetwork": "같은 네트워크",
       "otherNetwork": "다른 네트워크",
       "decline": "거절",
       "accept": "수락",
       "block": "이번 접속 동안 이 기기 요청 받지 않기",
-      "announce": "{name}가 1:1 연결을 요청했어요",
+      "announce": "{name}가 방 연결을 요청했어요",
       "compare": "그림이 같으면 수락, 다르면 거절하세요"
     },
     "confirm": {
@@ -588,17 +591,17 @@
       "TIMEOUT": "서버 응답이 없어요. 다시 시도해 주세요",
       "generic": "연결 요청을 보내지 못했어요",
       "leaveFailed": "연결을 끊지 못했어요. 다시 시도해 주세요",
-      "noRoom": "1:1 방을 찾을 수 없어요"
+      "noRoom": "방을 찾을 수 없어요"
     },
-    "tab": "1:1",
-    "tabMany": "1:1 ({n})",
-    "tabTitle": "{name}와 1:1",
-    "stripTitle": "{name}와 1:1",
+    "tab": "방",
+    "tabMany": "방 ({n})",
+    "tabTitle": "{name}와 쓰는 방",
+    "stripTitle": "{name}와 쓰는 방",
     "stripNote": "여기 올리는 파일·텍스트는 둘만 보고 자동으로 암호화돼요",
     "statusOnline": "접속 중",
     "statusLeft": "나갔어요",
-    "leave": "연결 끊기",
-    "leaveConfirmTitle": "1:1 연결을 끊을까요?",
+    "leave": "방 나가기",
+    "leaveConfirmTitle": "방에서 나갈까요?",
     "leaveConfirmBody": "이 방의 파일과 텍스트는 이 화면에서 사라지고, 다시 보려면 새로 연결해야 해요.",
     "uploadHint": "끌어다 놓아도 자동으로 암호화돼요",
     "peerLeftNotice": "상대가 연결을 끊었어요",
@@ -607,12 +610,12 @@
     "unreadableText": "읽을 수 없는 텍스트",
     "waitingAccept": "상대 수락 기다리는 중",
     "otherNetworkGroup": "다른 네트워크 기기 {n}대",
-    "shortcut": "{name}와 1:1",
+    "shortcut": "{name}와 쓰는 방",
     "statusOffline": "오프라인",
     "statusConnecting": "연결 중…",
     "offlineUploadNote": "상대가 접속하면 받을 수 있어요 (파일은 최대 1일 보관)",
     "offlineTextNote": "상대가 접속하면 보낼 수 있어요",
-    "expired": "1:1 연결이 만료됐어요",
+    "expired": "방 입장권이 만료됐어요. 다시 연결해 주세요",
     "checking": "확인 중",
     "peerChecking": "상대 확인 중",
     "acceptNote": "상대가 수락하면 연결돼요"
@@ -680,6 +683,6 @@
     "title": "여기에 놓으면 바로 올라가요",
     "toIp": "같은 네트워크로 보내요",
     "toGlobal": "전체 공유로 보내요",
-    "toPair": "1:1 상대에게 보내요"
+    "toPair": "이 방으로 보내요"
   }
 }

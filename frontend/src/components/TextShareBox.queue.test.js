@@ -23,7 +23,7 @@ describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
   it('잠금 켜짐·1:1 방·보관 안 함(구버전 서버) 문구, 칩은 공개 범위에만', () => {
     expect(label(mountBox({ storageMode: 'locked', scope: 'ip' }))).toBe('암호화해서 10분 보관 · 비밀번호 아는 기기만 봐요')
     const prv = mountBox({ storageMode: 'private', scope: 'prv:prv-1' })
-    expect(label(prv)).toBe('1:1 방 키로 암호화해서 10분 보관')
+    expect(label(prv)).toBe('방 키로 암호화해서 10분 보관')
     expect(prv.find('[data-testid="lock-chip"]').exists()).toBe(false)
     const none = mountBox({ storageMode: 'none' })
     expect(label(none)).toBe('보관 안 함 · 지금 열린 기기에만 전달')

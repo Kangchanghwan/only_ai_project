@@ -52,6 +52,7 @@ import PublicShareConfirm from './components/PublicShareConfirm.vue'
 import PairRequestSheet from './components/PairRequestSheet.vue'
 import PairConfirmSheet from './components/PairConfirmSheet.vue'
 import GroupInviteSheet from './components/GroupInviteSheet.vue'
+import LegacyInviteSheet from './components/LegacyInviteSheet.vue'
 import GroupJoinSheet from './components/GroupJoinSheet.vue'
 
 // ========================================
@@ -127,8 +128,16 @@ const pairFlow = usePairFlow({
   track: trackEvent,
   t,
   leaveRoom: (roomId) => socket.leavePrivate?.(roomId),
+  getMyName: () => {
+    const id = socket.myIdentity?.value
+    return isValidIdentity(id) ? identityName(id, t) : ''
+  },
+  getRoomDeviceCount: (roomId) => {
+    const devs = socket.privateRoomDevices?.value?.[roomId]
+    return Array.isArray(devs) ? devs.length : null
+  },
   onRoomReady: async (roomId) => {
-    // 새 1:1 탭으로 자동 이동하고, 그 방의 파일 목록을 불러온다
+    // 새 방 탭으로 자동 이동하고, 그 방의 파일 목록을 불러온다
     shareScope.setScope(scopeForPrivateRoom(roomId))
     await fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
   }
@@ -1405,6 +1414,7 @@ onUnmounted(() => {
 
       <!-- 그룹 방: 초대 QR / 입장 확인 (링크를 열어도 이 시트에서 "들어가기"를 눌러야 들어간다) -->
       <GroupInviteSheet :sheet="groupRooms.inviteSheet.value" @close="groupRooms.closeInvite" @copy="groupRooms.copyInviteLink" />
+      <LegacyInviteSheet :sheet="groupRooms.legacySheet.value" @close="groupRooms.closeLegacy" @create="groupRooms.createFromLegacy" />
       <GroupJoinSheet :sheet="groupRooms.joinSheet.value" @confirm="groupRooms.confirmJoin" @cancel="groupRooms.cancelJoin" />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->

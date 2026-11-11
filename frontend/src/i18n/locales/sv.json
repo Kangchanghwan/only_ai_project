@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Öppna {site} på din dator",
       "iosShortcut": "Skicka från delningsmenyn på iPhone/iPad (lägg till genvägen)"
-    }
+    },
+    "legacyInviteTitle": "Det här rummet skapades på det gamla sättet, så det går inte att bjuda in",
+    "legacyInviteBody": "Skapa ett nytt rum och lägg in den här enheten och de andra",
+    "legacyInviteCreate": "Skapa nytt rum"
   },
   "nextTime": {
     "iosText": "Nästa gång kan du skicka direkt från Dela-knappen i Bilder",

@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Bilgisayarında {site} adresini aç",
       "iosShortcut": "iPhone/iPad paylaşım menüsünden gönder (Kestirmeyi ekle)"
-    }
+    },
+    "legacyInviteTitle": "Bu oda eski yöntemle oluşturulmuş, bu yüzden davet edilemiyor",
+    "legacyInviteBody": "Yeni bir oda oluşturup bu cihazı ve diğerlerini içine ekleyin",
+    "legacyInviteCreate": "Yeni oda oluştur"
   },
   "nextTime": {
     "iosText": "Bir dahaki sefere doğrudan Fotoğraflar'daki paylaş düğmesinden gönderebilirsiniz",

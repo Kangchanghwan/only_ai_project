@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Open {site} op je pc",
       "iosShortcut": "Versturen vanuit het deelmenu van iPhone/iPad (opdracht toevoegen)"
-    }
+    },
+    "legacyInviteTitle": "Deze ruimte is op de oude manier gemaakt, dus je kunt niemand uitnodigen",
+    "legacyInviteBody": "Maak een nieuwe ruimte en voeg dit apparaat en de andere apparaten toe",
+    "legacyInviteCreate": "Nieuwe ruimte maken"
   },
   "nextTime": {
     "iosText": "Verstuur de volgende keer direct via de deelknop in Foto's",

@@ -27,15 +27,15 @@ describe('DeviceList 1:1 버튼', () => {
     const { wrapper, ctx } = build()
     const buttons = wrapper.findAll('[data-testid="pair-invite-button"]')
     expect(buttons).toHaveLength(1)
-    expect(buttons[0].attributes('aria-label')).toMatch(/둘만 쓰는 방 열기|private room/)
-    expect(buttons[0].text()).toBe('1:1 연결')
+    expect(buttons[0].attributes('aria-label')).toMatch(/둘이 쓰는 방 열기|private room/)
+    expect(buttons[0].text()).toBe('방으로 연결')
     await buttons[0].trigger('click')
     expect(ctx.invite).toHaveBeenCalledWith(peer)
   })
 
-  it('넓은 패널(wide)은 짧은 "1:1"', () => {
+  it('넓은 패널(wide)은 짧은 "연결"', () => {
     const { wrapper } = build({}, { wide: true })
-    expect(wrapper.find('[data-testid="pair-invite-button"]').text()).toBe('1:1')
+    expect(wrapper.find('[data-testid="pair-invite-button"]').text()).toBe('연결')
   })
 
   it('수락 대기 중이면 안내 문구와 취소 버튼, 취소하면 cancel(sessionId)', async () => {
@@ -47,10 +47,10 @@ describe('DeviceList 1:1 버튼', () => {
     wrapper.unmount()
   })
 
-  it('이미 연결된 상대는 채워진 "1:1 중"이고 누르면 그 방으로 이동', async () => {
+  it('이미 연결된 상대는 채워진 "같은 방"이고 누르면 그 방으로 이동', async () => {
     const { wrapper, ctx } = build({ p1: { state: 'paired', roomId: 'prv-abc' } })
     const btn = wrapper.find('[data-testid="pair-open-button"]')
-    expect(btn.text()).toBe('1:1 중')
+    expect(btn.text()).toBe('같은 방')
     expect(btn.classes()).toContain('bg-scope-private')
     await btn.trigger('click')
     expect(ctx.open).toHaveBeenCalledWith('prv-abc')

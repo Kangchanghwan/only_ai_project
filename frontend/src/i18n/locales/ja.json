@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "PCで{site}を開いてください",
       "iosShortcut": "iPhone・iPadの共有メニューから送る(ショートカットを追加)"
-    }
+    },
+    "legacyInviteTitle": "昔の方式で作った部屋なので招待できません",
+    "legacyInviteBody": "新しい部屋を作って、この端末とほかの端末を一緒に入れてください",
+    "legacyInviteCreate": "新しい部屋を作る"
   },
   "nextTime": {
     "iosText": "次回は写真アプリの共有ボタンからすぐ送れます",

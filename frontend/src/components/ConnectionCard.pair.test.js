@@ -20,7 +20,7 @@ describe('ConnectionCard 1:1 첫 안내(폰)', () => {
 
   it('다른 기기가 2대 이상이면 한 줄 안내, 닫으면 localStorage에 기록되고 사라진다', async () => {
     const w = build([me, other, other2])
-    expect(w.find('[data-testid="pair-hint"]').text()).toContain('둘만 쓰는 1:1 방을 열 수 있어요')
+    expect(w.find('[data-testid="pair-hint"]').text()).toContain('둘이 쓰는 방을 만들 수 있어요')
     await w.find('[data-testid="pair-hint-close"]').trigger('click')
     expect(w.find('[data-testid="pair-hint"]').exists()).toBe(false)
     expect(localStorage.getItem('pair-hint-dismissed')).toBe('1')
@@ -40,7 +40,7 @@ describe('ConnectionCard 폰 바로가기', () => {
     const w = build([me, other])
     const btn = w.find('[data-testid="pair-shortcut"]')
     expect(btn.exists()).toBe(true)
-    expect(btn.text()).toMatch(/와 1:1$/)
+    expect(btn.text()).toMatch(/와 쓰는 방$/)
     expect(btn.classes()).toContain('min-h-[44px]')
     expect(w.find('[data-testid="pair-hint"]').exists()).toBe(false)
     await btn.trigger('click')

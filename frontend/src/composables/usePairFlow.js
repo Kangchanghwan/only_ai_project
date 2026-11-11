@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { setTitleBadge } from './useTitleBadge'
 import { createPairing } from '../services/pairing.js'
+import { isGroupRoomId } from '../utils/groupRoom.js'
 import { identityName, isValidIdentity, sameIdentity } from '../utils/identity.js'
 
 /** 보낸 초대 에러 코드 → 사용자 안내 문구 */
@@ -32,10 +33,12 @@ const SILENT = new Set(['declined-by-me'])
  *   track?: (name: string, params?: object) => void,
  *   t: (key: string, params?: object) => string,
  *   onRoomReady?: (roomId: string, peer: object) => void|Promise<void>,
- *   leaveRoom?: (roomId: string) => void|Promise<void>
+ *   leaveRoom?: (roomId: string) => void|Promise<void>,
+ *   getMyName?: () => string,
+ *   getRoomDeviceCount?: (roomId: string) => number|null  새 방(prv-g-)의 현재 접속 기기 수. 정확히 2대일 때만 "같은 방"으로 본다
  * }} deps
  */
-export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t, onRoomReady, leaveRoom }) {
+export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t, onRoomReady, leaveRoom, getMyName = () => '', getRoomDeviceCount = null }) {
   const sessions = ref([])
   /** sessionId → 내가 초대한 대상 socketId */
   const targets = ref({})
@@ -77,6 +80,11 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
     }
     for (const r of privateRooms.rooms) {
       if (r.status !== 'online' || !r.peer?.socketId) continue
+      // 새 방은 지금 접속 중인 기기가 정확히 둘일 때만 "같은 방" (3대 이상이면 둘만의 방을 따로 만들 수 있다)
+      if (isGroupRoomId(r.roomId) && getRoomDeviceCount) {
+        const n = getRoomDeviceCount(r.roomId)
+        if (typeof n === 'number' && n !== 2) continue
+      }
       map[r.peer.socketId] = { state: 'paired', roomId: r.roomId }
     }
     return map
@@ -131,7 +139,13 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
     for (const id of toDismiss) queueMicrotask(() => pairing?.dismiss(id))
   }
 
-  async function handlePaired({ roomId, peer, roomSecret, ticket = null }) {
+  /** 연결로 만든 방의 이름: 요청한 기기(initiator)의 이름으로 양쪽이 같게 정한다 */
+  function roomNameFor(role, peer) {
+    const initiatorName = role === 'initiator' ? getMyName() : nameOf(peer)
+    return t('group.defaultName', { name: initiatorName || t('pair.unknownDevice') })
+  }
+
+  async function handlePaired({ roomId, peer, roomSecret, ticket = null, role = null }) {
     // 같은 상대와 이전에 나간 방이 남아 있으면 정리
     for (const r of [...privateRooms.rooms]) {
       const samePeer = !!peer && ((peer.socketId && r.peer?.socketId === peer.socketId) ||
@@ -141,7 +155,7 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
         try { await leaveRoom?.(r.roomId) } catch { /* 이미 정리된 방 */ }
       }
     }
-    await privateRooms.addRoom({ roomId, peer, roomSecret, ticket })
+    await privateRooms.addRoom({ roomId, peer, roomSecret, ticket, name: roomNameFor(role, peer) })
     track('pair_done')
     notify.showSuccess(t('pair.connected', { name: nameOf(peer) }))
     if (!prefersReducedMotion()) {
@@ -237,6 +251,6 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
   return {
     enabled: !!pairing,
     sessions, incoming, respondedWaiting, confirming, pairStates, highlightRoomId, announcement,
-    invite, cancel, respond, confirm, confirmInvite, cancelConfirming, destroy
+    invite, cancel, respond, confirm, confirmInvite, cancelConfirming, destroy, handlePaired
   }
 }

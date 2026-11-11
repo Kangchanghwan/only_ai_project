@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Buka {site} di PC kamu",
       "iosShortcut": "Kirim dari menu bagikan iPhone/iPad (tambahkan Pintasan)"
-    }
+    },
+    "legacyInviteTitle": "Ruang ini dibuat dengan cara lama, jadi tidak bisa mengundang",
+    "legacyInviteBody": "Buat ruang baru lalu masukkan perangkat ini dan perangkat lainnya",
+    "legacyInviteCreate": "Buat ruang baru"
   },
   "nextTime": {
     "iosText": "Lain kali, kirim langsung dari tombol Bagikan di aplikasi Foto",

@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Nyisd meg a {site} oldalt a számítógépeden",
       "iosShortcut": "Küldés az iPhone/iPad megosztás menüjéből (parancs hozzáadása)"
-    }
+    },
+    "legacyInviteTitle": "Ez a szoba a régi módon készült, ezért nem lehet meghívni bele",
+    "legacyInviteBody": "Hozz létre új szobát, és tedd bele ezt az eszközt meg a többit",
+    "legacyInviteCreate": "Új szoba létrehozása"
   },
   "nextTime": {
     "iosText": "Legközelebb közvetlenül a Fotók megosztás gombjával küldhet",

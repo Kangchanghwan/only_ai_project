@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Mở {site} trên máy tính của bạn",
       "iosShortcut": "Gửi từ menu chia sẻ trên iPhone/iPad (thêm Phím tắt)"
-    }
+    },
+    "legacyInviteTitle": "Phòng này được tạo theo cách cũ nên không thể mời thêm",
+    "legacyInviteBody": "Hãy tạo phòng mới rồi thêm thiết bị này và các thiết bị khác vào",
+    "legacyInviteCreate": "Tạo phòng mới"
   },
   "nextTime": {
     "iosText": "Lần sau, bạn có thể gửi thẳng từ nút Chia sẻ trong ứng dụng Ảnh",

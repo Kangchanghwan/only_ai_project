@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "请在电脑上打开 {site}",
       "iosShortcut": "从 iPhone/iPad 的共享菜单直接发送(添加快捷指令)"
-    }
+    },
+    "legacyInviteTitle": "这个房间是用旧方式创建的，无法邀请",
+    "legacyInviteBody": "请新建一个房间，把这台设备和其他设备一起加进去",
+    "legacyInviteCreate": "新建房间"
   },
   "nextTime": {
     "iosText": "下次可以直接从相册的分享按钮发送",

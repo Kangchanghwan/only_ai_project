@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Abra {site} no seu PC",
       "iosShortcut": "Envie pelo menu Compartilhar do iPhone/iPad (adicione o atalho)"
-    }
+    },
+    "legacyInviteTitle": "Esta sala foi criada do jeito antigo, então não dá para convidar",
+    "legacyInviteBody": "Crie uma sala nova e coloque este dispositivo e os outros nela",
+    "legacyInviteCreate": "Criar sala nova"
   },
   "nextTime": {
     "iosText": "Da próxima vez, envie direto pelo botão Compartilhar do app Fotos",

@@ -154,6 +154,11 @@ const groupMemberCount = computed(() => {
   const devs = id ? props.privateDevices[id] : null
   return Array.isArray(devs) ? devs.length : null
 })
+const groupOthers = computed(() => {
+  const id = currentRoom.value?.roomId
+  const devs = id ? props.privateDevices[id] : null
+  return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)) : []
+})
 // 상대가 나갔을 때 "다시 연결": 같은 상대가 ip/전체 공유 목록에 보이면 다시 초대할 수 있다
 const peerLeft = computed(() => !isGroupRoom.value && currentRoom.value?.status === 'left')
 // 상대 오프라인: 파일은 올릴 수 있고(상대가 나중에 받음), 텍스트도 10분 보관되므로 보낼 수 있다
@@ -226,6 +231,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
         v-if="currentRoom"
         :room="currentRoom"
         :member-count="groupMemberCount"
+        :others="groupOthers"
         @leave="$emit('leave-private', $event)"
         @invite="$emit('group-invite', $event)"
       />

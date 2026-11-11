@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Open {site} on your PC",
       "iosShortcut": "Send from the iPhone/iPad share menu (add the Shortcut)"
-    }
+    },
+    "legacyInviteTitle": "This room was made the old way, so it can't invite anyone",
+    "legacyInviteBody": "Create a new room and add this device and the others to it",
+    "legacyInviteCreate": "Create a new room"
   },
   "nextTime": {
     "iosText": "Next time, send straight from the Photos share button",
@@ -213,7 +216,7 @@
     "storagePlainIp": "Plain text, kept 10 min · anyone on this network can see it",
     "storagePlainGlobal": "Plain text, kept 10 min · strangers can see it too",
     "storageLocked": "Encrypted, kept 10 min · only devices with the password",
-    "storagePrivate": "Encrypted with the 1:1 room key, kept 10 min",
+    "storagePrivate": "Encrypted with the room key, kept 10 min",
     "storageNone": "Not kept · only devices open now",
     "notKeptTooLarge": "Over 96KB, so not kept · only devices open right now got it",
     "notKeptFull": "Server storage is full, so not kept · only devices open right now got it",
@@ -535,27 +538,27 @@
     }
   },
   "pair": {
-    "button": "Connect 1:1",
-    "buttonShort": "1:1",
-    "paired": "1:1 on",
+    "button": "Connect in a room",
+    "buttonShort": "Connect",
+    "paired": "Same room",
     "connecting": "Connecting…",
     "openWith": "Open a private room with {name}",
-    "openRoom": "Go to your 1:1 room with {name}",
+    "openRoom": "Go to your room with {name}",
     "pending": "Waiting for them to accept",
     "pendingSeconds": "{n}s",
     "cancel": "Cancel",
-    "hint": "Tap a device to open a private 1:1 room",
+    "hint": "Tap a device to make a room for the two of you. You can invite more devices later",
     "hintClose": "Close tip",
     "unknownDevice": "Unknown device",
     "request": {
-      "title": "1:1 connection request",
+      "title": "Room connection request",
       "body": "If you accept, you'll both check a picture match, then a room just for the two of you opens.",
       "sameNetwork": "Same network",
       "otherNetwork": "Different network",
       "decline": "Decline",
       "accept": "Accept",
       "block": "Don't accept requests from this device this visit",
-      "announce": "{name} wants a 1:1 connection",
+      "announce": "{name} wants to connect in a room",
       "compare": "Accept if they match, decline if not"
     },
     "confirm": {
@@ -588,31 +591,31 @@
       "TIMEOUT": "The server didn't respond. Please try again",
       "generic": "Couldn't send the request",
       "leaveFailed": "Couldn't disconnect. Please try again",
-      "noRoom": "This 1:1 room isn't available"
+      "noRoom": "This room isn't available"
     },
-    "tab": "1:1",
-    "tabMany": "1:1 ({n})",
-    "tabTitle": "1:1 with {name}",
-    "stripTitle": "1:1 with {name}",
+    "tab": "Room",
+    "tabMany": "Rooms ({n})",
+    "tabTitle": "Room with {name}",
+    "stripTitle": "Room with {name}",
     "stripNote": "Files and text here are seen only by the two of you and encrypted automatically",
     "statusOnline": "Online",
     "statusLeft": "Left",
-    "leave": "Disconnect",
-    "leaveConfirmTitle": "Disconnect this 1:1 room?",
+    "leave": "Leave room",
+    "leaveConfirmTitle": "Leave this room?",
     "leaveConfirmBody": "Files and text in this room disappear from this screen. You'll need to connect again to see them.",
     "uploadHint": "Drag and drop works too, and it's encrypted automatically",
     "peerLeftNotice": "They ended the connection",
     "reconnect": "Reconnect",
-    "peerLeftToast": "They ended the 1:1 connection",
+    "peerLeftToast": "They left the room",
     "unreadableText": "Unreadable text",
     "waitingAccept": "Waiting for them to accept",
     "otherNetworkGroup": "{n} devices on other networks",
-    "shortcut": "1:1 with {name}",
+    "shortcut": "Room with {name}",
     "statusOffline": "Offline",
     "statusConnecting": "Connecting…",
     "offlineUploadNote": "They can receive it when they're online (files are kept up to 1 day)",
     "offlineTextNote": "You can send text when they're online",
-    "expired": "The 1:1 connection expired",
+    "expired": "Your room pass expired. Please connect again",
     "checking": "Checking",
     "peerChecking": "Waiting for them",
     "acceptNote": "You'll connect once they accept"
@@ -680,6 +683,6 @@
     "title": "Drop here to upload right away",
     "toIp": "Sent to your network",
     "toGlobal": "Sent to everyone (public)",
-    "toPair": "Sent to your 1:1 peer"
+    "toPair": "Sent to this room"
   }
 }

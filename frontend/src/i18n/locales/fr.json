@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Ouvrez {site} sur votre PC",
       "iosShortcut": "Envoyer depuis le menu Partager de l’iPhone/iPad (ajouter le raccourci)"
-    }
+    },
+    "legacyInviteTitle": "Cette salle a été créée à l'ancienne, on ne peut donc pas y inviter",
+    "legacyInviteBody": "Créez une nouvelle salle et ajoutez-y cet appareil et les autres",
+    "legacyInviteCreate": "Créer une nouvelle salle"
   },
   "nextTime": {
     "iosText": "La prochaine fois, envoyez directement depuis le bouton Partager de Photos",

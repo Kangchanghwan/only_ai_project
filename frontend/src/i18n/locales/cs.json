@@ -27,7 +27,10 @@
       "pingLine": "또는 폰 주소창에 {ping}",
       "mobile": "Otevřete {site} na počítači",
       "iosShortcut": "Posílejte z nabídky sdílení na iPhonu/iPadu (přidejte zkratku)"
-    }
+    },
+    "legacyInviteTitle": "Tato místnost vznikla starým způsobem, takže do ní nelze zvát",
+    "legacyInviteBody": "Vytvořte novou místnost a přidejte do ní toto i další zařízení",
+    "legacyInviteCreate": "Vytvořit novou místnost"
   },
   "nextTime": {
     "iosText": "Příště můžete odesílat rovnou tlačítkem Sdílet v aplikaci Fotky",
