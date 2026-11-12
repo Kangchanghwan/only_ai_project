@@ -13,6 +13,7 @@ import { TokenBucket } from '../utils/tokenBucket';
 import { TextQueue, QueuedText, getTextQueue, toPublicText } from '../utils/textQueue';
 import { getPushNotifier } from '../services/pushNotifier';
 import { isValidPid } from '../services/pushStore';
+import { setupCodeHandlers } from './codeHandlers';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -452,6 +453,7 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQu
         socket.on('disconnect', () => handleDisconnect(socket, io, roomManager, pairs));
 
         setupPairHandlers(socket, io, roomManager, pairs);
+        setupCodeHandlers(socket, io, roomManager);
 
         socket.on('publish', (msg: any, target: PublishTarget, ack?: (error: Error | null, response?: PublishResponse) => void) =>
             handlePublish(socket, io, roomManager, textQueue, msg, target, ack)

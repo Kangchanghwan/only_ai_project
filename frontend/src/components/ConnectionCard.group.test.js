@@ -24,17 +24,37 @@ describe('ConnectionCard 그룹 방 만들기 진입 버튼', () => {
     const btn = w.find('[data-testid="empty-state-group-create"]')
     expect(btn.exists()).toBe(true)
     expect(btn.text()).toBe('다른 와이파이나 데이터를 쓰는 기기와 연결하려면 방을 만드세요')
-    // 빈 방 안내 영역의 마지막 요소
-    expect(w.find('[data-testid="empty-state"]').element.lastElementChild).toBe(btn.element)
+    // 그림으로 들어가기 버튼이 그 바로 아래(빈 방 안내 영역의 마지막 요소)
+    expect(btn.element.nextElementSibling).toBe(w.find('[data-testid="empty-state-code-enter"]').element)
+    expect(w.find('[data-testid="empty-state"]').element.lastElementChild).toBe(w.find('[data-testid="empty-state-code-enter"]').element)
     expect(btn.classes()).toContain('min-h-[44px]')
     await btn.trigger('click')
     expect(w.emitted('group-create')).toHaveLength(1)
+  })
+
+  it('빈 방 안내에 "그림으로 들어가기" 버튼이 있고 누르면 code-enter', async () => {
+    const w = mountCard([dev('me', me)])
+    await flushPromises()
+    const btn = w.find('[data-testid="empty-state-code-enter"]')
+    expect(btn.exists()).toBe(true)
+    expect(btn.text()).toBe('그림으로 들어가기')
+    expect(btn.classes()).toContain('min-h-[44px]')
+    await btn.trigger('click')
+    expect(w.emitted('code-enter')).toHaveLength(1)
+    expect(w.emitted('group-create')).toBeUndefined()
+  })
+
+  it('1:1 연결 기능이 꺼진 환경에서는 그림으로 들어가기 버튼도 없다', async () => {
+    const w = mountCard([dev('me', me)], false)
+    await flushPromises()
+    expect(w.find('[data-testid="empty-state-code-enter"]').exists()).toBe(false)
   })
 
   it('다른 기기가 있으면 빈 방 안내와 함께 사라진다', async () => {
     const w = mountCard([dev('me', me), dev('a', { adj: 0, animal: 0 })])
     await flushPromises()
     expect(w.find('[data-testid="empty-state-group-create"]').exists()).toBe(false)
+    expect(w.find('[data-testid="empty-state-code-enter"]').exists()).toBe(false)
   })
 
   it('1:1 연결 기능이 꺼진 환경(문맥 없음)에서는 버튼이 없다 (기존 화면 그대로)', async () => {
