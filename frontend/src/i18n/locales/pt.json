@@ -495,7 +495,8 @@
     "addTitle": "Adicionar uma sala",
     "addCreateTitle": "Criar uma nova sala",
     "addCreateDesc": "Crie uma sala e convide outros dispositivos com um QR ou com imagens",
-    "addEnterDesc": "Entre em uma sala com as 4 imagens mostradas em um dos dispositivos dela"
+    "addEnterDesc": "Entre em uma sala com as 4 imagens mostradas em um dos dispositivos dela",
+    "showNote": "Mesmo com as imagens certas, o dispositivo só entra depois que você tocar em 'Deixar entrar' aqui"
   },
   "arrival": {
     "notifyPrompt": "Receber aviso quando algo chegar com a aba em segundo plano?",

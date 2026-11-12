@@ -495,7 +495,8 @@
     "addTitle": "Tambah ruangan",
     "addCreateTitle": "Buat ruangan baru",
     "addCreateDesc": "Buat ruangan lalu undang perangkat lain dengan QR atau gambar",
-    "addEnterDesc": "Masuk ke ruangan dengan 4 gambar yang tampil di salah satu perangkatnya"
+    "addEnterDesc": "Masuk ke ruangan dengan 4 gambar yang tampil di salah satu perangkatnya",
+    "showNote": "Meski gambarnya benar, perangkat baru bisa masuk setelah Anda mengetuk 'Izinkan' di sini"
   },
   "arrival": {
     "notifyPrompt": "Dapatkan pemberitahuan saat ada yang masuk ketika tab di latar belakang?",

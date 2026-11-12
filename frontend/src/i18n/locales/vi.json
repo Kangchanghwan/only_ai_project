@@ -495,7 +495,8 @@
     "addTitle": "Thêm phòng",
     "addCreateTitle": "Tạo phòng mới",
     "addCreateDesc": "Tạo phòng rồi mời thiết bị khác bằng QR hoặc hình",
-    "addEnterDesc": "Vào phòng bằng 4 hình hiển thị trên một thiết bị trong phòng"
+    "addEnterDesc": "Vào phòng bằng 4 hình hiển thị trên một thiết bị trong phòng",
+    "showNote": "Dù chọn đúng hình, thiết bị chỉ vào được sau khi bạn nhấn 'Cho vào' ở đây"
   },
   "arrival": {
     "notifyPrompt": "Nhận thông báo khi có nội dung đến lúc tab đang chạy nền?",

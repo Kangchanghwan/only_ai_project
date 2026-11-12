@@ -672,11 +672,11 @@
     "declined": "방에서 거절했어요",
     "timeout": "방에서 응답이 없어요",
     "busy": "잠시 뒤에 다시 해 주세요",
-    "requestTitle": "{name}가 들어오려고 해요",
+    "requestTitle": "{name}이(가) 들어오려고 해요",
     "requestDevice": "{device}",
     "approve": "들이기",
     "reject": "거절",
-    "approved": "{name}가 들어왔어요",
+    "approved": "{name}이(가) 들어왔어요",
     "slotLabel": "{n}번째 그림: {name}",
     "slotEmpty": "{n}번째 그림: 비어 있음",
     "pickerLabel": "그림 24개",
@@ -710,7 +710,8 @@
     "addTitle": "방 추가",
     "addCreateTitle": "새 방 만들기",
     "addCreateDesc": "방을 만들고 QR이나 그림으로 다른 기기를 불러요",
-    "addEnterDesc": "방에 있는 기기에 보이는 그림 4개로 들어가요"
+    "addEnterDesc": "방에 있는 기기에 보이는 그림 4개로 들어가요",
+    "showNote": "그림을 맞게 눌러도 이 기기에서 '들이기'를 눌러야 들어올 수 있어요"
   },
   "pwa": {
     "installLabel": "앱 설치",

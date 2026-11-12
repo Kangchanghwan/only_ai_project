@@ -495,7 +495,8 @@
     "addTitle": "Přidat místnost",
     "addCreateTitle": "Vytvořit novou místnost",
     "addCreateDesc": "Vytvořte místnost a pozvěte další zařízení pomocí QR nebo obrázků",
-    "addEnterDesc": "Připojte se k místnosti pomocí 4 obrázků zobrazených na jednom z jejích zařízení"
+    "addEnterDesc": "Připojte se k místnosti pomocí 4 obrázků zobrazených na jednom z jejích zařízení",
+    "showNote": "I se správnými obrázky se zařízení dostane dovnitř, až zde klepnete na „Pustit dovnitř“"
   },
   "arrival": {
     "notifyPrompt": "Chcete dostávat upozornění, když něco dorazí a karta je na pozadí?",

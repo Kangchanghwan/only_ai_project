@@ -495,7 +495,8 @@
     "addTitle": "Ajouter une salle",
     "addCreateTitle": "Créer une nouvelle salle",
     "addCreateDesc": "Créez une salle et invitez d'autres appareils avec un QR ou des images",
-    "addEnterDesc": "Rejoignez une salle avec les 4 images affichées sur l'un de ses appareils"
+    "addEnterDesc": "Rejoignez une salle avec les 4 images affichées sur l'un de ses appareils",
+    "showNote": "Même avec les bonnes images, un appareil n'entre qu'après avoir appuyé sur « Laisser entrer » ici"
   },
   "arrival": {
     "notifyPrompt": "Être averti quand quelque chose arrive alors que l'onglet est en arrière-plan ?",

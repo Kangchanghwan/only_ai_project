@@ -495,7 +495,8 @@
     "addTitle": "Oda ekle",
     "addCreateTitle": "Yeni oda oluştur",
     "addCreateDesc": "Bir oda oluşturun ve diğer cihazları QR ya da resimlerle davet edin",
-    "addEnterDesc": "Odadaki bir cihazda görünen 4 resimle odaya katılın"
+    "addEnterDesc": "Odadaki bir cihazda görünen 4 resimle odaya katılın",
+    "showNote": "Resimler doğru olsa bile cihaz ancak burada 'İçeri al'a dokunduğunuzda girebilir"
   },
   "arrival": {
     "notifyPrompt": "Sekme arka plandayken bir şey geldiğinde bildirim almak ister misiniz?",

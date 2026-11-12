@@ -495,7 +495,8 @@
     "addTitle": "Dodaj pokój",
     "addCreateTitle": "Utwórz nowy pokój",
     "addCreateDesc": "Utwórz pokój i zaproś inne urządzenia kodem QR lub obrazkami",
-    "addEnterDesc": "Dołącz do pokoju za pomocą 4 obrazków widocznych na jednym z jego urządzeń"
+    "addEnterDesc": "Dołącz do pokoju za pomocą 4 obrazków widocznych na jednym z jego urządzeń",
+    "showNote": "Nawet z właściwymi obrazkami urządzenie wejdzie dopiero, gdy stukniesz tutaj „Wpuść”"
   },
   "arrival": {
     "notifyPrompt": "Powiadamiać, gdy coś dotrze, a karta jest w tle?",

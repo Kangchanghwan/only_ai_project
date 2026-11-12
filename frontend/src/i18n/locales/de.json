@@ -495,7 +495,8 @@
     "addTitle": "Raum hinzufügen",
     "addCreateTitle": "Neuen Raum erstellen",
     "addCreateDesc": "Erstelle einen Raum und lade andere Geräte per QR oder Bildern ein",
-    "addEnterDesc": "Tritt einem Raum über die 4 Bilder bei, die auf einem seiner Geräte angezeigt werden"
+    "addEnterDesc": "Tritt einem Raum über die 4 Bilder bei, die auf einem seiner Geräte angezeigt werden",
+    "showNote": "Auch mit den richtigen Bildern kommt ein Gerät erst rein, wenn du hier auf „Hereinlassen“ tippst"
   },
   "arrival": {
     "notifyPrompt": "Benachrichtigen, wenn etwas ankommt, während dieser Tab im Hintergrund ist?",

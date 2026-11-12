@@ -90,7 +90,7 @@ function onKeydown(event) {
           @renew="emit('code-renew')"
           @decide="emit('code-decide', $event)"
         />
-        <p v-if="tab === 'picture'" class="m-0 mt-3 text-xs text-text-secondary leading-relaxed" data-testid="group-invite-picture-warning">{{ t('group.inviteWarning') }}</p>
+        <p v-if="tab === 'picture'" class="m-0 mt-3 text-xs text-text-secondary leading-relaxed" data-testid="group-invite-picture-warning">{{ t('code.showNote') }}</p>
         <template v-else>
         <div v-if="tab === 'qr'" class="mt-4 flex justify-center">
           <img
