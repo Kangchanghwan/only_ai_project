@@ -223,7 +223,7 @@ export function createPairing({ socket, onPaired }) {
         try {
           onPaired?.({
             roomId: p.roomId, peer, roomToken: p.roomToken, roomTokenTtlSec: p.roomTokenTtlSec,
-            ticket: isStr(p.ticket) ? p.ticket : null, roomSecret
+            ticket: isStr(p.ticket) ? p.ticket : null, roomSecret, role: s.role
           })
         } catch (e) {
           console.error('[pairing] onPaired error:', e?.message || e)

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { ref } from 'vue'
 import { usePairFlow } from './usePairFlow.js'
 import { usePrivateRooms } from './usePrivateRooms.js'
 import { generateEphemeral } from '../utils/pairCrypto.js'
@@ -131,5 +132,41 @@ describe('usePairFlow', () => {
     expect(flow.pairStates.value.B).toMatchObject({ state: 'paired' })
     pr.setStatus('prv-g-' + 'ab12'.repeat(6), 'offline')
     expect(Object.keys(flow.pairStates.value)).toEqual(['B'])
+  })
+})
+
+describe('usePairFlow 방 이름·같은 방 표시 (1:1 연결로 만든 방도 하나의 방)', () => {
+  const t2 = (k, p) => (k === 'group.defaultName' ? `${p.name}의 방` : k === 'identity.nameFormat' ? `${p.adj}${p.animal}` : k.startsWith('identity.adj') ? '졸린' : k.startsWith('identity.animal') ? '판다' : k.startsWith('identity.') ? k : (p ? `${k}:${JSON.stringify(p)}` : k))
+  const NEW = 'prv-g-' + 'ab12'.repeat(6)
+  const mk = (extra = {}) => {
+    const pr = usePrivateRooms()
+    pr.resetPrivateRooms()
+    const flow = usePairFlow({ adapter: fakeAdapter(), privateRooms: pr, notify: { showInfo: vi.fn(), showSuccess: vi.fn(), showError: vi.fn() }, track: vi.fn(), t: t2, getMyName: () => '내기기', ...extra })
+    return { pr, flow }
+  }
+  const done = (role) => ({ roomId: NEW, peer, roomSecret: new Uint8Array(32).fill(5), ticket: 'pv1.x', role })
+
+  it('요청한 쪽(initiator)은 내 이름, 받은 쪽(responder)은 peer 이름을 방 이름으로 저장하고 inviteSecret도 남긴다', async () => {
+    const a = mk()
+    await a.flow.handlePaired(done('initiator'))
+    expect(a.pr.rooms[0].name).toBe('내기기의 방')
+    expect(await a.pr.inviteSecretFor(NEW)).toHaveLength(32)
+    a.flow.destroy()
+    const b = mk({ getMyName: () => '받은기기' })
+    await b.flow.handlePaired(done('responder'))
+    expect(b.pr.rooms[0].name).toBe('졸린판다의 방')
+    b.flow.destroy()
+  })
+
+  it('새 방은 접속 중인 기기가 정확히 2대일 때만 "같은 방", 3대면 아니다. 예전 방은 그대로', async () => {
+    const count = ref(2)
+    const { pr, flow } = mk({ getRoomDeviceCount: () => count.value })
+    await flow.handlePaired(done('initiator'))
+    expect(flow.pairStates.value.B).toMatchObject({ state: 'paired', roomId: NEW })
+    count.value = 3
+    expect(flow.pairStates.value.B).toBeUndefined()
+    await pr.addRoom({ roomId: 'prv-' + 'cd34'.repeat(6), peer: { ...peer, socketId: 'C' }, roomSecret: new Uint8Array(32).fill(6), ticket: 'u' })
+    expect(flow.pairStates.value.C).toMatchObject({ state: 'paired' })
+    flow.destroy()
   })
 })

@@ -6,7 +6,7 @@ import i18n from '../i18n/index.js'
 const stubs = {
   AppHeader: true, AppFooter: true, LandingContent: true, TransferProgress: true,
   FileGallery: { name: 'FileGallery', template: '<div class="gallery"><slot name="send" /></div>', props: ['files'] },
-  ConnectionCard: { name: 'ConnectionCard', template: '<button data-testid="cc-create" @click="$emit(\'group-create\')" />', props: ['otherNetworkDevices', 'devices'], emits: ['group-create'] }
+  ConnectionCard: { name: 'ConnectionCard', template: '<div><button data-testid="cc-create" @click="$emit(\'group-create\')" /><button data-testid="cc-code" @click="$emit(\'code-enter\')" /></div>', props: ['otherNetworkDevices', 'devices'], emits: ['group-create', 'code-enter'] }
 }
 const G = 'prv-g-' + 'ab12'.repeat(6)
 const me = { socketId: 'me', identity: { adj: 0, animal: 0 } }
@@ -22,7 +22,7 @@ describe('RoomScreen 그룹 방', () => {
   it('Strip이 방 이름과 기기 수를 보여 주고, 기기 목록은 그 방의 접속 기기다 (room.peer 대체 목록 없음)', () => {
     const w = mountWith({ privateRooms: room(), privateDevices: { [G]: [me, other, { socketId: 'x' }] } })
     expect(w.find('[data-testid="private-strip-title"]').text()).toBe('우리 방')
-    expect(w.find('[data-testid="group-members"]').text()).toBe('기기 3대')
+    expect(w.find('[data-testid="group-members"]').text()).toMatch(/^기기 3대/)
     expect(w.findComponent({ name: 'ConnectionCard' }).props('devices')).toHaveLength(3)
   })
 
@@ -46,8 +46,12 @@ describe('RoomScreen 그룹 방', () => {
     await w.find('[data-testid="group-create"]').trigger('click')
     await w.find('[data-testid="cc-create"]').trigger('click')
     await w.find('[data-testid="group-invite"]').trigger('click')
-    expect(w.emitted('group-create')).toHaveLength(2)
+    // "＋ 방"은 선택 시트를 여는 group-add, 빈 방 안내의 방 만들기는 그대로 group-create
+    expect(w.emitted('group-add')).toHaveLength(1)
+    expect(w.emitted('group-create')).toHaveLength(1)
     expect(w.emitted('group-invite')[0]).toEqual([G])
+    await w.find('[data-testid="cc-code"]').trigger('click')
+    expect(w.emitted('code-enter')).toHaveLength(1)
   })
 
   it('pairEnabled가 꺼져 있으면 "＋ 방" 버튼이 없다', () => {

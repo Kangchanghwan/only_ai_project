@@ -39,7 +39,7 @@ const props = defineProps({
   /** 전체 공유 방에만 있는 기기 (같은 네트워크 목록 아래 "다른 네트워크 기기 n대") */
   otherNetworkDevices: { type: Array, default: () => [] }
 })
-const emit = defineEmits(['reroll', 'hint-copied', 'group-create'])
+const emit = defineEmits(['reroll', 'hint-copied', 'group-create', 'code-enter'])
 
 // 폰 첫 안내: 다른 기기가 1대 이상일 때 한 줄, 닫으면 다시 보이지 않는다
 const pair = inject(PAIR_CONTEXT_KEY, null)
@@ -191,6 +191,14 @@ const shortcutName = computed(() => {
         data-testid="empty-state-group-create"
         @click="emit('group-create')"
       >{{ t('group.emptyCta') }}</button>
+      <!-- 방에 있는 기기의 그림 4개를 눌러 들어오기 -->
+      <button
+        v-if="pair"
+        type="button"
+        class="w-full min-h-[44px] px-3 rounded-full border border-border text-text-primary text-xs font-semibold leading-snug"
+        data-testid="empty-state-code-enter"
+        @click="emit('code-enter')"
+      >{{ t('code.enter') }}</button>
     </div>
     <ul v-if="pendingDevices.length > 0" class="mt-3 pt-3 border-t border-border flex flex-col gap-2 list-none p-0 m-0" data-testid="pair-pending-rows">
       <DeviceRow v-for="d in pendingDevices" :key="d.socketId" :device="d" />

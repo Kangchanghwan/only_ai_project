@@ -43,11 +43,42 @@ describe('PrivateRoomStrip 그룹 방', () => {
     expect(w.emitted('leave')[0]).toEqual([G])
   })
 
-  it('1:1 방은 지금과 같다 (초대 버튼·인원 표시 없음)', () => {
+  it('예전 방은 상대 이름 기준 표시 + 초대 버튼(누르면 안내 시트로 이어짐), 인원 표시 없음', () => {
     const w = mount(PrivateRoomStrip, { ...opts, props: { room: { roomId: 'prv-' + 'a'.repeat(24), status: 'online', peer: { identity: { adj: 1, animal: 1 } } } } })
-    expect(w.find('[data-testid="group-invite"]').exists()).toBe(false)
+    expect(w.find('[data-testid="group-invite"]').exists()).toBe(true)
     expect(w.find('[data-testid="group-members"]').exists()).toBe(false)
     expect(w.find('[data-testid="private-status"]').exists()).toBe(true)
-    expect(w.find('[data-testid="private-strip-title"]').text()).toMatch(/와 1:1$/)
+    expect(w.find('[data-testid="private-strip-title"]').text()).toMatch(/와 쓰는 방$/)
   })
 })
+
+describe('PrivateRoomStrip 상태 줄과 아바타 (방 합치기)', () => {
+  const dev = (n, extra = {}) => ({ socketId: 's' + n, identity: { adj: n, animal: n }, ...extra })
+  it('다른 기기가 0대면 "아직 나만 있어요"', () => {
+    const w = mount(PrivateRoomStrip, { ...opts, props: { room: grp(), memberCount: 1, others: [] } })
+    expect(w.find('[data-testid="group-members"]').text()).toBe('아직 나만 있어요')
+  })
+  it('1대 이상이면 "기기 n대 · 이름" (나 포함 n, 이름은 최대 2개)', () => {
+    const w = mount(PrivateRoomStrip, { ...opts, props: { room: grp(), memberCount: 2, others: [dev(1)] } })
+    const text = w.find('[data-testid="group-members"]').text()
+    expect(text).toMatch(/^기기 2대 · .+/)
+    expect(text.split(' · ')).toHaveLength(2)
+    const w4 = mount(PrivateRoomStrip, { ...opts, props: { room: grp(), memberCount: 4, others: [dev(1), dev(2), dev(3)] } })
+    const t4 = w4.find('[data-testid="group-members"]').text()
+    expect(t4).toMatch(/^기기 4대/)
+    expect(t4.split(' · ')).toHaveLength(3) // 대수 + 이름 2개
+    expect(w4.findAll('[data-testid="group-avatars"] > *')).toHaveLength(3)
+  })
+  it('연결로 만든 새 방도(peer가 있어도) 초대 버튼이 있다', async () => {
+    const w = mount(PrivateRoomStrip, { ...opts, props: { room: grp({ peer: dev(1) }), memberCount: 2, others: [dev(1)] } })
+    await w.find('[data-testid="group-invite"]').trigger('click')
+    expect(w.emitted('invite')[0]).toEqual([G])
+  })
+  it('예전 방에서도 초대 버튼이 있고 roomId를 올린다', async () => {
+    const legacy = 'prv-' + 'a'.repeat(24)
+    const w = mount(PrivateRoomStrip, { ...opts, props: { room: { roomId: legacy, status: 'online', peer: dev(1) } } })
+    await w.find('[data-testid="group-invite"]').trigger('click')
+    expect(w.emitted('invite')[0]).toEqual([legacy])
+  })
+})
+

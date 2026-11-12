@@ -123,6 +123,8 @@ const emit = defineEmits([
   'pair-confirm',
   'leave-private',
   'group-create',
+  'group-add',
+  'code-enter',
   'group-invite'
 ])
 
@@ -153,6 +155,11 @@ const groupMemberCount = computed(() => {
   const id = currentRoom.value?.roomId
   const devs = id ? props.privateDevices[id] : null
   return Array.isArray(devs) ? devs.length : null
+})
+const groupOthers = computed(() => {
+  const id = currentRoom.value?.roomId
+  const devs = id ? props.privateDevices[id] : null
+  return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)) : []
 })
 // 상대가 나갔을 때 "다시 연결": 같은 상대가 ip/전체 공유 목록에 보이면 다시 초대할 수 있다
 const peerLeft = computed(() => !isGroupRoom.value && currentRoom.value?.status === 'left')
@@ -208,7 +215,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
         :highlight-room-id="highlightRoomId"
         :group-create="pairEnabled"
         @select="$emit('select-scope', $event)"
-        @group-create="$emit('group-create')"
+        @group-create="$emit('group-add')"
       />
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->
@@ -226,6 +233,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
         v-if="currentRoom"
         :room="currentRoom"
         :member-count="groupMemberCount"
+        :others="groupOthers"
         @leave="$emit('leave-private', $event)"
         @invite="$emit('group-invite', $event)"
       />
@@ -244,6 +252,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
             @reroll="$emit('reroll-identity')"
             @hint-copied="$emit('hint-copied', $event)"
             @group-create="$emit('group-create')"
+            @code-enter="$emit('code-enter')"
           />
         </div>
 

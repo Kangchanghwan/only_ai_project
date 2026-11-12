@@ -37,10 +37,10 @@ describe('ShareScopeTabs 그룹 방', () => {
     expect(w.emitted('select')[0]).toEqual(['prv:' + G])
   })
 
-  it('1:1 + 그룹이 섞이면 같은 목록: 1:1은 상대 이름·아바타, 그룹은 방 이름·아이콘', async () => {
+  it('예전 방 + 새 방이 섞이면 같은 목록: 1:1은 상대 이름·아바타, 그룹은 방 이름·아이콘', async () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [one(), grp()] } })
     const tab = w.find('[data-testid="private-tab"]')
-    expect(tab.text()).toBe('1:1 (2)')
+    expect(tab.text()).toBe('방 (2)')
     await tab.trigger('click')
     const options = w.findAll('[data-testid="private-tab-option"]')
     expect(options).toHaveLength(2)

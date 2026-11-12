@@ -52,7 +52,10 @@ import PublicShareConfirm from './components/PublicShareConfirm.vue'
 import PairRequestSheet from './components/PairRequestSheet.vue'
 import PairConfirmSheet from './components/PairConfirmSheet.vue'
 import GroupInviteSheet from './components/GroupInviteSheet.vue'
+import LegacyInviteSheet from './components/LegacyInviteSheet.vue'
 import GroupJoinSheet from './components/GroupJoinSheet.vue'
+import RoomAddSheet from './components/RoomAddSheet.vue'
+import PictureCodeEnterSheet from './components/PictureCodeEnterSheet.vue'
 
 // ========================================
 // Composables 초기화
@@ -127,8 +130,16 @@ const pairFlow = usePairFlow({
   track: trackEvent,
   t,
   leaveRoom: (roomId) => socket.leavePrivate?.(roomId),
+  getMyName: () => {
+    const id = socket.myIdentity?.value
+    return isValidIdentity(id) ? identityName(id, t) : ''
+  },
+  getRoomDeviceCount: (roomId) => {
+    const devs = socket.privateRoomDevices?.value?.[roomId]
+    return Array.isArray(devs) ? devs.length : null
+  },
   onRoomReady: async (roomId) => {
-    // 새 1:1 탭으로 자동 이동하고, 그 방의 파일 목록을 불러온다
+    // 새 방 탭으로 자동 이동하고, 그 방의 파일 목록을 불러온다
     shareScope.setScope(scopeForPrivateRoom(roomId))
     await fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
   }
@@ -146,6 +157,7 @@ async function waitSocketRegistered() {
   }
   return false
 }
+const isMobile = /iPhone|iPad|iPod|Android|Mobi/i.test(typeof navigator !== 'undefined' ? navigator.userAgent || '' : '')
 const groupRooms = useGroupRooms({
   privateRooms,
   socket,
@@ -157,6 +169,8 @@ const groupRooms = useGroupRooms({
     return isValidIdentity(id) ? identityName(id, t) : ''
   },
   waitRegistered: waitSocketRegistered,
+  getCodeSocket: () => socketService.getCodeAdapter?.() ?? null,
+  isMobile,
   onAlreadyIn: (roomId) => shareScope.setScope(scopeForPrivateRoom(roomId)),
   onRoomReady: async (roomId) => {
     shareScope.setScope(scopeForPrivateRoom(roomId))
@@ -429,7 +443,6 @@ async function connectToRoom() {
 }
 
 // 탭이 뒤에 있을 때 도착 표시 (제목 숫자·파비콘 점·선택 알림)
-const isMobile = /iPhone|iPad|iPod|Android|Mobi/i.test(typeof navigator !== 'undefined' ? navigator.userAgent || '' : '')
 const arrival = useArrivalBadge({ getMySocketId: () => socket.mySocketId?.value, isMobile })
 const nextTime = useNextTimeHint({ isBlocked: () => arrival.promptVisible.value })
 
@@ -1340,6 +1353,8 @@ onUnmounted(() => {
         @pair-confirm="pairFlow.confirmInvite"
         @leave-private="handlePrivateLeave"
         @group-create="groupRooms.createRoom"
+        @group-add="groupRooms.openChoice"
+        @code-enter="groupRooms.openEnter"
         @group-invite="groupRooms.openInvite"
         @reroll-identity="handleRerollIdentity"
         @hint-copied="notification.showSuccess(t('file.copied'))"
@@ -1375,7 +1390,7 @@ onUnmounted(() => {
       <WindowDropOverlay
         :disabled="isMobile"
         :enabled="roomManager.roomIds.value.length > 0"
-        :blocked="isShareConfirmOpen || publicGuard.isOpen.value || !!pairFlow.confirming.value || !!incomingSession || !!groupRooms.inviteSheet.value || !!groupRooms.joinSheet.value"
+        :blocked="isShareConfirmOpen || publicGuard.isOpen.value || !!pairFlow.confirming.value || !!incomingSession || !!groupRooms.inviteSheet.value || !!groupRooms.joinSheet.value || !!groupRooms.legacySheet.value || groupRooms.choiceSheet.value || groupRooms.enterSheet.value"
         :scope-kind="isGroupRoomId(privateRoomIdOfScope(shareScope.scope.value)) ? 'group' : isPrivateScope(shareScope.scope.value) ? 'private' : shareScope.scope.value"
         @drop-files="handleUploadFiles"
       />
@@ -1404,7 +1419,27 @@ onUnmounted(() => {
       />
 
       <!-- 그룹 방: 초대 QR / 입장 확인 (링크를 열어도 이 시트에서 "들어가기"를 눌러야 들어간다) -->
-      <GroupInviteSheet :sheet="groupRooms.inviteSheet.value" @close="groupRooms.closeInvite" @copy="groupRooms.copyInviteLink" />
+      <GroupInviteSheet
+        :sheet="groupRooms.inviteSheet.value"
+        :tab="groupRooms.inviteTab.value"
+        :code-state="groupRooms.codeState.value"
+        @close="groupRooms.closeInvite"
+        @copy="groupRooms.copyInviteLink"
+        @tab="groupRooms.selectInviteTab"
+        @code-renew="groupRooms.renewCode"
+        @code-decide="groupRooms.decideCode"
+      />
+      <RoomAddSheet :open="groupRooms.choiceSheet.value" @close="groupRooms.closeChoice" @create="groupRooms.createFromChoice" @enter="groupRooms.openEnter" />
+      <PictureCodeEnterSheet
+        :open="groupRooms.enterSheet.value"
+        :status="groupRooms.enterState.value.status"
+        :warn="groupRooms.enterState.value.warn"
+        :retry-after-sec="groupRooms.enterState.value.retryAfterSec"
+        @close="groupRooms.closeEnter"
+        @submit="groupRooms.submitCode"
+        @cancel="groupRooms.cancelEnter"
+      />
+      <LegacyInviteSheet :sheet="groupRooms.legacySheet.value" @close="groupRooms.closeLegacy" @create="groupRooms.createFromLegacy" />
       <GroupJoinSheet :sheet="groupRooms.joinSheet.value" @confirm="groupRooms.confirmJoin" @cancel="groupRooms.cancelJoin" />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->

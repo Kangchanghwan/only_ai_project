@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { createI18n } from 'vue-i18n'
+import { fixKoJosa } from '../utils/koJosa.js'
 import ko from './locales/ko.json'
 import en from './locales/en.json'
 import zh from './locales/zh.json'
@@ -110,6 +111,8 @@ const i18n = createI18n({
   locale: defaultLocale,
   // 번역이 빠진 키는 한국어 대신 영어로 대체한다 (비한국어 UI에 한국어가 섞이지 않도록)
   fallbackLocale: 'en',
+  // 한국어 문구의 "와(과)", "이(가)" 같은 조사를 앞 글자 받침에 맞게 하나로 고른다
+  postTranslation: (str) => fixKoJosa(str),
   messages: {
     ko,
     en,

@@ -17,15 +17,15 @@ describe('TextShareBox 보관 안내: 그룹 방 vs 1:1 방', () => {
     expect(label(w)).not.toContain('1:1')
   })
 
-  it('1:1 방은 기존 문구 그대로', () => {
-    expect(label(mountBox({ scope: 'prv:prv-' + 'a'.repeat(24) }))).toBe('1:1 방 키로 암호화해서 10분 보관')
+  it('예전 방도 같은 문구', () => {
+    expect(label(mountBox({ scope: 'prv:prv-' + 'a'.repeat(24) }))).toBe('방 키로 암호화해서 10분 보관')
   })
 
-  it('영어도 그룹 방은 1:1 없이', () => {
+  it('영어도 1:1 없이', () => {
     i18n.global.locale.value = 'en'
     try {
       expect(label(mountBox({ scope: 'prv:' + G }))).toBe('Encrypted with the room key, kept 10 min')
-      expect(label(mountBox({ scope: 'prv:prv-' + 'a'.repeat(24) }))).toContain('1:1')
+      expect(label(mountBox({ scope: 'prv:prv-' + 'a'.repeat(24) }))).toBe('Encrypted with the room key, kept 10 min')
     } finally {
       i18n.global.locale.value = 'ko'
     }

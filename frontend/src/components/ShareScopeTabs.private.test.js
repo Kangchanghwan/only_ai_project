@@ -14,11 +14,11 @@ describe('ShareScopeTabs 1:1 탭', () => {
     expect(w.find('[data-testid="private-tab"]').exists()).toBe(false)
   })
 
-  it('1개면 아바타 + "1:1" 세 번째 탭, 선택 시 prv: 스코프를 올린다', async () => {
+  it('1개면 아바타 + "방" 세 번째 탭, 선택 시 prv: 스코프를 올린다', async () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [room('prv-a')] } })
     const tab = w.find('[data-testid="private-tab"]')
     expect(w.findAll('[role="tab"]')).toHaveLength(3)
-    expect(tab.text()).toBe('1:1')
+    expect(tab.text()).toBe('방')
     expect(tab.find('[data-testid="animal-avatar"]').exists()).toBe(true)
     await tab.trigger('click')
     expect(w.emitted('select')[0]).toEqual(['prv:prv-a'])
@@ -31,10 +31,10 @@ describe('ShareScopeTabs 1:1 탭', () => {
     expect(tab.attributes('aria-selected')).toBe('true')
   })
 
-  it('2개 이상이면 "1:1 (n)" 후 팝오버에서 상대를 고른다', async () => {
+  it('2개 이상이면 "방 (n)" 후 팝오버에서 상대를 고른다', async () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [room('prv-a', 1), room('prv-b', 2)] } })
     const tab = w.find('[data-testid="private-tab"]')
-    expect(tab.text()).toBe('1:1 (2)')
+    expect(tab.text()).toBe('방 (2)')
     expect(w.find('[data-testid="private-tab-popover"]').exists()).toBe(false)
     await tab.trigger('click')
     const options = w.findAll('[data-testid="private-tab-option"]')
@@ -60,7 +60,7 @@ describe('PrivateRoomStrip 상태', () => {
 describe('PrivateRoomStrip', () => {
   it('상대 이름/상태/암호화 안내를 보여 주고 상태는 글자로도 표시', () => {
     const w = mount(PrivateRoomStrip, { ...opts, props: { room: room('prv-a') } })
-    expect(w.find('[data-testid="private-strip-title"]').text()).toContain('1:1')
+    expect(w.find('[data-testid="private-strip-title"]').text()).toContain('쓰는 방')
     expect(w.find('[data-testid="private-status"]').text()).toBe('접속 중')
     expect(w.text()).toContain('자동으로 암호화돼요')
     const left = mount(PrivateRoomStrip, { ...opts, props: { room: { ...room('prv-a'), status: 'left' } } })

@@ -168,12 +168,16 @@ describe('Socket.IO - 그룹 방', () => {
     expect(await ask(A, 'private:create')).toMatchObject({ error: 'TOO_MANY_ROOMS' });
   });
 
-  test('그룹 방을 같이 써도 pair:invite 는 ALREADY_PAIRED 로 막히지 않는다', async () => {
+  test('그룹 방에 정확히 둘만 접속 중이면 ALREADY_PAIRED, 셋이면 허용', async () => {
     const A = await connect();
     const B = await connect();
+    const C = await connect();
     const { roomId } = await ask(A, 'private:create');
     const inv = await ask(A, 'private:invite', { roomId });
     await ask(B, 'private:join', { tickets: [inv.ticket] });
+    expect(await ask(A, 'pair:invite', { to: B.id })).toMatchObject({ ok: false, code: 'ALREADY_PAIRED' });
+    const inv2 = await ask(A, 'private:invite', { roomId });
+    await ask(C, 'private:join', { tickets: [inv2.ticket] });
     const res = await ask(A, 'pair:invite', { to: B.id });
     expect(res.ok).toBe(true);
     expect(res.code).toBeUndefined();
