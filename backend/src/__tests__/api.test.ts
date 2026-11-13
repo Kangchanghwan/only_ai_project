@@ -129,6 +129,11 @@ describe('REST API - upload/download presign', () => {
   });
 
   describe('GET /api/r2/download-url/:roomId/:fileName', () => {
+    it('응답에 Cache-Control: no-store를 붙인다 (CDN이 만료될 서명 주소를 캐시하지 않도록)', async () => {
+      const res = await fetch(`${baseUrl}/api/r2/download-url/room-x/${encodeURIComponent('photo.jpg')}`);
+      expect(res.headers.get('cache-control')).toBe('no-store');
+    });
+
     test('attachment 처리가 서명된 presigned GET URL을 발급한다', async () => {
       const res = await fetch(`${baseUrl}/api/r2/download-url/room-x/${encodeURIComponent('사진.png')}`);
 
