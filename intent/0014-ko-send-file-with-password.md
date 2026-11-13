@@ -1,6 +1,6 @@
 # Intent: 한국어 가이드 "파일 비밀번호 걸어서 보내기"
 
-Author: owner (2026-10-15 지시, 에이전트 작성). Status: shipped (2026-10-16). Created: 2026-10-15.
+Author: owner (2026-10-15 지시, 에이전트 작성). Status: rejected (2026-11-13, 28일 클릭 0). Created: 2026-10-15.
 Trigger: owner 아이디어 — 비밀번호 잠금·QR 공유 출시(PR #52~#55)를 유입 각도로 쓰기. ops/playbooks/lock-campaign.md.
 
 ## Problem
@@ -28,3 +28,4 @@ Trigger: owner 아이디어 — 비밀번호 잠금·QR 공유 출시(PR #52~#55
 - 기준값: 배포 전 GSC 28일 "비밀번호·암호·password·encrypt" 포함 쿼리 노출 0. GA4 10-09–10-15 locked_upload_complete 5회(1명), locked_download_complete 2회(1명), locked_link_download_complete 1회(1명) = 10-15 출시 테스트분.
 - 판독: 7일 10-23, 28일 11-13.
 - 7일 판독(10-23): GSC 10-16–10-20 이 URL 노출 1, 클릭 0, 순위 6 (검색어 표 비어 있음). 네이버 웹문서 상위 표 밖(노출 사실상 0). GA4 10-16–10-22 locked_upload_complete 30회(12명) / locked_download_complete 17회(8명) / locked_link_download_complete 0 — 기준값(10-09–10-15 5회·1명)보다 늘었으나 L1 블로그·velog 잠금 편 등 다른 홍보와 섞여 이 페이지 효과로 볼 수 없다. 판정 보류, 28일(11-13).
+- 28일 판독(11-13): GSC 10-16–11-10 이 URL 정확일치 노출 4, 클릭 0, 평균 3.8위(URL 검사 "등록되어 있음", 검색어 표는 익명 처리로 비어 있음). 네이버 30일 웹문서 노출 114, 클릭 0. 노출 50은 네이버로 넘었지만 클릭 1 목표를 못 채워 rejected. 페이지는 잠금 기능 설명(how-to-use·가이드 허브·블로그 L1 링크 대상)으로 남긴다. 잠금 이벤트 GA4 11-06–11-12 locked_upload_complete 120회(9명), locked_download_complete 117회(9명), 링크 0, qr_open 17회(7명): 소수 사용자 반복이라 페이지 효과로 보지 않는다. 캠페인 전체 판단은 11-15.
