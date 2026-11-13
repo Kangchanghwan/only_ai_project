@@ -90,8 +90,8 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEve
         credentials: true,
     },
     // 연결 타임아웃 설정
-    pingTimeout: 60000,      // 60초
-    pingInterval: 25000,     // 25초
+    pingTimeout: 15000,      // 15초 (끊긴 소켓 최대 약 25초 내 감지)
+    pingInterval: 10000,     // 10초
     connectTimeout: 45000,   // 45초
 
     // 연결 상태 복구 (프로덕션 기능)

@@ -37,6 +37,19 @@ const resolveIpRoomId = (socket: ExtendedSocket): string => {
     return deriveIpRoomId(ip, secret);
 };
 
+// === 클라이언트 인스턴스 ID (페이지 로드마다 새로 만든 값, 탭끼리 공유 안 함) ===
+
+const CLIENT_ID_PATTERN = /^[A-Za-z0-9_-]{8,64}$/;
+/** clientId → 현재 소켓 ID. 같은 기기의 유령 소켓을 정리하는 데 쓴다 */
+const clientSockets = new Map<string, string>();
+
+/** 형식이 맞는 clientId만 돌려준다 (없거나 틀리면 undefined = 구버전 동작) */
+export const parseClientId = (value: unknown): string | undefined =>
+    typeof value === 'string' && CLIENT_ID_PATTERN.test(value) ? value : undefined;
+
+const short = (v: string | undefined): string => (v ? v.slice(0, 6) : '-');
+const shortRoom = (v: string | undefined): string => (v ? v.slice(0, 8) : '-');
+
 /** 소켓이 들어가 있는 1:1 비공개 방 ID 목록 */
 const getPrivateRooms = (socket: ExtendedSocket): string[] => socket.data.privateRooms ?? [];
 
@@ -448,9 +461,31 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQu
     io.on('connection', (socket: ExtendedSocket) => {
         logger.log(`새 연결: ${socket.id}`);
 
+        const connectedAt = Date.now();
+        const clientId = parseClientId((socket.handshake.auth as Record<string, unknown> | undefined)?.clientId);
+        if (clientId) {
+            const oldId = clientSockets.get(clientId);
+            if (oldId && oldId !== socket.id) {
+                const old = io.sockets.sockets.get(oldId);
+                if (old) {
+                    logger.info(`[conn] replaced ${short(oldId)} -> ${short(socket.id)} client=${short(clientId)}`);
+                    // 옛 소켓의 정상 disconnect 처리가 자기 항목만 지우고 room-users를 알린다
+                    old.disconnect(true);
+                }
+            }
+            clientSockets.set(clientId, socket.id);
+        }
+        logger.info(
+            `[conn] connect ${socket.recovered ? 'recovered' : 'fresh'} transport=${socket.conn?.transport?.name ?? '-'} sid=${short(socket.id)} client=${short(clientId)}`
+        );
+
         handleConnection(socket, io, roomManager);
 
-        socket.on('disconnect', () => handleDisconnect(socket, io, roomManager, pairs));
+        socket.on('disconnect', (reason: string) => {
+            if (clientId && clientSockets.get(clientId) === socket.id) clientSockets.delete(clientId);
+            logger.info(`[conn] disconnect sid=${short(socket.id)} reason=${reason} secs=${Math.round((Date.now() - connectedAt) / 1000)}`);
+            handleDisconnect(socket, io, roomManager, pairs);
+        });
 
         setupPairHandlers(socket, io, roomManager, pairs);
         setupCodeHandlers(socket, io, roomManager);
@@ -501,11 +536,21 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
         // connectionStateRecovery로 복구된 연결
         if (socket.recovered && socket.data.globalRoomId && socket.data.ipRoomId) {
             const recoveredGlobalRoomId = socket.data.globalRoomId;
-            const recoveredIpRoomId = socket.data.ipRoomId;
+            const oldIpRoomId = socket.data.ipRoomId;
+            const recoveredIpRoomId = resolveIpRoomId(socket);
+            const ipChanged = recoveredIpRoomId !== oldIpRoomId;
             socket.globalRoomId = recoveredGlobalRoomId;
             socket.ipRoomId = recoveredIpRoomId;
             deviceInfo.identity = allocateIdentity(roomManager, [recoveredGlobalRoomId, recoveredIpRoomId], socket.id, preferred);
             socket.data.identity = deviceInfo.identity;
+            if (ipChanged) {
+                // IP가 바뀐 채 복구됐다: 옛 IP 룸에서 빼고 새 IP 룸으로 옮긴다
+                socket.leave(oldIpRoomId);
+                void roomManager.removeUserFromRoom(oldIpRoomId, socket.id).then(() => broadcastUsers(io, roomManager, oldIpRoomId));
+                socket.join(recoveredIpRoomId);
+                socket.data.ipRoomId = recoveredIpRoomId;
+                logger.info(`[conn] recovery room move sid=${short(socket.id)} ${shortRoom(oldIpRoomId)} -> ${shortRoom(recoveredIpRoomId)}`);
+            }
             roomManager.addUserToRoom(recoveredGlobalRoomId, socket.id, deviceInfo);
             roomManager.addUserToRoom(recoveredIpRoomId, socket.id, deviceInfo);
             io.to(recoveredIpRoomId).emit('room-users', { roomId: recoveredIpRoomId, devices: roomManager.getRoomUsers(recoveredIpRoomId) });
@@ -514,6 +559,9 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
             for (const roomId of getPrivateRooms(socket)) {
                 roomManager.addUserToRoom(roomId, socket.id, deviceInfo);
                 broadcastUsers(io, roomManager, roomId);
+            }
+            if (ipChanged) {
+                socket.emit('registered', { globalRoomId: recoveredGlobalRoomId, ipRoomId: recoveredIpRoomId, identity: deviceInfo.identity, ...buildRoomTokenPayload(socket) });
             }
             logger.log(`연결 복구 [${socket.id}] → ${recoveredGlobalRoomId} / ${recoveredIpRoomId}`);
             return;
