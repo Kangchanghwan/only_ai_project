@@ -536,5 +536,11 @@
     "zipFailed": "تعذّر تنزيل ملف ZIP. حاول مرة أخرى",
     "fileStarted": "بدأ التنزيل",
     "close": "إغلاق"
+  },
+  "presence": {
+    "joinedIp": "انضم {who} إلى شبكتك",
+    "leftIp": "غادر {who} شبكتك",
+    "joinedRoom": "انضم {who} إلى \"{room}\"",
+    "leftRoom": "غادر {who} \"{room}\""
   }
 }

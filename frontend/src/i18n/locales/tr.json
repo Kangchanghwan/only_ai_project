@@ -536,5 +536,11 @@
     "zipFailed": "ZIP indirilemedi. Lütfen tekrar deneyin",
     "fileStarted": "İndirme başladı",
     "close": "Kapat"
+  },
+  "presence": {
+    "joinedIp": "{who} ağınıza katıldı",
+    "leftIp": "{who} ağınızdan ayrıldı",
+    "joinedRoom": "{who} '{room}' odasına katıldı",
+    "leftRoom": "{who} '{room}' odasından ayrıldı"
   }
 }

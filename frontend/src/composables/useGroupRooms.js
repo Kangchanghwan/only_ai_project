@@ -4,7 +4,6 @@ import { newRoomSecret } from '../utils/pairCrypto.js'
 import { buildInviteUrl, sanitizeRoomName } from '../utils/groupInvite.js'
 import { isGroupRoomId } from '../utils/groupRoom.js'
 import { fromB64u } from '../utils/lockCrypto.js'
-import { isValidIdentity, identityName } from '../utils/identity.js'
 
 /**
  * 그룹 방: 만든 사람이 QR/링크를 보여 주면 다른 기기가 들어오는 비공개 방. 규격: docs/superpowers/specs/2026-11-12-group-rooms-design.md
@@ -129,7 +128,6 @@ export function useGroupRooms({
   }
 
   // === 그림 코드: 호스트(초대 시트의 그림 탭) ===
-  const peerName = (from) => (from && isValidIdentity(from.identity) ? identityName(from.identity, t) : t('pair.unknownDevice'))
 
   async function startCode(roomId) {
     stopCode()
@@ -150,7 +148,8 @@ export function useGroupRooms({
         return res.ticket
       },
       getRoomSecret: () => privateRooms.inviteSecretFor(roomId),
-      onApproved: ({ from }) => notify.showSuccess(t('code.approved', { name: peerName(from) }))
+      // 승인 토스트는 띄우지 않는다: 들어온 기기는 방 이름이 붙은 입장 토스트(App.vue presence)가 알린다
+      onApproved: () => {}
     })
     codeHost.value = host
     const ok = await host.start()

@@ -536,5 +536,11 @@
     "zipFailed": "Nu s-a putut descărca ZIP-ul. Încearcă din nou",
     "fileStarted": "Descărcarea a început",
     "close": "Închide"
+  },
+  "presence": {
+    "joinedIp": "{who} s-a alăturat rețelei tale",
+    "leftIp": "{who} a părăsit rețeaua ta",
+    "joinedRoom": "{who} a intrat în „{room}”",
+    "leftRoom": "{who} a ieșit din „{room}”"
   }
 }

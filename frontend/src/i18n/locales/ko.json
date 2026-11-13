@@ -762,5 +762,11 @@
     "zipFailed": "ZIP으로 받지 못했어요. 다시 시도해 주세요",
     "fileStarted": "다운로드를 시작했어요",
     "close": "닫기"
+  },
+  "presence": {
+    "joinedIp": "같은 네트워크에 {who}이(가) 들어왔어요",
+    "leftIp": "같은 네트워크에서 {who}이(가) 나갔어요",
+    "joinedRoom": "'{room}'에 {who}이(가) 들어왔어요",
+    "leftRoom": "'{room}'에서 {who}이(가) 나갔어요"
   }
 }

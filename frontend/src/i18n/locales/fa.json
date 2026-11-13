@@ -536,5 +536,11 @@
     "zipFailed": "دانلود ZIP انجام نشد. دوباره تلاش کنید",
     "fileStarted": "دانلود شروع شد",
     "close": "بستن"
+  },
+  "presence": {
+    "joinedIp": "{who} به شبکهٔ شما پیوست",
+    "leftIp": "{who} از شبکهٔ شما خارج شد",
+    "joinedRoom": "{who} به «{room}» پیوست",
+    "leftRoom": "{who} از «{room}» خارج شد"
   }
 }

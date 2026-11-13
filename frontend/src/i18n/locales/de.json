@@ -536,5 +536,11 @@
     "zipFailed": "ZIP konnte nicht heruntergeladen werden. Bitte erneut versuchen",
     "fileStarted": "Download gestartet",
     "close": "Schließen"
+  },
+  "presence": {
+    "joinedIp": "{who} ist deinem Netzwerk beigetreten",
+    "leftIp": "{who} hat dein Netzwerk verlassen",
+    "joinedRoom": "{who} ist „{room}“ beigetreten",
+    "leftRoom": "{who} hat „{room}“ verlassen"
   }
 }

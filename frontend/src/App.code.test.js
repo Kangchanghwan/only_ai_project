@@ -172,14 +172,14 @@ describe('App 그림 코드 (PC)', () => {
     expect(h.renew).toHaveBeenCalledTimes(1)
   })
 
-  it('호스트가 승인하면 "들어왔어요" 토스트를 띄운다(onApproved)', async () => {
+  it('호스트가 승인해도 따로 토스트를 띄우지 않는다 (방 이름이 붙은 입장 토스트가 대신 알린다)', async () => {
     w = await mountApp()
     room(w).vm.$emit('group-create')
     await vi.waitFor(() => expect(q('group-invite-qr')).not.toBeNull())
     q('group-invite-tab-picture').click()
     await vi.waitFor(() => expect(mock().hosts).toHaveLength(1))
     mock().hosts[0].opts.onApproved({ from: { identity: { adj: 1, animal: 1 } } })
-    expect(toasts('들어왔어요')).toBe(1)
+    expect(toasts('들어왔어요')).toBe(0)
   })
 
   it('빈 방 안내/＋방에서 "그림으로 들어가기"를 열면 시트가 뜨고 창 드롭 오버레이가 막힌다', async () => {

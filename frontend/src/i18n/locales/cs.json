@@ -536,5 +536,11 @@
     "zipFailed": "ZIP se nepodařilo stáhnout. Zkuste to znovu",
     "fileStarted": "Stahování zahájeno",
     "close": "Zavřít"
+  },
+  "presence": {
+    "joinedIp": "{who} se připojil(a) k vaší síti",
+    "leftIp": "{who} opustil(a) vaši síť",
+    "joinedRoom": "{who} vstoupil(a) do „{room}“",
+    "leftRoom": "{who} opustil(a) „{room}“"
   }
 }

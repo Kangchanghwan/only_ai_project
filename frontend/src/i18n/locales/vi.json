@@ -536,5 +536,11 @@
     "zipFailed": "Không tải được ZIP. Vui lòng thử lại",
     "fileStarted": "Đã bắt đầu tải",
     "close": "Đóng"
+  },
+  "presence": {
+    "joinedIp": "{who} đã vào mạng của bạn",
+    "leftIp": "{who} đã rời mạng của bạn",
+    "joinedRoom": "{who} đã vào '{room}'",
+    "leftRoom": "{who} đã rời '{room}'"
   }
 }

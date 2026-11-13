@@ -40,8 +40,8 @@ import { socketService } from './services/socketService'
 import { startP2pProbe } from './services/p2pProbe'
 import { openFileInNewTab } from './utils/openFile'
 import { createUploadProgress, cancelUpload, cancelAllUploads } from './utils/uploadProgress'
-import { createNewDeviceTracker } from './utils/newDevices'
-import { isValidIdentity, describeJoined, sameIdentity, identityName } from './utils/identity'
+import { createRoomPresence, presenceKey } from './utils/roomPresence'
+import { isValidIdentity, sameIdentity, identityName, describeConnected, animalEmoji } from './utils/identity'
 import { t } from './i18n/translate'
 
 import RoomScreen from './components/RoomScreen.vue'
@@ -81,19 +81,49 @@ const privateRooms = usePrivateRooms()
 // 텍스트 10분 보관: 1:1 방은 방 키 암호문, 같은 네트워크·전체 공유는 잠금 꺼짐이면 평문, 켜짐이면 암호문
 const textQueue = useTextQueue({ textShare, privateRooms, lockState, t, getMySocketId: () => socket.mySocketId?.value ?? null })
 
-// 같은 네트워크(ipRoom)에 새 기기가 들어오면 토스트로 알린다.
-// 내 접속 직후의 초기 목록, 이미 본 기기의 재접속(연결 복구), 내 기기, 전체 공유 방은 알리지 않는다.
-const newDeviceTracker = createNewDeviceTracker()
+// 기기가 들어오고 나가면 어느 방인지 붙여 토스트로 알린다 (같은 네트워크·내 그룹 방).
+// 이름표(동물)로 세므로 잠깐 끊겼다 돌아온 기기는 알리지 않는다(나감은 20초 기다림). 전체 공유는 모르는 사람이라 알리지 않는다.
+function presenceRoomName(roomKey) {
+  const r = privateRooms.rooms.find((x) => x.roomId === roomKey)
+  return r?.name || t('group.unnamed')
+}
+function presenceToast(kind, roomKey, device) {
+  if (!isValidIdentity(device?.identity)) return
+  const emoji = animalEmoji(device.identity.animal)
+  // 들어옴은 기기·브라우저까지, 나감은 이름만
+  const who = kind === 'join' ? `${emoji} ${describeConnected(device, t)}` : `${emoji} ${identityName(device.identity, t)}`
+  const key = `presence.${kind === 'join' ? 'joined' : 'left'}${roomKey === 'ip' ? 'Ip' : 'Room'}`
+  notification.showInfo(t(key, { who, room: roomKey === 'ip' ? '' : presenceRoomName(roomKey) }))
+  trackEvent(kind === 'join' ? 'new_device_toast' : 'device_left_toast', { scope: roomKey === 'ip' ? 'ip' : 'room' })
+}
+const presence = createRoomPresence({
+  onJoin: (roomKey, device) => presenceToast('join', roomKey, device),
+  onLeave: (roomKey, device) => presenceToast('leave', roomKey, device),
+})
+const presenceMe = () => ({
+  mySocketId: socket.mySocketId.value,
+  myKey: isValidIdentity(socket.myIdentity?.value) ? presenceKey({ identity: socket.myIdentity.value }) : null,
+})
 watch(
   () => socket.ipRoomDevices.value,
-  (devices) => {
-    const fresh = newDeviceTracker.update(devices, socket.mySocketId.value)
-    const joined = fresh.filter((d) => isValidIdentity(d.identity))
-    if (joined.length === 0) return
-    notification.showInfo(describeJoined(joined[joined.length - 1], t))
-    trackEvent('new_device_toast')
-  }
+  (devices) => presence.update('ip', devices, presenceMe())
 )
+watch(
+  () => [socket.privateRoomDevices?.value, privateRooms.rooms.map((r) => `${r.roomId}:${r.status}`).join('|')],
+  () => {
+    const byRoom = socket.privateRoomDevices?.value || {}
+    const mine = new Set()
+    for (const r of privateRooms.rooms) {
+      if (!isGroupRoomId(r.roomId) || r.status === 'left') continue
+      mine.add(r.roomId)
+      if (r.status === 'connecting') continue
+      if (Array.isArray(byRoom[r.roomId])) presence.update(r.roomId, byRoom[r.roomId], presenceMe())
+    }
+    for (const roomId of Object.keys(byRoom)) if (!mine.has(roomId)) presence.forget(roomId)
+  },
+  { deep: true }
+)
+onUnmounted(() => presence.dispose())
 
 async function handleRerollIdentity() {
   const result = await socket.rerollIdentity()
@@ -371,7 +401,7 @@ let cleanupOnMessage = null
 
 socket.onReconnected(() => {
   // 재접속 후 처음 받는 목록은 초기 목록으로 취급해 토스트를 띄우지 않는다
-  newDeviceTracker.markInitial()
+  presence.markInitial()
   console.log('[App] 재연결 완료')
   roomManager.setRooms({
     globalRoomId: socket.globalRoomId.value,
@@ -540,9 +570,9 @@ function setupSocketListeners() {
     }
   })
 
-  cleanupUserLeft = socket.onUserLeft((userCount) => {
-    notification.showInfo(t('room.userCount', { count: userCount }))
-  })
+  // 인원수만 갱신한다. 예전 "현재 N명이 룸에 있습니다" 토스트는 어느 방인지 알 수 없고, 전체 공유에서는
+  // 모르는 사람이 나갈 때마다 떠서 없앴다. 나감은 방 이름을 붙인 presence 토스트가 알린다
+  cleanupUserLeft = socket.onUserLeft(() => {})
 }
 
 // ========================================

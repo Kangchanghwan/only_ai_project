@@ -536,5 +536,11 @@
     "zipFailed": "无法下载 ZIP,请重试",
     "fileStarted": "已开始下载",
     "close": "关闭"
+  },
+  "presence": {
+    "joinedIp": "{who} 加入了同一网络",
+    "leftIp": "{who} 离开了同一网络",
+    "joinedRoom": "{who} 加入了“{room}”",
+    "leftRoom": "{who} 离开了“{room}”"
   }
 }
