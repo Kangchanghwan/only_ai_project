@@ -1,6 +1,6 @@
 # Clipboard Share
 
-> Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves, and text is kept for 10 minutes so devices that join later still get it. Sensitive files and text can be locked with a password in the sending browser before upload (unlocked text is kept as plain text; device labels are not locked), and two devices can open a private 1:1 room where files and text are encrypted automatically.
+> Free online clipboard: devices on the same Wi-Fi connect automatically in the browser and share copied text, screenshots and files instantly. No sign-up, no app; everything is deleted when every device leaves, and text is kept for 10 minutes so devices that join later still get it. Sensitive files and text can be locked with a password in the sending browser before upload (unlocked text is kept as plain text; device labels are not locked), and devices can open a private room (start with two, then invite more by QR code or link) where files and text are encrypted automatically.
 
 > Full text of the guides listed in https://www.clipboardapp.org/llms.txt, generated from the published HTML. Korean pages stay in Korean.
 
@@ -59,9 +59,9 @@ Source: https://www.clipboardapp.org/how-to-use.html
 
 화면과 함께 본 순서는 [파일 비밀번호 걸어서 보내기](https://www.clipboardapp.org/guide/send-file-with-password.html)에 정리했습니다.
 
-## 둘만 쓰는 1:1 연결
+## 둘이 쓰는 방으로 연결
 
-여러 기기가 함께 보이는 곳에서 한 기기와만 주고받고 싶다면, 기기 목록에서 그 기기의 **1:1** 버튼을 누르세요. 상대가 수락하고 두 화면에 뜬 그림 4개가 같은지 서로 확인하면 둘만 쓰는 방이 열립니다. 이 방에 올리는 파일과 텍스트는 비밀번호를 정하지 않아도 자동으로 암호화되고, 다른 네트워크에 있는 기기와도 연결할 수 있습니다. 상대가 잠시 나가 있어도 올린 파일은 최대 1일 보관되어, 다시 들어오면 받을 수 있습니다.
+여러 기기가 함께 보이는 곳에서 한 기기와만 주고받고 싶다면, 기기 목록에서 그 기기의 **방으로 연결** 버튼을 누르세요. 상대가 수락하고 두 화면에 뜬 그림 4개가 같은지 서로 확인하면 둘이 쓰는 방이 열립니다. 이 방에 올리는 파일과 텍스트는 비밀번호를 정하지 않아도 자동으로 암호화되고, 다른 네트워크에 있는 기기와도 연결할 수 있습니다. 상대가 잠시 나가 있어도 올린 파일은 최대 1일 보관되어, 다시 들어오면 받을 수 있습니다. 방의 **초대**를 누르면 QR이나 링크로 다른 기기도 이 방에 들일 수 있습니다(QR은 10분 동안 쓸 수 있습니다).
 
 ## 앱으로 설치
 
@@ -1006,7 +1006,7 @@ Source: https://www.clipboardapp.org/guide/same-wifi-file-share.html
 
 같은 와이파이에 있는 폰과 PC 사이에서 파일을 옮기는 방법을, 공유폴더 설정 없이 3단계로 정리했습니다(2026년 10월 기준). 두 기기에서 브라우저로 Clipboard Share를 열면 같은 와이파이의 기기가 브라우저에서 자동으로 연결됩니다. 가입·설치 없음, 파일당 5GB, 파일은 최대 약 1일 보관됩니다.
 
-필요한 파일만 비밀번호로 잠글 수 있고, 둘만 쓰는 1:1 방은 자동으로 암호화됩니다. 아래에서 방법, 윈도우 공유폴더와의 차이, 연결이 안 될 때의 대처를 차례로 설명합니다.
+필요한 파일만 비밀번호로 잠글 수 있고, 기기끼리 만든 방은 자동으로 암호화됩니다. 아래에서 방법, 윈도우 공유폴더와의 차이, 연결이 안 될 때의 대처를 차례로 설명합니다.
 
 ## 공유폴더 설정 없이 파일 공유하는 방법
 - 폰과 PC를 같은 와이파이에 연결합니다. PC가 유선이어도 같은 공유기에 물려 있으면 됩니다.
@@ -1030,7 +1030,7 @@ Source: https://www.clipboardapp.org/guide/same-wifi-file-share.html
 ## 같은 와이파이인데 연결이 안 될 때
 
 같은 네트워크 탭은 접속한 기기의 공인 IP가 같을 때 한 공간으로 묶입니다. 그래서 일부 핫스팟이나 모바일 데이터처럼 기기마다 공인 IP가 달라지는 환경에서는 같은 와이파이처럼 보여도 서로 보이지 않을 수 있습니다. 이럴 때는 다음 중 하나를 쓰세요.
-- **1:1 연결:** 기기 목록에서 상대 기기를 눌러 **1:1 연결**을 요청합니다. 상대가 **수락**하면 두 화면에 나온 그림이 같은지 확인하고, 둘만 쓰는 방이 열립니다. 다른 네트워크의 기기와도 연결할 수 있고, 이 방의 파일과 텍스트는 비밀번호 없이 자동으로 암호화됩니다.
+- **방으로 연결:** 기기 목록에서 상대 기기의 **방으로 연결**을 누릅니다. 상대가 **수락**하면 두 화면에 나온 그림이 같은지 확인하고, 둘이 쓰는 방이 열립니다. 나중에 **초대**로 다른 기기도 들일 수 있습니다. 다른 네트워크의 기기와도 연결할 수 있고, 이 방의 파일과 텍스트는 비밀번호 없이 자동으로 암호화됩니다.
 - **전체 공유 탭:** 네트워크가 달라도 쓸 수 있지만, 이 탭의 항목은 서비스를 열어 둔 모든 사람에게 보입니다.
 
 ## 알아두면 좋은 것
@@ -1049,11 +1049,11 @@ Source: https://www.clipboardapp.org/guide/same-wifi-file-share.html
 
 ### 같은 와이파이인데 기기가 안 보여요.
 
-같은 네트워크 탭은 접속한 기기의 공인 IP가 같을 때 묶입니다. 일부 핫스팟이나 모바일 데이터는 기기마다 공인 IP가 달라 묶이지 않을 수 있습니다. 이럴 땐 기기 목록에서 1:1 연결을 쓰거나 전체 공유 탭을 쓰세요.
+같은 네트워크 탭은 접속한 기기의 공인 IP가 같을 때 묶입니다. 일부 핫스팟이나 모바일 데이터는 기기마다 공인 IP가 달라 묶이지 않을 수 있습니다. 이럴 땐 방을 만들어 QR이나 링크로 다른 기기를 초대하거나 전체 공유 탭을 쓰세요.
 
 ### 같은 와이파이에 있는 다른 사람도 내 파일을 볼 수 있나요?
 
-학교·회사·카페처럼 같은 네트워크를 쓰는 다른 사람도 볼 수 있습니다. 필요한 파일만 비밀번호로 잠그거나, 둘만 쓰는 1:1 방을 쓰세요. 1:1 방은 자동 암호화됩니다.
+학교·회사·카페처럼 같은 네트워크를 쓰는 다른 사람도 볼 수 있습니다. 필요한 파일만 비밀번호로 잠그거나, 믿는 기기끼리만 들어오는 방을 쓰세요. 방은 자동 암호화됩니다.
 
 [https://www.clipboardapp.org 에서 바로 써보기](https://www.clipboardapp.org)
 
@@ -1365,7 +1365,7 @@ Checked on October 25, 2026. Sources: [cl1p.net](https://cl1p.net/) and its [API
 - 5GB per file.
 - Files are kept for at most about 1 day.
 - You can lock only the files that need it with a password.
-- A 1:1 room is encrypted automatically.
+- A private room between your devices is encrypted automatically.
 
 ## Questions
 
@@ -1383,7 +1383,7 @@ It differs. Clipboard Share keeps files for at most about 1 day, ClipSync delete
 
 ### Is an online clipboard safe for passwords or private files?
 
-Treat every shared clipboard as temporary. In Clipboard Share you can turn on a password lock that encrypts the files and text you send, and a 1:1 room is encrypted automatically, but device information is not locked. Do not paste one-time codes or secrets into any shared space you do not control.
+Treat every shared clipboard as temporary. In Clipboard Share you can turn on a password lock that encrypts the files and text you send, and a private room between your devices is encrypted automatically, but device information is not locked. Do not paste one-time codes or secrets into any shared space you do not control.
 
 [Try it now](https://www.clipboardapp.org/en/)
 
@@ -1603,7 +1603,7 @@ Not a link-sharing service first. Devices on the same Wi-Fi share one space in t
 - **Not locked:** text you send, the device name tag (the animal name), device and browser info, and the file size and send time.
 - The lock is never on by default. Turn it on each time you need it. Locked files have no preview or thumbnail and are received one at a time.
 - Some phone browsers cannot open very large locked files. If you see that message, receive it on a PC or in Chrome on Android.
-- For a device you send to often, **Connect 1:1** in the device list opens a room for just the two devices after both screens show the same pictures. Files and text in that room are encrypted automatically, without a password.
+- For a device you send to often, **Connect in a room** in the device list opens a room for just the two devices after both screens show the same pictures. Files and text in that room are encrypted automatically, without a password.
 
 ## Questions
 
@@ -1637,7 +1637,7 @@ Source: https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html
 
 2026년 10월 기준, AI에게 대화 속 텍스트를 폰으로 보내고 싶다고 하면 `https://www.clipboardapp.org/#/send?t=` 뒤에 URL 인코딩한 텍스트를 붙인 링크를 만들어 달라고 요청하면 됩니다. 그 링크를 폰에서 열고 '공유'를 누르는 2단계면 끝나고, 가입과 설치는 필요 없습니다.
 
-같은 와이파이의 기기가 브라우저에서 자동으로 연결되고, 가입·설치 없이 쓸 수 있습니다. 파일은 한 개당 5GB까지, 최대 약 1일 보관됩니다. 필요한 파일만 비밀번호로 잠글 수 있고, 1:1 방은 자동으로 암호화됩니다. 이 글은 텍스트를 보내는 링크 기능(링크로 텍스트 미리 채우기)을 다룹니다. 이 기능은 서비스 코드에서 확인한 내용만 적었고, 특정 AI 제품이 이 링크를 지원한다는 뜻은 아닙니다.
+같은 와이파이의 기기가 브라우저에서 자동으로 연결되고, 가입·설치 없이 쓸 수 있습니다. 파일은 한 개당 5GB까지, 최대 약 1일 보관됩니다. 필요한 파일만 비밀번호로 잠글 수 있고, 기기끼리 만든 방은 자동으로 암호화됩니다. 이 글은 텍스트를 보내는 링크 기능(링크로 텍스트 미리 채우기)을 다룹니다. 이 기능은 서비스 코드에서 확인한 내용만 적었고, 특정 AI 제품이 이 링크를 지원한다는 뜻은 아닙니다.
 
 ## 링크 형식
 
@@ -1671,7 +1671,7 @@ Source: https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html
 - 기본 범위인 **같은 네트워크**는 같은 공인 IP를 쓰는 사람에게 보입니다. 학교, 회사, 카페처럼 여러 사람이 쓰는 네트워크라면 그 안의 다른 사람에게도 보일 수 있습니다.
 - 민감한 파일은 업로드 전에 **비밀번호로 잠그기**를 켜서 보내세요(4자 이상). 보내는 기기에서 암호화되고, 비밀번호를 아는 사람만 열 수 있습니다.
 - 잠금을 켜지 않은 텍스트는 10분 동안 평문으로 보관되어 그 범위의 누구나 볼 수 있습니다. 비밀번호, 인증번호 같은 텍스트는 공용 네트워크에서 보내지 마세요.
-- 둘만 주고받으려면 기기 목록에서 **1:1**을 눌러 연결하세요. 상대가 수락하고 두 화면의 그림이 같은지 확인하면 둘만 쓰는 방이 열리고, 그 방의 파일과 텍스트는 자동으로 암호화됩니다.
+- 둘만 주고받으려면 기기 목록에서 그 기기의 **방으로 연결**을 누르세요. 상대가 수락하고 두 화면의 그림이 같은지 확인하면 둘이 쓰는 방이 열리고, 그 방의 파일과 텍스트는 자동으로 암호화됩니다.
 - 링크에는 텍스트가 그대로 들어갑니다. 비밀번호나 개인정보가 든 링크를 메신저나 공개 게시물에 남기지 마세요.
 
 ## 자주 묻는 질문
@@ -1698,7 +1698,7 @@ Source: https://www.clipboardapp.org/en/guide/ask-ai-to-send-text-to-your-phone.
 
 As of October 2026, the way to get text from an AI chat onto another device is to ask the assistant for a link that starts with `https://www.clipboardapp.org/#/send?t=` and ends with your text, URL-encoded. Open that link on the receiving device and press Share. That is two steps, with no sign-up and nothing to install.
 
-Devices on the same Wi-Fi connect automatically in the browser. There is no sign-up and no install, files can be up to 5GB each and are kept for about a day at most, you can lock just the files that need it with a password, and a 1:1 room is encrypted automatically. This guide covers the text link only. It describes what the site's code does; it does not mean any particular AI product already supports these links, so you may need to ask the assistant to build the link by hand.
+Devices on the same Wi-Fi connect automatically in the browser. There is no sign-up and no install, files can be up to 5GB each and are kept for about a day at most, you can lock just the files that need it with a password, and a room you open between your devices is encrypted automatically. This guide covers the text link only. It describes what the site's code does; it does not mean any particular AI product already supports these links, so you may need to ask the assistant to build the link by hand.
 
 ## The link format
 
@@ -1732,7 +1732,7 @@ If you let an agent control your browser, this is the sequence. Keep it to the t
 - The default **Same network** scope is visible to people behind the same public IP. On a school, office or cafe network that can include other people on that network.
 - For sensitive files, turn on **Lock with a password** before uploading (at least 4 characters). The file is encrypted in the sending browser and only people with the password can open it.
 - Unlocked text is kept as plain text for 10 minutes and anyone in that scope can see it; it is encrypted only while the password lock is on. Do not send passwords or one-time codes as text over a shared network.
-- To exchange things with one person only, press **Connect 1:1** in the device list. After they accept and you both confirm the same pictures, a room for just the two of you opens, and files and text in it are encrypted automatically.
+- To exchange things with one person only, press **Connect in a room** next to that device in the device list. After they accept and you both confirm the same pictures, a room for just the two of you opens, and files and text in it are encrypted automatically.
 - The link contains the text itself. Do not leave a link with private text in a chat, a document or a public post.
 
 ## Questions
