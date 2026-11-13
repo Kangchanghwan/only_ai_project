@@ -137,7 +137,8 @@
     "ipNotice": "Inne osoby w tej samej sieci (szkoła, biuro, kawiarnia) też mogą to zobaczyć.",
     "manage": "Zarządzaj plakietką",
     "notAuth": "Plakietka tylko odróżnia urządzenia. To nie jest weryfikacja tożsamości.",
-    "globalWarning": "Każdy, także obcy, widzi to, co wysyłasz, oraz dane Twojego urządzenia (zwierzę-plakietka, urządzenie i przeglądarka). Dla danych wrażliwych wybierz „Ta sama sieć”."
+    "globalWarning": "Każdy, także obcy, widzi to, co wysyłasz, oraz dane Twojego urządzenia (zwierzę-plakietka, urządzenie i przeglądarka). Dla danych wrażliwych wybierz „Ta sama sieć”.",
+    "pairSasLoading": "Wczytywanie obrazków…"
   },
   "shareScope": {
     "label": "Udostępnij dla",
@@ -377,7 +378,8 @@
     "tooLong": "Wybrano zbyt wiele plików, więc kod QR może być trudny do zeskanowania (URL: {length} znaków). Warto podzielić pliki.",
     "urlDetail": "Szczegóły URL",
     "lengthDetail": "Długość: {length} / {max} znaków",
-    "multiHint": "Zeskanuj kod QR telefonem, a wybrane pliki zostaną pobrane automatycznie jeden po drugim."
+    "multiHint": "Zeskanuj kod QR telefonem, a wybrane pliki zostaną pobrane automatycznie jeden po drugim.",
+    "singleTitle": "Kod QR do pobrania pliku"
   },
   "fileGallery": {
     "loadMore": "Wczytaj więcej"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Przechowywanie i użytkowanie",
-    "retention": "Nawet podczas połączenia pliki są automatycznie usuwane najpóźniej po 1 dniu. Czyszczenie działa okresowo, więc dokładna godzina (co do sekundy) nie jest gwarantowana, a po wyjściu wszystkich urządzeń usunięcie może nastąpić wcześniej. Pobierz potrzebne pliki od razu."
+    "retention": "Nawet podczas połączenia pliki są automatycznie usuwane najpóźniej po 1 dniu. Czyszczenie działa okresowo, więc dokładna godzina (co do sekundy) nie jest gwarantowana, a po wyjściu wszystkich urządzeń usunięcie może nastąpić wcześniej. Pobierz potrzebne pliki od razu.",
+    "roomRetention": "Pliki w tym pokoju są przechowywane maksymalnie przez około 1 dzień. Nie są usuwane od razu, gdy wszystkie urządzenia wyjdą. Czyszczenie działa okresowo, więc dokładna godzina nie jest gwarantowana. Teksty są przechowywane tylko 10 minut.",
+    "roomVisibility": "Widzą je tylko urządzenia znajdujące się w tym pokoju."
   },
   "download": {
     "title": "Pobieranie plików...",
@@ -535,7 +539,8 @@
     "zipDone": "Pobrano pliki w ZIP: {count}",
     "zipFailed": "Nie udało się pobrać ZIP. Spróbuj ponownie",
     "fileStarted": "Pobieranie rozpoczęte",
-    "close": "Zamknij"
+    "close": "Zamknij",
+    "titleOne": "Odbierz plik"
   },
   "presence": {
     "joinedIp": "{who} dołączył(a) do Twojej sieci",

@@ -137,7 +137,8 @@
     "ipNotice": "Orang lain di jaringan yang sama (sekolah, kantor, kafe) juga bisa melihatnya.",
     "manage": "Kelola label nama",
     "notAuth": "Label nama hanya membedakan perangkat. Ini bukan verifikasi identitas.",
-    "globalWarning": "Siapa pun, termasuk orang asing, bisa melihat yang Anda kirim dan info perangkat Anda (label hewan, perangkat, dan browser). Untuk hal sensitif, gunakan 'Jaringan yang sama'."
+    "globalWarning": "Siapa pun, termasuk orang asing, bisa melihat yang Anda kirim dan info perangkat Anda (label hewan, perangkat, dan browser). Untuk hal sensitif, gunakan 'Jaringan yang sama'.",
+    "pairSasLoading": "Memuat gambar…"
   },
   "shareScope": {
     "label": "Bagikan dengan",
@@ -377,7 +378,8 @@
     "tooLong": "File yang dipilih terlalu banyak sehingga kode QR bisa sulit dipindai (URL: {length} karakter). Sebaiknya bagi file menjadi beberapa bagian.",
     "urlDetail": "Detail URL",
     "lengthDetail": "Panjang: {length} / {max} karakter",
-    "multiHint": "Pindai kode QR dengan ponsel dan file yang dipilih akan terunduh satu per satu secara otomatis."
+    "multiHint": "Pindai kode QR dengan ponsel dan file yang dipilih akan terunduh satu per satu secara otomatis.",
+    "singleTitle": "QR unduh file"
   },
   "fileGallery": {
     "loadMore": "Muat lebih banyak"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Penyimpanan dan penggunaan",
-    "retention": "Meski Anda masih terhubung, file dibersihkan otomatis paling lama setelah 1 hari. Pembersihan berjalan berkala sehingga waktu persisnya (hingga detik) tidak dijamin, dan bisa lebih cepat setelah semua perangkat keluar. Unduh yang Anda perlukan segera."
+    "retention": "Meski Anda masih terhubung, file dibersihkan otomatis paling lama setelah 1 hari. Pembersihan berjalan berkala sehingga waktu persisnya (hingga detik) tidak dijamin, dan bisa lebih cepat setelah semua perangkat keluar. Unduh yang Anda perlukan segera.",
+    "roomRetention": "File di ruang ini disimpan hingga sekitar 1 hari. File tidak langsung dihapus saat semua perangkat keluar. Pembersihan berjalan berkala, jadi waktu persisnya tidak dijamin. Teks hanya disimpan selama 10 menit.",
+    "roomVisibility": "Hanya perangkat yang berada di ruang ini yang dapat melihatnya."
   },
   "download": {
     "title": "Mengunduh file...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} file diunduh sebagai ZIP",
     "zipFailed": "Tidak dapat mengunduh ZIP. Coba lagi",
     "fileStarted": "Unduhan dimulai",
-    "close": "Tutup"
+    "close": "Tutup",
+    "titleOne": "Terima file"
   },
   "presence": {
     "joinedIp": "{who} bergabung ke jaringan Anda",

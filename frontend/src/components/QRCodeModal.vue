@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { useEscapeClose } from '../composables/useEscapeClose'
 import { ref, watch, onMounted, computed } from 'vue'
 import { useQRCode } from '../composables/useQRCode'
 
@@ -17,6 +18,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'download'])
+useEscapeClose(() => props.isOpen, () => emit('close'))
 
 const qrCode = useQRCode()
 const canvasRef = ref(null)
@@ -90,19 +92,24 @@ async function handleCopyUrl() {
 </script>
 
 <template>
+  <Teleport to="body">
   <Transition name="modal">
     <div
       v-if="isOpen"
-      class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+      class="fixed inset-0 bg-black/70 flex items-center justify-center z-[80] p-4"
+      data-testid="qr-modal-overlay"
       @click="handleBackdropClick"
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="room-qr-title"
         class="bg-surface rounded-2xl p-8 max-w-md w-full border border-border shadow-2xl"
         @click.stop
       >
         <!-- 헤더 -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-text-primary">
+          <h2 id="room-qr-title" class="text-2xl font-bold text-text-primary">
             {{ t('qrModal.roomTitle') }}
           </h2>
           <button
@@ -174,6 +181,7 @@ async function handleCopyUrl() {
       </div>
     </div>
   </Transition>
+  </Teleport>
 </template>
 
 <style scoped>

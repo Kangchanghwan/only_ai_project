@@ -12,6 +12,7 @@ import { useMediaQuery } from '../composables/useMediaQuery'
 import { formatSizeMB } from '../utils/fileUtils'
 import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 import LandingContent from './LandingContent.vue'
+import { roomDisplayName } from '../utils/roomDisplayName'
 import PrivateRoomStrip from './PrivateRoomStrip.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
@@ -201,6 +202,8 @@ provide(SENDER_CONTEXT_KEY, {
   devices: activeDevices
 })
 
+/** 1:1·그룹 방(prv:)에서는 같은 네트워크/전체 공유용 안내 대신 방 기준 안내를 보여 준다 */
+const inRoom = computed(() => isPrivateScope(props.scope))
 const { bg: accentBg } = useScopeAccent(() => props.scope)
 </script>
 
@@ -232,6 +235,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       <PrivateRoomStrip
         v-if="currentRoom"
         :room="currentRoom"
+        :display-name="currentRoom ? roomDisplayName(privateRooms, currentRoom.roomId, t('group.unnamed')) : ''"
         :member-count="groupMemberCount"
         :others="groupOthers"
         @leave="$emit('leave-private', $event)"
@@ -358,9 +362,11 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       <details class="mt-6 bg-surface border border-border rounded-xl p-4 text-sm" data-testid="usage-notes" open>
         <summary class="cursor-pointer min-h-[44px] flex items-center font-semibold">{{ t('guide.title') }}</summary>
         <ul class="mt-2 flex flex-col gap-2 list-disc pl-5 text-text-secondary leading-relaxed">
-          <li>{{ t('guide.retention') }}</li>
+          <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
+          <li v-else>{{ t('guide.retention') }}</li>
           <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>
-          <li>{{ t('identity.ipNotice') }}</li>
+          <li v-if="inRoom" data-testid="room-visibility">{{ t('guide.roomVisibility') }}</li>
+          <li v-else>{{ t('identity.ipNotice') }}</li>
           <li>{{ t('identity.notAuth') }}</li>
         </ul>
       </details>

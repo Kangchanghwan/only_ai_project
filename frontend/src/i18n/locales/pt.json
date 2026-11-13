@@ -137,7 +137,8 @@
     "ipNotice": "Outras pessoas na mesma rede (escola, escritório, café) também podem ver.",
     "manage": "Gerenciar etiqueta",
     "notAuth": "A etiqueta só distingue dispositivos. Não é verificação de identidade.",
-    "globalWarning": "Qualquer pessoa, inclusive desconhecidos, pode ver o que você envia e as informações do seu dispositivo (etiqueta de animal, dispositivo e navegador). Use «Mesma rede» para conteúdo sensível."
+    "globalWarning": "Qualquer pessoa, inclusive desconhecidos, pode ver o que você envia e as informações do seu dispositivo (etiqueta de animal, dispositivo e navegador). Use «Mesma rede» para conteúdo sensível.",
+    "pairSasLoading": "Carregando as imagens…"
   },
   "shareScope": {
     "label": "Compartilhar com",
@@ -377,7 +378,8 @@
     "tooLong": "Há arquivos demais selecionados e o código QR pode ficar difícil de escanear (URL: {length} caracteres). Recomendamos dividir os arquivos.",
     "urlDetail": "Detalhes da URL",
     "lengthDetail": "Tamanho: {length} / {max} caracteres",
-    "multiHint": "Escaneie o código QR com um celular e os arquivos selecionados serão baixados automaticamente, um após o outro."
+    "multiHint": "Escaneie o código QR com um celular e os arquivos selecionados serão baixados automaticamente, um após o outro.",
+    "singleTitle": "QR de download do arquivo"
   },
   "fileGallery": {
     "loadMore": "Carregar mais"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Armazenamento e uso",
-    "retention": "Mesmo conectado, os arquivos são apagados automaticamente após no máximo 1 dia. A limpeza roda periodicamente, então o horário exato (ao segundo) não é garantido, e podem ser apagados antes quando todos os dispositivos saem. Baixe o que precisar logo."
+    "retention": "Mesmo conectado, os arquivos são apagados automaticamente após no máximo 1 dia. A limpeza roda periodicamente, então o horário exato (ao segundo) não é garantido, e podem ser apagados antes quando todos os dispositivos saem. Baixe o que precisar logo.",
+    "roomRetention": "Os arquivos desta sala ficam guardados por cerca de 1 dia, no máximo. Eles não são apagados imediatamente quando todos os dispositivos saem. A limpeza roda periodicamente, então o horário exato não é garantido. Os textos ficam guardados apenas por 10 minutos.",
+    "roomVisibility": "Somente os dispositivos que estão nesta sala podem vê-los."
   },
   "download": {
     "title": "Baixando arquivos...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} arquivos baixados em ZIP",
     "zipFailed": "Não foi possível baixar o ZIP. Tente novamente",
     "fileStarted": "Download iniciado",
-    "close": "Fechar"
+    "close": "Fechar",
+    "titleOne": "Receber arquivo"
   },
   "presence": {
     "joinedIp": "{who} entrou na sua rede",

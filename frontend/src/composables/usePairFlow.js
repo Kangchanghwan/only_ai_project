@@ -36,9 +36,11 @@ const SILENT = new Set(['declined-by-me'])
  *   leaveRoom?: (roomId: string) => void|Promise<void>,
  *   getMyName?: () => string,
  *   getRoomDeviceCount?: (roomId: string) => number|null  새 방(prv-g-)의 현재 접속 기기 수. 정확히 2대일 때만 "같은 방"으로 본다
+ *   getRoomDevices?: (roomId: string) => object[]|null  방의 현재 접속 기기 목록(나 포함). 서버처럼 그룹 방에 정확히 2대면 상대 기기를 "같은 방"으로 본다
+ *   getMySocketId?: () => string|null
  * }} deps
  */
-export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t, onRoomReady, leaveRoom, getMyName = () => '', getRoomDeviceCount = null }) {
+export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t, onRoomReady, leaveRoom, getMyName = () => '', getRoomDeviceCount = null, getRoomDevices = null, getMySocketId = () => null }) {
   const sessions = ref([])
   /** sessionId → 내가 초대한 대상 socketId */
   const targets = ref({})
@@ -76,6 +78,17 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
         map[target] = { state: 'pending', sessionId: s.sessionId, expiresAt: s.expiresAt, sas: s.sas, confirmed: !!s.confirmed }
       } else if (['accepted', 'keyed', 'waiting-peer-confirm'].includes(s.state)) {
         map[target] = { state: 'connecting', sessionId: s.sessionId }
+      }
+    }
+    // 서버 규칙(pair:invite)과 같게: 같이 쓰는 그룹 방에 접속 중인 기기가 정확히 둘이면 이미 연결된 기기다
+    const myId = getMySocketId?.()
+    if (getRoomDevices && myId) {
+      for (const r of privateRooms.rooms) {
+        if (!isGroupRoomId(r.roomId) || r.peer?.socketId) continue
+        const devs = getRoomDevices(r.roomId)
+        if (!Array.isArray(devs) || devs.length !== 2 || !devs.some((d) => d?.socketId === myId)) continue
+        const other = devs.find((d) => d?.socketId && d.socketId !== myId)
+        if (other && !map[other.socketId]?.sessionId) map[other.socketId] = { state: 'paired', roomId: r.roomId }
       }
     }
     for (const r of privateRooms.rooms) {

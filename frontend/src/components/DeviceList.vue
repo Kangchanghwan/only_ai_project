@@ -90,7 +90,10 @@ const isMe = (d) => isMeDevice(d, props.mySocketId, props.myIdentity)
       </ul>
     </div>
     <!-- 동물+닉네임 함께 확인하라는 안내는 목록에만 둔다 -->
-    <p v-if="!isPrivateScope(scope)" class="mt-3 text-xs text-text-secondary leading-relaxed" data-testid="device-list-note">
+    <p v-if="isPrivateScope(scope)" class="mt-3 text-xs text-text-secondary leading-relaxed" data-testid="device-list-note">
+      {{ t('guide.roomVisibility') }}
+    </p>
+    <p v-else class="mt-3 text-xs text-text-secondary leading-relaxed" data-testid="device-list-note">
       {{ scope === 'global' ? t('identity.globalNotice') : t('identity.verifyHint') }}
       <template v-if="scope !== 'global'"><br />{{ t('identity.ipNotice') }}</template>
     </p>

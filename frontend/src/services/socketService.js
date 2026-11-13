@@ -7,6 +7,20 @@ import { collectClientHints, loadIdentity, saveIdentity, isValidIdentity } from 
 /** 이름표 다시 뽑기 쿨다운 (서버와 같은 3초) */
 export const REROLL_COOLDOWN_MS = 3000
 
+/** 이 페이지 로드(탭) 고유 ID. 메모리에만 두어 탭끼리 공유하지 않는다. */
+function createClientId() {
+  try {
+    if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID()
+  } catch { /* 폴백 */ }
+  try {
+    if (globalThis.crypto?.getRandomValues) {
+      const b = globalThis.crypto.getRandomValues(new Uint8Array(16))
+      return Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('')
+    }
+  } catch { /* 폴백 */ }
+  return `c-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}${Math.random().toString(36).slice(2, 12)}`
+}
+
 /** pair/private ack 대기 시간 */
 const PAIR_ACK_TIMEOUT_MS = 5000
 
@@ -28,6 +42,9 @@ class SocketService {
   constructor() {
     // 소켓 인스턴스
     this.socket = null
+
+    // 페이지 로드마다 한 번 만드는 클라이언트 인스턴스 ID (재접속해도 동일)
+    this.clientId = createClientId()
 
     // 반응형 상태
     this.isConnected = ref(false)
@@ -83,6 +100,26 @@ class SocketService {
   _setupNetworkListeners() {
     window.addEventListener('online', this._boundHandleOnline)
     window.addEventListener('offline', this._boundHandleOffline)
+    this._boundPageHide = () => this._handlePageHide()
+    this._boundPageShow = (e) => this._handlePageShow(e)
+    window.addEventListener('pagehide', this._boundPageHide)
+    window.addEventListener('pageshow', this._boundPageShow)
+  }
+
+  /** 페이지를 떠날 때 서버에 바로 알려 유령 기기가 남지 않게 한다 (visibilitychange에서는 끊지 않는다) */
+  _handlePageHide() {
+    if (this.socket) {
+      this._stopReconnectPolling()
+      this.socket.disconnect()
+      this.isConnected.value = false
+    }
+  }
+
+  /** bfcache에서 복원되면 다시 접속한다 */
+  _handlePageShow(event) {
+    if (event?.persisted && this._wasConnected && !this.socket?.connected) {
+      this._attemptReconnect()
+    }
   }
 
   _handleOnline() {
@@ -181,7 +218,7 @@ class SocketService {
         auth: (cb) => {
           collectClientHints()
             .catch(() => ({}))
-            .then((hints) => cb({ identity: loadIdentity(), hints }))
+            .then((hints) => cb({ identity: loadIdentity(), hints, clientId: this.clientId }))
         },
         ...this.reconnectionConfig
       })
@@ -572,6 +609,8 @@ class SocketService {
     this._stopReconnectPolling()
     window.removeEventListener('online', this._boundHandleOnline)
     window.removeEventListener('offline', this._boundHandleOffline)
+    window.removeEventListener('pagehide', this._boundPageHide)
+    window.removeEventListener('pageshow', this._boundPageShow)
     this._onReconnectedCallbacks = []
     this.disconnect()
   }

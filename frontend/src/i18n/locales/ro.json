@@ -137,7 +137,8 @@
     "ipNotice": "Și alte persoane din aceeași rețea (școală, birou, cafenea) o pot vedea.",
     "manage": "Gestionează eticheta",
     "notAuth": "Eticheta doar deosebește dispozitivele. Nu este verificare de identitate.",
-    "globalWarning": "Oricine, inclusiv necunoscuți, poate vedea ce trimiți și informațiile dispozitivului tău (etichetă cu animal, dispozitiv și browser). Pentru conținut sensibil folosește „Aceeași rețea”."
+    "globalWarning": "Oricine, inclusiv necunoscuți, poate vedea ce trimiți și informațiile dispozitivului tău (etichetă cu animal, dispozitiv și browser). Pentru conținut sensibil folosește „Aceeași rețea”.",
+    "pairSasLoading": "Se încarcă imaginile…"
   },
   "shareScope": {
     "label": "Distribuie cu",
@@ -377,7 +378,8 @@
     "tooLong": "Sunt selectate prea multe fișiere și codul QR poate fi greu de scanat (URL: {length} caractere). Se recomandă împărțirea fișierelor.",
     "urlDetail": "Detalii URL",
     "lengthDetail": "Lungime: {length} / {max} caractere",
-    "multiHint": "Scanează codul QR cu un telefon și fișierele selectate se descarcă automat, unul după altul."
+    "multiHint": "Scanează codul QR cu un telefon și fișierele selectate se descarcă automat, unul după altul.",
+    "singleTitle": "Cod QR pentru descărcarea fișierului"
   },
   "fileGallery": {
     "loadMore": "Încarcă mai multe"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Stocare și utilizare",
-    "retention": "Chiar și cât ești conectat, fișierele sunt șterse automat după cel mult 1 zi. Curățarea rulează periodic, deci ora exactă (la secundă) nu este garantată, iar după ce pleacă toate dispozitivele se poate șterge mai devreme. Descarcă imediat ce ai nevoie."
+    "retention": "Chiar și cât ești conectat, fișierele sunt șterse automat după cel mult 1 zi. Curățarea rulează periodic, deci ora exactă (la secundă) nu este garantată, iar după ce pleacă toate dispozitivele se poate șterge mai devreme. Descarcă imediat ce ai nevoie.",
+    "roomRetention": "Fișierele din această cameră sunt păstrate cel mult aproximativ 1 zi. Nu sunt șterse imediat când toate dispozitivele pleacă. Curățarea rulează periodic, deci ora exactă nu este garantată. Textele sunt păstrate doar 10 minute.",
+    "roomVisibility": "Le pot vedea doar dispozitivele aflate în această cameră."
   },
   "download": {
     "title": "Se descarcă fișierele...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} fișiere descărcate ca ZIP",
     "zipFailed": "Nu s-a putut descărca ZIP-ul. Încearcă din nou",
     "fileStarted": "Descărcarea a început",
-    "close": "Închide"
+    "close": "Închide",
+    "titleOne": "Primește fișierul"
   },
   "presence": {
     "joinedIp": "{who} s-a alăturat rețelei tale",

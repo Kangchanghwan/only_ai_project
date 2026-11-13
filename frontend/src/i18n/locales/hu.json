@@ -137,7 +137,8 @@
     "ipNotice": "Az ugyanazon a hálózaton lévő más személyek (iskola, iroda, kávézó) is láthatják.",
     "manage": "Névcímke kezelése",
     "notAuth": "A névcímke csak az eszközök megkülönböztetésére szolgál. Nem személyazonosság-ellenőrzés.",
-    "globalWarning": "Bárki, idegenek is, láthatja, amit küldesz, és az eszközöd adatait (állatos névcímke, eszköz és böngésző). Érzékeny tartalomhoz használd az „Ugyanaz a hálózat” lehetőséget."
+    "globalWarning": "Bárki, idegenek is, láthatja, amit küldesz, és az eszközöd adatait (állatos névcímke, eszköz és böngésző). Érzékeny tartalomhoz használd az „Ugyanaz a hálózat” lehetőséget.",
+    "pairSasLoading": "Képek betöltése…"
   },
   "shareScope": {
     "label": "Megosztás ezzel",
@@ -377,7 +378,8 @@
     "tooLong": "Túl sok fájl van kijelölve, ezért a QR-kódot nehéz lehet beolvasni (URL: {length} karakter). Érdemes több részre osztani a fájlokat.",
     "urlDetail": "URL részletei",
     "lengthDetail": "Hossz: {length} / {max} karakter",
-    "multiHint": "Olvasd be a QR-kódot telefonnal, és a kijelölt fájlok automatikusan, egymás után letöltődnek."
+    "multiHint": "Olvasd be a QR-kódot telefonnal, és a kijelölt fájlok automatikusan, egymás után letöltődnek.",
+    "singleTitle": "Fájlletöltési QR-kód"
   },
   "fileGallery": {
     "loadMore": "Továbbiak betöltése"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Tárolás és használat",
-    "retention": "Akkor is, ha csatlakozva vagy, a fájlok legfeljebb 1 nap után automatikusan törlődnek. A takarítás időszakosan fut, ezért a pontos idő (másodpercre) nem garantált, és ha minden eszköz kilép, korábban is törlődhet. A szükséges fájlokat azonnal töltsd le."
+    "retention": "Akkor is, ha csatlakozva vagy, a fájlok legfeljebb 1 nap után automatikusan törlődnek. A takarítás időszakosan fut, ezért a pontos idő (másodpercre) nem garantált, és ha minden eszköz kilép, korábban is törlődhet. A szükséges fájlokat azonnal töltsd le.",
+    "roomRetention": "A szoba fájljait legfeljebb körülbelül 1 napig őrizzük meg. Nem törlődnek azonnal, amikor minden eszköz kilép. A takarítás rendszeresen fut, ezért a pontos időpont nem garantált. A szövegeket csak 10 percig őrizzük.",
+    "roomVisibility": "Csak a szobában lévő eszközök láthatják őket."
   },
   "download": {
     "title": "Fájlok letöltése...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} fájl letöltve ZIP-ként",
     "zipFailed": "Nem sikerült letölteni a ZIP-et. Próbáld újra",
     "fileStarted": "A letöltés elindult",
-    "close": "Bezárás"
+    "close": "Bezárás",
+    "titleOne": "Fájl fogadása"
   },
   "presence": {
     "joinedIp": "{who} csatlakozott a hálózatodhoz",

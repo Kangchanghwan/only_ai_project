@@ -111,6 +111,7 @@ function onKeydown(event) {
             type="button"
             class="min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
             :disabled="!acceptEnabled"
+            :aria-disabled="!acceptEnabled"
             :aria-busy="!acceptEnabled"
             data-testid="pair-accept"
             @click="accept"

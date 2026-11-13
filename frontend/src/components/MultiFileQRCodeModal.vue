@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { useEscapeClose } from '../composables/useEscapeClose'
 import { ref, watch, computed, onMounted } from 'vue'
 import QRCode from 'qrcode'
 import { generateDownloadUrl, validateUrlLength } from '../utils/router'
@@ -24,10 +25,20 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'download'])
+useEscapeClose(() => props.isOpen, () => emit('close'))
 
 const canvasRef = ref(null)
 const showUrlPreview = ref(false)
 const copySuccess = ref(false)
+
+// 열린 동안 보여 주는 파일이 지워지면(전체 선택 뒤 삭제 등) 모달을 닫는다. "0개 파일"은 보이지 않는다
+let shownNames = []
+watch(() => [props.isOpen, (props.files || []).map((f) => f.name).join('\u0000')], ([open]) => {
+  const names = (props.files || []).map((f) => f.name)
+  if (!open) { shownNames = []; return }
+  if (shownNames.length === 0) { shownNames = names; if (names.length === 0) emit('close'); return }
+  if (names.length === 0 || shownNames.some((n) => !names.includes(n))) emit('close')
+}, { immediate: true })
 
 // 다운로드 URL 생성
 const downloadUrl = computed(() => {
@@ -144,20 +155,25 @@ async function handleCopyUrl() {
 </script>
 
 <template>
+  <Teleport to="body">
   <Transition name="modal">
     <div
       v-if="isOpen"
-      class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+      class="fixed inset-0 bg-black/70 flex items-center justify-center z-[80] p-4"
+      data-testid="qr-modal-overlay"
       @click="handleBackdropClick"
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="multi-qr-title"
         class="bg-surface rounded-2xl p-8 max-w-md w-full border border-border shadow-2xl max-h-[90vh] overflow-y-auto"
         @click.stop
       >
         <!-- 헤더 -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-text-primary">
-            {{ t('qrModal.multiTitle') }}
+          <h2 id="multi-qr-title" class="text-2xl font-bold text-text-primary">
+            {{ files.length === 1 ? t('qrModal.singleTitle') : t('qrModal.multiTitle') }}
           </h2>
           <button
             class="text-text-secondary hover:text-text-primary transition-colors text-2xl leading-none w-8 h-8 flex items-center justify-center"
@@ -275,6 +291,7 @@ async function handleCopyUrl() {
       </div>
     </div>
   </Transition>
+  </Teleport>
 </template>
 
 <style scoped>

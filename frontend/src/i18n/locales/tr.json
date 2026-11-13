@@ -137,7 +137,8 @@
     "ipNotice": "Aynı ağdaki diğer kişiler de (okul, ofis, kafe) bunu görebilir.",
     "manage": "Ad etiketini yönet",
     "notAuth": "Ad etiketi yalnızca cihazları ayırt eder. Kimlik doğrulaması değildir.",
-    "globalWarning": "Yabancılar dahil herkes gönderdiklerinizi ve cihaz bilginizi (hayvan etiketi, cihaz ve tarayıcı) görebilir. Hassas içerikler için “Aynı ağ”ı kullanın."
+    "globalWarning": "Yabancılar dahil herkes gönderdiklerinizi ve cihaz bilginizi (hayvan etiketi, cihaz ve tarayıcı) görebilir. Hassas içerikler için “Aynı ağ”ı kullanın.",
+    "pairSasLoading": "Resimler yükleniyor…"
   },
   "shareScope": {
     "label": "Paylaşılacak kişiler",
@@ -377,7 +378,8 @@
     "tooLong": "Çok fazla dosya seçildiği için QR kodu taramak zor olabilir (URL: {length} karakter). Dosyaları bölmeniz önerilir.",
     "urlDetail": "URL ayrıntıları",
     "lengthDetail": "Uzunluk: {length} / {max} karakter",
-    "multiHint": "QR kodu telefonla taradığınızda seçilen dosyalar otomatik olarak sırayla indirilir."
+    "multiHint": "QR kodu telefonla taradığınızda seçilen dosyalar otomatik olarak sırayla indirilir.",
+    "singleTitle": "Dosya indirme QR kodu"
   },
   "fileGallery": {
     "loadMore": "Daha fazla yükle"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Saklama ve kullanım",
-    "retention": "Bağlı olsanız bile dosyalar en geç 1 gün sonra otomatik temizlenir. Temizlik düzenli aralıklarla çalışır, bu yüzden tam saat (saniyesine kadar) garanti edilmez; tüm cihazlar çıkınca daha erken silinebilir. İhtiyacınız olan dosyaları hemen indirin."
+    "retention": "Bağlı olsanız bile dosyalar en geç 1 gün sonra otomatik temizlenir. Temizlik düzenli aralıklarla çalışır, bu yüzden tam saat (saniyesine kadar) garanti edilmez; tüm cihazlar çıkınca daha erken silinebilir. İhtiyacınız olan dosyaları hemen indirin.",
+    "roomRetention": "Bu odadaki dosyalar en fazla yaklaşık 1 gün saklanır. Tüm cihazlar çıksa bile hemen silinmez. Temizlik düzenli aralıklarla çalışır, bu yüzden kesin zaman garanti edilmez. Metinler yalnızca 10 dakika saklanır.",
+    "roomVisibility": "Yalnızca bu odadaki cihazlar bunları görebilir."
   },
   "download": {
     "title": "Dosyalar indiriliyor...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} dosya ZIP olarak indirildi",
     "zipFailed": "ZIP indirilemedi. Lütfen tekrar deneyin",
     "fileStarted": "İndirme başladı",
-    "close": "Kapat"
+    "close": "Kapat",
+    "titleOne": "Dosyayı al"
   },
   "presence": {
     "joinedIp": "{who} ağınıza katıldı",

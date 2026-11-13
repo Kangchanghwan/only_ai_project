@@ -65,3 +65,37 @@ describe('SocketService - 정체성', () => {
     socketService.mySocketId.value = null
   })
 })
+
+describe('SocketService - 클라이언트 인스턴스 ID / 페이지 수명주기', () => {
+  it('auth.clientId는 재접속해도 같고 storage에 저장하지 않는다', async () => {
+    socketService.disconnect()
+    socketService.connect().catch(() => {})
+    const a1 = await new Promise((r) => io.mock.calls.at(-1)[1].auth(r))
+    socketService.disconnect()
+    socketService.connect().catch(() => {})
+    const a2 = await new Promise((r) => io.mock.calls.at(-1)[1].auth(r))
+    expect(a1.clientId).toBeTruthy()
+    expect(a2.clientId).toBe(a1.clientId)
+    expect(a1.identity === undefined || 'identity' in a1).toBe(true)
+    expect(JSON.stringify({ ...localStorage })).not.toContain(a1.clientId)
+    expect(JSON.stringify({ ...sessionStorage })).not.toContain(a1.clientId)
+  })
+
+  it('pagehide에서 소켓을 끊고, bfcache 복원(pageshow persisted)에서만 다시 접속한다', () => {
+    const disconnect = vi.fn()
+    socketService.socket = { connected: true, disconnect }
+    window.dispatchEvent(new Event('pagehide'))
+    expect(disconnect).toHaveBeenCalled()
+    const spy = vi.spyOn(socketService, '_attemptReconnect').mockResolvedValue()
+    socketService.socket = { connected: false, disconnect }
+    socketService._wasConnected = true
+    window.dispatchEvent(new Event('pageshow'))
+    expect(spy).not.toHaveBeenCalled()
+    const ev = new Event('pageshow'); ev.persisted = true
+    window.dispatchEvent(ev)
+    expect(spy).toHaveBeenCalled()
+    spy.mockRestore()
+    socketService._wasConnected = false
+    socketService.socket = null
+  })
+})

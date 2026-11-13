@@ -1,4 +1,5 @@
 <script setup>
+import { roomDisplayName } from '../utils/roomDisplayName'
 import { computed, ref, watch, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PairPeerAvatar from './PairPeerAvatar.vue'
@@ -40,7 +41,7 @@ const highlighted = computed(() => !!props.highlightRoomId && props.privateRooms
 const peerName = (room) => (isValidIdentity(room.peer?.identity) ? identityName(room.peer.identity, t) : t('pair.unknownDevice'))
 // 그룹 방(prv-g-…)은 같은 목록에 넣되 이름과 아이콘만 다르다
 const isGroup = (room) => isGroupRoomId(room?.roomId)
-const groupName = (room) => room.name || t('group.unnamed')
+const groupName = (room) => roomDisplayName(props.privateRooms, room.roomId, t('group.unnamed'))
 const roomLabel = (room) => (isGroup(room) ? groupName(room) : peerName(room))
 const hasPrivate = computed(() => props.privateRooms.length > 0)
 const manyLabel = computed(() =>

@@ -137,7 +137,8 @@
     "ipNotice": "Otras personas de la misma red (escuela, oficina, cafetería) también pueden verlo.",
     "manage": "Gestionar etiqueta",
     "notAuth": "La etiqueta solo distingue dispositivos. No verifica tu identidad.",
-    "globalWarning": "Cualquiera, incluso desconocidos, puede ver lo que envías y la información de tu dispositivo (etiqueta de animal, dispositivo y navegador). Usa «Misma red» para contenido sensible."
+    "globalWarning": "Cualquiera, incluso desconocidos, puede ver lo que envías y la información de tu dispositivo (etiqueta de animal, dispositivo y navegador). Usa «Misma red» para contenido sensible.",
+    "pairSasLoading": "Cargando imágenes…"
   },
   "shareScope": {
     "label": "Compartir con",
@@ -377,7 +378,8 @@
     "tooLong": "Hay demasiados archivos seleccionados y el código QR puede ser difícil de escanear (URL: {length} caracteres). Conviene dividir los archivos.",
     "urlDetail": "Detalles de la URL",
     "lengthDetail": "Longitud: {length} / {max} caracteres",
-    "multiHint": "Escanea el código QR con un móvil y los archivos seleccionados se descargarán uno tras otro automáticamente."
+    "multiHint": "Escanea el código QR con un móvil y los archivos seleccionados se descargarán uno tras otro automáticamente.",
+    "singleTitle": "QR de descarga de archivo"
   },
   "fileGallery": {
     "loadMore": "Cargar más"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Notas de almacenamiento y uso",
-    "retention": "Aunque sigas conectado, los archivos se eliminan automáticamente como máximo tras 1 día. La limpieza se ejecuta periódicamente, así que no se garantiza la hora exacta (al segundo), y pueden borrarse antes cuando todos los dispositivos salen. Descarga lo que necesites enseguida."
+    "retention": "Aunque sigas conectado, los archivos se eliminan automáticamente como máximo tras 1 día. La limpieza se ejecuta periódicamente, así que no se garantiza la hora exacta (al segundo), y pueden borrarse antes cuando todos los dispositivos salen. Descarga lo que necesites enseguida.",
+    "roomRetention": "Los archivos de esta sala se conservan hasta aproximadamente 1 día. No se borran de inmediato cuando todos los dispositivos salen. La limpieza se ejecuta periódicamente, así que no se garantiza la hora exacta. Los textos se conservan solo 10 minutos.",
+    "roomVisibility": "Solo los dispositivos que están en esta sala pueden verlos."
   },
   "download": {
     "title": "Descargando archivos...",
@@ -535,7 +539,8 @@
     "zipDone": "Se descargaron {count} archivos en un ZIP",
     "zipFailed": "No se pudo descargar el ZIP. Inténtalo de nuevo",
     "fileStarted": "Descarga iniciada",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "titleOne": "Recibir archivo"
   },
   "presence": {
     "joinedIp": "{who} se unió a tu red",

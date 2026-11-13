@@ -137,7 +137,8 @@
     "ipNotice": "Ook andere mensen op hetzelfde netwerk (school, kantoor, café) kunnen het zien.",
     "manage": "Naamlabel beheren",
     "notAuth": "Het naamlabel onderscheidt alleen apparaten. Het is geen identiteitscontrole.",
-    "globalWarning": "Iedereen, ook onbekenden, kan zien wat je verstuurt en de gegevens van je apparaat (dierlabel, apparaat en browser). Gebruik 'Zelfde netwerk' voor gevoelige bestanden."
+    "globalWarning": "Iedereen, ook onbekenden, kan zien wat je verstuurt en de gegevens van je apparaat (dierlabel, apparaat en browser). Gebruik 'Zelfde netwerk' voor gevoelige bestanden.",
+    "pairSasLoading": "Afbeeldingen laden…"
   },
   "shareScope": {
     "label": "Delen met",
@@ -377,7 +378,8 @@
     "tooLong": "Er zijn zoveel bestanden geselecteerd dat de QR-code moeilijk te scannen kan zijn (URL: {length} tekens). Splits de bestanden bij voorkeur op.",
     "urlDetail": "URL-details",
     "lengthDetail": "Lengte: {length} / {max} tekens",
-    "multiHint": "Scan de QR-code met een telefoon en de geselecteerde bestanden worden automatisch na elkaar gedownload."
+    "multiHint": "Scan de QR-code met een telefoon en de geselecteerde bestanden worden automatisch na elkaar gedownload.",
+    "singleTitle": "QR-code voor bestandsdownload"
   },
   "fileGallery": {
     "loadMore": "Meer laden"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Opslag en gebruik",
-    "retention": "Ook terwijl je verbonden bent, worden bestanden na uiterlijk 1 dag automatisch opgeruimd. Het opruimen draait periodiek, dus de exacte tijd (op de seconde) is niet gegarandeerd, en zodra alle apparaten weg zijn kan het eerder gebeuren. Download wat je nodig hebt meteen."
+    "retention": "Ook terwijl je verbonden bent, worden bestanden na uiterlijk 1 dag automatisch opgeruimd. Het opruimen draait periodiek, dus de exacte tijd (op de seconde) is niet gegarandeerd, en zodra alle apparaten weg zijn kan het eerder gebeuren. Download wat je nodig hebt meteen.",
+    "roomRetention": "Bestanden in deze kamer worden maximaal ongeveer 1 dag bewaard. Ze worden niet meteen verwijderd als alle apparaten vertrekken. Het opruimen draait periodiek, dus het exacte tijdstip is niet gegarandeerd. Teksten worden slechts 10 minuten bewaard.",
+    "roomVisibility": "Alleen apparaten in deze kamer kunnen ze zien."
   },
   "download": {
     "title": "Bestanden downloaden...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} bestanden als ZIP gedownload",
     "zipFailed": "Kan de ZIP niet downloaden. Probeer het opnieuw",
     "fileStarted": "Download gestart",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "titleOne": "Bestand ontvangen"
   },
   "presence": {
     "joinedIp": "{who} is je netwerk binnengekomen",

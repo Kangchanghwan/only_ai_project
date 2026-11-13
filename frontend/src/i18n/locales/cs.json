@@ -137,7 +137,8 @@
     "ipNotice": "Vidět to mohou i další lidé ve stejné síti (škola, kancelář, kavárna).",
     "manage": "Spravovat jmenovku",
     "notAuth": "Jmenovka jen rozlišuje zařízení. Není to ověření totožnosti.",
-    "globalWarning": "Kdokoli, i cizí lidé, vidí, co posíláte, a údaje o vašem zařízení (zvířecí jmenovka, zařízení a prohlížeč). Citlivé věci posílejte přes „Stejná síť“."
+    "globalWarning": "Kdokoli, i cizí lidé, vidí, co posíláte, a údaje o vašem zařízení (zvířecí jmenovka, zařízení a prohlížeč). Citlivé věci posílejte přes „Stejná síť“.",
+    "pairSasLoading": "Načítání obrázků…"
   },
   "shareScope": {
     "label": "Sdílet s",
@@ -377,7 +378,8 @@
     "tooLong": "Je vybráno příliš mnoho souborů a QR kód může být obtížné naskenovat (URL: {length} znaků). Doporučujeme soubory rozdělit.",
     "urlDetail": "Podrobnosti URL",
     "lengthDetail": "Délka: {length} / {max} znaků",
-    "multiHint": "Naskenujte QR kód telefonem a vybrané soubory se automaticky stáhnou jeden po druhém."
+    "multiHint": "Naskenujte QR kód telefonem a vybrané soubory se automaticky stáhnou jeden po druhém.",
+    "singleTitle": "QR kód ke stažení souboru"
   },
   "fileGallery": {
     "loadMore": "Načíst další"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Uložení a používání",
-    "retention": "I když jste připojeni, soubory se automaticky mažou nejpozději po 1 dni. Úklid probíhá pravidelně, takže přesný čas (na sekundu) není zaručen a po odchodu všech zařízení může dojít ke smazání dříve. Potřebné soubory si stáhněte hned."
+    "retention": "I když jste připojeni, soubory se automaticky mažou nejpozději po 1 dni. Úklid probíhá pravidelně, takže přesný čas (na sekundu) není zaručen a po odchodu všech zařízení může dojít ke smazání dříve. Potřebné soubory si stáhněte hned.",
+    "roomRetention": "Soubory v této místnosti se uchovávají nejvýše zhruba 1 den. Nesmažou se hned, když odejdou všechna zařízení. Úklid probíhá pravidelně, takže přesný čas není zaručen. Texty se uchovávají jen 10 minut.",
+    "roomVisibility": "Vidí je jen zařízení, která jsou v této místnosti."
   },
   "download": {
     "title": "Stahování souborů...",
@@ -535,7 +539,8 @@
     "zipDone": "Staženo souborů v ZIP: {count}",
     "zipFailed": "ZIP se nepodařilo stáhnout. Zkuste to znovu",
     "fileStarted": "Stahování zahájeno",
-    "close": "Zavřít"
+    "close": "Zavřít",
+    "titleOne": "Přijmout soubor"
   },
   "presence": {
     "joinedIp": "{who} se připojil(a) k vaší síti",

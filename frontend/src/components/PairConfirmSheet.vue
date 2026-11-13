@@ -5,6 +5,7 @@
  */
 import { ref, watch, nextTick, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import PairSasTiles from './PairSasTiles.vue'
 import PairPeerAvatar from './PairPeerAvatar.vue'
 import { sasImages } from '../utils/sasImages'
 import { trapTab } from '../utils/focusTrap'
@@ -22,6 +23,7 @@ const root = ref(null)
 const diffBtn = ref(null)
 const images = computed(() => sasImages(props.session?.sas))
 const waiting = computed(() => props.session?.state === 'waiting-peer-confirm')
+const sasReady = computed(() => !preparing.value && images.value.length === 4)
 const preparing = computed(() => props.session?.state === 'accepted' || !props.session?.sas)
 
 watch(
@@ -62,21 +64,13 @@ function onKeydown(event) {
         </div>
         <h2 id="pair-confirm-title" class="mt-3 text-base font-semibold text-center m-0">{{ t('pair.confirm.title') }}</h2>
 
-        <div v-if="!preparing" class="mt-4 grid grid-cols-4 gap-2" data-testid="pair-sas">
-          <div
-            v-for="(img, i) in images"
-            :key="i"
-            class="aspect-square rounded-xl bg-background border border-border flex items-center justify-center p-2"
-          >
-            <img :src="img.src" :alt="img.emoji" draggable="false" class="w-full h-full object-contain select-none" data-testid="pair-sas-image" />
-          </div>
-        </div>
-        <p v-else class="mt-4 text-sm text-text-secondary text-center m-0" role="status">{{ t('pair.confirm.preparing') }}</p>
+        <PairSasTiles class="mt-4" :images="preparing ? [] : images" size="lg" />
+        <p v-if="preparing" class="mt-2 text-sm text-text-secondary text-center m-0" role="status">{{ t('pair.confirm.preparing') }}</p>
 
         <p v-if="waiting" class="mt-4 text-sm text-center text-scope-private font-semibold m-0" role="status" data-testid="pair-waiting">{{ t('pair.confirm.waiting') }}</p>
 
         <div class="mt-4 flex gap-2 justify-center">
-          <template v-if="!preparing && !waiting">
+          <template v-if="!waiting">
             <button
               ref="diffBtn"
               type="button"
@@ -86,13 +80,15 @@ function onKeydown(event) {
             >{{ t('pair.confirm.different') }}</button>
             <button
               type="button"
-              class="flex-1 min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold"
+              class="flex-1 min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+              :disabled="!sasReady"
+              :aria-disabled="!sasReady"
               data-testid="pair-same"
               @click="emit('confirm', true)"
             >{{ t('pair.confirm.same') }}</button>
           </template>
           <button
-            v-else
+            v-if="waiting || preparing"
             type="button"
             class="min-h-[44px] px-5 rounded-full border border-border text-sm font-semibold"
             data-testid="pair-confirm-cancel"

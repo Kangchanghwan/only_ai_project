@@ -114,7 +114,7 @@ onMounted(async () => {
         <div v-else class="bg-surface rounded-2xl p-6 sm:p-8 border border-border shadow-2xl text-text-primary" data-testid="download-page">
           <div class="text-center mb-6">
             <div class="text-5xl mb-4">📥</div>
-            <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ t('multiDownload.title') }}</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ totalFiles === 1 ? t('multiDownload.titleOne') : t('multiDownload.title') }}</h1>
             <p class="text-text-secondary m-0">{{ t('multiDownload.pageIntro', { count: totalFiles }) }}</p>
           </div>
           <p v-if="loading" class="text-center text-text-secondary" data-testid="download-page-loading">{{ t('multiDownload.preparing') }}</p>
