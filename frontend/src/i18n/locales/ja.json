@@ -619,5 +619,10 @@
     "leftIp": "同じネットワークから{who}が退出しました",
     "joinedRoom": "「{room}」に{who}が参加しました",
     "leftRoom": "「{room}」から{who}が退出しました"
+  },
+  "inRoom": {
+    "textArrived": "{where}に新しいテキストが届きました",
+    "fileArrived": "{where}に新しいファイルが届きました",
+    "textsCleared": "{where}のテキストがすべて削除されました"
   }
 }

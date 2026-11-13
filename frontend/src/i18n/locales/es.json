@@ -542,5 +542,10 @@
     "leftIp": "{who} salió de tu red",
     "joinedRoom": "{who} se unió a «{room}»",
     "leftRoom": "{who} salió de «{room}»"
+  },
+  "inRoom": {
+    "textArrived": "Nuevo texto en {where}",
+    "fileArrived": "Nuevo archivo en {where}",
+    "textsCleared": "Se borraron todos los textos de {where}"
   }
 }

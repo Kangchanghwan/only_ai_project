@@ -24,3 +24,14 @@ describe('i18n 입장·퇴장 토스트(presence)', () => {
     expect(t('presence.leftRoom', { room: '날쌘 코알라의 방', who: '🐻 조용한 곰' })).toBe("'날쌘 코알라의 방'에서 🐻 조용한 곰이 나갔어요")
   })
 })
+
+describe('i18n 도착 알림(inRoom)', () => {
+  it('21개 로케일 모두 {where}가 들어간 세 문구가 있다', () => {
+    for (const [lang, json] of entries) {
+      for (const key of ['textArrived', 'fileArrived', 'textsCleared']) {
+        const v = json.inRoom?.[key]
+        expect(typeof v === 'string' && v.includes('{where}'), `${lang}.inRoom.${key}`).toBe(true)
+      }
+    }
+  })
+})

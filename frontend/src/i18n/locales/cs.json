@@ -542,5 +542,10 @@
     "leftIp": "{who} opustil(a) vaši síť",
     "joinedRoom": "{who} vstoupil(a) do „{room}“",
     "leftRoom": "{who} opustil(a) „{room}“"
+  },
+  "inRoom": {
+    "textArrived": "Nový text: {where}",
+    "fileArrived": "Nový soubor: {where}",
+    "textsCleared": "Všechny texty smazány: {where}"
   }
 }

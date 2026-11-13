@@ -542,5 +542,10 @@
     "leftIp": "{who} lämnade ditt nätverk",
     "joinedRoom": "{who} gick med i ”{room}”",
     "leftRoom": "{who} lämnade ”{room}”"
+  },
+  "inRoom": {
+    "textArrived": "Ny text i {where}",
+    "fileArrived": "Ny fil i {where}",
+    "textsCleared": "Alla texter i {where} har rensats"
   }
 }

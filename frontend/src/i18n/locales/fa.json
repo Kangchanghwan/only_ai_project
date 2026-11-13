@@ -542,5 +542,10 @@
     "leftIp": "{who} از شبکهٔ شما خارج شد",
     "joinedRoom": "{who} به «{room}» پیوست",
     "leftRoom": "{who} از «{room}» خارج شد"
+  },
+  "inRoom": {
+    "textArrived": "متن جدید در {where}",
+    "fileArrived": "فایل جدید در {where}",
+    "textsCleared": "همهٔ متن‌های {where} پاک شد"
   }
 }
