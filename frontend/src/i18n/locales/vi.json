@@ -402,7 +402,7 @@
     "qrCode": "Mã QR",
     "selectAllHint": "Chọn tất cả tệp",
     "deselectAllHint": "Bỏ chọn tất cả tệp",
-    "downloadHint": "Tải lần lượt các tệp đã chọn",
+    "downloadHint": "Tải các tệp đã chọn trong một ZIP (trên 200MB tải riêng)",
     "qrCodeHint": "Tạo mã QR cho các tệp đã chọn"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Gửi tới mạng của bạn",
     "toGlobal": "Gửi cho mọi người (công khai)",
     "toPair": "Gửi cho đối tác 1:1"
+  },
+  "multiDownload": {
+    "title": "Tải nhiều tệp",
+    "intro": "Tệp nhỏ được tải trong một tệp ZIP, tệp trên 200MB được tải riêng. Mục đầu tiên đã bắt đầu tải.",
+    "note": "Trình duyệt có thể chặn các lượt tải bắt đầu cùng lúc, vì vậy hãy chạm vào từng mục còn lại để tải.",
+    "pageIntro": "{count} tệp",
+    "zipOne": "ZIP · {count} tệp",
+    "zipMany": "ZIP {index}/{total} · {count} tệp",
+    "get": "Tải",
+    "again": "Tải lại",
+    "preparing": "Đang chuẩn bị",
+    "progress": "Đang tải {percent}%",
+    "done": "Đã tải",
+    "started": "Đã bắt đầu",
+    "failed": "Thất bại",
+    "zipDone": "Đã tải {count} tệp dưới dạng ZIP",
+    "zipFailed": "Không tải được ZIP. Vui lòng thử lại",
+    "fileStarted": "Đã bắt đầu tải",
+    "close": "Đóng"
   }
 }

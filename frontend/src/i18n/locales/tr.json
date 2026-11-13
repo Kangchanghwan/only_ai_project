@@ -402,7 +402,7 @@
     "qrCode": "QR kod",
     "selectAllHint": "Tüm dosyaları seç",
     "deselectAllHint": "Tüm dosyaların seçimini kaldır",
-    "downloadHint": "Seçili dosyaları sırayla indir",
+    "downloadHint": "Seçili dosyaları tek ZIP olarak indir (200 MB üstü ayrı)",
     "qrCodeHint": "Seçili dosyalar için QR kod oluştur"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Ağınıza gönderilir",
     "toGlobal": "Herkese gönderilir (herkese açık)",
     "toPair": "1:1 eşinize gönderilir"
+  },
+  "multiDownload": {
+    "title": "Dosyaları indir",
+    "intro": "Küçük dosyalar tek bir ZIP olarak, 200 MB'tan büyük dosyalar ayrı ayrı iner. İlki başladı.",
+    "note": "Tarayıcılar aynı anda başlayan indirmeleri engelleyebilir; kalan öğelere tek tek dokunarak indirin.",
+    "pageIntro": "{count} dosya",
+    "zipOne": "ZIP · {count} dosya",
+    "zipMany": "ZIP {index}/{total} · {count} dosya",
+    "get": "İndir",
+    "again": "Yeniden indir",
+    "preparing": "Hazırlanıyor",
+    "progress": "{percent}% indiriliyor",
+    "done": "İndirildi",
+    "started": "Başladı",
+    "failed": "Başarısız",
+    "zipDone": "{count} dosya ZIP olarak indirildi",
+    "zipFailed": "ZIP indirilemedi. Lütfen tekrar deneyin",
+    "fileStarted": "İndirme başladı",
+    "close": "Kapat"
   }
 }

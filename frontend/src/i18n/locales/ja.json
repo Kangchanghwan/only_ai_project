@@ -298,7 +298,7 @@
     "qrCode": "QRコード",
     "selectAllHint": "すべてのファイルを選択",
     "deselectAllHint": "すべてのファイルの選択を解除",
-    "downloadHint": "選択したファイルを順番にダウンロードします",
+    "downloadHint": "選択したファイルをZIPひとつでダウンロード(200MB超は個別)",
     "qrCodeHint": "選択したファイルのQRコードを生成します",
     "tipSequential": "ヒント：ファイルを順番にダウンロードします"
   },
@@ -594,5 +594,24 @@
     "toIp": "同じネットワークに送信",
     "toGlobal": "全体公開で送信",
     "toPair": "1:1の相手に送信"
+  },
+  "multiDownload": {
+    "title": "複数ファイルのダウンロード",
+    "intro": "小さいファイルはZIPひとつに、200MBを超えるファイルは個別にダウンロードします。最初の項目はすでに開始しました。",
+    "note": "ブラウザは同時に始まるダウンロードをブロックすることがあるため、残りはひとつずつタップしてください。",
+    "pageIntro": "ファイル{count}件",
+    "zipOne": "ZIP・ファイル{count}件",
+    "zipMany": "ZIP {index}/{total}・ファイル{count}件",
+    "get": "ダウンロード",
+    "again": "もう一度",
+    "preparing": "準備中",
+    "progress": "{percent}% ダウンロード中",
+    "done": "完了",
+    "started": "開始済み",
+    "failed": "失敗",
+    "zipDone": "{count}件のファイルをZIPでダウンロードしました",
+    "zipFailed": "ZIPをダウンロードできませんでした。もう一度お試しください",
+    "fileStarted": "ダウンロードを開始しました",
+    "close": "閉じる"
   }
 }

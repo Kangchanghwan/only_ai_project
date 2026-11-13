@@ -402,7 +402,7 @@
     "qrCode": "QR-kód",
     "selectAllHint": "Összes fájl kijelölése",
     "deselectAllHint": "Összes fájl kijelölésének törlése",
-    "downloadHint": "A kijelölt fájlok letöltése egymás után",
+    "downloadHint": "A kijelölt fájlok letöltése egy ZIP-ben (200 MB felett külön)",
     "qrCodeHint": "QR-kódok létrehozása a kijelölt fájlokhoz"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "A hálózatodnak küldi",
     "toGlobal": "Mindenkinek küldi (nyilvános)",
     "toPair": "1:1 partnerednek küldi"
+  },
+  "multiDownload": {
+    "title": "Fájlok letöltése",
+    "intro": "A kis fájlok egy ZIP-ben, a 200 MB-nál nagyobbak külön töltődnek le. Az első letöltés elindult.",
+    "note": "A böngészők letilthatják az egyszerre induló letöltéseket, ezért a többi elemet egyenként koppintva töltsd le.",
+    "pageIntro": "{count} fájl",
+    "zipOne": "ZIP · {count} fájl",
+    "zipMany": "ZIP {index}/{total} · {count} fájl",
+    "get": "Letöltés",
+    "again": "Letöltés újra",
+    "preparing": "Előkészítés",
+    "progress": "Letöltés: {percent}%",
+    "done": "Letöltve",
+    "started": "Elindult",
+    "failed": "Sikertelen",
+    "zipDone": "{count} fájl letöltve ZIP-ként",
+    "zipFailed": "Nem sikerült letölteni a ZIP-et. Próbáld újra",
+    "fileStarted": "A letöltés elindult",
+    "close": "Bezárás"
   }
 }

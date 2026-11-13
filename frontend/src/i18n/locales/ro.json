@@ -402,7 +402,7 @@
     "qrCode": "Cod QR",
     "selectAllHint": "Selectează toate fișierele",
     "deselectAllHint": "Deselectează toate fișierele",
-    "downloadHint": "Descarcă pe rând fișierele selectate",
+    "downloadHint": "Descarcă fișierele selectate într-un ZIP (peste 200 MB separat)",
     "qrCodeHint": "Generează coduri QR pentru fișierele selectate"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Trimis în rețeaua ta",
     "toGlobal": "Trimis tuturor (public)",
     "toPair": "Trimis partenerului 1:1"
+  },
+  "multiDownload": {
+    "title": "Descarcă fișierele",
+    "intro": "Fișierele mici vin într-un singur ZIP, cele de peste 200 MB se descarcă separat. Prima descărcare a început.",
+    "note": "Browserele pot bloca descărcările pornite în același timp, așa că atinge pe rând elementele rămase.",
+    "pageIntro": "{count} fișiere",
+    "zipOne": "ZIP · {count} fișiere",
+    "zipMany": "ZIP {index}/{total} · {count} fișiere",
+    "get": "Descarcă",
+    "again": "Descarcă din nou",
+    "preparing": "Se pregătește",
+    "progress": "Se descarcă {percent}%",
+    "done": "Descărcat",
+    "started": "Pornit",
+    "failed": "Eșuat",
+    "zipDone": "{count} fișiere descărcate ca ZIP",
+    "zipFailed": "Nu s-a putut descărca ZIP-ul. Încearcă din nou",
+    "fileStarted": "Descărcarea a început",
+    "close": "Închide"
   }
 }

@@ -402,7 +402,7 @@
     "qrCode": "QR kód",
     "selectAllHint": "Vybrat všechny soubory",
     "deselectAllHint": "Zrušit výběr všech souborů",
-    "downloadHint": "Stáhnout vybrané soubory postupně",
+    "downloadHint": "Stáhnout vybrané soubory v jednom ZIP (nad 200 MB zvlášť)",
     "qrCodeHint": "Vytvořit QR kódy pro vybrané soubory"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Odešle se do vaší sítě",
     "toGlobal": "Odešle se všem (veřejně)",
     "toPair": "Odešle se protějšku 1:1"
+  },
+  "multiDownload": {
+    "title": "Stáhnout soubory",
+    "intro": "Malé soubory se stáhnou v jednom ZIP, soubory nad 200 MB zvlášť. První stahování už začalo.",
+    "note": "Prohlížeče mohou blokovat stahování spuštěná najednou, proto zbývající položky stáhněte klepnutím jednu po druhé.",
+    "pageIntro": "Soubory: {count}",
+    "zipOne": "ZIP · soubory: {count}",
+    "zipMany": "ZIP {index}/{total} · soubory: {count}",
+    "get": "Stáhnout",
+    "again": "Stáhnout znovu",
+    "preparing": "Příprava",
+    "progress": "Stahování {percent} %",
+    "done": "Staženo",
+    "started": "Zahájeno",
+    "failed": "Chyba",
+    "zipDone": "Staženo souborů v ZIP: {count}",
+    "zipFailed": "ZIP se nepodařilo stáhnout. Zkuste to znovu",
+    "fileStarted": "Stahování zahájeno",
+    "close": "Zavřít"
   }
 }
