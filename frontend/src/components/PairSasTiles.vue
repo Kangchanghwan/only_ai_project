@@ -5,9 +5,8 @@
  * ready=false를 알린다. error가 난 그림은 이모지 글자로 대신 보여 비교할 수 있게 하고 준비된 것으로 센다.
  * 8초가 지나도 못 받은 그림은 글자로 대신하고 준비 완료로 본다.
  */
-import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, computed, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { preloadSasImages } from '../utils/sasImages'
 
 const { t } = useI18n()
 const props = defineProps({
@@ -37,7 +36,6 @@ watch(key, () => {
   }
 }, { immediate: true })
 watch(ready, (v) => { if (v) clearTimeout(timer); emit('ready-change', v) }, { immediate: true })
-onMounted(() => preloadSasImages())
 onBeforeUnmount(() => clearTimeout(timer))
 
 const mark = (i, s) => { if (status.value[i] === 'loading') status.value = status.value.map((x, j) => (j === i ? s : x)) }
