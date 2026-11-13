@@ -16,6 +16,7 @@ import { useMultiDownload } from './composables/useMultiDownload'
 import { useTextShare } from './composables/useTextShare'
 import { useTextQueue, textBytes, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA } from './composables/useTextQueue'
 import { roomDisplayName } from './utils/roomDisplayName'
+import { preloadSasImages } from './utils/sasImages'
 import { useShareScope, isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from './composables/useShareScope'
 import { usePrivateRooms } from './composables/usePrivateRooms'
 import { usePairFlow } from './composables/usePairFlow'
@@ -471,6 +472,8 @@ async function connectToRoom() {
     // 내가 없는 동안 보관된 텍스트(10분)를 받는다 (1:1 방은 다시 입장한 뒤 불러온다)
     textQueue.loadRooms(roomManager.roomIds.value)
     notification.showSuccess(t('notification.connected'))
+    // 1:1 확인 그림을 한가할 때 미리 받아 둔다
+    ;(window.requestIdleCallback || ((f) => setTimeout(f, 1500)))(() => preloadSasImages())
     // 저장된 1:1 방에 입장권으로 다시 들어간다 (백그라운드)
     rejoinPrivateRooms()
     // 도착 알림을 켜 둔 기기는 구독을 서버에 다시 맞춘다 (꺼져 있으면 아무 일도 없다)

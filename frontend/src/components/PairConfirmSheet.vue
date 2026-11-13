@@ -23,7 +23,8 @@ const root = ref(null)
 const diffBtn = ref(null)
 const images = computed(() => sasImages(props.session?.sas))
 const waiting = computed(() => props.session?.state === 'waiting-peer-confirm')
-const sasReady = computed(() => !preparing.value && images.value.length === 4)
+const tilesReady = ref(false)
+const sasReady = computed(() => !preparing.value && images.value.length === 4 && tilesReady.value)
 const preparing = computed(() => props.session?.state === 'accepted' || !props.session?.sas)
 
 watch(
@@ -64,7 +65,7 @@ function onKeydown(event) {
         </div>
         <h2 id="pair-confirm-title" class="mt-3 text-base font-semibold text-center m-0">{{ t('pair.confirm.title') }}</h2>
 
-        <PairSasTiles class="mt-4" :images="preparing ? [] : images" size="lg" />
+        <PairSasTiles class="mt-4" :images="preparing ? [] : images" size="lg" @ready-change="tilesReady = $event" />
         <p v-if="preparing" class="mt-2 text-sm text-text-secondary text-center m-0" role="status">{{ t('pair.confirm.preparing') }}</p>
 
         <p v-if="waiting" class="mt-4 text-sm text-center text-scope-private font-semibold m-0" role="status" data-testid="pair-waiting">{{ t('pair.confirm.waiting') }}</p>

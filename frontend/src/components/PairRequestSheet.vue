@@ -28,7 +28,8 @@ const declineBtn = ref(null)
 const images = computed(() => sasImages(props.session?.sas))
 const waiting = computed(() => props.session?.state === 'waiting-peer-confirm')
 const legacy = computed(() => !!props.session?.legacy)
-const sasReady = computed(() => images.value.length === 4)
+const tilesReady = ref(false)
+const sasReady = computed(() => images.value.length === 4 && tilesReady.value)
 const acceptEnabled = computed(() => legacy.value || sasReady.value)
 const accept = () => {
   if (!acceptEnabled.value) return
@@ -86,7 +87,7 @@ function onKeydown(event) {
         </div>
         <template v-if="!legacy">
           <p class="mt-4 text-sm font-semibold m-0 text-center">{{ t('pair.request.compare') }}</p>
-          <PairSasTiles class="mt-3" :images="images" size="lg" />
+          <PairSasTiles class="mt-3" :images="images" size="lg" @ready-change="tilesReady = $event" />
         </template>
         <p v-else class="mt-3 text-xs text-text-secondary leading-relaxed m-0">{{ t('pair.request.body') }}</p>
         <div v-if="waiting" class="mt-4 text-center">

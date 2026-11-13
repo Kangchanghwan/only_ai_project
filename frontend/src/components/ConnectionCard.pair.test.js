@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import ConnectionCard from './ConnectionCard.vue'
 import i18n from '../i18n/index.js'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext.js'
+import { loadAllSas } from '../test/sasLoad.js'
 
 const me = { socketId: 'me', identity: { adj: 0, animal: 0 }, deviceType: 'desktop', browser: 'Chrome', os: 'mac', joinedAt: 1 }
 const other2 = { socketId: 'p2', identity: { adj: 2, animal: 2 }, deviceType: 'desktop', browser: 'Firefox', os: 'win', joinedAt: 3 }
@@ -62,6 +63,7 @@ describe('ConnectionCard 폰 바로가기', () => {
     ctx.states.value = { p1: { state: 'pending', sessionId: 's1', expiresAt: Date.now() + 20000, sas: [1, 2, 3, 4], confirmed: false } }
     const w = build([me, other])
     expect(w.find('[data-testid="pair-shortcut"]').exists()).toBe(false)
+    await loadAllSas(w.element)
     await w.find('[data-testid="pair-same-inline"]').trigger('click')
     expect(ctx.confirm).toHaveBeenCalledWith('s1')
   })
