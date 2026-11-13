@@ -15,6 +15,7 @@ import { useDownload } from './composables/useDownload'
 import { useMultiDownload } from './composables/useMultiDownload'
 import { useTextShare } from './composables/useTextShare'
 import { useTextQueue, textBytes, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA } from './composables/useTextQueue'
+import { roomDisplayName } from './utils/roomDisplayName'
 import { useShareScope, isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from './composables/useShareScope'
 import { usePrivateRooms } from './composables/usePrivateRooms'
 import { usePairFlow } from './composables/usePairFlow'
@@ -85,7 +86,7 @@ const textQueue = useTextQueue({ textShare, privateRooms, lockState, t, getMySoc
 // 이름표(동물)로 세므로 잠깐 끊겼다 돌아온 기기는 알리지 않는다(나감은 20초 기다림). 전체 공유는 모르는 사람이라 알리지 않는다.
 function presenceRoomName(roomKey) {
   const r = privateRooms.rooms.find((x) => x.roomId === roomKey)
-  return r?.name || t('group.unnamed')
+  return r ? roomDisplayName(privateRooms.rooms, r.roomId, t('group.unnamed')) : t('group.unnamed')
 }
 function presenceToast(kind, roomKey, device) {
   if (!isValidIdentity(device?.identity)) return
@@ -170,6 +171,8 @@ const pairFlow = usePairFlow({
     const devs = socket.privateRoomDevices?.value?.[roomId]
     return Array.isArray(devs) ? devs.length : null
   },
+  getRoomDevices: (roomId) => socket.privateRoomDevices?.value?.[roomId] ?? null,
+  getMySocketId: () => socket.mySocketId?.value ?? null,
   onRoomReady: async (roomId) => {
     // 새 방 탭으로 자동 이동하고, 그 방의 파일 목록을 불러온다
     shareScope.setScope(scopeForPrivateRoom(roomId))
@@ -426,6 +429,19 @@ socket.onReconnected(() => {
   notification.showSuccess(t('notification.reconnected'))
 })
 
+// 복구된 연결에서 같은 네트워크 방이 바뀌면(와이파이 전환 등) 새 방 기준으로 목록·접속 기기를 다시 맞춘다
+socket.onIpRoomChanged?.(() => {
+  presence.markInitial()
+  roomManager.setRooms({
+    globalRoomId: socket.globalRoomId.value,
+    ipRoomId: socket.ipRoomId.value
+  })
+  fileManager.clearFiles()
+  textShare.clearAllTexts()
+  fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
+  textQueue.loadRooms(allRoomIds.value)
+})
+
 // ========================================
 // 룸 관리 및 소켓 통신
 // ========================================
@@ -536,7 +552,7 @@ function roomWhere(roomId) {
   if (roomId && roomId === roomManager.globalRoomId.value) return t('shareScope.global')
   const r = roomId ? privateRooms.rooms.find((x) => x.roomId === roomId) : null
   if (!r) return t('shareScope.ip')
-  if (isGroupRoomId(r.roomId)) return `'${r.name || t('group.unnamed')}'`
+  if (isGroupRoomId(r.roomId)) return `'${roomDisplayName(privateRooms.rooms, r.roomId, t('group.unnamed'))}'`
   const peer = isValidIdentity(r.peer?.identity) ? identityName(r.peer.identity, t) : t('pair.unknownDevice')
   return `'${t('pair.tabTitle', { name: peer })}'`
 }

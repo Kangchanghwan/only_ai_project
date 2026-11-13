@@ -1,9 +1,10 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { useEscapeClose } from '../composables/useEscapeClose'
 
 const { t } = useI18n()
 
-defineProps({
+const props = defineProps({
   qrCodeDataUrl: {
     type: String,
     default: null
@@ -15,6 +16,7 @@ defineProps({
 })
 
 const emit = defineEmits(['close'])
+useEscapeClose(() => props.isOpen, () => emit('close'))
 
 function handleOverlayClick(event) {
   if (event.target === event.currentTarget) {
@@ -27,10 +29,10 @@ function handleOverlayClick(event) {
   <Transition name="qr-zoom-modal">
     <div
       v-if="isOpen"
-      class="qr-zoom-overlay fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+      class="qr-zoom-overlay fixed inset-0 bg-black/70 flex items-center justify-center z-[80] p-4"
       @click="handleOverlayClick"
     >
-      <div class="qr-zoom-card relative bg-white rounded-2xl p-6 shadow-2xl" @click.stop>
+      <div role="dialog" aria-modal="true" :aria-label="t('qr.backgroundHint')" class="qr-zoom-card relative bg-white rounded-2xl p-6 shadow-2xl" @click.stop>
         <button
           type="button"
           class="qr-zoom-close absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 text-2xl leading-none"

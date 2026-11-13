@@ -13,6 +13,8 @@ const { t } = useI18n()
 const props = defineProps({
   /** { roomId, peer, status: 'online'|'offline'|'connecting'|'left' } */
   room: { type: Object, required: true },
+  /** 같은 이름 방이 여럿일 때 번호가 붙은 표시 이름(없으면 room.name) */
+  displayName: { type: String, default: '' },
   /** 그룹 방: 지금 방에 있는 기기 수(나 포함). 모르면 null */
   memberCount: { type: Number, default: null },
   /** 지금 방에 있는 다른 기기들(나 제외). 상태 줄 이름과 아바타에 쓴다 */
@@ -21,7 +23,7 @@ const props = defineProps({
 const emit = defineEmits(['leave', 'invite'])
 
 const isGroup = computed(() => isGroupRoomId(props.room.roomId))
-const groupTitle = computed(() => props.room.name || t('group.unnamed'))
+const groupTitle = computed(() => props.displayName || props.room.name || t('group.unnamed'))
 const otherNames = computed(() =>
   props.others.filter((d) => isValidIdentity(d?.identity)).slice(0, 2).map((d) => identityName(d.identity, t))
 )

@@ -169,4 +169,15 @@ describe('usePairFlow 방 이름·같은 방 표시 (1:1 연결로 만든 방도
     expect(flow.pairStates.value.C).toMatchObject({ state: 'paired' })
     flow.destroy()
   })
+
+  it('peer 없이 같이 쓰는 그룹 방에 정확히 2대가 있으면 상대 기기는 "같은 방"으로 바뀐다 (서버 pair:invite 규칙)', async () => {
+    const devs = ref([{ socketId: 'ME' }, { socketId: 'Z' }])
+    const { pr, flow } = mk({ getRoomDevices: () => devs.value, getMySocketId: () => 'ME' })
+    const gid = 'prv-g-' + 'ab12'.repeat(6)
+    await pr.addRoom({ roomId: gid, peer: null, roomSecret: new Uint8Array(32).fill(7), ticket: 't', name: '방' })
+    expect(flow.pairStates.value.Z).toMatchObject({ state: 'paired', roomId: gid })
+    devs.value = [...devs.value, { socketId: 'Y' }]
+    expect(flow.pairStates.value.Z).toBeUndefined()
+    flow.destroy()
+  })
 })

@@ -137,7 +137,8 @@
     "ipNotice": "Andra personer i samma nätverk (skola, kontor, kafé) kan också se det.",
     "manage": "Hantera namnlapp",
     "notAuth": "Namnlappen skiljer bara enheter åt. Det är ingen identitetskontroll.",
-    "globalWarning": "Alla, även okända, kan se det du skickar och din enhetsinformation (djurlapp, enhet och webbläsare). Använd ”Samma nätverk” för känsligt innehåll."
+    "globalWarning": "Alla, även okända, kan se det du skickar och din enhetsinformation (djurlapp, enhet och webbläsare). Använd ”Samma nätverk” för känsligt innehåll.",
+    "pairSasLoading": "Läser in bilder…"
   },
   "shareScope": {
     "label": "Dela med",
@@ -377,7 +378,8 @@
     "tooLong": "För många filer är valda och QR-koden kan bli svår att skanna (URL: {length} tecken). Dela gärna upp filerna.",
     "urlDetail": "URL-detaljer",
     "lengthDetail": "Längd: {length} / {max} tecken",
-    "multiHint": "Skanna QR-koden med en mobil så laddas de valda filerna ned automatiskt, en i taget."
+    "multiHint": "Skanna QR-koden med en mobil så laddas de valda filerna ned automatiskt, en i taget.",
+    "singleTitle": "QR-kod för filnedladdning"
   },
   "fileGallery": {
     "loadMore": "Visa fler"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Lagring och användning",
-    "retention": "Även när du är ansluten rensas filer automatiskt efter högst 1 dag. Rensningen körs periodiskt, så exakt tid (på sekunden) garanteras inte, och när alla enheter lämnat kan det ske tidigare. Ladda ner det du behöver direkt."
+    "retention": "Även när du är ansluten rensas filer automatiskt efter högst 1 dag. Rensningen körs periodiskt, så exakt tid (på sekunden) garanteras inte, och när alla enheter lämnat kan det ske tidigare. Ladda ner det du behöver direkt.",
+    "roomRetention": "Filer i det här rummet sparas i högst ungefär 1 dygn. De tas inte bort direkt när alla enheter lämnar. Rensningen körs regelbundet, så den exakta tiden är inte garanterad. Texter sparas bara i 10 minuter.",
+    "roomVisibility": "Bara enheter som är i det här rummet kan se dem."
   },
   "download": {
     "title": "Laddar ner filer...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} filer nedladdade som ZIP",
     "zipFailed": "Det gick inte att ladda ner ZIP-filen. Försök igen",
     "fileStarted": "Nedladdningen har startat",
-    "close": "Stäng"
+    "close": "Stäng",
+    "titleOne": "Ta emot fil"
   },
   "presence": {
     "joinedIp": "{who} anslöt till ditt nätverk",

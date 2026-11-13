@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import PairConfirmSheet from './PairConfirmSheet.vue'
 import i18n from '../i18n/index.js'
 import manifest from '../assets/sas/manifest.json'
+import { loadAllSas } from '../test/sasLoad.js'
 
 const peer = { socketId: 'p1', identity: { adj: 1, animal: 1 }, deviceType: 'mobile' }
 const base = { sessionId: 's1', role: 'initiator', state: 'keyed', peer, sas: [0, 5, 63, 10] }
@@ -28,6 +29,7 @@ describe('PairConfirmSheet', () => {
 
   it('달라요/같아요가 confirm(false/true)을 올린다', async () => {
     mountSheet()
+    await loadAllSas()
     q('pair-different').click()
     q('pair-same').click()
     await wrapper.vm.$nextTick()

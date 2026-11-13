@@ -2,6 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import PairRequestSheet from './PairRequestSheet.vue'
 import i18n from '../i18n/index.js'
+import { loadAllSas } from '../test/sasLoad.js'
 
 const session = {
   sessionId: 's1', role: 'responder', state: 'incoming', sameNetwork: true, legacy: false, sas: [1, 2, 3, 4],
@@ -53,12 +54,15 @@ describe('PairRequestSheet', () => {
     q('pair-accept').click()
     expect(wrapper.emitted('respond')).toBeUndefined()
     await wrapper.setProps({ session: { ...session } })
+    expect(q('pair-accept').disabled).toBe(true) // 데이터가 와도 그림 4장이 뜨기 전에는 막힌다
+    await loadAllSas()
     expect(q('pair-accept').disabled).toBe(false)
     expect(q('pair-accept-spinner')).toBeNull()
   })
 
   it('수락은 same:true 한 번, 거절/요청 받지 않기가 respond를 올린다', async () => {
     mountSheet()
+    await loadAllSas()
     q('pair-accept').click()
     q('pair-decline').click()
     q('pair-block').click()

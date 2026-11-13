@@ -137,7 +137,8 @@
     "ipNotice": "Auch andere Personen im selben Netzwerk (Schule, Büro, Café) können es sehen.",
     "manage": "Namensschild verwalten",
     "notAuth": "Das Namensschild unterscheidet nur Geräte. Es ist keine Identitätsprüfung.",
-    "globalWarning": "Jeder, auch Fremde, kann sehen, was du sendest, sowie deine Geräteinfos (Tier-Namensschild, Gerät und Browser). Sensible Dateien sendest du besser im „Gleichen Netzwerk“."
+    "globalWarning": "Jeder, auch Fremde, kann sehen, was du sendest, sowie deine Geräteinfos (Tier-Namensschild, Gerät und Browser). Sensible Dateien sendest du besser im „Gleichen Netzwerk“.",
+    "pairSasLoading": "Bilder werden geladen…"
   },
   "shareScope": {
     "label": "Teilen mit",
@@ -377,7 +378,8 @@
     "tooLong": "Es sind so viele Dateien ausgewählt, dass der QR-Code schwer lesbar sein kann (URL: {length} Zeichen). Teile die Dateien am besten auf.",
     "urlDetail": "URL-Details",
     "lengthDetail": "Länge: {length} / {max} Zeichen",
-    "multiHint": "Scanne den QR-Code mit einem Smartphone, dann werden die ausgewählten Dateien nacheinander automatisch heruntergeladen."
+    "multiHint": "Scanne den QR-Code mit einem Smartphone, dann werden die ausgewählten Dateien nacheinander automatisch heruntergeladen.",
+    "singleTitle": "QR-Code zum Datei-Download"
   },
   "fileGallery": {
     "loadMore": "Mehr laden"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Hinweise zu Speicherung und Nutzung",
-    "retention": "Auch während du verbunden bist, werden Dateien nach spätestens 1 Tag automatisch bereinigt. Die Bereinigung läuft periodisch, daher ist der genaue Zeitpunkt (auf die Sekunde) nicht garantiert; sobald alle Geräte weg sind, kann früher gelöscht werden. Lade Benötigtes gleich herunter."
+    "retention": "Auch während du verbunden bist, werden Dateien nach spätestens 1 Tag automatisch bereinigt. Die Bereinigung läuft periodisch, daher ist der genaue Zeitpunkt (auf die Sekunde) nicht garantiert; sobald alle Geräte weg sind, kann früher gelöscht werden. Lade Benötigtes gleich herunter.",
+    "roomRetention": "Dateien in diesem Raum werden bis zu etwa 1 Tag aufbewahrt. Sie werden nicht sofort gelöscht, wenn alle Geräte den Raum verlassen. Die Bereinigung läuft regelmäßig, daher ist der genaue Zeitpunkt nicht garantiert. Texte werden nur 10 Minuten aufbewahrt.",
+    "roomVisibility": "Nur Geräte in diesem Raum können sie sehen."
   },
   "download": {
     "title": "Dateien werden heruntergeladen...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} Dateien als ZIP heruntergeladen",
     "zipFailed": "ZIP konnte nicht heruntergeladen werden. Bitte erneut versuchen",
     "fileStarted": "Download gestartet",
-    "close": "Schließen"
+    "close": "Schließen",
+    "titleOne": "Datei empfangen"
   },
   "presence": {
     "joinedIp": "{who} ist deinem Netzwerk beigetreten",

@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import DeviceList from './DeviceList.vue'
 import i18n from '../i18n/index.js'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext.js'
+import { loadAllSas } from '../test/sasLoad.js'
 
 const me = { socketId: 'me', identity: { adj: 0, animal: 0 }, deviceType: 'desktop', browser: 'Chrome', os: 'mac', joinedAt: 1 }
 const peer = { socketId: 'p1', identity: { adj: 1, animal: 1 }, deviceType: 'mobile', browser: 'Safari', os: 'ios', joinedAt: 2 }
@@ -89,6 +90,9 @@ describe('DeviceList 1:1 버튼', () => {
       expect(imgs).toHaveLength(4)
       for (const img of imgs) expect(img.attributes('alt').length).toBeGreaterThan(0)
       const same = panel.find('[data-testid="pair-same-inline"]')
+      expect(same.attributes('disabled')).toBeDefined() // 그림 4장이 뜨기 전
+      await loadAllSas(wrapper.element)
+      expect(same.attributes('disabled')).toBeUndefined()
       expect(same.text()).toBe('같아요')
       expect(same.classes()).toContain('w-full')
       await same.trigger('click')
@@ -101,6 +105,7 @@ describe('DeviceList 1:1 버튼', () => {
       expect(panel.text()).not.toContain('상대가 수락하면 연결돼요')
       await panel.find('[data-testid="pair-cancel-button"]').trigger('click')
       expect(ctx.cancel).toHaveBeenCalledWith('s1')
+      await loadAllSas(wrapper.element)
       await panel.find('[data-testid="pair-same-inline"]').trigger('click')
       expect(ctx.confirm).toHaveBeenCalledWith('s1')
     })

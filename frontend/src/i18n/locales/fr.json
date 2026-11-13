@@ -137,7 +137,8 @@
     "ipNotice": "Les autres personnes du même réseau (école, bureau, café) peuvent aussi le voir.",
     "manage": "Gérer l'étiquette",
     "notAuth": "L'étiquette sert seulement à distinguer les appareils. Ce n'est pas une vérification d'identité.",
-    "globalWarning": "Tout le monde, y compris des inconnus, peut voir ce que vous envoyez et les infos de votre appareil (étiquette animale, appareil et navigateur). Pour du contenu sensible, utilisez « Même réseau »."
+    "globalWarning": "Tout le monde, y compris des inconnus, peut voir ce que vous envoyez et les infos de votre appareil (étiquette animale, appareil et navigateur). Pour du contenu sensible, utilisez « Même réseau ».",
+    "pairSasLoading": "Chargement des images…"
   },
   "shareScope": {
     "label": "Partager avec",
@@ -377,7 +378,8 @@
     "tooLong": "Trop de fichiers sont sélectionnés et le code QR risque d'être difficile à scanner (URL : {length} caractères). Il est conseillé de répartir les fichiers.",
     "urlDetail": "Détails de l'URL",
     "lengthDetail": "Longueur : {length} / {max} caractères",
-    "multiHint": "Scannez le code QR avec un mobile et les fichiers sélectionnés se téléchargent automatiquement l'un après l'autre."
+    "multiHint": "Scannez le code QR avec un mobile et les fichiers sélectionnés se téléchargent automatiquement l'un après l'autre.",
+    "singleTitle": "QR de téléchargement du fichier"
   },
   "fileGallery": {
     "loadMore": "Charger plus"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Conservation et utilisation",
-    "retention": "Même connecté, un fichier est supprimé automatiquement au bout de 1 jour maximum. Le nettoyage s'exécute périodiquement : l'heure exacte (à la seconde) n'est pas garantie, et la suppression peut être plus rapide quand tous les appareils sont partis. Téléchargez vite ce dont vous avez besoin."
+    "retention": "Même connecté, un fichier est supprimé automatiquement au bout de 1 jour maximum. Le nettoyage s'exécute périodiquement : l'heure exacte (à la seconde) n'est pas garantie, et la suppression peut être plus rapide quand tous les appareils sont partis. Téléchargez vite ce dont vous avez besoin.",
+    "roomRetention": "Les fichiers de ce salon sont conservés environ 1 jour au maximum. Ils ne sont pas supprimés immédiatement quand tous les appareils partent. Le nettoyage s'exécute périodiquement, l'heure exacte n'est donc pas garantie. Les textes ne sont conservés que 10 minutes.",
+    "roomVisibility": "Seuls les appareils présents dans ce salon peuvent les voir."
   },
   "download": {
     "title": "Téléchargement des fichiers...",
@@ -535,7 +539,8 @@
     "zipDone": "{count} fichiers téléchargés en ZIP",
     "zipFailed": "Impossible de télécharger le ZIP. Réessayez",
     "fileStarted": "Téléchargement démarré",
-    "close": "Fermer"
+    "close": "Fermer",
+    "titleOne": "Recevoir le fichier"
   },
   "presence": {
     "joinedIp": "{who} a rejoint votre réseau",

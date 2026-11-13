@@ -17,3 +17,16 @@ export function sasImage(value) {
 export function sasImages(sas) {
   return (sas || []).map((v) => sasImage(v)).filter(Boolean)
 }
+
+let preloaded = false
+/** 그림 64장을 미리 받아 둔다(한 번만). 확인 화면에서 바로 그려지게 한다. 실패해도 무시 */
+export function preloadSasImages() {
+  if (preloaded || typeof Image === 'undefined') return
+  preloaded = true
+  try {
+    for (const meta of manifest) {
+      const src = svgUrls[`../assets/sas/${meta.id}.svg`]
+      if (src) { const img = new Image(); img.decoding = 'async'; img.src = src }
+    }
+  } catch { /* 미리 받기는 실패해도 무방 */ }
+}

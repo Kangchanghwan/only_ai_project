@@ -137,7 +137,8 @@
     "ipNotice": "Other people on the same network, such as a school, office or cafe, can see it too.",
     "manage": "Manage name tag",
     "notAuth": "The name tag only tells devices apart. It is not identity verification.",
-    "globalWarning": "Everyone, including strangers, can see what you send and your device info (animal name tag, device and browser), and unlocked text is kept as plain text for 10 minutes. Turn on 'Lock with a password' for sensitive files and text so only people with the password can open them."
+    "globalWarning": "Everyone, including strangers, can see what you send and your device info (animal name tag, device and browser), and unlocked text is kept as plain text for 10 minutes. Turn on 'Lock with a password' for sensitive files and text so only people with the password can open them.",
+    "pairSasLoading": "Loading pictures…"
   },
   "shareScope": {
     "label": "Share with",
@@ -465,7 +466,8 @@
     "tooLong": "Too many files are selected, so the QR code may be hard to scan (URL: {length} characters). Consider splitting the files.",
     "urlDetail": "URL details",
     "lengthDetail": "Length: {length} / {max} characters",
-    "multiHint": "Scan the QR code on a mobile device and the selected files download one after another automatically."
+    "multiHint": "Scan the QR code on a mobile device and the selected files download one after another automatically.",
+    "singleTitle": "File download QR"
   },
   "fileGallery": {
     "loadMore": "Load more"
@@ -480,7 +482,9 @@
   },
   "guide": {
     "title": "Storage and usage notes",
-    "retention": "Even while you are connected, files are cleaned up automatically after at most 1 day. Cleanup runs periodically, so the exact time (to the second) is not guaranteed, and items may be deleted sooner once every device leaves. Download what you need right away."
+    "retention": "Even while you are connected, files are cleaned up automatically after at most 1 day. Cleanup runs periodically, so the exact time (to the second) is not guaranteed, and items may be deleted sooner once every device leaves. Download what you need right away.",
+    "roomRetention": "Files in this room are kept for up to about 1 day. They are not deleted right away when all devices leave. Cleanup runs periodically, so the exact time is not guaranteed. Texts are kept for 10 minutes only.",
+    "roomVisibility": "Only devices in this room can see them."
   },
   "lock": {
     "chipStart": "Lock with a password",
@@ -761,7 +765,8 @@
     "zipDone": "Downloaded {count} files as a ZIP",
     "zipFailed": "Couldn't download the ZIP. Please try again",
     "fileStarted": "Download started",
-    "close": "Close"
+    "close": "Close",
+    "titleOne": "Get file"
   },
   "presence": {
     "joinedIp": "{who} joined your network",

@@ -30,6 +30,8 @@ onBeforeUnmount(() => { if (timer) clearInterval(timer) })
 const tiles = computed(() =>
   (props.code || []).map((index) => ({ index, ...pictureOf(index), name: t(pictureKey(index)) }))
 )
+const tileState = ref({})
+const markTile = (i, s) => { tileState.value = { ...tileState.value, [i]: s } }
 const namesLine = computed(() => tiles.value.map((x) => x.name).join(' · '))
 const leftSec = computed(() => Math.max(0, Math.ceil((props.expiresAt - now.value) / 1000)))
 const leftText = computed(() => t('code.expiresIn', { min: Math.floor(leftSec.value / 60), sec: leftSec.value % 60 }))
@@ -48,10 +50,19 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
         :key="i"
         role="img"
         :aria-label="tile.name"
-        class="aspect-square bg-background border border-border rounded-xl p-2 flex items-center justify-center"
+        class="relative aspect-square bg-background border border-border rounded-xl p-2 flex items-center justify-center"
         data-testid="picture-code-tile"
       >
-        <img :src="tile.src" alt="" draggable="false" class="w-full h-full object-contain select-none" />
+        <span v-if="tileState[i] === 'failed'" class="text-sm font-semibold text-text-primary text-center" data-testid="picture-code-tile-label">{{ tile.name }}</span>
+        <template v-else>
+          <img
+            :src="tile.src" alt="" draggable="false"
+            class="w-full h-full object-contain select-none transition-opacity"
+            :class="tileState[i] === 'loaded' ? 'opacity-100' : 'opacity-0 absolute'"
+            @load="markTile(i, 'loaded')" @error="markTile(i, 'failed')"
+          />
+          <span v-if="!tileState[i]" class="inline-block w-5 h-5 rounded-full border-2 border-scope-private border-t-transparent animate-spin" aria-hidden="true" data-testid="picture-code-tile-spinner"></span>
+        </template>
       </div>
     </div>
     <div v-else class="mt-3 grid grid-cols-4 gap-2" aria-hidden="true" data-testid="picture-code-skeleton">

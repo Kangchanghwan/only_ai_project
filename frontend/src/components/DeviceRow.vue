@@ -46,7 +46,8 @@ const seconds = computed(() => {
 })
 
 const images = computed(() => sasImages(st.value?.sas))
-const sasReady = computed(() => images.value.length === 4)
+const tilesReady = ref(false)
+const sasReady = computed(() => images.value.length === 4 && tilesReady.value)
 const isPending = computed(() => !!pair && st.value?.state === 'pending')
 const confirmed = computed(() => !!st.value?.confirmed)
 
@@ -131,7 +132,7 @@ const joinedText = computed(() => {
       data-testid="pair-pending-panel"
     >
       <p class="m-0 text-sm font-semibold">{{ t('pair.confirm.askSame') }}</p>
-      <PairSasTiles :images="images" :size="wide ? 'md' : 'lg'" />
+      <PairSasTiles :images="images" :size="wide ? 'md' : 'lg'" @ready-change="tilesReady = $event" />
       <p
         v-if="confirmed"
         class="m-0 min-h-[44px] flex items-center justify-center text-sm font-semibold text-scope-private text-center"
@@ -141,8 +142,9 @@ const joinedText = computed(() => {
       <div v-else-if="wide" class="flex flex-col">
         <button
           type="button"
-          class="w-full min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+          class="w-full min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
+          :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"
           data-testid="pair-same-inline"
           @click="pair.confirm(st.sessionId)"
@@ -158,8 +160,9 @@ const joinedText = computed(() => {
         >{{ t('pair.cancel') }}</button>
         <button
           type="button"
-          class="min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+          class="min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
+          :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"
           data-testid="pair-same-inline"
           @click="pair.confirm(st.sessionId)"

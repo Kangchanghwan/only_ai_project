@@ -137,7 +137,8 @@
     "ipNotice": "Những người khác trong cùng mạng (trường học, văn phòng, quán cà phê) cũng có thể thấy.",
     "manage": "Quản lý thẻ tên",
     "notAuth": "Thẻ tên chỉ để phân biệt thiết bị, không phải xác thực danh tính.",
-    "globalWarning": "Bất kỳ ai, kể cả người lạ, đều có thể thấy nội dung bạn gửi và thông tin thiết bị (thẻ động vật, thiết bị và trình duyệt). Với nội dung nhạy cảm, hãy dùng “Cùng mạng”."
+    "globalWarning": "Bất kỳ ai, kể cả người lạ, đều có thể thấy nội dung bạn gửi và thông tin thiết bị (thẻ động vật, thiết bị và trình duyệt). Với nội dung nhạy cảm, hãy dùng “Cùng mạng”.",
+    "pairSasLoading": "Đang tải hình ảnh…"
   },
   "shareScope": {
     "label": "Chia sẻ với",
@@ -377,7 +378,8 @@
     "tooLong": "Đã chọn quá nhiều tệp nên mã QR có thể khó quét (URL: {length} ký tự). Nên chia nhỏ các tệp.",
     "urlDetail": "Chi tiết URL",
     "lengthDetail": "Độ dài: {length} / {max} ký tự",
-    "multiHint": "Quét mã QR bằng điện thoại, các tệp đã chọn sẽ tự động được tải xuống lần lượt."
+    "multiHint": "Quét mã QR bằng điện thoại, các tệp đã chọn sẽ tự động được tải xuống lần lượt.",
+    "singleTitle": "Mã QR tải tệp"
   },
   "fileGallery": {
     "loadMore": "Tải thêm"
@@ -392,7 +394,9 @@
   },
   "guide": {
     "title": "Lưu trữ và sử dụng",
-    "retention": "Dù đang kết nối, tệp vẫn được tự động dọn sau tối đa 1 ngày. Việc dọn chạy định kỳ nên không đảm bảo thời điểm chính xác (đến từng giây), và có thể xóa sớm hơn khi mọi thiết bị đã rời đi. Hãy tải ngay những gì bạn cần."
+    "retention": "Dù đang kết nối, tệp vẫn được tự động dọn sau tối đa 1 ngày. Việc dọn chạy định kỳ nên không đảm bảo thời điểm chính xác (đến từng giây), và có thể xóa sớm hơn khi mọi thiết bị đã rời đi. Hãy tải ngay những gì bạn cần.",
+    "roomRetention": "Tệp trong phòng này được giữ tối đa khoảng 1 ngày. Tệp không bị xóa ngay khi tất cả thiết bị rời đi. Việc dọn dẹp chạy định kỳ nên không đảm bảo thời điểm chính xác. Văn bản chỉ được giữ 10 phút.",
+    "roomVisibility": "Chỉ các thiết bị đang ở trong phòng này mới thấy được."
   },
   "download": {
     "title": "Đang tải tệp...",
@@ -535,7 +539,8 @@
     "zipDone": "Đã tải {count} tệp dưới dạng ZIP",
     "zipFailed": "Không tải được ZIP. Vui lòng thử lại",
     "fileStarted": "Đã bắt đầu tải",
-    "close": "Đóng"
+    "close": "Đóng",
+    "titleOne": "Nhận tệp"
   },
   "presence": {
     "joinedIp": "{who} đã vào mạng của bạn",

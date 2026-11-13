@@ -1,3 +1,4 @@
+import { roomDisplayName } from '../utils/roomDisplayName.js'
 import { ref, shallowRef, computed } from 'vue'
 import QRCode from 'qrcode'
 import { newRoomSecret } from '../utils/pairCrypto.js'
@@ -54,6 +55,7 @@ export function useGroupRooms({
 
   const safeTrack = (name, params) => { try { if (params === undefined) track(name); else track(name, params) } catch { /* 측정 실패는 무시 */ } }
   const displayName = (name) => name || t('group.unnamed')
+  const shownName = (roomId, name) => (privateRooms.rooms?.some((r) => r.roomId === roomId) ? roomDisplayName(privateRooms.rooms, roomId, t('group.unnamed')) : displayName(name))
 
   function defaultName() {
     return sanitizeRoomName(t('group.defaultName', { name: getMyName() || t('pair.unknownDevice') }))
@@ -91,7 +93,7 @@ export function useGroupRooms({
       safeTrack('room_legacy_invite')
       return
     }
-    const name = displayName(room.name)
+    const name = shownName(roomId, room.name)
     inviteSheet.value = { roomId, name, url: '', qrDataUrl: '', loading: true }
     // 폰이면 그림, PC면 QR이 기본 탭
     inviteTab.value = isMobile ? 'picture' : 'qr'
@@ -312,7 +314,7 @@ export function useGroupRooms({
         return 'expired'
       }
       await privateRooms.addRoom({ roomId: p.roomId, peer: null, roomSecret: p.secret, ticket: entry.ticket, name: p.name })
-      notify.showSuccess(t('group.joined', { name: displayName(p.name) }))
+      notify.showSuccess(t('group.joined', { name: shownName(p.roomId, p.name) }))
       return 'joined'
     } catch (e) {
       console.warn('[group] 입장 실패:', e?.message || e)
