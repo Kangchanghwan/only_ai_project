@@ -402,7 +402,7 @@
     "qrCode": "二维码",
     "selectAllHint": "选择所有文件",
     "deselectAllHint": "取消选择所有文件",
-    "downloadHint": "按顺序依次下载所选文件",
+    "downloadHint": "将所选文件打包为一个 ZIP 下载(超过 200MB 的文件单独下载)",
     "qrCodeHint": "为所选文件生成二维码"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "发送到你的网络",
     "toGlobal": "发送给所有人（公开）",
     "toPair": "发送给你的 1:1 对象"
+  },
+  "multiDownload": {
+    "title": "下载多个文件",
+    "intro": "小文件打包成一个 ZIP,超过 200MB 的文件单独下载。第一项已开始下载。",
+    "note": "浏览器可能会阻止同时开始的多个下载,其余项目请逐个点击下载。",
+    "pageIntro": "{count} 个文件",
+    "zipOne": "ZIP · {count} 个文件",
+    "zipMany": "ZIP {index}/{total} · {count} 个文件",
+    "get": "下载",
+    "again": "重新下载",
+    "preparing": "准备中",
+    "progress": "正在下载 {percent}%",
+    "done": "已下载",
+    "started": "已开始",
+    "failed": "失败",
+    "zipDone": "已将 {count} 个文件打包为 ZIP 下载",
+    "zipFailed": "无法下载 ZIP,请重试",
+    "fileStarted": "已开始下载",
+    "close": "关闭"
   }
 }

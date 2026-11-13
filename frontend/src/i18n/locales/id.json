@@ -402,7 +402,7 @@
     "qrCode": "Kode QR",
     "selectAllHint": "Pilih semua file",
     "deselectAllHint": "Batalkan pilihan semua file",
-    "downloadHint": "Unduh file yang dipilih satu per satu",
+    "downloadHint": "Unduh file terpilih dalam satu ZIP (di atas 200MB terpisah)",
     "qrCodeHint": "Buat kode QR untuk file yang dipilih"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Dikirim ke jaringan Anda",
     "toGlobal": "Dikirim ke semua orang (publik)",
     "toPair": "Dikirim ke lawan 1:1 Anda"
+  },
+  "multiDownload": {
+    "title": "Unduh file",
+    "intro": "File kecil diunduh dalam satu ZIP; file di atas 200MB diunduh terpisah. Unduhan pertama sudah dimulai.",
+    "note": "Browser dapat memblokir unduhan yang dimulai bersamaan, jadi ketuk setiap item lainnya untuk mengunduhnya.",
+    "pageIntro": "{count} file",
+    "zipOne": "ZIP · {count} file",
+    "zipMany": "ZIP {index}/{total} · {count} file",
+    "get": "Unduh",
+    "again": "Unduh lagi",
+    "preparing": "Menyiapkan",
+    "progress": "Mengunduh {percent}%",
+    "done": "Terunduh",
+    "started": "Dimulai",
+    "failed": "Gagal",
+    "zipDone": "{count} file diunduh sebagai ZIP",
+    "zipFailed": "Tidak dapat mengunduh ZIP. Coba lagi",
+    "fileStarted": "Unduhan dimulai",
+    "close": "Tutup"
   }
 }

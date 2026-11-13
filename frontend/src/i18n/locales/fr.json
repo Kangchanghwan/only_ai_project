@@ -402,7 +402,7 @@
     "qrCode": "Code QR",
     "selectAllHint": "Sélectionner tous les fichiers",
     "deselectAllHint": "Désélectionner tous les fichiers",
-    "downloadHint": "Télécharger les fichiers sélectionnés les uns après les autres",
+    "downloadHint": "Télécharger les fichiers sélectionnés dans un ZIP (plus de 200 Mo à part)",
     "qrCodeHint": "Générer des codes QR pour les fichiers sélectionnés"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Envoyé à votre réseau",
     "toGlobal": "Envoyé à tout le monde (public)",
     "toPair": "Envoyé à votre contact 1:1"
+  },
+  "multiDownload": {
+    "title": "Télécharger les fichiers",
+    "intro": "Les petits fichiers arrivent dans un seul ZIP ; ceux de plus de 200 Mo sont téléchargés à part. Le premier a commencé.",
+    "note": "Les navigateurs peuvent bloquer les téléchargements lancés en même temps : touchez chaque élément restant pour le télécharger.",
+    "pageIntro": "{count} fichiers",
+    "zipOne": "ZIP · {count} fichiers",
+    "zipMany": "ZIP {index}/{total} · {count} fichiers",
+    "get": "Télécharger",
+    "again": "Télécharger à nouveau",
+    "preparing": "Préparation",
+    "progress": "Téléchargement {percent} %",
+    "done": "Téléchargé",
+    "started": "Démarré",
+    "failed": "Échec",
+    "zipDone": "{count} fichiers téléchargés en ZIP",
+    "zipFailed": "Impossible de télécharger le ZIP. Réessayez",
+    "fileStarted": "Téléchargement démarré",
+    "close": "Fermer"
   }
 }

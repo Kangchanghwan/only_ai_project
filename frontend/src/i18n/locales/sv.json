@@ -402,7 +402,7 @@
     "qrCode": "QR-kod",
     "selectAllHint": "Markera alla filer",
     "deselectAllHint": "Avmarkera alla filer",
-    "downloadHint": "Ladda ner markerade filer en i taget",
+    "downloadHint": "Ladda ner valda filer som en ZIP (över 200 MB separat)",
     "qrCodeHint": "Skapa QR-koder för markerade filer"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Skickas till ditt nätverk",
     "toGlobal": "Skickas till alla (offentligt)",
     "toPair": "Skickas till din 1:1-motpart"
+  },
+  "multiDownload": {
+    "title": "Ladda ner filer",
+    "intro": "Små filer kommer som en ZIP, filer över 200 MB laddas ner separat. Den första nedladdningen har börjat.",
+    "note": "Webbläsare kan blockera nedladdningar som startar samtidigt, så tryck på varje återstående objekt för att ladda ner det.",
+    "pageIntro": "{count} filer",
+    "zipOne": "ZIP · {count} filer",
+    "zipMany": "ZIP {index}/{total} · {count} filer",
+    "get": "Ladda ner",
+    "again": "Ladda ner igen",
+    "preparing": "Förbereder",
+    "progress": "Laddar ner {percent} %",
+    "done": "Nedladdad",
+    "started": "Startad",
+    "failed": "Misslyckades",
+    "zipDone": "{count} filer nedladdade som ZIP",
+    "zipFailed": "Det gick inte att ladda ner ZIP-filen. Försök igen",
+    "fileStarted": "Nedladdningen har startat",
+    "close": "Stäng"
   }
 }

@@ -11,8 +11,7 @@ import { t } from '../i18n/translate.js'
 import { r2Service } from '../services/r2Service'
 import { fetchOriginal, trackStoreFallback } from '../utils/storeFallback.js'
 
-/** 여러 파일을 연속 트리거할 때 브라우저가 놓치지 않도록 두는 간격 */
-const DOWNLOAD_GAP_MS = 250
+// 여러 파일 받기는 useMultiDownload.js (ZIP 묶음 + 하나씩 받기). 연달아 트리거하면 브라우저가 막는다.
 
 export function useDownload() {
   /** 숨은 <a>로 다운로드를 트리거한다 (attachment 응답이라 페이지는 이동하지 않는다) */
@@ -124,93 +123,8 @@ export function useDownload() {
     }
   }
 
-  /** 룸별로 presigned URL을 한 번에 받아 파일명 → URL 맵을 만든다 (실패한 룸은 빈 맵) */
-  async function resolveDownloadUrls(files) {
-    const byRoom = new Map()
-    for (const file of files) {
-      if (!file?.roomId) continue
-      if (!byRoom.has(file.roomId)) byRoom.set(file.roomId, [])
-      byRoom.get(file.roomId).push(file.name)
-    }
-
-    const urlsByRoom = new Map()
-    await Promise.all(
-      Array.from(byRoom.entries()).map(async ([roomId, names]) => {
-        try {
-          urlsByRoom.set(roomId, await r2Service.getDownloadUrls(roomId, names))
-        } catch (err) {
-          console.warn('[useDownload] 배치 URL 발급 실패, Blob 방식으로 폴백:', roomId, err)
-          urlsByRoom.set(roomId, {})
-        }
-      })
-    )
-    return urlsByRoom
-  }
-
-  /**
-   * 여러 파일을 순차적으로 다운로드합니다.
-   *
-   * presigned URL은 룸별로 한 번에 받고, 각 파일은 짧은 간격을 두고
-   * 네이티브 다운로드로 트리거합니다 (ZIP 압축 없음).
-   *
-   * @param {Array<Object>} files - 다운로드할 파일 배열 [{ name, url, roomId? }, ...]
-   * @param {Object} options - 옵션 객체
-   * @param {Function} options.onProgress - 각 파일 시작/완료 시 호출되는 콜백 (file, status)
-   * @returns {Promise<{success: boolean, successCount: number, failCount: number, total: number, errors?: Array, error?: Error}>} 다운로드 결과
-   */
-  async function downloadParallel(files, options = {}) {
-    try {
-      if (!files || files.length === 0) {
-        throw new Error(t('errors.noFilesToDownload'))
-      }
-
-      const { onProgress } = options
-      const urlsByRoom = await resolveDownloadUrls(files)
-      const results = []
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-
-        if (onProgress) {
-          onProgress(file, 'start')
-        }
-
-        const presignedUrl = urlsByRoom.get(file.roomId)?.[file.name] || null
-        const result = await downloadWithUrl(file, presignedUrl)
-
-        if (onProgress) {
-          onProgress(file, result.success ? 'complete' : 'failed', result.error)
-        }
-
-        results.push(result)
-
-        // 마지막 파일이 아닌 경우 브라우저 다운로드 큐 처리 대기
-        if (i < files.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, DOWNLOAD_GAP_MS))
-        }
-      }
-
-      // 결과 집계
-      const successCount = results.filter(r => r.success).length
-      const failCount = results.filter(r => !r.success).length
-      const errors = results.filter(r => !r.success).map(r => r.error)
-
-      return {
-        success: successCount > 0,
-        successCount,
-        failCount,
-        total: files.length,
-        errors: errors.length > 0 ? errors : undefined
-      }
-    } catch (err) {
-      console.error('순차 다운로드 실패:', err)
-      return { success: false, error: err }
-    }
-  }
-
   return {
     downloadFile,
-    copyFilesToClipboard,
-    downloadParallel
+    copyFilesToClipboard
   }
 }

@@ -12,6 +12,7 @@ import { useClipboard } from './composables/useClipboard'
 import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
+import { useMultiDownload } from './composables/useMultiDownload'
 import { useTextShare } from './composables/useTextShare'
 import { useTextQueue, textBytes, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA } from './composables/useTextQueue'
 import { useShareScope, isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from './composables/useShareScope'
@@ -53,6 +54,7 @@ import PairRequestSheet from './components/PairRequestSheet.vue'
 import PairConfirmSheet from './components/PairConfirmSheet.vue'
 import GroupInviteSheet from './components/GroupInviteSheet.vue'
 import LegacyInviteSheet from './components/LegacyInviteSheet.vue'
+import MultiDownloadSheet from './components/MultiDownloadSheet.vue'
 import GroupJoinSheet from './components/GroupJoinSheet.vue'
 import RoomAddSheet from './components/RoomAddSheet.vue'
 import PictureCodeEnterSheet from './components/PictureCodeEnterSheet.vue'
@@ -444,7 +446,8 @@ async function connectToRoom() {
 
 // 탭이 뒤에 있을 때 도착 표시 (제목 숫자·파비콘 점·선택 알림)
 const arrival = useArrivalBadge({ getMySocketId: () => socket.mySocketId?.value, isMobile })
-const nextTime = useNextTimeHint({ isBlocked: () => arrival.promptVisible.value })
+// 여러 파일 받기 시트가 열려 있으면 안내를 띄우지 않는다 (시트 버튼을 가린다)
+const nextTime = useNextTimeHint({ isBlocked: () => arrival.promptVisible.value || !!multiDownload.sheet.value })
 
 // 도착 알림(Web Push): 비공개 방이 바뀌면 서버에 묶음을 다시 맞춘다
 const push = usePush()
@@ -728,56 +731,21 @@ async function handleDownloadFile(file) {
   }
 }
 
+// 여러 파일 받기: 작은 파일은 ZIP 하나로, 200MB 넘는 파일은 하나씩 (2건 이상이면 목록 시트)
+const multiDownload = useMultiDownload({
+  download,
+  t,
+  notification,
+  onSuccess: (count, method) => {
+    // GA4 주요 이벤트: ZIP은 다 받은 파일 수, 하나씩 받기는 브라우저에 넘긴 파일 수
+    trackEvent('file_download', { file_count: count, method })
+    nextTime.markSuccess('download')
+  },
+})
+
 async function handleDownloadParallel(files) {
   if (!files || files.length === 0) return
-
-  notification.showInfo(t('notification.downloadingCount', { count: files.length }))
-
-  const downloadIds = new Map()
-
-  const result = await download.downloadParallel(files, {
-    onProgress: (file, status, error) => {
-      if (status === 'start') {
-        const downloadId = crypto.randomUUID()
-        downloadIds.set(file.name, downloadId)
-        notification.addUpload(downloadId, file.name)
-      } else if (status === 'complete') {
-        const downloadId = downloadIds.get(file.name)
-        if (downloadId) {
-          notification.completeUpload(downloadId)
-          setTimeout(() => {
-            notification.removeUpload(downloadId)
-          }, 1500)
-        }
-      } else if (status === 'failed') {
-        const downloadId = downloadIds.get(file.name)
-        if (downloadId) {
-          notification.failUpload(downloadId, error?.message || t('file.downloadFailed'))
-          setTimeout(() => {
-            notification.removeUpload(downloadId)
-          }, 5000)
-        }
-      }
-    }
-  })
-
-  // GA4 주요 이벤트: 실제로 받아진 파일 수만 집계한다 (실패분 제외)
-  if (result.success && result.successCount > 0) {
-    trackEvent('file_download', { file_count: result.successCount })
-    nextTime.markSuccess('download')
-  }
-
-  if (result.success) {
-    if (result.failCount > 0) {
-      notification.showInfo(
-        t('notification.downloadPartial', { success: result.successCount, fail: result.failCount })
-      )
-    } else {
-      notification.showSuccess(t('notification.downloadCountComplete', { count: result.successCount }))
-    }
-  } else {
-    notification.showError(t('file.downloadFailed'))
-  }
+  await multiDownload.start(files)
 }
 
 async function handleCopySelectedToClipboard(files) {
@@ -1439,6 +1407,7 @@ onUnmounted(() => {
         @submit="groupRooms.submitCode"
         @cancel="groupRooms.cancelEnter"
       />
+      <MultiDownloadSheet :sheet="multiDownload.sheet.value" @close="multiDownload.close" @run="multiDownload.run" />
       <LegacyInviteSheet :sheet="groupRooms.legacySheet.value" @close="groupRooms.closeLegacy" @create="groupRooms.createFromLegacy" />
       <GroupJoinSheet :sheet="groupRooms.joinSheet.value" @confirm="groupRooms.confirmJoin" @cancel="groupRooms.cancelJoin" />
 

@@ -298,7 +298,7 @@
     "qrCode": "QR Code",
     "selectAllHint": "Select all files",
     "deselectAllHint": "Deselect all files",
-    "downloadHint": "Download selected files sequentially",
+    "downloadHint": "Download the selected files as one ZIP (files over 200MB separately)",
     "qrCodeHint": "Generate QR codes for selected files",
     "tipSequential": "Tip: Downloads files one by one sequentially"
   },
@@ -743,5 +743,24 @@
     "toIp": "Sent to your network",
     "toGlobal": "Sent to everyone (public)",
     "toPair": "Sent to this room"
+  },
+  "multiDownload": {
+    "title": "Download files",
+    "intro": "Small files come as one ZIP; files over 200MB download separately. The first one has started.",
+    "note": "Browsers can block downloads that start all at once, so tap each remaining item to download it.",
+    "pageIntro": "{count} files",
+    "zipOne": "ZIP · {count} files",
+    "zipMany": "ZIP {index}/{total} · {count} files",
+    "get": "Download",
+    "again": "Download again",
+    "preparing": "Preparing",
+    "progress": "Downloading {percent}%",
+    "done": "Downloaded",
+    "started": "Started",
+    "failed": "Failed",
+    "zipDone": "Downloaded {count} files as a ZIP",
+    "zipFailed": "Couldn't download the ZIP. Please try again",
+    "fileStarted": "Download started",
+    "close": "Close"
   }
 }

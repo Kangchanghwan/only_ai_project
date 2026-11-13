@@ -402,7 +402,7 @@
     "qrCode": "QR-Code",
     "selectAllHint": "Alle Dateien auswählen",
     "deselectAllHint": "Auswahl aller Dateien aufheben",
-    "downloadHint": "Ausgewählte Dateien nacheinander herunterladen",
+    "downloadHint": "Ausgewählte Dateien als ein ZIP herunterladen (über 200 MB einzeln)",
     "qrCodeHint": "QR-Codes für ausgewählte Dateien erstellen"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Wird an dein Netzwerk gesendet",
     "toGlobal": "Wird an alle gesendet (öffentlich)",
     "toPair": "Wird an dein 1:1-Gegenüber gesendet"
+  },
+  "multiDownload": {
+    "title": "Dateien herunterladen",
+    "intro": "Kleine Dateien kommen als ein ZIP, Dateien über 200 MB einzeln. Der erste Download hat begonnen.",
+    "note": "Browser können gleichzeitig startende Downloads blockieren. Tippe daher die übrigen Einträge einzeln an.",
+    "pageIntro": "{count} Dateien",
+    "zipOne": "ZIP · {count} Dateien",
+    "zipMany": "ZIP {index}/{total} · {count} Dateien",
+    "get": "Herunterladen",
+    "again": "Erneut herunterladen",
+    "preparing": "Wird vorbereitet",
+    "progress": "{percent} % wird heruntergeladen",
+    "done": "Heruntergeladen",
+    "started": "Gestartet",
+    "failed": "Fehlgeschlagen",
+    "zipDone": "{count} Dateien als ZIP heruntergeladen",
+    "zipFailed": "ZIP konnte nicht heruntergeladen werden. Bitte erneut versuchen",
+    "fileStarted": "Download gestartet",
+    "close": "Schließen"
   }
 }

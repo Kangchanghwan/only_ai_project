@@ -1,298 +1,134 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+/**
+ * 여러 파일 QR 받기 화면 (#/d?r=&f=).
+ * 예전에는 파일을 0.25초 간격으로 연달아 받아 브라우저가 일부를 막았다. 이제는 작은 파일을 ZIP 하나로,
+ * 200MB 넘는 파일(또는 크기를 모르는 파일)은 하나씩 받는다. 첫 건만 자동으로 시작하고 나머지는 눌러 받는다.
+ */
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { decodeFileNames } from '../utils/router'
 import { r2Service } from '../services/r2Service'
 import { useDownload } from '../composables/useDownload'
+import { useMultiDownload } from '../composables/useMultiDownload'
+import MultiDownloadList from './MultiDownloadList.vue'
 import AppFooter from './AppFooter.vue'
 
 const { t } = useI18n()
 
 const props = defineProps({
-  roomId: {
-    type: String,
-    required: true
-  },
-  fileNamesBase64: {
-    type: String,
-    required: true
-  }
+  roomId: { type: String, required: true },
+  fileNamesBase64: { type: String, required: true }
 })
 
 const download = useDownload()
+// 여기 크기는 응답 길이로 추정한 값이라 ZIP 길이(Content-Length)를 미리 정하지 않는다
+const multi = useMultiDownload({ download, t, exactSizes: false })
 
-// 상태 관리
-const downloadStates = ref({})
-const completedCount = ref(0)
-const failedCount = ref(0)
-const totalFiles = ref(0)
-const isComplete = ref(false)
+const loading = ref(true)
 const hasError = ref(false)
 const errorMessage = ref('')
-const fileNames = ref([])
-const files = ref([])
+const totalFiles = ref(0)
+const items = ref([])
 
-// 진행률 계산
-const progress = computed(() => {
-  if (totalFiles.value === 0) return 0
-  return Math.round((completedCount.value / totalFiles.value) * 100)
-})
-
-// 성공 여부
-const hasSuccess = computed(() => completedCount.value > 0)
-
-// 상태별 파일 필터링
-function getFilesByStatus(status) {
-  return files.value.filter(file => downloadStates.value[file.name] === status)
-}
-
-// 메인 페이지로 이동
 function goHome() {
   window.location.href = window.location.pathname
 }
 
-// 다운로드 시작
-async function startDownload() {
-  if (files.value.length === 0) {
-    hasError.value = true
-    errorMessage.value = t('download.noFiles')
-    return
-  }
-
+/** 받기 주소 응답의 Content-Length로 크기를 알아낸다 (본문은 받지 않고 끊는다). 모르면 null */
+async function probeSize(url) {
+  if (!url) return null
+  const ctrl = new AbortController()
   try {
-    await download.downloadParallel(files.value, {
-      onProgress: (file, status, error) => {
-        if (status === 'start') {
-          downloadStates.value[file.name] = 'downloading'
-        } else if (status === 'complete') {
-          downloadStates.value[file.name] = 'complete'
-          completedCount.value++
-        } else if (status === 'failed') {
-          downloadStates.value[file.name] = 'failed'
-          failedCount.value++
-          console.error(`[DownloadPage] 파일 다운로드 실패: ${file.name}`, error)
-        }
-      }
-    })
-
-    isComplete.value = true
-
-    // 모든 파일이 실패한 경우
-    if (failedCount.value === totalFiles.value) {
-      hasError.value = true
-      errorMessage.value = t('download.roomNotFound')
-    }
-  } catch (error) {
-    console.error('[DownloadPage] 다운로드 중 오류 발생:', error)
-    hasError.value = true
-    errorMessage.value = t('download.errorMessage')
-    isComplete.value = true
+    const res = await fetch(url, { signal: ctrl.signal })
+    const raw = res.headers.get('content-length')
+    ctrl.abort()
+    // 텍스트 파일은 저장소가 압축해 보내며 길이를 주지 않는다(null). 그런 파일은 하나씩 받는다
+    const len = raw === null ? NaN : Number(raw)
+    return res.ok && Number.isFinite(len) && len >= 0 ? len : null
+  } catch {
+    ctrl.abort()
+    return null
   }
 }
 
-// 초기화 및 자동 다운로드 시작
-onMounted(async () => {
-  console.log('[DownloadPage] 마운트됨:', {
-    roomId: props.roomId,
-    fileNamesBase64: props.fileNamesBase64
-  })
-
+async function withSizes(names) {
+  let urls = {}
   try {
-    // 파일명 디코딩
-    fileNames.value = decodeFileNames(props.fileNamesBase64)
+    urls = await r2Service.getDownloadUrls(props.roomId, names)
+  } catch {
+    urls = {}
+  }
+  const sizes = await Promise.all(names.map((name) => probeSize(urls[name])))
+  return names.map((name, i) => ({ name, roomId: props.roomId, size: sizes[i], url: r2Service.getFileUrl(props.roomId, name) }))
+}
 
-    if (fileNames.value.length === 0) {
+function run(item) {
+  return multi.run(item)
+}
+
+onMounted(async () => {
+  try {
+    const names = decodeFileNames(props.fileNamesBase64)
+    if (names.length === 0) {
       hasError.value = true
       errorMessage.value = t('download.invalidLink')
       return
     }
-
-    // 파일 객체 생성
-    files.value = fileNames.value.map(name => ({
-      name,
-      roomId: props.roomId,
-      url: r2Service.getFileUrl(props.roomId, name)
-    }))
-
-    totalFiles.value = files.value.length
-
-    // 초기 상태 설정
-    files.value.forEach(file => {
-      downloadStates.value[file.name] = 'pending'
-    })
-
-    console.log('[DownloadPage] 파일 목록:', files.value)
-
-    // 자동 다운로드 시작 (약간의 딜레이)
-    await new Promise(resolve => setTimeout(resolve, 500))
-    await startDownload()
+    totalFiles.value = names.length
+    const files = await withSizes(names)
+    items.value = multi.buildItems(files)
+    loading.value = false
+    // 첫 건만 자동으로 시작한다 (연달아 시작하면 브라우저가 막는다)
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    if (items.value[0]) await multi.run(items.value[0])
   } catch (error) {
     console.error('[DownloadPage] 초기화 실패:', error)
     hasError.value = true
     errorMessage.value = t('download.pageLoadError')
+  } finally {
+    loading.value = false
   }
 })
-
-// 상태별 아이콘
-function getStatusIcon(status) {
-  switch (status) {
-    case 'pending':
-      return '⏳'
-    case 'downloading':
-      return '⏬'
-    case 'complete':
-      return '✅'
-    case 'failed':
-      return '❌'
-    default:
-      return '📄'
-  }
-}
-
-// 상태별 텍스트
-function getStatusText(status) {
-  switch (status) {
-    case 'pending':
-      return t('download.pending')
-    case 'downloading':
-      return t('download.downloading')
-    case 'complete':
-      return t('download.completed')
-    case 'failed':
-      return t('download.failed')
-    default:
-      return ''
-  }
-}
 </script>
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-[#1a1a2e] to-[#16213e] text-white flex flex-col">
     <div class="flex-1 flex items-center justify-center p-4">
       <div class="max-w-2xl w-full">
-      <!-- 에러 화면 -->
-      <div v-if="hasError && !isComplete" class="bg-surface rounded-2xl p-8 border border-red-500/30 shadow-2xl">
-        <div class="text-center">
-          <div class="text-6xl mb-4">❌</div>
-          <h1 class="text-2xl font-bold mb-4 text-red-400">{{ t('download.error') }}</h1>
-          <p class="text-text-secondary mb-6">{{ errorMessage }}</p>
-          <button
-            class="bg-primary text-white px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
-            @click="goHome"
-          >
-            {{ t('download.backToMain') }}
-          </button>
-        </div>
-      </div>
-
-      <!-- 다운로드 진행 중 -->
-      <div v-else-if="!isComplete" class="bg-surface rounded-2xl p-8 border border-border shadow-2xl">
-        <!-- 헤더 -->
-        <div class="text-center mb-8">
-          <div class="text-5xl mb-4">📥</div>
-          <h1 class="text-3xl font-bold text-text-primary mb-2">
-            {{ t('download.title') }}
-          </h1>
-          <p class="text-text-secondary">
-            {{ t('download.filesCount', { count: totalFiles }) }} {{ t('download.parallel') }}
-          </p>
-        </div>
-
-        <!-- 진행률 바 -->
-        <div class="mb-8">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-sm text-text-secondary">{{ t('download.progress') }}</span>
-            <span class="text-sm font-bold text-primary">{{ progress }}%</span>
-          </div>
-          <div class="w-full bg-black/30 rounded-full h-4 overflow-hidden">
-            <div
-              class="bg-gradient-to-r from-primary to-green-400 h-full transition-all duration-300 ease-out"
-              :style="{ width: `${progress}%` }"
-            />
-          </div>
-          <div class="text-center mt-2 text-sm text-text-secondary">
-            {{ completedCount }} / {{ totalFiles }} {{ t('download.completed') }}
+        <!-- 에러 화면 -->
+        <div v-if="hasError" class="bg-surface rounded-2xl p-8 border border-red-500/30 shadow-2xl" data-testid="download-page-error">
+          <div class="text-center">
+            <div class="text-6xl mb-4">❌</div>
+            <h1 class="text-2xl font-bold mb-4 text-red-400">{{ t('download.error') }}</h1>
+            <p class="text-text-secondary mb-6">{{ errorMessage }}</p>
+            <button
+              class="bg-primary text-white px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
+              @click="goHome"
+            >
+              {{ t('download.backToMain') }}
+            </button>
           </div>
         </div>
 
-        <!-- 파일 목록 -->
-        <div class="space-y-2 max-h-96 overflow-y-auto">
-          <div
-            v-for="file in files"
-            :key="file.name"
-            class="bg-black/20 rounded-lg p-4 flex items-center gap-4 transition-all"
-            :class="{
-              'border border-primary/30': downloadStates[file.name] === 'downloading',
-              'opacity-50': downloadStates[file.name] === 'pending'
-            }"
-          >
-            <div class="text-3xl flex-shrink-0">
-              {{ getStatusIcon(downloadStates[file.name]) }}
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-medium truncate text-text-primary">{{ file.name }}</p>
-              <p class="text-sm text-text-secondary">
-                {{ getStatusText(downloadStates[file.name]) }}
-              </p>
-            </div>
+        <!-- 받기 목록 -->
+        <div v-else class="bg-surface rounded-2xl p-6 sm:p-8 border border-border shadow-2xl text-text-primary" data-testid="download-page">
+          <div class="text-center mb-6">
+            <div class="text-5xl mb-4">📥</div>
+            <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ t('multiDownload.title') }}</h1>
+            <p class="text-text-secondary m-0">{{ t('multiDownload.pageIntro', { count: totalFiles }) }}</p>
+          </div>
+          <p v-if="loading" class="text-center text-text-secondary" data-testid="download-page-loading">{{ t('multiDownload.preparing') }}</p>
+          <MultiDownloadList v-else :items="items" @run="run" />
+          <p v-if="!loading && items.length > 1" class="mt-4 mb-0 text-xs text-text-secondary leading-relaxed">{{ t('multiDownload.note') }}</p>
+          <div class="mt-6 text-center">
+            <button
+              class="bg-primary text-white px-8 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
+              @click="goHome"
+            >
+              {{ t('download.backToMain') }}
+            </button>
           </div>
         </div>
-      </div>
-
-      <!-- 완료 화면 -->
-      <div v-else class="bg-surface rounded-2xl p-8 border border-border shadow-2xl">
-        <div class="text-center">
-          <div class="text-6xl mb-4">
-            {{ hasSuccess ? '✅' : '❌' }}
-          </div>
-          <h1 class="text-3xl font-bold text-text-primary mb-4">
-            {{ hasSuccess ? t('download.complete') : t('download.failed') }}
-          </h1>
-
-          <!-- 결과 요약 -->
-          <div class="bg-black/20 rounded-lg p-6 mb-6">
-            <div class="grid grid-cols-2 gap-4 text-center">
-              <div>
-                <p class="text-3xl font-bold text-green-400">{{ completedCount }}</p>
-                <p class="text-sm text-text-secondary">{{ t('download.success') }}</p>
-              </div>
-              <div>
-                <p class="text-3xl font-bold text-red-400">{{ failedCount }}</p>
-                <p class="text-sm text-text-secondary">{{ t('download.failed') }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 실패한 파일 목록 -->
-          <div v-if="failedCount > 0" class="mb-6 text-left">
-            <p class="text-sm text-text-secondary mb-2">{{ t('download.failedFiles') }}</p>
-            <div class="bg-black/20 rounded-lg p-4 max-h-40 overflow-y-auto">
-              <ul class="space-y-1">
-                <li
-                  v-for="file in getFilesByStatus('failed')"
-                  :key="file.name"
-                  class="text-sm text-red-400"
-                >
-                  ❌ {{ file.name }}
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- 에러 메시지 -->
-          <p v-if="hasError" class="text-red-400 mb-6">
-            {{ errorMessage }}
-          </p>
-
-          <!-- 액션 버튼 -->
-          <button
-            class="bg-primary text-white px-8 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
-            @click="goHome"
-          >
-            {{ t('download.backToMain') }}
-          </button>
-        </div>
-      </div>
       </div>
     </div>
 

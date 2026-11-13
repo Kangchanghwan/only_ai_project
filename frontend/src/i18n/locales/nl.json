@@ -402,7 +402,7 @@
     "qrCode": "QR-code",
     "selectAllHint": "Alle bestanden selecteren",
     "deselectAllHint": "Selectie van alle bestanden opheffen",
-    "downloadHint": "Geselecteerde bestanden na elkaar downloaden",
+    "downloadHint": "Geselecteerde bestanden als één ZIP downloaden (boven 200 MB apart)",
     "qrCodeHint": "QR-codes maken voor geselecteerde bestanden"
   },
   "group": {
@@ -517,5 +517,24 @@
     "toIp": "Wordt naar je netwerk gestuurd",
     "toGlobal": "Wordt naar iedereen gestuurd (openbaar)",
     "toPair": "Wordt naar je 1:1-contact gestuurd"
+  },
+  "multiDownload": {
+    "title": "Bestanden downloaden",
+    "intro": "Kleine bestanden komen in één ZIP, bestanden boven 200 MB apart. De eerste download is begonnen.",
+    "note": "Browsers kunnen downloads blokkeren die tegelijk starten. Tik daarom de overige items één voor één aan.",
+    "pageIntro": "{count} bestanden",
+    "zipOne": "ZIP · {count} bestanden",
+    "zipMany": "ZIP {index}/{total} · {count} bestanden",
+    "get": "Downloaden",
+    "again": "Opnieuw downloaden",
+    "preparing": "Voorbereiden",
+    "progress": "{percent}% downloaden",
+    "done": "Gedownload",
+    "started": "Gestart",
+    "failed": "Mislukt",
+    "zipDone": "{count} bestanden als ZIP gedownload",
+    "zipFailed": "Kan de ZIP niet downloaden. Probeer het opnieuw",
+    "fileStarted": "Download gestart",
+    "close": "Sluiten"
   }
 }
