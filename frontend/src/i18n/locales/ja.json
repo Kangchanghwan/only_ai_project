@@ -613,5 +613,11 @@
     "zipFailed": "ZIPをダウンロードできませんでした。もう一度お試しください",
     "fileStarted": "ダウンロードを開始しました",
     "close": "閉じる"
+  },
+  "presence": {
+    "joinedIp": "同じネットワークに{who}が参加しました",
+    "leftIp": "同じネットワークから{who}が退出しました",
+    "joinedRoom": "「{room}」に{who}が参加しました",
+    "leftRoom": "「{room}」から{who}が退出しました"
   }
 }

@@ -536,5 +536,11 @@
     "zipFailed": "Kan de ZIP niet downloaden. Probeer het opnieuw",
     "fileStarted": "Download gestart",
     "close": "Sluiten"
+  },
+  "presence": {
+    "joinedIp": "{who} is je netwerk binnengekomen",
+    "leftIp": "{who} heeft je netwerk verlaten",
+    "joinedRoom": "{who} is '{room}' binnengekomen",
+    "leftRoom": "{who} heeft '{room}' verlaten"
   }
 }

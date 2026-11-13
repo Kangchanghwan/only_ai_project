@@ -536,5 +536,11 @@
     "zipFailed": "Nem sikerült letölteni a ZIP-et. Próbáld újra",
     "fileStarted": "A letöltés elindult",
     "close": "Bezárás"
+  },
+  "presence": {
+    "joinedIp": "{who} csatlakozott a hálózatodhoz",
+    "leftIp": "{who} kilépett a hálózatodból",
+    "joinedRoom": "{who} belépett ide: „{room}”",
+    "leftRoom": "{who} kilépett innen: „{room}”"
   }
 }

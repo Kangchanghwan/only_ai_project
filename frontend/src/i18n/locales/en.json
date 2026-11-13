@@ -762,5 +762,11 @@
     "zipFailed": "Couldn't download the ZIP. Please try again",
     "fileStarted": "Download started",
     "close": "Close"
+  },
+  "presence": {
+    "joinedIp": "{who} joined your network",
+    "leftIp": "{who} left your network",
+    "joinedRoom": "{who} joined '{room}'",
+    "leftRoom": "{who} left '{room}'"
   }
 }

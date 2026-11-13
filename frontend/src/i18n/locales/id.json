@@ -536,5 +536,11 @@
     "zipFailed": "Tidak dapat mengunduh ZIP. Coba lagi",
     "fileStarted": "Unduhan dimulai",
     "close": "Tutup"
+  },
+  "presence": {
+    "joinedIp": "{who} bergabung ke jaringan Anda",
+    "leftIp": "{who} keluar dari jaringan Anda",
+    "joinedRoom": "{who} bergabung ke '{room}'",
+    "leftRoom": "{who} keluar dari '{room}'"
   }
 }
