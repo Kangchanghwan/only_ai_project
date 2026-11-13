@@ -73,6 +73,13 @@ app.use((_req, res, next) => {
     next();
 });
 
+// API 응답은 캐시하지 않는다. 다운로드 주소(10분짜리 서명 URL)가 .jpg/.pdf/.bin처럼 끝나면
+// Cloudflare가 정적 파일로 보고 4시간 캐시해, 10분 뒤부터 같은 파일 받기가 만료 주소로 실패했다
+app.use('/api', (_req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+});
+
 // 요청 로깅 미들웨어
 app.use(requestLogger);
 
