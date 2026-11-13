@@ -542,5 +542,10 @@
     "leftIp": "{who} 离开了同一网络",
     "joinedRoom": "{who} 加入了“{room}”",
     "leftRoom": "{who} 离开了“{room}”"
+  },
+  "inRoom": {
+    "textArrived": "{where}有新文本",
+    "fileArrived": "{where}有新文件",
+    "textsCleared": "{where}的文本已全部删除"
   }
 }

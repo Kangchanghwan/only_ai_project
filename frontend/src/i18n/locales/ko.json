@@ -768,5 +768,10 @@
     "leftIp": "같은 네트워크에서 {who}이(가) 나갔어요",
     "joinedRoom": "'{room}'에 {who}이(가) 들어왔어요",
     "leftRoom": "'{room}'에서 {who}이(가) 나갔어요"
+  },
+  "inRoom": {
+    "textArrived": "{where}에 새 텍스트가 왔어요",
+    "fileArrived": "{where}에 새 파일이 왔어요",
+    "textsCleared": "{where}의 텍스트가 모두 삭제됐어요"
   }
 }

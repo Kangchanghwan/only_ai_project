@@ -542,5 +542,10 @@
     "leftIp": "{who} kilépett a hálózatodból",
     "joinedRoom": "{who} belépett ide: „{room}”",
     "leftRoom": "{who} kilépett innen: „{room}”"
+  },
+  "inRoom": {
+    "textArrived": "Új szöveg itt: {where}",
+    "fileArrived": "Új fájl itt: {where}",
+    "textsCleared": "Minden szöveg törölve itt: {where}"
   }
 }

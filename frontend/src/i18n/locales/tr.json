@@ -542,5 +542,10 @@
     "leftIp": "{who} ağınızdan ayrıldı",
     "joinedRoom": "{who} '{room}' odasına katıldı",
     "leftRoom": "{who} '{room}' odasından ayrıldı"
+  },
+  "inRoom": {
+    "textArrived": "{where} içinde yeni metin",
+    "fileArrived": "{where} içinde yeni dosya",
+    "textsCleared": "{where} içindeki tüm metinler silindi"
   }
 }

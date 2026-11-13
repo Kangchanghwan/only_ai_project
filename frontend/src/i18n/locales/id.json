@@ -542,5 +542,10 @@
     "leftIp": "{who} keluar dari jaringan Anda",
     "joinedRoom": "{who} bergabung ke '{room}'",
     "leftRoom": "{who} keluar dari '{room}'"
+  },
+  "inRoom": {
+    "textArrived": "Teks baru di {where}",
+    "fileArrived": "File baru di {where}",
+    "textsCleared": "Semua teks di {where} telah dihapus"
   }
 }

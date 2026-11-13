@@ -542,5 +542,10 @@
     "leftIp": "{who} вийшов із вашої мережі",
     "joinedRoom": "{who} увійшов до «{room}»",
     "leftRoom": "{who} вийшов із «{room}»"
+  },
+  "inRoom": {
+    "textArrived": "Новий текст: {where}",
+    "fileArrived": "Новий файл: {where}",
+    "textsCleared": "Усі тексти видалено: {where}"
   }
 }

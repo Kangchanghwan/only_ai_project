@@ -542,5 +542,10 @@
     "leftIp": "{who} đã rời mạng của bạn",
     "joinedRoom": "{who} đã vào '{room}'",
     "leftRoom": "{who} đã rời '{room}'"
+  },
+  "inRoom": {
+    "textArrived": "Có văn bản mới trong {where}",
+    "fileArrived": "Có tệp mới trong {where}",
+    "textsCleared": "Đã xóa tất cả văn bản trong {where}"
   }
 }

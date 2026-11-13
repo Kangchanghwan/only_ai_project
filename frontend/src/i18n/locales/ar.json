@@ -542,5 +542,10 @@
     "leftIp": "غادر {who} شبكتك",
     "joinedRoom": "انضم {who} إلى \"{room}\"",
     "leftRoom": "غادر {who} \"{room}\""
+  },
+  "inRoom": {
+    "textArrived": "نص جديد في {where}",
+    "fileArrived": "ملف جديد في {where}",
+    "textsCleared": "تم حذف كل النصوص في {where}"
   }
 }

@@ -768,5 +768,10 @@
     "leftIp": "{who} left your network",
     "joinedRoom": "{who} joined '{room}'",
     "leftRoom": "{who} left '{room}'"
+  },
+  "inRoom": {
+    "textArrived": "New text in {where}",
+    "fileArrived": "New file in {where}",
+    "textsCleared": "All texts in {where} were cleared"
   }
 }

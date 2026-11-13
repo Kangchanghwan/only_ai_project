@@ -528,10 +528,23 @@ function onServiceWorkerMessage(event) {
  * 받은 텍스트를 목록에 넣는다. 1:1 방은 암호문(enc)만 오며 평문 content는 쓰지 않는다.
  * 잠긴 텍스트는 이 범위 비밀번호를 확인한 기기에서만 풀린다. 같은 textId(내가 보낸 것의 되돌아옴 포함)는 한 번만.
  */
+/**
+ * 알림에 붙일 "어디": 같은 네트워크 / 전체 공유 / '방 이름' (예전 1:1 방은 '○○와 쓰는 방').
+ * 토스트는 지금 보고 있는 탭과 상관없이 뜨므로 항상 붙인다.
+ */
+function roomWhere(roomId) {
+  if (roomId && roomId === roomManager.globalRoomId.value) return t('shareScope.global')
+  const r = roomId ? privateRooms.rooms.find((x) => x.roomId === roomId) : null
+  if (!r) return t('shareScope.ip')
+  if (isGroupRoomId(r.roomId)) return `'${r.name || t('group.unnamed')}'`
+  const peer = isValidIdentity(r.peer?.identity) ? identityName(r.peer.identity, t) : t('pair.unknownDevice')
+  return `'${t('pair.tabTitle', { name: peer })}'`
+}
+
 async function receiveText(message) {
   const added = await textQueue.ingest(message)
   if (!added) return
-  notification.showInfo(t('text.newText'))
+  notification.showInfo(t('inRoom.textArrived', { where: roomWhere(message.roomId) }))
   arrival.onArrival({ kind: 'text', count: 1, sender: message.sender })
 }
 
@@ -552,10 +565,10 @@ function setupSocketListeners() {
       // 정보가 부족한 구버전 메시지('reload')일 때만 기존처럼 재조회한다.
       const action = applyFileMessage(message, fileManager)
       if (action === 'added') {
-        notification.showInfo(t('file.uploaded'))
+        notification.showInfo(t('inRoom.fileArrived', { where: roomWhere(message.roomId) }))
         if (message.type === 'file-uploaded') arrival.onArrival({ kind: 'file', count: Array.isArray(message.files) ? message.files.length || 1 : 1, sender: message.sender })
       } else if (action === 'reload' && roomManager.roomIds.value.length > 0) {
-        notification.showInfo(t('file.uploaded'))
+        notification.showInfo(t('inRoom.fileArrived', { where: roomWhere(message.roomId) }))
         fileManager.loadFilesFromRooms(roomManager.roomIds.value)
       }
     } else if (message.type === 'text-shared') {
@@ -566,7 +579,7 @@ function setupSocketListeners() {
       if (target && target.roomId === message.roomId) textShare.removeText(message.textId)
     } else if (message.type === 'texts-cleared') {
       textShare.clearTextsForRoom(message.roomId)
-      notification.showInfo(t('text.cleared'))
+      notification.showInfo(t('inRoom.textsCleared', { where: roomWhere(message.roomId) }))
     }
   })
 
