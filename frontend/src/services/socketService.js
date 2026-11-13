@@ -72,6 +72,7 @@ class SocketService {
 
     // 콜백
     this._onReconnectedCallbacks = []
+    this._onIpRoomChangedCallbacks = []
 
     // 1:1 연결 이벤트 리스너 (소켓이 다시 만들어져도 유지)
     this._pairListeners = new Map()
@@ -186,6 +187,17 @@ class SocketService {
     this._onReconnectedCallbacks.push(callback)
   }
 
+  /** 복구된 연결에서 같은 네트워크 방이 바뀌었을 때의 콜백: (oldIpRoomId, newIpRoomId) => void */
+  onIpRoomChanged(callback) {
+    this._onIpRoomChangedCallbacks.push(callback)
+  }
+
+  _emitIpRoomChanged(oldId, newId) {
+    for (const cb of this._onIpRoomChangedCallbacks) {
+      try { cb(oldId, newId) } catch (e) { console.error('[SocketService] onIpRoomChanged 콜백 에러:', e) }
+    }
+  }
+
   _emitReconnected() {
     for (const cb of this._onReconnectedCallbacks) {
       try { cb() } catch (e) { console.error('[SocketService] onReconnected 콜백 에러:', e) }
@@ -227,7 +239,6 @@ class SocketService {
 
       // 연결 타임아웃 설정
       const connectionTimeout = setTimeout(() => {
-        this.socket?.off('registered', handleRegistered)
         this.connectionError.value = 'Connection timeout'
         reject(new Error(t('errors.connectTimeout')))
       }, this.reconnectionConfig.timeout)
@@ -240,6 +251,7 @@ class SocketService {
         console.log('[SocketService] 룸 입장 완료:', payload)
         clearTimeout(connectionTimeout)
 
+        const prevIpRoomId = this.ipRoomId.value
         this.globalRoomId.value = payload.globalRoomId
         this.ipRoomId.value = payload.ipRoomId
         this._applyIdentity(payload.identity)
@@ -250,7 +262,13 @@ class SocketService {
         this.connectionError.value = null
         this._wasConnected = true
 
-        this.socket.off('registered', handleRegistered)
+        // 'registered'는 복구된 연결에서 IP 방이 바뀌었을 때 서버가 다시 보내므로 핸들러를 계속 둔다
+        const ipChanged = !!prevIpRoomId && prevIpRoomId !== payload.ipRoomId
+        if (ipChanged) {
+          this.ipRoomDevices.value = []
+          // 복구 없이 새로 등록된 연결은 onReconnected가 목록을 다시 불러오므로 여기서는 복구된 연결만 알린다
+          if (this.socket?.recovered) this._emitIpRoomChanged(prevIpRoomId, payload.ipRoomId)
+        }
         resolve({ globalRoomId: payload.globalRoomId, ipRoomId: payload.ipRoomId, users: 1 })
       }
 
@@ -612,6 +630,7 @@ class SocketService {
     window.removeEventListener('pagehide', this._boundPageHide)
     window.removeEventListener('pageshow', this._boundPageShow)
     this._onReconnectedCallbacks = []
+    this._onIpRoomChangedCallbacks = []
     this.disconnect()
   }
 }

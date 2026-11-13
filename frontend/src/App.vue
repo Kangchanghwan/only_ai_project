@@ -429,6 +429,19 @@ socket.onReconnected(() => {
   notification.showSuccess(t('notification.reconnected'))
 })
 
+// 복구된 연결에서 같은 네트워크 방이 바뀌면(와이파이 전환 등) 새 방 기준으로 목록·접속 기기를 다시 맞춘다
+socket.onIpRoomChanged?.(() => {
+  presence.markInitial()
+  roomManager.setRooms({
+    globalRoomId: socket.globalRoomId.value,
+    ipRoomId: socket.ipRoomId.value
+  })
+  fileManager.clearFiles()
+  textShare.clearAllTexts()
+  fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
+  textQueue.loadRooms(allRoomIds.value)
+})
+
 // ========================================
 // 룸 관리 및 소켓 통신
 // ========================================

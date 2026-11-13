@@ -23,4 +23,15 @@ describe('roomDisplayName', () => {
     const r = [{ roomId: g('a'), name: '' }, { roomId: g('b') }]
     expect(roomDisplayName(r, g('b'), '이름 없는 방')).toBe('이름 없는 방 2')
   })
+  it('1:1 방과 그룹 방, 예전 1:1 방을 합쳐서 같은 이름을 센다 (운영에서 본 "날쌘 코알라의 방" 두 개)', () => {
+    const mixed = [
+      { roomId: g('a'), name: '날쌘 코알라의 방', peer: { socketId: 'x' } }, // 1:1로 만든 방
+      { roomId: g('b'), name: '날쌘 코알라의 방', peer: null }, // 그룹 방
+      { roomId: 'prv-' + 'c'.repeat(24), peer: { socketId: 'y' } } // 예전 1:1 방
+    ]
+    const legacy = () => '날쌘 코알라의 방'
+    expect(roomDisplayName(mixed, g('a'), '이름 없는 방', legacy)).toBe('날쌘 코알라의 방')
+    expect(roomDisplayName(mixed, g('b'), '이름 없는 방', legacy)).toBe('날쌘 코알라의 방 2')
+    expect(roomDisplayName(mixed, 'prv-' + 'c'.repeat(24), '이름 없는 방', legacy)).toBe('날쌘 코알라의 방 3')
+  })
 })

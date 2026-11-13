@@ -80,7 +80,7 @@ function onKeydown(event) {
             >{{ t('pair.confirm.different') }}</button>
             <button
               type="button"
-              class="flex-1 min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+              class="flex-1 min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
               :disabled="!sasReady"
               :aria-disabled="!sasReady"
               data-testid="pair-same"

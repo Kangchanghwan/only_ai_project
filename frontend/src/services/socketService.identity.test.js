@@ -99,3 +99,29 @@ describe('SocketService - 클라이언트 인스턴스 ID / 페이지 수명주�
     socketService.socket = null
   })
 })
+
+describe('SocketService - registered 재수신', () => {
+  it('두 번째 registered(IP 방 변경)도 반영하고 기기 목록을 비운 뒤 알린다', () => {
+    socketService.disconnect()
+    socketService.connect().catch(() => {})
+    const sock = io.mock.results.at(-1).value
+    const handler = sock.on.mock.calls.find((c) => c[0] === 'registered')[1]
+    const changed = vi.fn()
+    socketService.onIpRoomChanged(changed)
+    handler({ globalRoomId: 'g1', ipRoomId: 'ip-A', identity: { adj: 1, animal: 1 } })
+    expect(socketService.ipRoomId.value).toBe('ip-A')
+    expect(changed).not.toHaveBeenCalled()
+    socketService.ipRoomDevices.value = [{ socketId: 'old' }]
+    sock.recovered = true
+    handler({ globalRoomId: 'g1', ipRoomId: 'ip-B', identity: { adj: 2, animal: 2 } })
+    expect(socketService.ipRoomId.value).toBe('ip-B')
+    expect(socketService.ipRoomDevices.value).toEqual([])
+    expect(socketService.myIdentity.value).toEqual({ adj: 2, animal: 2 })
+    expect(changed).toHaveBeenCalledWith('ip-A', 'ip-B')
+    // 같은 방이면 다시 알리지 않는다
+    handler({ globalRoomId: 'g1', ipRoomId: 'ip-B' })
+    expect(changed).toHaveBeenCalledTimes(1)
+    socketService._onIpRoomChangedCallbacks = []
+    socketService.disconnect()
+  })
+})

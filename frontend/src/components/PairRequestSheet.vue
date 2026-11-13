@@ -109,7 +109,7 @@ function onKeydown(event) {
           >{{ t('pair.request.decline') }}</button>
           <button
             type="button"
-            class="min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+            class="min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
             :disabled="!acceptEnabled"
             :aria-disabled="!acceptEnabled"
             :aria-busy="!acceptEnabled"

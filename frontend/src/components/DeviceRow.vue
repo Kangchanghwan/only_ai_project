@@ -141,7 +141,7 @@ const joinedText = computed(() => {
       <div v-else-if="wide" class="flex flex-col">
         <button
           type="button"
-          class="w-full min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+          class="w-full min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
           :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"
@@ -159,7 +159,7 @@ const joinedText = computed(() => {
         >{{ t('pair.cancel') }}</button>
         <button
           type="button"
-          class="min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+          class="min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
           :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"
