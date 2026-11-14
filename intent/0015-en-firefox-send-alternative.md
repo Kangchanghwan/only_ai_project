@@ -1,6 +1,6 @@
 # Intent: 영어 가이드 "Firefox Send alternative"
 
-Author: owner (2026-10-15 지시, 에이전트 작성). Status: shipped. Created: 2026-10-15.
+Author: owner (2026-10-15 지시, 에이전트 작성). Status: rejected (2026-11-14 28일 판독). Created: 2026-10-15.
 Trigger: owner 아이디어 — 잠금 기능 유입 각도. ops/playbooks/lock-campaign.md.
 
 ## Problem
@@ -28,3 +28,4 @@ Trigger: owner 아이디어 — 잠금 기능 유입 각도. ops/playbooks/lock-
   - 허브 ItemList 9, en/guide 허브 "Files and photos", online-clipboard-for-files-and-images 관련 글 맨 위, sitemap(새 URL·허브·online-clipboard-for-files lastmod 10-17), llms.txt.
   - 7일 결과 10-24, 28일 11-14.
 - 2026-10-24 7일 판독: GSC 10-17–10-23 노출 26, 클릭 0, 평균 순위 14. 색인됨(10-20 확인). 잠금 이벤트는 7일 locked_upload_complete 29(11명)지만 로케일별 분리는 못 했다. 노출이 붙기 시작했으니 28일(11-14)에 클릭으로 판단한다.
+- 2026-11-14 28일 판독 (rejected): GSC 정확일치 10-17–11-10(최신일) 노출 52, 클릭 0, 평균 10.8위. 상위 검색어 send lock 0/6, firefox send alternative 0/3, lock send 0/2, firefox lock file 0/2, send.vis 0/1. 네이버 30일 4/0. 목표(28일 노출 100+, 클릭 1+) 둘 다 미달. 잠금을 검색 각도로 쓴 0014(11-13 rejected)와 같은 결과다. 페이지는 링크·색인이 있어 그대로 두고, 11-16 E2E 보강(e2ee-campaign.md E2, rooms 절 + FAQ)은 새 측정으로 분리해 적는다(기준값 = 이 판독).
