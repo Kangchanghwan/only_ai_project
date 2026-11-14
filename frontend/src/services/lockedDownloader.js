@@ -148,6 +148,29 @@ export async function deleteLockedWithProof({ roomId, id, lockState }) {
   return r2Service.deleteLockedFile(roomId, id, { verifier: entry.verifier })
 }
 
+/**
+ * 이미 열쇠가 있는 잠긴 파일(방 파일, 이번 접속에서 비밀번호를 확인한 파일)을 받을 준비를 한다.
+ * 서버가 확인값을 맞혀야 60초 받기 주소를 주므로, 받기 직전에 부른다(여러 파일 ZIP은 파일마다 따로).
+ * 열쇠가 없으면 서버에 묻지 않고 NEED_PASSWORD.
+ * @returns {Promise<{url:string, size:number, ctSize:number, dkRaw:Uint8Array, np:Uint8Array, name:string}>}
+ */
+export async function prepareLockedEntry({ roomId, id, lockState }) {
+  const meta = await r2Service.lockedMeta(roomId, id)
+  if (meta.v !== LOCK_VERSION || (meta.rs && meta.rs !== RECORD_SIZE)) throw lockError('LOCK_UNSUPPORTED')
+  const entry = lockState.keyFor(meta.salt)
+  if (!entry) throw lockError('NEED_PASSWORD', { remaining: meta.remaining })
+  const res = await r2Service.lockedUnlock(roomId, id, entry.verifier)
+  const dkRaw = await unwrapFileKeyRaw(entry.encKey, res.wk, res.wkIv)
+  const name = await decryptName(await importRawKey(dkRaw), res.en, res.enIv)
+  lockState.rememberName(roomId, id, name)
+  return { url: res.url, size: res.size, ctSize: res.ctSize, dkRaw, np: fromB64u(res.np), name }
+}
+
+/** 잠긴 파일의 원래 이름 (이번 접속에서 이미 풀었으면 서버에 묻지 않는다) */
+export async function lockedNameOf({ roomId, id, lockState }) {
+  return lockState.nameFor(roomId, id) || (await prepareLockedEntry({ roomId, id, lockState })).name
+}
+
 export async function openLockedFile({ roomId, id, password, lockState, onName, onProgress, download = true }) {
   const meta = await r2Service.lockedMeta(roomId, id)
   if (meta.v !== LOCK_VERSION || (meta.rs && meta.rs !== RECORD_SIZE)) throw lockError('LOCK_UNSUPPORTED')

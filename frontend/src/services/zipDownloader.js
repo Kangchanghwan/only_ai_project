@@ -4,10 +4,13 @@
  * - 서비스워커를 쓸 수 있으면 `/__zip/<token>`을 숨은 iframe으로 열고, 서비스워커가 파일을 차례로 받으면서
  *   바로 ZIP으로 내보낸다(메모리에 모으지 않는다). 각 파일 주소는 받기 직전에 서비스워커가 새로 받는다.
  * - 아이폰이거나 서비스워커가 없으면 메모리에 모아 Blob으로 저장한다(묶음 한도 300MB, downloadPlan.js).
+ * - 방(잠긴) 파일은 받기 직전에 getLockedEntry로 60초 주소와 키를 받아, 이 기기에서 풀면서 ZIP에 넣는다.
+ *   서비스워커 방식이면 서비스워커가 ZIP_NEED_KEY로 요청하고 이 탭이 답한다(키는 탭과 서비스워커 사이에서만).
  */
 import { r2Service } from './r2Service'
 import { canStreamViaServiceWorker } from './lockedDownloader.js'
 import { buildZipParts, encodeName, zipSize } from '../utils/zipWriter.js'
+import { importRawKey, createDecryptor } from '../utils/lockCrypto.js'
 
 const SW_REGISTER_TIMEOUT_MS = 3000
 const SW_STALL_TIMEOUT_MS = 60000
@@ -30,9 +33,9 @@ function registerZipJob(job) {
   })
 }
 
-function streamViaServiceWorker({ entries, zipName, total, exact, onProgress }) {
+function streamViaServiceWorker({ entries, zipName, total, exact, onProgress, getLockedEntry }) {
   const token = (globalThis.crypto.randomUUID?.() || Math.random().toString(36).slice(2)).replace(/-/g, '')
-  return registerZipJob({ token, apiUrl: r2Service.apiUrl, zipName, entries, exact }).then(
+  return registerZipJob({ token, apiUrl: r2Service.apiUrl, zipName, entries: entries.map(({ source, ...e }) => e), exact }).then(
     () =>
       new Promise((resolve, reject) => {
         let stall
@@ -48,6 +51,11 @@ function streamViaServiceWorker({ entries, zipName, total, exact, onProgress }) 
         }
         function onMessage(e) {
           const d = e.data
+          if (d && d.type === 'ZIP_NEED_KEY' && d.token === token) {
+            arm()
+            answerKeyRequest(entries[d.index], e.ports?.[0], getLockedEntry)
+            return
+          }
           if (!d || d.type !== 'ZIP_PROGRESS' || d.token !== token) return
           arm()
           if (d.error) { cleanup(); reject(zipError(d.error)); return }
@@ -63,6 +71,45 @@ function streamViaServiceWorker({ entries, zipName, total, exact, onProgress }) 
   )
 }
 
+/** 서비스워커의 키 요청에 답한다. 실패하면 ok:false (서비스워커가 ZIP을 오류로 끝낸다) */
+async function answerKeyRequest(entry, port, getLockedEntry) {
+  if (!port) return
+  try {
+    if (!entry?.locked || !getLockedEntry) throw new Error('NO_KEY')
+    const p = await getLockedEntry(entry.source)
+    port.postMessage({ ok: true, url: p.url, dk: p.dkRaw, np: p.np })
+  } catch {
+    port.postMessage({ ok: false })
+  }
+}
+
+/** 메모리 방식에서 방(잠긴) 파일 하나를 받아 풀어 평문 조각으로 */
+async function readLockedEntry(entry, getLockedEntry, fetchImpl, onBytes) {
+  let p
+  try {
+    p = await getLockedEntry(entry.source)
+  } catch {
+    throw zipError('ZIP_KEY_FAILED')
+  }
+  const response = await fetchImpl(p.url)
+  if (!response.ok || !response.body) throw zipError('ZIP_DOWNLOAD_FAILED', { status: response.status })
+  const reader = response.body.getReader()
+  const decryptor = createDecryptor(await importRawKey(p.dkRaw), p.np, entry.size)
+  const chunks = []
+  try {
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      onBytes(value.length * (entry.size / Math.max(1, p.ctSize || entry.size)))
+      chunks.push(...(await decryptor.push(value)))
+    }
+    decryptor.finish()
+  } catch {
+    throw zipError('ZIP_DECRYPT_FAILED')
+  }
+  return chunks
+}
+
 function saveBlob(blob, name) {
   const href = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -76,10 +123,21 @@ function saveBlob(blob, name) {
 }
 
 /** 메모리 방식: 파일을 차례로 받아 모은 뒤 ZIP Blob으로 저장한다 */
-export async function zipInMemoryDownload({ entries, zipName, total, exact = true, onProgress, fetchImpl = fetch, getUrl = (e) => r2Service.getDownloadUrl(e.roomId, e.file) }) {
+export async function zipInMemoryDownload({ entries, zipName, total, exact = true, onProgress, fetchImpl = fetch, getUrl = (e) => r2Service.getDownloadUrl(e.roomId, e.file), getLockedEntry = null }) {
   const items = []
   let loaded = 0
   for (const entry of entries) {
+    if (entry.locked) {
+      if (!getLockedEntry) throw zipError('ZIP_KEY_FAILED')
+      const chunks = await readLockedEntry(entry, getLockedEntry, fetchImpl, (n) => {
+        loaded += n
+        onProgress?.(total ? Math.min(99, Math.floor((loaded / total) * 100)) : 0)
+      })
+      const got = chunks.reduce((n, c) => n + c.length, 0)
+      if (exact && got !== entry.size) throw zipError('ZIP_SIZE_MISMATCH')
+      items.push({ name: entry.name, chunks })
+      continue
+    }
     let response
     try {
       response = await fetchImpl(await getUrl(entry))
@@ -112,18 +170,19 @@ export async function zipInMemoryDownload({ entries, zipName, total, exact = tru
  * @param {string[]} p.names ZIP 안 이름 (zipEntryNames 결과, files와 같은 순서)
  * @param {string} p.zipName 저장 파일 이름
  * @param {boolean} [p.exactSizes=true] 크기가 정확하면 받은 바이트 수를 검사하고 ZIP 길이를 미리 알린다
+ * @param {(file:object)=>Promise<{url,dkRaw,np,ctSize}>} [p.getLockedEntry] 방(잠긴) 파일의 받기 주소·키 (받기 직전에 부른다)
  * @param {(percent:number)=>void} [p.onProgress]
  */
-export async function downloadZip({ files, names, zipName, exactSizes = true, onProgress }) {
-  const entries = files.map((f, i) => ({ roomId: f.roomId, file: f.name, name: names[i], size: f.size }))
+export async function downloadZip({ files, names, zipName, exactSizes = true, onProgress, getLockedEntry = null }) {
+  const entries = files.map((f, i) => ({ roomId: f.roomId, file: f.name, name: names[i], size: f.size, locked: !!f.locked, source: f }))
   const total = zipSize(entries.map((e) => ({ nameBytes: encodeName(e.name), size: e.size })))
   if (canStreamViaServiceWorker()) {
     try {
-      return await streamViaServiceWorker({ entries, zipName, total, exact: exactSizes, onProgress })
+      return await streamViaServiceWorker({ entries, zipName, total, exact: exactSizes, onProgress, getLockedEntry })
     } catch (err) {
       // 등록 단계에서 실패하면 메모리 방식으로 넘어간다. 받는 중 실패는 그대로 알린다
       if (err?.code !== 'ZIP_SW_TIMEOUT' && err?.code !== 'ZIP_SW_REJECTED') throw err
     }
   }
-  return zipInMemoryDownload({ entries, zipName, total, exact: exactSizes, onProgress })
+  return zipInMemoryDownload({ entries, zipName, total, exact: exactSizes, onProgress, getLockedEntry })
 }

@@ -6,12 +6,12 @@ const MB = 1024 * 1024
 const f = (name, mb) => ({ name, roomId: 'room-a', size: Math.round(mb * MB) })
 const t = (k, p) => (p ? `${k}:${JSON.stringify(p)}` : k)
 
-function setup({ zipImpl, fileOk = true, inMemory = false } = {}) {
+function setup({ zipImpl, fileOk = true, inMemory = false, extra = {} } = {}) {
   const notification = { addUpload: vi.fn(), updateUpload: vi.fn(), completeUpload: vi.fn(), failUpload: vi.fn(), removeUpload: vi.fn(), showSuccess: vi.fn(), showError: vi.fn() }
   const download = { downloadFile: vi.fn(async () => ({ success: fileOk })) }
   const downloadZip = vi.fn(zipImpl || (async ({ onProgress }) => { onProgress(50); onProgress(100) }))
   const onSuccess = vi.fn()
-  const m = useMultiDownload({ download, t, notification, onSuccess, downloadZip, zipInMemory: () => inMemory, now: () => new Date(2026, 10, 13, 9, 5) })
+  const m = useMultiDownload({ download, t, notification, onSuccess, downloadZip, zipInMemory: () => inMemory, now: () => new Date(2026, 10, 13, 9, 5), ...extra })
   return { m, notification, download, downloadZip, onSuccess }
 }
 
@@ -87,5 +87,41 @@ describe('useMultiDownload', () => {
     expect(downloadZip).toHaveBeenCalledTimes(1)
     release()
     await p
+  })
+})
+
+describe('useMultiDownload: 방(잠긴) 파일', () => {
+  const lf = (id, mb) => ({ name: id, roomId: 'prv-g-x', size: Math.round(mb * MB), locked: true })
+
+  it('원래 이름을 풀어 ZIP 안 이름으로 쓰고, getLockedEntry를 ZIP 받기에 넘긴다', async () => {
+    const getLockedEntry = vi.fn()
+    const resolveNames = vi.fn(async (files) => files.map((f) => ({ ...f, zipName: '계약서.pdf' })))
+    const { m, downloadZip } = setup({ extra: { resolveNames, getLockedEntry } })
+    await m.start([lf('id1', 1), lf('id2', 1)])
+    const arg = downloadZip.mock.calls[0][0]
+    expect(arg.names).toEqual(['계약서.pdf', '계약서 (2).pdf'])
+    expect(arg.files.map((f) => f.name)).toEqual(['id1', 'id2'])
+    expect(arg.getLockedEntry).toBe(getLockedEntry)
+  })
+
+  it('200MB 넘는 방 파일은 따로: 누르면 downloadLockedFile로 이 기기에서 풀어 받고 "받음"', async () => {
+    const downloadLockedFile = vi.fn(async () => ({ success: true }))
+    const resolveNames = async (files) => files.map((f) => ({ ...f, zipName: 'n-' + f.name }))
+    const { m, download, onSuccess } = setup({ extra: { resolveNames, downloadLockedFile } })
+    await m.start([lf('a', 1), lf('b', 1), lf('big', 300)])
+    const items = m.sheet.value.items
+    expect(items[1].file.zipName).toBe('n-big')
+    await m.run(items[1])
+    expect(downloadLockedFile).toHaveBeenCalledWith(expect.objectContaining({ name: 'big' }))
+    expect(download.downloadFile).not.toHaveBeenCalled()
+    expect(items[1].state).toBe('done')
+    expect(onSuccess).toHaveBeenCalledWith(1, 'locked')
+  })
+
+  it('이름을 풀지 못하면 ZIP을 시작하지 않고 실패를 알린다', async () => {
+    const { m, downloadZip, notification } = setup({ extra: { resolveNames: async () => { throw new Error('NEED_PASSWORD') } } })
+    await m.start([lf('a', 1), lf('b', 1)])
+    expect(downloadZip).not.toHaveBeenCalled()
+    expect(notification.showError).toHaveBeenCalledWith('multiDownload.zipFailed')
   })
 })

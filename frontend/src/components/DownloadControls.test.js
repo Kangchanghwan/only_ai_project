@@ -75,14 +75,22 @@ describe('DownloadControls.vue - 좁은 폭 줄바꿈', () => {
   })
 })
 
-describe('DownloadControls.vue - 1:1 방 (privateMode)', () => {
-  it('모두 선택·선택 삭제 2개만 보이고 2열 그리드다', () => {
+describe('DownloadControls.vue - 방 (privateMode)', () => {
+  it('모두 선택·받기·선택 삭제 3개만 보이고 3열 그리드다 (QR·비우기 없음)', () => {
     const wrapper = mountControls({ privateMode: true })
-    expect(wrapper.findAll('button')).toHaveLength(2)
+    expect(wrapper.findAll('button')).toHaveLength(3)
     expect(wrapper.find('[data-testid="select-all"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="delete-selected"]').exists()).toBe(true)
-    expect(wrapper.element.className).toContain('md:grid-cols-2')
+    expect(wrapper.element.className).toContain('md:grid-cols-3')
     expect(wrapper.element.className).not.toContain('grid-cols-5')
+    expect(wrapper.text()).not.toContain('QR')
+  })
+
+  it('방에서도 선택한 파일 받기를 누르면 download-parallel을 보낸다', async () => {
+    const wrapper = mountControls({ privateMode: true, selectedCount: 2 })
+    const btn = wrapper.findAll('button').find((b) => b.text().includes('(2)') && !b.attributes('data-testid'))
+    await btn.trigger('click')
+    expect(wrapper.emitted('download-parallel')).toHaveLength(1)
   })
 
   it('선택이 있으면 선택 삭제가 켜지고 누르면 delete-selected를 보낸다', async () => {

@@ -13,6 +13,7 @@ import { useSocket } from './composables/useSocket'
 import { useNotification } from './composables/useNotification'
 import { useDownload } from './composables/useDownload'
 import { useMultiDownload } from './composables/useMultiDownload'
+import { prepareLockedEntry, lockedNameOf, openLockedFile } from './services/lockedDownloader.js'
 import { useTextShare } from './composables/useTextShare'
 import { useTextQueue, textBytes, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA } from './composables/useTextQueue'
 import { roomDisplayName } from './utils/roomDisplayName'
@@ -795,12 +796,29 @@ const multiDownload = useMultiDownload({
   download,
   t,
   notification,
+  // 방 파일은 잠겨 있다: 이름은 이 기기에서 풀고, 각 파일은 받기 직전에 60초 주소·키를 받아 이 기기에서 푼다
+  resolveNames: (files) => Promise.all(files.map(async (f) =>
+    f.locked ? { ...f, zipName: await lockedNameOf({ roomId: f.roomId, id: f.name, lockState }) } : f
+  )),
+  getLockedEntry: (f) => prepareLockedEntry({ roomId: f.roomId, id: f.name, lockState }),
+  downloadLockedFile: async (f) => {
+    try {
+      await openLockedFile({ roomId: f.roomId, id: f.name, lockState, download: true })
+      return { success: true }
+    } catch (error) {
+      console.error('[App] 방 파일 받기 실패:', error?.code || error)
+      return { success: false, error }
+    }
+  },
   onSuccess: (count, method) => {
     // GA4 주요 이벤트: ZIP은 다 받은 파일 수, 하나씩 받기는 브라우저에 넘긴 파일 수
     trackEvent('file_download', { file_count: count, method })
     nextTime.markSuccess('download')
   },
 })
+
+// 여러 파일 받기 창이 열리면 이미 떠 있던 안내도 숨긴다 (창 버튼을 가리지 않게)
+watch(() => multiDownload.sheet.value, (sheet) => { if (sheet) nextTime.hide() })
 
 async function handleDownloadParallel(files) {
   if (!files || files.length === 0) return

@@ -18,7 +18,7 @@ function label(item) {
       ? t('multiDownload.zipMany', { index: item.index + 1, total: item.zipCount, count: item.files.length })
       : t('multiDownload.zipOne', { count: item.files.length })
   }
-  return item.file?.name || ''
+  return item.file?.zipName || item.file?.name || ''
 }
 
 /** "5.1 MB · ✓ 받음" (크기를 모르면 상태만) */

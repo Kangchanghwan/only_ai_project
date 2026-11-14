@@ -16,8 +16,11 @@ import { downloadZip as defaultDownloadZip, zipInMemory as defaultZipInMemory } 
  * @param {object} [deps.notification] useNotification() (없으면 진행 표시·토스트 생략)
  * @param {(count:number, method:'zip'|'native')=>void} [deps.onSuccess] 받기 성공(또는 브라우저 받기 시작) 시
  * @param {boolean} [deps.exactSizes=true] 파일 크기가 목록의 정확한 값인지 (QR 받기 화면은 추정값이라 false)
+ * @param {(files:Array)=>Promise<Array>} [deps.resolveNames] 방(잠긴) 파일의 원래 이름을 zipName에 채워 돌려준다
+ * @param {(file:object)=>Promise<object>} [deps.getLockedEntry] 방(잠긴) 파일의 60초 받기 주소·키 (받기 직전에 부른다)
+ * @param {(file:object)=>Promise<{success:boolean}>} [deps.downloadLockedFile] ZIP에서 빠진 큰 방 파일 하나 받기
  */
-export function useMultiDownload({ download, t, notification = null, onSuccess = () => {}, exactSizes = true, downloadZip = defaultDownloadZip, zipInMemory = defaultZipInMemory, now = () => new Date() }) {
+export function useMultiDownload({ download, t, notification = null, onSuccess = () => {}, exactSizes = true, resolveNames = null, getLockedEntry = null, downloadLockedFile = null, downloadZip = defaultDownloadZip, zipInMemory = defaultZipInMemory, now = () => new Date() }) {
   /** 열린 목록: { items } | null */
   const sheet = ref(null)
 
@@ -30,7 +33,7 @@ export function useMultiDownload({ download, t, notification = null, onSuccess =
       const base = { ...item, key, state: 'idle', percent: 0 }
       if (item.type !== 'zip') return base
       const index = zipIndex++
-      return { ...base, index, zipCount, zipName: zipFileName(date, index, zipCount), names: zipEntryNames(item.files) }
+      return { ...base, index, zipCount, zipName: zipFileName(date, index, zipCount), names: zipEntryNames(item.files.map((f) => ({ name: f.zipName || f.name }))) }
     })
   }
 
@@ -45,6 +48,7 @@ export function useMultiDownload({ download, t, notification = null, onSuccess =
         names: item.names,
         zipName: item.zipName,
         exactSizes,
+        getLockedEntry,
         onProgress: (p) => {
           item.percent = p
           notification?.updateUpload(id, p)
@@ -67,6 +71,19 @@ export function useMultiDownload({ download, t, notification = null, onSuccess =
 
   async function runFile(item) {
     item.state = 'running'
+    if (item.file?.locked) {
+      // 방(잠긴) 파일: 이 기기에서 풀어 저장한다. 다 받은 뒤에 끝나므로 '받음'으로 표시한다
+      const r = downloadLockedFile ? await downloadLockedFile(item.file) : { success: false }
+      if (r?.success) {
+        item.state = 'done'
+        notification?.showSuccess(t('file.downloadComplete'))
+        onSuccess(1, 'locked')
+      } else {
+        item.state = 'failed'
+        notification?.showError(t('file.downloadFailed'))
+      }
+      return
+    }
     const result = await download.downloadFile(item.file)
     if (result?.success) {
       // 브라우저 다운로드 관리자에 넘겼다. 실제로 끝났는지는 사이트가 알 수 없다
@@ -88,6 +105,15 @@ export function useMultiDownload({ download, t, notification = null, onSuccess =
   /** 선택한 파일 받기 시작 */
   async function start(files) {
     if (!files || files.length === 0) return
+    if (resolveNames && files.some((f) => f?.locked)) {
+      try {
+        files = await resolveNames(files)
+      } catch (err) {
+        console.error('[useMultiDownload] 방 파일 이름을 풀지 못했어요:', err?.code || err)
+        notification?.showError(t('multiDownload.zipFailed'))
+        return
+      }
+    }
     const items = buildItems(files)
     if (items.length === 1) {
       await run(items[0])
