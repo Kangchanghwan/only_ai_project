@@ -249,7 +249,8 @@ async function handleLockedDownload(token) {
 // 압축 없이 묶기만 한다(stored). 항목마다 데이터 서술자를 써서 받으면서 바로 내보낸다. Zip64 없음(묶음 한도 500MB).
 const ZIP_JOB_TTL_MS = 2 * 60 * 1000;
 const ZIP_MAX_BYTES = 0xffffffff - 1024 * 1024;
-const zipJobs = new Map(); // token -> { apiUrl, zipName, exact, entries:[{roomId,file,name,size}], clientId, at }
+const zipJobs = new Map(); // token -> { apiUrl, zipName, exact, entries:[{roomId,file,name,size,locked}], clientId, at }
+const ZIP_KEY_TIMEOUT_MS = 30 * 1000;
 
 const ZIP_CRC_TABLE = (() => {
   const table = new Uint32Array(256);
@@ -366,10 +367,65 @@ async function zipFetchEntry(apiUrl, entry, fetchImpl) {
 }
 
 /**
+ * 방(잠긴) 파일: 탭에 그 파일의 받기 주소·키를 요청한다. 탭이 받기 직전에 서버에서 60초 주소를 새로 받는다.
+ * 키는 이 서비스워커와 탭 사이에서만 오간다.
+ */
+function zipAskClientForKey(clientId, token, index) {
+  return new Promise(async (resolve, reject) => {
+    let client = null;
+    try { client = clientId ? await self.clients.get(clientId) : null; } catch { client = null; }
+    if (!client) { reject(new Error('ZIP_KEY_FAILED')); return; }
+    const channel = new MessageChannel();
+    const timer = setTimeout(() => reject(new Error('ZIP_KEY_FAILED')), ZIP_KEY_TIMEOUT_MS);
+    channel.port1.onmessage = (e) => {
+      clearTimeout(timer);
+      const d = e.data || {};
+      const ok = d.ok === true && typeof d.url === 'string' && /^https:\/\//.test(d.url) &&
+        d.dk instanceof Uint8Array && d.dk.length === 32 && d.np instanceof Uint8Array;
+      if (ok) resolve({ url: d.url, dk: d.dk, np: d.np });
+      else reject(new Error('ZIP_KEY_FAILED'));
+    };
+    client.postMessage({ type: 'ZIP_NEED_KEY', token, index }, [channel.port2]);
+  });
+}
+
+/** 잠긴 파일을 받으면서 풀어 평문 조각을 내주는 reader (handleLockedDownload와 같은 복호) */
+async function zipLockedReader(keyInfo, size, fetchImpl) {
+  let key;
+  try {
+    key = await crypto.subtle.importKey('raw', keyInfo.dk, 'AES-GCM', false, ['decrypt']);
+  } catch {
+    throw new Error('ZIP_KEY_FAILED');
+  }
+  const upstream = await fetchImpl(keyInfo.url);
+  if (!upstream.ok || !upstream.body) throw new Error('ZIP_DOWNLOAD_FAILED');
+  const raw = upstream.body.getReader();
+  const decryptor = createLockedDecryptor(key, keyInfo.np, size);
+  const queue = [];
+  let ended = false;
+  return {
+    async read() {
+      for (;;) {
+        if (queue.length) return { done: false, value: queue.shift() };
+        if (ended) return { done: true, value: undefined };
+        const { done, value } = await raw.read();
+        try {
+          if (done) { decryptor.finish(); ended = true; continue; }
+          for (const pt of await decryptor.push(value)) queue.push(pt);
+        } catch {
+          throw new Error('ZIP_DECRYPT_FAILED');
+        }
+      }
+    },
+    cancel() { try { raw.cancel(); } catch { /* ignore */ } },
+  };
+}
+
+/**
  * ZIP 바이트 스트림을 만든다. 서비스워커 응답과 테스트가 함께 쓴다.
  * onEvent({loaded}|{done}|{error}) 로 진행을 알린다.
  */
-function createZipStream(job, { fetchImpl = fetch, now = new Date(), onEvent = () => {} } = {}) {
+function createZipStream(job, { fetchImpl = fetch, now = new Date(), onEvent = () => {}, requestKey = null } = {}) {
   const enc = new TextEncoder();
   const dos = zipDos(now);
   const entries = job.entries.map((e) => ({ ...e, nameBytes: enc.encode(e.name) }));
@@ -417,7 +473,12 @@ function createZipStream(job, { fetchImpl = fetch, now = new Date(), onEvent = (
           }
           const entry = entries[index];
           if (!reader) {
-            reader = await zipFetchEntry(job.apiUrl, entry, fetchImpl);
+            if (entry.locked) {
+              if (!requestKey) throw new Error('ZIP_KEY_FAILED');
+              reader = await zipLockedReader(await requestKey(index), entry.size, fetchImpl);
+            } else {
+              reader = await zipFetchEntry(job.apiUrl, entry, fetchImpl);
+            }
             crc = 0;
             got = 0;
             push(controller, zipLocalHeader(entry.nameBytes, dos));
@@ -464,7 +525,10 @@ async function handleZipDownload(token) {
   }
   const enc = new TextEncoder();
   const total = zipTotalSize(job.entries.map((e) => ({ nameBytes: enc.encode(e.name), size: e.size })));
-  const body = createZipStream(job, { onEvent: (ev) => notifyZip(job.clientId, { token, ...ev }) });
+  const body = createZipStream(job, {
+    onEvent: (ev) => notifyZip(job.clientId, { token, ...ev }),
+    requestKey: (index) => zipAskClientForKey(job.clientId, token, index),
+  });
   const headers = {
     'Content-Type': 'application/zip',
     'Content-Disposition': zipContentDisposition(job.zipName),
@@ -486,6 +550,7 @@ function validZipJob(data) {
     if (typeof e.file !== 'string' || e.file.length === 0 || e.file.length > 1024) return false;
     if (typeof e.name !== 'string' || e.name.length === 0 || e.name.length > 512 || /[\\/]/.test(e.name)) return false;
     if (!Number.isInteger(e.size) || e.size < 0) return false;
+    if (e.locked !== undefined && typeof e.locked !== 'boolean') return false;
     total += e.size;
   }
   return total <= ZIP_MAX_BYTES;
@@ -605,7 +670,7 @@ self.addEventListener('message', (event) => {
         apiUrl: data.apiUrl,
         zipName: data.zipName,
         exact: data.exact !== false,
-        entries: data.entries.map((e) => ({ roomId: e.roomId, file: e.file, name: e.name, size: e.size })),
+        entries: data.entries.map((e) => ({ roomId: e.roomId, file: e.file, name: e.name, size: e.size, locked: e.locked === true })),
         clientId: event.source && event.source.id,
         at: now,
       });
@@ -616,4 +681,4 @@ self.addEventListener('message', (event) => {
 
 // 테스트에서 레코드 복호기를 검증할 수 있게 노출한다 (서비스워커 동작에는 영향 없음)
 self.__lockedTest = { createLockedDecryptor, lockedContentDisposition };
-self.__zipTest = { createZipStream, zipTotalSize, validZipJob, zipContentDisposition, handleZipDownload, zipJobs };
+self.__zipTest = { zipAskClientForKey, createZipStream, zipTotalSize, validZipJob, zipContentDisposition, handleZipDownload, zipJobs };

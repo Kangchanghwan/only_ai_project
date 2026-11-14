@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { buildZipParts } from '../utils/zipWriter.js'
+import { createFileKey, encryptPart, ctPartCount, RECORD_SIZE } from '../utils/lockCrypto.js'
 
 /** public/sw.js를 가짜 self에 올려 ZIP 도구와 리스너를 얻는다 */
 function loadSw() {
@@ -160,5 +161,76 @@ describe('서비스워커 ZIP 스트림', () => {
     const replies = []
     listeners.message({ data: { type: 'ZIP_REGISTER', token: 'x' }, source: { id: 'c' }, ports: [{ postMessage: (m) => replies.push(m) }] })
     expect(replies).toEqual([{ ok: false }])
+  })
+})
+
+async function encryptAll(dk, np, bytes) {
+  const blob = new Blob([bytes])
+  const parts = []
+  for (let p = 0; p < ctPartCount(blob.size); p++) parts.push(new Uint8Array(await (await encryptPart(dk, np, blob, p)).arrayBuffer()))
+  return concat(parts)
+}
+
+describe('서비스워커 ZIP: 방(잠긴) 파일', () => {
+  it('키를 받아 풀면서 넣는다: 평문으로 만든 ZIP과 바이트 단위로 같고, 키는 파일마다 받기 직전에 요청한다', async () => {
+    const { zip } = loadSw()
+    const date = new Date(2026, 10, 14, 23, 0, 0)
+    const { dk, dkRaw, np } = await createFileKey()
+    const secret = new Uint8Array(RECORD_SIZE + 777).map((_, i) => (i * 31) & 0xff)
+    const ct = await encryptAll(dk, np, secret)
+    const asked = []
+    const requestKey = async (index) => { asked.push(index); return { url: 'https://r2.example/locked-ct', dk: dkRaw, np } }
+    const fetchImpl = async (url, init) => {
+      if (url.endsWith('/api/r2/download-urls')) {
+        const { fileNames } = JSON.parse(init.body)
+        return { ok: true, json: async () => ({ urls: fileNames.map((n) => ({ fileName: n, url: `https://r2.example/${n}` })) }) }
+      }
+      const data = url === 'https://r2.example/locked-ct' ? ct : enc.encode('plain file')
+      const chunks = []
+      for (let i = 0; i < data.length; i += 50000) chunks.push(data.subarray(i, i + 50000))
+      let i = 0
+      return { ok: true, body: { getReader: () => ({ read: async () => (i < chunks.length ? { done: false, value: chunks[i++] } : { done: true }), cancel: () => {} }) } }
+    }
+    const entries = [
+      { roomId: 'prv-g-' + 'a'.repeat(24), file: 'id1', name: '계약서.pdf', size: secret.length, locked: true },
+      { roomId: 'room-a', file: 'b.txt', name: 'b.txt', size: 10 },
+    ]
+    const bytes = await readAll(zip.createZipStream(job(entries), { fetchImpl, now: date, requestKey }))
+    const expected = concat(buildZipParts([{ name: '계약서.pdf', chunks: [secret] }, { name: 'b.txt', chunks: [enc.encode('plain file')] }], date))
+    expect(Buffer.compare(Buffer.from(bytes), Buffer.from(expected))).toBe(0)
+    expect(asked).toEqual([0])
+  })
+
+  it('키를 못 받으면 ZIP_KEY_FAILED, 변조된 암호문이면 ZIP_DECRYPT_FAILED로 끝낸다', async () => {
+    const { zip } = loadSw()
+    const { dk, dkRaw, np } = await createFileKey()
+    const secret = new Uint8Array(1000).fill(7)
+    const ct = await encryptAll(dk, np, secret)
+    ct[20] ^= 1
+    const body = (data) => ({ ok: true, body: { getReader: () => { let d = false; return { read: async () => (d ? { done: true } : (d = true, { done: false, value: data })), cancel: () => {} } } } })
+    const entries = [{ roomId: 'prv-1', file: 'id1', name: 'x', size: secret.length, locked: true }]
+    await expect(readAll(zip.createZipStream(job(entries), { fetchImpl: async () => body(ct), requestKey: async () => { throw new Error('ZIP_KEY_FAILED') } }))).rejects.toThrow('ZIP_KEY_FAILED')
+    await expect(readAll(zip.createZipStream(job(entries), { fetchImpl: async () => body(ct), requestKey: async () => ({ url: 'https://r2.example/x', dk: dkRaw, np }) }))).rejects.toThrow('ZIP_DECRYPT_FAILED')
+  })
+
+  it('탭에 키를 요청한다: https 주소와 32바이트 키만 받아들인다', async () => {
+    const src = readFileSync(fileURLToPath(new URL('../../public/sw.js', import.meta.url)), 'utf-8')
+    let reply = null
+    const client = { postMessage: (msg, [port]) => { expect(msg).toEqual({ type: 'ZIP_NEED_KEY', token: 't0k3n0000001', index: 2 }); port.postMessage(reply) } }
+    const self = { addEventListener: () => {}, clients: { get: async () => client, claim: async () => {} }, skipWaiting: () => {}, navigator: { language: 'ko' }, registration: {} }
+    new Function('self', src)(self)
+    const ask = (r) => { reply = r; return self.__zipTest.zipAskClientForKey('c1', 't0k3n0000001', 2) }
+    const good = { ok: true, url: 'https://r2.example/a', dk: new Uint8Array(32), np: new Uint8Array(4) }
+    await expect(ask(good)).resolves.toMatchObject({ url: 'https://r2.example/a' })
+    await expect(ask({ ...good, url: 'http://evil.example/a' })).rejects.toThrow('ZIP_KEY_FAILED')
+    await expect(ask({ ...good, dk: new Uint8Array(16) })).rejects.toThrow('ZIP_KEY_FAILED')
+    await expect(ask({ ok: false })).rejects.toThrow('ZIP_KEY_FAILED')
+  })
+
+  it('등록 검사: locked는 boolean만', () => {
+    const { zip } = loadSw()
+    const ok = { token: 'abcdef123456', apiUrl: 'https://api.clipboardapp.org', zipName: 'a.zip', entries: [{ roomId: 'prv-1', file: 'id', name: 'a', size: 1, locked: true }] }
+    expect(zip.validZipJob(ok)).toBe(true)
+    expect(zip.validZipJob({ ...ok, entries: [{ ...ok.entries[0], locked: 'yes' }] })).toBe(false)
   })
 })

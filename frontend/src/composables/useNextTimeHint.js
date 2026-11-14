@@ -102,6 +102,12 @@ export function useNextTimeHint({ isBlocked = () => false } = {}) {
     save(state)
   }
 
+  /** 다른 창이 떠서 안내가 버튼을 가릴 때: 이번 페이지에서만 숨긴다 (기기 기록은 그대로) */
+  function hide() {
+    clearTimers()
+    visible.value = false
+  }
+
   /** 닫기 버튼 */
   function dismiss() {
     if (variant.value) safeTrack('next_time_hint_dismiss', { variant: variant.value })
@@ -118,5 +124,5 @@ export function useNextTimeHint({ isBlocked = () => false } = {}) {
 
   if (getCurrentInstance()) onUnmounted(clearTimers)
 
-  return { visible, variant, kind, markSuccess, dismiss, act }
+  return { visible, variant, kind, markSuccess, dismiss, act, hide }
 }

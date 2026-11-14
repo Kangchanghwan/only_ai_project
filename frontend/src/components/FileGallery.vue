@@ -69,8 +69,8 @@ function fileKey(file) {
   return `${file.roomId}::${file.name}`
 }
 
-// 1:1 방: 파일이 전부 방 키로 잠겨 있고 두 기기 모두 그 키를 가진다.
-// 그래서 잠긴 파일도 선택해서 한꺼번에 지울 수 있다 (일괄 받기·QR·복사·비우기는 공개 URL 기준이라 숨긴다)
+// 방: 파일이 전부 방 키로 잠겨 있고 방의 모든 기기가 그 키를 가진다.
+// 그래서 잠긴 파일도 선택해서 한꺼번에 지우고 받을 수 있다(받기는 이 기기에서 풀어 ZIP으로). QR·복사·비우기는 공개 URL 기준이라 숨긴다
 const isPrivate = computed(() => isPrivateScope(props.scope))
 
 // 그 밖의 범위에서 잠긴 파일은 선택(일괄 받기·QR·복사) 대상이 아니다. 비밀번호로 하나씩 푼다
@@ -128,7 +128,6 @@ const multiQRFiles = computed(() =>
 
 // 병렬 다운로드
 function downloadParallel() {
-  if (isPrivate.value) return
   if (selectedCount.value > 0) {
     emit('download-parallel', selectedFilesArray.value)
   }

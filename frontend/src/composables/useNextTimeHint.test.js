@@ -217,3 +217,17 @@ describe('useNextTimeHint 저장소 예외', () => {
     expect(stored().shows).toBe(1)
   })
 })
+
+describe('useNextTimeHint hide (다른 창이 열릴 때)', () => {
+  it('이번 페이지에서만 숨기고 기기 기록(shows)은 그대로 둔다', () => {
+    const h = useNextTimeHint()
+    h.markSuccess('upload')
+    wait()
+    expect(h.visible.value).toBe(true)
+    const before = stored()
+    h.hide()
+    expect(h.visible.value).toBe(false)
+    expect(stored()).toEqual(before)
+    expect(stored().done).not.toBe(true)
+  })
+})

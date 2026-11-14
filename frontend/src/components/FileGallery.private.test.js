@@ -31,12 +31,12 @@ const mountGallery = (props) => mount(FileGallery, {
 })
 
 describe('FileGallery - 1:1 방 모두 선택·선택 삭제', () => {
-  it('1:1 범위에서는 잠긴 파일도 선택 대상이고, 컨트롤은 모두 선택·선택 삭제 2개만 보인다', () => {
+  it('방 범위에서는 잠긴 파일도 선택 대상이고, 컨트롤은 모두 선택·받기·선택 삭제 3개만 보인다', () => {
     const w = mountGallery({ scope: PRV })
     const dc = w.findComponent({ name: 'DownloadControls' })
     expect(dc.props('totalCount')).toBe(2)
     expect(dc.props('privateMode')).toBe(true)
-    expect(dc.findAll('button')).toHaveLength(2)
+    expect(dc.findAll('button')).toHaveLength(3)
     expect(dc.find('[data-testid="select-all"]').attributes('disabled')).toBeUndefined()
     expect(w.findAll('.locked-check')).toHaveLength(2)
   })
@@ -50,6 +50,13 @@ describe('FileGallery - 1:1 방 모두 선택·선택 삭제', () => {
     await del.trigger('click')
     const payload = w.emitted('delete-selected')[0][0]
     expect(payload.map((f) => f.name)).toEqual(['l1', 'l2'])
+  })
+
+  it('모두 선택 후 받기를 누르면 잠긴(방) 파일 전부를 download-parallel로 넘긴다', async () => {
+    const w = mountGallery({ scope: PRV })
+    await w.find('[data-testid="select-all"]').trigger('click')
+    w.findComponent({ name: 'DownloadControls' }).vm.$emit('download-parallel')
+    expect(w.emitted('download-parallel')[0][0].map((f) => f.name)).toEqual(['l1', 'l2'])
   })
 
   it('하나만 골라 지울 수 있다', async () => {
