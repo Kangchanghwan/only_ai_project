@@ -58,7 +58,7 @@ owner 지시(2026-11-13 "네 그렇게 해주세요"): 방 통합(#76)·그림 �
 | 11-17(화) | 네이버 블로그 E-N1 | "회사 PC·PC방에서 폰 사진 옮길 때 남이 못 보게: 방 만들어 보내기" (상황 제목, 본문에서 방 암호화 1절 범위) | 캡처는 더미 파일, 라이브 화면 |
 | 11-17(화) | 개선 E3 (intent 0041) | 영어 새 페이지 `/en/guide/end-to-end-encrypted-online-clipboard.html`: "secure online clipboard", "e2ee file transfer" 의도. 첫 문단에 답·숫자·기준일, 1절 범위·한계, "다른 도구가 나은 경우"(Wormhole: 링크 공유, LocalSend: 설치형 P2P) 공정하게 | auto. 만들기 전 ai-visibility 규칙대로 상위 결과 확인 |
 | 11-18(수) | 제3자 언급 | AlternativeTo 상태 확인 → 승인됐으면 기능 태그 Encrypted·대안 연결. SaaSHub 동일 | |
-| 11-19(목) | velog + DEV.to | 개발기 "그림 4개로 방 열쇠 넘기기: 브라우저에서 SPAKE2(RFC 9382)" — **owner가 승인한 초안만 발행** (초안: 루틴 메모리 11-14 항목) | canonical = velog |
+| 11-19(목) | velog + DEV.to | 개발기 "그림 4개로 방 열쇠 넘기기: 브라우저에서 SPAKE2(RFC 9382)" — **owner 승인 완료(2026-11-14 "네 올리세요")**. 초안 원문: 루틴 메모리 폴더 `drafts/velog-spake2.md`. 발행 직전 코드 수치만 master와 다시 대조하고 내용은 바꾸지 않는다(오탈자·깨진 링크만). DEV.to는 같은 내용을 영어로 옮기되 사실 추가 금지 | canonical = velog |
 | 11-20 이후 | 개선 E4 (주 1건) | 한국어 상황 페이지에 "개인 파일은 방에서" 절: `office-pc-file-transfer-without-messenger.html` 먼저(측정 중 intent 없음). `pc-bang-file-transfer.html`은 0035 28일 판독 뒤 | 판독 기간 중인 페이지는 건드리지 않는다 |
 | 11-21(토) | 디스콰이엇 | E1~E3 첫 수치 | |
 | 11-24(화) | 네이버 E-N2 | "폰 인증번호·비밀번호를 PC로 옮길 때 남지 않게"(방 텍스트 10분, 1절 범위) | 11-13 네이버 10번과 겹치지 않게 각도: 민감 텍스트 |
