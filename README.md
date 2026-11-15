@@ -4,7 +4,7 @@
 
 ![Clipboard Share 사용 장면: 같은 와이파이에서 폰과 PC가 서로를 찾고, 폰에서 보낸 텍스트와 사진이 PC에 도착하는 16초](docs/media/demo-ko.gif)
 
-사용법 영상: [한국어 52초](https://youtu.be/TIiRMzS7wD0) · [English 53s](https://youtu.be/2_2aWO0lL4Y)
+사용법 영상: [한국어 52초](https://youtu.be/C5qcUgtEG1M) · [English 53s](https://youtu.be/-x0xVxSTHlg)
 
 Socket.IO 기반 실시간 공유 서버와 Vue 3 프론트엔드로 구성됩니다. (아래 기능 설명 일부는 초기 6자리 룸 모델 기준의 옛 내용입니다.)
 
