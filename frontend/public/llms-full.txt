@@ -26,7 +26,7 @@ Source: https://www.clipboardapp.org/how-to-use.html
 - **0:24** PC에서 방을 만들면 그림 4개가 뜹니다. 폰에서 같은 그림을 순서대로 누르고, PC에서 "들이기"를 누르면 폰이 방에 들어옵니다.
 - **0:39** 방에 올린 PDF는 파일 이름까지 폰에서 암호화되어 올라가고, PC에서 풀려 원래 이름으로 보입니다.
 
-장면별 표는 [영상 페이지](https://www.clipboardapp.org/guide/clipboard-share-video.html)에 정리했습니다. 영어판 영상은 [유튜브](https://youtu.be/2_2aWO0lL4Y)에 있습니다.
+장면별 표는 [영상 페이지](https://www.clipboardapp.org/guide/clipboard-share-video.html)에 정리했습니다. 영어판 영상은 [유튜브](https://youtu.be/-x0xVxSTHlg)에 있습니다.
 
 ## 파일 보내기
 - PC에서는 파일을 페이지 위로 끌어다 놓거나, **파일 업로드** 카드를 눌러 파일을 고릅니다.
@@ -655,6 +655,8 @@ Source: https://www.clipboardapp.org/guide/galaxy-photo-to-pc-transfer.html
 갤럭시로 찍은 사진을 컴퓨터로 옮기려면 보통 USB 케이블을 찾거나, PC에 앱을 깔고 계정을 연결하거나, 카톡 나에게 보내기로 한 장씩 넘깁니다. 학교나 회사 컴퓨터처럼 프로그램 설치가 막혀 있고 블루투스도 없는 데스크톱이면 쓸 수 있는 방법이 더 줄어듭니다.
 
 갤럭시와 컴퓨터를 같은 와이파이에 두고 양쪽에서 브라우저를 열면 바로 연결됩니다. 갤럭시에서 올린 사진이 몇 초 뒤 컴퓨터 화면에 나타나고, 메신저처럼 압축되지 않은 원본으로 저장됩니다.
+
+실제 사이트 화면 5초: 폰에서 사진 4장을 고르면 컴퓨터 목록에 바로 도착합니다. 전체 과정은 [사용법 영상(52초)](https://www.clipboardapp.org/how-to-use.html)에 있습니다.
 
 ## 옮기는 방법
 - 갤럭시와 컴퓨터를 같은 와이파이에 연결합니다. 데스크톱처럼 유선으로 연결된 PC라도 같은 공유기에 물려 있으면 됩니다.

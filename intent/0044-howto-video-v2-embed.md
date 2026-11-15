@@ -7,12 +7,12 @@ Author: growth-operator (agent). Status: accepted (owner 2026-11-16 "순서대�
 - 유튜브 유입은 28일 7세션(10-17 영상 기준)으로 작다. 영상 자체보다, 이미 색인된 사용법 페이지에 영상을 붙여 구글 동영상 결과·주요 순간 노출을 노리는 쪽이 낫다(추정).
 
 ## Change (2026-11-16)
-- 새 채널 "Clipboard Share"(@ClipboardShare, UCfXVtgaRFsZYMIcijmbTeBA)에 공개 업로드: 한국어 https://youtu.be/TIiRMzS7wD0 (52초), 영어 https://youtu.be/2_2aWO0lL4Y (53초). 나레이션 없음, 장면마다 제목 한 줄, 음악 YouTube 오디오 보관함 Fun Vibe(Dyalla). 저작권 검사 문제 없음. 설명란 링크 utm_campaign=howto-2611.
+- 채널: owner 지시(11-16)로 The Trend Why(UCxY3QULZpupEvTNXgjvYkKw)를 Clipboard Share(@ClipboardShareApp)로 바꿔 공개 업로드(처음 만든 새 채널 UCfXVtgaRFsZYMIcijmbTeBA 업로드는 삭제): 한국어 https://youtu.be/C5qcUgtEG1M (52초), 영어 https://youtu.be/-x0xVxSTHlg (53초). 나레이션 없음, 장면마다 제목 한 줄, 음악 YouTube 오디오 보관함 Fun Vibe(Dyalla). 저작권 검사 문제 없음. 설명란 링크 utm_campaign=howto-2611.
 - how-to-use.html: 영상 교체, VideoObject를 새 영상으로, 장면 6개 Clip(hasPart) 추가, 장면 목록 갱신.
 - guide/clipboard-share-video.html(canonical → how-to-use): 영상·VideoObject·Clip·장면 표 교체, 대본 절 삭제(나레이션 없음), 촬영 방식 문구 갱신, "같은 와이파이가 아니면" 답에 방 + 그림 4개 추가.
 - en/guide/transfer-photos-iphone-to-windows-without-cable.html: 영어 영상 절 + VideoObject(Clip 6개). 같은 페이지 옛 UI 문구 "Upload File card" → "Choose files", "Paste card" → "Paste button"(실제 화면 기준). 이 페이지는 진행 중 판독 intent 없음.
 - sitemap.xml: how-to-use 영상 태그 교체, 영어 가이드에 video 태그 추가. llms-full.txt 재생성.
-- 2026-11-16 추가: 쇼츠 3편 공개(Lww6CBq4Xiw, SjmWDBaROWg, iXcaz5g4w8c), 채널 설명·링크, galaxy-photo-to-pc-transfer.html 상단에 5초 장면 클립(/guide/media/, 0012 rejected 페이지라 측정 충돌 없음), video-campaign.md 5절(일정·측정·중단 기준).
+- 2026-11-16 추가: 쇼츠 3편 공개(q2SRH8RpVBw, Xp5Q_VW2MIo, v2Nb9StmKts), 채널 설명·링크, galaxy-photo-to-pc-transfer.html 상단에 5초 장면 클립(/guide/media/, 0012 rejected 페이지라 측정 충돌 없음), video-campaign.md 5절(일정·측정·중단 기준).
 - 개선 1건 원칙 예외: owner 지시(11-16).
 
 ## Measure

@@ -57,15 +57,15 @@ owner 지시(2026-11-16): "순서대로 다해줘. 영상 업로드도 다해주
 ### 자산
 | 종류 | 주소 | 비고 |
 |---|---|---|
-| 채널 | https://www.youtube.com/@ClipboardShare (UCfXVtgaRFsZYMIcijmbTeBA) | 11-16 새 브랜드 채널(lgodl3512 관리). 옛 영상 DqPto5orZ1s·2i_LNpqvL-Y는 The Trend Why 채널에 일부 공개로 그대로 |
-| 한국어 본편 52초 | https://youtu.be/TIiRMzS7wD0 | how-to-use.html·영상 페이지에 넣음 |
-| 영어 본편 53초 | https://youtu.be/2_2aWO0lL4Y | /en/guide/transfer-photos-iphone-to-windows-without-cable.html에 넣음 |
-| 쇼츠 A 12초 | https://youtube.com/shorts/Lww6CBq4Xiw | 폰 사진 → 컴퓨터 |
-| 쇼츠 B 13초 | https://youtube.com/shorts/SjmWDBaROWg | 폰 텍스트 → 컴퓨터 |
-| 쇼츠 C 27초 | https://youtube.com/shorts/iXcaz5g4w8c | 그림 4개로 방 + 방 암호화 |
+| 채널 | https://www.youtube.com/@ClipboardShareApp (UCxY3QULZpupEvTNXgjvYkKw) | owner 지시(11-16 "The Trend Why를 바꿔서 사용해줘. 새로 만들지말고")로 The Trend Why(@TheTrendWhyTV, 원래 강창환 채널)를 이름 Clipboard Share·핸들 @ClipboardShareApp로 바꿔 씀. 휴대폰 인증된 채널. The Trend Why 공개 쇼츠 2편(1c3hrSSEyD8, bd4Adha0UuM)은 비공개로 돌림(되돌리기 가능). 옛 영상 DqPto5orZ1s·2i_LNpqvL-Y는 같은 채널에 일부 공개 |
+| 한국어 본편 52초 | https://youtu.be/C5qcUgtEG1M | how-to-use.html·영상 페이지에 넣음 |
+| 영어 본편 53초 | https://youtu.be/-x0xVxSTHlg | /en/guide/transfer-photos-iphone-to-windows-without-cable.html에 넣음 |
+| 쇼츠 A 12초 | https://youtube.com/shorts/q2SRH8RpVBw | 폰 사진 → 컴퓨터 |
+| 쇼츠 B 13초 | https://youtube.com/shorts/Xp5Q_VW2MIo | 폰 텍스트 → 컴퓨터 |
+| 쇼츠 C 27초 | https://youtube.com/shorts/v2Nb9StmKts | 그림 4개로 방 + 방 암호화 |
 | 장면 클립 5초 | /guide/media/galaxy-photo-scene.mp4 | galaxy-photo-to-pc-transfer.html 상단(0012 rejected 페이지라 측정 충돌 없음) |
 
-나레이션 없음, 음악은 YouTube 오디오 보관함 Fun Vibe(Dyalla). Pixabay 곡은 Content ID 소유권 주장이 떠서 쓰지 않는다(Pixabay 방패 표시가 없어도 걸릴 수 있음). 설명란 링크 utm_campaign=howto-2611(utm_medium=video|shorts|channel). 새 채널은 휴대폰 인증 전이라 설명란 링크가 눌리지 않을 수 있다 → owner 요청.
+나레이션 없음, 음악은 YouTube 오디오 보관함 Fun Vibe(Dyalla). Pixabay 곡은 Content ID 소유권 주장이 떠서 쓰지 않는다(Pixabay 방패 표시가 없어도 걸릴 수 있음). 설명란 링크 utm_campaign=howto-2611(utm_medium=video|shorts|channel). 채널은 휴대폰 인증이 된 계정이다(10-18 확인).
 
 ### 일정에 넣기
 - 11-17(화) 네이버 E-N1: 본문 "방 만들어 보내기" 절 아래에 쇼츠 C 또는 본편 0:24 링크(유튜브 단독 줄 → 영상 카드). 글 맨 끝에 본편 링크 한 줄.
