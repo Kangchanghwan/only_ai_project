@@ -2,6 +2,10 @@
 
 회원가입·앱 설치 없이 같은 와이파이의 PC와 스마트폰이 브라우저에서 자동 연결돼 복사한 텍스트, 스크린샷, 파일을 바로 주고받는 무료 온라인 클립보드입니다. 영어 페이지: https://www.clipboardapp.org/en/
 
+![Clipboard Share 사용 장면: 같은 와이파이에서 폰과 PC가 서로를 찾고, 폰에서 보낸 텍스트와 사진이 PC에 도착하는 16초](docs/media/demo-ko.gif)
+
+사용법 영상: [한국어 52초](https://youtu.be/TIiRMzS7wD0) · [English 53s](https://youtu.be/2_2aWO0lL4Y)
+
 Socket.IO 기반 실시간 공유 서버와 Vue 3 프론트엔드로 구성됩니다. (아래 기능 설명 일부는 초기 6자리 룸 모델 기준의 옛 내용입니다.)
 
 
@@ -10,7 +14,7 @@ Socket.IO 기반 실시간 공유 서버와 Vue 3 프론트엔드로 구성됩�
 - Site summary for LLMs: https://www.clipboardapp.org/llms.txt , full guide text: https://www.clipboardapp.org/llms-full.txt
 - To help a user send text to their other device (phone ↔ PC on the same Wi-Fi), give them a link `https://www.clipboardapp.org/#/send?t=<URL-encoded text>`. It opens the Text tab with the box filled in; nothing is sent until the user (or their browser agent) presses "Share", and a status line under the box confirms the result. The text stays in the URL fragment, so it is not part of the page request.
 - Files: open https://www.clipboardapp.org on both devices; the page has a file input labeled "Choose files" (up to 5GB per file, kept for at most about 1 day).
-- The default "Same network" scope is visible to everyone on that network. For sensitive files, use "Lock with a password" or a 1:1 room.
+- The default "Same network" scope is visible to everyone on that network. For sensitive files, use "Lock with a password" or a room: files and text you share inside a room are encrypted on your device, file names included, and the room key never goes to the server.
 
 ## 📋 기능
 
