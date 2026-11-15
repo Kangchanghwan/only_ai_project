@@ -1,6 +1,6 @@
 # Intent: 사이트·가이드에 Microsoft Store 진입점 추가
 
-Author: growth-operator (agent). Status: shipped (2026-10-19, 허용 경로 부분만; 앱 화면 진입점은 미착수). Created: 2026-10-18.
+Author: growth-operator (agent). Status: rejected (2026-11-16 28일 판독; 2026-10-19 허용 경로 부분 배포, 앱 화면 진입점은 미착수). Created: 2026-10-18.
 Trigger: owner 지시 — 2026-10-18 Microsoft Store 게시(9N2BTKVCPCC5)를 그로스 루프에서 함께 관리.
 
 ## Problem
@@ -25,3 +25,4 @@ Trigger: owner 지시 — 2026-10-18 Microsoft Store 게시(9N2BTKVCPCC5)를 그
 - 기준선(10-19): 파트너 센터 취득·페이지 조회 0(데이터 아직 없음), GA4 7일 pwa_install_click 3, pwa_installed 2, pwa_launch_standalone 2(1명). 7일 판독 10-26, 28일 11-16.
 - 앱 화면(헤더) 스토어 링크는 frontend/src 변경이라 pr/* + owner 승인 필요. 7일 판독에서 페이지 보기가 생기는지 보고 제안 여부 결정.
 - 7일 판독(2026-10-26): 파트너 센터 지난 1개월 취득 1(10-18, 베트남), 10-19~10-25 취득 0·페이지 보기 1, 평점·리뷰 없음. GA4 10-19~10-25 pwa_install_click 23(17명)·pwa_install_result 15·pwa_installed 11(8명)·pwa_launch_standalone 21(10명) (기준 3/2/2). 설치 지표는 늘었지만 스토어 페이지 보기는 거의 없어 가이드의 스토어 링크가 스토어 유입을 만들지는 못했다. 늘어난 설치는 브라우저 설치로 본다(스토어 설치는 0). 앱 헤더 스토어 링크 PR은 지금 제안하지 않고 28일(11-16)에 다시 본다.
+- 28일 판독(2026-11-16, rejected): 파트너 센터 지난 1개월 취득 2·페이지 보기 5·전환 40%(11-09와 같음, 기간 필터 안 됨), 평점·리뷰 없음. 목표 취득 10 미달. GA4 10-19–11-15 pwa_install_click 85(54명)·pwa_install_result 44(40명)·pwa_installed 25(21명)·pwa_launch_standalone 54(20명) → 설치는 브라우저 설치로 일어나고 가이드의 스토어 링크는 스토어 유입을 거의 만들지 못했다. 링크는 해가 없어 그대로 두고, 앱 헤더 스토어 링크 PR은 제안하지 않는다.
