@@ -12,6 +12,7 @@ Author: growth-operator (agent). Status: accepted (owner 2026-11-16 "순서대�
 - guide/clipboard-share-video.html(canonical → how-to-use): 영상·VideoObject·Clip·장면 표 교체, 대본 절 삭제(나레이션 없음), 촬영 방식 문구 갱신, "같은 와이파이가 아니면" 답에 방 + 그림 4개 추가.
 - en/guide/transfer-photos-iphone-to-windows-without-cable.html: 영어 영상 절 + VideoObject(Clip 6개). 같은 페이지 옛 UI 문구 "Upload File card" → "Choose files", "Paste card" → "Paste button"(실제 화면 기준). 이 페이지는 진행 중 판독 intent 없음.
 - sitemap.xml: how-to-use 영상 태그 교체, 영어 가이드에 video 태그 추가. llms-full.txt 재생성.
+- 2026-11-16 추가: 쇼츠 3편 공개(Lww6CBq4Xiw, SjmWDBaROWg, iXcaz5g4w8c), 채널 설명·링크, galaxy-photo-to-pc-transfer.html 상단에 5초 장면 클립(/guide/media/, 0012 rejected 페이지라 측정 충돌 없음), video-campaign.md 5절(일정·측정·중단 기준).
 - 개선 1건 원칙 예외: owner 지시(11-16).
 
 ## Measure

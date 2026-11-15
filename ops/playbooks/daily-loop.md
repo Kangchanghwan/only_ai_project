@@ -5,7 +5,7 @@
 
 ## 0. 준비
 1. `git fetch origin` → `git worktree add /tmp/cs-ops-YYYYMMDD origin/master --detach`
-2. 읽기: intent/goal.md, 최근 ops/reports/ 3개, 상태가 proposed/accepted인 intent/*.md, 루틴 메모리. 2026-10-17~11-14에는 ops/playbooks/video-campaign.md(사용법 영상 캠페인)도 읽고, 그날 날짜에 해당하는 일정(2절 블로그, 3절 측정)을 오늘 할 일에 넣는다. 2026-11-14~12-15에는 ops/playbooks/e2ee-campaign.md(방 종단간 암호화 캠페인)도 읽고 3절 일정 중 오늘 날짜 항목을 오늘 할 일에 넣는다.
+2. 읽기: intent/goal.md, 최근 ops/reports/ 3개, 상태가 proposed/accepted인 intent/*.md, 루틴 메모리. 2026-10-17~11-14와 2026-11-16~12-14에는 ops/playbooks/video-campaign.md(사용법 영상 캠페인, 11-16부터는 5절)도 읽고, 그날 날짜에 해당하는 일정(2절 블로그, 3절 측정)을 오늘 할 일에 넣는다. 2026-11-14~12-15에는 ops/playbooks/e2ee-campaign.md(방 종단간 암호화 캠페인)도 읽고 3절 일정 중 오늘 날짜 항목을 오늘 할 일에 넣는다.
 3. 어제 연 PR·auto 브랜치 결과 확인: GitHub Actions(https://github.com/Kangchanghwan/only_ai_project/actions)에서 auto-merge 성공/실패. 실패면 원인을 읽고 오늘 고치거나 intent에 기록.
 
 ## 1. 수집 (metrics.md)

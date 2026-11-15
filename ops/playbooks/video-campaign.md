@@ -49,3 +49,31 @@ V2(velog 제작기) 소재 메모 (사실만): 에뮬레이터 호스트 녹화(
 
 ## 4. owner 요청 (해결될 때까지 보고에 유지)
 - ~~유튜브 채널 1회 인증(휴대폰)~~ → 2026-10-18 youtube.com/verify "전화번호가 이미 인증되었습니다" 확인(채널 강창환, lgodl3512). 해결됨, 보고에서 뺀다.
+
+## 5. v2 영상 (2026-11-16 ~ 12-14, intent 0044)
+
+owner 지시(2026-11-16): "순서대로 다해줘. 영상 업로드도 다해주고 2번도 해줘."
+
+### 자산
+| 종류 | 주소 | 비고 |
+|---|---|---|
+| 채널 | https://www.youtube.com/@ClipboardShare (UCfXVtgaRFsZYMIcijmbTeBA) | 11-16 새 브랜드 채널(lgodl3512 관리). 옛 영상 DqPto5orZ1s·2i_LNpqvL-Y는 The Trend Why 채널에 일부 공개로 그대로 |
+| 한국어 본편 52초 | https://youtu.be/TIiRMzS7wD0 | how-to-use.html·영상 페이지에 넣음 |
+| 영어 본편 53초 | https://youtu.be/2_2aWO0lL4Y | /en/guide/transfer-photos-iphone-to-windows-without-cable.html에 넣음 |
+| 쇼츠 A 12초 | https://youtube.com/shorts/Lww6CBq4Xiw | 폰 사진 → 컴퓨터 |
+| 쇼츠 B 13초 | https://youtube.com/shorts/SjmWDBaROWg | 폰 텍스트 → 컴퓨터 |
+| 쇼츠 C 27초 | https://youtube.com/shorts/iXcaz5g4w8c | 그림 4개로 방 + 방 암호화 |
+| 장면 클립 5초 | /guide/media/galaxy-photo-scene.mp4 | galaxy-photo-to-pc-transfer.html 상단(0012 rejected 페이지라 측정 충돌 없음) |
+
+나레이션 없음, 음악은 YouTube 오디오 보관함 Fun Vibe(Dyalla). Pixabay 곡은 Content ID 소유권 주장이 떠서 쓰지 않는다(Pixabay 방패 표시가 없어도 걸릴 수 있음). 설명란 링크 utm_campaign=howto-2611(utm_medium=video|shorts|channel). 새 채널은 휴대폰 인증 전이라 설명란 링크가 눌리지 않을 수 있다 → owner 요청.
+
+### 일정에 넣기
+- 11-17(화) 네이버 E-N1: 본문 "방 만들어 보내기" 절 아래에 쇼츠 C 또는 본편 0:24 링크(유튜브 단독 줄 → 영상 카드). 글 맨 끝에 본편 링크 한 줄.
+- 11-18(수) AlternativeTo·SaaSHub: 승인 상태면 미디어/동영상 칸에 영어 본편 URL 추가.
+- 11-19(목) velog·DEV.to 개발기: owner 승인 초안은 내용 변경 금지라 영상은 넣지 않는다. 넣고 싶으면 owner에게 먼저 묻는다.
+- 11-20 이후 E4(office-pc): "개인 파일은 방에서" 절에 그림 4개 장면 클립(5~8초)을 같이 넣는다. 장면 클립은 주 1개, 측정 중 intent가 없는 페이지만.
+- GitHub README 데모 GIF: README.md는 허용 경로 밖이라 PR(owner 머지).
+
+### 측정과 중단
+- 월요일 리포트에 표: 영상별 조회수(Studio), GA utm_campaign=howto-2611 세션(medium별), GSC 동영상 노출(how-to-use, 영어 가이드).
+- 12-14 판단: 유튜브 경유 세션(쇼츠 포함) 20 미만이면 쇼츠 추가 제작 중단, 사이트 임베드만 유지. 20 이상이면 쇼츠 주 1편(장면 단위, 상황 검색어 제목).
