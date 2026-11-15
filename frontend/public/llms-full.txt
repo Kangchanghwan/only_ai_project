@@ -1374,22 +1374,22 @@ This is a comparison to help you choose. If you already know you want Clipboard 
 
 ## Comparison table
 
-Service | Sign-up needed | File size limit | How long items are kept | Same Wi-Fi auto-connect | Open source | Password-lock files |
+Service | Sign-up needed | File size limit | How long items are kept | Same Wi-Fi auto-connect | Open source | Password-lock files | Encryption (as stated) |
 
-**Clipboard Share** | No | 5GB per file | Files up to about 1 day | Yes | Yes (MIT license, public repo) | Yes, for the files you choose |
+**Clipboard Share** | No | 5GB per file | Files up to about 1 day | Yes | Yes (MIT license, public repo) | Yes, for the files you choose | In a room: end-to-end, on your device, file names included. Other tabs: only when locked |
 
-**cl1p.net** | Not stated | Not stated | Destroyed when read; up to a month if kept | Not stated | Not stated | Not stated |
+**cl1p.net** | Not stated | Not stated | Destroyed when read; up to a month if kept | Not stated | Not stated | Not stated | Not stated |
 
-**clipboard.im** | No registration or login | 100MB per file, 300MB total | Files cleaned up after 7 days | Not stated | Not stated | Not stated |
+**clipboard.im** | No registration or login | 100MB per file, 300MB total | Files cleaned up after 7 days | Not stated | Not stated | Not stated | Stored with asymmetric encryption, per its notes |
 
-**ClipSync (Free rooms)** | No account | 25 MB per file | 24 hours | Not stated | Not stated | Not stated |
+**ClipSync (Free rooms)** | No account | 25 MB per file | 24 hours | Not stated | Not stated | Not stated | In transit (HTTPS/WSS); its FAQ says it is not meant for sensitive data |
 
-**PairDrop** | Not stated | Not stated | Not kept (direct transfer, no database) | Yes | Yes (public repo) | Not stated |
+**PairDrop** | Not stated | Not stated | Not kept (direct transfer, no database) | Yes | Yes (public repo) | Not stated | In transit (WebRTC); its FAQ says you still have to trust its server |
 
-Checked on October 25, 2026. Sources: [cl1p.net](https://cl1p.net/) and its [API page](https://cl1p.net/sys/api.jsp); [clipboard.im](https://clipboard.im/en); [ClipSync](https://clipsync.live/) and its [limits page](https://clipsync.live/limits); [PairDrop](https://pairdrop.net), its [GitHub page](https://github.com/schlagmichdoch/PairDrop) and [FAQ](https://github.com/schlagmichdoch/PairDrop/blob/master/docs/faq.md); Clipboard Share's [public repository](https://github.com/Kangchanghwan/only_ai_project). Limits change, so check the service before relying on a number. ClipSync also has a paid Pro plan; the row shows Free rooms.
+Checked on October 25, 2026. Sources: [cl1p.net](https://cl1p.net/) and its [API page](https://cl1p.net/sys/api.jsp); [clipboard.im](https://clipboard.im/en); [ClipSync](https://clipsync.live/) and its [limits page](https://clipsync.live/limits); [PairDrop](https://pairdrop.net), its [GitHub page](https://github.com/schlagmichdoch/PairDrop) and [FAQ](https://github.com/schlagmichdoch/PairDrop/blob/master/docs/faq.md); Clipboard Share's [public repository](https://github.com/Kangchanghwan/only_ai_project). The Encryption column was checked on November 16, 2026, against clipboard.im's notes, ClipSync's [FAQ](https://clipsync.live/faq) and [privacy page](https://clipsync.live/privacy), and PairDrop's FAQ; cl1p.net's home page does not mention encryption. Limits change, so check the service before relying on a number. ClipSync also has a paid Pro plan; the row shows Free rooms.
 
 ## When each one is the better pick
-- **Clipboard Share:** your phone and PC are on the same Wi-Fi and you want them to connect automatically in the browser, with no sign-up or install, files up to 5GB, and a password on the files that need it. Limits: files are kept for at most about 1 day, unlocked text is kept as plain text for 10 minutes, and device information cannot be locked with a password.
+- **Clipboard Share:** your phone and PC are on the same Wi-Fi and you want them to connect automatically in the browser, with no sign-up or install, files up to 5GB, and a password on the files that need it. For a device on another network, a room keeps what you share encrypted on your device. Limits: files are kept for at most about 1 day, unlocked text is kept as plain text for 10 minutes, and device information cannot be locked with a password.
 - **cl1p.net:** you want a short URL you can type on any computer, and an item that is destroyed as soon as it is read. Its page does not state a file size limit, so check it before sending anything large.
 - **clipboard.im:** you want to choose your own address and have files stay up to 7 days. The limit is 100MB per file and 300MB in total, so large files do not fit.
 - **ClipSync:** you want rooms you can open by code, link or QR, and a paid option that keeps items longer. Free rooms hold up to 30 items and 5 files, 25 MB per file, for 24 hours.
@@ -1401,7 +1401,7 @@ Checked on October 25, 2026. Sources: [cl1p.net](https://cl1p.net/) and its [API
 - 5GB per file.
 - Files are kept for at most about 1 day.
 - You can lock only the files that need it with a password.
-- A private room between your devices is encrypted automatically.
+- Files and text you share inside a room are encrypted on your device, file names included. The room key never goes to the server.
 
 ## Questions
 
@@ -1419,7 +1419,11 @@ It differs. Clipboard Share keeps files for at most about 1 day, ClipSync delete
 
 ### Is an online clipboard safe for passwords or private files?
 
-Treat every shared clipboard as temporary. In Clipboard Share you can turn on a password lock that encrypts the files and text you send, and a private room between your devices is encrypted automatically, but device information is not locked. Do not paste one-time codes or secrets into any shared space you do not control.
+Treat every shared clipboard as temporary. In Clipboard Share you can turn on a password lock that encrypts the files and text you send, and files and text you share inside a room are encrypted on your device, file names included, with no password. Device information, file size and send time are not hidden. Do not paste one-time codes or secrets into any shared space you do not control.
+
+### Can the server read my files?
+
+Not what you share inside a room: files and text there are encrypted on your device, so the server only holds ciphertext, and the room key never goes to the server. In the Same network and Everyone tabs, files and text are encrypted only when you turn on Lock with a password. The server still sees file size, send time, device name tags and IP addresses.
 
 [Try it now](https://www.clipboardapp.org/en/)
 
@@ -1624,10 +1628,11 @@ Not a link-sharing service first. Devices on the same Wi-Fi share one space in t
 - Several people use the same Wi-Fi (a school, an office, a library) and you want only one person to be able to open the file.
 - The recipient might open it a little later. Files wait in the space for up to about a day instead of needing both devices open at the same moment.
 - You would rather show a QR code than read out a password.
+- The other device is on a different network. Make a room instead of using the Everyone tab, and what you share there is encrypted without a password (see [Rooms](#rooms) below).
 
 ## When something else fits better
 - Your main job is emailing one link to someone far away, with a download limit or a longer expiry you choose. The Send fork or Wormhole is built for that.
-- You need the text itself protected. The password lock covers files only.
+- You need the device name tag, file size or send time hidden as well. Neither the lock nor a room hides them.
 - You need files kept for days. Here everything is deleted shortly after every device leaves, and after about one day at most.
 
 ## How to send a locked file
@@ -1640,20 +1645,32 @@ Not a link-sharing service first. Devices on the same Wi-Fi share one space in t
 
 ## What is locked and what is not
 - **Locked:** the file contents and the file name. Other people on the same network see a scrambled name instead.
-- **Not locked:** text you send, the device name tag (the animal name), device and browser info, and the file size and send time.
+- **Not locked:** text sent while the lock is off (kept as plain text for 10 minutes), the device name tag (the animal name), device and browser info, and the file size and send time.
 - The lock is never on by default. Turn it on each time you need it. Locked files have no preview or thumbnail and are received one at a time.
 - Some phone browsers cannot open very large locked files. If you see that message, receive it on a PC or in Chrome on Android.
-- For a device you send to often, **Connect in a room** in the device list opens a room for just the two devices after both screens show the same pictures. Files and text in that room are encrypted automatically, without a password.
+
+## Rooms: encrypted sharing without a password
+
+A room is a space only the devices inside it can see, and it works even when the devices are on different networks. Files and text you share inside a room are encrypted on your device, file names included, and the room key never goes to the server. That is end-to-end encryption inside the room, with no password to agree on.
+- If the other device appears in your device list, choose **Connect in a room** on it. When the other side accepts, check that both screens show the same 4 pictures. If they differ, decline.
+- If it does not appear (it is on another Wi-Fi or on mobile data), tap **＋ Room** in the tab row, choose **Create a new room**, then tap **Invite** and pick pictures, a QR code or a link.
+- A QR code or link works for 10 minutes, and anyone who has it in that time can join after a confirmation, so show it only to people you trust. With pictures, the new device taps **＋ Room** → **Join with pictures** and taps the 4 pictures in order, and it only gets in after you tap **Let in** on a device in the room.
+
+What the server still sees: file size, send time, device name tags, which device is in which room, and IP addresses. Room files are kept for up to about a day and room text for 10 minutes. Because this is a web app, you are trusting the code the site serves; that code is public on [GitHub](https://github.com/Kangchanghwan/only_ai_project) under the MIT license. If you clear your browser data, the room key goes with it and you cannot get back into that room, and there is no way yet to remove a device that has joined.
 
 ## Questions
 
 ### Is it end-to-end encrypted?
 
-Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text sent while the lock is on is encrypted too and kept for 10 minutes; device labels, file size and send time are not locked.
+Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text sent while the lock is on is encrypted too and kept for 10 minutes; device labels, file size and send time are not locked. Inside a room, files and text are encrypted on your device without a password.
+
+### Can the server read my files?
+
+Not what you share inside a room: files and text there are encrypted on your device, so the server only holds ciphertext, and the room key never goes to the server. In the Same network and Everyone tabs, files and text are encrypted only when you turn on Lock with a password. The server still sees file size, send time, device name tags and IP addresses.
 
 ### Can I send to someone who is not on my Wi-Fi?
 
-Yes. Switch to the Everyone tab, which is visible to anyone with the service open, and lock the file before sending. The confirmation that appears the first time you send there also has an optional password field. You can also show the recipient a QR code for one locked file.
+Yes. For your own devices or someone you trust, make a room: tap ＋ Room, create a new room and invite the other device with pictures, a QR code or a link. What you share there is encrypted on your device. You can also use the Everyone tab, which is visible to anyone with the service open; lock the file before sending there. You can also show the recipient a QR code for one locked file.
 
 ### What if I forget the password?
 

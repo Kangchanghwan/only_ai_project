@@ -32,7 +32,7 @@
     "description": "Firefox Send shut down in 2020. Here are honest options today, and how to lock a file with a password in your browser before sending it, with no sign-up and no app.",
     "inLanguage": "en-US",
     "datePublished": "2026-10-17",
-    "dateModified": "2026-10-17",
+    "dateModified": "2026-11-16",
     "author": {
       "@type": "Organization",
       "name": "Clipboard Share",
@@ -146,7 +146,15 @@
         "name": "Is it end-to-end encrypted?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text sent while the lock is on is encrypted too and kept for 10 minutes; device labels, file size and send time are not locked."
+          "text": "Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text sent while the lock is on is encrypted too and kept for 10 minutes; device labels, file size and send time are not locked. Inside a room, files and text are encrypted on your device without a password."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can the server read my files?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not what you share inside a room: files and text there are encrypted on your device, so the server only holds ciphertext, and the room key never goes to the server. In the Same network and Everyone tabs, files and text are encrypted only when you turn on Lock with a password. The server still sees file size, send time, device name tags and IP addresses."
         }
       },
       {
@@ -154,7 +162,7 @@
         "name": "Can I send to someone who is not on my Wi-Fi?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. Switch to the Everyone tab, which is visible to anyone with the service open, and lock the file before sending. The confirmation that appears the first time you send there also has an optional password field. You can also show the recipient a QR code for one locked file."
+          "text": "Yes. For your own devices or someone you trust, make a room: tap ＋ Room, create a new room and invite the other device with pictures, a QR code or a link. What you share there is encrypted on your device. You can also use the Everyone tab, which is visible to anyone with the service open; lock the file before sending there. You can also show the recipient a QR code for one locked file."
         }
       },
       {
@@ -321,12 +329,13 @@
           <li>Several people use the same Wi-Fi (a school, an office, a library) and you want only one person to be able to open the file.</li>
           <li>The recipient might open it a little later. Files wait in the space for up to about a day instead of needing both devices open at the same moment.</li>
           <li>You would rather show a QR code than read out a password.</li>
+          <li>The other device is on a different network. Make a room instead of using the Everyone tab, and what you share there is encrypted without a password (see <a href="#rooms">Rooms</a> below).</li>
         </ul>
 
         <h2>When something else fits better</h2>
         <ul>
           <li>Your main job is emailing one link to someone far away, with a download limit or a longer expiry you choose. The Send fork or Wormhole is built for that.</li>
-          <li>You need the text itself protected. The password lock covers files only.</li>
+          <li>You need the device name tag, file size or send time hidden as well. Neither the lock nor a room hides them.</li>
           <li>You need files kept for days. Here everything is deleted shortly after every device leaves, and after about one day at most.</li>
         </ul>
 
@@ -344,18 +353,28 @@
         <div class="card">
           <ul>
             <li><strong>Locked:</strong> the file contents and the file name. Other people on the same network see a scrambled name instead.</li>
-            <li><strong>Not locked:</strong> text you send, the device name tag (the animal name), device and browser info, and the file size and send time.</li>
+            <li><strong>Not locked:</strong> text sent while the lock is off (kept as plain text for 10 minutes), the device name tag (the animal name), device and browser info, and the file size and send time.</li>
             <li>The lock is never on by default. Turn it on each time you need it. Locked files have no preview or thumbnail and are received one at a time.</li>
             <li>Some phone browsers cannot open very large locked files. If you see that message, receive it on a PC or in Chrome on Android.</li>
-            <li>For a device you send to often, <strong>Connect in a room</strong> in the device list opens a room for just the two devices after both screens show the same pictures. Files and text in that room are encrypted automatically, without a password.</li>
           </ul>
         </div>
 
+        <h2 id="rooms">Rooms: encrypted sharing without a password</h2>
+        <p>A room is a space only the devices inside it can see, and it works even when the devices are on different networks. Files and text you share inside a room are encrypted on your device, file names included, and the room key never goes to the server. That is end-to-end encryption inside the room, with no password to agree on.</p>
+        <ol>
+          <li>If the other device appears in your device list, choose <strong>Connect in a room</strong> on it. When the other side accepts, check that both screens show the same 4 pictures. If they differ, decline.</li>
+          <li>If it does not appear (it is on another Wi-Fi or on mobile data), tap <strong>＋ Room</strong> in the tab row, choose <strong>Create a new room</strong>, then tap <strong>Invite</strong> and pick pictures, a QR code or a link.</li>
+          <li>A QR code or link works for 10 minutes, and anyone who has it in that time can join after a confirmation, so show it only to people you trust. With pictures, the new device taps <strong>＋ Room</strong> → <strong>Join with pictures</strong> and taps the 4 pictures in order, and it only gets in after you tap <strong>Let in</strong> on a device in the room.</li>
+        </ol>
+        <p>What the server still sees: file size, send time, device name tags, which device is in which room, and IP addresses. Room files are kept for up to about a day and room text for 10 minutes. Because this is a web app, you are trusting the code the site serves; that code is public on <a href="https://github.com/Kangchanghwan/only_ai_project" rel="noopener">GitHub</a> under the MIT license. If you clear your browser data, the room key goes with it and you cannot get back into that room, and there is no way yet to remove a device that has joined.</p>
+
         <h2>Questions</h2>
         <h3>Is it end-to-end encrypted?</h3>
-        <p>Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text sent while the lock is on is encrypted too and kept for 10 minutes; device labels, file size and send time are not locked.</p>
+        <p>Files you lock with a password are. The file name and contents are encrypted in the sending browser (PBKDF2-SHA256 with 600,000 iterations, then AES-GCM with a fresh random key per file), and the server only stores the ciphertext and a value used to check the password. The password and keys are never sent to the server. Text sent while the lock is on is encrypted too and kept for 10 minutes; device labels, file size and send time are not locked. Inside a room, files and text are encrypted on your device without a password.</p>
+        <h3>Can the server read my files?</h3>
+        <p>Not what you share inside a room: files and text there are encrypted on your device, so the server only holds ciphertext, and the room key never goes to the server. In the Same network and Everyone tabs, files and text are encrypted only when you turn on Lock with a password. The server still sees file size, send time, device name tags and IP addresses.</p>
         <h3>Can I send to someone who is not on my Wi-Fi?</h3>
-        <p>Yes. Switch to the Everyone tab, which is visible to anyone with the service open, and lock the file before sending. The confirmation that appears the first time you send there also has an optional password field. You can also show the recipient a QR code for one locked file.</p>
+        <p>Yes. For your own devices or someone you trust, make a room: tap ＋ Room, create a new room and invite the other device with pictures, a QR code or a link. What you share there is encrypted on your device. You can also use the Everyone tab, which is visible to anyone with the service open; lock the file before sending there. You can also show the recipient a QR code for one locked file.</p>
         <h3>What if I forget the password?</h3>
         <p>There is no way to recover it, because the password is never stored on the server. If you still have the original, send it again with a new password.</p>
         <h3>How long are files kept?</h3>
