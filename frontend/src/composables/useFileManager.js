@@ -9,9 +9,19 @@ import { formatSizeMB } from '../utils/fileUtils.js'
 import { lockedUpload } from '../services/lockedUploader.js'
 import { deleteLockedWithProof } from '../services/lockedDownloader.js'
 import { useLockState } from './useLockState.js'
+import { ctPartCount } from '../utils/lockCrypto.js'
 
 /** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
 const DEFAULT_UPLOAD_CONCURRENCY = 3
+
+/**
+ * 잠금(방·비밀번호) 업로드에서 한 조각(평문 64MiB 이하)짜리 파일을 동시에 몇 개 올릴지.
+ * 조각마다 암호문을 메모리에 만들므로 폰·태블릿은 2개, 그 밖은 3개 (64MiB × 3 = 최대 약 192MiB).
+ * 여러 조각짜리 큰 파일은 파일 안에서 조각을 병렬로 올리므로 파일은 하나씩 올린다.
+ */
+export function lockedFileConcurrency(userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '') {
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent) ? 2 : 3
+}
 
 /**
  * 단일 파일 검증. 실패 사유를 Error로 반환하고 통과하면 null을 반환한다.
@@ -523,8 +533,9 @@ export function useFileManager() {
     })
     await largeRun
 
-    // 3-c. 잠금 파일: 파일은 순차 (파트는 내부에서 병렬, 파트마다 암호화)
-    await runWithConcurrency(lockedFiles, 1, async (file) => {
+    // 3-c. 잠금 파일: 한 조각짜리(작은) 파일은 동시에 몇 개씩, 여러 조각짜리 큰 파일은 하나씩(조각은 파일 안에서 병렬).
+    // 작은 파일을 먼저 끝내고 큰 파일을 올린다 (암호문 조각이 메모리에 한꺼번에 쌓이지 않게)
+    const uploadOneLocked = async (file) => {
       const handle = handles.get(file)
       if (handle.state !== 'queued') return undefined
       handle.state = 'running'
@@ -560,14 +571,19 @@ export function useFileManager() {
         }
         throw err
       }
-    }).then(settled => {
+    }
+    const lockedSmall = lockedFiles.filter(file => ctPartCount(file.size) <= 1)
+    const lockedLarge = lockedFiles.filter(file => ctPartCount(file.size) > 1)
+    const reportLocked = (list) => (settled) => {
       settled.forEach((outcome, index) => {
         if (outcome.status === 'rejected') {
-          console.error('[useFileManager] 잠금 업로드 실패:', lockedFiles[index].name, outcome.reason)
-          fail(lockedFiles[index], outcome.reason)
+          console.error('[useFileManager] 잠금 업로드 실패:', list[index].name, outcome.reason)
+          fail(list[index], outcome.reason)
         }
       })
-    })
+    }
+    await runWithConcurrency(lockedSmall, lockedFileConcurrency(), uploadOneLocked).then(reportLocked(lockedSmall))
+    await runWithConcurrency(lockedLarge, 1, uploadOneLocked).then(reportLocked(lockedLarge))
 
     return summarize(files, outcomes)
   }
