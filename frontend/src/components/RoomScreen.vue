@@ -87,6 +87,8 @@ const props = defineProps({
   privateRooms: { type: Array, default: () => [] },
   privateDevices: { type: Object, default: () => ({}) },
   pairStates: { type: Object, default: () => ({}) },
+  /** 받은 1:1 요청 세션(state === 'incoming') 또는 null: 보낸 기기 카드에서 수락/거절 */
+  pairIncoming: { type: Object, default: null },
   highlightRoomId: { type: String, default: null },
   /** 진행 중인 업로드/다운로드 (App.vue 상태) */
   uploads: {
@@ -121,6 +123,7 @@ const emit = defineEmits([
   'pair-invite',
   'pair-cancel',
   'pair-confirm',
+  'pair-respond',
   'leave-private',
   'group-create',
   'group-add',
@@ -185,6 +188,8 @@ if (props.pairEnabled) {
     invite: (device) => emit('pair-invite', device),
     cancel: (sessionId) => emit('pair-cancel', sessionId),
     confirm: (sessionId) => emit('pair-confirm', sessionId),
+    incoming: computed(() => props.pairIncoming),
+    respond: (accept) => emit('pair-respond', { accept, legacy: !!props.pairIncoming?.legacy }),
     open: (roomId) => emit('select-scope', scopeForPrivateRoom(roomId))
   })
 }
@@ -253,7 +258,6 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
             @code-enter="$emit('code-enter')"
           />
         </div>
-        <p v-if="scope === 'ip'" class="m-0 min-w-0 basis-full text-xs text-text-secondary" data-testid="ip-notice">{{ t('identity.ipNotice') }}</p>
       </div>
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->

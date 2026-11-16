@@ -20,9 +20,10 @@ describe('ConnectionCard', () => {
     expect(w.find('[data-testid="other-count"]').text()).toContain('연결 대기')
   })
 
-  it('좁은 화면: 펼침 트리거(ConnectedDevices)만 있고 옆 패널 목록은 없다', () => {
+  it('좁은 화면: 카드가 항상 보이고(나 포함) 아바타 펼침 트리거·옆 패널 목록은 없다', () => {
     const w = mount(ConnectionCard, { props: { devices: [dev('me', fox), dev('a', { adj: 0, animal: 0 })], mySocketId: 'me', myIdentity: fox, wide: false }, global })
-    expect(w.findComponent({ name: 'ConnectedDevices' }).exists()).toBe(true)
+    expect(w.findAll('[data-testid="device-card"]')).toHaveLength(2)
+    expect(w.find('[data-testid="devices-trigger"]').exists()).toBe(false)
     expect(w.find('[data-testid="device-panel"]').exists()).toBe(false)
     expect(w.findAll('[data-testid="device-row"]')).toHaveLength(0)
   })
@@ -35,21 +36,21 @@ describe('ConnectionCard', () => {
     expect(w.find('[data-testid="devices-popover"]').exists()).toBe(false)
   })
 
-  it('두 모드 모두 같은 devices 하나에서 나온다 (wide 전환 시 열린 팝오버가 남지 않는다)', async () => {
+  it('wide 전환 시 카드는 사라지고 같은 devices로 목록이 나온다', async () => {
     const props = { devices: [dev('me', fox), dev('a', { adj: 0, animal: 0 })], mySocketId: 'me', myIdentity: fox, wide: false }
-    const w = mount(ConnectionCard, { props, global, attachTo: document.body })
-    await w.find('[data-testid="devices-trigger"]').trigger('click')
-    expect(w.find('[data-testid="devices-popover"]').exists()).toBe(true)
+    const w = mount(ConnectionCard, { props, global })
+    expect(w.findAll('[data-testid="device-card"]')).toHaveLength(2)
     await w.setProps({ wide: true })
-    expect(w.find('[data-testid="devices-popover"]').exists()).toBe(false)
+    expect(w.findAll('[data-testid="device-card"]')).toHaveLength(0)
     expect(w.findAll('[data-testid="device-row"]')).toHaveLength(2)
-    w.unmount()
   })
 
   it('"나: ... (이 기기)" 이름표 컴포넌트는 더 이상 없고, 넓은 화면 목록의 내 행에서 다시 뽑기가 emit 된다', async () => {
     const narrow = mount(ConnectionCard, { props: { devices: [dev('me', fox)], mySocketId: 'me', myIdentity: fox }, global })
     expect(narrow.text()).not.toContain('이 기기')
     expect(narrow.find('[data-testid="my-identity"]').exists()).toBe(false)
+    await narrow.find('[data-testid="reroll-button"]').trigger('click')
+    expect(narrow.emitted('reroll')).toHaveLength(1)
     const wide = mount(ConnectionCard, { props: { devices: [dev('me', fox), dev('a', { adj: 0, animal: 0 })], mySocketId: 'me', myIdentity: fox, wide: true }, global })
     await wide.find('[data-testid="reroll-button"]').trigger('click')
     expect(wide.emitted('reroll')).toHaveLength(1)

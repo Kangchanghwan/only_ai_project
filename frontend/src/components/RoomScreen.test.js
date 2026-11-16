@@ -162,8 +162,8 @@ describe('RoomScreen.vue', () => {
     })
   })
 
-  describe('연결된 기기 배지', () => {
-    it('현재 scope가 ip이면 ipRoomDevices가 배지의 ConnectedDevices에 전달된다', () => {
+  describe('연결된 기기 카드', () => {
+    it('현재 scope가 ip이면 ipRoomDevices가 DeviceCards에 전달된다', () => {
       const wrapper = mount(RoomScreen, {
         props: {
           ...defaultProps,
@@ -174,12 +174,12 @@ describe('RoomScreen.vue', () => {
         global: { plugins: [i18n], stubs }
       })
 
-      const badge = wrapper.findComponent({ name: 'ConnectedDevices' })
+      const badge = wrapper.findComponent({ name: 'DeviceCards' })
       expect(badge.exists()).toBe(true)
       expect(badge.props('devices')).toEqual([{ socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }])
     })
 
-    it('현재 scope가 global이면 globalRoomDevices가 배지의 ConnectedDevices에 전달된다', () => {
+    it('현재 scope가 global이면 globalRoomDevices가 DeviceCards에 전달된다', () => {
       const wrapper = mount(RoomScreen, {
         props: {
           ...defaultProps,
@@ -190,7 +190,7 @@ describe('RoomScreen.vue', () => {
         global: { plugins: [i18n], stubs }
       })
 
-      const badge = wrapper.findComponent({ name: 'ConnectedDevices' })
+      const badge = wrapper.findComponent({ name: 'DeviceCards' })
       expect(badge.exists()).toBe(true)
       expect(badge.props('devices')).toEqual([{ socketId: 'b', deviceType: 'mobile', browser: 'Safari', os: 'iOS' }])
     })
