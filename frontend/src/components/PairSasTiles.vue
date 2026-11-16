@@ -48,7 +48,7 @@ const mark = (i, s) => { if (status.value[i] === 'loading') status.value = statu
         v-for="(img, i) in images"
         :key="`${i}-${img.src}`"
         class="relative aspect-square bg-background border border-border flex items-center justify-center overflow-hidden"
-        :class="size === 'lg' ? 'rounded-xl p-2' : 'rounded-lg p-1.5'"
+        :class="size === 'lg' ? 'rounded-none p-2' : 'rounded-none p-1.5'"
       >
         <img
           v-if="status[i] !== 'failed'"
@@ -67,7 +67,7 @@ const mark = (i, s) => { if (status.value[i] === 'loading') status.value = statu
           class="absolute inset-0 flex items-center justify-center bg-background animate-pulse"
           aria-hidden="true"
           data-testid="pair-sas-skeleton-tile"
-        ><span class="inline-block w-5 h-5 rounded-full border-2 border-scope-private border-t-transparent animate-spin"></span></span>
+        ><span class="inline-block w-5 h-5 rounded-none border-2 border-scope-private border-t-transparent animate-spin"></span></span>
       </div>
     </div>
     <div v-else class="grid grid-cols-4 gap-2" aria-hidden="true" data-testid="pair-sas-skeleton">
@@ -75,10 +75,10 @@ const mark = (i, s) => { if (status.value[i] === 'loading') status.value = statu
         v-for="i in 4"
         :key="i"
         class="aspect-square bg-background border border-border animate-pulse flex items-center justify-center"
-        :class="size === 'lg' ? 'rounded-xl' : 'rounded-lg'"
+        :class="size === 'lg' ? 'rounded-none' : 'rounded-none'"
         data-testid="pair-sas-skeleton-tile"
       >
-        <span class="inline-block w-5 h-5 rounded-full border-2 border-scope-private border-t-transparent animate-spin"></span>
+        <span class="inline-block w-5 h-5 rounded-none border-2 border-scope-private border-t-transparent animate-spin"></span>
       </div>
     </div>
     <p v-if="!ready" class="m-0 text-xs text-text-secondary text-center" role="status" data-testid="pair-sas-loading-text">{{ t('identity.pairSasLoading') }}</p>

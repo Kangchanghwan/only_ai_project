@@ -81,7 +81,7 @@ const isKo = computed(() => locale.value === 'ko')
   cursor: pointer;
   text-decoration: none;
 }
-.next-time-hint__btn--primary { background: #FF6B4A; border-color: #FF6B4A; border-width: 2px; font-weight: 800; color: #fff; }
+.next-time-hint__btn--primary { background: var(--color-ink); border-color: var(--color-ink); border-width: 2px; font-weight: 800; color: var(--color-on-ink); }
 .next-time-hint__close {
   border: 0;
   background: transparent;

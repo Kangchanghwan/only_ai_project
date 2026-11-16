@@ -50,7 +50,7 @@ const currentYear = new Date().getFullYear()
       <button
         type="button"
         data-testid="pwa-install-button"
-        class="px-3 py-1 rounded-none bg-ink text-on-ink text-xs font-extrabold hover:opacity-90 transition-colors"
+        class="px-3 py-1 min-h-[44px] rounded-none bg-ink text-on-ink text-xs font-extrabold hover:opacity-90 transition-colors"
         @click="promptInstall"
       >
         {{ t('footer.installButton') }}
@@ -66,7 +66,7 @@ const currentYear = new Date().getFullYear()
         type="button"
         data-testid="push-enable"
         :disabled="pushBusy"
-        class="px-3 py-1 rounded-none bg-ink text-on-ink text-xs font-extrabold hover:opacity-90 transition-colors disabled:opacity-60"
+        class="px-3 py-1 min-h-[44px] rounded-none bg-ink text-on-ink text-xs font-extrabold hover:opacity-90 transition-colors disabled:opacity-60"
         @click="onPushEnable"
       >
         {{ t('arrival.pushEnable') }}

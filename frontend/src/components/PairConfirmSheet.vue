@@ -55,7 +55,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="pair-confirm-title"
-        class="w-full sm:max-w-md bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-scope-private p-5"
+        class="w-full sm:max-w-md bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <div class="flex items-center justify-center gap-3" aria-hidden="true">

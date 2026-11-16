@@ -44,7 +44,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="room-add-title"
-        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-scope-private p-5"
+        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <h2 id="room-add-title" class="text-base font-semibold m-0">{{ t('code.addTitle') }}</h2>
@@ -52,7 +52,7 @@ function onKeydown(event) {
           <button
             ref="createBtn"
             type="button"
-            class="w-full min-h-[72px] px-4 py-3 rounded-xl border border-scope-private bg-scope-private/10 text-left"
+            class="w-full min-h-[72px] px-4 py-3 rounded-none border border-scope-private bg-scope-private/10 text-left"
             data-testid="room-add-create"
             @click="emit('create')"
           >
@@ -61,7 +61,7 @@ function onKeydown(event) {
           </button>
           <button
             type="button"
-            class="w-full min-h-[72px] px-4 py-3 rounded-xl border border-border bg-background text-left"
+            class="w-full min-h-[72px] px-4 py-3 rounded-none border border-border bg-background text-left"
             data-testid="room-add-enter"
             @click="emit('enter')"
           >

@@ -50,7 +50,7 @@ defineProps({
         :aria-label="t('notification.cancel')"
         :title="t('notification.cancel')"
         @click="emit('cancel')"
-      >✕</button>
+      ><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
     <div v-if="locked && status === 'uploading'" class="progress-bar locked-bar" data-testid="locked-progress">
       <div class="progress-fill lock-enc" :style="{ width: encPercent / 2 + '%' }"></div>
@@ -96,6 +96,9 @@ defineProps({
 .cancel-btn {
   flex: none;
   /* 실제 터치 영역 44px */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 44px;
   height: 44px;
   margin: -0.5rem -0.5rem -0.5rem 0;
@@ -103,14 +106,14 @@ defineProps({
   padding: 0;
   background: transparent;
   border: none;
-  border-radius: 50%;
+  border-radius: 0;
   color: var(--color-text-primary);
   font-size: 0.875rem;
   cursor: pointer;
 }
 
 .cancel-btn:hover {
-  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 15%, transparent);
 }
 
 .status-indicator {
@@ -137,25 +140,25 @@ defineProps({
 }
 
 .progress-fill.uploading {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  background: var(--color-scope-private);
 }
 
 .progress-fill.completed {
-  background: linear-gradient(90deg, #22c55e, #4ade80);
+  background: var(--color-scope-global);
 }
 
 .progress-fill.failed {
-  background: linear-gradient(90deg, #ef4444, #f87171);
+  background: var(--color-danger);
 }
 .locked-bar {
   display: flex;
 }
 .progress-fill.lock-enc {
-  background: var(--color-primary);
+  background: var(--color-ink);
   transition: width 0.12s linear;
 }
 .progress-fill.lock-up {
-  background: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 45%, transparent);
   transition: width 0.12s linear;
 }
 .lock-steps {
@@ -171,6 +174,6 @@ defineProps({
   font-weight: 600;
 }
 .lock-steps .done {
-  color: var(--color-success, #16a34a);
+  color: var(--color-scope-global);
 }
 </style>

@@ -49,7 +49,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="picture-enter-sheet-title"
-        class="w-full sm:max-w-md max-h-[92vh] overflow-y-auto bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-scope-private p-4 sm:p-5"
+        class="w-full sm:max-w-md max-h-[92vh] overflow-y-auto bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-4 sm:p-5"
         @keydown="onKeydown"
       >
         <div class="flex items-center justify-between gap-2">

@@ -86,6 +86,6 @@ const cancellableCount = computed(() => {
   font-size: 0.8125rem;
   cursor: pointer;
 }
-.cancel-all-btn:hover { background: color-mix(in srgb, var(--color-primary) 10%, transparent); }
+.cancel-all-btn:hover { background: color-mix(in srgb, var(--color-ink) 10%, transparent); }
 .upload-list { max-height: 18rem; overflow-y: auto; }
 </style>

@@ -70,7 +70,7 @@ function onKeydown(event) {
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="pair-request-title"
-        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-scope-private p-5"
+        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <h2 id="pair-request-title" class="text-base font-semibold m-0">{{ t('pair.request.title') }}</h2>
@@ -81,7 +81,7 @@ function onKeydown(event) {
             <div class="text-xs text-text-secondary truncate">{{ deviceText }}</div>
           </div>
           <span
-            class="shrink-0 text-[11px] font-semibold px-2 py-1 rounded-xs bg-scope-private/10 text-scope-private"
+            class="shrink-0 text-[11px] font-semibold px-2 py-1 rounded-[2px] bg-scope-private/10 text-scope-private"
             data-testid="pair-network-badge"
           >{{ session.sameNetwork ? t('pair.request.sameNetwork') : t('pair.request.otherNetwork') }}</span>
         </div>
@@ -117,7 +117,7 @@ function onKeydown(event) {
             data-testid="pair-accept"
             @click="accept"
           >
-            <span v-if="!acceptEnabled" class="inline-block w-4 h-4 rounded-none border-2 border-white border-t-transparent animate-spin" aria-hidden="true" data-testid="pair-accept-spinner"></span>
+            <span v-if="!acceptEnabled" class="inline-block w-4 h-4 rounded-none border-2 border-on-accent border-t-transparent animate-spin" aria-hidden="true" data-testid="pair-accept-spinner"></span>
             {{ t('pair.request.accept') }}
           </button>
         </div>

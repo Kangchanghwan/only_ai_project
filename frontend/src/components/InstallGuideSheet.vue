@@ -47,7 +47,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="install-guide-title"
-        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink p-5"
+        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-none border-2 border-ink p-5"
         @keydown="onKeydown"
       >
         <h2 id="install-guide-title" class="text-base font-semibold m-0">{{ t('pwa.guideTitle') }}</h2>

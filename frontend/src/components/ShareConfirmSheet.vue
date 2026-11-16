@@ -71,16 +71,16 @@ function handleCancel() {
         @click="handleCancel"
       >
         <div
-          class="w-full bg-surface rounded-t-2xl p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
+          class="w-full bg-surface rounded-none p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
           @click.stop
         >
-          <div class="mx-auto mb-3 h-1 w-8 rounded-full bg-border"></div>
+          <div class="mx-auto mb-3 h-1 w-8 rounded-none bg-border"></div>
           <p class="mb-3 text-sm font-semibold text-text-primary">{{ title }}</p>
 
           <div class="mb-4 space-y-2">
             <button
               type="button"
-              class="w-full rounded-lg border px-3 py-2.5 text-left transition-colors"
+              class="w-full min-h-[44px] rounded-none border px-3 py-2.5 text-left transition-colors"
               :class="localScope === 'ip' ? [ipBorder, ipBgSoft10] : 'border-border'"
               @click="localScope = 'ip'"
             >
@@ -89,7 +89,7 @@ function handleCancel() {
             </button>
             <button
               type="button"
-              class="w-full rounded-lg border px-3 py-2.5 text-left transition-colors"
+              class="w-full min-h-[44px] rounded-none border px-3 py-2.5 text-left transition-colors"
               :class="localScope === 'global' ? [globalBorder, globalBgSoft10] : 'border-border'"
               @click="localScope = 'global'"
             >
@@ -101,14 +101,14 @@ function handleCancel() {
           <div class="flex gap-2">
             <button
               type="button"
-              class="flex-1 rounded-lg bg-background py-2.5 text-sm font-semibold text-text-secondary"
+              class="flex-1 min-h-[44px] rounded-none border-2 border-ink bg-surface py-2.5 text-sm font-bold text-ink"
               @click="handleCancel"
             >
               {{ t('shareTargetConfirm.cancel') }}
             </button>
             <button
               type="button"
-              class="flex-1 rounded-lg py-2.5 text-sm font-semibold text-on-accent"
+              class="flex-1 min-h-[44px] rounded-none py-2.5 text-sm font-semibold text-on-accent"
               :class="localScope === 'global' ? globalBg : ipBg"
               @click="handleConfirm"
             >

@@ -61,7 +61,7 @@ function doLeave() {
 
 <template>
   <div
-    class="mb-4 rounded-xl border border-scope-private bg-scope-private/10 p-3 text-sm text-text-primary"
+    class="mb-4 rounded-none border border-scope-private bg-scope-private/10 p-3 text-sm text-text-primary"
     role="note"
     data-testid="private-strip"
     @keydown.esc="closeAll"
@@ -70,7 +70,7 @@ function doLeave() {
       <span v-if="isGroup && avatarDevices.length > 0" class="inline-flex items-center shrink-0 -space-x-3" data-testid="group-avatars" aria-hidden="true">
         <PairPeerAvatar v-for="(d, i) in avatarDevices" :key="d.socketId || i" :device="d" />
       </span>
-      <span v-else-if="isGroup" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-scope-private/10 text-scope-private shrink-0" aria-hidden="true">
+      <span v-else-if="isGroup" class="inline-flex items-center justify-center w-10 h-10 rounded-none bg-scope-private-tint text-scope-private shrink-0" aria-hidden="true">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17" cy="9" r="2.5" /><path d="M17.5 14.2c2.4.3 4 2.1 4 4.8" />
         </svg>
@@ -93,7 +93,7 @@ function doLeave() {
             :data-status="status"
           >
             <span
-              class="inline-block w-2 h-2 rounded-full"
+              class="inline-block w-2 h-2 rounded-none"
               :class="[status === 'online' ? 'bg-scope-private' : status === 'connecting' ? 'bg-text-secondary animate-pulse' : status === 'offline' ? 'border border-text-secondary' : 'bg-text-secondary']"
               data-testid="private-status-dot"
               aria-hidden="true"
@@ -118,10 +118,10 @@ function doLeave() {
           data-testid="private-menu"
           @click="toggleMenu"
         >⋯</button>
-        <div v-if="menuOpen && !confirming" class="absolute right-0 top-full z-20 bg-surface border-2 border-ink rounded-lg min-w-[8rem]">
+        <div v-if="menuOpen && !confirming" class="absolute right-0 top-full z-20 bg-surface border-2 border-ink rounded-none min-w-[8rem]">
           <button
             type="button"
-            class="w-full min-h-[44px] px-4 text-left text-sm text-red-500"
+            class="w-full min-h-[44px] px-4 text-left text-sm text-danger"
             data-testid="private-leave"
             @click="askLeave"
           >{{ isGroup ? t('group.leave') : t('pair.leave') }}</button>
@@ -133,7 +133,7 @@ function doLeave() {
       <p class="m-0 mt-1 text-xs text-text-secondary leading-relaxed">{{ isGroup ? t('group.leaveConfirm') : t('pair.leaveConfirmBody') }}</p>
       <div class="mt-2 flex gap-2 justify-end">
         <button type="button" class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold" data-testid="private-leave-cancel" @click="closeAll">{{ t('notification.cancel') }}</button>
-        <button type="button" class="min-h-[44px] px-4 rounded-none bg-red-500 text-white text-sm font-extrabold" data-testid="private-leave-ok" @click="doLeave">{{ isGroup ? t('group.leave') : t('pair.leave') }}</button>
+        <button type="button" class="min-h-[44px] px-4 rounded-none bg-danger text-on-accent text-sm font-extrabold" data-testid="private-leave-ok" @click="doLeave">{{ isGroup ? t('group.leave') : t('pair.leave') }}</button>
       </div>
     </div>
   </div>

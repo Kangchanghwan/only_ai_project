@@ -50,7 +50,7 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
         :key="i"
         role="img"
         :aria-label="tile.name"
-        class="relative aspect-square bg-background border border-border rounded-xl p-2 flex items-center justify-center"
+        class="relative aspect-square bg-background border border-border rounded-none p-2 flex items-center justify-center"
         data-testid="picture-code-tile"
       >
         <span v-if="tileState[i] === 'failed'" class="text-sm font-semibold text-text-primary text-center" data-testid="picture-code-tile-label">{{ tile.name }}</span>
@@ -66,7 +66,7 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
       </div>
     </div>
     <div v-else class="mt-3 grid grid-cols-4 gap-2" aria-hidden="true" data-testid="picture-code-skeleton">
-      <div v-for="i in 4" :key="i" class="aspect-square bg-background border border-border rounded-xl animate-pulse"></div>
+      <div v-for="i in 4" :key="i" class="aspect-square bg-background border border-border rounded-none animate-pulse"></div>
     </div>
     <p class="m-0 mt-3 text-base font-semibold text-center text-text-primary" data-testid="picture-code-names">{{ namesLine }}</p>
     <div class="mt-2 flex items-center justify-between gap-3">
@@ -84,7 +84,7 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
       role="alertdialog"
       aria-live="polite"
       :aria-label="t('code.requestTitle', { name: reqName })"
-      class="mt-4 rounded-xl border border-border border-t-4 border-t-scope-private bg-background p-4"
+      class="mt-4 rounded-none border border-border border-t-4 border-t-scope-private bg-background p-4"
       data-testid="picture-code-request"
     >
       <div class="flex items-center gap-3 min-w-0">

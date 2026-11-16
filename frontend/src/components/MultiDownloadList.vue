@@ -44,11 +44,11 @@ function buttonText(item) {
     <li
       v-for="item in items"
       :key="item.key"
-      class="flex items-center gap-3 rounded-xl border border-border px-3 py-2"
+      class="flex items-center gap-3 rounded-none border border-border px-3 py-2"
       :data-testid="`multi-download-item-${item.key}`"
       :data-state="item.state"
     >
-      <span aria-hidden="true" class="text-lg shrink-0">{{ item.type === 'zip' ? '🗜️' : '📄' }}</span>
+      <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><template v-if="item.type === 'zip'"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></template><template v-else><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></template></svg>
       <div class="min-w-0 flex-1">
         <p class="m-0 text-sm font-semibold truncate" :title="label(item)">{{ label(item) }}</p>
         <p v-if="detail(item)" class="m-0 text-xs text-text-secondary">{{ detail(item) }}</p>
@@ -56,7 +56,7 @@ function buttonText(item) {
       <button
         type="button"
         class="min-h-[44px] px-4 rounded-none text-sm font-semibold shrink-0 disabled:opacity-50"
-        :class="item.state === 'idle' || item.state === 'failed' ? 'bg-primary text-white' : 'border border-border'"
+        :class="item.state === 'idle' || item.state === 'failed' ? 'bg-ink text-on-ink' : 'border-2 border-ink text-ink bg-surface'"
         :disabled="item.state === 'running'"
         :aria-label="`${buttonText(item)}: ${label(item)}`"
         :data-testid="`multi-download-run-${item.key}`"

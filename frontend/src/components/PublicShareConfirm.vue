@@ -58,7 +58,7 @@ async function confirm() {
       @keydown.esc="emit('cancel')"
       @click.self="emit('cancel')"
     >
-      <div class="w-full max-w-sm bg-surface text-text-primary rounded-2xl border-2 border-ink p-5">
+      <div class="w-full max-w-sm bg-surface text-text-primary rounded-none border-2 border-ink p-5">
         <h2 id="public-confirm-title" class="text-base font-semibold m-0">{{ t('publicConfirm.title') }}</h2>
         <p id="public-confirm-desc" class="mt-2 text-sm text-text-secondary leading-relaxed">{{ t('publicConfirm.body') }}</p>
         <div v-if="!alreadyLocked" class="mt-3">
@@ -69,11 +69,11 @@ async function confirm() {
             type="password"
             autocomplete="new-password"
             :placeholder="t('lock.confirmPlaceholder')"
-            class="w-full min-h-[40px] px-3 rounded-lg border border-border bg-background text-sm text-text-primary"
+            class="w-full min-h-[44px] px-3 rounded-none border border-border bg-background text-sm text-text-primary"
             data-testid="public-confirm-password"
             @keydown.enter.prevent="confirm"
           />
-          <p class="mt-1 text-xs m-0" :class="lockError ? 'text-red-500' : 'text-text-secondary'">{{ lockError || t('lock.confirmHint') }}</p>
+          <p class="mt-1 text-xs m-0" :class="lockError ? 'text-danger' : 'text-text-secondary'">{{ lockError || t('lock.confirmHint') }}</p>
         </div>
         <p v-else class="mt-3 text-xs text-text-secondary m-0" data-testid="public-confirm-locked"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>{{ t('lock.confirmAlreadyLocked') }}</p>
         <div class="mt-4 flex gap-2 justify-end flex-wrap">

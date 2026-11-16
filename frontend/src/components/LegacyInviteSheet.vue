@@ -46,7 +46,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="legacy-invite-title"
-        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-scope-private p-5"
+        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <h2 id="legacy-invite-title" class="text-base font-semibold m-0">{{ t('room.legacyInviteTitle') }}</h2>

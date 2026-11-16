@@ -47,7 +47,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="multi-download-title"
-        class="w-full sm:max-w-md max-h-[85vh] overflow-y-auto bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-primary p-5"
+        class="w-full sm:max-w-md max-h-[85vh] overflow-y-auto bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-ink p-5"
         @keydown="onKeydown"
       >
         <h2 id="multi-download-title" class="text-base font-semibold m-0">{{ t('multiDownload.title') }}</h2>

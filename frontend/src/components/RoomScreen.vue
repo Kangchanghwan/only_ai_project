@@ -271,7 +271,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->
       <div
         v-if="scope === 'global'"
-        class="global-warning mb-4 rounded-xl border border-scope-global bg-scope-global/10 p-3 text-sm text-text-primary"
+        class="global-warning mb-4 rounded-none border border-scope-global bg-scope-global/10 p-3 text-sm text-text-primary"
         role="note"
         data-testid="global-warning"
       >
@@ -290,7 +290,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       />
 
       <div class="workspace">
-        <main class="ws-main sm:bg-surface sm:rounded-xl p-0 sm:p-6 sm:border sm:border-border min-w-0">
+        <main class="ws-main sm:bg-surface sm:rounded-none p-0 sm:p-6 sm:border sm:border-border min-w-0">
           <div class="flex flex-col gap-8">
             <section data-testid="workspace-stack">
               <p v-if="peerOffline" class="m-0 mb-2 text-xs text-text-secondary" role="status" data-testid="peer-offline-upload-note">{{ t('pair.offlineUploadNote') }}</p>
@@ -321,7 +321,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
               >
                 <!-- 상대가 나간 1:1 방: 업로드 칸 대신 안내 -->
                 <template v-if="peerLeft" #send>
-                  <div class="rounded-xl border border-dashed border-scope-private p-4 mb-2 text-center" data-testid="peer-left-notice">
+                  <div class="rounded-none border border-dashed border-scope-private p-4 mb-2 text-center" data-testid="peer-left-notice">
                     <p class="m-0 text-sm text-text-secondary">{{ t('pair.peerLeftNotice') }}</p>
                     <p v-if="reinviteState?.state === 'pending'" class="m-0 mt-2 text-sm font-semibold text-scope-private" role="status">{{ t('pair.pending') }}</p>
                     <button

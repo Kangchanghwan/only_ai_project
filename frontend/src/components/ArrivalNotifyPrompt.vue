@@ -35,7 +35,7 @@ const { t } = useI18n()
   box-shadow: none;
 }
 .arrival-prompt__btn {
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid color-mix(in srgb, var(--color-on-ink) 40%, transparent);
   background: transparent;
   color: inherit;
   border-radius: 0;
@@ -43,5 +43,5 @@ const { t } = useI18n()
   font-size: 0.8125rem;
   cursor: pointer;
 }
-.arrival-prompt__btn--primary { background: #FF6B4A; border-color: #FF6B4A; border-width: 2px; font-weight: 800; color: #fff; }
+.arrival-prompt__btn--primary { background: var(--color-on-ink); border-color: var(--color-on-ink); border-width: 2px; font-weight: 800; color: var(--color-ink); }
 </style>

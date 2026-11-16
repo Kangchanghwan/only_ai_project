@@ -61,7 +61,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="group-invite-title"
-        class="w-full sm:max-w-sm max-h-[92vh] overflow-y-auto bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-scope-private p-5"
+        class="w-full sm:max-w-sm max-h-[92vh] overflow-y-auto bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <h2 id="group-invite-title" class="text-base font-semibold m-0">{{ t('group.inviteTitle', { name: sheet.name }) }}</h2>
@@ -99,14 +99,14 @@ function onKeydown(event) {
             width="224"
             height="224"
             alt="QR"
-            class="rounded-lg bg-white"
+            class="rounded-none bg-white"
             data-testid="group-invite-qr"
           />
-          <div v-else class="w-56 h-56 rounded-lg bg-background animate-pulse" aria-hidden="true" data-testid="group-invite-loading"></div>
+          <div v-else class="w-56 h-56 rounded-none bg-background animate-pulse" aria-hidden="true" data-testid="group-invite-loading"></div>
         </div>
         <p
           v-else
-          class="mt-4 mb-0 p-3 rounded-lg bg-background border border-border text-xs text-text-secondary break-all select-all"
+          class="mt-4 mb-0 p-3 rounded-none bg-background border border-border text-xs text-text-secondary break-all select-all"
           data-testid="group-invite-link"
         >{{ sheet.url || '…' }}</p>
         <p class="m-0 mt-4 text-sm text-text-primary" data-testid="group-invite-expiry">{{ t('group.inviteExpiry') }}</p>
