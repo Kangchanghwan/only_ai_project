@@ -106,9 +106,9 @@ function unlock() {
   cursor: pointer;
 }
 .lock-chip.on {
-  border-color: transparent;
-  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
-  color: var(--color-primary);
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-on-ink, #fff);
   font-weight: 600;
   cursor: default;
 }

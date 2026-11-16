@@ -57,11 +57,12 @@ describe('RoomScreen.vue', () => {
       global: { plugins: [i18n], stubs }
     })
 
-    it('방 줄에 범위 선택과 기기 카드가 함께 있고 왼쪽 기기 패널(device-panel)은 없다', () => {
+    it('방 탭 줄(위)과 기기 줄(아래)이 나뉘어 있고 왼쪽 기기 패널(device-panel)은 없다', () => {
       const w = mountScope('ip', { ipRoomDevices: [{ socketId: 'a', browser: 'x', os: 'y' }] })
       const row = w.find('[data-testid="room-row"]')
       expect(row.find('.share-scope-tabs-stub').exists()).toBe(true)
-      expect(row.find('[data-testid="connection-card"]').exists()).toBe(true)
+      expect(row.find('[data-testid="connection-card"]').exists()).toBe(false)
+      expect(w.find('[data-testid="device-row"] [data-testid="connection-card"]').exists()).toBe(true)
       expect(w.find('[data-testid="device-panel"]').exists()).toBe(false)
     })
 

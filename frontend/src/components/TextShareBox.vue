@@ -5,14 +5,13 @@
  * - 입력 중인 textarea에 붙여넣은 내용은 자동 전송되지 않고 일반 입력으로 남는다(App의 전역 paste 핸들러가 편집 가능 요소는 무시)
  * - 모든 본문은 텍스트 노드로만 렌더링한다 (v-html 사용 금지)
  * - 보관 방식 박스 하나: 평문/암호문 중 무엇으로 10분 보관하는지 + 받을 기기 수(0대면 들어오면 전달/전달 안 됨)
- *   + 바로 잠금을 켜는 칩. 보낸 직후 성공 문장은 화면에 고정하지 않는다(토스트·카드의 남은 시간으로 충분)
+ *  . 보낸 직후 성공 문장은 화면에 고정하지 않는다(토스트·카드의 남은 시간으로 충분)
  * - 받은 텍스트 목록은 TextItemRow가 파일과 같은 한 목록(FileGallery)에서 그린다
  */
 import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { privateRoomIdOfScope } from '../composables/useShareScope'
 import { isGroupRoomId } from '../utils/groupRoom'
-import LockChip from './LockChip.vue'
 
 const { t } = useI18n()
 
@@ -96,7 +95,7 @@ function onKeydown(event) {
 
 <template>
   <div class="min-w-0" data-testid="text-composer">
-    <!-- 한 줄 입력: 입력란 + (잠금 칩) + 공유. 잠금 칩은 자체 form이 있어 입력 form 밖에 둔다 -->
+    <!-- 한 줄 입력: 입력란 + 공유. 잠금 칩은 보내기 패널 머리에 하나만 있다 -->
     <div class="flex flex-wrap sm:flex-nowrap items-end gap-2">
       <form class="contents" id="text-compose-form" data-testid="text-compose" @submit.prevent="submit">
         <label class="sr-only" for="text-share-input">{{ t('text.share') }}</label>
@@ -113,7 +112,6 @@ function onKeydown(event) {
           @keydown="onKeydown"
         ></textarea>
       </form>
-      <LockChip v-if="!composeDisabled && (storageMode === 'plain' || storageMode === 'locked')" :scope="scope" class="shrink-0" />
       <button
         type="submit"
         form="text-compose-form"

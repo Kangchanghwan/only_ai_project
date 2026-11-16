@@ -207,7 +207,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 
     <div class="page-shell px-4 sm:px-6">
       <!-- 방 + 기기 줄: 어느 방인지, 누가 있는지 한 줄에 -->
-      <div class="bleed-line-b relative flex flex-wrap items-start gap-x-5 gap-y-2 pb-3 mb-3 border-b border-border" data-testid="room-row">
+      <div class="bleed-line-b relative flex items-stretch border-b border-border mb-3" data-testid="room-row">
         <ShareScopeTabs
           :scope="scope"
           :private-rooms="privateRooms"
@@ -216,6 +216,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
           @select="$emit('select-scope', $event)"
           @group-create="$emit('group-add')"
         />
+      </div>
+      <div class="flex flex-wrap items-start gap-x-5 gap-y-2 mb-3" data-testid="device-row">
         <div class="min-w-0 basis-full sm:basis-auto sm:flex-1">
           <ConnectionCard
             :devices="activeDevices"
@@ -230,8 +232,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
             @code-enter="$emit('code-enter')"
           />
         </div>
+        <p v-if="scope === 'ip'" class="m-0 min-w-0 basis-full sm:basis-auto sm:self-center text-xs text-text-secondary" data-testid="ip-notice">{{ t('identity.ipNotice') }}</p>
       </div>
-      <p v-if="scope === 'ip'" class="m-0 mb-3 text-xs text-text-secondary" data-testid="ip-notice">{{ t('identity.ipNotice') }}</p>
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->
       <div

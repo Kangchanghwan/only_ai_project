@@ -3,8 +3,6 @@ import { formatSizeMB } from '../utils/fileUtils'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
-import LockChip from './LockChip.vue'
-import { isPrivateScope } from '../composables/useShareScope'
 
 const { t } = useI18n()
 
@@ -94,7 +92,6 @@ function handleDrop(event) {
 
     <template v-if="compact">
       <div class="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center justify-end gap-2" @click.stop>
-        <LockChip v-if="!isPrivateScope(scope)" :scope="scope" />
         <slot />
         <button
           type="button"
@@ -127,9 +124,6 @@ function handleDrop(event) {
       <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
         {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
       </p>
-      <!-- 1:1 방은 자동 암호화라 비밀번호 잠금 칩을 숨긴다 -->
-      <LockChip v-if="!isPrivateScope(scope)" :scope="scope" />
-      <p v-else class="text-xs text-scope-private m-0" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>{{ t('pair.uploadHint') }}</p>
       <div class="w-full sm:w-auto" @click.stop><slot /></div>
     </template>
   </div>

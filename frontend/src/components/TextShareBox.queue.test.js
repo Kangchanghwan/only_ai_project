@@ -11,16 +11,16 @@ const mountBox = (props = {}) => mount(TextShareBox, { props: { texts: [], ...pr
 describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
   const label = (w) => w.find('[data-testid="text-storage-label"]').text()
 
-  it('잠금 꺼짐(평문): 같은 네트워크·전체 공유 각각 누가 볼 수 있는지와 잠금 칩을 보여 준다', () => {
+  it('잠금 꺼짐(평문): 같은 네트워크·전체 공유 각각 누가 볼 수 있는지 보여 준다 (잠금 칩은 보내기 패널 머리에만)', () => {
     const ip = mountBox({ storageMode: 'plain', scope: 'ip' })
     expect(label(ip)).toBe('평문 10분 보관 · 같은 네트워크 누구나 볼 수 있어요')
-    expect(ip.find('[data-testid="lock-start"]').exists()).toBe(true)
+    expect(ip.find('[data-testid="lock-chip"]').exists()).toBe(false)
     const global = mountBox({ storageMode: 'plain', scope: 'global' })
     expect(label(global)).toBe('평문 10분 보관 · 모르는 사람도 누구나 볼 수 있어요')
     expect(global.find('[data-testid="text-storage-label"]').classes()).toContain('font-semibold')
   })
 
-  it('잠금 켜짐·1:1 방·보관 안 함(구버전 서버) 문구, 칩은 공개 범위에만', () => {
+  it('잠금 켜짐·1:1 방·보관 안 함(구버전 서버) 문구', () => {
     expect(label(mountBox({ storageMode: 'locked', scope: 'ip' }))).toBe('암호화해서 10분 보관 · 비밀번호 아는 기기만 봐요')
     const prv = mountBox({ storageMode: 'private', scope: 'prv:prv-1' })
     expect(label(prv)).toBe('방 키로 암호화해서 10분 보관')
@@ -68,12 +68,4 @@ describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
     expect(w.find('[data-testid="text-input"]').attributes('title')).toContain('Ctrl+V')
   })
 
-  it('잠금 칩의 비밀번호 입력 제출은 텍스트 공유로 번지지 않는다', async () => {
-    const w = mountBox({ storageMode: 'plain', scope: 'ip' })
-    await w.find('[data-testid="text-input"]').setValue('draft')
-    await w.find('[data-testid="lock-start"]').trigger('click')
-    await w.find('[data-testid="lock-password"]').setValue('ab')
-    await w.find('form.lock-form').trigger('submit')
-    expect(w.emitted('share-text')).toBeFalsy()
-  })
 })
