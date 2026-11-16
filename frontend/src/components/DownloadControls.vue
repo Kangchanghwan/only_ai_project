@@ -34,10 +34,9 @@ const { text: accentText } = useScopeAccent(() => props.scope)
 </script>
 
 <template>
-  <div class="fixed left-1/2 -translate-x-1/2 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 w-[calc(100%-2rem)] max-w-[28rem] bg-surface border-2 border-ink rounded-2xl overflow-hidden download-controls flex flex-wrap justify-center md:grid" :class="privateMode ? 'md:grid-cols-3' : 'md:grid-cols-5'" data-testid="download-controls">
+  <div class="fixed left-1/2 -translate-x-1/2 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 w-[calc(100%-2rem)] max-w-[28rem] bg-surface border-2 border-ink rounded-none overflow-hidden download-controls grid" :class="privateMode ? 'grid-cols-3' : 'grid-cols-4 md:grid-cols-5'" data-testid="download-controls">
     <button
-      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
-      :class="accentText"
+      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors text-ink"
       :disabled="totalCount === 0"
       data-testid="select-all"
       @click="$emit('toggle-select-all')"
@@ -55,8 +54,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
       </span>
     </button>
     <button
-      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
-      :class="accentText"
+      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors text-ink"
       :disabled="selectedCount === 0"
       @click="$emit('download-parallel')"
       :title="t('download.downloadHint')"
@@ -69,10 +67,10 @@ const { text: accentText } = useScopeAccent(() => props.scope)
       <span class="dc-label text-[11px] leading-tight text-center">{{ t('download.downloadSelected') }} ({{ selectedCount }})</span>
     </button>
     <button
-      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
-      :class="accentText"
+      class="dc-btn hidden md:flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors text-ink"
       v-if="!privateMode"
       :disabled="selectedCount === 0"
+      data-testid="multi-qr"
       @click="$emit('show-multi-qr')"
       :title="t('download.qrCodeHint')"
     >
