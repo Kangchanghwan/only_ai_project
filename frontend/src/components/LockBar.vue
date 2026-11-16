@@ -16,6 +16,7 @@ const lockState = useLockState()
 const confirming = ref(false)
 const offRef = ref(null)
 const cancelRef = ref(null)
+const rootRef = ref(null)
 
 const locked = computed(() => lockState.isLocked(props.scope))
 const state = computed(() => {
@@ -37,14 +38,17 @@ async function cancelOff() {
   await nextTick()
   offRef.value?.focus()
 }
-function confirmOff() {
+async function confirmOff() {
   confirming.value = false
   lockState.clearLock(props.scope)
+  // 줄이 사라지므로 초점을 도구 줄의 '비밀번호로 잠그기' 버튼으로 옮긴다
+  await nextTick()
+  rootRef.value?.closest('[data-testid="send-box"]')?.querySelector('[data-testid="lock-start"]')?.focus()
 }
 </script>
 
 <template>
-  <div role="status">
+  <div ref="rootRef" role="status">
     <div
       v-if="state === 'on'"
       class="flex items-center gap-1.5 min-h-[32px] px-2.5 bg-ink text-on-ink text-xs"
@@ -69,9 +73,11 @@ function confirmOff() {
       data-state="confirm"
       @keydown.esc.prevent="cancelOff"
     >
-      <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
-      <span class="min-w-0">{{ t('lock.offConfirm') }}</span>
-      <span class="ml-auto flex items-center gap-1.5">
+      <span class="flex items-start gap-1.5 min-w-0 flex-1 basis-[11rem]">
+        <svg class="shrink-0 mt-px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+        <span class="min-w-0">{{ t('lock.offConfirm') }}</span>
+      </span>
+      <span class="ml-auto shrink-0 flex items-center gap-1.5">
         <button type="button" class="h-7 px-2.5 rounded-none border border-on-ink bg-on-ink text-ink text-xs font-bold whitespace-nowrap cursor-pointer" data-testid="lock-off-confirm" @click="confirmOff">{{ t('lock.offConfirmYes') }}</button>
         <button ref="cancelRef" type="button" class="h-7 px-2.5 rounded-none border border-on-ink bg-transparent text-on-ink text-xs font-bold whitespace-nowrap cursor-pointer" data-testid="lock-off-cancel" @click="cancelOff">{{ t('notification.cancel') }}</button>
       </span>
@@ -82,9 +88,11 @@ function confirmOff() {
       data-testid="lock-bar"
       data-state="lapsed"
     >
-      <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
-      <span class="min-w-0">{{ t('lock.reloadOff') }}</span>
-      <span class="ml-auto flex items-center gap-1.5">
+      <span class="flex items-start gap-1.5 min-w-0 flex-1 basis-[11rem]">
+        <svg class="shrink-0 mt-px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
+        <span class="min-w-0">{{ t('lock.reloadOff') }}</span>
+      </span>
+      <span class="ml-auto shrink-0 flex items-center gap-1.5">
         <button type="button" class="h-7 px-2.5 rounded-none border border-ink bg-surface text-ink text-xs font-bold whitespace-nowrap cursor-pointer" data-testid="lock-relock" @click="lockState.requestEdit(scope)">{{ t('lock.reloadRelock') }}</button>
         <button type="button" class="w-7 h-7 inline-flex items-center justify-center rounded-none border-0 bg-transparent text-ink cursor-pointer" :aria-label="t('notification.cancel')" data-testid="lock-lapsed-dismiss" @click="lockState.dismissLapsed(scope)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>

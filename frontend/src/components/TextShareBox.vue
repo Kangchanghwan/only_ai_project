@@ -106,6 +106,8 @@ const storageLabel = computed(() => {
 
 
 const draft = ref('')
+// 잠금 비밀번호 입력 줄이 열려 있으면 좁은 화면에서도 도구 줄이 줄바꿈된다
+const lockEditing = ref(false)
 const sending = ref(false)
 /** 링크로 채운 내용인지 (안내 문구 표시용) */
 const fromLink = ref(false)
@@ -190,7 +192,7 @@ function onKeydown(event) {
       </form>
 
       <!-- 도구 줄: 파일 선택 · 붙여넣기 · 잠금 · 공유 (모바일은 두 줄) -->
-      <div class="flex flex-nowrap sm:flex-wrap items-center gap-1.5 sm:gap-2 p-2 border-t border-border" data-testid="send-toolbar">
+      <div class="flex items-center gap-1.5 sm:gap-2 p-2 border-t border-border" :class="lockEditing ? 'flex-wrap' : 'flex-nowrap sm:flex-wrap'" data-testid="send-toolbar">
         <input ref="fileInputRef" type="file" multiple class="sr-only" tabindex="-1" :aria-label="t('file.inputLabel')" data-testid="file-input" @change="handleFileSelect" @click.stop />
         <button
           type="button"
@@ -212,10 +214,10 @@ function onKeydown(event) {
           aria-keyshortcuts="Control+Enter Meta+Enter"
           :data-locked="storageMode === 'locked' ? 'true' : undefined"
           data-testid="text-share-button"
-        ><template v-if="storageMode === 'locked'"><svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>{{ t('lock.confirmLockedSend') }}</template><template v-else>{{ t('file.share') }}</template></button>
+        ><template v-if="storageMode === 'locked'"><svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span class="max-[359px]:hidden" data-testid="share-label-full">{{ t('lock.confirmLockedSend') }}</span><span class="hidden max-[359px]:inline" data-testid="share-label-short">{{ t('file.share') }}</span></template><template v-else>{{ t('file.share') }}</template></button>
         <!-- 모바일 줄바꿈: 첫 줄은 파일 선택 + 공유 -->
         <PasteSection class="order-2 shrink-0" :scope="scope" @paste-content="emit('paste-content')" />
-        <LockChip v-if="!isPrivate" :scope="scope" class="order-3 shrink-0" />
+        <LockChip v-if="!isPrivate" :scope="scope" class="order-3 shrink-0" @editing="lockEditing = $event" />
         <p v-else class="order-3 shrink-0 text-xs text-scope-private m-0 min-w-[44px] min-h-[44px] sm:min-h-0 inline-flex items-center justify-center sm:justify-start" :title="t('pair.uploadHint')" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span class="sr-only sm:not-sr-only">{{ t('pair.uploadHint') }}</span></p>
       </div>
 

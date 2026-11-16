@@ -3,13 +3,15 @@
  * 업로드 영역의 비밀번호 잠금 칩. 범위(ip/global)별로 이번 접속 동안만 유지된다.
  * 꺼져 있을 때는 작은 버튼 하나뿐이라 평소 흐름의 클릭 수는 늘지 않는다.
  */
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLockState, MIN_LOCK_PASSWORD } from '../composables/useLockState'
 
 const { t } = useI18n()
 const props = defineProps({ scope: { type: String, default: 'ip' } })
 const lockState = useLockState()
+// 입력 줄이 열려 있는 동안 도구 줄이 줄바꿈을 허용하도록 부모에게 알린다 (좁은 화면에서 입력 줄이 잘리지 않게)
+const emit = defineEmits(['editing'])
 
 const editing = ref(false)
 const password = ref('')
@@ -46,6 +48,9 @@ async function apply() {
     error.value = t('lock.errors.setFailed')
   }
 }
+
+watch(() => editing.value && !locked.value, (v) => emit('editing', v))
+onBeforeUnmount(() => emit('editing', false))
 
 // 잠금 줄의 '다시 잠그기'가 입력창을 열어 달라고 요청하면 연다
 watch(() => lockState.editRequest[props.scope], (n, o) => {
@@ -152,7 +157,7 @@ watch(() => lockState.editRequest[props.scope], (n, o) => {
   border-radius: 0;
   border: 0;
   background: var(--color-ink);
-  color: #fff;
+  color: var(--color-on-ink);
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -167,7 +172,7 @@ watch(() => lockState.editRequest[props.scope], (n, o) => {
   color: var(--color-text-secondary);
 }
 .lock-hint.err {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 /* 좁은 화면: 도구 줄을 한 줄로 두려고 글자는 숨기고 아이콘만 (이름은 aria-label·title로) */
 @media (max-width: 639px) {
