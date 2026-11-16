@@ -5,7 +5,7 @@
  */
 import { computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { animalSrc, animalBg, isValidIdentity, identityName, deviceAndBrowser, formatRelativeTime } from '../utils/identity'
+import { animalSrc, animalBg, isValidIdentity, identityName, deviceAndBrowser, formatRelativeTime, formatBadgeTime } from '../utils/identity'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
 
 const { t, locale } = useI18n()
@@ -43,7 +43,8 @@ const canPair = computed(() => !!pair && !props.isMe && props.pairable)
 const showBottom = computed(() => (props.isMe ? valid.value : canPair.value || !!incoming.value))
 
 const joinedAt = computed(() => props.device.joinedAt || 0)
-const tagText = computed(() => (joinedAt.value ? formatRelativeTime(joinedAt.value, locale?.value ?? 'en', props.now) : ''))
+const fullTagText = computed(() => (joinedAt.value ? formatRelativeTime(joinedAt.value, locale?.value ?? 'en', props.now) : ''))
+const tagText = computed(() => (joinedAt.value ? formatBadgeTime(joinedAt.value, locale?.value ?? 'en', props.now) : ''))
 const isNow = computed(() => !!joinedAt.value && Math.abs(props.now - joinedAt.value) < props.nowWindowMs)
 const title = computed(() => (sub.value ? `${name.value} · ${sub.value}` : name.value))
 
@@ -78,10 +79,10 @@ const BTN = 'h-[26px] w-full min-w-0 inline-flex items-center justify-center gap
         </span>
         <span
           v-if="tagText"
-          class="absolute -top-px -left-px px-[3px] py-[2px] text-[9px] leading-none font-bold text-on-accent whitespace-nowrap"
+          class="absolute -top-px -left-px px-[3px] py-[2px] text-[9px] leading-none font-bold text-on-accent whitespace-nowrap max-w-[40px] overflow-hidden text-ellipsis"
           :class="isNow ? 'bg-scope-global' : 'bg-text-secondary'"
           :data-now="isNow ? 'true' : 'false'"
-          :title="t('identity.joinedAgo', { time: tagText })"
+          :title="t('identity.joinedAgo', { time: fullTagText })"
           data-testid="device-card-status"
         >{{ tagText }}</span>
       </div>

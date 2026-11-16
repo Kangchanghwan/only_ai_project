@@ -14,6 +14,7 @@ import {
   koEuro,
   koGa,
   formatRelativeTime,
+  formatBadgeTime,
   saveIdentity,
   loadIdentity,
   collectClientHints,
@@ -196,5 +197,19 @@ describe('collectClientHints', () => {
   it('빈 model은 보내지 않는다', async () => {
     const hints = await collectClientHints({ userAgentData: { getHighEntropyValues: async () => ({ model: '' }) } })
     expect(hints).toEqual({})
+  })
+})
+
+describe('formatBadgeTime (딱지용 짧은 형식)', () => {
+  const now = Date.now()
+  it('영어는 6자 이하로 줄어든다', () => {
+    expect(formatBadgeTime(now - 5 * 60_000, 'en', now)).toBe('5m')
+    expect(formatBadgeTime(now - 4 * 3600_000, 'en', now)).toBe('4h')
+    expect(Array.from(formatBadgeTime(now - 5 * 60_000, 'de', now)).length).toBeLessThanOrEqual(8)
+  })
+  it('한국어는 그대로다', () => {
+    expect(formatBadgeTime(now - 5 * 60_000, 'ko', now)).toBe('5분 전')
+    expect(formatBadgeTime(now - 4 * 3600_000, 'ko', now)).toBe('4시간 전')
+    expect(formatBadgeTime(now - 2000, 'ko', now)).toBe('지금')
   })
 })

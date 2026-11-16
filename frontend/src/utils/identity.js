@@ -168,6 +168,29 @@ export function formatRelativeTime(timestamp, locale, now = Date.now()) {
   return rtf.format(Math.round(diffSec / 86400), 'day')
 }
 
+/** 좁은 딱지용 짧은 상대 시간 ("5m", "4h", "5 Min."). 방금은 초 단위 */
+export function formatCompactRelativeTime(timestamp, locale, now = Date.now()) {
+  const diffSec = Math.round((now - timestamp) / 1000)
+  const abs = Math.abs(diffSec)
+  let unit, value
+  if (abs < 45) { unit = 'second'; value = Math.max(abs, 0) }
+  else if (abs < 45 * 60) { unit = 'minute'; value = Math.round(abs / 60) }
+  else if (abs < 22 * 3600) { unit = 'hour'; value = Math.round(abs / 3600) }
+  else { unit = 'day'; value = Math.round(abs / 86400) }
+  const opts = { style: 'unit', unit, unitDisplay: 'narrow' }
+  try {
+    return new Intl.NumberFormat(locale, opts).format(value)
+  } catch {
+    return new Intl.NumberFormat('en', opts).format(value)
+  }
+}
+
+/** 딱지용: 6자 이하면 보통 형식, 넘으면 짧은 형식 */
+export function formatBadgeTime(timestamp, locale, now = Date.now()) {
+  const full = formatRelativeTime(timestamp, locale, now)
+  return Array.from(full).length <= 6 ? full : formatCompactRelativeTime(timestamp, locale, now)
+}
+
 // === 저장된 정체성 (30일) ===
 
 const STORAGE_KEY = 'clipboard-identity'
