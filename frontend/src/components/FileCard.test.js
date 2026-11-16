@@ -153,7 +153,6 @@ describe('FileCard 행 눌러 선택 (체크박스 없음)', () => {
     expect(row.attributes('tabindex')).toBe('0')
     expect(row.attributes('aria-label')).toBe('file.selectFile')
     expect(wrapper.find('[data-testid="select-thumb"]').exists()).toBe(false)
-    expect(wrapper.find('[data-testid="select-hint"]').exists()).toBe(true)
   })
   it('행을 누르면 toggle-selection을 보낸다', async () => {
     mountCard()
@@ -172,13 +171,13 @@ describe('FileCard 행 눌러 선택 (체크박스 없음)', () => {
     await wrapper.find('.file-row').trigger('keydown', { key: 'Enter' })
     expect(wrapper.emitted('toggle-selection')).toHaveLength(2)
   })
-  it('선택되면 체크 칸·aria-checked=true·강조 배경', () => {
+  it('선택되면 체크 칸 없이 테두리만 두껍게·aria-checked=true', () => {
     mountCard({ isSelected: true })
     const row = wrapper.find('.file-row')
     expect(row.attributes('aria-checked')).toBe('true')
-    expect(row.classes()).toContain('bg-tint')
-    expect(wrapper.find('[data-testid="select-thumb"]').exists()).toBe(true)
-    expect(wrapper.find('img').exists()).toBe(false)
-    expect(wrapper.find('[data-testid="select-hint"]').exists()).toBe(false)
+    expect(row.classes()).not.toContain('bg-tint')
+    expect(row.classes()).toContain('outline-2')
+    expect(wrapper.find('[data-testid="select-thumb"]').exists()).toBe(false)
+    expect(wrapper.find('img').exists()).toBe(true)
   })
 })

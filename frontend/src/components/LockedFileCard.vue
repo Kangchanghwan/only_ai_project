@@ -287,7 +287,7 @@ onUnmounted(() => clearInterval(revealTimer))
 <template>
   <div
     class="group file-row relative overflow-hidden flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-    :class="[isSelected ? 'border-ink bg-tint outline outline-2 -outline-offset-2 outline-ink' : 'border-border', selectable ? 'cursor-pointer select-none' : '']"
+    :class="[isSelected ? 'border-ink outline outline-2 -outline-offset-2 outline-ink' : 'border-border', selectable ? 'cursor-pointer select-none' : '']"
     :role="selectable ? 'checkbox' : undefined"
     :aria-checked="selectable ? (isSelected ? 'true' : 'false') : undefined"
     :tabindex="selectable ? 0 : undefined"
@@ -296,14 +296,8 @@ onUnmounted(() => clearInterval(revealTimer))
     @click="onRowClick"
     @keydown="onRowKeydown"
   >
-    <!-- 아이콘 칸: 자물쇠 (풀리면 열린 자물쇠). 1:1 방에서 선택되면 남색 체크 칸 -->
+    <!-- 아이콘 칸: 자물쇠 (풀리면 열린 자물쇠). 선택 표시는 행 테두리만 두껍게 -->
     <div class="relative w-8 h-8 sm:w-10 sm:h-10 shrink-0">
-      <div
-        v-if="isSelected"
-        class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-ink text-on-ink"
-        data-testid="select-thumb"
-      ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>
-      <template v-else>
         <div
           class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center"
           :class="[accentBgSoft10, accentText]"
@@ -314,13 +308,6 @@ onUnmounted(() => clearInterval(revealTimer))
           <svg v-if="phase === 'done'" class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
           <svg v-else class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
         </div>
-        <span
-          v-if="selectable"
-          class="select-hint pointer-events-none absolute inset-0 border-[1.5px] border-ink bg-transparent opacity-0 transition-opacity duration-150 [@media(pointer:fine)]:group-hover:opacity-100"
-          aria-hidden="true"
-          data-testid="select-hint"
-        ></span>
-      </template>
     </div>
 
     <!-- 이름 + 2행 "보낸 사람 · 용량 · 시간(상태)" — 일반 카드와 같은 순서 -->

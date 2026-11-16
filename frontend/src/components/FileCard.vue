@@ -183,7 +183,7 @@ async function handleShare(event) {
   <!-- 행 전체 클릭으로 복사하지 않는다. 받기(primary)와 더보기(복사/QR/공유/삭제)를 명시 버튼으로 둔다. -->
   <div
     class="group file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200 cursor-pointer select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-    :class="[isSelected ? 'border-ink bg-tint outline outline-2 -outline-offset-2 outline-ink' : 'border-border']"
+    :class="[isSelected ? 'border-ink outline outline-2 -outline-offset-2 outline-ink' : 'border-border']"
     role="checkbox"
     :aria-checked="isSelected ? 'true' : 'false'"
     tabindex="0"
@@ -191,14 +191,8 @@ async function handleShare(event) {
     @click="onRowClick"
     @keydown="onRowKeydown"
   >
-    <!-- 썸네일 칸: 선택되면 같은 크기의 남색 체크 칸으로 바뀐다 (자리 이동 없음) -->
+    <!-- 썸네일 칸: 선택돼도 그대로 둔다. 선택 표시는 행 테두리를 두껍게 하는 것뿐 -->
     <div class="relative w-8 h-8 sm:w-10 sm:h-10 shrink-0">
-      <div
-        v-if="isSelected"
-        class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-ink text-on-ink"
-        data-testid="select-thumb"
-      ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>
-      <template v-else>
         <img
           v-if="showImagePreview"
           :src="previewSrc"
@@ -217,13 +211,6 @@ async function handleShare(event) {
         >
           <span class="text-xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
         </div>
-        <span
-        v-if="!isSelected"
-        class="select-hint pointer-events-none absolute inset-0 border-[1.5px] border-ink bg-transparent opacity-0 transition-opacity duration-150 [@media(pointer:fine)]:group-hover:opacity-100"
-        aria-hidden="true"
-        data-testid="select-hint"
-      ></span>
-      </template>
     </div>
 
     <!-- 파일명(ellipsis, 전체는 title) + 2행 "보낸 사람 · 용량 · 시간" (시간은 한 번만) -->

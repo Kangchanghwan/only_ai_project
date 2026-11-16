@@ -170,10 +170,11 @@ describe('LockChip', () => {
     expect(w.emitted('toggle-selection')[0][0]).toMatchObject({ name: 'abc123' })
   })
 
-  it('선택된 1:1 카드는 남색 체크 칸과 aria-checked=true를 보여 준다', () => {
+  it('선택된 1:1 카드는 체크 칸 없이 테두리만 두껍게, aria-checked=true', () => {
     const w = mountCard({ file, selectable: true, isSelected: true })
     expect(w.attributes('aria-checked')).toBe('true')
-    expect(w.find('[data-testid="select-thumb"]').exists()).toBe(true)
-    expect(w.classes()).toContain('bg-tint')
+    expect(w.find('[data-testid="select-thumb"]').exists()).toBe(false)
+    expect(w.classes()).not.toContain('bg-tint')
+    expect(w.classes()).toContain('outline-2')
   })
 })

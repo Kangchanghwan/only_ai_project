@@ -104,7 +104,7 @@ onMounted(async () => {
         ><span aria-hidden="true">⋯</span></button>
         <div
           v-if="moreOpen"
-          class="absolute right-0 top-full mt-1 z-50 bg-surface border-2 border-ink rounded-none p-3 flex flex-col items-stretch gap-3"
+          class="header-more-menu absolute right-0 top-full mt-1 z-50 bg-surface border-2 border-ink rounded-none p-3 flex flex-col items-stretch gap-3"
           data-testid="header-more-menu"
         >
           <LanguageSelector />
@@ -112,7 +112,7 @@ onMounted(async () => {
           <button
             v-if="showInstall"
             type="button"
-            class="header-install-button h-11 min-w-11 px-0 sm:px-4 rounded-none bg-transparent hover:bg-tint text-ink font-bold text-sm transition-colors duration-200 flex items-center justify-center gap-2 border-2 border-ink w-11 sm:w-auto"
+            class="header-install-button h-11 w-full px-0 sm:px-4 rounded-none bg-transparent hover:bg-tint text-ink font-bold text-sm transition-colors duration-200 flex items-center justify-center gap-2 border-2 border-ink"
             :title="t('pwa.installAria')"
             :aria-label="t('pwa.installAria')"
             data-testid="header-install-button"
@@ -172,3 +172,12 @@ onMounted(async () => {
     @close="closeQrZoom"
   />
 </template>
+
+<style scoped>
+/* ⋯ 메뉴 안의 언어·테마·설치 버튼을 같은 폭(좌우 끝 맞춤)으로 */
+.header-more-menu :deep(.language-selector) { display: block; width: 100%; }
+.header-more-menu :deep(.langs-area) { width: 100%; }
+.header-more-menu :deep(.magictool-langselector-dropdown) { flex: 1 1 auto; min-width: 0; }
+.header-more-menu :deep(.dropdown-toggle) { width: 100%; }
+.header-more-menu :deep(.theme-toggle-button) { width: 100%; }
+</style>
