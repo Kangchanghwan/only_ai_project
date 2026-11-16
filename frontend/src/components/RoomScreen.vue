@@ -202,7 +202,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 </script>
 
 <template>
-  <div :class="['text-text-primary', files.length > 0 && !isLoading ? 'pb-24' : 'pb-6']">
+  <div :class="['text-text-primary', files.length > 0 && !isLoading ? 'pb-36 sm:pb-24' : 'pb-6']">
     <AppHeader :user-count="userCount" :is-connecting="isConnecting" />
 
     <div class="page-shell px-4 sm:px-6">
