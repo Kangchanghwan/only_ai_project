@@ -171,7 +171,7 @@ function formatTime(timestamp) {
         ><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>{{ t('clipboard.pasteTitle') }}</button>
       </div>
       <!-- 페이지 어디서나 붙여넣기 자동 공유: 키보드·마우스 기기에서만 한 줄로 -->
-      <p class="hidden pointer-fine:block m-0 text-[11px] leading-4 text-text-secondary truncate" :title="t('text.autoShareHint')" data-testid="text-autoshare-hint">{{ t('text.autoShareHint') }}</p>
+      <p class="sr-only" data-testid="text-autoshare-hint">{{ t('text.autoShareHint') }}</p>
       <p v-if="fromLink" class="m-0 text-xs font-semibold text-text-primary" data-testid="text-prefill-note">{{ t('text.prefillNote') }}</p>
       <!-- 결과는 보조기술·브라우저 에이전트용으로 남긴다. 성공은 토스트로 보이므로 화면에는 실패만 -->
       <p

@@ -135,6 +135,7 @@ onUnmounted(() => {
                 </div>
               </div>
               <p class="text-sm text-text-secondary mt-3">{{ t('help.scopeDevicesDesc') }}</p>
+              <p class="text-sm text-text-secondary mt-1">{{ t('identity.verifyHint') }}</p>
             </section>
 
             <!-- 파일 공유 -->

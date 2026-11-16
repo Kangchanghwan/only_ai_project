@@ -90,7 +90,7 @@ function handleDrop(event) {
       </svg>
       {{ t('file.chooseFiles') }}
     </button>
-    <p class="hidden sm:block text-sm text-text-secondary m-0">{{ t('file.dropHint') }}</p>
+    <p class="sr-only">{{ t('file.dropHint') }}</p>
     <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
       {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
     </p>

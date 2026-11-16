@@ -61,10 +61,10 @@ describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
     expect(status.text()).toBe('공유하지 못했어요. 다시 시도해 주세요.')
   })
 
-  it('붙여넣기 자동 공유 도움말은 키보드·마우스 기기에서만 한 줄, 붙여넣기 버튼 툴팁에도', () => {
+  it('붙여넣기 자동 공유 도움말은 화면 줄 대신 스크린리더 문구와 붙여넣기 버튼 툴팁으로', () => {
     const w = mountBox()
     const hint = w.find('[data-testid="text-autoshare-hint"]')
-    expect(hint.classes()).toEqual(expect.arrayContaining(['hidden', 'pointer-fine:block', 'truncate']))
+    expect(hint.classes()).toContain('sr-only')
     expect(w.find('[data-testid="text-paste-button"]').attributes('title')).toContain('Ctrl+V')
   })
 
