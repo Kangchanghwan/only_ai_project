@@ -16,6 +16,7 @@ import { useScopeAccent } from '../composables/useScopeAccent'
 import { formatSizeMB } from '../utils/fileUtils'
 import PasteSection from './PasteSection.vue'
 import LockChip from './LockChip.vue'
+import LockBar from './LockBar.vue'
 
 const { t } = useI18n()
 
@@ -169,6 +170,7 @@ function onKeydown(event) {
       @dragleave="handleDragLeave"
       @drop="handleDrop"
     >
+      <LockBar v-if="!isPrivate" :scope="scope" />
       <form class="contents" id="text-compose-form" data-testid="text-compose" @submit.prevent="submit">
         <label class="sr-only" for="text-share-input">{{ t('text.share') }}</label>
         <textarea
