@@ -201,6 +201,14 @@ provide(SENDER_CONTEXT_KEY, {
 
 /** 1:1·그룹 방(prv:)에서는 같은 네트워크/전체 공유용 안내 대신 방 기준 안내를 보여 준다 */
 const inRoom = computed(() => isPrivateScope(props.scope))
+// 공개 범위(ip/전체)에서 목록이 "비어 있음"으로 확정되면 안내·소개·푸터를 메인 화면 목록 아래에 보인다
+const extraTarget = ref(null)
+const isPrerender = typeof window !== 'undefined' && !!window.__PRERENDER__
+const showExtraInMain = computed(() =>
+  (props.scope === 'ip' || props.scope === 'global') &&
+  props.files.length === 0 && props.texts.length === 0 &&
+  (!props.isLoading || isPrerender)
+)
 const { bg: accentBg } = useScopeAccent(() => props.scope)
 </script>
 
@@ -208,7 +216,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
   <div :class="['text-text-primary', files.length > 0 && !isLoading ? 'pb-24' : 'pb-6']">
     <AppHeader :user-count="userCount" :is-connecting="isConnecting">
       <!-- 안내·소개·푸터: 도움말 창 안에 두고 화면에서는 숨김(DOM 유지, SEO) -->
-      <div class="help-extra">
+      <Teleport :to="extraTarget" :disabled="!showExtraInMain || !extraTarget">
+      <div class="help-extra" data-testid="help-extra">
         <section class="border-t border-border pt-6 text-sm" data-testid="usage-notes">
           <h3 class="text-lg font-semibold text-text-primary mb-3">{{ t('guide.title') }}</h3>
           <ul class="flex flex-col list-none p-0 m-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
@@ -227,6 +236,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
           <AppFooter />
         </div>
       </div>
+      </Teleport>
     </AppHeader>
 
     <div class="page-shell px-4 sm:px-6">
@@ -343,6 +353,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
           </div>
         </main>
       </div>
+      <div ref="extraTarget" :class="showExtraInMain ? 'mt-8' : ''" data-testid="empty-extra-target"></div>
     </div>
   </div>
 </template>
