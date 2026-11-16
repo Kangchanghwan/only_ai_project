@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Scrie aici sau trage și plasează fișiere",
     "shortcutHint": "Trimite cu Ctrl+Enter (⌘+Enter pe Mac)"
+  },
+  "lock": {
+    "chipOn": "Blocare activă",
+    "chipOff": "Dezactivează",
+    "confirmLockedSend": "Blochează și trimite",
+    "barDesc": "Fișierele și textele trimise aici pot fi deschise doar pe dispozitivele care știu parola",
+    "barDescShort": "Se deschide doar cu parola",
+    "offConfirm": "Dezactivezi blocarea? Ce s-a trimis deja rămâne blocat.",
+    "offConfirmYes": "Dezactivează",
+    "reloadOff": "Blocarea s-a oprit la reîncărcarea paginii. Ce trimiți acum nu este blocat.",
+    "reloadRelock": "Blochează din nou",
+    "tag": "Blocat"
   }
 }

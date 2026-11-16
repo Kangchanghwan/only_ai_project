@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Ketik di sini atau seret dan lepas berkas",
     "shortcutHint": "Kirim dengan Ctrl+Enter (⌘+Enter di Mac)"
+  },
+  "lock": {
+    "chipOn": "Kunci aktif",
+    "chipOff": "Matikan",
+    "confirmLockedSend": "Kunci dan kirim",
+    "barDesc": "File dan teks yang dikirim di sini hanya bisa dibuka di perangkat yang tahu kata sandinya",
+    "barDescShort": "Hanya dengan kata sandi",
+    "offConfirm": "Matikan kunci? Yang sudah terkirim tetap terkunci.",
+    "offConfirmYes": "Matikan",
+    "reloadOff": "Kunci mati saat halaman dimuat ulang. Yang Anda kirim sekarang tidak terkunci.",
+    "reloadRelock": "Kunci lagi",
+    "tag": "Terkunci"
   }
 }

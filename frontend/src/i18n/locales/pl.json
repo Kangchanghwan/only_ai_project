@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Wpisz tutaj lub przeciągnij i upuść pliki",
     "shortcutHint": "Wyślij przez Ctrl+Enter (⌘+Enter na Macu)"
+  },
+  "lock": {
+    "chipOn": "Blokada włączona",
+    "chipOff": "Wyłącz",
+    "confirmLockedSend": "Zablokuj i wyślij",
+    "barDesc": "Pliki i tekst wysłane tutaj otworzą tylko urządzenia znające hasło",
+    "barDescShort": "Otworzy tylko hasło",
+    "offConfirm": "Wyłączyć blokadę? Już wysłane elementy pozostaną zablokowane.",
+    "offConfirmYes": "Wyłącz",
+    "reloadOff": "Blokada wyłączyła się po odświeżeniu strony. To, co teraz wyślesz, nie będzie zablokowane.",
+    "reloadRelock": "Zablokuj ponownie",
+    "tag": "Zablokowane"
   }
 }

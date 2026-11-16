@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Pište sem nebo přetáhněte soubory",
     "shortcutHint": "Odeslat pomocí Ctrl+Enter (⌘+Enter na Macu)"
+  },
+  "lock": {
+    "chipOn": "Zámek zapnut",
+    "chipOff": "Vypnout",
+    "confirmLockedSend": "Zamknout a odeslat",
+    "barDesc": "Soubory a text odeslané sem otevřou jen zařízení, která znají heslo",
+    "barDescShort": "Otevřou jen zařízení s heslem",
+    "offConfirm": "Vypnout zámek? Už odeslané položky zůstanou zamčené.",
+    "offConfirmYes": "Vypnout",
+    "reloadOff": "Zámek se po znovunačtení stránky vypnul. Co teď odešlete, nebude zamčené.",
+    "reloadRelock": "Zamknout znovu",
+    "tag": "Zamčeno"
   }
 }

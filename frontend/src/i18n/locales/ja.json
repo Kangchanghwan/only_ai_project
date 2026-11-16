@@ -649,5 +649,17 @@
   "send": {
     "placeholder": "ここに入力するか、ファイルをドラッグ＆ドロップしてください",
     "shortcutHint": "Ctrl+Enterで送信（Macは⌘+Enter）"
+  },
+  "lock": {
+    "chipOn": "ロック中",
+    "chipOff": "解除",
+    "confirmLockedSend": "ロックして送信",
+    "barDesc": "ここで送るファイルとテキストは、パスワードを知っている端末でのみ開けます",
+    "barDescShort": "パスワードを知る端末のみ開けます",
+    "offConfirm": "ロックを解除しますか？送信済みのものはロックされたままです。",
+    "offConfirmYes": "解除",
+    "reloadOff": "ページの再読み込みでロックが解除されました。今送るものはロックされません。",
+    "reloadRelock": "再ロック",
+    "tag": "ロック"
   }
 }

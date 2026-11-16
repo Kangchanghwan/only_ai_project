@@ -539,7 +539,14 @@
       "openApp": "Clipboard Share 열기",
       "invalid": "링크가 올바르지 않아요. QR을 다시 찍어 주세요.",
       "expired": "파일이 없어요. 하루가 지났거나 삭제됐을 수 있어요."
-    }
+    },
+    "barDesc": "여기서 보내는 파일과 텍스트는 비밀번호를 아는 기기만 열 수 있어요",
+    "barDescShort": "비밀번호를 아는 기기만 열어요",
+    "offConfirm": "잠금을 풀까요? 이미 보낸 것은 잠긴 채로 남아요.",
+    "offConfirmYes": "풀기",
+    "reloadOff": "페이지를 새로 열어서 잠금이 꺼졌어요. 지금 보내면 잠기지 않아요.",
+    "reloadRelock": "다시 잠그기",
+    "tag": "잠금"
   },
   "pair": {
     "button": "방으로 연결",

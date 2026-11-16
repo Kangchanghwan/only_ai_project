@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Saisissez ici ou glissez-déposez des fichiers",
     "shortcutHint": "Envoyer avec Ctrl+Entrée (⌘+Entrée sur Mac)"
+  },
+  "lock": {
+    "chipOn": "Verrou activé",
+    "chipOff": "Retirer",
+    "confirmLockedSend": "Verrouiller et envoyer",
+    "barDesc": "Les fichiers et textes envoyés ici ne s'ouvrent que sur les appareils qui connaissent le mot de passe",
+    "barDescShort": "Ouvrable avec le mot de passe",
+    "offConfirm": "Retirer le verrou ? Ce qui est déjà envoyé reste verrouillé.",
+    "offConfirmYes": "Retirer",
+    "reloadOff": "Le verrou s'est désactivé au rechargement de la page. Ce que vous envoyez maintenant n'est pas verrouillé.",
+    "reloadRelock": "Reverrouiller",
+    "tag": "Verrouillé"
   }
 }
