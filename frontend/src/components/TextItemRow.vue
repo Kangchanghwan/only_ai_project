@@ -87,7 +87,8 @@ function formatTime(timestamp) {
 <template>
   <!-- 접힌 행은 FileCard의 행과 같은 모양: 더보기를 눌러야 아래로 늘어난다 -->
   <article
-    class="text-row file-row flex flex-wrap sm:flex-nowrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
+    class="text-row file-row flex flex-wrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
+    :class="expanded ? '' : 'sm:flex-nowrap'"
     data-testid="text-entry"
   >
     <!-- 파일 행의 체크박스 자리 -->
@@ -177,7 +178,7 @@ function formatTime(timestamp) {
     </div>
 
     <!-- 펼친 상태: 행 아래로 전체 본문 + 접기 -->
-    <div v-if="expanded && text.content != null" class="basis-full min-w-0" data-testid="text-expanded">
+    <div v-if="expanded && text.content != null" class="basis-full min-w-0 pl-[5.25rem] sm:pl-[6.25rem]" data-testid="text-expanded">
       <p
         class="m-0 p-3 text-sm text-text-primary whitespace-pre-wrap break-words select-text max-h-[60vh] overflow-y-auto border border-border bg-background"
         data-testid="text-body"
