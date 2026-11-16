@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Írj ide, vagy húzd ide a fájlokat",
     "shortcutHint": "Küldés: Ctrl+Enter (Macen ⌘+Enter)"
+  },
+  "lock": {
+    "chipOn": "Zár bekapcsolva",
+    "chipOff": "Kikapcsolás",
+    "confirmLockedSend": "Zárolás és küldés",
+    "barDesc": "Az itt küldött fájlokat és szövegeket csak a jelszót ismerő eszközök nyithatják meg",
+    "barDescShort": "Csak jelszóval nyitható",
+    "offConfirm": "Kikapcsolja a zárat? A már elküldött elemek zárolva maradnak.",
+    "offConfirmYes": "Kikapcsolás",
+    "reloadOff": "Az oldal újratöltésekor a zár kikapcsolt. Amit most küld, nem lesz zárolva.",
+    "reloadRelock": "Zárolás újra",
+    "tag": "Zárolt"
   }
 }

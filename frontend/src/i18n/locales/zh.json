@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "在此输入，或将文件拖放到这里",
     "shortcutHint": "按 Ctrl+Enter 发送（Mac 为 ⌘+Enter）"
+  },
+  "lock": {
+    "chipOn": "锁定已开启",
+    "chipOff": "关闭",
+    "confirmLockedSend": "锁定并发送",
+    "barDesc": "在这里发送的文件和文本，只有知道密码的设备才能打开",
+    "barDescShort": "仅知道密码的设备可打开",
+    "offConfirm": "要关闭锁定吗？已发送的内容仍保持锁定。",
+    "offConfirmYes": "关闭",
+    "reloadOff": "页面刷新后锁定已关闭。现在发送的内容不会被锁定。",
+    "reloadRelock": "重新锁定",
+    "tag": "已锁定"
   }
 }

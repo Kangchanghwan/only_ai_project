@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Typ hier of sleep bestanden hierheen",
     "shortcutHint": "Verzenden met Ctrl+Enter (⌘+Enter op Mac)"
+  },
+  "lock": {
+    "chipOn": "Slot aan",
+    "chipOff": "Uitzetten",
+    "confirmLockedSend": "Vergrendel en verstuur",
+    "barDesc": "Bestanden en tekst die je hier stuurt, openen alleen op apparaten die het wachtwoord kennen",
+    "barDescShort": "Alleen met wachtwoord te openen",
+    "offConfirm": "Slot uitzetten? Wat al is verstuurd blijft vergrendeld.",
+    "offConfirmYes": "Uitzetten",
+    "reloadOff": "Het slot ging uit toen de pagina opnieuw laadde. Wat je nu stuurt is niet vergrendeld.",
+    "reloadRelock": "Opnieuw vergrendelen",
+    "tag": "Vergrendeld"
   }
 }

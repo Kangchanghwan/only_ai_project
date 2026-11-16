@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Skriv här eller dra och släpp filer",
     "shortcutHint": "Skicka med Ctrl+Enter (⌘+Enter på Mac)"
+  },
+  "lock": {
+    "chipOn": "Lås på",
+    "chipOff": "Stäng av",
+    "confirmLockedSend": "Lås och skicka",
+    "barDesc": "Filer och text du skickar hit kan bara öppnas på enheter som kan lösenordet",
+    "barDescShort": "Öppnas bara med lösenord",
+    "offConfirm": "Stänga av låset? Det som redan skickats förblir låst.",
+    "offConfirmYes": "Stäng av",
+    "reloadOff": "Låset stängdes av när sidan laddades om. Det du skickar nu är inte låst.",
+    "reloadRelock": "Lås igen",
+    "tag": "Låst"
   }
 }

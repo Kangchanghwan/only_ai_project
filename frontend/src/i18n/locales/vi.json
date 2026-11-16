@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Nhập tại đây hoặc kéo và thả tệp vào",
     "shortcutHint": "Gửi bằng Ctrl+Enter (⌘+Enter trên Mac)"
+  },
+  "lock": {
+    "chipOn": "Đã bật khóa",
+    "chipOff": "Tắt",
+    "confirmLockedSend": "Khóa và gửi",
+    "barDesc": "Tệp và văn bản gửi ở đây chỉ mở được trên thiết bị biết mật khẩu",
+    "barDescShort": "Chỉ mở bằng mật khẩu",
+    "offConfirm": "Tắt khóa? Những gì đã gửi vẫn được khóa.",
+    "offConfirmYes": "Tắt",
+    "reloadOff": "Khóa đã tắt khi tải lại trang. Nội dung gửi bây giờ sẽ không được khóa.",
+    "reloadRelock": "Khóa lại",
+    "tag": "Đã khóa"
   }
 }

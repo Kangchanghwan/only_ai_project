@@ -43,6 +43,8 @@ describe('통합 보내기 상자: 잠금 칩은 도구 줄에 하나', () => {
     expect(lock.isLocked('ip')).toBe(true)
     expect(lock.getLock('ip')).toBeTruthy()
     expect(lock.isLocked('global')).toBe(false)
-    expect(w.find('[data-testid="lock-chip"] .lock-chip.on').exists()).toBe(true)
+    // 켜진 뒤에는 도구 줄의 칩이 사라지고 상자 위 잠금 줄이 상태를 보인다
+    expect(w.find('[data-testid="lock-chip"]').exists()).toBe(false)
+    expect(w.find('[data-testid="send-box"] [data-testid="lock-bar"]').attributes('data-state')).toBe('on')
   })
 })

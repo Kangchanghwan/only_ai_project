@@ -239,3 +239,46 @@ describe('TextItemRow ⋯ 메뉴 닫기', () => {
     w.unmount()
   })
 })
+
+describe('TextItemRow 잠금 표시', () => {
+  const lockIconRect = '<rect x="5" y="11" width="14" height="9" rx="2"'
+  it('잠긴 행은 타일에 자물쇠 아이콘과 data-locked, 내용이 열려 있으면 작은 "잠금" 태그가 메타 줄 맨 앞', () => {
+    const w = mountRow({ id: 'L', content: '열림', locked: true, salt: 's', timestamp: 0, roomId: 'r' })
+    const tag = w.find('[data-testid="text-tag"]')
+    expect(tag.attributes('data-locked')).toBe('true')
+    expect(tag.html()).toContain(lockIconRect)
+    const lt = w.find('[data-testid="text-meta"] > [data-testid="text-lock-tag"]')
+    expect(lt.exists()).toBe(true)
+    expect(lt.text()).toBe(i18n.global.t('lock.tag'))
+    expect(lt.classes()).toContain('max-[359px]:hidden')
+    expect(w.find('[data-testid="text-meta"]').element.firstElementChild).toBe(lt.element)
+  })
+  it('아직 못 푼 행은 타일이 자물쇠이고 제목 안에는 자물쇠 svg와 태그가 없다', () => {
+    const w = mountRow({ id: 'L', content: null, locked: true, salt: 's', timestamp: 0, roomId: 'r' })
+    expect(w.find('[data-testid="text-tag"]').html()).toContain(lockIconRect)
+    expect(w.find('[data-testid="text-locked"] svg').exists()).toBe(false)
+    expect(w.find('[data-testid="text-locked"]').text()).toContain('잠긴 텍스트')
+    expect(w.find('[data-testid="text-lock-tag"]').exists()).toBe(false)
+  })
+  it('잠기지 않은 행은 기존 줄 아이콘이고 data-locked가 없다', () => {
+    const w = mountRow({ id: 'P', content: 'hi', timestamp: 0 })
+    expect(w.find('[data-testid="text-tag"]').attributes('data-locked')).toBeUndefined()
+    expect(w.find('[data-testid="text-tag"]').html()).not.toContain(lockIconRect)
+    expect(w.find('[data-testid="text-lock-tag"]').exists()).toBe(false)
+  })
+  it('풀기 폼은 행 아래 한 줄(basis-full)로 내려가고 행은 flex-wrap, 제목·버튼은 첫 줄에 남는다', async () => {
+    const w = mountRow({ id: 'L', content: null, locked: true, salt: 's', timestamp: 0, roomId: 'r' })
+    expect(w.find('[data-testid="text-entry"]').classes()).toContain('flex-nowrap')
+    await w.find('[data-testid="text-unlock-open"]').trigger('click')
+    expect(w.find('[data-testid="text-entry"]').classes()).toContain('flex-wrap')
+    const form = w.find('[data-testid="text-unlock-form"]')
+    expect(form.classes()).toEqual(expect.arrayContaining(['basis-full', 'pl-[2.375rem]', 'sm:pl-[3.25rem]']))
+    expect(w.find('[data-testid="text-unlock-password"]').classes()).toEqual(expect.arrayContaining(['flex-1', 'min-w-0']))
+    expect(w.find('[data-testid="text-locked"]').exists()).toBe(true)
+    expect(w.find('[data-testid="text-unlock-open"]').exists()).toBe(true)
+    expect(w.find('[data-testid="text-more"]').exists()).toBe(true)
+    // 폼은 행의 직계 자식이며 제목 줄(file-info) 뒤에 온다
+    const kids = Array.from(w.find('[data-testid="text-entry"]').element.children)
+    expect(kids.indexOf(form.element)).toBeGreaterThan(kids.findIndex((el) => el.classList.contains('file-info')))
+  })
+})

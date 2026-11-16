@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Digite aqui ou arraste e solte arquivos",
     "shortcutHint": "Enviar com Ctrl+Enter (⌘+Enter no Mac)"
+  },
+  "lock": {
+    "chipOn": "Bloqueio ativo",
+    "chipOff": "Desativar",
+    "confirmLockedSend": "Bloquear e enviar",
+    "barDesc": "Os arquivos e textos enviados aqui só abrem em dispositivos que sabem a senha",
+    "barDescShort": "Só abre com a senha",
+    "offConfirm": "Desativar o bloqueio? O que já foi enviado continua bloqueado.",
+    "offConfirmYes": "Desativar",
+    "reloadOff": "O bloqueio foi desativado ao recarregar a página. O que você enviar agora não ficará bloqueado.",
+    "reloadRelock": "Bloquear de novo",
+    "tag": "Bloqueado"
   }
 }

@@ -572,5 +572,17 @@
   "send": {
     "placeholder": "Hier tippen oder Dateien hierher ziehen",
     "shortcutHint": "Mit Strg+Enter senden (⌘+Enter auf dem Mac)"
+  },
+  "lock": {
+    "chipOn": "Sperre aktiv",
+    "chipOff": "Aufheben",
+    "confirmLockedSend": "Sperren und senden",
+    "barDesc": "Hier gesendete Dateien und Texte lassen sich nur auf Geräten öffnen, die das Passwort kennen",
+    "barDescShort": "Nur mit Passwort zu öffnen",
+    "offConfirm": "Sperre aufheben? Bereits gesendete Inhalte bleiben gesperrt.",
+    "offConfirmYes": "Aufheben",
+    "reloadOff": "Die Sperre wurde beim Neuladen der Seite aufgehoben. Was Sie jetzt senden, ist nicht gesperrt.",
+    "reloadRelock": "Erneut sperren",
+    "tag": "Gesperrt"
   }
 }

@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import ShareScopeTabs from './ShareScopeTabs.vue'
 import PrivateRoomStrip from './PrivateRoomStrip.vue'
 import i18n from '../i18n/index.js'
+import { useLockState } from '../composables/useLockState'
 
 const opts = { global: { plugins: [i18n] }, attachTo: document.body }
 const G = 'prv-g-' + 'ab12'.repeat(6)
@@ -194,5 +195,25 @@ describe('ShareScopeTabs 넘침 표시', () => {
       expect(w.emitted('select')[1]).toEqual(['ip'])
     })
     function mountControls(scope) { return mount(ShareScopeTabs, { ...opts, props: { scope, privateRooms: rooms } }) }
+  })
+})
+
+describe('ShareScopeTabs 잠금 표시', () => {
+  it('잠긴 범위의 탭 글자 앞에만 자물쇠 아이콘이 붙는다', async () => {
+    const l = useLockState()
+    l.resetLockState()
+    const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip' } })
+    expect(w.find('[data-testid="scope-lock-ip"]').exists()).toBe(false)
+    await l.setLock('global', 'abcd', { iterations: 1000 })
+    await w.vm.$nextTick()
+    const icon = w.find('[data-testid="scope-option-global"] [data-testid="scope-lock-global"]')
+    expect(icon.exists()).toBe(true)
+    expect(icon.element.nextElementSibling.textContent).toBe('잠금 켜짐')
+    expect(w.find('[data-testid="scope-lock-ip"]').exists()).toBe(false)
+    await l.setLock('ip', 'abcd', { iterations: 1000 })
+    await w.vm.$nextTick()
+    expect(w.find('[data-testid="scope-option-ip"] [data-testid="scope-lock-ip"]').exists()).toBe(true)
+    l.resetLockState()
+    w.unmount()
   })
 })

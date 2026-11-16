@@ -539,7 +539,14 @@
       "openApp": "Open Clipboard Share",
       "invalid": "This link isn't valid. Please scan the QR code again.",
       "expired": "File not found. It may have expired after a day or been deleted."
-    }
+    },
+    "barDesc": "Files and text you send here can only be opened on devices that know the password",
+    "barDescShort": "Only devices with the password can open these",
+    "offConfirm": "Turn off the lock? Items already sent stay locked.",
+    "offConfirmYes": "Turn off",
+    "reloadOff": "The lock turned off when the page reloaded. Items you send now are not locked.",
+    "reloadRelock": "Lock again",
+    "tag": "Locked"
   },
   "pair": {
     "button": "Connect in a room",

@@ -6,8 +6,10 @@ import PairPeerAvatar from './PairPeerAvatar.vue'
 import { privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
 import { isValidIdentity, identityName } from '../utils/identity'
 import { isGroupRoomId } from '../utils/groupRoom'
+import { useLockState } from '../composables/useLockState'
 
 const { t } = useI18n()
+const lockState = useLockState()
 
 const props = defineProps({
   scope: {
@@ -145,7 +147,7 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
         :title="t('shareScope.ipDescription')"
         data-testid="scope-option-ip"
         @click="emit('select', 'ip')"
-      ><span class="truncate">{{ t('shareScope.ip') }}</span></button>
+      ><svg v-if="lockState.isLocked('ip')" class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="scope-lock-ip"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span v-if="lockState.isLocked('ip')" class="sr-only">{{ t('lock.chipOn') }}</span><span class="truncate">{{ t('shareScope.ip') }}</span></button>
       <button
         type="button"
         role="tab"
@@ -157,6 +159,7 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
         @click="emit('select', 'global')"
       >
         <span class="shrink-0 w-2 h-2 bg-scope-global" aria-hidden="true" data-testid="scope-mark-global"></span>
+        <svg v-if="lockState.isLocked('global')" class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="scope-lock-global"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span v-if="lockState.isLocked('global')" class="sr-only">{{ t('lock.chipOn') }}</span>
         <span class="truncate">{{ t('shareScope.global') }}</span>
       </button>
       <button
