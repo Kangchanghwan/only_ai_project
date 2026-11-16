@@ -61,6 +61,20 @@ describe('TextShareBox 직접 입력', () => {
   })
 })
 
+describe('TextShareBox 잠금 보내기 버튼', () => {
+  it('잠금이면 자물쇠 아이콘과 "잠그고 보내기", 아니면 기존 "공유"', () => {
+    const on = mountBox({ storageMode: 'locked' }).find('[data-testid="text-share-button"]')
+    expect(on.attributes('data-locked')).toBe('true')
+    expect(on.find('svg').exists()).toBe(true)
+    expect(on.text()).toBe(i18n.global.t('lock.confirmLockedSend'))
+    expect(on.classes()).toContain('inline-flex')
+    const off = mountBox({ storageMode: 'plain' }).find('[data-testid="text-share-button"]')
+    expect(off.attributes('data-locked')).toBeUndefined()
+    expect(off.find('svg').exists()).toBe(false)
+    expect(off.text()).toBe('공유')
+  })
+})
+
 describe('TextShareBox 링크 미리 채우기 (#/send?t=)', () => {
   it('prefill은 입력란만 채우고 자동 전송하지 않으며 안내 문구를 보인다', async () => {
     const w = mountBox({ prefill: '링크 텍스트' })

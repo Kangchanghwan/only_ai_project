@@ -206,11 +206,13 @@ function onKeydown(event) {
           type="submit"
           form="text-compose-form"
           class="order-4 shrink-0 sm:ml-auto min-h-[44px] px-3 sm:px-6 rounded-none bg-ink text-on-ink font-extrabold text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="{ 'inline-flex items-center gap-1.5': storageMode === 'locked' }"
           :disabled="composeDisabled || !draft.trim() || sending"
           :title="t('send.shortcutHint')"
           aria-keyshortcuts="Control+Enter Meta+Enter"
+          :data-locked="storageMode === 'locked' ? 'true' : undefined"
           data-testid="text-share-button"
-        >{{ t('file.share') }}</button>
+        ><template v-if="storageMode === 'locked'"><svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>{{ t('lock.confirmLockedSend') }}</template><template v-else>{{ t('file.share') }}</template></button>
         <!-- 모바일 줄바꿈: 첫 줄은 파일 선택 + 공유 -->
         <PasteSection class="order-2 shrink-0" :scope="scope" @paste-content="emit('paste-content')" />
         <LockChip v-if="!isPrivate" :scope="scope" class="order-3 shrink-0" />
