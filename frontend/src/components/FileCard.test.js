@@ -144,14 +144,19 @@ describe('FileCard.vue - 더보기 메뉴', () => {
 })
 
 describe('FileCard 행 눌러 선택 (체크박스 없음)', () => {
-  it('체크박스 input이 없고 role=checkbox 행이다', () => {
+  it('행은 role 없이, 화면에 안 보이는 진짜 체크박스를 첫 자식으로 가진다', () => {
     mountCard()
-    expect(wrapper.find('input[type="checkbox"]').exists()).toBe(false)
     const row = wrapper.find('.file-row')
-    expect(row.attributes('role')).toBe('checkbox')
-    expect(row.attributes('aria-checked')).toBe('false')
-    expect(row.attributes('tabindex')).toBe('0')
-    expect(row.attributes('aria-label')).toBe('file.selectFile')
+    expect(row.attributes('role')).toBeUndefined()
+    expect(row.attributes('aria-checked')).toBeUndefined()
+    expect(row.attributes('tabindex')).toBeUndefined()
+    expect(row.attributes('data-selected')).toBeUndefined()
+    const box = wrapper.find('[data-testid="row-select"]')
+    expect(box.element.tagName).toBe('INPUT')
+    expect(box.classes()).toContain('sr-only')
+    expect(box.element.checked).toBe(false)
+    expect(box.attributes('aria-label')).toBe('file.selectFile')
+    expect(row.element.firstElementChild).toBe(box.element)
     expect(wrapper.find('[data-testid="select-thumb"]').exists()).toBe(false)
   })
   it('행을 누르면 toggle-selection을 보낸다', async () => {
@@ -165,16 +170,26 @@ describe('FileCard 행 눌러 선택 (체크박스 없음)', () => {
     await wrapper.find('.more-btn').trigger('click')
     expect(wrapper.emitted('toggle-selection')).toBeUndefined()
   })
-  it('포커스된 행에서 Space/Enter로 선택한다', async () => {
+  it('체크박스 change는 toggle-selection을 정확히 한 번 보낸다', async () => {
     mountCard()
-    await wrapper.find('.file-row').trigger('keydown', { key: ' ' })
-    await wrapper.find('.file-row').trigger('keydown', { key: 'Enter' })
-    expect(wrapper.emitted('toggle-selection')).toHaveLength(2)
+    await wrapper.find('[data-testid="row-select"]').trigger('change')
+    expect(wrapper.emitted('toggle-selection')).toHaveLength(1)
   })
-  it('선택되면 체크 칸 없이 테두리만 두껍게·aria-checked=true', () => {
+  it('체크박스를 직접 눌러도(click 버블링) 두 번 토글되지 않는다', async () => {
+    mountCard()
+    await wrapper.find('[data-testid="row-select"]').trigger('click')
+    expect(wrapper.emitted('toggle-selection')).toBeUndefined()
+  })
+  it('체크박스에서 Enter로도 선택한다', async () => {
+    mountCard()
+    await wrapper.find('[data-testid="row-select"]').trigger('keydown', { key: 'Enter' })
+    expect(wrapper.emitted('toggle-selection')).toHaveLength(1)
+  })
+  it('선택되면 테두리만 두껍게·체크박스 checked·data-selected=true', () => {
     mountCard({ isSelected: true })
     const row = wrapper.find('.file-row')
-    expect(row.attributes('aria-checked')).toBe('true')
+    expect(wrapper.find('[data-testid="row-select"]').element.checked).toBe(true)
+    expect(row.attributes('data-selected')).toBe('true')
     expect(row.classes()).not.toContain('bg-tint')
     expect(row.classes()).toContain('file-row-selected')
     expect(row.classes()).toContain('border-ink')

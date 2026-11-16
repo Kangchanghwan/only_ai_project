@@ -1,10 +1,11 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { formatFileSize, getFileIcon, getFileType, formatUploadTime } from '../utils/fileUtils'
+import { formatFileSize, getFileType, formatUploadTime } from '../utils/fileUtils'
 import { r2Service } from '../services/r2Service'
 import FileQRCodeModal from './FileQRCodeModal.vue'
 import SenderLabel from './SenderLabel.vue'
+import FileTypeIcon from './icons/FileTypeIcon.vue'
 import { trackEvent } from '../utils/analytics'
 import { trackStoreFallback } from '../utils/storeFallback'
 import { useScopeAccent } from '../composables/useScopeAccent'
@@ -47,7 +48,6 @@ const canShare = ref(typeof navigator !== 'undefined' && !!navigator.share)
 const fileMetadata = computed(() => {
   const type = getFileType(props.file.name)
   return {
-    icon: getFileIcon(props.file.name),
     type: type,
     isImage: type === 'image',
     size: formatFileSize(props.file.size),
@@ -90,14 +90,6 @@ function handleThumbError() {
 function onRowClick(event) {
   if (event.target.closest && event.target.closest('button, a, input, textarea, select, [role="menu"], [role="dialog"]')) return
   emit('toggle-selection', props.file)
-}
-
-function onRowKeydown(event) {
-  if (event.target !== event.currentTarget) return
-  if (event.key === ' ' || event.key === 'Enter') {
-    event.preventDefault()
-    emit('toggle-selection', props.file)
-  }
 }
 
 function handleDownload(event) {
@@ -182,15 +174,21 @@ async function handleShare(event) {
 <template>
   <!-- 행 전체 클릭으로 복사하지 않는다. 받기(primary)와 더보기(복사/QR/공유/삭제)를 명시 버튼으로 둔다. -->
   <div
-    class="group file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200 cursor-pointer select-none"
+    class="group file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-none border bg-surface transition-colors duration-200 cursor-pointer select-none"
     :class="[isSelected ? 'border-ink file-row-selected' : 'border-border']"
-    role="checkbox"
-    :aria-checked="isSelected ? 'true' : 'false'"
-    tabindex="0"
-    :aria-label="t('file.selectFile', { name: file.name })"
+    :data-selected="isSelected ? 'true' : undefined"
     @click="onRowClick"
-    @keydown="onRowKeydown"
   >
+    <input
+      v-if="true"
+      type="checkbox"
+      class="sr-only"
+      :checked="isSelected"
+      :aria-label="t('file.selectFile', { name: file.name })"
+      data-testid="row-select"
+      @change="emit('toggle-selection', file)"
+      @keydown.enter.prevent="emit('toggle-selection', file)"
+    />
     <!-- 썸네일 칸: 선택돼도 그대로 둔다. 선택 표시는 행 테두리를 두껍게 하는 것뿐 -->
     <div class="relative w-8 h-8 sm:w-10 sm:h-10 shrink-0">
         <img
@@ -201,15 +199,15 @@ async function handleShare(event) {
           decoding="async"
           width="40"
           height="40"
-          class="w-8 h-8 sm:w-10 sm:h-10 rounded-md object-cover"
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-none object-cover"
           @error="handleThumbError"
         />
         <div
           v-else
-          class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center"
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-none flex items-center justify-center"
           :class="accentBgSoft10"
         >
-          <span class="text-xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
+          <FileTypeIcon :name="file.name" :mime="file.type" :title="fileMetadata.type" />
         </div>
     </div>
 
@@ -275,11 +273,11 @@ async function handleShare(event) {
           @click="handleActionsSheetBackdropClick"
           @keydown.esc="closeActionsSheet"
         >
-          <div class="w-full sm:w-80 bg-surface rounded-t-2xl sm:rounded-2xl p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
+          <div class="w-full sm:w-80 bg-surface rounded-none p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
             <p class="px-4 py-2 text-xs text-text-secondary truncate m-0">{{ file.name }}</p>
             <button
               v-if="fileMetadata.isImage"
-              class="sheet-copy w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
+              class="sheet-copy w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
               @click="handleSheetCopy"
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
@@ -287,28 +285,28 @@ async function handleShare(event) {
             </button>
             <button
               v-if="canShare"
-              class="sheet-share w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
+              class="sheet-share w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
               @click="handleSheetShare"
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
               <span class="text-sm font-medium">{{ t('file.share') }}</span>
             </button>
             <button
-              class="sheet-qr w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
+              class="sheet-qr w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
               @click="handleSheetQR"
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
               <span class="text-sm font-medium">{{ t('room.qrShareTitle') }}</span>
             </button>
             <button
-              class="sheet-download w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary"
+              class="sheet-download w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
               @click="handleSheetDownload"
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
               <span class="text-sm font-medium">{{ t('file.download') }}</span>
             </button>
             <button
-              class="sheet-delete w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-red-500/10 text-red-500"
+              class="sheet-delete w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-red-500/10 text-red-500"
               @click="handleSheetDelete"
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>

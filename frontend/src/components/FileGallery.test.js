@@ -149,3 +149,19 @@ describe('FileGallery 보내기 패널', () => {
     expect(w.findAll('[data-testid="send-panel"] .composer-probe')).toHaveLength(1)
   })
 })
+
+describe('FileGallery.vue - 지워진 파일의 선택은 남지 않는다', () => {
+  it('선택 → 목록에서 빠짐 → 같은 이름이 다시 들어오면 선택되지 않은 상태', async () => {
+    const wrapper = mount(FileGallery, {
+      props: { files: dupFiles, roomId: 'room-a', isLoading: false },
+      ...mountOptions
+    })
+    await wrapper.findAllComponents({ name: 'FileCard' })[0].find('.select-btn').trigger('click')
+    expect(wrapper.findComponent({ name: 'DownloadControls' }).props('selectedCount')).toBe(1)
+    await wrapper.setProps({ files: [dupFiles[1]] })
+    await wrapper.setProps({ files: dupFiles })
+    expect(wrapper.findComponent({ name: 'DownloadControls' }).props('selectedCount')).toBe(0)
+    const card = wrapper.findAllComponents({ name: 'FileCard' }).find(c => c.props('file').roomId === 'room-a')
+    expect(card.props('isSelected')).toBe(false)
+  })
+})

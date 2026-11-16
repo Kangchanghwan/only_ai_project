@@ -6,7 +6,7 @@
  * - 복사(남색 채움) + ⋯ 메뉴(삭제). 모든 본문은 텍스트 노드로만 렌더링한다 (v-html 사용 금지)
  * - 보관 중(10분) 남은 시간/보관 취소, 보관 안 된 내 텍스트 안내, 잠긴 텍스트 풀기는 기존 흐름 그대로
  */
-import { ref, computed, watch, onMounted, onUpdated, onUnmounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onUpdated, onUnmounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SenderLabel from './SenderLabel.vue'
 
@@ -81,10 +81,15 @@ const unlockPassword = ref('')
 const unlockBusy = ref(false)
 const unlockMessage = ref('')
 
-function openUnlock() {
+const unlockInput = ref(null)
+async function openUnlock() {
   unlocking.value = !unlocking.value
   unlockPassword.value = ''
   unlockMessage.value = ''
+  if (unlocking.value) {
+    await nextTick()
+    unlockInput.value?.focus()
+  }
 }
 
 function submitUnlock() {
@@ -119,13 +124,13 @@ function formatTime(timestamp) {
 <template>
   <!-- 접힌 행은 FileCard의 행과 같은 모양: 더보기를 눌러야 아래로 늘어난다 -->
   <article
-    class="text-row file-row flex items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
+    class="text-row file-row flex items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-none border border-border bg-surface transition-colors duration-200"
     :class="[expanded ? 'flex-wrap' : 'flex-nowrap', toggleable ? 'cursor-pointer' : '']"
     data-testid="text-entry"
     @click="onRowClick"
   >
     <div
-      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center flex-shrink-0 bg-tint text-ink"
+      class="w-8 h-8 sm:w-10 sm:h-10 rounded-none flex items-center justify-center flex-shrink-0 bg-tint text-ink"
       data-testid="text-tag"
     ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 12H3"/><path d="M17 18H3"/><path d="M21 6H3"/></svg><span class="sr-only">{{ t('room.textTab') }}</span></div>
 
@@ -232,8 +237,12 @@ function formatTime(timestamp) {
     <form v-if="unlocking && text.content == null" class="basis-full flex items-center gap-2" data-testid="text-unlock-form" @submit.prevent="submitUnlock">
       <input
         v-model="unlockPassword"
+        ref="unlockInput"
         type="password"
         autocomplete="off"
+        data-1p-ignore
+        data-lpignore="true"
+        data-bwignore
         class="flex-1 min-w-0 min-h-[44px] rounded-none border border-border bg-background text-text-primary text-sm px-4 focus-visible:outline-2 focus-visible:outline-ink"
         :placeholder="t('text.passwordPlaceholder')"
         :aria-label="t('text.passwordPlaceholder')"

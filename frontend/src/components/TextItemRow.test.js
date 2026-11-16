@@ -138,6 +138,21 @@ describe('TextItemRow 더보기', () => {
   })
 })
 
+describe('TextItemRow 잠금 풀기 포커스', () => {
+  it('풀기를 누르면 비밀번호 칸에 포커스가 가고 비밀번호 관리자 무시 속성이 있다', async () => {
+    const w = mount(TextItemRow, { props: { text: { id: 'L2', content: null, locked: true, salt: 's', timestamp: 0, roomId: 'r' } }, attachTo: document.body, global: { plugins: [i18n], provide } })
+    await w.find('[data-testid="text-unlock-open"]').trigger('click')
+    await w.vm.$nextTick()
+    const input = w.find('[data-testid="text-unlock-password"]')
+    expect(document.activeElement).toBe(input.element)
+    expect(input.attributes('data-1p-ignore')).toBeDefined()
+    expect(input.attributes('data-lpignore')).toBe('true')
+    expect(input.attributes('data-bwignore')).toBeDefined()
+    expect(w.find('[role="checkbox"]').exists()).toBe(false)
+    w.unmount()
+  })
+})
+
 describe('TextItemRow 접힌 행은 파일 행과 같은 모양', () => {
   const fileRowClasses = () => {
     const src = readFileSync('src/components/FileCard.vue', 'utf8')

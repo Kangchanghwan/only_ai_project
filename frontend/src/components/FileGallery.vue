@@ -124,6 +124,19 @@ const selectedFilesArray = computed(() => {
 // 선택된 파일 개수
 const selectedCount = computed(() => selectedFilesArray.value.length)
 
+// 목록에서 사라진 파일의 선택은 버린다(같은 이름이 다시 와도 선택된 채로 나타나지 않게)
+watch(selectableFiles, (list) => {
+  if (selectedFiles.value.size === 0) return
+  const alive = new Set(list.map(fileKey))
+  let changed = false
+  const next = new Set()
+  for (const k of selectedFiles.value) {
+    if (alive.has(k)) next.add(k)
+    else changed = true
+  }
+  if (changed) selectedFiles.value = next
+})
+
 // 범위(탭)를 바꾸면 선택을 비운다
 watch(() => props.scope, () => {
   selectedFiles.value = new Set()
@@ -289,7 +302,7 @@ onUnmounted(() => {
     <div v-if="hasMore && !isLoading" class="flex justify-center mt-8">
       <button
         @click="$emit('load-more')"
-        class="min-h-[44px] px-6 py-3 bg-primary text-white font-medium rounded-lg transition-opacity duration-200 hover:opacity-90"
+        class="min-h-[44px] px-6 py-3 bg-primary text-white font-medium rounded-none transition-opacity duration-200 hover:opacity-90"
       >
         {{ $t('fileGallery.loadMore') }}
       </button>
