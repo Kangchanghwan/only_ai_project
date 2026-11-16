@@ -109,6 +109,8 @@ body.dark {
   #app {
     width: 100%;
     min-height: 100vh;
+    /* 화면 끝까지 늘린 구분선(100vw)이 가로 스크롤을 만들지 않게 */
+    overflow-x: clip;
   }
 
   /* Simple scrollbar styling - 테마 적응형 */
@@ -129,4 +131,16 @@ body.dark {
   ::-webkit-scrollbar-thumb:hover {
     background-color: var(--color-border);
   }
+}
+
+/* 코어테크넷식 가로선: 내용 폭은 그대로 두고 구분선만 화면 끝까지 늘린다 */
+@layer components {
+  .bleed-line-b, .bleed-line-t, .bleed-line-t-ink { isolation: isolate; }
+  .bleed-line-b::after, .bleed-line-t::before, .bleed-line-t-ink::before {
+    content: ''; position: absolute; z-index: -1; left: 50%; width: 100vw;
+    transform: translateX(-50%); pointer-events: none;
+  }
+  .bleed-line-b::after { bottom: -1px; height: 1px; background: var(--color-border); }
+  .bleed-line-t::before { top: 0; height: 1px; background: var(--color-border); }
+  .bleed-line-t-ink::before { top: 0; height: 2px; background: var(--color-ink); }
 }

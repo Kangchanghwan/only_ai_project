@@ -143,7 +143,7 @@ const shortcutName = computed(() => {
     <div class="flex items-center justify-between gap-2 flex-wrap min-w-0">
       <div class="flex items-center gap-2 min-w-0" :class="wide ? 'w-full' : ''">
         <p class="text-sm text-text-secondary m-0 min-w-0" data-testid="other-count" aria-live="polite">
-          <span class="font-semibold text-text-primary">{{ t('room.otherDevices', { count: otherCount }) }}</span>
+          <span class="text-[17px] font-extrabold tracking-[-0.02em] text-ink">{{ t('room.otherDevices', { count: otherCount }) }}</span>
           <span v-if="otherCount === 0"> · {{ t('room.waiting') }}</span>
         </p>
         <ConnectedDevices

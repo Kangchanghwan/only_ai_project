@@ -78,7 +78,7 @@ function pick(roomId) {
 <template>
   <div
     ref="root"
-    class="relative flex items-stretch gap-1 mb-3 border-b border-border"
+    class="bleed-line-b relative flex items-stretch gap-1 mb-3 border-b border-border"
     role="tablist"
     :aria-label="t('shareScope.label')"
   >

@@ -66,9 +66,8 @@ const { currentTheme, toggleTheme } = useTheme()
 }
 
 .theme-toggle-button:hover {
-  background: var(--color-surface);
-  border-color: var(--color-primary);
-  transform: translateY(-1px);
+  background: var(--color-tint);
+  border-color: var(--color-ink);
 }
 
 .theme-toggle-button:active {
@@ -82,6 +81,6 @@ const { currentTheme, toggleTheme } = useTheme()
 }
 
 .theme-toggle-button:hover svg {
-  transform: rotate(20deg);
+  transform: none;
 }
 </style>

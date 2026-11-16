@@ -141,7 +141,7 @@ function formatTime(timestamp) {
   <div class="min-w-0">
     <!-- 직접 입력 -->
     <form class="flex flex-col gap-2 mb-6" data-testid="text-compose" @submit.prevent="submit">
-      <label class="text-sm font-semibold text-text-primary" for="text-share-input">{{ t('text.share') }}</label>
+      <label class="text-[17px] font-extrabold tracking-[-0.02em] text-ink" for="text-share-input">{{ t('text.share') }}</label>
       <textarea
         id="text-share-input"
         ref="inputRef"
@@ -204,7 +204,7 @@ function formatTime(timestamp) {
 
     <!-- 받은 텍스트 -->
     <div class="flex items-center justify-between mb-3 gap-2">
-      <h2 class="text-lg font-semibold text-text-primary m-0">
+      <h2 class="text-[17px] font-extrabold tracking-[-0.02em] text-ink m-0">
         {{ t('text.receivedText') }}
         <span v-if="texts.length > 0" class="text-sm font-normal text-text-secondary" data-testid="text-count">({{ texts.length }})</span>
       </h2>

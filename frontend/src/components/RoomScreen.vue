@@ -359,8 +359,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       </div>
 
       <!-- 보관/사용 안내 (details 본문은 DOM에 그대로 있어 크롤링 가능) -->
-      <details class="group mt-6 bg-transparent border-0 border-t-2 border-ink rounded-none pt-4 text-sm" data-testid="usage-notes">
-        <summary class="cursor-pointer min-h-[44px] flex items-center justify-between font-semibold list-none [&::-webkit-details-marker]:hidden"><span class="font-extrabold">{{ t('guide.title') }}</span><svg class="w-5 h-5 text-ink transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <details class="bleed-line-t-ink relative group mt-6 bg-transparent border-0 rounded-none pt-4 text-sm" data-testid="usage-notes">
+        <summary class="cursor-pointer min-h-[44px] flex items-center justify-between font-semibold list-none [&::-webkit-details-marker]:hidden"><span class="text-[17px] font-extrabold tracking-[-0.02em] text-ink">{{ t('guide.title') }}</span><svg class="w-5 h-5 text-ink transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
         <ul class="mt-2 flex flex-col list-none p-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
           <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
           <li v-else>{{ t('guide.retention') }}</li>
@@ -372,7 +372,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       </details>
 
       <!-- 작업 영역과 분리된 서비스 소개(SEO) 영역 -->
-      <div class="landing-separator mt-12 pt-8 border-t border-border" data-testid="landing-separator">
+      <div class="bleed-line-t relative landing-separator mt-12 pt-8" data-testid="landing-separator">
         <LandingContent />
       </div>
 
