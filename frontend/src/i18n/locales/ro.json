@@ -412,6 +412,21 @@
     "downloadHint": "Descarcă fișierele selectate într-un ZIP (peste 200 MB separat)",
     "qrCodeHint": "Generează coduri QR pentru fișierele selectate"
   },
+  "pair": {
+    "button": "Conectează într-o cameră",
+    "buttonShort": "Conectare",
+    "paired": "Aceeași cameră",
+    "connecting": "Se conectează…",
+    "openWith": "Deschide o cameră privată cu {name}",
+    "openRoom": "Mergi la camera ta cu {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Anulează",
+    "checking": "Se verifică",
+    "peerChecking": "Se așteaptă celălalt",
+    "request": {
+      "title": "Cerere de conectare la cameră"
+    }
+  },
   "group": {
     "create": "Creează o cameră de grup",
     "createShort": "Cameră",

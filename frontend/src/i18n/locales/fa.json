@@ -412,6 +412,21 @@
     "downloadHint": "دانلود فایل‌های انتخاب‌شده در یک ZIP (بزرگ‌تر از ۲۰۰ مگابایت جداگانه)",
     "qrCodeHint": "ساخت کد QR برای فایل‌های انتخاب‌شده"
   },
+  "pair": {
+    "button": "اتصال در یک اتاق",
+    "buttonShort": "اتصال",
+    "paired": "همان اتاق",
+    "connecting": "در حال اتصال…",
+    "openWith": "باز کردن اتاق خصوصی با {name}",
+    "openRoom": "رفتن به اتاق خود با {name}",
+    "pendingSeconds": "{n} ث",
+    "cancel": "لغو",
+    "checking": "در حال بررسی",
+    "peerChecking": "در انتظار طرف مقابل",
+    "request": {
+      "title": "درخواست اتصال به اتاق"
+    }
+  },
   "group": {
     "create": "ساخت اتاق گروهی",
     "createShort": "اتاق",

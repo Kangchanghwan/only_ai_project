@@ -412,6 +412,21 @@
     "downloadHint": "Tải các tệp đã chọn trong một ZIP (trên 200MB tải riêng)",
     "qrCodeHint": "Tạo mã QR cho các tệp đã chọn"
   },
+  "pair": {
+    "button": "Kết nối trong phòng",
+    "buttonShort": "Kết nối",
+    "paired": "Cùng phòng",
+    "connecting": "Đang kết nối…",
+    "openWith": "Mở phòng riêng với {name}",
+    "openRoom": "Vào phòng của bạn với {name}",
+    "pendingSeconds": "{n} giây",
+    "cancel": "Hủy",
+    "checking": "Đang kiểm tra",
+    "peerChecking": "Đang chờ bên kia",
+    "request": {
+      "title": "Yêu cầu kết nối phòng"
+    }
+  },
   "group": {
     "create": "Tạo phòng nhóm",
     "createShort": "Phòng",

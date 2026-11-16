@@ -188,28 +188,28 @@ function onKeydown(event) {
       </form>
 
       <!-- 도구 줄: 파일 선택 · 붙여넣기 · 잠금 · 공유 (모바일은 두 줄) -->
-      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 p-2 border-t border-border" data-testid="send-toolbar">
+      <div class="flex flex-nowrap sm:flex-wrap items-center gap-1.5 sm:gap-2 p-2 border-t border-border" data-testid="send-toolbar">
         <input ref="fileInputRef" type="file" multiple class="sr-only" tabindex="-1" :aria-label="t('file.inputLabel')" data-testid="file-input" @change="handleFileSelect" @click.stop />
         <button
           type="button"
-          class="order-1 flex-1 sm:flex-none min-h-[44px] px-2 sm:px-4 rounded-none text-on-accent font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
+          class="order-1 min-w-0 flex-1 sm:flex-none min-h-[44px] px-2 sm:px-4 rounded-none text-on-accent font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
           :class="accentBg"
           data-testid="choose-files"
           @click="openFileDialog"
         >
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>{{ t('file.chooseFiles') }}
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span class="truncate min-w-0">{{ t('file.chooseFiles') }}</span>
         </button>
         <button
           type="submit"
           form="text-compose-form"
-          class="order-4 sm:ml-auto min-h-[44px] px-3 sm:px-6 rounded-none bg-ink text-on-ink font-extrabold text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+          class="order-4 shrink-0 sm:ml-auto min-h-[44px] px-3 sm:px-6 rounded-none bg-ink text-on-ink font-extrabold text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
           :disabled="composeDisabled || !draft.trim() || sending"
           data-testid="text-share-button"
         >{{ t('file.share') }}</button>
         <!-- 모바일 줄바꿈: 첫 줄은 파일 선택 + 공유 -->
-        <PasteSection class="order-2" :scope="scope" @paste-content="emit('paste-content')" />
-        <LockChip v-if="!isPrivate" :scope="scope" class="order-3" />
-        <p v-else class="order-3 text-xs text-scope-private m-0 min-w-[44px] min-h-[44px] sm:min-h-0 inline-flex items-center justify-center sm:justify-start" :title="t('pair.uploadHint')" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span class="sr-only sm:not-sr-only">{{ t('pair.uploadHint') }}</span></p>
+        <PasteSection class="order-2 shrink-0" :scope="scope" @paste-content="emit('paste-content')" />
+        <LockChip v-if="!isPrivate" :scope="scope" class="order-3 shrink-0" />
+        <p v-else class="order-3 shrink-0 text-xs text-scope-private m-0 min-w-[44px] min-h-[44px] sm:min-h-0 inline-flex items-center justify-center sm:justify-start" :title="t('pair.uploadHint')" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span class="sr-only sm:not-sr-only">{{ t('pair.uploadHint') }}</span></p>
       </div>
 
       <!-- 파일을 끌어 올려 둘 때 -->

@@ -412,6 +412,21 @@
     "downloadHint": "Ausgewählte Dateien als ein ZIP herunterladen (über 200 MB einzeln)",
     "qrCodeHint": "QR-Codes für ausgewählte Dateien erstellen"
   },
+  "pair": {
+    "button": "In einem Raum verbinden",
+    "buttonShort": "Verbinden",
+    "paired": "Gleicher Raum",
+    "connecting": "Verbinde…",
+    "openWith": "Privaten Raum mit {name} öffnen",
+    "openRoom": "Zum Raum mit {name} wechseln",
+    "pendingSeconds": "{n} s",
+    "cancel": "Abbrechen",
+    "checking": "Prüfung",
+    "peerChecking": "Warten auf Gegenseite",
+    "request": {
+      "title": "Raumverbindungsanfrage"
+    }
+  },
   "group": {
     "create": "Gruppenraum erstellen",
     "createShort": "Raum",

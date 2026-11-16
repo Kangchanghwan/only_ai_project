@@ -489,6 +489,21 @@
     "roomRetention": "このルームのファイルは最長で約1日保管されます。すべての端末が退出してもすぐには削除されません。クリーンアップは定期的に実行されるため、正確な時刻は保証されません。テキストは10分間だけ保管されます。",
     "roomVisibility": "このルームに入っている端末だけが見られます。"
   },
+  "pair": {
+    "button": "ルームで接続",
+    "buttonShort": "接続",
+    "paired": "同じルーム",
+    "connecting": "接続中…",
+    "openWith": "{name}と二人用のルームを開く",
+    "openRoom": "{name}とのルームへ移動",
+    "pendingSeconds": "{n}秒",
+    "cancel": "キャンセル",
+    "checking": "確認中",
+    "peerChecking": "相手を待機中",
+    "request": {
+      "title": "ルーム接続のリクエスト"
+    }
+  },
   "group": {
     "create": "グループルームを作る",
     "createShort": "ルーム",

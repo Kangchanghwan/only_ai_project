@@ -412,6 +412,21 @@
     "downloadHint": "Geselecteerde bestanden als één ZIP downloaden (boven 200 MB apart)",
     "qrCodeHint": "QR-codes maken voor geselecteerde bestanden"
   },
+  "pair": {
+    "button": "Verbinden in een kamer",
+    "buttonShort": "Verbind",
+    "paired": "Dezelfde kamer",
+    "connecting": "Verbinden…",
+    "openWith": "Privékamer met {name} openen",
+    "openRoom": "Naar je kamer met {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Annuleren",
+    "checking": "Controleren",
+    "peerChecking": "Wachten op de ander",
+    "request": {
+      "title": "Verzoek voor kamerverbinding"
+    }
+  },
   "group": {
     "create": "Groepsruimte maken",
     "createShort": "Ruimte",

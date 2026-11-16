@@ -412,6 +412,21 @@
     "downloadHint": "Télécharger les fichiers sélectionnés dans un ZIP (plus de 200 Mo à part)",
     "qrCodeHint": "Générer des codes QR pour les fichiers sélectionnés"
   },
+  "pair": {
+    "button": "Connecter dans un salon",
+    "buttonShort": "Connecter",
+    "paired": "Même salon",
+    "connecting": "Connexion…",
+    "openWith": "Ouvrir un salon privé avec {name}",
+    "openRoom": "Aller à votre salon avec {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Annuler",
+    "checking": "Vérification",
+    "peerChecking": "En attente de l’autre",
+    "request": {
+      "title": "Demande de connexion au salon"
+    }
+  },
   "group": {
     "create": "Créer une salle de groupe",
     "createShort": "Salle",

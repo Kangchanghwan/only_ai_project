@@ -33,7 +33,9 @@ describe('통합 보내기 상자', () => {
     expect(choose.classes()).toEqual(expect.arrayContaining(['font-extrabold', 'min-h-[44px]', 'text-on-accent', 'whitespace-nowrap']))
     expect(choose.classes().join(' ')).toMatch(/bg-/)
     const tb = w.find('[data-testid="send-toolbar"]')
-    expect(tb.classes()).toEqual(expect.arrayContaining(['flex', 'flex-wrap', 'p-2', 'border-t', 'border-border']))
+    expect(tb.classes()).toEqual(expect.arrayContaining(['flex', 'flex-nowrap', 'sm:flex-wrap', 'p-2', 'border-t', 'border-border']))
+    expect(choose.classes()).toEqual(expect.arrayContaining(['min-w-0']))
+    expect(w.find('[data-testid="text-share-button"]').classes()).toContain('shrink-0')
     const order = (el) => el.element.className.match(/(?<![:\w-])order-(\d)/)?.[1]
     // 모든 폭에서 한 줄: 파일 선택, 붙여넣기, 잠금, 공유(오른쪽 끝). 좁은 화면에서는 붙여넣기·잠금이 아이콘만
     expect(w.find('[data-testid="toolbar-break"]').exists()).toBe(false)

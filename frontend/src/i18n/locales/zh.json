@@ -412,6 +412,21 @@
     "downloadHint": "将所选文件打包为一个 ZIP 下载(超过 200MB 的文件单独下载)",
     "qrCodeHint": "为所选文件生成二维码"
   },
+  "pair": {
+    "button": "在房间中连接",
+    "buttonShort": "连接",
+    "paired": "同一房间",
+    "connecting": "连接中…",
+    "openWith": "与 {name} 打开私密房间",
+    "openRoom": "前往与 {name} 的房间",
+    "pendingSeconds": "{n} 秒",
+    "cancel": "取消",
+    "checking": "检查中",
+    "peerChecking": "等待对方",
+    "request": {
+      "title": "房间连接请求"
+    }
+  },
   "group": {
     "create": "创建群组房间",
     "createShort": "房间",

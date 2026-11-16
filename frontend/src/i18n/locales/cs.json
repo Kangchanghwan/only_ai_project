@@ -412,6 +412,21 @@
     "downloadHint": "Stáhnout vybrané soubory v jednom ZIP (nad 200 MB zvlášť)",
     "qrCodeHint": "Vytvořit QR kódy pro vybrané soubory"
   },
+  "pair": {
+    "button": "Připojit v místnosti",
+    "buttonShort": "Připojit",
+    "paired": "Stejná místnost",
+    "connecting": "Připojování…",
+    "openWith": "Otevřít soukromou místnost s {name}",
+    "openRoom": "Přejít do místnosti s {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Zrušit",
+    "checking": "Kontrola",
+    "peerChecking": "Čekání na druhé zařízení",
+    "request": {
+      "title": "Žádost o připojení do místnosti"
+    }
+  },
   "group": {
     "create": "Vytvořit skupinovou místnost",
     "createShort": "Místnost",

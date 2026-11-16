@@ -412,6 +412,21 @@
     "downloadHint": "Seçili dosyaları tek ZIP olarak indir (200 MB üstü ayrı)",
     "qrCodeHint": "Seçili dosyalar için QR kod oluştur"
   },
+  "pair": {
+    "button": "Odada bağlan",
+    "buttonShort": "Bağlan",
+    "paired": "Aynı oda",
+    "connecting": "Bağlanıyor…",
+    "openWith": "{name} ile özel oda aç",
+    "openRoom": "{name} ile odana git",
+    "pendingSeconds": "{n} sn",
+    "cancel": "İptal",
+    "checking": "Kontrol ediliyor",
+    "peerChecking": "Karşı taraf bekleniyor",
+    "request": {
+      "title": "Oda bağlantı isteği"
+    }
+  },
   "group": {
     "create": "Grup odası oluştur",
     "createShort": "Oda",

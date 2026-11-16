@@ -412,6 +412,21 @@
     "downloadHint": "Pobierz wybrane pliki w jednym ZIP (powyżej 200 MB osobno)",
     "qrCodeHint": "Utwórz kody QR dla zaznaczonych plików"
   },
+  "pair": {
+    "button": "Połącz w pokoju",
+    "buttonShort": "Połącz",
+    "paired": "Ten sam pokój",
+    "connecting": "Łączenie…",
+    "openWith": "Otwórz prywatny pokój z {name}",
+    "openRoom": "Przejdź do pokoju z {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Anuluj",
+    "checking": "Sprawdzanie",
+    "peerChecking": "Czekanie na drugą stronę",
+    "request": {
+      "title": "Prośba o połączenie w pokoju"
+    }
+  },
   "group": {
     "create": "Utwórz pokój grupowy",
     "createShort": "Pokój",

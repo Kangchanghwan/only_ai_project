@@ -412,6 +412,21 @@
     "downloadHint": "تنزيل الملفات المحددة في ملف ZIP واحد (الأكبر من 200 ميغابايت بشكل منفصل)",
     "qrCodeHint": "إنشاء رموز QR للملفات المحددة"
   },
+  "pair": {
+    "button": "الاتصال في غرفة",
+    "buttonShort": "اتصال",
+    "paired": "الغرفة نفسها",
+    "connecting": "جارٍ الاتصال…",
+    "openWith": "فتح غرفة خاصة مع {name}",
+    "openRoom": "الانتقال إلى غرفتك مع {name}",
+    "pendingSeconds": "{n} ث",
+    "cancel": "إلغاء",
+    "checking": "جارٍ التحقق",
+    "peerChecking": "بانتظار الطرف الآخر",
+    "request": {
+      "title": "طلب الاتصال بغرفة"
+    }
+  },
   "group": {
     "create": "إنشاء غرفة جماعية",
     "createShort": "غرفة",

@@ -412,6 +412,21 @@
     "downloadHint": "Unduh file terpilih dalam satu ZIP (di atas 200MB terpisah)",
     "qrCodeHint": "Buat kode QR untuk file yang dipilih"
   },
+  "pair": {
+    "button": "Hubungkan dalam ruang",
+    "buttonShort": "Hubungkan",
+    "paired": "Ruang yang sama",
+    "connecting": "Menghubungkan…",
+    "openWith": "Buka ruang pribadi dengan {name}",
+    "openRoom": "Buka ruang Anda dengan {name}",
+    "pendingSeconds": "{n} dtk",
+    "cancel": "Batal",
+    "checking": "Memeriksa",
+    "peerChecking": "Menunggu lawan",
+    "request": {
+      "title": "Permintaan koneksi ruang"
+    }
+  },
   "group": {
     "create": "Buat ruang grup",
     "createShort": "Ruang",

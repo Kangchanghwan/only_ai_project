@@ -412,6 +412,21 @@
     "downloadHint": "Ladda ner valda filer som en ZIP (över 200 MB separat)",
     "qrCodeHint": "Skapa QR-koder för markerade filer"
   },
+  "pair": {
+    "button": "Anslut i ett rum",
+    "buttonShort": "Anslut",
+    "paired": "Samma rum",
+    "connecting": "Ansluter…",
+    "openWith": "Öppna ett privat rum med {name}",
+    "openRoom": "Gå till ditt rum med {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Avbryt",
+    "checking": "Kontrollerar",
+    "peerChecking": "Väntar på andra",
+    "request": {
+      "title": "Begäran om rumsanslutning"
+    }
+  },
   "group": {
     "create": "Skapa ett gruppum",
     "createShort": "Rum",

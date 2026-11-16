@@ -412,6 +412,21 @@
     "downloadHint": "A kijelölt fájlok letöltése egy ZIP-ben (200 MB felett külön)",
     "qrCodeHint": "QR-kódok létrehozása a kijelölt fájlokhoz"
   },
+  "pair": {
+    "button": "Csatlakozás szobában",
+    "buttonShort": "Csatlakozás",
+    "paired": "Ugyanaz a szoba",
+    "connecting": "Csatlakozás…",
+    "openWith": "Privát szoba megnyitása vele: {name}",
+    "openRoom": "Ugrás a közös szobához: {name}",
+    "pendingSeconds": "{n} mp",
+    "cancel": "Mégse",
+    "checking": "Ellenőrzés",
+    "peerChecking": "Várakozás a másik félre",
+    "request": {
+      "title": "Szobacsatlakozási kérés"
+    }
+  },
   "group": {
     "create": "Csoportszoba létrehozása",
     "createShort": "Szoba",
