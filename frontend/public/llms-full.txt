@@ -1690,6 +1690,87 @@ Treat it like the file itself. Anyone who has the QR code or its link can downlo
 
 ---
 
+Source: https://www.clipboardapp.org/en/guide/end-to-end-encrypted-online-clipboard.html
+
+# A secure online clipboard: end-to-end encryption inside a room
+
+As of November 2026, Clipboard Share encrypts the files and text you share inside a room on your own device before they are uploaded, file names included, and the room key never goes to the server. Making a room takes 3 steps (＋ Room, Create a new room, Invite), you invite your phone or another computer with 4 pictures, a QR code or a link, and each file can be up to 5 GB. There is no sign-up and no app, room files are kept for up to about 1 day, and room text for 10 minutes.
+
+This page is for people searching for a secure online clipboard or an end-to-end encrypted way to move files between their own devices. It explains what is encrypted, what the server can still see, and when another tool is the better choice.
+
+## What a room protects, and what it does not
+- **Encrypted on your device:** file contents, file names and text shared inside a room. The server stores only ciphertext.
+- **Never sent to the server:** the room key (a 32-byte secret kept in each browser that joined the room).
+- **Still visible to the server:** file size, send time, device name tags (the animal name, device and browser), which device is in which room, and IP addresses.
+- **Not encrypted by default:** the Same network and Everyone tabs. There, files and text are encrypted only if you turn on **Lock with a password**.
+
+## How to share in an encrypted room
+- **Open the site on both devices.** Open https://www.clipboardapp.org/en/ in a browser on each device. There is no account and nothing to install.
+- **Make a room.** Tap **＋ Room** in the tab row and choose **Create a new room**. If the other device already shows up in your device list, you can tap **Connect** next to it instead and check that both screens show the same 4 pictures.
+- **Invite the other device.** In the room, tap **Invite** and pick pictures, a QR code or a link. With pictures, the other device taps **＋ Room**, then **Join with pictures**, taps the 4 pictures in order, and gets in after you tap **Let in**.
+- **Share inside the room.** Pick files or paste text while the room tab is selected. Files and text are encrypted on the sending device with the room key before they are uploaded, file names included.
+
+Devices on the same Wi-Fi still show up in the **Same network** tab automatically, with no code to type. A room is what you use when the other device is on a different network or mobile data, or when you want a space that only your devices can see.
+
+## How the room key gets to the other device
+- **From the device list:** the two browsers agree on a one-time key (ECDH P-256) to wrap the room key, and both screens show 4 pictures derived from it. If the pictures differ, decline.
+- **QR code or link:** the key is in the part of the address after `#`, which browsers do not send to the server. The app removes it from the address bar before analytics load. The invite works for 10 minutes.
+- **Pictures:** the 4 pictures work as a short password for SPAKE2 ([RFC 9382](https://www.rfc-editor.org/rfc/rfc9382), P-256), a protocol designed so that whoever relays the messages cannot learn the key from them. The server only learns the first 2 pictures, which it uses to find the room, and the new device still waits until you tap **Let in**. The code is tested against the RFC's published test vectors.
+
+The source code is public on [GitHub](https://github.com/Kangchanghwan/only_ai_project) under the MIT license.
+
+## Limits you should know
+- This is a web app, so you are trusting the code the site serves each time you open it. An installed app with end-to-end encryption does not have that dependency in the same way.
+- Anyone who has a room QR code or link within its 10 minutes can ask to join, and a confirmation appears on their side. Show it only to people you trust. There is no way yet to remove a device that has joined.
+- Room files are deleted about 1 day after upload and room text after 10 minutes. This is not storage.
+- If you clear browser data, that device loses the room key and cannot get back in.
+
+## When another tool fits better
+
+Checked on the tools' own pages on November 17, 2026.
+
+### Wormhole
+
+Better when you want to send one link to someone far away. Its [security page](https://wormhole.app/security) says files are encrypted in the browser with AES-GCM before they leave it, and the key is placed after the # in the share link so it is not sent to its servers.
+
+### LocalSend
+
+Better when you can install an app on every device and stay on one local network. Its [site](https://localsend.org/) describes a free, open source app for Windows, macOS, Linux, Android and iOS that works without the internet and needs no account.
+
+### Clipboard Share
+
+Fits when you cannot or do not want to install anything (a work PC, a shared computer), when you move text as well as files, and when your devices are on different networks but you still want only them in the room.
+
+## Questions
+
+### Can the server read my files?
+
+Not what you share inside a room. Files and text there are encrypted on your device, so the server only holds ciphertext, and the room key never goes to the server. In the Same network and Everyone tabs, files and text are encrypted only when you turn on Lock with a password. The server still sees file size, send time, device name tags, which device is in which room, and IP addresses.
+
+### Is everything end-to-end encrypted?
+
+No. End-to-end encryption applies inside a room and to files you lock with a password. The Same network and Everyone tabs send files and text as they are unless the password lock is on, and anyone on the same network, or anyone at all in the Everyone tab, can see them.
+
+### How does the room key reach my other device?
+
+It never passes through the server in readable form. From the device list, the two browsers agree on a one-time key (ECDH P-256) and you compare 4 pictures on both screens. With a QR code or link, the key sits after the # in the address, which browsers do not send to the server, and the app removes it from the address bar before analytics load. With pictures, the 4 pictures act as a password for SPAKE2 (RFC 9382, P-256), and the server only learns the first 2 pictures, which it uses to find the room.
+
+### Do I need an account or an app?
+
+No. Both devices open the same site in a browser. Devices on the same Wi-Fi are grouped automatically; rooms are for devices on another network or when you want a space only your devices can see.
+
+### How long are files and text kept?
+
+Room files are kept for up to about 1 day and room text for 10 minutes. Each file can be up to 5 GB.
+
+### What happens if I clear my browser data?
+
+The room key is stored only in that browser, so clearing site data removes it and that device cannot get back into the room. Make a new room and invite the devices again.
+
+[Try it now](https://www.clipboardapp.org/en/)
+
+---
+
 Source: https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html
 
 # ChatGPT·Claude에게 '폰으로 보내 줘' 하기
