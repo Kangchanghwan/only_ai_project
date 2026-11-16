@@ -5,7 +5,7 @@
  * - 복사(남색 채움) + ⋯ 메뉴(삭제). 모든 본문은 텍스트 노드로만 렌더링한다 (v-html 사용 금지)
  * - 보관 중(10분) 남은 시간/보관 취소, 보관 안 된 내 텍스트 안내, 잠긴 텍스트 풀기는 기존 흐름 그대로
  */
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SenderLabel from './SenderLabel.vue'
 
@@ -15,10 +15,13 @@ const props = defineProps({
   text: { type: Object, required: true }
 })
 
-const emit = defineEmits(['remove-text', 'cancel-text', 'unlock-text', 'send-as-file', 'copy-text'])
+const emit = defineEmits(['remove-text', 'cancel-text', 'unlock-text', 'send-as-file', 'copy-text', 'copy-line'])
 
 const openMenu = ref(false)
 const expanded = ref(false)
+const lines = computed(() => (typeof props.text.content === 'string' ? props.text.content.split(/\r\n|\r|\n/) : []))
+const lineCount = computed(() => lines.value.length)
+const isMultiline = computed(() => lineCount.value > 2)
 
 function expiresLabel(text) {
   const minutes = Math.min(10, Math.ceil((text.remainingMs || 0) / 60000))
@@ -77,13 +80,50 @@ function formatTime(timestamp) {
     ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 12H3"/><path d="M17 18H3"/><path d="M21 6H3"/></svg><span class="sr-only">{{ t('room.textTab') }}</span></span>
 
     <div class="flex-1 min-w-[8rem] sm:min-w-0">
-      <p
-        v-if="text.content != null"
-        class="m-0 text-sm text-text-primary whitespace-pre-wrap break-words cursor-pointer"
-        :class="expanded ? '' : 'line-clamp-2'"
-        data-testid="text-body"
-        @click="expanded = !expanded"
-      >{{ text.content }}</p>
+      <template v-if="text.content != null">
+        <div
+          v-if="expanded"
+          class="border border-border bg-background max-h-[50vh] overflow-y-auto"
+          data-testid="text-lines"
+        >
+          <div
+            v-for="(line, i) in lines"
+            :key="i"
+            class="group flex items-start gap-1 px-1"
+            data-testid="text-line"
+          >
+            <span class="shrink-0 w-10 pt-1.5 pr-2 text-right text-xs text-text-secondary tabular-nums select-none" aria-hidden="true" data-testid="text-line-no">{{ i + 1 }}</span>
+            <span class="flex-1 min-w-0 py-1.5 text-sm text-text-primary whitespace-pre-wrap break-words select-text" data-testid="text-line-body">{{ line }}</span>
+            <button
+              v-if="line.trim() !== ''"
+              type="button"
+              class="shrink-0 w-9 h-9 inline-flex items-center justify-center rounded-none bg-transparent border-0 text-ink hover:bg-tint cursor-pointer opacity-100 [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 focus-visible:!opacity-100"
+              :aria-label="t('room.copy')"
+              :title="t('room.copy')"
+              data-testid="text-line-copy"
+              @click.stop="emit('copy-line', line)"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+            <span v-else class="shrink-0 w-9" aria-hidden="true"></span>
+          </div>
+        </div>
+        <p
+          v-else
+          class="m-0 text-sm text-text-primary whitespace-pre-wrap break-words cursor-pointer line-clamp-2"
+          data-testid="text-body"
+          @click="expanded = true"
+        >{{ text.content }}</p>
+        <button
+          v-if="isMultiline || expanded"
+          type="button"
+          class="mt-1 min-h-[44px] sm:min-h-[32px] px-0 inline-flex items-center gap-1 bg-transparent border-0 text-xs font-bold text-ink cursor-pointer whitespace-nowrap"
+          :aria-expanded="expanded"
+          :data-testid="expanded ? 'text-collapse' : 'text-expand'"
+          @click="expanded = !expanded"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path :d="expanded ? 'm18 15-6-6-6 6' : 'm6 9 6 6 6-6'"/></svg>
+          <span>{{ expanded ? t('text.collapse') : t('text.expandLines', { n: lineCount }) }}</span>
+        </button>
+      </template>
       <!-- 잠긴 텍스트: 이 범위 비밀번호를 확인한 기기에서만 내용이 보인다 -->
       <div v-else data-testid="text-locked">
         <p class="m-0 text-sm text-text-secondary inline-flex items-center gap-1">

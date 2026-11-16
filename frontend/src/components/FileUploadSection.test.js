@@ -42,9 +42,9 @@ describe('FileUploadSection', () => {
       expect(w.find('[data-testid="upload-limit"]').exists()).toBe(false)
     })
 
-    it('compact에서도 슬롯(붙여넣기)은 유지되고 파일 선택이 열린다', async () => {
-      const w = mount(FileUploadSection, { ...mountOptions, props: { compact: true }, slots: { default: '<button data-testid="slot-btn">p</button>' } })
-      expect(w.find('[data-testid="slot-btn"]').exists()).toBe(true)
+    it('compact에는 붙여넣기 버튼이 없고 파일 선택만 열린다', async () => {
+      const w = mount(FileUploadSection, { ...mountOptions, props: { compact: true } })
+      expect(w.find('[data-testid="paste-button"]').exists()).toBe(false)
       const spy = vi.spyOn(HTMLInputElement.prototype, 'click').mockImplementation(() => {})
       await w.find('[data-testid="choose-files"]').trigger('click')
       expect(spy).toHaveBeenCalled()

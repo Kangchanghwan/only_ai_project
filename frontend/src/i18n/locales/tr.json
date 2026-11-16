@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Bu oda eski yöntemle oluşturulmuş, bu yüzden davet edilemiyor",
     "legacyInviteBody": "Yeni bir oda oluşturup bu cihazı ve diğerlerini içine ekleyin",
-    "legacyInviteCreate": "Yeni oda oluştur"
+    "legacyInviteCreate": "Yeni oda oluştur",
+    "moreRooms": "{n} oda daha var"
   },
   "nextTime": {
     "iosText": "Bir dahaki sefere doğrudan Fotoğraflar'daki paylaş düğmesinden gönderebilirsiniz",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Her cihaz en fazla son {count} metnini saklar. En eskisi artık katılan cihazlara iletilmez.",
     "receiversCount": "Alacak cihaz: {count}",
     "deliverOnJoin": "biri katılınca iletilir",
-    "notDelivered": "iletilmeyecek"
+    "notDelivered": "iletilmeyecek",
+    "expandLines": "{n} satır · Genişlet",
+    "collapse": "Daralt"
   },
   "notification": {
     "uploading": "Yükleniyor...",

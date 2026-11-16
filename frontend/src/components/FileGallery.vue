@@ -49,6 +49,7 @@ const props = defineProps({
 
 const emit = defineEmits([
   'copy-image',
+  'copy-line',
   'download-file',
   'download-parallel',
   'copy-selected-to-clipboard',
@@ -223,15 +224,14 @@ onUnmounted(() => {
 
     <!-- 보내기 패널: 머리에 잠금 칩 하나(파일·텍스트 공통) + 파일 선택 + 한 줄 텍스트 입력 -->
     <div data-testid="send-panel">
-      <div class="flex items-center justify-end gap-2 mb-2 min-h-[32px]" data-testid="send-panel-header">
-        <LockChip v-if="!isPrivate" :scope="scope" />
-        <p v-else class="text-xs text-scope-private m-0" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>{{ t('pair.uploadHint') }}</p>
+      <div class="flex items-center justify-between gap-x-2 gap-y-2 flex-wrap mb-2 min-h-[44px]" data-testid="send-panel-header">
+        <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
+        <LockChip v-if="!isPrivate" :scope="scope" class="ml-auto" />
+        <p v-else class="text-xs text-scope-private m-0 ml-auto" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>{{ t('pair.uploadHint') }}</p>
       </div>
     <slot name="send">
       <div class="flex flex-col gap-3 mb-2" data-testid="send-area">
-        <FileUploadSection :scope="scope" :compact="hasItems" @upload-files="$emit('upload-files', $event)">
-          <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
-        </FileUploadSection>
+        <FileUploadSection :scope="scope" :compact="hasItems" @upload-files="$emit('upload-files', $event)" />
       </div>
     </slot>
 
@@ -272,6 +272,7 @@ onUnmounted(() => {
             @unlock-text="$emit('unlock-text', $event)"
             @send-as-file="$emit('send-as-file', $event)"
             @copy-text="$emit('copy-text', $event)"
+            @copy-line="$emit('copy-line', $event)"
           />
           <LockedFileCard
             v-else-if="item.file.locked"

@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Cette salle a été créée à l'ancienne, on ne peut donc pas y inviter",
     "legacyInviteBody": "Créez une nouvelle salle et ajoutez-y cet appareil et les autres",
-    "legacyInviteCreate": "Créer une nouvelle salle"
+    "legacyInviteCreate": "Créer une nouvelle salle",
+    "moreRooms": "{n} salons de plus"
   },
   "nextTime": {
     "iosText": "La prochaine fois, envoyez directement depuis le bouton Partager de Photos",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Chaque appareil conserve au plus ses {count} textes les plus récents. Le plus ancien n'atteindra plus les appareils qui arrivent.",
     "receiversCount": "Appareils destinataires : {count}",
     "deliverOnJoin": "transmis dès qu'un appareil arrive",
-    "notDelivered": "ne sera pas transmis"
+    "notDelivered": "ne sera pas transmis",
+    "expandLines": "{n} lignes · Développer",
+    "collapse": "Réduire"
   },
   "notification": {
     "uploading": "Téléchargement...",

@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "هذه الغرفة أُنشئت بالطريقة القديمة، لذا لا يمكن الدعوة إليها",
     "legacyInviteBody": "أنشئ غرفة جديدة وأضف هذا الجهاز والأجهزة الأخرى إليها",
-    "legacyInviteCreate": "إنشاء غرفة جديدة"
+    "legacyInviteCreate": "إنشاء غرفة جديدة",
+    "moreRooms": "{n} غرف إضافية"
   },
   "nextTime": {
     "iosText": "في المرة القادمة أرسل مباشرة من زر المشاركة في تطبيق الصور",
@@ -220,7 +221,9 @@
     "quotaEvicted": "يحفظ كل جهاز آخر {count} نصوص فقط. لن يصل أقدمها بعد الآن إلى الأجهزة التي تنضم.",
     "receiversCount": "الأجهزة المستلمة: {count}",
     "deliverOnJoin": "يُسلَّم عند انضمام جهاز",
-    "notDelivered": "لن يصل"
+    "notDelivered": "لن يصل",
+    "expandLines": "{n} أسطر · توسيع",
+    "collapse": "طي"
   },
   "notification": {
     "uploading": "جاري التحميل...",

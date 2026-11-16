@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "这个房间是用旧方式创建的，无法邀请",
     "legacyInviteBody": "请新建一个房间，把这台设备和其他设备一起加进去",
-    "legacyInviteCreate": "新建房间"
+    "legacyInviteCreate": "新建房间",
+    "moreRooms": "还有 {n} 个房间"
   },
   "nextTime": {
     "iosText": "下次可以直接从相册的分享按钮发送",
@@ -220,7 +221,9 @@
     "quotaEvicted": "每台发送设备最多保存最近 {count} 条。最早的一条将不再发送给之后加入的设备。",
     "receiversCount": "可接收设备 {count} 台",
     "deliverOnJoin": "有设备加入时发送",
-    "notDelivered": "不会送达"
+    "notDelivered": "不会送达",
+    "expandLines": "{n} 行 · 展开",
+    "collapse": "收起"
   },
   "notification": {
     "uploading": "上传中...",

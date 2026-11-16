@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Phòng này được tạo theo cách cũ nên không thể mời thêm",
     "legacyInviteBody": "Hãy tạo phòng mới rồi thêm thiết bị này và các thiết bị khác vào",
-    "legacyInviteCreate": "Tạo phòng mới"
+    "legacyInviteCreate": "Tạo phòng mới",
+    "moreRooms": "Còn {n} phòng nữa"
   },
   "nextTime": {
     "iosText": "Lần sau, bạn có thể gửi thẳng từ nút Chia sẻ trong ứng dụng Ảnh",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Mỗi thiết bị chỉ lưu tối đa {count} văn bản gần nhất. Văn bản cũ nhất sẽ không còn được gửi tới thiết bị tham gia sau.",
     "receiversCount": "Thiết bị nhận: {count}",
     "deliverOnJoin": "gửi khi có thiết bị vào",
-    "notDelivered": "sẽ không được gửi"
+    "notDelivered": "sẽ không được gửi",
+    "expandLines": "{n} dòng · Mở rộng",
+    "collapse": "Thu gọn"
   },
   "notification": {
     "uploading": "Đang tải lên...",

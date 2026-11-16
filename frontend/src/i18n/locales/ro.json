@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Această cameră a fost creată în modul vechi, deci nu se poate invita",
     "legacyInviteBody": "Creează o cameră nouă și adaugă în ea acest dispozitiv și pe celelalte",
-    "legacyInviteCreate": "Creează o cameră nouă"
+    "legacyInviteCreate": "Creează o cameră nouă",
+    "moreRooms": "Încă {n} camere"
   },
   "nextTime": {
     "iosText": "Data viitoare poți trimite direct din butonul Partajare din aplicația Poze",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Fiecare dispozitiv păstrează cel mult ultimele {count} texte. Cel mai vechi nu mai ajunge la dispozitivele care intră.",
     "receiversCount": "Dispozitive care primesc: {count}",
     "deliverOnJoin": "livrat când intră cineva",
-    "notDelivered": "nu va ajunge"
+    "notDelivered": "nu va ajunge",
+    "expandLines": "{n} rânduri · Extinde",
+    "collapse": "Restrânge"
   },
   "notification": {
     "uploading": "Se încarcă...",

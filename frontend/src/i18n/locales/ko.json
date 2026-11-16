@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "예전 방식으로 만든 방이라 초대할 수 없어요",
     "legacyInviteBody": "새 방을 만들어 이 기기와 다른 기기를 함께 넣어 주세요",
-    "legacyInviteCreate": "새 방 만들기"
+    "legacyInviteCreate": "새 방 만들기",
+    "moreRooms": "방 {n}개 더 있어요"
   },
   "nextTime": {
     "iosText": "다음엔 사진 앱 공유 버튼에서 바로 보낼 수 있어요",
@@ -227,7 +228,9 @@
     "quotaEvicted": "보관은 보낸 기기마다 최근 {count}개까지예요. 가장 오래된 보관분은 이제 새로 들어오는 기기에 전달되지 않아요.",
     "receiversCount": "받을 기기 {count}대",
     "deliverOnJoin": "들어오면 전달",
-    "notDelivered": "전달 안 됨"
+    "notDelivered": "전달 안 됨",
+    "expandLines": "{n}줄 · 펼치기",
+    "collapse": "접기"
   },
   "notification": {
     "uploading": "업로드 중...",

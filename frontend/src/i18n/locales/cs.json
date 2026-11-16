@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Tato místnost vznikla starým způsobem, takže do ní nelze zvát",
     "legacyInviteBody": "Vytvořte novou místnost a přidejte do ní toto i další zařízení",
-    "legacyInviteCreate": "Vytvořit novou místnost"
+    "legacyInviteCreate": "Vytvořit novou místnost",
+    "moreRooms": "Dalších místností: {n}"
   },
   "nextTime": {
     "iosText": "Příště můžete odesílat rovnou tlačítkem Sdílet v aplikaci Fotky",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Každé zařízení uchovává nejvýše {count} posledních textů. Ten nejstarší už nedorazí k novým zařízením.",
     "receiversCount": "Příjemců: {count}",
     "deliverOnJoin": "doručí se, až se někdo připojí",
-    "notDelivered": "nedorazí"
+    "notDelivered": "nedorazí",
+    "expandLines": "{n} řádků · Rozbalit",
+    "collapse": "Sbalit"
   },
   "notification": {
     "uploading": "Nahrávání...",

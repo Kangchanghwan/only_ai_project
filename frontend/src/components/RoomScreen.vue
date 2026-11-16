@@ -111,6 +111,7 @@ const emit = defineEmits([
   'send-text-as-file',
   'clear-all-texts',
   'copy-text',
+  'copy-line',
   'paste-content',
   'load-more',
   'select-scope',
@@ -275,6 +276,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 @send-as-file="$emit('send-text-as-file', $event)"
                 @clear-all-texts="$emit('clear-all-texts')"
                 @copy-text="$emit('copy-text', $event)"
+                @copy-line="$emit('copy-line', $event)"
                 @copy-image="$emit('copy-image', $event)"
                 @download-file="$emit('download-file', $event)"
                 @download-parallel="$emit('download-parallel', $event)"

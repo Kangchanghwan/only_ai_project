@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Deze ruimte is op de oude manier gemaakt, dus je kunt niemand uitnodigen",
     "legacyInviteBody": "Maak een nieuwe ruimte en voeg dit apparaat en de andere apparaten toe",
-    "legacyInviteCreate": "Nieuwe ruimte maken"
+    "legacyInviteCreate": "Nieuwe ruimte maken",
+    "moreRooms": "Nog {n} ruimtes"
   },
   "nextTime": {
     "iosText": "Verstuur de volgende keer direct via de deelknop in Foto's",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Elk apparaat bewaart hooguit zijn {count} meest recente teksten. De oudste bereikt nieuwe apparaten niet meer.",
     "receiversCount": "Ontvangende apparaten: {count}",
     "deliverOnJoin": "afgeleverd zodra er een bijkomt",
-    "notDelivered": "komt niet aan"
+    "notDelivered": "komt niet aan",
+    "expandLines": "{n} regels · Uitklappen",
+    "collapse": "Inklappen"
   },
   "notification": {
     "uploading": "Uploaden...",

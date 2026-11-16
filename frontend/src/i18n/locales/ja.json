@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "昔の方式で作った部屋なので招待できません",
     "legacyInviteBody": "新しい部屋を作って、この端末とほかの端末を一緒に入れてください",
-    "legacyInviteCreate": "新しい部屋を作る"
+    "legacyInviteCreate": "新しい部屋を作る",
+    "moreRooms": "ほかに{n}個のルームがあります"
   },
   "nextTime": {
     "iosText": "次回は写真アプリの共有ボタンからすぐ送れます",
@@ -227,7 +228,9 @@
     "quotaEvicted": "保管は送信した端末ごとに直近{count}件までです。いちばん古い保管分は、これから入る端末には届きません。",
     "receiversCount": "受け取れる端末 {count}台",
     "deliverOnJoin": "入ったら届けます",
-    "notDelivered": "届きません"
+    "notDelivered": "届きません",
+    "expandLines": "{n}行 · 開く",
+    "collapse": "閉じる"
   },
   "notification": {
     "uploading": "アップロード中...",

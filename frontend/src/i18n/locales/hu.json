@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Ez a szoba a régi módon készült, ezért nem lehet meghívni bele",
     "legacyInviteBody": "Hozz létre új szobát, és tedd bele ezt az eszközt meg a többit",
-    "legacyInviteCreate": "Új szoba létrehozása"
+    "legacyInviteCreate": "Új szoba létrehozása",
+    "moreRooms": "Még {n} szoba"
   },
   "nextTime": {
     "iosText": "Legközelebb közvetlenül a Fotók megosztás gombjával küldhet",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Eszközönként legfeljebb a legutóbbi {count} szöveget őrizzük meg. A legrégebbi már nem jut el a belépő eszközökhöz.",
     "receiversCount": "Fogadó eszközök: {count}",
     "deliverOnJoin": "megérkezik, ha valaki belép",
-    "notDelivered": "nem érkezik meg"
+    "notDelivered": "nem érkezik meg",
+    "expandLines": "{n} sor · Kinyitás",
+    "collapse": "Összecsukás"
   },
   "notification": {
     "uploading": "Feltöltés...",

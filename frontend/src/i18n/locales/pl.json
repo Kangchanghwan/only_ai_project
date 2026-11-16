@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Ten pokój utworzono starą metodą, więc nie można do niego zapraszać",
     "legacyInviteBody": "Utwórz nowy pokój i dodaj do niego to urządzenie oraz pozostałe",
-    "legacyInviteCreate": "Utwórz nowy pokój"
+    "legacyInviteCreate": "Utwórz nowy pokój",
+    "moreRooms": "Jeszcze pokoi: {n}"
   },
   "nextTime": {
     "iosText": "Następnym razem wyślesz prosto z przycisku Udostępnij w aplikacji Zdjęcia",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Każde urządzenie przechowuje najwyżej {count} ostatnich tekstów. Najstarszy nie trafi już do nowych urządzeń.",
     "receiversCount": "Odbiorców: {count}",
     "deliverOnJoin": "dotrze, gdy ktoś dołączy",
-    "notDelivered": "nie dotrze"
+    "notDelivered": "nie dotrze",
+    "expandLines": "{n} wierszy · Rozwiń",
+    "collapse": "Zwiń"
   },
   "notification": {
     "uploading": "Przesyłanie...",

@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "This room was made the old way, so it can't invite anyone",
     "legacyInviteBody": "Create a new room and add this device and the others to it",
-    "legacyInviteCreate": "Create a new room"
+    "legacyInviteCreate": "Create a new room",
+    "moreRooms": "{n} more rooms"
   },
   "nextTime": {
     "iosText": "Next time, send straight from the Photos share button",
@@ -227,7 +228,9 @@
     "quotaEvicted": "Each device can keep up to its {count} most recent texts. Your oldest kept text will no longer reach devices that join.",
     "receiversCount": "Receiving devices: {count}",
     "deliverOnJoin": "delivered when one joins",
-    "notDelivered": "won't be delivered"
+    "notDelivered": "won't be delivered",
+    "expandLines": "{n} lines · Expand",
+    "collapse": "Collapse"
   },
   "notification": {
     "uploading": "Uploading...",

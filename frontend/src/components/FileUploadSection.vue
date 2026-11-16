@@ -92,10 +92,9 @@ function handleDrop(event) {
 
     <template v-if="compact">
       <div class="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center justify-end gap-2" @click.stop>
-        <slot />
         <button
           type="button"
-          class="order-first w-full sm:order-none sm:w-auto min-h-[44px] px-4 rounded-none text-white font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
+          class="w-full sm:w-auto min-h-[44px] px-4 rounded-none text-white font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
           :class="accentBg"
           data-testid="choose-files"
           @click.stop="openFileDialog"
@@ -124,7 +123,6 @@ function handleDrop(event) {
       <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
         {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
       </p>
-      <div class="w-full sm:w-auto" @click.stop><slot /></div>
     </template>
   </div>
 </template>

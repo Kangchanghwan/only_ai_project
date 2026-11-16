@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Dieser Raum wurde auf die alte Art erstellt, daher kann man niemanden einladen",
     "legacyInviteBody": "Erstelle einen neuen Raum und füge dieses und die anderen Geräte hinzu",
-    "legacyInviteCreate": "Neuen Raum erstellen"
+    "legacyInviteCreate": "Neuen Raum erstellen",
+    "moreRooms": "{n} weitere Räume"
   },
   "nextTime": {
     "iosText": "Beim nächsten Mal direkt über die Teilen-Taste in Fotos senden",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Pro Gerät werden höchstens die letzten {count} Texte aufbewahrt. Dein ältester aufbewahrter Text erreicht neu beitretende Geräte nicht mehr.",
     "receiversCount": "Empfangende Geräte: {count}",
     "deliverOnJoin": "kommt an, sobald eins beitritt",
-    "notDelivered": "kommt nicht an"
+    "notDelivered": "kommt nicht an",
+    "expandLines": "{n} Zeilen · Aufklappen",
+    "collapse": "Zuklappen"
   },
   "notification": {
     "uploading": "Hochladen...",

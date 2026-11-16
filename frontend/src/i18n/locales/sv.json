@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Det här rummet skapades på det gamla sättet, så det går inte att bjuda in",
     "legacyInviteBody": "Skapa ett nytt rum och lägg in den här enheten och de andra",
-    "legacyInviteCreate": "Skapa nytt rum"
+    "legacyInviteCreate": "Skapa nytt rum",
+    "moreRooms": "{n} rum till"
   },
   "nextTime": {
     "iosText": "Nästa gång kan du skicka direkt från Dela-knappen i Bilder",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Varje enhet sparar högst sina {count} senaste texter. Den äldsta når inte längre enheter som ansluter.",
     "receiversCount": "Mottagande enheter: {count}",
     "deliverOnJoin": "levereras när någon ansluter",
-    "notDelivered": "levereras inte"
+    "notDelivered": "levereras inte",
+    "expandLines": "{n} rader · Visa",
+    "collapse": "Dölj"
   },
   "notification": {
     "uploading": "Laddar upp...",

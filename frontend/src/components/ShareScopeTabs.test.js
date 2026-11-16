@@ -129,3 +129,41 @@ describe('PrivateRoomStrip', () => {
     expect(w.emitted('leave')[0]).toEqual(['prv-a'])
   })
 })
+
+describe('ShareScopeTabs 넘침 표시', () => {
+  const rooms = [one('prv-a', 1), one('prv-b', 2), grp()]
+  function stub(w, { sw, cw, left = 0, rights }) {
+    const bar = w.find('[data-testid="room-tablist"]').element
+    Object.defineProperty(bar, 'scrollWidth', { configurable: true, value: sw })
+    Object.defineProperty(bar, 'clientWidth', { configurable: true, value: cw })
+    bar.scrollLeft = left
+    bar.getBoundingClientRect = () => ({ right: cw, left: 0 })
+    w.findAll('[role="tab"]').forEach((t, i) => { t.element.getBoundingClientRect = () => ({ right: rights[i] }) })
+    return bar
+  }
+  it('넘치면 +N 버튼과 오른쪽 페이드, 안 넘치면 없다', async () => {
+    const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: rooms, groupCreate: true } })
+    expect(w.find('[data-testid="tabs-more-right"]').exists()).toBe(false)
+    const bar = stub(w, { sw: 800, cw: 300, rights: [100, 200, 300, 400, 500] })
+    bar.scrollIntoView = undefined
+    await bar.dispatchEvent(new Event('scroll'))
+    await w.vm.$nextTick()
+    const btn = w.find('[data-testid="tabs-more-right"]')
+    expect(btn.exists()).toBe(true)
+    expect(btn.text()).toContain('+2')
+    expect(btn.attributes('aria-label')).toBe('방 2개 더 있어요')
+    expect(w.find('[data-testid="tabs-fade-right"]').exists()).toBe(true)
+    expect(w.find('[data-testid="tabs-fade-left"]').exists()).toBe(false)
+    const spy = vi.fn()
+    w.findAll('[role="tab"]')[3].element.scrollIntoView = spy
+    await btn.trigger('click')
+    expect(spy).toHaveBeenCalledWith({ inline: 'start', block: 'nearest', behavior: 'smooth' })
+  })
+  it('스크롤이 시작을 벗어나면 왼쪽 페이드', async () => {
+    const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: rooms } })
+    const bar = stub(w, { sw: 800, cw: 300, left: 200, rights: [-100, 0, 100, 200, 300] })
+    await bar.dispatchEvent(new Event('scroll'))
+    await w.vm.$nextTick()
+    expect(w.find('[data-testid="tabs-fade-left"]').exists()).toBe(true)
+  })
+})

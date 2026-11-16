@@ -168,9 +168,11 @@ describe('FileGallery 업로드 영역 크기', () => {
     expect(w.find('.upload-probe').attributes('data-compact')).toBe('false')
   })
 
-  it('파일이 1개 이상이면 컴팩트 막대(compact=true)이고 붙여넣기는 그 안에 유지된다', () => {
+  it('파일이 1개 이상이면 컴팩트 막대(compact=true)이고 붙여넣기는 보내기 머리줄에 하나만 있다', () => {
     const w = mount(FileGallery, { props: { files: [file], roomId: 'r' }, global: { plugins: [i18n], stubs: probeStubs } })
     expect(w.find('.upload-probe').attributes('data-compact')).toBe('true')
-    expect(w.find('.upload-probe .paste-probe').exists()).toBe(true)
+    expect(w.findAll('.paste-probe')).toHaveLength(1)
+    expect(w.find('[data-testid="send-panel-header"] .paste-probe').exists()).toBe(true)
+    expect(w.find('.upload-probe .paste-probe').exists()).toBe(false)
   })
 })

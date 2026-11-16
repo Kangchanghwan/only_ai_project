@@ -30,7 +30,8 @@
     },
     "legacyInviteTitle": "Ruang ini dibuat dengan cara lama, jadi tidak bisa mengundang",
     "legacyInviteBody": "Buat ruang baru lalu masukkan perangkat ini dan perangkat lainnya",
-    "legacyInviteCreate": "Buat ruang baru"
+    "legacyInviteCreate": "Buat ruang baru",
+    "moreRooms": "{n} ruang lagi"
   },
   "nextTime": {
     "iosText": "Lain kali, kirim langsung dari tombol Bagikan di aplikasi Foto",
@@ -220,7 +221,9 @@
     "quotaEvicted": "Setiap perangkat menyimpan paling banyak {count} teks terbarunya. Yang paling lama tidak lagi dikirim ke perangkat yang bergabung.",
     "receiversCount": "Perangkat penerima: {count}",
     "deliverOnJoin": "dikirim saat ada yang bergabung",
-    "notDelivered": "tidak akan terkirim"
+    "notDelivered": "tidak akan terkirim",
+    "expandLines": "{n} baris · Buka",
+    "collapse": "Tutup"
   },
   "notification": {
     "uploading": "Mengunggah...",
