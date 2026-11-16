@@ -34,6 +34,17 @@ describe('LockedFileCard', () => {
     expect(name).toMatch(/^[0-9a-f]{16}…$/)
   })
 
+  it('이 기기에서 이름이 보이면 메타 줄 맨 앞에 잠금 태그, 이름이 숨겨져 있으면 태그 없음', () => {
+    expect(mountCard().find('[data-testid="locked-lock-tag"]').exists()).toBe(false)
+    useLockState().rememberName('room-1', 'abc123', 'report.pdf')
+    const w = mountCard()
+    const tag = w.find('[data-testid="locked-meta"] > [data-testid="locked-lock-tag"]')
+    expect(tag.exists()).toBe(true)
+    expect(tag.text()).toBe('lock.tag')
+    expect(tag.classes()).toContain('max-[359px]:hidden')
+    expect(w.find('[data-testid="locked-meta"]').element.firstElementChild).toBe(tag.element)
+  })
+
   it('일반 카드와 같은 틀: 카드 안에 비밀번호 입력란이 없고, 주 버튼·더보기만 있다', () => {
     const w = mountCard()
     expect(w.find('[data-testid="locked-password"]').exists()).toBe(false)
@@ -88,7 +99,7 @@ describe('LockedFileCard', () => {
     expect(w.find('[data-testid="locked-icon"]').attributes('data-state')).toBe('open')
     expect(w.find('[data-testid="locked-icon"]').attributes('title')).toBe('lock.unlockedHere')
     // 메타 줄은 일반 카드와 같은 내용(용량 · 시간)만 담는다
-    expect(w.find('[data-testid="locked-meta"]').text()).not.toContain('lock.')
+    expect(w.find('[data-testid="locked-meta"]').text().replace('lock.tag', '')).not.toContain('lock.')
     expect(w.find('[data-testid="locked-name"]').text()).toBe('계획서.pdf')
   })
 

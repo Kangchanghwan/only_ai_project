@@ -316,6 +316,7 @@ onUnmounted(() => clearInterval(revealTimer))
         data-testid="locked-name"
       >{{ displayName }}</p>
       <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="locked-meta">
+        <span v-if="isPlain" data-testid="locked-lock-tag" class="max-[359px]:hidden shrink-0 inline-flex items-center border border-ink text-ink text-[10px] leading-4 font-bold px-1 rounded-[2px] whitespace-nowrap">{{ t('lock.tag') }}</span>
         <SenderLabel v-if="file.uploader" :sender="file.uploader" class="shrink min-w-0" />
         <span v-if="file.uploader" aria-hidden="true">·</span>
         <span class="whitespace-nowrap">{{ meta.size }}</span>
