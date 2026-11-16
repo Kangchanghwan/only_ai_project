@@ -169,11 +169,11 @@ async function handleShare(event) {
 <template>
   <!-- 행 전체 클릭으로 복사하지 않는다. 받기(primary)와 더보기(복사/QR/공유/삭제)를 명시 버튼으로 둔다. -->
   <div
-    class="file-row flex flex-wrap sm:flex-nowrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
+    class="file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
     :class="[accentHoverBorder50, isSelected ? ['border-l-4', accentBgSoft5, accentBorderL] : '']"
   >
     <!-- 체크박스: 44px 터치 영역의 label로 감싸 접근 가능한 이름을 준다 -->
-    <label class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 cursor-pointer">
+    <label class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 -mx-1 shrink-0 cursor-pointer">
       <input
         type="checkbox"
         class="select-checkbox w-5 h-5 cursor-pointer"
@@ -204,9 +204,9 @@ async function handleShare(event) {
     </div>
 
     <!-- 파일명(ellipsis, 전체는 title) + 2행 "보낸 사람 · 용량 · 시간" (시간은 한 번만) -->
-    <div class="file-info flex-1 min-w-[8rem] sm:min-w-0">
+    <div class="file-info flex-1 min-w-0">
       <p class="file-name text-sm font-medium text-text-primary truncate m-0" :title="file.name" data-testid="file-name">{{ file.name }}</p>
-      <p class="file-meta flex flex-wrap items-center gap-x-1 text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="file-meta">
+      <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="file-meta">
         <SenderLabel v-if="file.uploader" :sender="file.uploader" class="shrink min-w-0" />
         <span v-if="file.uploader" aria-hidden="true">·</span>
         <span class="whitespace-nowrap">{{ fileMetadata.size }}</span>
@@ -216,7 +216,7 @@ async function handleShare(event) {
     </div>
 
     <!-- 액션 영역: 좁은 폭에서는 정보 영역 아래 줄 오른쪽으로 내려가 메타를 가리지 않는다 -->
-    <div class="file-actions flex items-center gap-2 shrink-0 ml-auto">
+    <div class="file-actions flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
     <!-- 받기 (primary) -->
     <button
       type="button"

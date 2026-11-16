@@ -51,6 +51,19 @@ describe('RoomScreen.vue', () => {
     globalRoomDevices: []
   }
 
+  describe('더 알아보기 접기', () => {
+    it('more-info details는 기본으로 닫혀 있고 안내·랜딩·푸터를 담는다', () => {
+      const w = mount(RoomScreen, { props: defaultProps, global: { plugins: [i18n], stubs } })
+      const d = w.find('[data-testid="more-info"]')
+      expect(d.element.tagName).toBe('DETAILS')
+      expect(d.element.open).toBe(false)
+      expect(d.find('[data-testid="usage-notes"]').exists()).toBe(true)
+      expect(d.find('[data-testid="landing-separator"]').exists()).toBe(true)
+      expect(d.find('.app-footer-stub').exists()).toBe(true)
+      expect(w.find('[data-testid="usage-notes"]').element.tagName).toBe('SECTION')
+    })
+  })
+
   describe('방·기기 줄', () => {
     const mountScope = (scope, extra = {}) => mount(RoomScreen, {
       props: { ...defaultProps, scope, ...extra },

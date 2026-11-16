@@ -97,4 +97,12 @@ describe('AppHeader.vue', () => {
     expect(header.classes()).toContain('z-40')
     expect(header.classes()).toContain('bg-surface')
   })
+
+  it('개인정보 처리방침 링크가 ⋯ 메뉴 안에 있다', async () => {
+    const wrapper = await mountReady()
+    await wrapper.find('[data-testid="header-more-button"]').trigger('click')
+    const link = wrapper.find('[data-testid="header-more-menu"] [data-testid="header-privacy-link"]')
+    expect(link.exists()).toBe(true)
+    expect(link.attributes('href')).toContain('PRIVACY.md')
+  })
 })

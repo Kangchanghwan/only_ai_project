@@ -271,12 +271,12 @@ onUnmounted(() => clearInterval(revealTimer))
 
 <template>
   <div
-    class="file-row relative overflow-hidden flex flex-wrap sm:flex-nowrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
+    class="file-row relative overflow-hidden flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
     :class="[accentHoverBorder50, isSelected ? ['border-l-4', accentBgSoft5, accentBorderL] : '']"
     data-testid="locked-file"
   >
     <!-- 1:1 방: 방 키로 지울 수 있으니 일괄 삭제용으로 고를 수 있다 -->
-    <label v-if="selectable" class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 cursor-pointer">
+    <label v-if="selectable" class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 -mx-1 shrink-0 cursor-pointer">
       <input
         type="checkbox"
         class="select-checkbox w-5 h-5 cursor-pointer"
@@ -288,7 +288,7 @@ onUnmounted(() => clearInterval(revealTimer))
       />
     </label>
     <!-- 체크박스 자리: 잠긴 파일은 하나씩 받으므로 선택할 수 없다 (정렬을 맞추려고 자리는 둔다) -->
-    <label v-else class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 opacity-40" :title="t('lock.noBulk')">
+    <label v-else class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 -mx-1 shrink-0 opacity-40" :title="t('lock.noBulk')">
       <input
         type="checkbox"
         class="select-checkbox w-5 h-5"
@@ -311,14 +311,14 @@ onUnmounted(() => clearInterval(revealTimer))
     </div>
 
     <!-- 이름 + 2행 "보낸 사람 · 용량 · 시간(상태)" — 일반 카드와 같은 순서 -->
-    <div class="file-info flex-1 min-w-[8rem] sm:min-w-0">
+    <div class="file-info flex-1 min-w-0">
       <p
         class="file-name text-sm font-medium truncate m-0"
         :class="isPlain ? 'text-text-primary' : 'text-text-secondary'"
         :title="isPlain ? displayName : t('lock.hiddenName')"
         data-testid="locked-name"
       >{{ displayName }}</p>
-      <p class="file-meta flex flex-wrap items-center gap-x-1 text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="locked-meta">
+      <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="locked-meta">
         <SenderLabel v-if="file.uploader" :sender="file.uploader" class="shrink min-w-0" />
         <span v-if="file.uploader" aria-hidden="true">·</span>
         <span class="whitespace-nowrap">{{ meta.size }}</span>
@@ -328,7 +328,7 @@ onUnmounted(() => clearInterval(revealTimer))
     </div>
 
     <!-- 액션 영역: 일반 카드와 같은 버튼 2개 -->
-    <div class="file-actions flex items-center gap-2 shrink-0 ml-auto">
+    <div class="file-actions flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
       <button
         type="button"
         class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none text-white text-sm font-extrabold inline-flex items-center justify-center gap-1"

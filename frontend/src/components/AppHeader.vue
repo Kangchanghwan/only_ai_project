@@ -123,6 +123,14 @@ onMounted(async () => {
             </svg>
             <span class="hidden sm:inline whitespace-nowrap">{{ t('pwa.installLabel') }}</span>
           </button>
+          <a
+            href="https://github.com/Kangchanghwan/only_ai_project/blob/master/PRIVACY.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="h-11 px-3 flex items-center justify-center text-ink text-sm font-bold hover:underline whitespace-nowrap"
+            data-testid="header-privacy-link"
+            @click="moreOpen = false"
+          >{{ t('footer.privacyPolicy') }}</a>
         </div>
       </div>
       <button

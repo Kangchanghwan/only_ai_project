@@ -87,18 +87,18 @@ function formatTime(timestamp) {
 <template>
   <!-- 접힌 행은 FileCard의 행과 같은 모양: 더보기를 눌러야 아래로 늘어난다 -->
   <article
-    class="text-row file-row flex flex-wrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
-    :class="expanded ? '' : 'sm:flex-nowrap'"
+    class="text-row file-row flex items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
+    :class="expanded ? 'flex-wrap' : 'flex-nowrap'"
     data-testid="text-entry"
   >
     <!-- 파일 행의 체크박스 자리 -->
-    <span class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0" aria-hidden="true" data-testid="text-spacer"></span>
+    <span class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 -mx-1 shrink-0" aria-hidden="true" data-testid="text-spacer"></span>
     <div
       class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center flex-shrink-0 bg-tint text-ink"
       data-testid="text-tag"
     ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 12H3"/><path d="M17 18H3"/><path d="M21 6H3"/></svg><span class="sr-only">{{ t('room.textTab') }}</span></div>
 
-    <div class="file-info flex-1 min-w-[8rem] sm:min-w-0">
+    <div class="file-info flex-1 min-w-0">
       <p
         v-if="text.content != null"
         ref="titleRef"
@@ -112,7 +112,7 @@ function formatTime(timestamp) {
         <span class="truncate">{{ t('text.lockedTitle') }}</span>
         <span class="sr-only">{{ t('text.lockedHint') }}</span>
       </p>
-      <p class="file-meta flex flex-wrap items-center gap-x-1 text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="text-meta">
+      <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="text-meta">
         <SenderLabel v-if="text.sender" :sender="text.sender" :time="text.timestamp" class="shrink min-w-0" />
         <span v-else class="whitespace-nowrap" data-testid="text-time">{{ formatTime(text.timestamp) }}</span>
         <template v-if="text.expiresAt">
@@ -132,7 +132,7 @@ function formatTime(timestamp) {
       </p>
     </div>
 
-    <div class="file-actions flex items-center gap-2 shrink-0 ml-auto">
+    <div class="file-actions flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
       <button
         v-if="text.content != null"
         type="button"
