@@ -286,8 +286,8 @@ onUnmounted(() => clearInterval(revealTimer))
 
 <template>
   <div
-    class="group file-row relative overflow-hidden flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-    :class="[isSelected ? 'border-ink outline outline-2 -outline-offset-2 outline-ink' : 'border-border', selectable ? 'cursor-pointer select-none' : '']"
+    class="group file-row relative overflow-hidden flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200"
+    :class="[isSelected ? 'border-ink file-row-selected' : 'border-border', selectable ? 'cursor-pointer select-none' : '']"
     :role="selectable ? 'checkbox' : undefined"
     :aria-checked="selectable ? (isSelected ? 'true' : 'false') : undefined"
     :tabindex="selectable ? 0 : undefined"

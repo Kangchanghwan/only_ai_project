@@ -182,8 +182,8 @@ async function handleShare(event) {
 <template>
   <!-- 행 전체 클릭으로 복사하지 않는다. 받기(primary)와 더보기(복사/QR/공유/삭제)를 명시 버튼으로 둔다. -->
   <div
-    class="group file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200 cursor-pointer select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-    :class="[isSelected ? 'border-ink outline outline-2 -outline-offset-2 outline-ink' : 'border-border']"
+    class="group file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200 cursor-pointer select-none"
+    :class="[isSelected ? 'border-ink file-row-selected' : 'border-border']"
     role="checkbox"
     :aria-checked="isSelected ? 'true' : 'false'"
     tabindex="0"
