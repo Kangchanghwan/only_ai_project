@@ -16,7 +16,7 @@ const emit = defineEmits(['paste-content'])
     <button
       type="button"
       :title="`${t('clipboard.pasteDescription')} ${t('file.uploadPasteHint')}`"
-      class="ml-auto min-h-[44px] px-4 rounded-none border-2 border-ink bg-transparent text-sm font-bold text-ink hover:bg-tint inline-flex items-center gap-2"
+      class="ml-auto min-h-[44px] px-4 whitespace-nowrap rounded-none border-2 border-ink bg-transparent text-sm font-bold text-ink hover:bg-tint inline-flex items-center gap-2"
       data-testid="paste-button"
       @click="emit('paste-content')"
     >

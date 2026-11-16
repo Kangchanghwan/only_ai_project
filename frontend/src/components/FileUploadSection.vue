@@ -12,6 +12,11 @@ const props = defineProps({
   scope: {
     type: String,
     default: 'ip'
+  },
+  /** 파일이 이미 있으면 한 줄짜리 얇은 막대로 접는다 */
+  compact: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -64,10 +69,16 @@ function handleDrop(event) {
 </script>
 
 <template>
-  <!-- 파일 선택이 primary. PC에서는 드래그 앤 드롭 영역, 모바일은 간결한 안내 -->
+  <!-- 파일이 없으면 큰 드롭 영역(PC) / 큰 버튼(모바일), 있으면 한 줄 막대 -->
   <div
-    class="upload-drop relative rounded-none cursor-pointer border border-dashed transition-colors duration-200 p-4 sm:p-6 flex flex-col items-center gap-3 text-center"
-    :class="isDragging ? 'border-ink bg-tint' : 'border-ink/30 bg-tint'"
+    class="upload-drop relative rounded-none cursor-pointer transition-colors duration-200 bg-tint"
+    :class="[
+      compact
+        ? 'border border-dashed px-3 py-2 min-h-[56px] flex flex-wrap items-center gap-x-3 gap-y-2'
+        : 'p-4 sm:p-6 sm:min-h-[300px] sm:border sm:border-dashed flex flex-col items-center justify-center gap-3 text-center',
+      isDragging ? 'border-ink' : 'sm:border-ink/30 border-ink/30'
+    ]"
+    :data-state="compact ? 'compact' : 'big'"
     data-testid="upload-dropzone"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
@@ -76,26 +87,48 @@ function handleDrop(event) {
   >
     <input ref="fileInputRef" type="file" multiple class="sr-only" tabindex="-1" :aria-label="t('file.inputLabel')" data-testid="file-input" @change="handleFileSelect" @click.stop />
 
-    <button
-      type="button"
-      class="w-full sm:w-auto min-h-[48px] px-6 rounded-none text-white font-extrabold text-base inline-flex items-center justify-center gap-2"
-      :class="accentBg"
-      data-testid="choose-files"
-      @click.stop="openFileDialog"
-    >
-      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-        <polyline points="17 8 12 3 7 8" />
-        <line x1="12" y1="3" x2="12" y2="15" />
-      </svg>
-      {{ t('file.chooseFiles') }}
-    </button>
-    <p class="sr-only">{{ t('file.dropHint') }}</p>
-    <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
-      {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
-    </p>
-    <!-- 1:1 방은 자동 암호화라 비밀번호 잠금 칩을 숨긴다 -->
-    <LockChip v-if="!isPrivateScope(scope)" :scope="scope" />
-    <p v-else class="text-xs text-scope-private m-0" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>{{ t('pair.uploadHint') }}</p>
+    <!-- 컴팩트 막대: 왼쪽 안내 -->
+    <p v-if="compact" class="m-0 flex-1 min-w-[8rem] truncate text-sm text-text-secondary" data-testid="upload-compact-hint">{{ t('file.dropHint') }}</p>
+    <!-- 큰 상태: 제목 (모바일에서는 스크린리더용) -->
+    <p v-else class="m-0 sr-only sm:not-sr-only sm:text-[22px] font-extrabold text-ink tracking-[-0.02em]" data-testid="upload-heading">{{ t('file.dropHint') }}</p>
+
+    <template v-if="compact">
+      <div class="ml-auto flex flex-wrap items-center justify-end gap-2" @click.stop>
+        <LockChip v-if="!isPrivateScope(scope)" :scope="scope" />
+        <slot />
+        <button
+          type="button"
+          class="min-h-[44px] px-4 rounded-none text-white font-extrabold text-sm inline-flex items-center justify-center gap-2"
+          :class="accentBg"
+          data-testid="choose-files"
+          @click.stop="openFileDialog"
+        >
+          {{ t('file.chooseFiles') }}
+        </button>
+      </div>
+    </template>
+    <template v-else>
+      <button
+        type="button"
+        class="w-full sm:w-auto min-h-[52px] px-8 rounded-none text-white font-extrabold text-base inline-flex items-center justify-center gap-2"
+        :class="accentBg"
+        data-testid="choose-files"
+        @click.stop="openFileDialog"
+      >
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        {{ t('file.chooseFiles') }}
+      </button>
+      <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
+        {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
+      </p>
+      <!-- 1:1 방은 자동 암호화라 비밀번호 잠금 칩을 숨긴다 -->
+      <LockChip v-if="!isPrivateScope(scope)" :scope="scope" />
+      <p v-else class="text-xs text-scope-private m-0" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>{{ t('pair.uploadHint') }}</p>
+      <div class="w-full sm:w-auto" @click.stop><slot /></div>
+    </template>
   </div>
 </template>

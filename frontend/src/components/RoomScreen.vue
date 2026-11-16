@@ -8,7 +8,6 @@ import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import ConnectionCard from './ConnectionCard.vue'
 import TransferProgress from './TransferProgress.vue'
-import { useMediaQuery } from '../composables/useMediaQuery'
 import { formatSizeMB } from '../utils/fileUtils'
 import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 import LandingContent from './LandingContent.vue'
@@ -133,9 +132,6 @@ const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120
 const mobilePanel = ref('files')
 watch(() => props.prefillText, (v) => { if (v) mobilePanel.value = 'text' }, { immediate: true })
 
-// 넓은 화면(CSS의 @media (min-width: 1100px)와 동일 값)에서는 기기 목록을 왼쪽 패널에 항상 보여준다.
-// 작업 영역은 이 값으로 다시 마운트되지 않는다 (목록 표시 방식만 바뀐다).
-const isWide = useMediaQuery()
 
 // 1:1 탭이면 그 방의 접속 기기(나 + 상대)를 보여 준다
 const currentRoom = computed(() => {
@@ -212,14 +208,32 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
     <AppHeader :user-count="userCount" :is-connecting="isConnecting" />
 
     <div class="page-shell px-4 sm:px-6">
-      <ShareScopeTabs
-        :scope="scope"
-        :private-rooms="privateRooms"
-        :highlight-room-id="highlightRoomId"
-        :group-create="pairEnabled"
-        @select="$emit('select-scope', $event)"
-        @group-create="$emit('group-add')"
-      />
+      <!-- 방 + 기기 줄: 어느 방인지, 누가 있는지 한 줄에 -->
+      <div class="bleed-line-b relative flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-3 mb-3 border-b border-border" data-testid="room-row">
+        <ShareScopeTabs
+          :scope="scope"
+          :private-rooms="privateRooms"
+          :highlight-room-id="highlightRoomId"
+          :group-create="pairEnabled"
+          @select="$emit('select-scope', $event)"
+          @group-create="$emit('group-add')"
+        />
+        <div class="min-w-0 flex-1 sm:flex-none sm:max-w-[60%]">
+          <ConnectionCard
+            :devices="activeDevices"
+            :my-socket-id="mySocketId"
+            :my-identity="myIdentity"
+            :reroll-available-at="rerollAvailableAt"
+            :scope="scope"
+            :other-network-devices="otherNetworkDevices"
+            @reroll="$emit('reroll-identity')"
+            @hint-copied="$emit('hint-copied', $event)"
+            @group-create="$emit('group-create')"
+            @code-enter="$emit('code-enter')"
+          />
+        </div>
+      </div>
+      <p v-if="scope === 'ip'" class="m-0 mb-3 text-xs text-text-secondary" data-testid="ip-notice">{{ t('identity.ipNotice') }}</p>
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->
       <div
@@ -243,23 +257,6 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       />
 
       <div class="workspace">
-        <!-- 연결 카드 (좁은 화면: 상단 카드 / 넓은 화면: 왼쪽 패널). grid-area로 위치만 바뀐다 -->
-        <div class="ws-conn">
-          <ConnectionCard
-            :devices="activeDevices"
-            :my-socket-id="mySocketId"
-            :my-identity="myIdentity"
-            :reroll-available-at="rerollAvailableAt"
-            :scope="scope"
-            :other-network-devices="otherNetworkDevices"
-            :wide="isWide"
-            @reroll="$emit('reroll-identity')"
-            @hint-copied="$emit('hint-copied', $event)"
-            @group-create="$emit('group-create')"
-            @code-enter="$emit('code-enter')"
-          />
-        </div>
-
         <main class="ws-main bg-surface rounded-xl p-4 sm:p-6 border border-border min-w-0">
           <div
             class="flex mb-4 w-fit max-w-full rounded-none"
@@ -382,32 +379,19 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 </template>
 
 <style scoped>
-/* 레이아웃 임계값:
-   - 기본~1099px: 한 열, 전체 최대 760px (연결 카드는 작업 영역 위)
-   - 1100px 이상: 전체 최대 1040px = 왼쪽 기기 패널 240px + 간격 24px + 작업 영역 최대 776px(760px 본문)
-   JS의 WIDE_QUERY(useMediaQuery.js)도 반드시 같은 1100px이어야 한다. */
+/* 한 열 레이아웃: 768px 이상 최대 880px, 그 아래는 760px */
 .page-shell {
   width: 100%;
   max-width: 760px;
   margin: 0 auto;
   box-sizing: border-box;
 }
+@media (min-width: 768px) {
+  .page-shell { max-width: 880px; }
+}
 .workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'conn' 'main';
   gap: 1rem;
-}
-.ws-conn { grid-area: conn; min-width: 0; }
-.ws-main { grid-area: main; }
-@media (min-width: 1100px) {
-  .page-shell { max-width: 1040px; }
-  .workspace {
-    grid-template-columns: 240px minmax(0, 1fr);
-    grid-template-areas: 'conn main';
-    gap: 1.5rem;
-    align-items: start;
-  }
-  .ws-conn { position: sticky; top: 5.5rem; }
 }
 </style>

@@ -139,7 +139,7 @@ const shortcutName = computed(() => {
 </script>
 
 <template>
-  <div role="group" class="connection-card bg-surface border border-border rounded-xl p-3 min-w-0" :aria-label="t('room.connectedDevices')" data-testid="connection-card">
+  <div role="group" class="connection-card bg-transparent border-0 rounded-none p-0 min-w-0" :aria-label="t('room.connectedDevices')" data-testid="connection-card">
     <div class="flex items-center justify-between gap-2 flex-wrap min-w-0">
       <div class="flex items-center gap-2 min-w-0" :class="wide ? 'w-full' : ''">
         <p class="text-sm text-text-secondary m-0 min-w-0" data-testid="other-count" aria-live="polite">

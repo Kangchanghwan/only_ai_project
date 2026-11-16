@@ -43,6 +43,7 @@ describe('RoomScreen 그룹 방', () => {
 
   it('"＋ 방"(탭)과 초대 버튼(Strip)과 빈 방 안내(ConnectionCard)가 이벤트로 올라간다', async () => {
     const w = mountWith({ privateRooms: room(), privateDevices: { [G]: [me, other] } })
+    await w.find('[data-testid="scope-trigger"]').trigger('click')
     await w.find('[data-testid="group-create"]').trigger('click')
     await w.find('[data-testid="cc-create"]').trigger('click')
     await w.find('[data-testid="group-invite"]').trigger('click')
@@ -54,8 +55,9 @@ describe('RoomScreen 그룹 방', () => {
     expect(w.emitted('code-enter')).toHaveLength(1)
   })
 
-  it('pairEnabled가 꺼져 있으면 "＋ 방" 버튼이 없다', () => {
+  it('pairEnabled가 꺼져 있으면 "＋ 방" 항목이 없다', async () => {
     const w = mountWith({ pairEnabled: false, privateRooms: [], scope: 'ip' })
+    await w.find('[data-testid="scope-trigger"]').trigger('click')
     expect(w.find('[data-testid="group-create"]').exists()).toBe(false)
   })
 })

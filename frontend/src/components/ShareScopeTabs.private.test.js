@@ -7,41 +7,47 @@ import i18n from '../i18n/index.js'
 const opts = { global: { plugins: [i18n] }, attachTo: document.body }
 const room = (id, animal = 1) => ({ roomId: id, status: 'online', peer: { socketId: id, identity: { adj: 1, animal } } })
 
-describe('ShareScopeTabs 1:1 탭', () => {
-  it('연결이 없으면 기존 2탭 그대로', () => {
+describe('ShareScopeTabs 1:1 방 항목', () => {
+  it('연결이 없으면 기본 option 2개뿐', async () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip' } })
-    expect(w.findAll('[role="tab"]')).toHaveLength(2)
-    expect(w.find('[data-testid="private-tab"]').exists()).toBe(false)
+    await w.find('[data-testid="scope-trigger"]').trigger('click')
+    expect(w.findAll('[role="option"]')).toHaveLength(2)
+    expect(w.find('[data-testid="private-tab-option"]').exists()).toBe(false)
   })
 
-  it('1개면 아바타 + "방" 세 번째 탭, 선택 시 prv: 스코프를 올린다', async () => {
+  it('1개면 아바타 + 방 option이 추가되고, 선택 시 prv: 스코프를 올린다', async () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [room('prv-a')] } })
-    const tab = w.find('[data-testid="private-tab"]')
-    expect(w.findAll('[role="tab"]')).toHaveLength(3)
-    expect(tab.text()).toBe('방')
-    expect(tab.find('[data-testid="animal-avatar"]').exists()).toBe(true)
-    await tab.trigger('click')
+    await w.find('[data-testid="scope-trigger"]').trigger('click')
+    const opt = w.find('[data-testid="private-tab-option"]')
+    expect(w.findAll('[role="option"]')).toHaveLength(3)
+    expect(opt.find('[data-testid="animal-avatar"]').exists()).toBe(true)
+    await opt.trigger('click')
     expect(w.emitted('select')[0]).toEqual(['prv:prv-a'])
   })
 
-  it('활성일 때 전용 파랑 배경', () => {
+  it('활성 방이면 트리거에 방 이름·아바타가 보이고 option이 선택 표시', async () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'prv:prv-a', privateRooms: [room('prv-a')] } })
-    const tab = w.find('[data-testid="private-tab"]')
-    expect(tab.classes()).toContain('border-ink')
-    expect(tab.attributes('aria-selected')).toBe('true')
+    const trig = w.find('[data-testid="scope-trigger"]')
+    expect(trig.find('[data-testid="animal-avatar"]').exists()).toBe(true)
+    await trig.trigger('click')
+    const opt = w.find('[data-testid="private-tab-option"]')
+    expect(opt.attributes('aria-selected')).toBe('true')
+    expect(opt.classes()).toContain('bg-ink')
   })
 
-  it('2개 이상이면 "방 (n)" 후 팝오버에서 상대를 고른다', async () => {
+  it('방이 여러 개여도 같은 목록에서 상대를 고른다', async () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [room('prv-a', 1), room('prv-b', 2)] } })
-    const tab = w.find('[data-testid="private-tab"]')
-    expect(tab.text()).toBe('방 (2)')
-    expect(w.find('[data-testid="private-tab-popover"]').exists()).toBe(false)
-    await tab.trigger('click')
+    await w.find('[data-testid="scope-trigger"]').trigger('click')
     const options = w.findAll('[data-testid="private-tab-option"]')
     expect(options).toHaveLength(2)
     await options[1].trigger('click')
     expect(w.emitted('select')[0]).toEqual(['prv:prv-b'])
-    expect(w.find('[data-testid="private-tab-popover"]').exists()).toBe(false)
+    expect(w.find('[data-testid="scope-menu"]').exists()).toBe(false)
+  })
+
+  it('highlightRoomId가 있으면 트리거가 한 번 강조된다', () => {
+    const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [room('prv-a')], highlightRoomId: 'prv-a' } })
+    expect(w.find('[data-testid="scope-trigger"]').classes()).toContain('pair-tab-pulse')
   })
 })
 

@@ -35,7 +35,6 @@ const emit = defineEmits(['select', 'group-create'])
 
 const activeRoomId = computed(() => privateRoomIdOfScope(props.scope))
 const privateActive = computed(() => isPrivateScope(props.scope))
-const single = computed(() => props.privateRooms.length === 1 ? props.privateRooms[0] : null)
 const highlighted = computed(() => !!props.highlightRoomId && props.privateRooms.some((r) => r.roomId === props.highlightRoomId))
 
 const peerName = (room) => (isValidIdentity(room.peer?.identity) ? identityName(room.peer.identity, t) : t('pair.unknownDevice'))
@@ -43,14 +42,14 @@ const peerName = (room) => (isValidIdentity(room.peer?.identity) ? identityName(
 const isGroup = (room) => isGroupRoomId(room?.roomId)
 const groupName = (room) => roomDisplayName(props.privateRooms, room.roomId, t('group.unnamed'), peerName)
 const roomLabel = (room) => roomDisplayName(props.privateRooms, room.roomId, t('group.unnamed'), peerName)
-const hasPrivate = computed(() => props.privateRooms.length > 0)
-const manyLabel = computed(() =>
-  props.privateRooms.every(isGroup)
-    ? `${t('group.createShort')} (${props.privateRooms.length})`
-    : t('pair.tabMany', { n: props.privateRooms.length })
-)
+const currentRoom = computed(() => props.privateRooms.find((r) => r.roomId === activeRoomId.value) || null)
+const currentLabel = computed(() => {
+  if (props.scope === 'global') return t('shareScope.global')
+  if (privateActive.value && currentRoom.value) return roomLabel(currentRoom.value)
+  return t('shareScope.ip')
+})
 
-// 2개 이상일 때 상대 고르는 팝오버
+// 방 선택 드롭다운
 const open = ref(false)
 const root = ref(null)
 const onPointerDown = (e) => { if (root.value && !root.value.contains(e.target)) open.value = false }
@@ -73,111 +72,99 @@ function pick(roomId) {
   open.value = false
   emit('select', scopeForPrivateRoom(roomId))
 }
+function pickScope(value) {
+  open.value = false
+  emit('select', value)
+}
+function createGroup() {
+  open.value = false
+  emit('group-create')
+}
 </script>
 
 <template>
-  <div
-    ref="root"
-    class="bleed-line-b relative flex items-stretch gap-1 mb-3 border-b border-border"
-    role="tablist"
-    :aria-label="t('shareScope.label')"
-  >
+  <div ref="root" class="relative min-w-0">
     <button
       type="button"
-      role="tab"
-      class="flex-1 flex items-center justify-center gap-2 min-h-[44px] rounded-none text-sm font-semibold border-b-2 -mb-px transition-colors"
-      :class="[hasPrivate ? 'px-2 whitespace-nowrap' : 'px-4', scope === 'ip' ? 'text-ink font-extrabold border-ink' : 'text-text-secondary border-transparent hover:bg-tint']"
-      :aria-selected="scope === 'ip'"
-      :title="t('shareScope.ipDescription')"
-      @click="emit('select', 'ip')"
+      class="min-h-[44px] max-w-full inline-flex items-center gap-2 px-3 rounded-none border-2 border-ink bg-transparent text-ink font-extrabold text-sm hover:bg-tint"
+      :class="highlighted ? 'pair-tab-pulse' : ''"
+      aria-haspopup="listbox"
+      :aria-expanded="open"
+      :aria-label="`${t('shareScope.label')}: ${currentLabel}`"
+      data-testid="scope-trigger"
+      @click="open = !open"
     >
-      {{ t('shareScope.ip') }}
+      <template v-if="privateActive && currentRoom">
+        <svg v-if="isGroup(currentRoom)" class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="group-tab-icon">
+              <circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17" cy="9" r="2.5" /><path d="M17.5 14.2c2.4.3 4 2.1 4 4.8" />
+            </svg>
+            <PairPeerAvatar v-else :device="currentRoom.peer" size="sm" />
+      </template>
+      <span class="min-w-0 truncate" data-testid="scope-current">{{ currentLabel }}</span>
+      <svg class="w-4 h-4 shrink-0 transition-transform" :class="open ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
     </button>
-    <button
-      type="button"
-      role="tab"
-      class="flex-1 flex items-center justify-center gap-2 min-h-[44px] rounded-none text-sm font-semibold border-b-2 -mb-px transition-colors"
-      :class="[hasPrivate ? 'px-2 whitespace-nowrap' : 'px-4', scope === 'global' ? 'text-ink font-extrabold border-ink' : 'text-text-secondary border-transparent hover:bg-tint']"
-      :aria-selected="scope === 'global'"
-      :title="t('shareScope.globalDescription')"
-      @click="emit('select', 'global')"
+    <ul
+      v-if="open"
+      role="listbox"
+      :aria-label="t('shareScope.label')"
+      class="absolute left-0 top-full mt-1 z-30 min-w-[14rem] max-w-[calc(100vw-2rem)] bg-surface border-2 border-ink rounded-none p-0 m-0 list-none"
+      data-testid="scope-menu"
     >
-      {{ t('shareScope.global') }}
-    </button>
-
-    <!-- 1:1 탭: 연결이 있을 때만 -->
-    <button
-      v-if="single"
-      type="button"
-      role="tab"
-      class="flex-1 flex items-center justify-center min-h-[44px] rounded-none text-sm font-semibold border-b-2 -mb-px transition-colors"
-      :class="[isGroup(single) ? 'min-w-0 overflow-hidden gap-1 px-2' : 'gap-2 px-3', privateActive ? 'text-ink font-extrabold border-ink' : 'text-text-secondary border-transparent hover:bg-tint', highlighted ? 'pair-tab-pulse' : '']"
-      :aria-selected="privateActive"
-      :title="isGroup(single) ? groupName(single) : t('pair.tabTitle', { name: peerName(single) })"
-      :aria-label="isGroup(single) ? groupName(single) : t('pair.tabTitle', { name: peerName(single) })"
-      data-testid="private-tab"
-      @click="pick(single.roomId)"
-    >
-      <svg v-if="isGroup(single)" class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="group-tab-icon">
-        <circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17" cy="9" r="2.5" /><path d="M17.5 14.2c2.4.3 4 2.1 4 4.8" />
-      </svg>
-      <PairPeerAvatar v-else :device="single.peer" size="sm" />
-      <span :class="isGroup(single) ? 'min-w-0 max-w-[10rem] truncate whitespace-nowrap overflow-hidden text-ellipsis' : ''" :data-testid="isGroup(single) ? 'group-tab-name' : undefined">{{ isGroup(single) ? groupName(single) : t('pair.tab') }}</span>
-    </button>
-    <template v-else-if="privateRooms.length > 1">
-      <button
-        type="button"
-        role="tab"
-        class="flex-1 flex items-center justify-center gap-2 px-3 min-h-[44px] rounded-none text-sm font-semibold border-b-2 -mb-px transition-colors"
-        :class="[privateActive ? 'text-ink font-extrabold border-ink' : 'text-text-secondary border-transparent hover:bg-tint', highlighted ? 'pair-tab-pulse' : '']"
-        :aria-selected="privateActive"
-        aria-haspopup="listbox"
-        :aria-expanded="open"
-        data-testid="private-tab"
-        @click="open = !open"
-      >
-        {{ manyLabel }}
-      </button>
-      <ul
-        v-if="open"
-        role="listbox"
-        class="absolute right-0 top-full mt-1 z-30 min-w-[12rem] bg-surface border-2 border-ink rounded-xl p-1 m-0 list-none"
-        data-testid="private-tab-popover"
-      >
-        <li v-for="room in privateRooms" :key="room.roomId" role="presentation">
-          <button
-            type="button"
-            role="option"
-            class="w-full flex items-center gap-2 min-h-[44px] px-3 rounded-none text-sm text-left hover:bg-tint"
-            :class="activeRoomId === room.roomId ? 'font-semibold text-scope-private' : 'text-text-primary'"
-            :aria-selected="activeRoomId === room.roomId"
-            data-testid="private-tab-option"
-            @click="pick(room.roomId)"
-          >
-            <svg v-if="isGroup(room)" class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="group-tab-icon">
+      <li role="presentation">
+        <button
+          type="button"
+          role="option"
+          class="w-full flex items-center gap-2 min-h-[44px] px-3 text-sm text-left hover:bg-tint rounded-none"
+          :class="scope === 'ip' ? 'bg-ink text-on-ink font-extrabold' : 'text-text-primary'"
+          :aria-selected="scope === 'ip'"
+          :title="t('shareScope.ipDescription')"
+          data-testid="scope-option-ip"
+          @click="pickScope('ip')"
+        >{{ t('shareScope.ip') }}</button>
+      </li>
+      <li role="presentation">
+        <button
+          type="button"
+          role="option"
+          class="w-full flex items-center gap-2 min-h-[44px] px-3 text-sm text-left hover:bg-tint rounded-none"
+          :class="scope === 'global' ? 'bg-ink text-on-ink font-extrabold' : 'text-text-primary'"
+          :aria-selected="scope === 'global'"
+          :title="t('shareScope.globalDescription')"
+          data-testid="scope-option-global"
+          @click="pickScope('global')"
+        >{{ t('shareScope.global') }}</button>
+      </li>
+      <li v-for="room in privateRooms" :key="room.roomId" role="presentation">
+        <button
+          type="button"
+          role="option"
+          class="w-full flex items-center gap-2 min-h-[44px] px-3 text-sm text-left hover:bg-tint rounded-none"
+          :class="activeRoomId === room.roomId ? 'bg-ink text-on-ink font-extrabold' : 'text-text-primary'"
+          :aria-selected="activeRoomId === room.roomId"
+          data-testid="private-tab-option"
+          @click="pick(room.roomId)"
+        >
+          <svg v-if="isGroup(room)" class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="group-tab-icon">
               <circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17" cy="9" r="2.5" /><path d="M17.5 14.2c2.4.3 4 2.1 4 4.8" />
             </svg>
             <PairPeerAvatar v-else :device="room.peer" size="sm" />
-            <span class="truncate">{{ roomLabel(room) }}</span>
-          </button>
-        </li>
-      </ul>
-    </template>
-
-    <!-- 그룹 방 만들기 -->
-    <button
-      v-if="groupCreate"
-      type="button"
-      class="shrink-0 flex items-center justify-center gap-1 min-h-[44px] rounded-none text-sm font-semibold text-text-secondary hover:bg-tint transition-colors whitespace-nowrap"
-      :class="hasPrivate ? 'px-2' : 'px-3'"
-      :aria-label="t('group.create')"
-      :title="t('group.create')"
-      data-testid="group-create"
-      @click="emit('group-create')"
-    >
-      <span aria-hidden="true">＋</span>
-      <span aria-hidden="true">{{ t('group.createShort') }}</span>
-    </button>
+          <span class="truncate" :data-testid="isGroup(room) ? 'group-tab-name' : undefined">{{ roomLabel(room) }}</span>
+        </button>
+      </li>
+      <li v-if="groupCreate" role="presentation" class="border-t border-border">
+        <button
+          type="button"
+          class="w-full flex items-center gap-2 min-h-[44px] px-3 text-sm text-left hover:bg-tint rounded-none font-semibold text-text-primary"
+          :aria-label="t('group.create')"
+          :title="t('group.create')"
+          data-testid="group-create"
+          @click="createGroup"
+        >
+          <span aria-hidden="true">＋</span>
+          <span aria-hidden="true">{{ t('group.createShort') }}</span>
+        </button>
+      </li>
+    </ul>
   </div>
 </template>
 

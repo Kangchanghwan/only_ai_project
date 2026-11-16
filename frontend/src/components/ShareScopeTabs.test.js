@@ -3,47 +3,61 @@ import { mount } from '@vue/test-utils'
 import ShareScopeTabs from './ShareScopeTabs.vue'
 import i18n from '../i18n/index.js'
 
-const mountOptions = { global: { plugins: [i18n] } }
+const mountOptions = { global: { plugins: [i18n] }, attachTo: document.body }
 
-describe('ShareScopeTabs', () => {
-  it('role=tablist 컨테이너와 role=tab 버튼 2개를 렌더링한다', () => {
+describe('ShareScopeTabs (범위 드롭다운)', () => {
+  it('닫혀 있을 때는 현재 범위 이름만 보이고 메뉴는 없다', () => {
+    const wrapper = mount(ShareScopeTabs, { ...mountOptions, props: { scope: 'ip' } })
+    expect(wrapper.find('[data-testid="scope-current"]').text()).toBe('같은 네트워크')
+    expect(wrapper.find('[data-testid="scope-menu"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="scope-trigger"]').attributes('aria-expanded')).toBe('false')
+  })
+
+  it('열면 role=listbox에 같은 네트워크/전체 공유 option 2개', async () => {
     const wrapper = mount(ShareScopeTabs, mountOptions)
-
-    expect(wrapper.find('[role="tablist"]').exists()).toBe(true)
-    expect(wrapper.findAll('[role="tab"]')).toHaveLength(2)
+    await wrapper.find('[data-testid="scope-trigger"]').trigger('click')
+    expect(wrapper.find('[role="listbox"]').exists()).toBe(true)
+    expect(wrapper.findAll('[role="option"]')).toHaveLength(2)
   })
 
-  it('scope가 ip이면 첫 번째 탭이 활성(aria-selected=true, coral 배경)이다', () => {
+  it('scope가 ip/global이면 해당 option이 aria-selected + ink 채움', async () => {
+    for (const [scope, idx] of [['ip', 0], ['global', 1]]) {
+      const wrapper = mount(ShareScopeTabs, { ...mountOptions, props: { scope } })
+      await wrapper.find('[data-testid="scope-trigger"]').trigger('click')
+      const opts = wrapper.findAll('[role="option"]')
+      expect(opts[idx].attributes('aria-selected')).toBe('true')
+      expect(opts[idx].classes()).toContain('bg-ink')
+      expect(opts[1 - idx].attributes('aria-selected')).toBe('false')
+    }
+  })
+
+  it('전체 공유 option 클릭 시 select(global)을 올리고 메뉴가 닫힌다', async () => {
     const wrapper = mount(ShareScopeTabs, { ...mountOptions, props: { scope: 'ip' } })
-    const tabs = wrapper.findAll('[role="tab"]')
-
-    expect(tabs[0].attributes('aria-selected')).toBe('true')
-    expect(tabs[0].classes()).toContain('border-ink')
-    expect(tabs[1].attributes('aria-selected')).toBe('false')
-  })
-
-  it('scope가 global이면 두 번째 탭이 활성(aria-selected=true, sage 배경)이다', () => {
-    const wrapper = mount(ShareScopeTabs, { ...mountOptions, props: { scope: 'global' } })
-    const tabs = wrapper.findAll('[role="tab"]')
-
-    expect(tabs[1].attributes('aria-selected')).toBe('true')
-    expect(tabs[1].classes()).toContain('border-ink')
-    expect(tabs[0].attributes('aria-selected')).toBe('false')
-  })
-
-  it('두 번째 탭 클릭 시 select 이벤트가 global과 함께 발생한다', async () => {
-    const wrapper = mount(ShareScopeTabs, { ...mountOptions, props: { scope: 'ip' } })
-    const tabs = wrapper.findAll('[role="tab"]')
-
-    await tabs[1].trigger('click')
-
-    expect(wrapper.emitted('select')).toBeTruthy()
+    await wrapper.find('[data-testid="scope-trigger"]').trigger('click')
+    await wrapper.find('[data-testid="scope-option-global"]').trigger('click')
     expect(wrapper.emitted('select')[0]).toEqual(['global'])
+    expect(wrapper.find('[data-testid="scope-menu"]').exists()).toBe(false)
   })
 
-  it('탭 버튼 안에는 ConnectedDevices가 더 이상 렌더링되지 않는다', () => {
-    const wrapper = mount(ShareScopeTabs, mountOptions)
+  it('scope가 global이면 트리거에 "전체 공유"가 보인다', () => {
+    const wrapper = mount(ShareScopeTabs, { ...mountOptions, props: { scope: 'global' } })
+    expect(wrapper.find('[data-testid="scope-current"]').text()).toBe('전체 공유')
+  })
 
+  it('Esc와 바깥 클릭으로 닫힌다', async () => {
+    const wrapper = mount(ShareScopeTabs, mountOptions)
+    await wrapper.find('[data-testid="scope-trigger"]').trigger('click')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-testid="scope-menu"]').exists()).toBe(false)
+    await wrapper.find('[data-testid="scope-trigger"]').trigger('click')
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-testid="scope-menu"]').exists()).toBe(false)
+  })
+
+  it('ConnectedDevices는 렌더링하지 않는다', () => {
+    const wrapper = mount(ShareScopeTabs, mountOptions)
     expect(wrapper.findAllComponents({ name: 'ConnectedDevices' })).toHaveLength(0)
   })
 })

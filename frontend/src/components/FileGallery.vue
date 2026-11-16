@@ -182,8 +182,9 @@ onUnmounted(() => {
     <!-- 보내기: 파일 선택(primary) + 붙여넣기(secondary, compact) -->
     <slot name="send">
       <div class="flex flex-col gap-3 mb-2" data-testid="send-area">
-        <FileUploadSection :scope="scope" @upload-files="$emit('upload-files', $event)" />
-        <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
+        <FileUploadSection :scope="scope" :compact="files.length > 0" @upload-files="$emit('upload-files', $event)">
+          <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
+        </FileUploadSection>
       </div>
     </slot>
 

@@ -51,6 +51,32 @@ describe('RoomScreen.vue', () => {
     globalRoomDevices: []
   }
 
+  describe('방·기기 줄', () => {
+    const mountScope = (scope, extra = {}) => mount(RoomScreen, {
+      props: { ...defaultProps, scope, ...extra },
+      global: { plugins: [i18n], stubs }
+    })
+
+    it('방 줄에 범위 선택과 기기 카드가 함께 있고 왼쪽 기기 패널(device-panel)은 없다', () => {
+      const w = mountScope('ip', { ipRoomDevices: [{ socketId: 'a', browser: 'x', os: 'y' }] })
+      const row = w.find('[data-testid="room-row"]')
+      expect(row.find('.share-scope-tabs-stub').exists()).toBe(true)
+      expect(row.find('[data-testid="connection-card"]').exists()).toBe(true)
+      expect(w.find('[data-testid="device-panel"]').exists()).toBe(false)
+    })
+
+    it('같은 네트워크면 ipNotice 한 줄이 항상 보인다', () => {
+      const w = mountScope('ip')
+      expect(w.find('[data-testid="ip-notice"]').text()).toContain('같은 네트워크를 쓰는 다른 사람도 볼 수 있어요')
+    })
+
+    it('전체 공유면 경고 박스만 보이고 ipNotice 줄은 없다', () => {
+      const w = mountScope('global')
+      expect(w.find('[data-testid="global-warning"]').exists()).toBe(true)
+      expect(w.find('[data-testid="ip-notice"]').exists()).toBe(false)
+    })
+  })
+
   describe('컴포넌트 렌더링', () => {
     it('모든 하위 컴포넌트가 렌더링되어야 한다', () => {
       const wrapper = mount(RoomScreen, {
