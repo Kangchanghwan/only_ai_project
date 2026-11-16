@@ -56,7 +56,7 @@ const { currentTheme, toggleTheme } = useTheme()
   padding: 0.5rem;
   background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+  border-radius: 0;
   color: var(--color-text-primary);
   font-size: 1.25rem;
   cursor: pointer;

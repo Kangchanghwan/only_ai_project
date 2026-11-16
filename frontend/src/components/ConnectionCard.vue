@@ -187,7 +187,7 @@ const shortcutName = computed(() => {
       <button
         v-if="pair"
         type="button"
-        class="w-full min-h-[44px] px-3 rounded-full border border-scope-private text-scope-private text-xs font-semibold leading-snug"
+        class="w-full min-h-[44px] px-3 rounded-none border border-scope-private text-scope-private text-xs font-semibold leading-snug"
         data-testid="empty-state-group-create"
         @click="emit('group-create')"
       >{{ t('group.emptyCta') }}</button>
@@ -195,7 +195,7 @@ const shortcutName = computed(() => {
       <button
         v-if="pair"
         type="button"
-        class="w-full min-h-[44px] px-3 rounded-full border border-border text-text-primary text-xs font-semibold leading-snug"
+        class="w-full min-h-[44px] px-3 rounded-none border-2 border-ink text-ink hover:bg-tint text-xs font-bold leading-snug"
         data-testid="empty-state-code-enter"
         @click="emit('code-enter')"
       >{{ t('code.enter') }}</button>
@@ -206,7 +206,7 @@ const shortcutName = computed(() => {
     <div v-if="shortcutDevice" class="mt-3" data-testid="pair-shortcut-wrap">
       <button
         type="button"
-        class="w-full min-h-[44px] px-4 rounded-full border border-scope-private text-scope-private text-sm font-semibold truncate"
+        class="w-full min-h-[44px] px-4 rounded-none border border-scope-private text-scope-private text-sm font-semibold truncate"
         data-testid="pair-shortcut"
         @click="pair.invite(shortcutDevice)"
       >{{ t('pair.shortcut', { name: shortcutName }) }}</button>

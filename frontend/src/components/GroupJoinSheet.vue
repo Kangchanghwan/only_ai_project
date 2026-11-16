@@ -46,7 +46,7 @@ function onKeydown(event) {
         aria-modal="true"
         aria-labelledby="group-join-title"
         aria-describedby="group-join-body"
-        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border border-border border-t-4 border-t-scope-private p-5 shadow-xl"
+        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <h2 id="group-join-title" class="text-base font-semibold m-0" data-testid="group-join-title">{{ t('group.joinTitle', { name: sheet.name }) }}</h2>
@@ -55,14 +55,14 @@ function onKeydown(event) {
           <button
             ref="cancelBtn"
             type="button"
-            class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+            class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
             :disabled="sheet.busy"
             data-testid="group-join-cancel"
             @click="emit('cancel')"
           >{{ t('group.cancel') }}</button>
           <button
             type="button"
-            class="min-h-[44px] px-4 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
+            class="min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
             :disabled="sheet.busy"
             data-testid="group-join-confirm"
             @click="emit('confirm')"

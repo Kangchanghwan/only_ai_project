@@ -331,7 +331,7 @@ onUnmounted(() => clearInterval(revealTimer))
     <div class="file-actions flex items-center gap-2 shrink-0 ml-auto">
       <button
         type="button"
-        class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-full text-white text-sm font-semibold inline-flex items-center justify-center gap-1"
+        class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none text-white text-sm font-extrabold inline-flex items-center justify-center gap-1"
         :class="[accentBg, { 'opacity-50': lockedOut && !canReceiveDirectly }]"
         :disabled="busy || (lockedOut && !canReceiveDirectly)"
         :aria-label="busy ? (phase === 'checking' ? t('lock.checking') : t('lock.decrypting', { percent })) : `${canReceiveDirectly ? t('file.receive') : t('lock.unlock')}: ${isPlain ? displayName : t('lock.lockedFile')}`"
@@ -353,7 +353,7 @@ onUnmounted(() => clearInterval(revealTimer))
 
       <button
         type="button"
-        class="more-btn shrink-0 w-11 h-11 flex items-center justify-center rounded-full border border-border bg-background text-text-primary"
+        class="more-btn shrink-0 w-11 h-11 flex items-center justify-center rounded-none border border-border bg-background text-text-primary"
         :title="t('file.moreActions')"
         :aria-label="t('file.moreActions')"
         aria-haspopup="dialog"
@@ -431,13 +431,13 @@ onUnmounted(() => clearInterval(revealTimer))
             <div class="flex gap-2 justify-end mt-2">
               <button
                 type="button"
-                class="min-h-[44px] px-5 rounded-full border border-border text-sm font-semibold text-text-primary"
+                class="min-h-[44px] px-5 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
                 :disabled="phase === 'checking'"
                 @click="closePasswordSheet"
               >{{ t('notification.cancel') }}</button>
               <button
                 type="submit"
-                class="min-h-[44px] px-5 rounded-full text-white text-sm font-semibold disabled:opacity-50"
+                class="min-h-[44px] px-5 rounded-none text-white text-sm font-extrabold disabled:opacity-50"
                 :class="accentBg"
                 :disabled="!password || lockedOut || phase === 'checking'"
                 data-testid="locked-submit"

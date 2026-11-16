@@ -62,7 +62,7 @@ const cancellableCount = computed(() => {
   margin: 1rem 0;
   padding: 0.75rem 1rem;
   border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
+  border-radius: 0;
   background: var(--color-background);
   color: var(--color-text-primary);
 }
@@ -82,7 +82,7 @@ const cancellableCount = computed(() => {
   background: transparent;
   border: 1px solid var(--color-border);
   color: var(--color-text-primary);
-  border-radius: 0.5rem;
+  border-radius: 0;
   font-size: 0.8125rem;
   cursor: pointer;
 }

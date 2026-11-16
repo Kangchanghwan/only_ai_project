@@ -1519,7 +1519,7 @@ onUnmounted(() => {
   max-width: 100%;
   min-height: 100dvh;
   background-color: var(--color-surface);
-  box-shadow: 0 0 3.125rem rgba(22, 28, 1, 0.1);
+  box-shadow: none;
 }
 
 .app-frame--narrow {

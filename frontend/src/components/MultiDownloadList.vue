@@ -55,7 +55,7 @@ function buttonText(item) {
       </div>
       <button
         type="button"
-        class="min-h-[44px] px-4 rounded-full text-sm font-semibold shrink-0 disabled:opacity-50"
+        class="min-h-[44px] px-4 rounded-none text-sm font-semibold shrink-0 disabled:opacity-50"
         :class="item.state === 'idle' || item.state === 'failed' ? 'bg-primary text-white' : 'border border-border'"
         :disabled="item.state === 'running'"
         :aria-label="`${buttonText(item)}: ${label(item)}`"

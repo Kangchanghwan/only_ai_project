@@ -64,16 +64,16 @@ const joinedText = computed(() => {
 </script>
 
 <template>
-  <li class="flex flex-col min-w-0" data-testid="device-row">
+  <li class="flex flex-col min-w-0 border-b border-border py-2 last:border-b-0" data-testid="device-row">
     <div class="flex items-center gap-3 min-w-0" data-testid="device-row-header">
       <AnimalAvatar v-if="isValidIdentity(device.identity)" :identity="device.identity" size="md" />
-      <span v-else class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-lg shrink-0">{{ icon(device.deviceType) }}</span>
+      <span v-else class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-tint text-lg shrink-0">{{ icon(device.deviceType) }}</span>
       <div class="min-w-0 flex-1">
         <div class="flex items-center gap-2 min-w-0">
           <span class="text-sm font-semibold truncate">
             {{ isValidIdentity(device.identity) ? identityName(device.identity, t) : legacyLabel(device) }}
           </span>
-          <span v-if="isMe" class="text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-primary text-white shrink-0" data-testid="me-badge">{{ t('identity.me') }}</span>
+          <span v-if="isMe" class="text-[11px] font-extrabold px-1.5 py-0.5 rounded-xs bg-ink text-on-ink shrink-0" data-testid="me-badge">{{ t('identity.me') }}</span>
         </div>
         <div v-if="isValidIdentity(device.identity)" class="text-xs text-text-secondary truncate">{{ deviceAndBrowser(device, t) }}</div>
         <div v-if="joinedText && !isPending" class="text-xs text-text-secondary">{{ joinedText }}</div>
@@ -82,7 +82,7 @@ const joinedText = computed(() => {
       <template v-if="pair && !isMe">
         <span
           v-if="isPending"
-          class="shrink-0 inline-flex items-center whitespace-nowrap text-xs font-semibold px-2.5 py-1 rounded-full bg-scope-private/10 text-scope-private"
+          class="shrink-0 inline-flex items-center whitespace-nowrap text-xs font-semibold px-2.5 py-1 rounded-xs bg-scope-private/10 text-scope-private"
           role="status"
           data-testid="pair-pending-text"
         >{{ confirmed ? t('pair.peerChecking') : t('pair.checking') }}<template v-if="seconds !== null"> · {{ t('pair.pendingSeconds', { n: seconds }) }}</template></span>
@@ -142,7 +142,7 @@ const joinedText = computed(() => {
       <div v-else-if="wide" class="flex flex-col">
         <button
           type="button"
-          class="w-full min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+          class="w-full min-h-[44px] rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
           :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"
@@ -153,14 +153,14 @@ const joinedText = computed(() => {
       <div v-else class="grid grid-cols-2 gap-2">
         <button
           type="button"
-          class="min-h-[44px] rounded-full border border-border text-sm font-semibold disabled:opacity-50"
+          class="min-h-[44px] rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold disabled:opacity-50"
           :disabled="!st.sessionId"
           data-testid="pair-cancel-button"
           @click="pair.cancel(st.sessionId)"
         >{{ t('pair.cancel') }}</button>
         <button
           type="button"
-          class="min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+          class="min-h-[44px] rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
           :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"

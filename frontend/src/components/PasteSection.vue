@@ -15,7 +15,7 @@ const emit = defineEmits(['paste-content'])
     <p class="text-xs text-text-secondary m-0 min-w-0 flex-1 basis-40">{{ t('clipboard.pasteDescription') }} {{ t('file.uploadPasteHint') }}</p>
     <button
       type="button"
-      class="min-h-[44px] px-4 rounded-full border border-border bg-background text-sm font-semibold text-text-primary hover:border-primary inline-flex items-center gap-2"
+      class="min-h-[44px] px-4 rounded-none border-2 border-ink bg-transparent text-sm font-bold text-ink hover:bg-tint inline-flex items-center gap-2"
       data-testid="paste-button"
       @click="emit('paste-content')"
     >

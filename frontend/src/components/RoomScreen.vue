@@ -262,7 +262,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 
         <main class="ws-main bg-surface rounded-xl p-4 sm:p-6 border border-border min-w-0">
           <div
-            class="flex gap-2 mb-4 p-1 w-fit max-w-full rounded-full border border-border bg-background"
+            class="flex mb-4 w-fit max-w-full rounded-none"
             role="tablist"
             :aria-label="t('room.mobilePanelLabel')"
           >
@@ -270,8 +270,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
               type="button"
               role="tab"
               :aria-selected="mobilePanel === 'files'"
-              class="min-h-[44px] px-4 rounded-full text-sm font-semibold transition-colors"
-              :class="mobilePanel === 'files' ? [accentBg, 'text-white'] : 'text-text-secondary'"
+              class="min-h-[44px] px-4 rounded-none border border-border text-sm font-semibold transition-colors"
+              :class="mobilePanel === 'files' ? 'bg-ink text-on-ink border-ink' : 'text-text-secondary'"
               @click="mobilePanel = 'files'"
             >
               {{ t('room.filesTab') }} ({{ files.length }})
@@ -280,8 +280,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
               type="button"
               role="tab"
               :aria-selected="mobilePanel === 'text'"
-              class="min-h-[44px] px-4 rounded-full text-sm font-semibold transition-colors"
-              :class="mobilePanel === 'text' ? [accentBg, 'text-white'] : 'text-text-secondary'"
+              class="min-h-[44px] px-4 rounded-none border border-border -ml-px text-sm font-semibold transition-colors"
+              :class="mobilePanel === 'text' ? 'bg-ink text-on-ink border-ink' : 'text-text-secondary'"
               @click="mobilePanel = 'text'"
             >
               {{ t('room.textTab') }} ({{ texts.length }})
@@ -319,7 +319,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                     <button
                       v-else-if="reinviteDevice"
                       type="button"
-                      class="mt-3 min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold"
+                      class="mt-3 min-h-[44px] px-5 rounded-none bg-scope-private text-white text-sm font-semibold"
                       data-testid="pair-reinvite"
                       @click="$emit('pair-invite', reinviteDevice)"
                     >{{ t('pair.reconnect') }}</button>
@@ -359,9 +359,9 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       </div>
 
       <!-- 보관/사용 안내 (details 본문은 DOM에 그대로 있어 크롤링 가능) -->
-      <details class="mt-6 bg-surface border border-border rounded-xl p-4 text-sm" data-testid="usage-notes" open>
-        <summary class="cursor-pointer min-h-[44px] flex items-center font-semibold">{{ t('guide.title') }}</summary>
-        <ul class="mt-2 flex flex-col gap-2 list-disc pl-5 text-text-secondary leading-relaxed">
+      <details class="mt-6 bg-transparent border-0 border-t-2 border-ink rounded-none pt-4 text-sm" data-testid="usage-notes" open>
+        <summary class="cursor-pointer min-h-[44px] flex items-center font-semibold"><span class="mr-2 inline-block border-2 border-ink px-[5px] text-[11px] font-extrabold leading-4 text-ink" aria-hidden="true">01</span><span class="font-extrabold">{{ t('guide.title') }}</span></summary>
+        <ul class="mt-2 flex flex-col list-none p-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
           <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
           <li v-else>{{ t('guide.retention') }}</li>
           <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>

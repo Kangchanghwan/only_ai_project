@@ -36,11 +36,11 @@ const emit = defineEmits(['cancel-upload', 'cancel-all'])
   transform: translateX(-50%);
   width: max-content;
   max-width: calc(100vw - 2rem);
-  background: rgba(20, 18, 16, 0.92);
-  color: #fff;
+  background: var(--color-ink);
+  color: var(--color-on-ink);
   padding: 0.75rem 1.25rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 0;
+  box-shadow: none;
   z-index: 1000;
   overflow-wrap: anywhere;
   text-align: center;

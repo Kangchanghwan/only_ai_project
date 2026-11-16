@@ -58,7 +58,7 @@ async function confirm() {
       @keydown.esc="emit('cancel')"
       @click.self="emit('cancel')"
     >
-      <div class="w-full max-w-sm bg-surface text-text-primary rounded-2xl border border-border p-5 shadow-xl">
+      <div class="w-full max-w-sm bg-surface text-text-primary rounded-2xl border-2 border-ink p-5">
         <h2 id="public-confirm-title" class="text-base font-semibold m-0">{{ t('publicConfirm.title') }}</h2>
         <p id="public-confirm-desc" class="mt-2 text-sm text-text-secondary leading-relaxed">{{ t('publicConfirm.body') }}</p>
         <div v-if="!alreadyLocked" class="mt-3">
@@ -77,8 +77,8 @@ async function confirm() {
         </div>
         <p v-else class="mt-3 text-xs text-text-secondary m-0" data-testid="public-confirm-locked">🔒 {{ t('lock.confirmAlreadyLocked') }}</p>
         <div class="mt-4 flex gap-2 justify-end flex-wrap">
-          <button ref="cancelBtn" type="button" class="min-h-[44px] px-5 rounded-full border border-border text-sm font-semibold" data-testid="public-confirm-cancel" @click="emit('cancel')">{{ t('notification.cancel') }}</button>
-          <button type="button" class="min-h-[44px] px-5 rounded-full bg-scope-global text-white text-sm font-semibold" data-testid="public-confirm-accept" :disabled="busy" @click="confirm">{{ busy ? t('lock.settingUp') : (password || alreadyLocked ? t('lock.confirmLockedSend') : t('publicConfirm.confirm')) }}</button>
+          <button ref="cancelBtn" type="button" class="min-h-[44px] px-5 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold" data-testid="public-confirm-cancel" @click="emit('cancel')">{{ t('notification.cancel') }}</button>
+          <button type="button" class="min-h-[44px] px-5 rounded-none bg-scope-global text-white text-sm font-semibold" data-testid="public-confirm-accept" :disabled="busy" @click="confirm">{{ busy ? t('lock.settingUp') : (password || alreadyLocked ? t('lock.confirmLockedSend') : t('publicConfirm.confirm')) }}</button>
         </div>
       </div>
     </div>

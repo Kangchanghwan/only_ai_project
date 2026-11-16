@@ -44,7 +44,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="room-add-title"
-        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border border-border border-t-4 border-t-scope-private p-5 shadow-xl"
+        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <h2 id="room-add-title" class="text-base font-semibold m-0">{{ t('code.addTitle') }}</h2>
@@ -72,7 +72,7 @@ function onKeydown(event) {
         <div class="mt-4 flex justify-end">
           <button
             type="button"
-            class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+            class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
             data-testid="room-add-close"
             @click="emit('close')"
           >{{ t('group.close') }}</button>

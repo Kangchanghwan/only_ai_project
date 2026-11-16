@@ -59,7 +59,7 @@ onUnmounted(() => {
       >
         <div
           data-testid="help-modal"
-          class="bg-surface rounded-2xl border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+          class="bg-surface rounded-2xl border-2 border-ink max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           @click.stop
         >
           <!-- 헤더 -->
@@ -93,27 +93,27 @@ onUnmounted(() => {
               </h3>
               <ul class="space-y-2 text-text-secondary">
                 <li class="flex items-start gap-2">
-                  <span class="text-primary mt-0.5">•</span>
+                  <span class="text-ink mt-0.5">•</span>
                   <span><strong class="text-text-primary">{{ t('help.feature1') }}</strong> {{ t('help.feature1Desc') }}</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-primary mt-0.5">•</span>
+                  <span class="text-ink mt-0.5">•</span>
                   <span><strong class="text-text-primary">{{ t('help.feature2') }}</strong> {{ t('help.feature2Desc') }}</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-primary mt-0.5">•</span>
+                  <span class="text-ink mt-0.5">•</span>
                   <span><strong class="text-text-primary">{{ t('help.feature3') }}</strong> {{ t('help.feature3Desc') }}</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-primary mt-0.5">•</span>
+                  <span class="text-ink mt-0.5">•</span>
                   <span><strong class="text-text-primary">{{ t('help.feature4') }}</strong> {{ t('help.feature4Desc') }}</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-primary mt-0.5">•</span>
+                  <span class="text-ink mt-0.5">•</span>
                   <span><strong class="text-text-primary">{{ t('help.feature5') }}</strong> {{ t('help.feature5Desc') }}</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-primary mt-0.5">•</span>
+                  <span class="text-ink mt-0.5">•</span>
                   <span><strong class="text-text-primary">{{ t('help.feature6') }}</strong> {{ t('help.feature6Desc') }}</span>
                 </li>
               </ul>
@@ -251,8 +251,8 @@ onUnmounted(() => {
             </section>
 
             <!-- 팁 -->
-            <section class="bg-primary/10 border border-primary/30 rounded-lg p-4">
-              <h3 class="text-lg font-semibold text-primary mb-2 flex items-center gap-2">
+            <section class="bg-tint border border-ink rounded-lg p-4">
+              <h3 class="text-lg font-semibold text-ink mb-2 flex items-center gap-2">
                 💡 {{ t('help.tipsTitle') }}
               </h3>
               <ul class="text-sm text-text-secondary space-y-1 ml-4">
@@ -273,7 +273,7 @@ onUnmounted(() => {
                   href="https://github.com/Kangchanghwan/only_ai_project/blob/master/PRIVACY.md"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-primary hover:underline"
+                  class="text-ink hover:underline"
                 >{{ t('footer.privacyPolicy') }}</a>
                 <span class="text-text-secondary/50">·</span>
                 <a
@@ -281,7 +281,7 @@ onUnmounted(() => {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-testid="feedback-link"
-                  class="text-primary hover:underline"
+                  class="text-ink hover:underline"
                   @click="trackEvent('feedback_click')"
                 >{{ t('footer.feedback') }}</a>
                 <span class="text-text-secondary/50">·</span>
@@ -289,7 +289,7 @@ onUnmounted(() => {
                   href="https://github.com/Kangchanghwan/only_ai_project"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-primary hover:underline"
+                  class="text-ink hover:underline"
                 >{{ t('footer.sourceOnGitHub') }}</a>
                 <span class="text-text-secondary/50">·</span>
                 <span>
@@ -298,7 +298,7 @@ onUnmounted(() => {
                     href="https://github.com/Kangchanghwan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-primary hover:underline"
+                    class="text-ink hover:underline"
                   >Kang Chang Hwan</a>
                 </span>
                 <span class="text-text-secondary/50">·</span>

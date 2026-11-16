@@ -125,7 +125,7 @@ onUnmounted(() => {
   gap: 0.5rem;
   padding: 2.5rem 3rem;
   border: 3px dashed var(--color-primary);
-  border-radius: 1.5rem;
+  border-radius: 0;
   background: color-mix(in srgb, var(--color-surface) 92%, transparent);
   color: var(--color-primary);
   text-align: center;

@@ -69,7 +69,7 @@ onMounted(async () => {
    <div class="mx-auto w-full max-w-[1040px] box-border px-4 sm:px-6 py-2 flex justify-between items-center flex-wrap gap-x-4 gap-y-1">
     <div class="flex items-center gap-3 text-2xl min-w-0">
       <span class="text-3xl sm:text-4xl" aria-hidden="true">📋</span>
-      <h1 class="font-display font-bold text-xl sm:text-2xl m-0 truncate">{{ t('app.title') }}</h1>
+      <h1 class="font-display font-extrabold text-ink text-xl sm:text-2xl m-0 truncate">{{ t('app.title') }}</h1>
     </div>
     <div class="flex items-center gap-2 sm:gap-4">
       <LanguageSelector />
@@ -77,7 +77,7 @@ onMounted(async () => {
       <button
         v-if="showInstall"
         type="button"
-        class="header-install-button h-11 min-w-11 px-0 sm:px-4 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 border-2 border-primary/30 hover:border-primary/50 w-11 sm:w-auto"
+        class="header-install-button h-11 min-w-11 px-0 sm:px-4 rounded-none bg-transparent hover:bg-tint text-ink font-bold text-sm transition-colors duration-200 flex items-center justify-center gap-2 border-2 border-ink w-11 sm:w-auto"
         :title="t('pwa.installAria')"
         :aria-label="t('pwa.installAria')"
         data-testid="header-install-button"
@@ -89,7 +89,7 @@ onMounted(async () => {
         <span class="hidden sm:inline whitespace-nowrap">{{ t('pwa.installLabel') }}</span>
       </button>
       <button
-        class="w-11 h-11 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-bold text-lg transition-all duration-200 flex items-center justify-center border-2 border-primary/30 hover:border-primary/50"
+        class="w-11 h-11 rounded-none bg-transparent hover:bg-tint text-ink font-bold text-lg transition-colors duration-200 flex items-center justify-center border border-border"
         @click="openHelpModal"
         :title="t('app.helpTitle')"
         :aria-label="t('app.help')"
@@ -99,12 +99,12 @@ onMounted(async () => {
       <button
         v-if="qrCodeDataUrl"
         type="button"
-        class="header-qr-button w-11 h-11 flex items-center justify-center bg-white rounded-lg border border-border hover:opacity-90 transition-opacity"
+        class="header-qr-button w-11 h-11 flex items-center justify-center bg-white rounded-none border border-border hover:opacity-90 transition-opacity"
         :title="t('qr.backgroundHint')"
         :aria-label="t('qr.backgroundHint')"
         @click="openQrZoom"
       >
-        <img :src="qrCodeDataUrl" alt="" class="w-full h-full rounded-lg" />
+        <img :src="qrCodeDataUrl" alt="" class="w-full h-full" />
       </button>
     </div>
    </div>

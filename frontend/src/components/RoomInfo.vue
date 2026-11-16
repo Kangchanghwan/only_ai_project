@@ -44,25 +44,25 @@ function closeQRModal() {
     <div class="flex items-center gap-4 text-xl min-h-[38px]">
       <span class="text-text-secondary">{{ t('room.currentRoomCode') }}</span>
       <div v-if="isConnecting" class="flex items-center gap-3 text-xl text-text-secondary">
-        <div class="w-6 h-6 border-3 border-border border-t-primary rounded-full animate-spin"></div>
+        <div class="w-6 h-6 border-3 border-border border-t-ink rounded-full animate-spin"></div>
         <span>{{ t('room.connecting') }}</span>
       </div>
       <template v-else-if="roomId">
         <span
-          class="font-bold text-2xl text-primary cursor-pointer hover:opacity-80 transition-opacity"
+          class="font-bold text-2xl text-ink cursor-pointer hover:opacity-80 transition-opacity"
           @click="$emit('copy-room-code')"
         >
           {{ roomId }}
         </span>
         <div class="flex gap-2">
           <button
-            class="bg-transparent border border-border text-text-secondary px-3 py-1 rounded-md cursor-pointer text-xs hover:bg-border hover:text-text-primary transition-colors"
+            class="bg-transparent border-2 border-ink text-ink font-bold px-3 py-1 rounded-none cursor-pointer text-xs hover:bg-tint transition-colors"
             @click="$emit('copy-room-code')"
           >
             {{ t('room.copy') }}
           </button>
           <button
-            class="bg-primary text-white px-3 py-1 rounded-md cursor-pointer text-xs hover:bg-primary/90 transition-colors flex items-center gap-1"
+            class="bg-ink text-on-ink font-bold px-3 py-1 rounded-none cursor-pointer text-xs hover:opacity-90 transition-colors flex items-center gap-1"
             @click="openQRModal"
             :title="t('room.qrShareTitle')"
           >
@@ -97,12 +97,12 @@ function closeQRModal() {
           type="text"
           :placeholder="t('room.enterCode')"
           maxlength="6"
-          class="bg-surface border border-border text-text-primary px-3 py-1.5 rounded-l-lg w-32 text-sm uppercase placeholder:text-text-secondary placeholder:normal-case focus:outline-none focus:border-primary"
+          class="bg-surface border border-border text-text-primary px-3 py-1.5 rounded-none w-32 text-sm uppercase placeholder:text-text-secondary placeholder:normal-case focus:outline-none focus:border-ink"
           :disabled="isConnecting"
           @keyup.enter="handleJoinOtherRoom"
         />
         <button
-          class="bg-primary text-white px-3 py-1.5 rounded-r-lg font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors text-sm"
+          class="bg-primary text-white px-3 py-1.5 rounded-none font-extrabold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-colors text-sm"
           :disabled="isConnecting"
           @click="handleJoinOtherRoom"
         >

@@ -98,7 +98,7 @@ function unlock() {
   gap: 0.3rem;
   min-height: 32px;
   padding: 0 0.75rem;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid var(--color-border);
   background: transparent;
   color: var(--color-text-secondary);
@@ -145,7 +145,7 @@ function unlock() {
   min-width: 0;
   min-height: 36px;
   padding: 0 0.625rem;
-  border-radius: 0.5rem;
+  border-radius: 0;
   border: 1px solid var(--color-border);
   background: var(--color-background);
   color: var(--color-text-primary);
@@ -154,9 +154,9 @@ function unlock() {
 .lock-apply {
   min-height: 36px;
   padding: 0 0.875rem;
-  border-radius: 0.5rem;
+  border-radius: 0;
   border: 0;
-  background: var(--color-primary);
+  background: var(--color-ink);
   color: #fff;
   font-size: 0.75rem;
   font-weight: 600;

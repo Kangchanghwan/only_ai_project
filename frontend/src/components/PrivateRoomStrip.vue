@@ -105,20 +105,20 @@ function doLeave() {
       </div>
       <button
         type="button"
-        class="shrink-0 min-h-[44px] px-4 rounded-full bg-scope-private text-white text-sm font-semibold"
+        class="shrink-0 min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold"
         data-testid="group-invite"
         @click="emit('invite', room.roomId)"
       >{{ t('group.invite') }}</button>
       <div class="relative shrink-0">
         <button
           type="button"
-          class="w-11 h-11 inline-flex items-center justify-center rounded-full text-text-secondary"
+          class="w-11 h-11 inline-flex items-center justify-center rounded-none text-text-secondary"
           :aria-label="t('file.moreActions')"
           :aria-expanded="menuOpen"
           data-testid="private-menu"
           @click="toggleMenu"
         >⋯</button>
-        <div v-if="menuOpen && !confirming" class="absolute right-0 top-full z-20 bg-surface border border-border rounded-lg shadow-lg min-w-[8rem]">
+        <div v-if="menuOpen && !confirming" class="absolute right-0 top-full z-20 bg-surface border-2 border-ink rounded-lg min-w-[8rem]">
           <button
             type="button"
             class="w-full min-h-[44px] px-4 text-left text-sm text-red-500"
@@ -132,8 +132,8 @@ function doLeave() {
       <p class="m-0 text-sm font-semibold">{{ isGroup ? t('group.leave') : t('pair.leaveConfirmTitle') }}</p>
       <p class="m-0 mt-1 text-xs text-text-secondary leading-relaxed">{{ isGroup ? t('group.leaveConfirm') : t('pair.leaveConfirmBody') }}</p>
       <div class="mt-2 flex gap-2 justify-end">
-        <button type="button" class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold" data-testid="private-leave-cancel" @click="closeAll">{{ t('notification.cancel') }}</button>
-        <button type="button" class="min-h-[44px] px-4 rounded-full bg-red-500 text-white text-sm font-semibold" data-testid="private-leave-ok" @click="doLeave">{{ isGroup ? t('group.leave') : t('pair.leave') }}</button>
+        <button type="button" class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold" data-testid="private-leave-cancel" @click="closeAll">{{ t('notification.cancel') }}</button>
+        <button type="button" class="min-h-[44px] px-4 rounded-none bg-red-500 text-white text-sm font-extrabold" data-testid="private-leave-ok" @click="doLeave">{{ isGroup ? t('group.leave') : t('pair.leave') }}</button>
       </div>
     </div>
   </div>

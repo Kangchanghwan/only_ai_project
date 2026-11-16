@@ -74,7 +74,7 @@ const links = computed(() =>
       v-if="altLink"
       :href="altLink.href"
       data-testid="landing-alt-link"
-      class="text-sm text-primary hover:underline"
+      class="text-sm text-ink hover:underline"
     >{{ altLink.label }}</a>
 
     <div class="bg-surface border border-border rounded-xl p-6">
@@ -117,7 +117,7 @@ const links = computed(() =>
       <h2 id="landing-more-title" class="font-display font-bold text-lg">{{ tc('landing.moreTitle') }}</h2>
       <ul class="mt-2 flex flex-col gap-2 text-base">
         <li v-for="link in links" :key="link.href">
-          <a :href="link.href" data-testid="landing-link" class="text-primary hover:underline">{{ tc(link.key) }}</a>
+          <a :href="link.href" data-testid="landing-link" class="text-ink hover:underline">{{ tc(link.key) }}</a>
         </li>
       </ul>
     </nav>

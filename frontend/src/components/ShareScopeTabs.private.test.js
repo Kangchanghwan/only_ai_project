@@ -27,7 +27,7 @@ describe('ShareScopeTabs 1:1 탭', () => {
   it('활성일 때 전용 파랑 배경', () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'prv:prv-a', privateRooms: [room('prv-a')] } })
     const tab = w.find('[data-testid="private-tab"]')
-    expect(tab.classes()).toContain('bg-scope-private')
+    expect(tab.classes()).toContain('border-ink')
     expect(tab.attributes('aria-selected')).toBe('true')
   })
 

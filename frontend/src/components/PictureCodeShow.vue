@@ -61,7 +61,7 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
             :class="tileState[i] === 'loaded' ? 'opacity-100' : 'opacity-0 absolute'"
             @load="markTile(i, 'loaded')" @error="markTile(i, 'failed')"
           />
-          <span v-if="!tileState[i]" class="inline-block w-5 h-5 rounded-full border-2 border-scope-private border-t-transparent animate-spin" aria-hidden="true" data-testid="picture-code-tile-spinner"></span>
+          <span v-if="!tileState[i]" class="inline-block w-5 h-5 rounded-none border-2 border-scope-private border-t-transparent animate-spin" aria-hidden="true" data-testid="picture-code-tile-spinner"></span>
         </template>
       </div>
     </div>
@@ -73,7 +73,7 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
       <span class="text-xs text-text-secondary" role="timer" data-testid="picture-code-left">{{ code ? leftText : '' }}</span>
       <button
         type="button"
-        class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+        class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
         data-testid="picture-code-renew"
         @click="emit('renew')"
       >{{ t('code.renew') }}</button>
@@ -97,13 +97,13 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
       <div class="mt-3 flex gap-2 justify-end">
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+          class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
           data-testid="picture-code-reject"
           @click="emit('decide', false)"
         >{{ t('code.reject') }}</button>
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full bg-scope-private text-white text-sm font-semibold"
+          class="min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold"
           data-testid="picture-code-approve"
           @click="emit('decide', true)"
         >{{ t('code.approve') }}</button>

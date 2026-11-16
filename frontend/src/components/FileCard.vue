@@ -220,7 +220,7 @@ async function handleShare(event) {
     <!-- 받기 (primary) -->
     <button
       type="button"
-      class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-full text-white text-sm font-semibold inline-flex items-center justify-center gap-1"
+      class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none text-white text-sm font-extrabold inline-flex items-center justify-center gap-1"
       :class="accentBg"
       :aria-label="`${t('file.receive')}: ${file.name}`"
       data-testid="file-receive"
@@ -237,7 +237,7 @@ async function handleShare(event) {
     <!-- 더보기 (복사/QR/공유/삭제) -->
     <button
       type="button"
-      class="more-btn shrink-0 w-11 h-11 flex items-center justify-center rounded-full border border-border bg-background text-text-primary"
+      class="more-btn shrink-0 w-11 h-11 flex items-center justify-center rounded-none border border-border bg-background text-text-primary"
       :title="t('file.moreActions')"
       :aria-label="t('file.moreActions')"
       aria-haspopup="dialog"

@@ -121,7 +121,7 @@ async function handleCopyUrl() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="file-qr-title"
-        class="bg-surface rounded-2xl p-8 max-w-md w-full border border-border shadow-2xl"
+        class="bg-surface rounded-2xl p-8 max-w-md w-full border-2 border-ink"
         @click.stop
       >
         <!-- 헤더 -->
@@ -170,7 +170,7 @@ async function handleCopyUrl() {
               type="text"
               :value="file.url"
               readonly
-              class="flex-1 bg-black/20 text-text-primary px-3 py-2 rounded-lg text-sm font-mono border border-border focus:outline-none focus:border-primary"
+              class="flex-1 bg-black/20 text-text-primary px-3 py-2 rounded-lg text-sm font-mono border border-border focus:outline-none focus:border-ink"
             />
             <button
               class="bg-primary text-white px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors text-sm whitespace-nowrap"
@@ -182,7 +182,7 @@ async function handleCopyUrl() {
         </div>
 
         <!-- 안내 메시지 -->
-        <div class="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6">
+        <div class="bg-tint border border-ink rounded-lg p-4 mb-6">
           <p class="text-text-primary text-sm leading-relaxed">
             💡 {{ hint || t('qrModal.fileHint') }}
           </p>

@@ -381,7 +381,7 @@ describe('RoomScreen.vue', () => {
       })
 
       const tabs = wrapper.findAll('[role="tab"]')
-      expect(tabs[0].classes()).toContain('bg-scope-global')
+      expect(tabs[0].classes()).toContain('bg-ink')
       expect(tabs[0].classes()).not.toContain('bg-primary')
     })
   })

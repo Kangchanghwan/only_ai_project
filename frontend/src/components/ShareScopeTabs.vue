@@ -78,30 +78,32 @@ function pick(roomId) {
 <template>
   <div
     ref="root"
-    class="relative flex items-center gap-1 p-1 mb-3 bg-surface rounded-full border border-border"
+    class="relative flex items-stretch gap-1 mb-3 border-b border-border"
     role="tablist"
     :aria-label="t('shareScope.label')"
   >
     <button
       type="button"
       role="tab"
-      class="flex-1 flex items-center justify-center gap-2 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
-      :class="[hasPrivate ? 'px-2 whitespace-nowrap' : 'px-4', scope === 'ip' ? 'bg-primary text-white' : 'text-text-secondary hover:bg-background']"
+      class="flex-1 flex items-center justify-center gap-2 min-h-[44px] rounded-none text-sm font-semibold border-b-2 -mb-px transition-colors"
+      :class="[hasPrivate ? 'px-2 whitespace-nowrap' : 'px-4', scope === 'ip' ? 'text-ink font-extrabold border-ink' : 'text-text-secondary border-transparent hover:bg-tint']"
       :aria-selected="scope === 'ip'"
       :title="t('shareScope.ipDescription')"
       @click="emit('select', 'ip')"
     >
+      <span class="text-[11px] font-bold text-ink-2" aria-hidden="true">01</span>
       {{ t('shareScope.ip') }}
     </button>
     <button
       type="button"
       role="tab"
-      class="flex-1 flex items-center justify-center gap-2 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
-      :class="[hasPrivate ? 'px-2 whitespace-nowrap' : 'px-4', scope === 'global' ? 'bg-scope-global text-white' : 'text-text-secondary hover:bg-background']"
+      class="flex-1 flex items-center justify-center gap-2 min-h-[44px] rounded-none text-sm font-semibold border-b-2 -mb-px transition-colors"
+      :class="[hasPrivate ? 'px-2 whitespace-nowrap' : 'px-4', scope === 'global' ? 'text-ink font-extrabold border-ink' : 'text-text-secondary border-transparent hover:bg-tint']"
       :aria-selected="scope === 'global'"
       :title="t('shareScope.globalDescription')"
       @click="emit('select', 'global')"
     >
+      <span class="text-[11px] font-bold text-ink-2" aria-hidden="true">02</span>
       {{ t('shareScope.global') }}
     </button>
 
@@ -110,8 +112,8 @@ function pick(roomId) {
       v-if="single"
       type="button"
       role="tab"
-      class="flex-1 flex items-center justify-center min-h-[44px] rounded-full text-sm font-semibold transition-colors"
-      :class="[isGroup(single) ? 'min-w-0 overflow-hidden gap-1 px-2' : 'gap-2 px-3', privateActive ? 'bg-scope-private text-white' : 'text-scope-private hover:bg-background', highlighted ? 'pair-tab-pulse' : '']"
+      class="flex-1 flex items-center justify-center min-h-[44px] rounded-none text-sm font-semibold border-b-2 -mb-px transition-colors"
+      :class="[isGroup(single) ? 'min-w-0 overflow-hidden gap-1 px-2' : 'gap-2 px-3', privateActive ? 'text-ink font-extrabold border-ink' : 'text-text-secondary border-transparent hover:bg-tint', highlighted ? 'pair-tab-pulse' : '']"
       :aria-selected="privateActive"
       :title="isGroup(single) ? groupName(single) : t('pair.tabTitle', { name: peerName(single) })"
       :aria-label="isGroup(single) ? groupName(single) : t('pair.tabTitle', { name: peerName(single) })"
@@ -128,8 +130,8 @@ function pick(roomId) {
       <button
         type="button"
         role="tab"
-        class="flex-1 flex items-center justify-center gap-2 px-3 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
-        :class="[privateActive ? 'bg-scope-private text-white' : 'text-scope-private hover:bg-background', highlighted ? 'pair-tab-pulse' : '']"
+        class="flex-1 flex items-center justify-center gap-2 px-3 min-h-[44px] rounded-none text-sm font-semibold border-b-2 -mb-px transition-colors"
+        :class="[privateActive ? 'text-ink font-extrabold border-ink' : 'text-text-secondary border-transparent hover:bg-tint', highlighted ? 'pair-tab-pulse' : '']"
         :aria-selected="privateActive"
         aria-haspopup="listbox"
         :aria-expanded="open"
@@ -141,14 +143,14 @@ function pick(roomId) {
       <ul
         v-if="open"
         role="listbox"
-        class="absolute right-0 top-full mt-1 z-30 min-w-[12rem] bg-surface border border-border rounded-xl shadow-lg p-1 m-0 list-none"
+        class="absolute right-0 top-full mt-1 z-30 min-w-[12rem] bg-surface border-2 border-ink rounded-xl p-1 m-0 list-none"
         data-testid="private-tab-popover"
       >
         <li v-for="room in privateRooms" :key="room.roomId" role="presentation">
           <button
             type="button"
             role="option"
-            class="w-full flex items-center gap-2 min-h-[44px] px-3 rounded-lg text-sm text-left hover:bg-background"
+            class="w-full flex items-center gap-2 min-h-[44px] px-3 rounded-none text-sm text-left hover:bg-tint"
             :class="activeRoomId === room.roomId ? 'font-semibold text-scope-private' : 'text-text-primary'"
             :aria-selected="activeRoomId === room.roomId"
             data-testid="private-tab-option"
@@ -168,7 +170,7 @@ function pick(roomId) {
     <button
       v-if="groupCreate"
       type="button"
-      class="shrink-0 flex items-center justify-center gap-1 min-h-[44px] rounded-full text-sm font-semibold text-scope-private hover:bg-background transition-colors whitespace-nowrap"
+      class="shrink-0 flex items-center justify-center gap-1 min-h-[44px] rounded-none text-sm font-semibold text-text-secondary hover:bg-tint transition-colors whitespace-nowrap"
       :class="hasPrivate ? 'px-2' : 'px-3'"
       :aria-label="t('group.create')"
       :title="t('group.create')"

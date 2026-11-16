@@ -3,12 +3,16 @@
 /* Light Theme - 코랄 웜톤 */
 [data-theme="light"],
 body.light {
-  --color-background: #FAF8F5;
+  --color-background: #FFFFFF;
   --color-surface: #FFFFFF;
   --color-primary: #FF6B4A;
-  --color-text-primary: #2A2622;
-  --color-text-secondary: #8A8178;
-  --color-border: #E9E3DA;
+  --color-text-primary: #0B1F4D;
+  --color-text-secondary: #5A6B8C;
+  --color-border: #E1E5EC;
+  --color-ink: #0B1F4D;
+  --color-ink-2: #2D4270;
+  --color-on-ink: #FFFFFF;
+  --color-tint: #F1F5FA;
   --color-scope-global: #4F8767;
   --color-scope-global-tint: #E4EEE7;
   --color-scope-private: #2F66D0;
@@ -19,12 +23,16 @@ body.light {
 :root,
 [data-theme="dark"],
 body.dark {
-  --color-background: #1C1917;
-  --color-surface: #262220;
+  --color-background: #0A1430;
+  --color-surface: #0F1D40;
   --color-primary: #FF7A5C;
-  --color-text-primary: #F2EDE7;
-  --color-text-secondary: #A69A8D;
-  --color-border: #3A3430;
+  --color-text-primary: #EEF2F8;
+  --color-text-secondary: #9AA8C4;
+  --color-border: #24335A;
+  --color-ink: #DCE4F2;
+  --color-ink-2: #B7C4DC;
+  --color-on-ink: #0A1430;
+  --color-tint: #13234A;
   --color-scope-global: #6FAE8A;
   --color-scope-global-tint: #223026;
   --color-scope-private: #5B8DEF;
@@ -32,17 +40,36 @@ body.dark {
 }
 
 @theme {
-  --color-background: #1C1917;
-  --color-surface: #262220;
+  --color-background: #0A1430;
+  --color-surface: #0F1D40;
   --color-primary: #FF7A5C;
-  --color-text-primary: #F2EDE7;
-  --color-text-secondary: #A69A8D;
-  --color-border: #3A3430;
+  --color-text-primary: #EEF2F8;
+  --color-text-secondary: #9AA8C4;
+  --color-border: #24335A;
+  --color-ink: #DCE4F2;
+  --color-ink-2: #B7C4DC;
+  --color-on-ink: #0A1430;
+  --color-tint: #13234A;
   --color-scope-global: #6FAE8A;
   --color-scope-global-tint: #223026;
   --color-scope-private: #5B8DEF;
   --color-scope-private-tint: #1F2A40;
   /* 'Cabinet Grotesk Fallback*' / 'Plus Jakarta Sans Fallback*'는 index.html critical CSS의 메트릭 보정 @font-face(로컬 폴백). 스택 순서는 index.html과 동일하게 유지할 것. */
+  --radius-xs: 2px;
+  --radius-sm: 2px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+  --shadow-2xs: none;
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-2xl: none;
   --font-display: 'Cabinet Grotesk', 'Cabinet Grotesk Fallback', 'Cabinet Grotesk Fallback Android', 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -59,8 +86,24 @@ body.dark {
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: 'Plus Jakarta Sans', 'Plus Jakarta Sans Fallback', 'Plus Jakarta Sans Fallback Android', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: 'Pretendard Variable', Pretendard, 'Plus Jakarta Sans', 'Plus Jakarta Sans Fallback', 'Plus Jakarta Sans Fallback Android', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  textarea {
+    border-radius: 0;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 0;
+    box-shadow: none;
   }
 
   #app {
@@ -79,7 +122,7 @@ body.dark {
 
   ::-webkit-scrollbar-thumb {
     background-color: var(--color-surface);
-    border-radius: 4px;
+    border-radius: 0;
     border: 2px solid var(--color-background);
   }
 

@@ -18,7 +18,7 @@ describe('ShareScopeTabs', () => {
     const tabs = wrapper.findAll('[role="tab"]')
 
     expect(tabs[0].attributes('aria-selected')).toBe('true')
-    expect(tabs[0].classes()).toContain('bg-primary')
+    expect(tabs[0].classes()).toContain('border-ink')
     expect(tabs[1].attributes('aria-selected')).toBe('false')
   })
 
@@ -27,7 +27,7 @@ describe('ShareScopeTabs', () => {
     const tabs = wrapper.findAll('[role="tab"]')
 
     expect(tabs[1].attributes('aria-selected')).toBe('true')
-    expect(tabs[1].classes()).toContain('bg-scope-global')
+    expect(tabs[1].classes()).toContain('border-ink')
     expect(tabs[0].attributes('aria-selected')).toBe('false')
   })
 

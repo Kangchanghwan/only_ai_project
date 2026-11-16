@@ -108,7 +108,7 @@ onBeforeUnmount(() => {
   >
     <button
       type="button"
-      class="flex items-center justify-center rounded-full cursor-pointer min-h-[44px] min-w-[44px] px-1 focus-visible:outline-2 focus-visible:outline-primary"
+      class="flex items-center justify-center rounded-none cursor-pointer min-h-[44px] min-w-[44px] px-1 focus-visible:outline-2 focus-visible:outline-ink"
       :aria-expanded="isOpen"
       aria-haspopup="dialog"
       :aria-label="t('identity.openList')"
@@ -123,7 +123,7 @@ onBeforeUnmount(() => {
           :aria-label="deviceTitle(device)"
           :style="avatarStyle(index)"
           :class="{ '-ml-2': index > 0 }"
-          class="relative inline-flex items-center justify-center w-8 h-8 rounded-full ring-2 ring-background bg-primary/10 text-base hover:z-20! hover:-translate-y-0.5 hover:scale-105 transition-transform duration-150"
+          class="relative inline-flex items-center justify-center w-8 h-8 rounded-full ring-2 ring-background bg-tint text-base hover:z-20! hover:-translate-y-0.5 hover:scale-105 transition-transform duration-150"
         >
           <AnimalAvatar v-if="isValidIdentity(device.identity)" :identity="device.identity" />
           <template v-else>{{ getDeviceIcon(device.deviceType) }}</template>
@@ -146,7 +146,7 @@ onBeforeUnmount(() => {
       <div
         role="dialog"
         :aria-label="t('identity.listTitle', { count: devices.length })"
-        class="z-50 bg-surface border border-border shadow-lg text-text-primary fixed inset-x-0 bottom-0 rounded-t-2xl p-4 max-h-[70vh] overflow-y-auto sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 sm:rounded-xl sm:max-h-96"
+        class="z-50 bg-surface border-2 border-ink text-text-primary fixed inset-x-0 bottom-0 rounded-t-2xl p-4 max-h-[70vh] overflow-y-auto sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 sm:rounded-xl sm:max-h-96"
         data-testid="devices-popover"
       >
         <div class="flex items-center justify-between mb-3">

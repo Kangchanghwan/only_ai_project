@@ -147,7 +147,7 @@ function formatTime(timestamp) {
         ref="inputRef"
         v-model="draft"
         rows="4"
-        class="w-full min-h-[6rem] resize-y rounded-xl border border-border bg-background text-text-primary text-sm p-3 font-mono focus-visible:outline-2 focus-visible:outline-primary"
+        class="w-full min-h-[6rem] resize-y rounded-xl border border-border bg-background text-text-primary text-sm p-3 font-mono focus-visible:outline-2 focus-visible:outline-ink"
         :placeholder="t('text.composePlaceholder')"
         data-testid="text-input"
         :disabled="composeDisabled"
@@ -157,14 +157,14 @@ function formatTime(timestamp) {
       <div class="flex items-center gap-2 flex-wrap">
         <button
           type="submit"
-          class="min-h-[44px] px-6 rounded-full text-white font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          class="min-h-[44px] px-6 rounded-none text-white font-extrabold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           :class="accentBg"
           :disabled="composeDisabled || !draft.trim() || sending"
           data-testid="text-share-button"
         >{{ t('file.share') }}</button>
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full border border-border bg-background text-sm font-semibold text-text-primary"
+          class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint bg-background text-sm font-bold"
           :title="t('text.autoShareHint')"
           data-testid="text-paste-button"
           @click="emit('paste-content')"
@@ -237,7 +237,7 @@ function formatTime(timestamp) {
             <button
               v-if="text.content != null"
               type="button"
-              class="min-h-[44px] px-3 rounded-full border border-border text-xs font-semibold text-text-primary"
+              class="min-h-[44px] px-3 rounded-none border-2 border-ink text-ink hover:bg-tint text-xs font-bold"
               :aria-label="t('room.copy')"
               data-testid="text-copy"
               @click="$emit('copy-text', text.id)"
@@ -245,13 +245,13 @@ function formatTime(timestamp) {
             <div class="relative">
               <button
                 type="button"
-                class="w-11 h-11 inline-flex items-center justify-center rounded-full text-text-secondary"
+                class="w-11 h-11 inline-flex items-center justify-center rounded-none text-text-secondary"
                 :aria-label="t('file.moreActions')"
                 :aria-expanded="openMenuId === text.id"
                 data-testid="text-more"
                 @click="openMenuId = openMenuId === text.id ? null : text.id"
               >⋯</button>
-              <div v-if="openMenuId === text.id" class="absolute right-0 top-full z-20 bg-surface border border-border rounded-lg shadow-lg min-w-[8rem]">
+              <div v-if="openMenuId === text.id" class="absolute right-0 top-full z-20 bg-surface border-2 border-ink rounded-lg min-w-[8rem]">
                 <button
                   type="button"
                   class="w-full min-h-[44px] px-4 text-left text-sm text-red-500"
@@ -272,7 +272,7 @@ function formatTime(timestamp) {
             </p>
             <button
               type="button"
-              class="min-h-[44px] px-4 rounded-full text-white text-xs font-semibold shrink-0"
+              class="min-h-[44px] px-4 rounded-none text-white text-xs font-extrabold shrink-0"
               :class="accentBg"
               :aria-expanded="unlockingId === text.id"
               data-testid="text-unlock-open"
@@ -285,14 +285,14 @@ function formatTime(timestamp) {
               v-model="unlockPassword"
               type="password"
               autocomplete="off"
-              class="flex-1 min-w-0 min-h-[44px] rounded-full border border-border bg-background text-text-primary text-sm px-4 focus-visible:outline-2 focus-visible:outline-primary"
+              class="flex-1 min-w-0 min-h-[44px] rounded-none border border-border bg-background text-text-primary text-sm px-4 focus-visible:outline-2 focus-visible:outline-ink"
               :placeholder="t('text.passwordPlaceholder')"
               :aria-label="t('text.passwordPlaceholder')"
               data-testid="text-unlock-password"
             />
             <button
               type="submit"
-              class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold text-text-primary disabled:opacity-50"
+              class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold disabled:opacity-50"
               :disabled="!unlockPassword || unlockBusy"
               data-testid="text-unlock-submit"
             >{{ unlockBusy ? '…' : t('text.unlock') }}</button>
@@ -317,7 +317,7 @@ function formatTime(timestamp) {
           <button
             v-if="text.notStored === 'TOO_LARGE' && text.content != null"
             type="button"
-            class="min-h-[44px] px-3 rounded-full border border-border text-xs font-semibold text-text-primary"
+            class="min-h-[44px] px-3 rounded-none border-2 border-ink text-ink hover:bg-tint text-xs font-bold"
             data-testid="text-send-as-file"
             @click="$emit('send-as-file', text.id)"
           >{{ t('text.sendAsFile') }}</button>

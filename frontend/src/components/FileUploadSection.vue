@@ -66,8 +66,8 @@ function handleDrop(event) {
 <template>
   <!-- 파일 선택이 primary. PC에서는 드래그 앤 드롭 영역, 모바일은 간결한 안내 -->
   <div
-    class="upload-drop relative rounded-xl cursor-pointer border-2 border-dashed transition-colors duration-200 p-4 sm:p-6 flex flex-col items-center gap-3 text-center"
-    :class="isDragging ? [accentBorder, accentBgSoft10] : 'border-border bg-background'"
+    class="upload-drop relative rounded-none cursor-pointer border border-dashed transition-colors duration-200 p-4 sm:p-6 flex flex-col items-center gap-3 text-center"
+    :class="isDragging ? 'border-ink bg-tint' : 'border-ink/30 bg-tint'"
     data-testid="upload-dropzone"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
@@ -78,7 +78,7 @@ function handleDrop(event) {
 
     <button
       type="button"
-      class="w-full sm:w-auto min-h-[48px] px-6 rounded-full text-white font-semibold text-base inline-flex items-center justify-center gap-2"
+      class="w-full sm:w-auto min-h-[48px] px-6 rounded-none text-white font-extrabold text-base inline-flex items-center justify-center gap-2"
       :class="accentBg"
       data-testid="choose-files"
       @click.stop="openFileDialog"

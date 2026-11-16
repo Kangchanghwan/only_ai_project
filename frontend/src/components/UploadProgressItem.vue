@@ -126,13 +126,13 @@ defineProps({
   width: 100%;
   height: 4px;
   background: var(--color-border);
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  border-radius: 2px;
+  border-radius: 0;
   transition: width 0.3s ease;
 }
 

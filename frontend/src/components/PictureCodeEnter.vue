@@ -147,21 +147,21 @@ const showWarn = computed(() => props.warn && (props.status === 'wrong' || props
       <button
         v-if="inProgress"
         type="button"
-        class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+        class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
         data-testid="picture-enter-cancel"
         @click="emit('cancel')"
       >{{ t('group.cancel') }}</button>
       <template v-else>
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold disabled:opacity-50"
+          class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold disabled:opacity-50"
           :disabled="slots.length === 0"
           data-testid="picture-enter-clear"
           @click="clearLast"
         >{{ t('code.clear') }}</button>
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
+          class="min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
           :disabled="!canSubmit"
           data-testid="picture-enter-confirm"
           @click="submit"

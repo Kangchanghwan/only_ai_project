@@ -96,7 +96,7 @@ onMounted(async () => {
     <div class="flex-1 flex items-center justify-center p-4">
       <div class="max-w-2xl w-full">
         <!-- 에러 화면 -->
-        <div v-if="hasError" class="bg-surface rounded-2xl p-8 border border-red-500/30 shadow-2xl" data-testid="download-page-error">
+        <div v-if="hasError" class="bg-surface rounded-2xl p-8 border border-red-500/30" data-testid="download-page-error">
           <div class="text-center">
             <div class="text-6xl mb-4">❌</div>
             <h1 class="text-2xl font-bold mb-4 text-red-400">{{ t('download.error') }}</h1>
@@ -111,7 +111,7 @@ onMounted(async () => {
         </div>
 
         <!-- 받기 목록 -->
-        <div v-else class="bg-surface rounded-2xl p-6 sm:p-8 border border-border shadow-2xl text-text-primary" data-testid="download-page">
+        <div v-else class="bg-surface rounded-2xl p-6 sm:p-8 border-2 border-ink text-text-primary" data-testid="download-page">
           <div class="text-center mb-6">
             <div class="text-5xl mb-4">📥</div>
             <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ totalFiles === 1 ? t('multiDownload.titleOne') : t('multiDownload.title') }}</h1>
@@ -144,12 +144,12 @@ onMounted(async () => {
 
 .overflow-y-auto::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
   background: rgba(66, 184, 131, 0.5);
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
