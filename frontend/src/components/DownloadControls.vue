@@ -107,10 +107,10 @@ const { text: accentText } = useScopeAccent(() => props.scope)
       @click="$emit('clear-storage')"
     >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-        <line x1="18" y1="3" x2="10" y2="11" />
-        <path d="M10 11 L4 13 L4 19 L11 19 L13 13 Z" />
-        <line x1="6" y1="19" x2="4" y2="21" />
-        <line x1="9" y1="19" x2="7.5" y2="21" />
+        <!-- 폴더 X: 이 공간의 파일을 통째로 비운다 (선택 삭제의 휴지통과 구분) -->
+        <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+        <path d="m9.5 10.5 5 5" />
+        <path d="m14.5 10.5-5 5" />
       </svg>
       <span class="dc-label text-[11px] leading-tight text-center">{{ t('file.clearStorage') }}</span>
     </button>
