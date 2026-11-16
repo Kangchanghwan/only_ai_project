@@ -222,7 +222,7 @@
     "receiversCount": "Thiết bị nhận: {count}",
     "deliverOnJoin": "gửi khi có thiết bị vào",
     "notDelivered": "sẽ không được gửi",
-    "expandLines": "{n} dòng · Mở rộng",
+    "showMore": "Xem thêm",
     "collapse": "Thu gọn"
   },
   "notification": {

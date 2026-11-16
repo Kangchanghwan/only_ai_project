@@ -229,7 +229,7 @@
     "receiversCount": "Receiving devices: {count}",
     "deliverOnJoin": "delivered when one joins",
     "notDelivered": "won't be delivered",
-    "expandLines": "{n} lines · Expand",
+    "showMore": "Show more",
     "collapse": "Collapse"
   },
   "notification": {

@@ -229,7 +229,7 @@
     "receiversCount": "받을 기기 {count}대",
     "deliverOnJoin": "들어오면 전달",
     "notDelivered": "전달 안 됨",
-    "expandLines": "{n}줄 · 펼치기",
+    "showMore": "더보기",
     "collapse": "접기"
   },
   "notification": {

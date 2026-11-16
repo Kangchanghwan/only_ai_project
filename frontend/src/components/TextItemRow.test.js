@@ -97,44 +97,33 @@ describe('TextItemRow 보관 중·잠긴 텍스트 카드', () => {
 })
 
 describe('TextItemRow 행 모양', () => {
-  it('"텍스트" 태그, 2줄 줄임 본문(누르면 펼침), 복사 버튼은 남색 채움', async () => {
+  it('"텍스트" 태그, 2줄 줄임 본문, 복사 버튼은 남색 채움', () => {
     const w = mountRow({ id: '1', content: 'a\nb\nc\nd', timestamp: Date.now(), sender })
     expect(w.find('[data-testid="text-tag"]').text()).toBe('텍스트')
-    const body = w.find('[data-testid="text-body"]')
-    expect(body.classes()).toContain('line-clamp-2')
-    await body.trigger('click')
-    expect(w.find('[data-testid="text-body"]').exists()).toBe(false)
-    expect(w.find('[data-testid="text-lines"]').exists()).toBe(true)
+    expect(w.find('[data-testid="text-body"]').classes()).toContain('line-clamp-2')
     const copy = w.find('[data-testid="text-copy"]')
     expect(copy.classes()).toContain('bg-ink')
     expect(copy.classes()).toContain('min-h-[44px]')
   })
 })
 
-describe('TextItemRow 여러 줄 펼치기', () => {
+describe('TextItemRow 더보기', () => {
   const multi = { id: 'm', content: 'one\ntwo\n\nfour', timestamp: Date.now() }
-  it('2줄 넘으면 줄 수 + 펼치기, 짧은 글은 없다', () => {
-    expect(mountRow(multi).find('[data-testid="text-expand"]').text()).toContain('4줄')
+  it('2줄을 넘으면 "더보기"가 보이고, 짧은 글에는 없다', () => {
+    expect(mountRow(multi).find('[data-testid="text-expand"]').text()).toContain('더보기')
     expect(mountRow({ id: 's', content: 'hi\nyo', timestamp: Date.now() }).find('[data-testid="text-expand"]').exists()).toBe(false)
   })
-  it('펼치면 번호 붙은 줄, 줄 복사는 그 줄만 내보내고 빈 줄엔 버튼 없음', async () => {
+  it('더보기를 누르면 전체 글을 그대로 보여 주고(줄 번호·줄 복사 없음), 글을 눌러도 접히지 않으며 접기로 접는다', async () => {
     const w = mountRow(multi)
     await w.find('[data-testid="text-expand"]').trigger('click')
-    const rows = w.findAll('[data-testid="text-line"]')
-    expect(rows).toHaveLength(4)
-    expect(rows[3].find('[data-testid="text-line-no"]').text()).toBe('4')
-    expect(rows[2].find('[data-testid="text-line-copy"]').exists()).toBe(false)
-    await rows[1].find('[data-testid="text-line-copy"]').trigger('click')
-    expect(w.emitted('copy-line')[0]).toEqual(['two'])
-    expect(w.emitted('copy-text')).toBeUndefined()
-  })
-  it('펼친 상태에서 글을 눌러도 접히지 않고, 접기 버튼으로 접는다', async () => {
-    const w = mountRow(multi)
-    await w.find('[data-testid="text-expand"]').trigger('click')
-    await w.find('[data-testid="text-line-body"]').trigger('click')
-    expect(w.find('[data-testid="text-lines"]').exists()).toBe(true)
+    const body = w.find('[data-testid="text-body"]')
+    expect(body.classes()).not.toContain('line-clamp-2')
+    expect(body.text()).toContain('four')
+    expect(w.find('[data-testid="text-line-copy"]').exists()).toBe(false)
+    await body.trigger('click')
+    expect(w.find('[data-testid="text-body"]').classes()).not.toContain('line-clamp-2')
     await w.find('[data-testid="text-collapse"]').trigger('click')
-    expect(w.find('[data-testid="text-lines"]').exists()).toBe(false)
-    expect(w.find('[data-testid="text-body"]').exists()).toBe(true)
+    expect(w.find('[data-testid="text-body"]').classes()).toContain('line-clamp-2')
+    expect(w.emitted('copy-text')).toBeUndefined()
   })
 })

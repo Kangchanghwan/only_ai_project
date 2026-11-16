@@ -28,7 +28,7 @@ const emit = defineEmits(['cancel-upload', 'cancel-all'])
 
 <style scoped>
 /* 하단 중앙 단일 위치. 안전 영역 + 하단 고정 액션바(약 4.5rem) 위에 띄운다.
-   넓은 화면(>=1100px)에서는 왼쪽 240px 패널을 뺀 작업 영역 중앙에 맞춘다. */
+   왼쪽 기기 패널이 없어진 한 열 화면이라 모든 폭에서 화면 가운데에 둔다. */
 .notification {
   position: fixed;
   left: 50%;
@@ -45,9 +45,6 @@ const emit = defineEmits(['cancel-upload', 'cancel-all'])
   overflow-wrap: anywhere;
   text-align: center;
   font-size: 0.875rem;
-}
-@media (min-width: 1100px) {
-  .notification { left: calc(50% + 140px); }
 }
 .fade-enter-active,
 .fade-leave-active { transition: opacity 0.3s ease; }

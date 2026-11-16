@@ -229,7 +229,7 @@
     "receiversCount": "受け取れる端末 {count}台",
     "deliverOnJoin": "入ったら届けます",
     "notDelivered": "届きません",
-    "expandLines": "{n}行 · 開く",
+    "showMore": "もっと見る",
     "collapse": "閉じる"
   },
   "notification": {

@@ -222,7 +222,7 @@
     "receiversCount": "Appareils destinataires : {count}",
     "deliverOnJoin": "transmis dès qu'un appareil arrive",
     "notDelivered": "ne sera pas transmis",
-    "expandLines": "{n} lignes · Développer",
+    "showMore": "Voir plus",
     "collapse": "Réduire"
   },
   "notification": {

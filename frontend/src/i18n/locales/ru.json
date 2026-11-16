@@ -222,7 +222,7 @@
     "receiversCount": "Получат устройств: {count}",
     "deliverOnJoin": "доставим, когда кто-то подключится",
     "notDelivered": "не будет доставлен",
-    "expandLines": "{n} стр. · Развернуть",
+    "showMore": "Показать ещё",
     "collapse": "Свернуть"
   },
   "notification": {

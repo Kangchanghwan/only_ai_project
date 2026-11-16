@@ -222,7 +222,7 @@
     "receiversCount": "Fogadó eszközök: {count}",
     "deliverOnJoin": "megérkezik, ha valaki belép",
     "notDelivered": "nem érkezik meg",
-    "expandLines": "{n} sor · Kinyitás",
+    "showMore": "Több",
     "collapse": "Összecsukás"
   },
   "notification": {

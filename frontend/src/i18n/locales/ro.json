@@ -222,7 +222,7 @@
     "receiversCount": "Dispozitive care primesc: {count}",
     "deliverOnJoin": "livrat când intră cineva",
     "notDelivered": "nu va ajunge",
-    "expandLines": "{n} rânduri · Extinde",
+    "showMore": "Vezi mai mult",
     "collapse": "Restrânge"
   },
   "notification": {

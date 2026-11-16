@@ -222,7 +222,7 @@
     "receiversCount": "دستگاه‌های گیرنده: {count}",
     "deliverOnJoin": "با ورود دستگاهی می‌رسد",
     "notDelivered": "نمی‌رسد",
-    "expandLines": "{n} خط · باز کردن",
+    "showMore": "نمایش بیشتر",
     "collapse": "بستن"
   },
   "notification": {

@@ -222,7 +222,7 @@
     "receiversCount": "可接收设备 {count} 台",
     "deliverOnJoin": "有设备加入时发送",
     "notDelivered": "不会送达",
-    "expandLines": "{n} 行 · 展开",
+    "showMore": "查看更多",
     "collapse": "收起"
   },
   "notification": {

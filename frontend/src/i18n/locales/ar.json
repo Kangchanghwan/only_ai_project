@@ -222,7 +222,7 @@
     "receiversCount": "الأجهزة المستلمة: {count}",
     "deliverOnJoin": "يُسلَّم عند انضمام جهاز",
     "notDelivered": "لن يصل",
-    "expandLines": "{n} أسطر · توسيع",
+    "showMore": "عرض المزيد",
     "collapse": "طي"
   },
   "notification": {

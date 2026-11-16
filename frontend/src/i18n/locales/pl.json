@@ -222,7 +222,7 @@
     "receiversCount": "Odbiorców: {count}",
     "deliverOnJoin": "dotrze, gdy ktoś dołączy",
     "notDelivered": "nie dotrze",
-    "expandLines": "{n} wierszy · Rozwiń",
+    "showMore": "Pokaż więcej",
     "collapse": "Zwiń"
   },
   "notification": {

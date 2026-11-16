@@ -222,7 +222,7 @@
     "receiversCount": "Příjemců: {count}",
     "deliverOnJoin": "doručí se, až se někdo připojí",
     "notDelivered": "nedorazí",
-    "expandLines": "{n} řádků · Rozbalit",
+    "showMore": "Zobrazit více",
     "collapse": "Sbalit"
   },
   "notification": {

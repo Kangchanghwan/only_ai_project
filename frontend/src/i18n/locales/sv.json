@@ -222,7 +222,7 @@
     "receiversCount": "Mottagande enheter: {count}",
     "deliverOnJoin": "levereras när någon ansluter",
     "notDelivered": "levereras inte",
-    "expandLines": "{n} rader · Visa",
+    "showMore": "Visa mer",
     "collapse": "Dölj"
   },
   "notification": {

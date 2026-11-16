@@ -222,7 +222,7 @@
     "receiversCount": "Perangkat penerima: {count}",
     "deliverOnJoin": "dikirim saat ada yang bergabung",
     "notDelivered": "tidak akan terkirim",
-    "expandLines": "{n} baris · Buka",
+    "showMore": "Lihat selengkapnya",
     "collapse": "Tutup"
   },
   "notification": {

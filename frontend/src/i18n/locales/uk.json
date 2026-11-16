@@ -222,7 +222,7 @@
     "receiversCount": "Отримають пристроїв: {count}",
     "deliverOnJoin": "доставимо, коли хтось під'єднається",
     "notDelivered": "не буде доставлено",
-    "expandLines": "{n} рядків · Розгорнути",
+    "showMore": "Показати більше",
     "collapse": "Згорнути"
   },
   "notification": {

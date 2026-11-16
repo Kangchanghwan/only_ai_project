@@ -49,7 +49,6 @@ const props = defineProps({
 
 const emit = defineEmits([
   'copy-image',
-  'copy-line',
   'download-file',
   'download-parallel',
   'copy-selected-to-clipboard',
@@ -272,7 +271,6 @@ onUnmounted(() => {
             @unlock-text="$emit('unlock-text', $event)"
             @send-as-file="$emit('send-as-file', $event)"
             @copy-text="$emit('copy-text', $event)"
-            @copy-line="$emit('copy-line', $event)"
           />
           <LockedFileCard
             v-else-if="item.file.locked"

@@ -222,7 +222,7 @@
     "receiversCount": "Ontvangende apparaten: {count}",
     "deliverOnJoin": "afgeleverd zodra er een bijkomt",
     "notDelivered": "komt niet aan",
-    "expandLines": "{n} regels · Uitklappen",
+    "showMore": "Meer tonen",
     "collapse": "Inklappen"
   },
   "notification": {

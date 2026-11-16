@@ -1069,15 +1069,6 @@ async function handleCopyText(textId) {
   }
 }
 
-async function handleCopyLine(line) {
-  try {
-    await navigator.clipboard.writeText(line)
-    notification.showSuccess(t('file.copied'))
-    nextTime.markSuccess('copy')
-  } catch {
-    notification.showError(t('file.copyFailed'))
-  }
-}
 
 async function handlePasteContent() {
   if (roomManager.roomIds.value.length === 0) return
@@ -1429,7 +1420,6 @@ onUnmounted(() => {
         @send-text-as-file="handleSendTextAsFile"
         @clear-all-texts="handleClearAllTexts"
         @copy-text="handleCopyText"
-        @copy-line="handleCopyLine"
         @paste-content="handlePasteContent"
         :prefill-text="prefillText"
         @share-text="handleShareText"

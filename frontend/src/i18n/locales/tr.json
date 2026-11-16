@@ -222,7 +222,7 @@
     "receiversCount": "Alacak cihaz: {count}",
     "deliverOnJoin": "biri katılınca iletilir",
     "notDelivered": "iletilmeyecek",
-    "expandLines": "{n} satır · Genişlet",
+    "showMore": "Daha fazla",
     "collapse": "Daralt"
   },
   "notification": {

@@ -222,7 +222,7 @@
     "receiversCount": "Empfangende Geräte: {count}",
     "deliverOnJoin": "kommt an, sobald eins beitritt",
     "notDelivered": "kommt nicht an",
-    "expandLines": "{n} Zeilen · Aufklappen",
+    "showMore": "Mehr anzeigen",
     "collapse": "Zuklappen"
   },
   "notification": {

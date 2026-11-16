@@ -222,7 +222,7 @@
     "receiversCount": "Dispositivos que recebem: {count}",
     "deliverOnJoin": "entregue quando um entrar",
     "notDelivered": "não será entregue",
-    "expandLines": "{n} linhas · Expandir",
+    "showMore": "Ver mais",
     "collapse": "Recolher"
   },
   "notification": {
