@@ -70,15 +70,16 @@ function formatTime(timestamp) {
     class="text-row flex flex-wrap sm:flex-nowrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface"
     data-testid="text-entry"
   >
+    <span class="w-11 h-11 -mx-1 shrink-0" aria-hidden="true"></span>
     <span
-      class="inline-flex items-center justify-center shrink-0 h-8 sm:h-10 px-2 rounded-none bg-tint border border-border text-[11px] font-extrabold text-ink"
+      class="inline-flex items-center justify-center shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-none bg-tint border border-border text-ink"
       data-testid="text-tag"
-    >{{ t('room.textTab') }}</span>
+    ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 12H3"/><path d="M17 18H3"/><path d="M21 6H3"/></svg><span class="sr-only">{{ t('room.textTab') }}</span></span>
 
     <div class="flex-1 min-w-[8rem] sm:min-w-0">
       <p
         v-if="text.content != null"
-        class="m-0 text-sm text-text-primary font-mono whitespace-pre-wrap break-words cursor-pointer"
+        class="m-0 text-sm text-text-primary whitespace-pre-wrap break-words cursor-pointer"
         :class="expanded ? '' : 'line-clamp-2'"
         data-testid="text-body"
         @click="expanded = !expanded"
@@ -101,11 +102,11 @@ function formatTime(timestamp) {
       <button
         v-if="text.content != null"
         type="button"
-        class="shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none bg-ink text-on-ink text-sm font-extrabold"
+        class="shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none bg-ink text-on-ink text-sm font-extrabold inline-flex items-center justify-center gap-1"
         :aria-label="t('room.copy')"
         data-testid="text-copy"
         @click="$emit('copy-text', text.id)"
-      >{{ t('room.copy') }}</button>
+      ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span class="hidden sm:inline">{{ t('room.copy') }}</span></button>
       <button
         v-else
         type="button"
@@ -123,7 +124,7 @@ function formatTime(timestamp) {
           :aria-expanded="openMenu"
           data-testid="text-more"
           @click="openMenu = !openMenu"
-        >⋯</button>
+        ><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg></button>
         <div v-if="openMenu" class="absolute right-0 top-full z-20 bg-surface border-2 border-ink min-w-[8rem]">
           <button
             type="button"

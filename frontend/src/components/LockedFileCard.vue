@@ -490,7 +490,7 @@ onUnmounted(() => clearInterval(revealTimer))
               data-testid="locked-delete"
               @click="handleSheetDelete"
             >
-              <span aria-hidden="true">🗑</span>
+              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               <span class="text-sm font-medium">{{ t('file.delete') }}</span>
             </button>
             <p v-else class="px-4 py-3 text-sm text-text-secondary m-0" data-testid="locked-delete-note">{{ t('lock.errors.deleteForbidden') }}</p>

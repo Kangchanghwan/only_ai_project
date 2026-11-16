@@ -249,10 +249,10 @@ onUnmounted(() => {
       <div v-if="texts.length > 0" class="flex justify-end -mb-1">
         <button
           type="button"
-          class="min-h-[44px] px-3 text-xs text-text-secondary hover:text-ink"
+          class="min-h-[44px] px-3 text-xs text-text-secondary hover:text-ink inline-flex items-center gap-1.5"
           data-testid="texts-clear-all"
           @click="$emit('clear-all-texts')"
-        >🗑️ {{ t('text.clearAll') }}</button>
+        ><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>{{ t('text.clearAll') }}</button>
       </div>
       <TransitionGroup name="card-land" @before-enter="onCardBeforeEnter">
         <template v-for="item in items">

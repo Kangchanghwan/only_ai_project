@@ -105,7 +105,7 @@ function onKeydown(event) {
           ref="inputRef"
           v-model="draft"
           rows="1"
-          class="basis-full sm:basis-0 sm:flex-1 min-w-0 min-h-[44px] max-h-[150px] resize-none overflow-y-auto rounded-none border border-border bg-background text-text-primary text-sm px-3 py-[11px] leading-5 font-mono focus-visible:outline-2 focus-visible:outline-ink"
+          class="basis-full sm:basis-0 sm:flex-1 min-w-0 max-h-[150px] resize-none overflow-y-auto rounded-none border border-border bg-background text-text-primary text-sm px-3 py-[11px] leading-5 min-h-[64px] sm:min-h-[44px] focus-visible:outline-2 focus-visible:outline-ink"
           :placeholder="t('text.composePlaceholder')"
           :title="t('text.autoShareHint')"
           data-testid="text-input"
