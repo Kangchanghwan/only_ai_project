@@ -159,7 +159,9 @@ onMounted(async () => {
   <HelpModal
     :is-open="isHelpModalOpen"
     @close="closeHelpModal"
-  />
+  >
+    <slot />
+  </HelpModal>
 
   <InstallGuideSheet :is-open="isInstallGuideOpen" @close="isInstallGuideOpen = false" />
 

@@ -4,7 +4,7 @@
  *
  * 애플리케이션의 주요 기능과 사용 방법을 설명하는 모달 컴포넌트
  */
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { FEEDBACK_FORM_URL } from '../constants/feedback.js'
 import { trackEvent } from '../utils/analytics.js'
@@ -53,12 +53,15 @@ onUnmounted(() => {
   <Teleport to="body">
     <Transition name="modal">
       <div
-        v-if="isOpen"
+        v-show="isOpen"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
         @click="handleBackdropClick"
       >
         <div
           data-testid="help-modal"
+          role="dialog"
+          aria-modal="true"
+          :aria-hidden="isOpen ? undefined : 'true'"
           class="bg-surface rounded-2xl border-2 border-ink max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           @click.stop
         >
@@ -306,6 +309,9 @@ onUnmounted(() => {
                 <span>&copy; {{ currentYear }}</span>
               </div>
             </section>
+
+            <!-- 추가 안내(사용 안내·서비스 소개·푸터): 닫혀 있어도 DOM에 유지 -->
+            <slot />
           </div>
 
           <!-- 푸터 -->

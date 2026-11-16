@@ -2,6 +2,9 @@ import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import RoomScreen from './RoomScreen.vue'
 import i18n from '../i18n/index.js'
+import { createI18n } from 'vue-i18n'
+import koMsgs from '../i18n/locales/ko.json'
+import enMsgs from '../i18n/locales/en.json'
 
 // 하위 컴포넌트 스텁
 const stubs = {
@@ -51,16 +54,37 @@ describe('RoomScreen.vue', () => {
     globalRoomDevices: []
   }
 
-  describe('더 알아보기 접기', () => {
-    it('more-info details는 기본으로 닫혀 있고 안내·랜딩·푸터를 담는다', () => {
+  describe('도움말 창 안의 안내·소개·푸터', () => {
+    it('more-info 블록은 더 이상 없고 안내·랜딩·푸터는 AppHeader 슬롯으로 전달된다', () => {
       const w = mount(RoomScreen, { props: defaultProps, global: { plugins: [i18n], stubs } })
-      const d = w.find('[data-testid="more-info"]')
-      expect(d.element.tagName).toBe('DETAILS')
-      expect(d.element.open).toBe(false)
-      expect(d.find('[data-testid="usage-notes"]').exists()).toBe(true)
-      expect(d.find('[data-testid="landing-separator"]').exists()).toBe(true)
-      expect(d.find('.app-footer-stub').exists()).toBe(true)
+      expect(w.find('[data-testid="more-info"]').exists()).toBe(false)
+      const h = w.find('.app-header-stub')
+      expect(h.find('[data-testid="usage-notes"]').exists()).toBe(true)
+      expect(h.find('[data-testid="landing-separator"]').exists()).toBe(true)
+      expect(h.find('.app-footer-stub').exists()).toBe(true)
       expect(w.find('[data-testid="usage-notes"]').element.tagName).toBe('SECTION')
+    })
+
+    it('모달이 닫혀 있어도 landing-content·FAQ·푸터 링크가 DOM에 있고 숨겨져 있다가 ?를 누르면 보인다', async () => {
+      const koI18n = createI18n({ legacy: false, locale: 'ko', fallbackLocale: 'en', messages: { ko: koMsgs, en: enMsgs } })
+      const w = mount(RoomScreen, {
+        props: defaultProps,
+        attachTo: document.body,
+        global: { plugins: [koI18n], stubs: { ...stubs, AppHeader: false, AppFooter: false, LandingContent: false } }
+      })
+      const modal = () => document.body.querySelector('[data-testid="help-modal"]')
+      expect(modal()).not.toBeNull()
+      const overlay = modal().parentElement
+      expect(overlay.style.display).toBe('none')
+      expect(modal().querySelector('[data-testid="landing-content"]')).not.toBeNull()
+      expect(modal().querySelector('[data-testid="usage-notes"]')).not.toBeNull()
+      expect(modal().querySelector('[data-testid="feedback-link"]')).not.toBeNull()
+      expect(document.body.innerHTML).toContain(koI18n.global.t('landing.faqTitle'))
+      expect(document.body.querySelector('[data-testid="more-info"]')).toBeNull()
+
+      await w.find('button[aria-label="' + koI18n.global.t('app.help') + '"]').trigger('click')
+      expect(overlay.style.display).not.toBe('none')
+      w.unmount()
     })
   })
 

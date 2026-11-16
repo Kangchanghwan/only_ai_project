@@ -203,7 +203,28 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 
 <template>
   <div :class="['text-text-primary', files.length > 0 && !isLoading ? 'pb-36 sm:pb-24' : 'pb-6']">
-    <AppHeader :user-count="userCount" :is-connecting="isConnecting" />
+    <AppHeader :user-count="userCount" :is-connecting="isConnecting">
+      <!-- 안내·소개·푸터: 도움말 창 안에 두고 화면에서는 숨김(DOM 유지, SEO) -->
+      <div class="help-extra">
+        <section class="border-t border-border pt-6 text-sm" data-testid="usage-notes">
+          <h3 class="text-lg font-semibold text-text-primary mb-3">{{ t('guide.title') }}</h3>
+          <ul class="flex flex-col list-none p-0 m-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
+            <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
+            <li v-else>{{ t('guide.retention') }}</li>
+            <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>
+            <li v-if="inRoom" data-testid="room-visibility">{{ t('guide.roomVisibility') }}</li>
+            <li v-else>{{ t('identity.ipNotice') }}</li>
+            <li>{{ t('identity.notAuth') }}</li>
+          </ul>
+        </section>
+        <div class="landing-separator border-t border-border pt-6" data-testid="landing-separator">
+          <LandingContent />
+        </div>
+        <div class="border-t border-border pt-6">
+          <AppFooter />
+        </div>
+      </div>
+    </AppHeader>
 
     <div class="page-shell px-4 sm:px-6">
       <!-- 방 + 기기 줄: 어느 방인지, 누가 있는지 한 줄에 -->
@@ -320,30 +341,6 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
           </div>
         </main>
       </div>
-
-      <!-- 더 알아보기: 안내·소개·푸터를 한 줄로 접는다 (닫혀 있어도 본문은 DOM에 있어 크롤링 가능) -->
-      <details class="bleed-line-t relative group" data-testid="more-info">
-        <summary class="cursor-pointer min-h-[56px] w-full flex items-center justify-between list-none [&::-webkit-details-marker]:hidden"><span class="text-[17px] font-extrabold tracking-[-0.02em] text-ink">{{ t('landing.moreTitle') }}</span><svg class="w-5 h-5 text-ink transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
-        <!-- 보관/사용 안내 (details 본문은 DOM에 그대로 있어 크롤링 가능) -->
-        <section class="bleed-line-t-ink relative mt-0 pt-4 text-sm" data-testid="usage-notes">
-          <h2 class="text-[17px] font-extrabold tracking-[-0.02em] text-ink m-0">{{ t('guide.title') }}</h2>
-          <ul class="mt-2 flex flex-col list-none p-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
-            <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
-            <li v-else>{{ t('guide.retention') }}</li>
-            <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>
-            <li v-if="inRoom" data-testid="room-visibility">{{ t('guide.roomVisibility') }}</li>
-            <li v-else>{{ t('identity.ipNotice') }}</li>
-            <li>{{ t('identity.notAuth') }}</li>
-          </ul>
-        </section>
-
-        <!-- 작업 영역과 분리된 서비스 소개(SEO) 영역 -->
-        <div class="bleed-line-t relative landing-separator mt-8 pt-8" data-testid="landing-separator">
-          <LandingContent />
-        </div>
-
-        <AppFooter />
-      </details>
     </div>
   </div>
 </template>
@@ -359,6 +356,16 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 @media (min-width: 768px) {
   .page-shell { max-width: 880px; }
 }
+.help-extra { display: flex; flex-direction: column; gap: 1.5rem; }
+.help-extra :deep(#landing-content),
+.help-extra :deep([data-testid="landing-content"]) { margin: 0; gap: 1.5rem; }
+.help-extra :deep([data-testid="landing-content"] > div) {
+  background: transparent; border: 0; border-radius: 0; padding: 0;
+}
+.help-extra :deep([data-testid="landing-content"] > nav) { padding: 0; }
+.help-extra :deep([data-testid="landing-content"] h2) { font-size: 1.125rem; font-weight: 600; }
+.help-extra :deep([data-testid="landing-content"] p),
+.help-extra :deep([data-testid="landing-content"] li) { font-size: 0.875rem; }
 .workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
