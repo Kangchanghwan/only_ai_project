@@ -574,14 +574,14 @@
     "shortcutHint": "Ctrl+Enter ile gönder (Mac'te ⌘+Enter)"
   },
   "lock": {
-    "chipOn": "Kilit açık",
-    "chipOff": "Kapat",
+    "chipOn": "Kilit etkin",
+    "chipOff": "Kaldır",
     "confirmLockedSend": "Kilitle ve gönder",
     "barDesc": "Burada gönderdiğiniz dosya ve metinler yalnızca parolayı bilen cihazlarda açılır",
     "barDescShort": "Yalnızca parolayla açılır",
-    "offConfirm": "Kilit kapatılsın mı? Gönderilenler kilitli kalır.",
-    "offConfirmYes": "Kapat",
-    "reloadOff": "Sayfa yenilenince kilit kapandı. Şimdi göndereceğiniz kilitli olmaz.",
+    "offConfirm": "Kilit kaldırılsın mı? Gönderilenler kilitli kalır.",
+    "offConfirmYes": "Kaldır",
+    "reloadOff": "Sayfa yenilenince kilit kalktı. Şimdi göndereceğiniz kilitlenmez.",
     "reloadRelock": "Tekrar kilitle",
     "tag": "Kilitli"
   }
