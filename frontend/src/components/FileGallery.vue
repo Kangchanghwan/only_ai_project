@@ -246,9 +246,22 @@ onUnmounted(() => {
       @cancel-all="$emit('cancel-all')"
     />
 
-    <!-- 로딩 중일 때 스피너 표시 -->
-    <div v-if="isLoading" class="flex justify-center py-16">
-      <div class="w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin"></div>
+    <!-- 로딩 중: 실제 목록 줄과 같은 모양·높이의 자리 표시 두 줄 (목록이 뜰 때 화면이 덜 움직인다) -->
+    <div v-if="isLoading" class="flex flex-col gap-2 mt-4" aria-busy="true" data-testid="list-loading">
+      <div
+        v-for="i in 2"
+        :key="i"
+        class="file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-none border border-border bg-surface"
+        aria-hidden="true"
+        data-testid="list-loading-row"
+      >
+        <div class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 bg-border animate-pulse motion-reduce:animate-none"></div>
+        <div class="flex-1 min-w-0 flex flex-col gap-2">
+          <div class="h-3 bg-border animate-pulse motion-reduce:animate-none" :class="i === 1 ? 'w-2/5' : 'w-1/4'"></div>
+          <div class="h-2.5 w-1/5 bg-border animate-pulse motion-reduce:animate-none"></div>
+        </div>
+        <div class="h-11 w-11 sm:w-20 shrink-0 bg-border animate-pulse motion-reduce:animate-none"></div>
+      </div>
     </div>
 
     <!-- 한 목록: 파일과 텍스트를 시간순(최신 먼저)으로 (로딩 중이 아닐 때) -->
