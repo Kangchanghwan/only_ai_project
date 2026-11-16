@@ -190,5 +190,6 @@ function unlock() {
   .lc-on-narrow { display: inline-flex; cursor: pointer; }
   .lc-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .lock-chip { min-width: 44px; justify-content: center; padding: 0 0.5rem; }
+  .lock-chip svg { width: 16px; height: 16px; }
 }
 </style>
