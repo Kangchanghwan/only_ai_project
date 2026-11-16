@@ -18,16 +18,20 @@ beforeEach(() => { sessionStorage.clear(); i18n.global.locale.value = 'ko' })
 afterEach(() => vi.restoreAllMocks())
 
 describe('ConnectionCard 그룹 방 만들기 진입 버튼', () => {
-  it('혼자일 때 빈 방 안내 맨 아래에 한 줄 버튼이 있고 누르면 group-create', async () => {
+  it('혼자일 때 빈 방 안내 맨 아래에 작은 버튼 두 개가 나란히 있고, 방 만들기를 누르면 group-create', async () => {
     const w = mountCard([dev('me', me)])
     await flushPromises()
     const btn = w.find('[data-testid="empty-state-group-create"]')
     expect(btn.exists()).toBe(true)
-    expect(btn.text()).toBe('다른 와이파이나 데이터를 쓰는 기기와 연결하려면 방을 만드세요')
-    // 그림으로 들어가기 버튼이 그 바로 아래(빈 방 안내 영역의 마지막 요소)
+    expect(btn.text()).toBe('새 방 만들기')
+    // 왜 방이 필요한지는 설명 글(title)로 남긴다
+    expect(btn.attributes('title')).toBe('다른 와이파이나 데이터를 쓰는 기기와 연결하려면 방을 만드세요')
+    // 그림으로 들어가기 버튼이 바로 옆, 두 버튼 묶음이 빈 방 안내의 마지막 요소
+    const actions = w.find('[data-testid="empty-state-actions"]')
     expect(btn.element.nextElementSibling).toBe(w.find('[data-testid="empty-state-code-enter"]').element)
-    expect(w.find('[data-testid="empty-state"]').element.lastElementChild).toBe(w.find('[data-testid="empty-state-code-enter"]').element)
-    expect(btn.classes()).toContain('min-h-[44px]')
+    expect(actions.element.lastElementChild).toBe(w.find('[data-testid="empty-state-code-enter"]').element)
+    expect(w.find('[data-testid="empty-state"]').element.lastElementChild).toBe(actions.element)
+    expect(btn.classes()).not.toContain('w-full')
     await btn.trigger('click')
     expect(w.emitted('group-create')).toHaveLength(1)
   })
@@ -38,7 +42,7 @@ describe('ConnectionCard 그룹 방 만들기 진입 버튼', () => {
     const btn = w.find('[data-testid="empty-state-code-enter"]')
     expect(btn.exists()).toBe(true)
     expect(btn.text()).toBe('그림으로 들어가기')
-    expect(btn.classes()).toContain('min-h-[44px]')
+    expect(btn.classes()).not.toContain('w-full')
     await btn.trigger('click')
     expect(w.emitted('code-enter')).toHaveLength(1)
     expect(w.emitted('group-create')).toBeUndefined()

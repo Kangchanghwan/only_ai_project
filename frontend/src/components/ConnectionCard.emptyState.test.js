@@ -49,13 +49,14 @@ describe('ConnectionCard 빈 방 안내', () => {
     expect(w.find('[data-testid="empty-state-line1"]').exists()).toBe(true)
   })
 
-  it('모바일: QR 없이 한 줄 안내', async () => {
-    navigator.userAgent // eslint-disable-line no-unused-expressions
+  it('모바일: QR과 함께 PC에서 열 주소 안내가 보인다 (폰끼리는 QR, PC는 주소)', async () => {
     vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) Mobile')
     const w = mountCard(alone())
     await flushPromises()
-    expect(w.find('[data-testid="empty-state-qr"]').exists()).toBe(false)
-    expect(qr).not.toHaveBeenCalled()
+    expect(qr.mock.calls[0][0]).toBe(EMPTY_STATE_QR_URL)
+    expect(w.find('[data-testid="empty-state-qr"]').attributes('data-qr-value')).toBe(EMPTY_STATE_QR_URL)
+    expect(w.find('[data-testid="empty-state-line1"]').exists()).toBe(true)
+    expect(w.find('[data-testid="empty-state-ping"]').exists()).toBe(false)
     expect(w.find('[data-testid="empty-state-mobile"]').text()).toContain('clipboardapp.org')
     expect(w.find('[data-testid="empty-state-mobile"]').text()).toContain('핑.한국/')
   })

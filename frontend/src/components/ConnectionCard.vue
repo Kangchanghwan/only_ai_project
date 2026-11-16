@@ -66,7 +66,7 @@ let sawEmpty = false
 function clearViewTimer() { if (viewTimer) { clearTimeout(viewTimer); viewTimer = null } }
 
 async function makeQr() {
-  if (isMobile || qrDataUrl.value) return
+  if (qrDataUrl.value) return
   try {
     qrDataUrl.value = await QRCode.toDataURL(EMPTY_STATE_QR_URL, { width: 140, margin: 2, color: { dark: '#000000', light: '#ffffff' } })
   } catch { /* QR 실패 시 텍스트 안내만 보인다 */ }
@@ -154,22 +154,22 @@ const otherOpen = computed(() => otherOpenManual.value || otherBusy.value)
         <li class="flex-[0_0_146px] sm:flex-auto h-[85px] border border-border bg-tint list-none m-0"></li>
       </ul>
     </div>
-    <div v-if="showEmpty" class="mt-3 pt-3 border-t border-border flex flex-col items-center gap-2 text-center" data-testid="empty-state">
-      <template v-if="!isMobile">
-        <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="EMPTY_STATE_QR_URL" width="140" height="140" alt="QR" class="rounded-none bg-white" data-testid="empty-state-qr" />
-        <p class="m-0 text-sm text-text-primary" data-testid="empty-state-line1">{{ t('room.emptyState.qrLine') }}</p>
-        <i18n-t v-if="isKo" keypath="room.emptyState.pingLine" tag="p" class="m-0 text-xs text-text-secondary" data-testid="empty-state-ping">
-          <template #ping>
-            <button type="button" class="font-bold text-text-primary bg-transparent border-0 p-0 cursor-pointer" data-testid="empty-state-copy-ping" @click="copyHint('ping')">{{ PING_ADDRESS }}</button>
-          </template>
-        </i18n-t>
-      </template>
-      <i18n-t v-else keypath="room.emptyState.mobile" tag="p" class="m-0 text-sm text-text-secondary" data-testid="empty-state-mobile">
+    <div v-if="showEmpty" class="mt-3 pt-3.5 border-t border-border flex flex-col items-center gap-1.5 text-center" data-testid="empty-state">
+      <!-- QR은 PC와 폰 모두에서 보인다 (폰끼리 연결할 때 상대 폰이 이 화면을 찍는다) -->
+      <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="EMPTY_STATE_QR_URL" width="140" height="140" alt="QR" class="block mb-1 rounded-none bg-white border border-border" data-testid="empty-state-qr" />
+      <p class="m-0 text-sm font-bold text-ink" data-testid="empty-state-line1">{{ t('room.emptyState.qrLine') }}</p>
+      <i18n-t v-if="!isMobile && isKo" keypath="room.emptyState.pingLine" tag="p" class="m-0 text-xs text-text-secondary" data-testid="empty-state-ping">
+        <template #ping>
+          <button type="button" class="font-bold text-ink bg-transparent border-0 p-0 cursor-pointer" data-testid="empty-state-copy-ping" @click="copyHint('ping')">{{ PING_ADDRESS }}</button>
+        </template>
+      </i18n-t>
+      <!-- 폰에서는 PC가 QR을 찍을 수 없으므로 PC에서 열 주소를 함께 알려 준다 -->
+      <i18n-t v-if="isMobile" keypath="room.emptyState.mobile" tag="p" class="m-0 text-xs text-text-secondary" data-testid="empty-state-mobile">
         <template #site>
-          <button type="button" class="font-bold text-text-primary bg-transparent border-0 p-0 cursor-pointer" data-testid="empty-state-copy-site" @click="copyHint('clipboardapp')">{{ SITE_ADDRESS }}</button>
+          <button type="button" class="font-bold text-ink bg-transparent border-0 p-0 cursor-pointer" data-testid="empty-state-copy-site" @click="copyHint('clipboardapp')">{{ SITE_ADDRESS }}</button>
         </template>
         <template #ping>
-          <button type="button" class="font-bold text-text-primary bg-transparent border-0 p-0 cursor-pointer" data-testid="empty-state-copy-ping" @click="copyHint('ping')">{{ PING_ADDRESS }}</button>
+          <button type="button" class="font-bold text-ink bg-transparent border-0 p-0 cursor-pointer" data-testid="empty-state-copy-ping" @click="copyHint('ping')">{{ PING_ADDRESS }}</button>
         </template>
       </i18n-t>
       <a
@@ -179,22 +179,22 @@ const otherOpen = computed(() => otherOpenManual.value || otherBusy.value)
         data-testid="empty-state-ios-shortcut"
         @click="onIosShortcutClick"
       >{{ t('room.emptyState.iosShortcut') }}</a>
-      <!-- 다른 네트워크 기기와 연결하려면 그룹 방 (그룹 방 기능이 켜져 있을 때만) -->
-      <button
-        v-if="pair"
-        type="button"
-        class="w-full min-h-[44px] px-3 rounded-none border border-scope-private text-scope-private text-xs font-semibold leading-snug"
-        data-testid="empty-state-group-create"
-        @click="emit('group-create')"
-      >{{ t('group.emptyCta') }}</button>
-      <!-- 방에 있는 기기의 그림 4개를 눌러 들어오기 -->
-      <button
-        v-if="pair"
-        type="button"
-        class="w-full min-h-[44px] px-3 rounded-none border-2 border-ink text-ink hover:bg-tint text-xs font-bold leading-snug"
-        data-testid="empty-state-code-enter"
-        @click="emit('code-enter')"
-      >{{ t('code.enter') }}</button>
+      <!-- 그룹 방 기능이 켜져 있을 때만: 다른 네트워크 기기는 방으로, 방에 있는 기기의 그림 4개로 들어오기 -->
+      <div v-if="pair" class="mt-1.5 flex flex-wrap justify-center gap-1.5" data-testid="empty-state-actions">
+        <button
+          type="button"
+          class="h-8 px-3 rounded-none border border-ink bg-surface text-ink hover:bg-tint text-xs font-bold whitespace-nowrap"
+          :title="t('group.emptyCta')"
+          data-testid="empty-state-group-create"
+          @click="emit('group-create')"
+        >{{ t('code.addCreateTitle') }}</button>
+        <button
+          type="button"
+          class="h-8 px-3 rounded-none border border-border bg-surface text-ink hover:bg-tint text-xs font-bold whitespace-nowrap"
+          data-testid="empty-state-code-enter"
+          @click="emit('code-enter')"
+        >{{ t('code.enter') }}</button>
+      </div>
     </div>
     <ul v-if="pendingDevices.length > 0" class="mt-3 pt-3 border-t border-border flex flex-col gap-2 list-none p-0 m-0" data-testid="pair-pending-rows">
       <DeviceRow v-for="d in pendingDevices" :key="d.socketId" :device="d" />
