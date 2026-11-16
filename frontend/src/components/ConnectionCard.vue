@@ -145,6 +145,12 @@ const otherList = computed(() => (!props.wide && props.scope === 'ip' && pair
       :reroll-available-at="rerollAvailableAt"
       @reroll="emit('reroll')"
     />
+    <!-- 서버 연결 전 자리표시: 실제 카드 줄과 같은 높이(85px)로 자리를 잡아 아래 입력 상자가 밀리지 않게 한다 -->
+    <div v-else-if="!wide" class="relative min-w-0" aria-hidden="true" data-testid="device-cards-placeholder">
+      <ul class="list-none m-0 p-0 flex flex-nowrap gap-[6px] overflow-hidden sm:grid sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] items-stretch">
+        <li class="flex-[0_0_146px] sm:flex-auto h-[85px] border border-border bg-tint list-none m-0"></li>
+      </ul>
+    </div>
     <div v-if="showEmpty" class="mt-3 pt-3 border-t border-border flex flex-col items-center gap-2 text-center" data-testid="empty-state">
       <template v-if="!isMobile">
         <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="EMPTY_STATE_QR_URL" width="140" height="140" alt="QR" class="rounded-lg bg-white" data-testid="empty-state-qr" />
