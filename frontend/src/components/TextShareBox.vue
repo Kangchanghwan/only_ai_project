@@ -192,12 +192,13 @@ function onKeydown(event) {
         <input ref="fileInputRef" type="file" multiple class="sr-only" tabindex="-1" :aria-label="t('file.inputLabel')" data-testid="file-input" @change="handleFileSelect" @click.stop />
         <button
           type="button"
-          class="order-1 min-w-0 flex-1 sm:flex-none min-h-[44px] px-2 sm:px-4 rounded-none text-on-accent font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
+          class="order-1 min-w-[44px] max-sm:[container-type:inline-size] flex-1 sm:flex-none min-h-[44px] px-2 sm:px-4 rounded-none text-on-accent font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
           :class="accentBg"
           data-testid="choose-files"
+          :aria-label="t('file.chooseFiles')"
           @click="openFileDialog"
         >
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span class="truncate min-w-0">{{ t('file.chooseFiles') }}</span>
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span class="truncate max-sm:@max-[4rem]:hidden min-w-0">{{ t('file.chooseFiles') }}</span>
         </button>
         <button
           type="submit"
