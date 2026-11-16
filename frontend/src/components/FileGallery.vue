@@ -1,4 +1,5 @@
 <script setup>
+import { isEditableTarget } from '../utils/editable'
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import FileCard from './FileCard.vue'
 import LockedFileCard from './LockedFileCard.vue'
@@ -183,6 +184,9 @@ function showQRModal() {
 function handleKeydown(event) {
   if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
     if (isPrivate.value) return
+    // 입력란에서의 복사이거나 글자를 선택해 둔 경우는 브라우저 기본 복사에 맡긴다
+    if (isEditableTarget(event.target)) return
+    if (window.getSelection?.()?.toString()) return
     if (selectedCount.value > 0) {
       emit('copy-selected-to-clipboard', selectedFilesArray.value)
     }
