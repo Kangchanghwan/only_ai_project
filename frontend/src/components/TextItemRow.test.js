@@ -239,3 +239,31 @@ describe('TextItemRow ⋯ 메뉴 닫기', () => {
     w.unmount()
   })
 })
+
+describe('TextItemRow 잠금 표시', () => {
+  const lockIconRect = '<rect x="5" y="11" width="14" height="9" rx="2"'
+  it('잠긴 행은 타일에 자물쇠 아이콘과 data-locked, 내용이 열려 있으면 작은 "잠금" 태그가 메타 줄 맨 앞', () => {
+    const w = mountRow({ id: 'L', content: '열림', locked: true, salt: 's', timestamp: 0, roomId: 'r' })
+    const tag = w.find('[data-testid="text-tag"]')
+    expect(tag.attributes('data-locked')).toBe('true')
+    expect(tag.html()).toContain(lockIconRect)
+    const lt = w.find('[data-testid="text-meta"] > [data-testid="text-lock-tag"]')
+    expect(lt.exists()).toBe(true)
+    expect(lt.text()).toBe(i18n.global.t('lock.tag'))
+    expect(lt.classes()).toContain('max-[359px]:hidden')
+    expect(w.find('[data-testid="text-meta"]').element.firstElementChild).toBe(lt.element)
+  })
+  it('아직 못 푼 행은 타일이 자물쇠이고 제목 안에는 자물쇠 svg와 태그가 없다', () => {
+    const w = mountRow({ id: 'L', content: null, locked: true, salt: 's', timestamp: 0, roomId: 'r' })
+    expect(w.find('[data-testid="text-tag"]').html()).toContain(lockIconRect)
+    expect(w.find('[data-testid="text-locked"] svg').exists()).toBe(false)
+    expect(w.find('[data-testid="text-locked"]').text()).toContain('잠긴 텍스트')
+    expect(w.find('[data-testid="text-lock-tag"]').exists()).toBe(false)
+  })
+  it('잠기지 않은 행은 기존 줄 아이콘이고 data-locked가 없다', () => {
+    const w = mountRow({ id: 'P', content: 'hi', timestamp: 0 })
+    expect(w.find('[data-testid="text-tag"]').attributes('data-locked')).toBeUndefined()
+    expect(w.find('[data-testid="text-tag"]').html()).not.toContain(lockIconRect)
+    expect(w.find('[data-testid="text-lock-tag"]').exists()).toBe(false)
+  })
+})

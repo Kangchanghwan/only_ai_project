@@ -131,8 +131,9 @@ function formatTime(timestamp) {
   >
     <div
       class="w-8 h-8 sm:w-10 sm:h-10 rounded-none flex items-center justify-center flex-shrink-0 bg-tint text-ink"
+      :data-locked="text.locked ? 'true' : undefined"
       data-testid="text-tag"
-    ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 12H3"/><path d="M17 18H3"/><path d="M21 6H3"/></svg><span class="sr-only">{{ t('room.textTab') }}</span></div>
+    ><svg v-if="text.locked" class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><svg v-else class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 12H3"/><path d="M17 18H3"/><path d="M21 6H3"/></svg><span class="sr-only">{{ t('room.textTab') }}</span></div>
 
     <div class="file-info flex-1 min-w-0">
       <p
@@ -144,11 +145,11 @@ function formatTime(timestamp) {
       >{{ firstLine }}</p>
       <!-- 잠긴 텍스트: 이 범위 비밀번호를 확인한 기기에서만 내용이 보인다 -->
       <p v-else class="file-name text-sm font-medium text-text-primary truncate m-0 inline-flex items-center gap-1 max-w-full" :title="t('text.lockedHint')" data-testid="text-locked">
-        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
         <span class="truncate">{{ t('text.lockedTitle') }}</span>
         <span class="sr-only">{{ t('text.lockedHint') }}</span>
       </p>
       <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="text-meta">
+        <span v-if="text.locked && text.content != null" data-testid="text-lock-tag" class="max-[359px]:hidden shrink-0 inline-flex items-center border border-ink text-ink text-[10px] leading-4 font-bold px-1 rounded-[2px] whitespace-nowrap">{{ t('lock.tag') }}</span>
         <SenderLabel v-if="text.sender" :sender="text.sender" :time="text.timestamp" class="shrink min-w-0" />
         <span v-else class="whitespace-nowrap" data-testid="text-time">{{ formatTime(text.timestamp) }}</span>
         <template v-if="text.expiresAt">

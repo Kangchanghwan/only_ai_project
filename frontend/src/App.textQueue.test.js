@@ -102,6 +102,17 @@ describe('App 텍스트 10분 보관', () => {
     expect(lockState.deleteKeyFor('I', msg.textId)).toBeTruthy()
   })
 
+  it('잠금 중에 보낸 내 텍스트는 내 목록에서도 locked === true이고 내용이 열려 있다 (잠금 표시 근거)', async () => {
+    w = await mountApp()
+    const lock = await lockState.setLock('ip', 'pass1234', { iterations: 1000 })
+    await flush()
+    await textEmit(w, '내가 잠가 보냄')
+    const mine = room(w).props('texts')[0]
+    expect(mine.locked).toBe(true)
+    expect(mine.salt).toBe(lock.salt)
+    expect(mine.content).toBe('내가 잠가 보냄')
+  })
+
   it('잠금이 꺼져 있으면(기본) 평문으로 보내고 평문 보관 모드로 표시, 서버 만료 시각을 카드에 반영한다', async () => {
     w = await mountApp()
     expect(room(w).props('textStorageMode')).toBe('plain')
