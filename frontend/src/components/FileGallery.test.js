@@ -32,15 +32,6 @@ const stubs = {
       </div>
     `
   },
-  FileUploadSection: {
-    name: 'FileUploadSection',
-    emits: ['upload-files'],
-    template: '<div class="file-upload-section-stub"></div>'
-  },
-  PasteSection: {
-    name: 'PasteSection',
-    template: '<div class="paste-section-stub"></div>'
-  },
   DownloadControls: {
     name: 'DownloadControls',
     props: ['selectedCount', 'totalCount', 'allSelected'],
@@ -151,28 +142,15 @@ describe('FileGallery.vue - 파일 카드 land 애니메이션', () => {
   })
 })
 
-describe('FileGallery 업로드 영역 크기', () => {
-  const probeStubs = {
-    ...stubs,
-    FileUploadSection: {
-      name: 'FileUploadSection',
-      props: ['compact'],
-      template: '<div class="upload-probe" :data-compact="String(compact)"><slot /></div>'
-    },
-    PasteSection: { name: 'PasteSection', template: '<div class="paste-probe"></div>' }
-  }
-  const file = { name: 'a.png', roomId: 'r', url: 'https://example.com/a.png', size: 1, created: '2026-01-01T00:00:00.000Z' }
-
-  it('파일이 0개면 큰 상태(compact=false)', () => {
-    const w = mount(FileGallery, { props: { files: [], roomId: 'r' }, global: { plugins: [i18n], stubs: probeStubs } })
-    expect(w.find('.upload-probe').attributes('data-compact')).toBe('false')
-  })
-
-  it('파일이 1개 이상이면 컴팩트 막대(compact=true)이고 붙여넣기는 보내기 머리줄에 하나만 있다', () => {
-    const w = mount(FileGallery, { props: { files: [file], roomId: 'r' }, global: { plugins: [i18n], stubs: probeStubs } })
-    expect(w.find('.upload-probe').attributes('data-compact')).toBe('true')
-    expect(w.findAll('.paste-probe')).toHaveLength(1)
-    expect(w.find('[data-testid="send-panel-header"] .paste-probe').exists()).toBe(true)
-    expect(w.find('.upload-probe .paste-probe').exists()).toBe(false)
+describe('FileGallery 보내기 패널', () => {
+  it('업로드 영역·머리줄은 없고 composer 슬롯(통합 보내기 상자)만 받는다', () => {
+    const w = mount(FileGallery, {
+      props: { files: [], roomId: 'r' },
+      slots: { composer: '<div class="composer-probe"></div>' },
+      global: { plugins: [i18n], stubs }
+    })
+    expect(w.find('[data-testid="send-panel-header"]').exists()).toBe(false)
+    expect(w.find('[data-testid="upload-dropzone"]').exists()).toBe(false)
+    expect(w.findAll('[data-testid="send-panel"] .composer-probe')).toHaveLength(1)
   })
 })

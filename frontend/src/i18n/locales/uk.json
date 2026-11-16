@@ -555,5 +555,8 @@
     "textArrived": "Новий текст: {where}",
     "fileArrived": "Новий файл: {where}",
     "textsCleared": "Усі тексти видалено: {where}"
+  },
+  "send": {
+    "placeholder": "Введіть текст тут або перетягніть файли"
   }
 }

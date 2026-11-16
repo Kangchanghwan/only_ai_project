@@ -555,5 +555,8 @@
     "textArrived": "Teks baru di {where}",
     "fileArrived": "File baru di {where}",
     "textsCleared": "Semua teks di {where} telah dihapus"
+  },
+  "send": {
+    "placeholder": "Ketik di sini atau seret dan lepas berkas"
   }
 }

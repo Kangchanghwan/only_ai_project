@@ -781,5 +781,8 @@
     "textArrived": "New text in {where}",
     "fileArrived": "New file in {where}",
     "textsCleared": "All texts in {where} were cleared"
+  },
+  "send": {
+    "placeholder": "Type here, or drag and drop files"
   }
 }

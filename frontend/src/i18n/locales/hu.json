@@ -555,5 +555,8 @@
     "textArrived": "Új szöveg itt: {where}",
     "fileArrived": "Új fájl itt: {where}",
     "textsCleared": "Minden szöveg törölve itt: {where}"
+  },
+  "send": {
+    "placeholder": "Írj ide, vagy húzd ide a fájlokat"
   }
 }

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { readFileSync } from 'node:fs'
 import { ref } from 'vue'
 import TextItemRow from './TextItemRow.vue'
 import i18n from '../i18n/index.js'
@@ -34,8 +35,8 @@ describe('TextItemRow 받은 텍스트', () => {
 
   it('본문은 일반 텍스트로만 렌더링된다 (HTML 주입 없음)', () => {
     const w = mountRow({ id: '1', content: '<img src=x onerror=alert(1)><b>x</b>', timestamp: time })
-    expect(w.find('[data-testid="text-body"] img').exists()).toBe(false)
-    expect(w.find('[data-testid="text-body"]').text()).toContain('<img src=x')
+    expect(w.find('[data-testid="text-title"] img').exists()).toBe(false)
+    expect(w.find('[data-testid="text-title"]').text()).toContain('<img src=x')
   })
 })
 
@@ -46,16 +47,18 @@ describe('TextItemRow 보관 중·잠긴 텍스트 카드', () => {
   it('보관 중이면 남은 시간과 보관 취소 버튼, 누르면 cancel-text', async () => {
     const w = mountRow(queued)
     expect(w.find('[data-testid="text-expires"]').text()).toBe('8분 뒤 삭제')
+    await w.find('[data-testid="text-more"]').trigger('click')
     await w.find('[data-testid="text-cancel-keep"]').trigger('click')
     expect(w.emitted('cancel-text')[0]).toEqual(['q1'])
   })
 
-  it('1분 미만은 "곧 삭제", 지울 증명이 없으면 취소 버튼이 없다, 보관 중이 아니면 줄 자체가 없다', () => {
+  it('1분 미만은 "곧 삭제", 지울 증명이 없으면 취소 버튼이 없다, 보관 중이 아니면 삭제 시각이 없다', async () => {
     const soon = mountRow({ ...queued, remainingMs: 30000, canCancel: false })
     expect(soon.find('[data-testid="text-expires"]').text()).toBe('곧 삭제')
+    await soon.find('[data-testid="text-more"]').trigger('click')
     expect(soon.find('[data-testid="text-cancel-keep"]').exists()).toBe(false)
     const live = mountRow({ ...queued, expiresAt: undefined, remainingMs: 0 })
-    expect(live.find('[data-testid="text-queued"]').exists()).toBe(false)
+    expect(live.find('[data-testid="text-expires"]').exists()).toBe(false)
   })
 
   it('잠긴 텍스트는 내용·복사 없이 "잠긴 텍스트"로만 보이고, 비밀번호로 풀기를 요청한다', async () => {
@@ -91,16 +94,19 @@ describe('TextItemRow 보관 중·잠긴 텍스트 카드', () => {
 
   it('풀린 잠긴 텍스트는 일반 카드처럼 내용과 복사 버튼이 보인다', () => {
     const w = mountRow({ id: 'L2', content: '열림', locked: true, salt: 's', timestamp: 0, roomId: 'r' })
-    expect(w.find('[data-testid="text-body"]').text()).toBe('열림')
+    expect(w.find('[data-testid="text-title"]').text()).toBe('열림')
     expect(w.find('[data-testid="text-copy"]').exists()).toBe(true)
   })
 })
 
 describe('TextItemRow 행 모양', () => {
-  it('"텍스트" 태그, 2줄 줄임 본문, 복사 버튼은 남색 채움', () => {
-    const w = mountRow({ id: '1', content: 'a\nb\nc\nd', timestamp: Date.now(), sender })
+  it('"텍스트" 태그, 한 줄 제목(첫 줄), 복사 버튼은 남색 채움', () => {
+    const w = mountRow({ id: '1', content: '\n  첫 줄\nb\nc\nd', timestamp: Date.now(), sender })
     expect(w.find('[data-testid="text-tag"]').text()).toBe('텍스트')
-    expect(w.find('[data-testid="text-body"]').classes()).toContain('line-clamp-2')
+    const title = w.find('[data-testid="text-title"]')
+    expect(title.text()).toBe('첫 줄')
+    expect(title.classes()).toContain('truncate')
+    expect(w.find('[data-testid="text-body"]').exists()).toBe(false)
     const copy = w.find('[data-testid="text-copy"]')
     expect(copy.classes()).toContain('bg-ink')
     expect(copy.classes()).toContain('min-h-[44px]')
@@ -109,21 +115,51 @@ describe('TextItemRow 행 모양', () => {
 
 describe('TextItemRow 더보기', () => {
   const multi = { id: 'm', content: 'one\ntwo\n\nfour', timestamp: Date.now() }
-  it('2줄을 넘으면 "더보기"가 보이고, 짧은 글에는 없다', () => {
-    expect(mountRow(multi).find('[data-testid="text-expand"]').text()).toContain('더보기')
-    expect(mountRow({ id: 's', content: 'hi\nyo', timestamp: Date.now() }).find('[data-testid="text-expand"]').exists()).toBe(false)
+  it('여러 줄이면 메타 줄에 "더보기"가 보이고, 한 줄 글에는 없다', () => {
+    const more = mountRow(multi).find('[data-testid="text-expand"]')
+    expect(more.text()).toContain('더보기')
+    expect(more.element.closest('[data-testid="text-meta"]')).not.toBeNull()
+    expect(mountRow({ id: 's', content: 'hi', timestamp: Date.now() }).find('[data-testid="text-expand"]').exists()).toBe(false)
+    expect(mountRow({ id: 's', content: 'hi\n\n', timestamp: Date.now() }).find('[data-testid="text-expand"]').exists()).toBe(false)
   })
   it('더보기를 누르면 전체 글을 그대로 보여 주고(줄 번호·줄 복사 없음), 글을 눌러도 접히지 않으며 접기로 접는다', async () => {
     const w = mountRow(multi)
     await w.find('[data-testid="text-expand"]').trigger('click')
     const body = w.find('[data-testid="text-body"]')
-    expect(body.classes()).not.toContain('line-clamp-2')
+    expect(body.classes()).toContain('whitespace-pre-wrap')
+    expect(body.classes()).toContain('max-h-[60vh]')
     expect(body.text()).toContain('four')
     expect(w.find('[data-testid="text-line-copy"]').exists()).toBe(false)
     await body.trigger('click')
-    expect(w.find('[data-testid="text-body"]').classes()).not.toContain('line-clamp-2')
+    expect(w.find('[data-testid="text-body"]').exists()).toBe(true)
     await w.find('[data-testid="text-collapse"]').trigger('click')
-    expect(w.find('[data-testid="text-body"]').classes()).toContain('line-clamp-2')
+    expect(w.find('[data-testid="text-body"]').exists()).toBe(false)
     expect(w.emitted('copy-text')).toBeUndefined()
+  })
+})
+
+describe('TextItemRow 접힌 행은 파일 행과 같은 모양', () => {
+  const fileRowClasses = () => {
+    const src = readFileSync('src/components/FileCard.vue', 'utf8')
+    const m = src.match(/class="file-row ([^"]+)"/)
+    return m[1].split(/\s+/)
+  }
+  it('루트·컨테이너 클래스가 FileCard 행과 같고 제목은 truncate(여러 줄 줄임 없음), 삭제 시각은 메타 줄 안에 있다', () => {
+    const w = mountRow({ id: 'p', content: '첫 줄\n둘째 줄', timestamp: Date.now(), expiresAt: 1, remainingMs: 5 * 60000, canCancel: true, sender })
+    const classes = w.find('[data-testid="text-entry"]').classes()
+    for (const c of fileRowClasses()) {
+      if (c.startsWith('[') || c.startsWith('hover:') || c.includes('{')) continue
+      expect(classes).toContain(c)
+    }
+    expect(classes).toContain('file-row')
+    const title = w.find('[data-testid="text-title"]')
+    expect(title.classes()).toContain('truncate')
+    expect(w.html()).not.toContain('line-clamp')
+    expect(title.classes()).toEqual(expect.arrayContaining(['text-sm', 'font-medium']))
+    expect(w.find('[data-testid="text-meta"] [data-testid="text-expires"]').text()).toBe('5분 뒤 삭제')
+    expect(w.find('[data-testid="text-queued"]').exists()).toBe(false)
+    // 복사/더보기 버튼: FileCard의 받기/더보기와 같은 크기 클래스
+    expect(w.find('[data-testid="text-copy"]').classes()).toEqual(expect.arrayContaining(['bg-ink', 'min-h-[44px]', 'min-w-[44px]', 'px-3', 'sm:px-4']))
+    expect(w.find('[data-testid="text-more"]').classes()).toEqual(expect.arrayContaining(['w-11', 'h-11', 'border-border', 'bg-background']))
   })
 })

@@ -781,5 +781,8 @@
     "textArrived": "{where}에 새 텍스트가 왔어요",
     "fileArrived": "{where}에 새 파일이 왔어요",
     "textsCleared": "{where}의 텍스트가 모두 삭제됐어요"
+  },
+  "send": {
+    "placeholder": "여기에 입력하거나 파일을 끌어다 놓으세요"
   }
 }

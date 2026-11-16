@@ -555,5 +555,8 @@
     "textArrived": "Ny text i {where}",
     "fileArrived": "Ny fil i {where}",
     "textsCleared": "Alla texter i {where} har rensats"
+  },
+  "send": {
+    "placeholder": "Skriv här eller dra och släpp filer"
   }
 }

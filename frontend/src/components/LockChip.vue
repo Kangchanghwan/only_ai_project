@@ -53,7 +53,7 @@ function unlock() {
 </script>
 
 <template>
-  <div class="lock-chip-wrap" data-testid="lock-chip" @click.stop>
+  <div class="lock-chip-wrap" :class="{ 'is-editing': editing && !locked }" data-testid="lock-chip" @click.stop>
     <template v-if="locked">
       <span class="lock-chip on">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
@@ -88,15 +88,20 @@ function unlock() {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.375rem;
   cursor: default;
+}
+/* 비밀번호 입력 중에는 도구 줄 아래 한 줄을 전부 쓴다 */
+.lock-chip-wrap.is-editing {
+  flex-basis: 100%;
+  order: 99;
 }
 .lock-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  min-height: 32px;
+  min-height: 44px;
   padding: 0 0.75rem;
   border-radius: 0;
   border: 1px solid var(--color-border);
@@ -135,10 +140,10 @@ function unlock() {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.375rem;
   width: 100%;
-  max-width: 22rem;
+  max-width: 28rem;
 }
 .lock-form input {
   flex: 1 1 10rem;

@@ -555,5 +555,8 @@
     "textArrived": "Có văn bản mới trong {where}",
     "fileArrived": "Có tệp mới trong {where}",
     "textsCleared": "Đã xóa tất cả văn bản trong {where}"
+  },
+  "send": {
+    "placeholder": "Nhập tại đây hoặc kéo và thả tệp vào"
   }
 }

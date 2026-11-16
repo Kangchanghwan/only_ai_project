@@ -282,8 +282,6 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 @delete-file="$emit('delete-file', $event)"
                 @delete-selected="$emit('delete-selected', $event)"
                 @clear-storage="$emit('clear-storage')"
-                @upload-files="$emit('upload-files', $event)"
-                @paste-content="$emit('paste-content')"
                 @load-more="$emit('load-more')"
                 @cancel-upload="$emit('cancel-upload', $event)"
                 @cancel-all="$emit('cancel-all')"
@@ -302,15 +300,18 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                     >{{ t('pair.reconnect') }}</button>
                   </div>
                 </template>
-                <template #composer>
+                <template v-if="!peerLeft" #composer>
                   <TextShareBox
                     :scope="scope"
                     :prefill="prefillText"
                     :receiver-count="textReceiverCount"
                     :storage-mode="textStorageMode"
+                    :has-items="files.length > 0 || texts.length > 0"
                     :compose-disabled="peerLeft || (peerOffline && textStorageMode === 'none') || peerConnecting"
                     :compose-note="peerOffline && textStorageMode === 'none' ? t('pair.offlineTextNote') : ''"
                     @share-text="$emit('share-text', $event)"
+                    @upload-files="$emit('upload-files', $event)"
+                    @paste-content="$emit('paste-content')"
                   />
                 </template>
               </FileGallery>

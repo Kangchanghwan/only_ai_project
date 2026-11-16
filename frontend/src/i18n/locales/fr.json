@@ -555,5 +555,8 @@
     "textArrived": "Nouveau texte dans {where}",
     "fileArrived": "Nouveau fichier dans {where}",
     "textsCleared": "Tous les textes de {where} ont été supprimés"
+  },
+  "send": {
+    "placeholder": "Saisissez ici ou glissez-déposez des fichiers"
   }
 }

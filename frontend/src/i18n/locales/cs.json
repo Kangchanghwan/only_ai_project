@@ -555,5 +555,8 @@
     "textArrived": "Nový text: {where}",
     "fileArrived": "Nový soubor: {where}",
     "textsCleared": "Všechny texty smazány: {where}"
+  },
+  "send": {
+    "placeholder": "Pište sem nebo přetáhněte soubory"
   }
 }

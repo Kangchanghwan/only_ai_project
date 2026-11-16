@@ -632,5 +632,8 @@
     "textArrived": "{where}に新しいテキストが届きました",
     "fileArrived": "{where}に新しいファイルが届きました",
     "textsCleared": "{where}のテキストがすべて削除されました"
+  },
+  "send": {
+    "placeholder": "ここに入力するか、ファイルをドラッグ＆ドロップしてください"
   }
 }

@@ -20,8 +20,6 @@ const stubs = {
       <input v-if="selectable" type="checkbox" class="locked-check" :checked="isSelected" @change="$emit('toggle-selection', file)" />
     </div>`
   },
-  FileUploadSection: { name: 'FileUploadSection', template: '<div></div>' },
-  PasteSection: { name: 'PasteSection', template: '<div></div>' },
   MultiFileQRCodeModal: { name: 'MultiFileQRCodeModal', props: ['files', 'roomId', 'isOpen'], template: '<div></div>' }
 }
 

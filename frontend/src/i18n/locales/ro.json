@@ -555,5 +555,8 @@
     "textArrived": "Text nou în {where}",
     "fileArrived": "Fișier nou în {where}",
     "textsCleared": "Toate textele din {where} au fost șterse"
+  },
+  "send": {
+    "placeholder": "Scrie aici sau trage și plasează fișiere"
   }
 }

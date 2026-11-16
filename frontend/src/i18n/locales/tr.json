@@ -555,5 +555,8 @@
     "textArrived": "{where} içinde yeni metin",
     "fileArrived": "{where} içinde yeni dosya",
     "textsCleared": "{where} içindeki tüm metinler silindi"
+  },
+  "send": {
+    "placeholder": "Buraya yazın veya dosyaları sürükleyip bırakın"
   }
 }

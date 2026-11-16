@@ -555,5 +555,8 @@
     "textArrived": "{where}有新文本",
     "fileArrived": "{where}有新文件",
     "textsCleared": "{where}的文本已全部删除"
+  },
+  "send": {
+    "placeholder": "在此输入，或将文件拖放到这里"
   }
 }

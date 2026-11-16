@@ -555,5 +555,8 @@
     "textArrived": "نص جديد في {where}",
     "fileArrived": "ملف جديد في {where}",
     "textsCleared": "تم حذف كل النصوص في {where}"
+  },
+  "send": {
+    "placeholder": "اكتب هنا أو اسحب الملفات وأفلتها"
   }
 }

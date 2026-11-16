@@ -555,5 +555,8 @@
     "textArrived": "Nieuwe tekst in {where}",
     "fileArrived": "Nieuw bestand in {where}",
     "textsCleared": "Alle teksten in {where} zijn gewist"
+  },
+  "send": {
+    "placeholder": "Typ hier of sleep bestanden hierheen"
   }
 }

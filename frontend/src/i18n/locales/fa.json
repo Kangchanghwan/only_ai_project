@@ -555,5 +555,8 @@
     "textArrived": "متن جدید در {where}",
     "fileArrived": "فایل جدید در {where}",
     "textsCleared": "همهٔ متن‌های {where} پاک شد"
+  },
+  "send": {
+    "placeholder": "اینجا بنویسید یا فایل‌ها را بکشید و رها کنید"
   }
 }

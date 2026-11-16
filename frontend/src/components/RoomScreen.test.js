@@ -26,7 +26,7 @@ const stubs = {
     name: 'TextShareBox',
     template: '<div class="text-share-box-stub"></div>',
     props: ['scope'],
-    emits: ['share-text']
+    emits: ['share-text', 'upload-files', 'paste-content']
   },
   AppFooter: {
     name: 'AppFooter',
@@ -224,15 +224,15 @@ describe('RoomScreen.vue', () => {
       expect(wrapper.emitted('copy-selected-to-clipboard')[0][0]).toEqual(files)
     })
 
-    it('FileGallery에서 upload-files 이벤트가 전파되어야 한다', async () => {
+    it('통합 보내기 상자의 upload-files 이벤트가 전파되어야 한다', async () => {
       const files = [new File(['test'], 'test.png', { type: 'image/png' })]
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
         global: { plugins: [i18n], stubs }
       })
 
-      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
-      await fileGallery.vm.$emit('upload-files', files)
+      const box = wrapper.findComponent({ name: 'TextShareBox' })
+      await box.vm.$emit('upload-files', files)
 
       expect(wrapper.emitted()).toHaveProperty('upload-files')
       expect(wrapper.emitted('upload-files')[0][0]).toEqual(files)

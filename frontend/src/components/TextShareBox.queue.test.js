@@ -11,10 +11,10 @@ const mountBox = (props = {}) => mount(TextShareBox, { props: { texts: [], ...pr
 describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
   const label = (w) => w.find('[data-testid="text-storage-label"]').text()
 
-  it('잠금 꺼짐(평문): 같은 네트워크·전체 공유 각각 누가 볼 수 있는지 보여 준다 (잠금 칩은 보내기 패널 머리에만)', () => {
+  it('잠금 꺼짐(평문): 같은 네트워크·전체 공유 각각 누가 볼 수 있는지 보여 준다 (잠금 칩은 도구 줄에 하나)', () => {
     const ip = mountBox({ storageMode: 'plain', scope: 'ip' })
     expect(label(ip)).toBe('평문 10분 보관 · 같은 네트워크 누구나 볼 수 있어요')
-    expect(ip.find('[data-testid="lock-chip"]').exists()).toBe(false)
+    expect(ip.findAll('[data-testid="lock-chip"]')).toHaveLength(1)
     const global = mountBox({ storageMode: 'plain', scope: 'global' })
     expect(label(global)).toBe('평문 10분 보관 · 모르는 사람도 누구나 볼 수 있어요')
     expect(global.find('[data-testid="text-storage-label"]').classes()).toContain('font-semibold')
@@ -27,7 +27,7 @@ describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
     expect(prv.find('[data-testid="lock-chip"]').exists()).toBe(false)
     const none = mountBox({ storageMode: 'none' })
     expect(label(none)).toBe('보관 안 함 · 지금 열린 기기에만 전달')
-    expect(none.find('[data-testid="lock-chip"]').exists()).toBe(false)
+    expect(none.findAll('[data-testid="lock-chip"]')).toHaveLength(1)
   })
 
   it('받을 기기 수는 보관 방식 박스 안에 짧게: 0대면 들어오면 전달(보관 안 하면 전달 안 됨)', () => {
