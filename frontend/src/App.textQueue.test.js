@@ -198,11 +198,72 @@ describe('App 텍스트 10분 보관', () => {
     expect(service.unlock).not.toHaveBeenCalled()
   })
 
-  it('전체 삭제는 서버 대기열도 함께 지운 뒤 알린다', async () => {
+  const undoProp = (w) => w.findComponent({ name: 'NotificationToast' }).props('undo')
+
+  it('전체 삭제: 5초 전 실행 취소하면 서버 삭제 없이 글이 원래 순서로 돌아온다', async () => {
     w = await mountApp()
-    room(w).vm.$emit('clear-all-texts')
+    await textEmit(w, 'one')
+    await textEmit(w, 'two')
     await flush()
-    expect(service.remove).toHaveBeenCalledWith('I', expect.objectContaining({ all: true }))
-    expect(publish).toHaveBeenCalledWith({ type: 'texts-cleared', roomId: 'I' }, 'ip')
+    service.remove.mockClear(); publish.mockClear()
+    const before = room(w).props('texts').map((x) => x.id)
+    expect(before).toHaveLength(2)
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      room(w).vm.$emit('clear-all-texts')
+      await Promise.resolve(); await w.vm.$nextTick()
+      expect(room(w).props('texts')).toHaveLength(0)
+      expect(undoProp(w).label).toBe('실행 취소')
+      await vi.advanceTimersByTimeAsync(4000)
+      w.findComponent({ name: 'NotificationToast' }).vm.$emit('undo')
+      await w.vm.$nextTick()
+      expect(room(w).props('texts').map((x) => x.id)).toEqual(before)
+      await vi.advanceTimersByTimeAsync(10000)
+      expect(service.remove).not.toHaveBeenCalled()
+      expect(publish).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'texts-cleared' }), expect.anything())
+    } finally { vi.useRealTimers() }
+  })
+
+  it('전체 삭제: 5초가 지나면 서버 대기열도 지우고 알린다', async () => {
+    w = await mountApp()
+    await textEmit(w, 'one')
+    await flush()
+    service.remove.mockClear(); publish.mockClear()
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      room(w).vm.$emit('clear-all-texts')
+      await Promise.resolve()
+      await vi.advanceTimersByTimeAsync(4900)
+      expect(service.remove).not.toHaveBeenCalled()
+      await vi.advanceTimersByTimeAsync(200)
+      expect(service.remove).toHaveBeenCalledWith('I', expect.objectContaining({ all: true }))
+      expect(publish).toHaveBeenCalledWith({ type: 'texts-cleared', roomId: 'I' }, 'ip')
+    } finally { vi.useRealTimers() }
+  })
+
+  it('글 하나 삭제도 같은 방식이고, 대기 중 또 삭제하면 앞의 삭제가 즉시 확정된다', async () => {
+    w = await mountApp()
+    await textEmit(w, 'one')
+    await textEmit(w, 'two')
+    await flush()
+    service.remove.mockClear()
+    const [first, second] = room(w).props('texts').map((x) => x.id)
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      room(w).vm.$emit('remove-text', first)
+      await Promise.resolve()
+      expect(room(w).props('texts').map((x) => x.id)).toEqual([second])
+      expect(service.remove).not.toHaveBeenCalled()
+      room(w).vm.$emit('remove-text', second)
+      await vi.advanceTimersByTimeAsync(0)
+      expect(service.remove).toHaveBeenCalledWith('I', expect.objectContaining({ textIds: [first] }))
+      await vi.advanceTimersByTimeAsync(5100)
+      expect(service.remove).toHaveBeenCalledWith('I', expect.objectContaining({ textIds: [second] }))
+    } finally { vi.useRealTimers() }
+  })
+
+  it('첫 연결에는 "연결되었습니다" 알림이 없다', async () => {
+    w = await mountApp()
+    expect(notifications()).not.toContain('연결되었습니다.')
   })
 })

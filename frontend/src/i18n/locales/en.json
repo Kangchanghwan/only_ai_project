@@ -11,9 +11,7 @@
     "connectedDevices": "Connected devices",
     "copyCode": "Copy Room Code",
     "copied": "Room code copied!",
-    "filesTab": "Files",
     "textTab": "Text",
-    "mobilePanelLabel": "Switch between files and text",
     "qrShareTitle": "Share via QR code",
     "currentRoomCode": "Current room code",
     "copy": "Copy",
@@ -139,7 +137,8 @@
     "manage": "Manage name tag",
     "notAuth": "The name tag only tells devices apart. It is not identity verification.",
     "globalWarning": "Everyone, including strangers, can see what you send and your device info (animal name tag, device and browser), and unlocked text is kept as plain text for 10 minutes. Turn on 'Lock with a password' for sensitive files and text so only people with the password can open them.",
-    "pairSasLoading": "Loading pictures…"
+    "pairSasLoading": "Loading pictures…",
+    "moreDevices": "Show {count} more"
   },
   "shareScope": {
     "label": "Share with",
@@ -176,7 +175,6 @@
     "clearStorage": "Clear Storage",
     "moreActions": "More",
     "chooseFiles": "Choose files",
-    "dropHint": "or drag and drop files here",
     "limitResume": "Up to {size} per file · interrupted uploads resume",
     "receive": "Receive",
     "copyImage": "Copy image",
@@ -190,14 +188,11 @@
     "removed": "Text removed.",
     "clearAll": "Clear All Texts",
     "cleared": "All texts cleared.",
-    "receivedText": "Received text",
     "autoShareHint": "Text is automatically shared when you paste (Ctrl+V / Cmd+V)",
-    "noMessages": "No messages yet",
     "clickToCopy": "Click to copy",
     "delete": "Delete",
     "messageCount": "{count} message",
     "messageCount_plural": "{count} messages",
-    "composePlaceholder": "Type or paste here, then press Share",
     "prefillNote": "This text came from a link. Check it, then press 'Share' to send it.",
     "sentStatus": "Shared. It now appears in the text list on connected devices.",
     "sendFailedStatus": "Couldn't share. Please try again.",
@@ -265,7 +260,10 @@
     "cancel": "Cancel",
     "cancelAll": "Cancel all",
     "uploadCancelled": "Upload canceled",
-    "uploadsCancelled": "{count} uploads canceled"
+    "uploadsCancelled": "{count} uploads canceled",
+    "undo": "Undo",
+    "textsCleared": "All texts cleared",
+    "textRemoved": "Text removed"
   },
   "clipboard": {
     "paste": "Paste",
@@ -525,7 +523,6 @@
       "downloadFailed": "Something went wrong while downloading. Please try again.",
       "deleteForbidden": "Only people who know the password can delete this file."
     },
-    "noBulk": "Locked files are received one at a time",
     "sheetTitle": "Enter the password",
     "showPassword": "Show",
     "hidePassword": "Hide",
@@ -554,8 +551,6 @@
     "pending": "Waiting for them to accept",
     "pendingSeconds": "{n}s",
     "cancel": "Cancel",
-    "hint": "Tap a device to make a room for the two of you. You can invite more devices later",
-    "hintClose": "Close tip",
     "unknownDevice": "Unknown device",
     "request": {
       "title": "Room connection request",
@@ -600,8 +595,6 @@
       "leaveFailed": "Couldn't disconnect. Please try again",
       "noRoom": "This room isn't available"
     },
-    "tab": "Room",
-    "tabMany": "Rooms ({n})",
     "tabTitle": "Room with {name}",
     "stripTitle": "Room with {name}",
     "stripNote": "Files and text here are seen only by the two of you and encrypted automatically",
@@ -617,7 +610,6 @@
     "unreadableText": "Unreadable text",
     "waitingAccept": "Waiting for them to accept",
     "otherNetworkGroup": "{n} devices on other networks",
-    "shortcut": "Room with {name}",
     "statusOffline": "Offline",
     "statusConnecting": "Connecting…",
     "offlineUploadNote": "They can receive it when they're online (files are kept up to 1 day)",
@@ -783,6 +775,7 @@
     "textsCleared": "All texts in {where} were cleared"
   },
   "send": {
-    "placeholder": "Type here, or drag and drop files"
+    "placeholder": "Type here, or drag and drop files",
+    "shortcutHint": "Send with Ctrl+Enter (⌘+Enter on Mac)"
   }
 }

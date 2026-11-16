@@ -48,7 +48,29 @@ const overflowRight = ref(false)
 const scrolledAway = ref(false)
 const hiddenRight = ref(0)
 function cardEls() { return strip.value ? Array.from(strip.value.querySelectorAll('[data-testid="device-card"]')) : [] }
+// ── PC(640px+): 최대 2줄. 한 줄 칸 수는 실제 폭에서 구한다 ──
+const CARD_MIN = 150
+const CARD_GAP = 6
+const desktop = ref(false)
+const cols = ref(0)
+const expanded = ref(false)
+function updateCols() {
+  const el = strip.value
+  desktop.value = typeof window !== 'undefined' && window.innerWidth >= 640
+  const w = el?.clientWidth || 0
+  cols.value = w > 0 ? Math.max(1, Math.floor((w + CARD_GAP) / (CARD_MIN + CARD_GAP))) : 0
+}
+const capacity = computed(() => cols.value * 2)
+const overCapacity = computed(() => desktop.value && cols.value > 0 && sorted.value.length > capacity.value)
+const hiddenCount = computed(() => (overCapacity.value ? sorted.value.length - (capacity.value - 1) : 0))
+// 가려질 순서에 1:1 요청 중인 기기가 있으면 자동으로 펼친다
+const forcedOpen = computed(() => overCapacity.value && sorted.value.slice(capacity.value - 1).some((d) => pairingIds.value.has(d.socketId)))
+const isOpen = computed(() => expanded.value || forcedOpen.value)
+const shown = computed(() => (overCapacity.value && !isOpen.value ? sorted.value.slice(0, capacity.value - 1) : sorted.value))
+const TILE = 'hidden sm:flex h-[85px] items-center justify-center text-center px-2 border border-border bg-tint text-ink font-bold text-xs cursor-pointer rounded-none'
+
 function updateOverflow() {
+  updateCols()
   const el = strip.value
   if (!el) return
   const max = el.scrollWidth - el.clientWidth
@@ -86,7 +108,7 @@ watch(() => props.devices.length, async () => { await nextTick(); updateOverflow
       @scroll.passive="updateOverflow"
     >
       <DeviceCard
-        v-for="d in sorted"
+        v-for="d in shown"
         :key="d.socketId"
         :device="d"
         :is-me="isMe(d)"
@@ -96,6 +118,12 @@ watch(() => props.devices.length, async () => { await nextTick(); updateOverflow
         class="flex-[0_0_146px] snap-start sm:flex-auto"
         @reroll="emit('reroll')"
       />
+      <li v-if="overCapacity && !isOpen" class="list-none m-0 flex">
+        <button type="button" :class="[TILE, 'w-full']" aria-expanded="false" data-testid="cards-more-tile" @click="expanded = true">{{ t('identity.moreDevices', { count: hiddenCount }) }}</button>
+      </li>
+      <li v-else-if="overCapacity && expanded && !forcedOpen" class="list-none m-0 flex">
+        <button type="button" :class="[TILE, 'w-full']" aria-expanded="true" data-testid="cards-more-tile" @click="expanded = false">{{ t('text.collapse') }}</button>
+      </li>
     </ul>
     <span v-if="scrolledAway" class="sm:hidden pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-surface to-transparent" aria-hidden="true" data-testid="cards-fade-left"></span>
     <span v-if="overflowRight" class="sm:hidden pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-surface to-transparent" aria-hidden="true" data-testid="cards-fade-right"></span>

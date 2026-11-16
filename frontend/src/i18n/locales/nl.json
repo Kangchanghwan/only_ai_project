@@ -11,9 +11,7 @@
     "connectedDevices": "Verbonden apparaten",
     "copyCode": "Kamercode kopiëren",
     "copied": "Kamercode gekopieerd!",
-    "filesTab": "Bestanden",
     "textTab": "Tekst",
-    "mobilePanelLabel": "Wisselen tussen bestanden en tekst",
     "qrShareTitle": "Delen via QR-code",
     "currentRoomCode": "Huidige ruimtecode",
     "copy": "Kopiëren",
@@ -139,7 +137,8 @@
     "manage": "Naamlabel beheren",
     "notAuth": "Het naamlabel onderscheidt alleen apparaten. Het is geen identiteitscontrole.",
     "globalWarning": "Iedereen, ook onbekenden, kan zien wat je verstuurt en de gegevens van je apparaat (dierlabel, apparaat en browser). Gebruik 'Zelfde netwerk' voor gevoelige bestanden.",
-    "pairSasLoading": "Afbeeldingen laden…"
+    "pairSasLoading": "Afbeeldingen laden…",
+    "moreDevices": "Nog {count} tonen"
   },
   "shareScope": {
     "label": "Delen met",
@@ -171,7 +170,6 @@
     "clearStorage": "Opslag wissen",
     "moreActions": "Meer",
     "chooseFiles": "Bestanden kiezen",
-    "dropHint": "of sleep bestanden hierheen",
     "limitResume": "Tot {size} per bestand · onderbroken uploads worden hervat",
     "receive": "Ontvangen",
     "copyImage": "Afbeelding kopiëren",
@@ -186,10 +184,7 @@
     "removed": "Tekst verwijderd.",
     "clearAll": "Alle teksten wissen",
     "cleared": "Alle teksten gewist.",
-    "composePlaceholder": "Typ of plak hier en druk op Delen",
-    "receivedText": "Ontvangen tekst",
     "autoShareHint": "Tekst wordt automatisch gedeeld bij plakken (Ctrl+V / Cmd+V)",
-    "noMessages": "Nog geen berichten",
     "delete": "Verwijderen",
     "prefillNote": "Deze tekst komt uit een link. Controleer hem en tik op 'Delen' om te verzenden.",
     "sentStatus": "Gedeeld. Hij staat nu in de tekstlijst op verbonden apparaten.",
@@ -258,7 +253,10 @@
     "cancel": "Annuleren",
     "cancelAll": "Alles annuleren",
     "uploadCancelled": "Upload geannuleerd",
-    "uploadsCancelled": "{count} uploads geannuleerd"
+    "uploadsCancelled": "{count} uploads geannuleerd",
+    "undo": "Ongedaan maken",
+    "textsCleared": "Alle teksten gewist",
+    "textRemoved": "Tekst gewist"
   },
   "clipboard": {
     "paste": "Plakken",
@@ -572,6 +570,7 @@
     "textsCleared": "Alle teksten in {where} zijn gewist"
   },
   "send": {
-    "placeholder": "Typ hier of sleep bestanden hierheen"
+    "placeholder": "Typ hier of sleep bestanden hierheen",
+    "shortcutHint": "Verzenden met Ctrl+Enter (⌘+Enter op Mac)"
   }
 }

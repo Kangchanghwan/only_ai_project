@@ -11,9 +11,7 @@
     "connectedDevices": "Dispositivos conectados",
     "copyCode": "Copiar código da sala",
     "copied": "Código da sala copiado!",
-    "filesTab": "Arquivos",
     "textTab": "Texto",
-    "mobilePanelLabel": "Alternar entre arquivos e texto",
     "qrShareTitle": "Compartilhar por código QR",
     "currentRoomCode": "Código da sala atual",
     "copy": "Copiar",
@@ -139,7 +137,8 @@
     "manage": "Gerenciar etiqueta",
     "notAuth": "A etiqueta só distingue dispositivos. Não é verificação de identidade.",
     "globalWarning": "Qualquer pessoa, inclusive desconhecidos, pode ver o que você envia e as informações do seu dispositivo (etiqueta de animal, dispositivo e navegador). Use «Mesma rede» para conteúdo sensível.",
-    "pairSasLoading": "Carregando as imagens…"
+    "pairSasLoading": "Carregando as imagens…",
+    "moreDevices": "Ver mais {count}"
   },
   "shareScope": {
     "label": "Compartilhar com",
@@ -171,7 +170,6 @@
     "clearStorage": "Limpar armazenamento",
     "moreActions": "Mais",
     "chooseFiles": "Escolher arquivos",
-    "dropHint": "ou arraste e solte arquivos aqui",
     "limitResume": "Até {size} por arquivo · retoma se for interrompido",
     "receive": "Receber",
     "copyImage": "Copiar imagem",
@@ -186,10 +184,7 @@
     "removed": "Texto removido.",
     "clearAll": "Limpar todos os textos",
     "cleared": "Todos os textos limpos.",
-    "composePlaceholder": "Digite ou cole aqui e toque em Compartilhar",
-    "receivedText": "Texto recebido",
     "autoShareHint": "O texto é compartilhado automaticamente ao colar (Ctrl+V / Cmd+V)",
-    "noMessages": "Ainda não há mensagens",
     "delete": "Excluir",
     "prefillNote": "Este texto veio de um link. Confira e toque em \"Compartilhar\" para enviar.",
     "sentStatus": "Compartilhado. Agora aparece na lista de textos dos dispositivos conectados.",
@@ -258,7 +253,10 @@
     "cancel": "Cancelar",
     "cancelAll": "Cancelar tudo",
     "uploadCancelled": "Envio cancelado",
-    "uploadsCancelled": "{count} envios cancelados"
+    "uploadsCancelled": "{count} envios cancelados",
+    "undo": "Desfazer",
+    "textsCleared": "Todos os textos foram apagados",
+    "textRemoved": "Texto apagado"
   },
   "clipboard": {
     "paste": "Colar",
@@ -572,6 +570,7 @@
     "textsCleared": "Todos os textos de {where} foram apagados"
   },
   "send": {
-    "placeholder": "Digite aqui ou arraste e solte arquivos"
+    "placeholder": "Digite aqui ou arraste e solte arquivos",
+    "shortcutHint": "Enviar com Ctrl+Enter (⌘+Enter no Mac)"
   }
 }

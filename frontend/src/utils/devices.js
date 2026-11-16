@@ -16,7 +16,9 @@ export function sortDevices(devices, mySocketId, myIdentity, priorityIds = null)
     const ra = rank(a)
     const rb = rank(b)
     if (ra !== rb) return ra - rb
-    return (b.joinedAt ?? 0) - (a.joinedAt ?? 0)
+    const dt = (b.joinedAt ?? 0) - (a.joinedAt ?? 0)
+    if (dt !== 0) return dt
+    return String(a.socketId ?? '') < String(b.socketId ?? '') ? -1 : String(a.socketId ?? '') > String(b.socketId ?? '') ? 1 : 0
   })
 }
 

@@ -11,9 +11,7 @@
     "connectedDevices": "Csatlakoztatott eszközök",
     "copyCode": "Szobakód másolása",
     "copied": "Szobakód másolva!",
-    "filesTab": "Fájlok",
     "textTab": "Szöveg",
-    "mobilePanelLabel": "Váltás fájlok és szöveg között",
     "qrShareTitle": "Megosztás QR-kóddal",
     "currentRoomCode": "Jelenlegi szobakód",
     "copy": "Másolás",
@@ -139,7 +137,8 @@
     "manage": "Névcímke kezelése",
     "notAuth": "A névcímke csak az eszközök megkülönböztetésére szolgál. Nem személyazonosság-ellenőrzés.",
     "globalWarning": "Bárki, idegenek is, láthatja, amit küldesz, és az eszközöd adatait (állatos névcímke, eszköz és böngésző). Érzékeny tartalomhoz használd az „Ugyanaz a hálózat” lehetőséget.",
-    "pairSasLoading": "Képek betöltése…"
+    "pairSasLoading": "Képek betöltése…",
+    "moreDevices": "{count} további megjelenítése"
   },
   "shareScope": {
     "label": "Megosztás ezzel",
@@ -171,7 +170,6 @@
     "clearStorage": "Tároló törlése",
     "moreActions": "Több",
     "chooseFiles": "Fájlok kiválasztása",
-    "dropHint": "vagy húzd ide a fájlokat",
     "limitResume": "Fájlonként legfeljebb {size} · a megszakadt feltöltés folytatódik",
     "receive": "Fogadás",
     "copyImage": "Kép másolása",
@@ -186,10 +184,7 @@
     "removed": "Szöveg eltávolítva.",
     "clearAll": "Összes szöveg törlése",
     "cleared": "Összes szöveg törölve.",
-    "composePlaceholder": "Írj vagy illessz be ide, majd nyomd meg a Megosztás gombot",
-    "receivedText": "Kapott szöveg",
     "autoShareHint": "A szöveg beillesztéskor (Ctrl+V / Cmd+V) automatikusan megosztásra kerül",
-    "noMessages": "Még nincs üzenet",
     "delete": "Törlés",
     "prefillNote": "Ez a szöveg egy linkből érkezett. Ellenőrizd, majd nyomd meg a „Megosztás” gombot a küldéshez.",
     "sentStatus": "Megosztva. Megjelent a csatlakozott eszközök szöveglistájában.",
@@ -258,7 +253,10 @@
     "cancel": "Mégse",
     "cancelAll": "Összes megszakítása",
     "uploadCancelled": "Feltöltés megszakítva",
-    "uploadsCancelled": "{count} feltöltés megszakítva"
+    "uploadsCancelled": "{count} feltöltés megszakítva",
+    "undo": "Visszavonás",
+    "textsCleared": "Minden szöveg törölve",
+    "textRemoved": "Szöveg törölve"
   },
   "clipboard": {
     "paste": "Beillesztés",
@@ -572,6 +570,7 @@
     "textsCleared": "Minden szöveg törölve itt: {where}"
   },
   "send": {
-    "placeholder": "Írj ide, vagy húzd ide a fájlokat"
+    "placeholder": "Írj ide, vagy húzd ide a fájlokat",
+    "shortcutHint": "Küldés: Ctrl+Enter (Macen ⌘+Enter)"
   }
 }

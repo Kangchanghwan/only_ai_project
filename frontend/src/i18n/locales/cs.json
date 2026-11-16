@@ -11,9 +11,7 @@
     "connectedDevices": "Připojená zařízení",
     "copyCode": "Kopírovat kód místnosti",
     "copied": "Kód místnosti zkopírován!",
-    "filesTab": "Soubory",
     "textTab": "Text",
-    "mobilePanelLabel": "Přepínání souborů a textu",
     "qrShareTitle": "Sdílet přes QR kód",
     "currentRoomCode": "Kód aktuální místnosti",
     "copy": "Kopírovat",
@@ -139,7 +137,8 @@
     "manage": "Spravovat jmenovku",
     "notAuth": "Jmenovka jen rozlišuje zařízení. Není to ověření totožnosti.",
     "globalWarning": "Kdokoli, i cizí lidé, vidí, co posíláte, a údaje o vašem zařízení (zvířecí jmenovka, zařízení a prohlížeč). Citlivé věci posílejte přes „Stejná síť“.",
-    "pairSasLoading": "Načítání obrázků…"
+    "pairSasLoading": "Načítání obrázků…",
+    "moreDevices": "Zobrazit dalších {count}"
   },
   "shareScope": {
     "label": "Sdílet s",
@@ -171,7 +170,6 @@
     "clearStorage": "Vymazat úložiště",
     "moreActions": "Více",
     "chooseFiles": "Vybrat soubory",
-    "dropHint": "nebo sem přetáhněte soubory",
     "limitResume": "Až {size} na soubor · přerušené nahrávání se obnoví",
     "receive": "Přijmout",
     "copyImage": "Kopírovat obrázek",
@@ -186,10 +184,7 @@
     "removed": "Text odstraněn.",
     "clearAll": "Vymazat všechny texty",
     "cleared": "Všechny texty vymazány.",
-    "composePlaceholder": "Napište nebo vložte sem a stiskněte Sdílet",
-    "receivedText": "Přijatý text",
     "autoShareHint": "Text se po vložení (Ctrl+V / Cmd+V) sdílí automaticky",
-    "noMessages": "Zatím žádné zprávy",
     "delete": "Smazat",
     "prefillNote": "Tento text přišel z odkazu. Zkontrolujte ho a stiskněte „Sdílet“ pro odeslání.",
     "sentStatus": "Sdíleno. Text se zobrazí v seznamu na připojených zařízeních.",
@@ -258,7 +253,10 @@
     "cancel": "Zrušit",
     "cancelAll": "Zrušit vše",
     "uploadCancelled": "Nahrávání zrušeno",
-    "uploadsCancelled": "Zrušeno nahrávání: {count}"
+    "uploadsCancelled": "Zrušeno nahrávání: {count}",
+    "undo": "Vrátit zpět",
+    "textsCleared": "Všechny texty byly smazány",
+    "textRemoved": "Text byl smazán"
   },
   "clipboard": {
     "paste": "Vložit",
@@ -572,6 +570,7 @@
     "textsCleared": "Všechny texty smazány: {where}"
   },
   "send": {
-    "placeholder": "Pište sem nebo přetáhněte soubory"
+    "placeholder": "Pište sem nebo přetáhněte soubory",
+    "shortcutHint": "Odeslat pomocí Ctrl+Enter (⌘+Enter na Macu)"
   }
 }

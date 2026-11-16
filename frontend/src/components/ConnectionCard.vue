@@ -121,10 +121,13 @@ const narrowPair = computed(() => !props.wide && !!pair && !isPrivateScope(props
 const pendingDevices = computed(() => (narrowPair.value ? others.value.filter((d) => stateOf(d)?.state === 'pending') : []))
 
 // 다른 네트워크 기기: 카드 아래 접힌 묶음 (같은 네트워크 방에서만, 1:1 연결이 가능할 때만)
-const otherOpen = ref(false)
+const otherOpenManual = ref(false)
 const otherList = computed(() => (!props.wide && props.scope === 'ip' && pair
   ? sortDevices(props.otherNetworkDevices, props.mySocketId, props.myIdentity).filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity))
   : []))
+// 내가 보낸 1:1 요청이 진행 중인 기기가 묶음 안에 있으면 접어 둘 수 없다 (그림 확인 패널이 가려지지 않게)
+const otherBusy = computed(() => otherList.value.some((d) => { const st = stateOf(d)?.state; return st === 'pending' || st === 'connecting' }))
+const otherOpen = computed(() => otherOpenManual.value || otherBusy.value)
 </script>
 
 <template>
@@ -153,7 +156,7 @@ const otherList = computed(() => (!props.wide && props.scope === 'ip' && pair
     </div>
     <div v-if="showEmpty" class="mt-3 pt-3 border-t border-border flex flex-col items-center gap-2 text-center" data-testid="empty-state">
       <template v-if="!isMobile">
-        <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="EMPTY_STATE_QR_URL" width="140" height="140" alt="QR" class="rounded-lg bg-white" data-testid="empty-state-qr" />
+        <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="EMPTY_STATE_QR_URL" width="140" height="140" alt="QR" class="rounded-none bg-white" data-testid="empty-state-qr" />
         <p class="m-0 text-sm text-text-primary" data-testid="empty-state-line1">{{ t('room.emptyState.qrLine') }}</p>
         <i18n-t v-if="isKo" keypath="room.emptyState.pingLine" tag="p" class="m-0 text-xs text-text-secondary" data-testid="empty-state-ping">
           <template #ping>
@@ -202,7 +205,7 @@ const otherList = computed(() => (!props.wide && props.scope === 'ip' && pair
         class="w-full flex items-center justify-between gap-2 min-h-[44px] -my-2 text-sm font-semibold text-text-secondary"
         :aria-expanded="otherOpen"
         data-testid="other-network-toggle"
-        @click="otherOpen = !otherOpen"
+        @click="otherOpenManual = !otherOpenManual"
       >
         <span>{{ t('pair.otherNetworkGroup', { n: otherList.length }) }}</span>
         <span aria-hidden="true">{{ otherOpen ? '▴' : '▾' }}</span>

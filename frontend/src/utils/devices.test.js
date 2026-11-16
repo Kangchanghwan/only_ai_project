@@ -31,6 +31,16 @@ describe('countOtherDevices (다른 기기 N대)', () => {
   })
 })
 
+describe('sortDevices 동점', () => {
+  it('joinedAt이 같거나 없으면 socketId 순으로 고정한다', () => {
+    const x = [d('c', { adj: 3, animal: 3 }, 5), d('a', panda, 5), d('b', { adj: 2, animal: 2 }, 5)]
+    expect(sortDevices(x, 'zz', null).map((v) => v.socketId)).toEqual(['a', 'b', 'c'])
+    expect(sortDevices([...x].reverse(), 'zz', null).map((v) => v.socketId)).toEqual(['a', 'b', 'c'])
+    const none = [{ socketId: 'q' }, { socketId: 'p' }]
+    expect(sortDevices(none, 'zz', null).map((v) => v.socketId)).toEqual(['p', 'q'])
+  })
+})
+
 describe('isEditableTarget', () => {
   it('textarea/text input/contenteditable은 편집 가능, 체크박스/버튼/body는 아님', () => {
     expect(isEditableTarget(document.createElement('textarea'))).toBe(true)

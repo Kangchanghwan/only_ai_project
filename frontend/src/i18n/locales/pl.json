@@ -11,9 +11,7 @@
     "connectedDevices": "Połączone urządzenia",
     "copyCode": "Kopiuj kod pokoju",
     "copied": "Kod pokoju skopiowany!",
-    "filesTab": "Pliki",
     "textTab": "Tekst",
-    "mobilePanelLabel": "Przełączanie między plikami a tekstem",
     "qrShareTitle": "Udostępnij kodem QR",
     "currentRoomCode": "Kod bieżącego pokoju",
     "copy": "Kopiuj",
@@ -139,7 +137,8 @@
     "manage": "Zarządzaj plakietką",
     "notAuth": "Plakietka tylko odróżnia urządzenia. To nie jest weryfikacja tożsamości.",
     "globalWarning": "Każdy, także obcy, widzi to, co wysyłasz, oraz dane Twojego urządzenia (zwierzę-plakietka, urządzenie i przeglądarka). Dla danych wrażliwych wybierz „Ta sama sieć”.",
-    "pairSasLoading": "Wczytywanie obrazków…"
+    "pairSasLoading": "Wczytywanie obrazków…",
+    "moreDevices": "Pokaż jeszcze {count}"
   },
   "shareScope": {
     "label": "Udostępnij dla",
@@ -171,7 +170,6 @@
     "clearStorage": "Wyczyść magazyn",
     "moreActions": "Więcej",
     "chooseFiles": "Wybierz pliki",
-    "dropHint": "lub przeciągnij pliki tutaj",
     "limitResume": "Do {size} na plik · przerwane wysyłanie zostanie wznowione",
     "receive": "Odbierz",
     "copyImage": "Kopiuj obraz",
@@ -186,10 +184,7 @@
     "removed": "Tekst usunięty.",
     "clearAll": "Wyczyść wszystkie teksty",
     "cleared": "Wszystkie teksty wyczyszczone.",
-    "composePlaceholder": "Wpisz lub wklej tutaj, a potem naciśnij Udostępnij",
-    "receivedText": "Otrzymany tekst",
     "autoShareHint": "Tekst jest udostępniany automatycznie po wklejeniu (Ctrl+V / Cmd+V)",
-    "noMessages": "Brak wiadomości",
     "delete": "Usuń",
     "prefillNote": "Ten tekst pochodzi z linku. Sprawdź go i naciśnij „Udostępnij”, aby wysłać.",
     "sentStatus": "Udostępniono. Tekst pojawił się na liście na połączonych urządzeniach.",
@@ -258,7 +253,10 @@
     "cancel": "Anuluj",
     "cancelAll": "Anuluj wszystko",
     "uploadCancelled": "Anulowano przesyłanie",
-    "uploadsCancelled": "Anulowano przesyłanie plików: {count}"
+    "uploadsCancelled": "Anulowano przesyłanie plików: {count}",
+    "undo": "Cofnij",
+    "textsCleared": "Usunięto wszystkie teksty",
+    "textRemoved": "Usunięto tekst"
   },
   "clipboard": {
     "paste": "Wklej",
@@ -572,6 +570,7 @@
     "textsCleared": "Usunięto wszystkie teksty: {where}"
   },
   "send": {
-    "placeholder": "Wpisz tutaj lub przeciągnij i upuść pliki"
+    "placeholder": "Wpisz tutaj lub przeciągnij i upuść pliki",
+    "shortcutHint": "Wyślij przez Ctrl+Enter (⌘+Enter na Macu)"
   }
 }

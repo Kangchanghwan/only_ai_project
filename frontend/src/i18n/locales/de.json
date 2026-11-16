@@ -11,9 +11,7 @@
     "connectedDevices": "Verbundene Geräte",
     "copyCode": "Raumcode kopieren",
     "copied": "Raumcode kopiert!",
-    "filesTab": "Dateien",
     "textTab": "Text",
-    "mobilePanelLabel": "Zwischen Dateien und Text wechseln",
     "qrShareTitle": "Per QR-Code teilen",
     "currentRoomCode": "Aktueller Raumcode",
     "copy": "Kopieren",
@@ -139,7 +137,8 @@
     "manage": "Namensschild verwalten",
     "notAuth": "Das Namensschild unterscheidet nur Geräte. Es ist keine Identitätsprüfung.",
     "globalWarning": "Jeder, auch Fremde, kann sehen, was du sendest, sowie deine Geräteinfos (Tier-Namensschild, Gerät und Browser). Sensible Dateien sendest du besser im „Gleichen Netzwerk“.",
-    "pairSasLoading": "Bilder werden geladen…"
+    "pairSasLoading": "Bilder werden geladen…",
+    "moreDevices": "{count} weitere anzeigen"
   },
   "shareScope": {
     "label": "Teilen mit",
@@ -171,7 +170,6 @@
     "clearStorage": "Speicher leeren",
     "moreActions": "Mehr",
     "chooseFiles": "Dateien auswählen",
-    "dropHint": "oder Dateien hierher ziehen",
     "limitResume": "Bis zu {size} pro Datei · Unterbrochene Uploads werden fortgesetzt",
     "receive": "Empfangen",
     "copyImage": "Bild kopieren",
@@ -186,10 +184,7 @@
     "removed": "Text entfernt.",
     "clearAll": "Alle Texte löschen",
     "cleared": "Alle Texte gelöscht.",
-    "composePlaceholder": "Hier eingeben oder einfügen, dann auf Teilen tippen",
-    "receivedText": "Empfangener Text",
     "autoShareHint": "Text wird beim Einfügen automatisch geteilt (Strg+V / Cmd+V)",
-    "noMessages": "Noch keine Nachrichten",
     "delete": "Löschen",
     "prefillNote": "Dieser Text stammt aus einem Link. Prüfe ihn und tippe dann auf „Teilen“, um ihn zu senden.",
     "sentStatus": "Geteilt. Er erscheint jetzt in der Textliste der verbundenen Geräte.",
@@ -258,7 +253,10 @@
     "cancel": "Abbrechen",
     "cancelAll": "Alle abbrechen",
     "uploadCancelled": "Upload abgebrochen",
-    "uploadsCancelled": "{count} Uploads abgebrochen"
+    "uploadsCancelled": "{count} Uploads abgebrochen",
+    "undo": "Rückgängig",
+    "textsCleared": "Alle Texte gelöscht",
+    "textRemoved": "Text gelöscht"
   },
   "clipboard": {
     "paste": "Einfügen",
@@ -572,6 +570,7 @@
     "textsCleared": "Alle Texte in {where} wurden gelöscht"
   },
   "send": {
-    "placeholder": "Hier tippen oder Dateien hierher ziehen"
+    "placeholder": "Hier tippen oder Dateien hierher ziehen",
+    "shortcutHint": "Mit Strg+Enter senden (⌘+Enter auf dem Mac)"
   }
 }

@@ -11,9 +11,7 @@
     "connectedDevices": "Appareils connectés",
     "copyCode": "Copier le code de la salle",
     "copied": "Code de la salle copié!",
-    "filesTab": "Fichiers",
     "textTab": "Texte",
-    "mobilePanelLabel": "Basculer entre fichiers et texte",
     "qrShareTitle": "Partager par code QR",
     "currentRoomCode": "Code de la salle actuelle",
     "copy": "Copier",
@@ -139,7 +137,8 @@
     "manage": "Gérer l'étiquette",
     "notAuth": "L'étiquette sert seulement à distinguer les appareils. Ce n'est pas une vérification d'identité.",
     "globalWarning": "Tout le monde, y compris des inconnus, peut voir ce que vous envoyez et les infos de votre appareil (étiquette animale, appareil et navigateur). Pour du contenu sensible, utilisez « Même réseau ».",
-    "pairSasLoading": "Chargement des images…"
+    "pairSasLoading": "Chargement des images…",
+    "moreDevices": "Afficher {count} de plus"
   },
   "shareScope": {
     "label": "Partager avec",
@@ -171,7 +170,6 @@
     "clearStorage": "Vider le stockage",
     "moreActions": "Plus",
     "chooseFiles": "Choisir des fichiers",
-    "dropHint": "ou glissez-déposez des fichiers ici",
     "limitResume": "Jusqu'à {size} par fichier · reprise après interruption",
     "receive": "Recevoir",
     "copyImage": "Copier l'image",
@@ -186,10 +184,7 @@
     "removed": "Texte supprimé.",
     "clearAll": "Effacer tous les textes",
     "cleared": "Tous les textes effacés.",
-    "composePlaceholder": "Saisissez ou collez ici, puis appuyez sur Partager",
-    "receivedText": "Texte reçu",
     "autoShareHint": "Le texte est partagé automatiquement lorsque vous collez (Ctrl+V / Cmd+V)",
-    "noMessages": "Aucun message pour le moment",
     "delete": "Supprimer",
     "prefillNote": "Ce texte provient d'un lien. Vérifiez-le, puis appuyez sur « Partager » pour l'envoyer.",
     "sentStatus": "Partagé. Il apparaît maintenant dans la liste des textes des appareils connectés.",
@@ -258,7 +253,10 @@
     "cancel": "Annuler",
     "cancelAll": "Tout annuler",
     "uploadCancelled": "Envoi annulé",
-    "uploadsCancelled": "{count} envois annulés"
+    "uploadsCancelled": "{count} envois annulés",
+    "undo": "Annuler",
+    "textsCleared": "Tous les textes ont été effacés",
+    "textRemoved": "Texte supprimé"
   },
   "clipboard": {
     "paste": "Coller",
@@ -572,6 +570,7 @@
     "textsCleared": "Tous les textes de {where} ont été supprimés"
   },
   "send": {
-    "placeholder": "Saisissez ici ou glissez-déposez des fichiers"
+    "placeholder": "Saisissez ici ou glissez-déposez des fichiers",
+    "shortcutHint": "Envoyer avec Ctrl+Entrée (⌘+Entrée sur Mac)"
   }
 }

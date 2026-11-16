@@ -205,6 +205,8 @@ function onKeydown(event) {
           form="text-compose-form"
           class="order-4 shrink-0 sm:ml-auto min-h-[44px] px-3 sm:px-6 rounded-none bg-ink text-on-ink font-extrabold text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
           :disabled="composeDisabled || !draft.trim() || sending"
+          :title="t('send.shortcutHint')"
+          aria-keyshortcuts="Control+Enter Meta+Enter"
           data-testid="text-share-button"
         >{{ t('file.share') }}</button>
         <!-- 모바일 줄바꿈: 첫 줄은 파일 선택 + 공유 -->

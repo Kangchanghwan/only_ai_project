@@ -11,9 +11,7 @@
     "connectedDevices": "Dispozitive conectate",
     "copyCode": "Copiază codul camerei",
     "copied": "Cod cameră copiat!",
-    "filesTab": "Fișiere",
     "textTab": "Text",
-    "mobilePanelLabel": "Comutare între fișiere și text",
     "qrShareTitle": "Partajează prin cod QR",
     "currentRoomCode": "Codul camerei curente",
     "copy": "Copiază",
@@ -139,7 +137,8 @@
     "manage": "Gestionează eticheta",
     "notAuth": "Eticheta doar deosebește dispozitivele. Nu este verificare de identitate.",
     "globalWarning": "Oricine, inclusiv necunoscuți, poate vedea ce trimiți și informațiile dispozitivului tău (etichetă cu animal, dispozitiv și browser). Pentru conținut sensibil folosește „Aceeași rețea”.",
-    "pairSasLoading": "Se încarcă imaginile…"
+    "pairSasLoading": "Se încarcă imaginile…",
+    "moreDevices": "Arată încă {count}"
   },
   "shareScope": {
     "label": "Distribuie cu",
@@ -171,7 +170,6 @@
     "clearStorage": "Golire stocare",
     "moreActions": "Mai multe",
     "chooseFiles": "Alege fișiere",
-    "dropHint": "sau trage fișierele aici",
     "limitResume": "Până la {size} per fișier · încărcările întrerupte se reiau",
     "receive": "Primește",
     "copyImage": "Copiază imaginea",
@@ -186,10 +184,7 @@
     "removed": "Text eliminat.",
     "clearAll": "Șterge toate textele",
     "cleared": "Toate textele șterse.",
-    "composePlaceholder": "Scrie sau lipește aici, apoi apasă Partajează",
-    "receivedText": "Text primit",
     "autoShareHint": "Textul este partajat automat la lipire (Ctrl+V / Cmd+V)",
-    "noMessages": "Încă nu există mesaje",
     "delete": "Șterge",
     "prefillNote": "Acest text vine dintr-un link. Verifică-l, apoi apasă „Partajează” pentru a-l trimite.",
     "sentStatus": "Partajat. Apare acum în lista de texte a dispozitivelor conectate.",
@@ -258,7 +253,10 @@
     "cancel": "Anulează",
     "cancelAll": "Anulează tot",
     "uploadCancelled": "Încărcare anulată",
-    "uploadsCancelled": "{count} încărcări anulate"
+    "uploadsCancelled": "{count} încărcări anulate",
+    "undo": "Anulează",
+    "textsCleared": "Toate textele au fost șterse",
+    "textRemoved": "Textul a fost șters"
   },
   "clipboard": {
     "paste": "Lipește",
@@ -572,6 +570,7 @@
     "textsCleared": "Toate textele din {where} au fost șterse"
   },
   "send": {
-    "placeholder": "Scrie aici sau trage și plasează fișiere"
+    "placeholder": "Scrie aici sau trage și plasează fișiere",
+    "shortcutHint": "Trimite cu Ctrl+Enter (⌘+Enter pe Mac)"
   }
 }

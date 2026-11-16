@@ -11,9 +11,7 @@
     "connectedDevices": "Perangkat yang terhubung",
     "copyCode": "Salin kode ruangan",
     "copied": "Kode ruangan disalin!",
-    "filesTab": "File",
     "textTab": "Teks",
-    "mobilePanelLabel": "Beralih antara file dan teks",
     "qrShareTitle": "Bagikan lewat kode QR",
     "currentRoomCode": "Kode ruang saat ini",
     "copy": "Salin",
@@ -139,7 +137,8 @@
     "manage": "Kelola label nama",
     "notAuth": "Label nama hanya membedakan perangkat. Ini bukan verifikasi identitas.",
     "globalWarning": "Siapa pun, termasuk orang asing, bisa melihat yang Anda kirim dan info perangkat Anda (label hewan, perangkat, dan browser). Untuk hal sensitif, gunakan 'Jaringan yang sama'.",
-    "pairSasLoading": "Memuat gambar…"
+    "pairSasLoading": "Memuat gambar…",
+    "moreDevices": "Tampilkan {count} lagi"
   },
   "shareScope": {
     "label": "Bagikan dengan",
@@ -171,7 +170,6 @@
     "clearStorage": "Hapus Semua",
     "moreActions": "Lainnya",
     "chooseFiles": "Pilih file",
-    "dropHint": "atau seret dan lepas file ke sini",
     "limitResume": "Hingga {size} per file · unggahan terputus dilanjutkan",
     "receive": "Terima",
     "copyImage": "Salin gambar",
@@ -186,10 +184,7 @@
     "removed": "Teks dihapus.",
     "clearAll": "Hapus Semua Teks",
     "cleared": "Semua teks dihapus.",
-    "composePlaceholder": "Ketik atau tempel di sini, lalu tekan Bagikan",
-    "receivedText": "Teks diterima",
     "autoShareHint": "Teks dibagikan otomatis saat ditempel (Ctrl+V / Cmd+V)",
-    "noMessages": "Belum ada pesan",
     "delete": "Hapus",
     "prefillNote": "Teks ini berasal dari tautan. Periksa, lalu tekan \"Bagikan\" untuk mengirim.",
     "sentStatus": "Dibagikan. Sekarang muncul di daftar teks perangkat yang terhubung.",
@@ -258,7 +253,10 @@
     "cancel": "Batal",
     "cancelAll": "Batalkan semua",
     "uploadCancelled": "Unggahan dibatalkan",
-    "uploadsCancelled": "{count} unggahan dibatalkan"
+    "uploadsCancelled": "{count} unggahan dibatalkan",
+    "undo": "Urungkan",
+    "textsCleared": "Semua teks telah dihapus",
+    "textRemoved": "Teks telah dihapus"
   },
   "clipboard": {
     "paste": "Tempel",
@@ -572,6 +570,7 @@
     "textsCleared": "Semua teks di {where} telah dihapus"
   },
   "send": {
-    "placeholder": "Ketik di sini atau seret dan lepas berkas"
+    "placeholder": "Ketik di sini atau seret dan lepas berkas",
+    "shortcutHint": "Kirim dengan Ctrl+Enter (⌘+Enter di Mac)"
   }
 }

@@ -78,7 +78,7 @@ const BTN = 'h-[26px] w-full min-w-0 inline-flex items-center justify-center gap
           <svg v-else class="w-5 h-5 text-text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" :data-device-type="icon(device.deviceType)"><rect x="3" y="4" width="18" height="12" rx="0"/><path d="M2 20h20"/></svg>
         </span>
         <span
-          v-if="tagText"
+          v-if="tagText && !isMe"
           class="absolute -top-px -left-px px-[3px] py-[2px] text-[9px] leading-none font-bold text-on-accent whitespace-nowrap max-w-[40px] overflow-hidden text-ellipsis"
           :class="isNow ? 'bg-scope-global' : 'bg-text-secondary'"
           :data-now="isNow ? 'true' : 'false'"

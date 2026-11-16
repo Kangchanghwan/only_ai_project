@@ -7,14 +7,20 @@ import TransferProgress from './TransferProgress.vue'
 
 defineProps({
   message: { type: String, default: null },
-  uploads: { type: Map, default: () => new Map() }
+  uploads: { type: Map, default: () => new Map() },
+  /** 동작 버튼이 달린 알림: { message, label }. 있으면 일반 알림 대신 보인다 */
+  undo: { type: Object, default: null }
 })
-const emit = defineEmits(['cancel-upload', 'cancel-all'])
+const emit = defineEmits(['cancel-upload', 'cancel-all', 'undo'])
 </script>
 
 <template>
   <transition name="fade">
-    <div v-if="message" class="notification" role="status" aria-live="polite" data-prerender-strip>
+    <div v-if="undo" key="undo" class="notification flex items-center gap-3" role="status" aria-live="polite" data-testid="undo-toast">
+      <span>{{ undo.message }}</span>
+      <button type="button" class="shrink-0 min-h-[32px] px-3 border border-on-ink bg-transparent text-on-ink font-bold text-sm cursor-pointer rounded-none" data-testid="undo-button" @click="emit('undo')">{{ undo.label }}</button>
+    </div>
+    <div v-else-if="message" key="msg" class="notification" role="status" aria-live="polite" data-prerender-strip>
       {{ message }}
     </div>
   </transition>

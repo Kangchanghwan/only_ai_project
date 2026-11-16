@@ -11,9 +11,7 @@
     "connectedDevices": "Anslutna enheter",
     "copyCode": "Kopiera rumskod",
     "copied": "Rumskod kopierad!",
-    "filesTab": "Filer",
     "textTab": "Text",
-    "mobilePanelLabel": "Växla mellan filer och text",
     "qrShareTitle": "Dela med QR-kod",
     "currentRoomCode": "Aktuell rumskod",
     "copy": "Kopiera",
@@ -139,7 +137,8 @@
     "manage": "Hantera namnlapp",
     "notAuth": "Namnlappen skiljer bara enheter åt. Det är ingen identitetskontroll.",
     "globalWarning": "Alla, även okända, kan se det du skickar och din enhetsinformation (djurlapp, enhet och webbläsare). Använd ”Samma nätverk” för känsligt innehåll.",
-    "pairSasLoading": "Läser in bilder…"
+    "pairSasLoading": "Läser in bilder…",
+    "moreDevices": "Visa {count} till"
   },
   "shareScope": {
     "label": "Dela med",
@@ -171,7 +170,6 @@
     "clearStorage": "Rensa lagring",
     "moreActions": "Mer",
     "chooseFiles": "Välj filer",
-    "dropHint": "eller dra och släpp filer här",
     "limitResume": "Upp till {size} per fil · avbrutna uppladdningar återupptas",
     "receive": "Ta emot",
     "copyImage": "Kopiera bild",
@@ -186,10 +184,7 @@
     "removed": "Text borttagen.",
     "clearAll": "Rensa alla texter",
     "cleared": "Alla texter rensade.",
-    "composePlaceholder": "Skriv eller klistra in här och tryck på Dela",
-    "receivedText": "Mottagen text",
     "autoShareHint": "Text delas automatiskt när du klistrar in (Ctrl+V / Cmd+V)",
-    "noMessages": "Inga meddelanden än",
     "delete": "Ta bort",
     "prefillNote": "Den här texten kom från en länk. Kontrollera den och tryck på ”Dela” för att skicka.",
     "sentStatus": "Delat. Texten syns nu i textlistan på anslutna enheter.",
@@ -258,7 +253,10 @@
     "cancel": "Avbryt",
     "cancelAll": "Avbryt alla",
     "uploadCancelled": "Uppladdningen avbröts",
-    "uploadsCancelled": "{count} uppladdningar avbröts"
+    "uploadsCancelled": "{count} uppladdningar avbröts",
+    "undo": "Ångra",
+    "textsCleared": "Alla texter raderades",
+    "textRemoved": "Texten raderades"
   },
   "clipboard": {
     "paste": "Klistra in",
@@ -572,6 +570,7 @@
     "textsCleared": "Alla texter i {where} har rensats"
   },
   "send": {
-    "placeholder": "Skriv här eller dra och släpp filer"
+    "placeholder": "Skriv här eller dra och släpp filer",
+    "shortcutHint": "Skicka med Ctrl+Enter (⌘+Enter på Mac)"
   }
 }

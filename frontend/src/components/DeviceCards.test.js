@@ -33,12 +33,14 @@ describe('DeviceCards', () => {
   it('접속 시각 딱지: 지금이면 초록, 아니면 회색', () => {
     const w = build([me, a, b])
     const tags = w.findAll('[data-testid="device-card-status"]')
-    // 정렬: 나 → 최근 접속(a, 지금) → b(3분 전)
-    expect(tags[1].text()).toBe('지금')
-    expect(tags[1].classes()).toContain('bg-scope-global')
-    expect(tags[2].text()).toBe('3분 전')
-    expect(tags[2].classes()).toContain('bg-text-secondary')
-    expect(tags[2].classes()).not.toContain('bg-scope-global')
+    // 정렬: 나(딱지 없음) → 최근 접속(a, 지금) → b(3분 전)
+    expect(tags).toHaveLength(2)
+    expect(w.findAll('[data-testid="device-card"]')[0].find('[data-testid="device-card-status"]').exists()).toBe(false)
+    expect(tags[0].text()).toBe('지금')
+    expect(tags[0].classes()).toContain('bg-scope-global')
+    expect(tags[1].text()).toBe('3분 전')
+    expect(tags[1].classes()).toContain('bg-text-secondary')
+    expect(tags[1].classes()).not.toContain('bg-scope-global')
   })
 
   it('연결 버튼은 invite를 부르고 aria-label에 이름이 들어간다', async () => {
@@ -92,6 +94,8 @@ describe('DeviceCards', () => {
   })
 
   it('모바일 띠: 가로 스크롤 + 146px 카드, 숨은 카드 수 +N, 누르면 다음 카드로 스크롤', async () => {
+    const prevW = window.innerWidth
+    window.innerWidth = 400
     const w = build([me, a, b], {}, true)
     const strip = w.find('[data-testid="device-cards-strip"]')
     expect(strip.classes()).toContain('overflow-x-auto')
@@ -108,6 +112,7 @@ describe('DeviceCards', () => {
     expect(w.find('[data-testid="cards-fade-right"]').exists()).toBe(true)
     await w.find('[data-testid="cards-more-right"]').trigger('click')
     expect(scrolls).toEqual([1])
+    window.innerWidth = prevW
   })
 
   it('네모 사진은 카드 안에서만, 다른 곳 아바타는 동그라미 그대로', () => {

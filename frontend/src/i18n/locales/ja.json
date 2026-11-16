@@ -11,9 +11,7 @@
     "connectedDevices": "接続中のデバイス",
     "copyCode": "ルームコードをコピー",
     "copied": "ルームコードをコピーしました！",
-    "filesTab": "ファイル",
     "textTab": "テキスト",
-    "mobilePanelLabel": "ファイルとテキストの切り替え",
     "qrShareTitle": "QRコードで共有",
     "currentRoomCode": "現在のルームコード",
     "copy": "コピー",
@@ -139,7 +137,8 @@
     "manage": "名札の管理",
     "notAuth": "名札は本人確認ではなく、端末を見分けるための表示です。",
     "globalWarning": "全体共有では、知らない人にも送ったファイル・テキストと端末情報（動物の名札、端末・ブラウザ）が見えます。機密性の高い内容は「同じネットワーク」で送ってください。",
-    "pairSasLoading": "画像を読み込み中…"
+    "pairSasLoading": "画像を読み込み中…",
+    "moreDevices": "あと{count}台を表示"
   },
   "shareScope": {
     "label": "共有先",
@@ -176,7 +175,6 @@
     "clearStorage": "ストレージ初期化",
     "moreActions": "その他",
     "chooseFiles": "ファイルを選択",
-    "dropHint": "またはここにファイルをドラッグ＆ドロップ",
     "limitResume": "1ファイルあたり最大 {size} · 中断しても続きから再開",
     "receive": "受け取る",
     "copyImage": "画像をコピー",
@@ -190,14 +188,11 @@
     "removed": "テキストが削除されました。",
     "clearAll": "すべてのテキストをクリア",
     "cleared": "すべてのテキストがクリアされました。",
-    "receivedText": "受信したテキスト",
     "autoShareHint": "テキストを貼り付けると自動的に共有されます（Ctrl+V / Cmd+V）",
-    "noMessages": "まだメッセージがありません",
     "clickToCopy": "クリックしてコピー",
     "delete": "削除",
     "messageCount": "{count} 件のメッセージ",
     "messageCount_plural": "{count} 件のメッセージ",
-    "composePlaceholder": "ここに入力または貼り付けて「共有」を押してください",
     "prefillNote": "リンクから受け取ったテキストです。内容を確認して「共有」を押すと送信されます。",
     "sentStatus": "共有しました。接続中の端末のテキスト一覧に表示されます。",
     "sendFailedStatus": "共有できませんでした。もう一度お試しください。",
@@ -265,7 +260,10 @@
     "cancel": "キャンセル",
     "cancelAll": "すべてキャンセル",
     "uploadCancelled": "アップロードをキャンセルしました",
-    "uploadsCancelled": "{count}件のアップロードをキャンセルしました"
+    "uploadsCancelled": "{count}件のアップロードをキャンセルしました",
+    "undo": "元に戻す",
+    "textsCleared": "テキストをすべて削除しました",
+    "textRemoved": "テキストを削除しました"
   },
   "clipboard": {
     "paste": "貼り付け",
@@ -649,6 +647,7 @@
     "textsCleared": "{where}のテキストがすべて削除されました"
   },
   "send": {
-    "placeholder": "ここに入力するか、ファイルをドラッグ＆ドロップしてください"
+    "placeholder": "ここに入力するか、ファイルをドラッグ＆ドロップしてください",
+    "shortcutHint": "Ctrl+Enterで送信（Macは⌘+Enter）"
   }
 }

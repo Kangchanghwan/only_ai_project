@@ -11,9 +11,7 @@
     "connectedDevices": "Thiết bị đã kết nối",
     "copyCode": "Sao chép mã phòng",
     "copied": "Đã sao chép mã phòng!",
-    "filesTab": "Tệp",
     "textTab": "Văn bản",
-    "mobilePanelLabel": "Chuyển đổi giữa tệp và văn bản",
     "qrShareTitle": "Chia sẻ bằng mã QR",
     "currentRoomCode": "Mã phòng hiện tại",
     "copy": "Sao chép",
@@ -139,7 +137,8 @@
     "manage": "Quản lý thẻ tên",
     "notAuth": "Thẻ tên chỉ để phân biệt thiết bị, không phải xác thực danh tính.",
     "globalWarning": "Bất kỳ ai, kể cả người lạ, đều có thể thấy nội dung bạn gửi và thông tin thiết bị (thẻ động vật, thiết bị và trình duyệt). Với nội dung nhạy cảm, hãy dùng “Cùng mạng”.",
-    "pairSasLoading": "Đang tải hình ảnh…"
+    "pairSasLoading": "Đang tải hình ảnh…",
+    "moreDevices": "Xem thêm {count}"
   },
   "shareScope": {
     "label": "Chia sẻ với",
@@ -171,7 +170,6 @@
     "clearStorage": "Xóa bộ nhớ",
     "moreActions": "Thêm",
     "chooseFiles": "Chọn tệp",
-    "dropHint": "hoặc kéo và thả tệp vào đây",
     "limitResume": "Tối đa {size} mỗi tệp · tải lên bị gián đoạn sẽ tiếp tục",
     "receive": "Nhận",
     "copyImage": "Sao chép ảnh",
@@ -186,10 +184,7 @@
     "removed": "Văn bản đã bị xóa.",
     "clearAll": "Xóa tất cả văn bản",
     "cleared": "Đã xóa tất cả văn bản.",
-    "composePlaceholder": "Nhập hoặc dán vào đây rồi nhấn Chia sẻ",
-    "receivedText": "Văn bản đã nhận",
     "autoShareHint": "Văn bản được chia sẻ tự động khi bạn dán (Ctrl+V / Cmd+V)",
-    "noMessages": "Chưa có tin nhắn",
     "delete": "Xóa",
     "prefillNote": "Văn bản này đến từ một liên kết. Kiểm tra rồi nhấn \"Chia sẻ\" để gửi.",
     "sentStatus": "Đã chia sẻ. Văn bản đã hiện trong danh sách trên các thiết bị đã kết nối.",
@@ -258,7 +253,10 @@
     "cancel": "Hủy",
     "cancelAll": "Hủy tất cả",
     "uploadCancelled": "Đã hủy tải lên",
-    "uploadsCancelled": "Đã hủy {count} lượt tải lên"
+    "uploadsCancelled": "Đã hủy {count} lượt tải lên",
+    "undo": "Hoàn tác",
+    "textsCleared": "Đã xóa tất cả văn bản",
+    "textRemoved": "Đã xóa văn bản"
   },
   "clipboard": {
     "paste": "Dán",
@@ -572,6 +570,7 @@
     "textsCleared": "Đã xóa tất cả văn bản trong {where}"
   },
   "send": {
-    "placeholder": "Nhập tại đây hoặc kéo và thả tệp vào"
+    "placeholder": "Nhập tại đây hoặc kéo và thả tệp vào",
+    "shortcutHint": "Gửi bằng Ctrl+Enter (⌘+Enter trên Mac)"
   }
 }
