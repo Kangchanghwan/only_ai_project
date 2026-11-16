@@ -70,7 +70,8 @@ function formatTime(timestamp) {
 
 <template>
   <article
-    class="text-row flex flex-wrap sm:flex-nowrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface"
+    class="text-row flex flex-wrap gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface"
+    :class="expanded ? 'items-start' : 'items-center'"
     data-testid="text-entry"
   >
     <span class="w-11 h-11 -mx-1 shrink-0" aria-hidden="true"></span>
@@ -97,7 +98,7 @@ function formatTime(timestamp) {
             <button
               v-if="line.trim() !== ''"
               type="button"
-              class="shrink-0 w-9 h-9 inline-flex items-center justify-center rounded-none bg-transparent border-0 text-ink hover:bg-tint cursor-pointer opacity-100 [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 focus-visible:!opacity-100"
+              class="shrink-0 w-9 h-9 inline-flex items-center justify-center rounded-none bg-transparent border-0 text-text-secondary hover:text-ink hover:bg-tint group-hover:text-ink cursor-pointer focus-visible:outline-2 focus-visible:outline-ink"
               :aria-label="t('room.copy')"
               :title="t('room.copy')"
               data-testid="text-line-copy"
@@ -196,7 +197,7 @@ function formatTime(timestamp) {
     <p v-if="unlocking && unlockMessage" class="basis-full m-0 text-xs text-red-500" role="alert" data-testid="text-unlock-message">{{ unlockMessage }}</p>
 
     <!-- 보관 중(10분): 남은 시간 + 보관 취소 -->
-    <footer v-if="text.expiresAt" class="basis-full flex items-center justify-between gap-2" data-testid="text-queued">
+    <footer v-if="text.expiresAt" class="basis-full flex items-center justify-between gap-2 pl-[5.75rem] sm:pl-[6.5rem] text-xs" data-testid="text-queued">
       <span class="text-xs text-text-secondary tabular-nums" data-testid="text-expires">{{ expiresLabel(text) }}</span>
       <button
         v-if="text.canCancel"
