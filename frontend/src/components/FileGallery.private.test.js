@@ -34,7 +34,8 @@ describe('FileGallery - 1:1 방 모두 선택·선택 삭제', () => {
     const dc = w.findComponent({ name: 'DownloadControls' })
     expect(dc.props('totalCount')).toBe(2)
     expect(dc.props('privateMode')).toBe(true)
-    expect(dc.findAll('button')).toHaveLength(3)
+    // 선택이 없으면 모두 선택만 보이고, 선택이 생기면 받기·선택 삭제가 나타난다
+    expect(dc.findAll('button')).toHaveLength(1)
     expect(dc.find('[data-testid="select-all"]').attributes('disabled')).toBeUndefined()
     expect(w.findAll('.locked-check')).toHaveLength(2)
   })
@@ -43,6 +44,7 @@ describe('FileGallery - 1:1 방 모두 선택·선택 삭제', () => {
     const w = mountGallery({ scope: PRV })
     await w.find('[data-testid="select-all"]').trigger('click')
     expect(w.find('[data-testid="select-all"]').text()).toContain('(2/2)')
+    expect(w.findComponent({ name: 'DownloadControls' }).findAll('button')).toHaveLength(3)
     const del = w.find('[data-testid="delete-selected"]')
     expect(del.attributes('disabled')).toBeUndefined()
     await del.trigger('click')
@@ -85,7 +87,7 @@ describe('FileGallery - 1:1 방 모두 선택·선택 삭제', () => {
     const dc = w.findComponent({ name: 'DownloadControls' })
     expect(dc.props('totalCount')).toBe(0)
     expect(dc.props('privateMode')).toBe(false)
-    expect(dc.findAll('button')).toHaveLength(5)
+    expect(dc.findAll('button')).toHaveLength(2) // 선택 0개: 전체 선택·저장소 초기화만
     expect(w.findAll('.locked-check')).toHaveLength(0)
   })
 })

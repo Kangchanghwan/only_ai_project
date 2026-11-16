@@ -41,6 +41,36 @@ const isGroup = (room) => isGroupRoomId(room?.roomId)
 const roomLabel = (room) => roomDisplayName(props.privateRooms, room.roomId, t('group.unnamed'), peerName)
 
 const bar = ref(null)
+
+// roving tabindex: 고른 탭만 Tab 키로 닿는다. 고른 탭이 목록에 없으면(예: 사라진 방) 첫 탭이 대신 받는다
+const selectedIndex = computed(() => {
+  if (props.scope === 'ip') return 0
+  if (props.scope === 'global') return 1
+  const i = props.privateRooms.findIndex((r) => r.roomId === activeRoomId.value)
+  return i < 0 ? 0 : i + 2
+})
+const tabIndexOf = (i) => (i === selectedIndex.value ? 0 : -1)
+
+function onTabKeydown(e) {
+  if (e.altKey || e.ctrlKey || e.metaKey) return
+  const els = Array.from(bar.value?.querySelectorAll('[role="tab"]') ?? [])
+  if (!els.length) return
+  const cur = els.indexOf(e.target.closest?.('[role="tab"]'))
+  if (cur < 0) return
+  const rtl = typeof document !== 'undefined' && (document.documentElement.dir === 'rtl' || getComputedStyle(bar.value).direction === 'rtl')
+  let next
+  if (e.key === 'ArrowRight') next = cur + (rtl ? -1 : 1)
+  else if (e.key === 'ArrowLeft') next = cur + (rtl ? 1 : -1)
+  else if (e.key === 'Home') next = 0
+  else if (e.key === 'End') next = els.length - 1
+  else return
+  e.preventDefault()
+  next = (next + els.length) % els.length
+  const el = els[next]
+  el.focus()
+  if (typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  el.click()
+}
 /** 지금 고른 탭이 가로 스크롤 밖에 있으면 보이는 자리로 */
 async function revealActive() {
   await nextTick()
@@ -104,12 +134,14 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
       class="flex flex-nowrap min-w-0 overflow-x-auto -mb-px [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       data-testid="room-tablist"
       @scroll.passive="updateOverflow"
+      @keydown="onTabKeydown"
     >
       <button
         type="button"
         role="tab"
         :class="tabClass(scope === 'ip')"
         :aria-selected="scope === 'ip'"
+        :tabindex="tabIndexOf(0)"
         :title="t('shareScope.ipDescription')"
         data-testid="scope-option-ip"
         @click="emit('select', 'ip')"
@@ -119,6 +151,7 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
         role="tab"
         :class="tabClass(scope === 'global')"
         :aria-selected="scope === 'global'"
+        :tabindex="tabIndexOf(1)"
         :title="t('shareScope.globalDescription')"
         data-testid="scope-option-global"
         @click="emit('select', 'global')"
@@ -127,12 +160,13 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
         <span class="truncate">{{ t('shareScope.global') }}</span>
       </button>
       <button
-        v-for="room in privateRooms"
+        v-for="(room, ri) in privateRooms"
         :key="room.roomId"
         type="button"
         role="tab"
         :class="tabClass(activeRoomId === room.roomId)"
         :aria-selected="activeRoomId === room.roomId"
+        :tabindex="tabIndexOf(ri + 2)"
         :title="roomLabel(room)"
         data-testid="private-tab-option"
         @click="emit('select', scopeForPrivateRoom(room.roomId))"

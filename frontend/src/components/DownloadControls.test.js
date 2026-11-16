@@ -7,7 +7,7 @@ const mountOptions = { global: { plugins: [i18n] } }
 
 function mountControls(props = {}) {
   return mount(DownloadControls, {
-    props: { selectedCount: 0, totalCount: 3, allSelected: false, ...props },
+    props: { selectedCount: 2, totalCount: 3, allSelected: false, ...props },
     ...mountOptions
   })
 }
@@ -27,12 +27,22 @@ describe('DownloadControls.vue - 하단 고정 5열 레이아웃', () => {
     expect(wrapper.findAll('button')).toHaveLength(5)
   })
 
-  it('선택된 파일이 없으면 다운로드/QR/선택삭제 버튼이 비활성화된다', () => {
+  it('선택이 없으면 전체 선택과 저장소 초기화 2개만 그린다', () => {
     const wrapper = mountControls({ selectedCount: 0 })
-    const buttons = wrapper.findAll('button')
-    expect(buttons[1].attributes('disabled')).toBeDefined() // 다운로드
-    expect(buttons[2].attributes('disabled')).toBeDefined() // QR
-    expect(buttons[3].attributes('disabled')).toBeDefined() // 선택 삭제
+    expect(wrapper.findAll('button')).toHaveLength(2)
+    expect(wrapper.find('[data-testid="select-all"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="multi-qr"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="delete-selected"]').exists()).toBe(false)
+    expect(wrapper.element.className).toContain('grid-cols-2')
+  })
+
+  it('선택이 1개 이상이면 5개를 모두 그린다', () => {
+    expect(mountControls({ selectedCount: 1 }).findAll('button')).toHaveLength(5)
+  })
+
+  it('select-all의 aria-pressed는 전부 선택됐을 때만 true다', () => {
+    expect(mountControls({ allSelected: true }).find('[data-testid="select-all"]').attributes('aria-pressed')).toBe('true')
+    expect(mountControls({ allSelected: false }).find('[data-testid="select-all"]').attributes('aria-pressed')).toBe('false')
   })
 
   it('전체 선택 버튼 클릭 시 toggle-select-all을 emit한다', async () => {

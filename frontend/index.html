@@ -100,7 +100,8 @@
     <meta name="twitter:image" content="https://www.clipboardapp.org/og-image.png" />
 
     <!-- Theme and App -->
-    <meta name="theme-color" content="#FF6B4A" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0A1430" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Clipboard Share" />
@@ -115,25 +116,21 @@
     <link rel="manifest" href="/manifest.json" />
 
     <!-- Preconnect and Resource Hints -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://api.fontshare.com">
     <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
     <!--
-      웹폰트 (DESIGN.md Typography): Plus Jakarta Sans + Geist(Google Fonts), Cabinet Grotesk(Fontshare).
+      웹폰트: Pretendard(jsDelivr, 본문), Cabinet Grotesk(Fontshare, 제목).
       두 CSS는 preload + onload 패턴으로 비동기 로드해 첫 페인트를 막지 않는다 (display=swap 유지).
       noscript 블록 안의 복사본은 JS가 꺼진 클라이언트용 폴백이다.
       scripts/prerender.mjs가 직렬화 전에 rel="preload"를 복원하고 이 패턴이 유지되는지 검증하므로,
       아래 태그를 바꾸면 prerender.mjs의 assertAsyncFontLinks도 함께 수정할 것.
     -->
     <link rel="preload" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Geist:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Geist:wght@400;500;600&display=swap">
       <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap">
     </noscript>
       <meta name="naver-site-verification" content="920779bd906a843adf615672baef035d0fe83a71" />

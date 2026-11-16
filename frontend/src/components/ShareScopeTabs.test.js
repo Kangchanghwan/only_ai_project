@@ -166,4 +166,33 @@ describe('ShareScopeTabs 넘침 표시', () => {
     await w.vm.$nextTick()
     expect(w.find('[data-testid="tabs-fade-left"]').exists()).toBe(true)
   })
+
+  describe('키보드 (WAI-ARIA 탭)', () => {
+    const rooms = [one()]
+    const key = async (w, i, k) => { await tabs(w)[i].trigger('keydown', { key: k }) }
+    it('선택된 탭만 tabindex 0, 나머지는 -1', () => {
+      const w = mountControls('global')
+      expect(tabs(w).map((x) => x.attributes('tabindex'))).toEqual(['-1', '0', '-1'])
+    })
+    it('→ 키로 다음 탭 선택 emit', async () => {
+      const w = mountControls('ip')
+      await key(w, 0, 'ArrowRight')
+      expect(w.emitted('select')[0]).toEqual(['global'])
+    })
+    it('끝에서 → 는 처음으로, 처음에서 ← 는 끝으로 순환', async () => {
+      const w = mountControls('prv:prv-a')
+      await key(w, 2, 'ArrowRight')
+      expect(w.emitted('select')[0]).toEqual(['ip'])
+      await key(w, 0, 'ArrowLeft')
+      expect(w.emitted('select')[1]).toEqual(['prv:prv-a'])
+    })
+    it('Home/End는 처음/마지막 탭', async () => {
+      const w = mountControls('global')
+      await key(w, 1, 'End')
+      expect(w.emitted('select')[0]).toEqual(['prv:prv-a'])
+      await key(w, 1, 'Home')
+      expect(w.emitted('select')[1]).toEqual(['ip'])
+    })
+    function mountControls(scope) { return mount(ShareScopeTabs, { ...opts, props: { scope, privateRooms: rooms } }) }
+  })
 })

@@ -37,11 +37,12 @@ const { text: accentText } = useScopeAccent(() => props.scope)
 </script>
 
 <template>
-  <div class="fixed left-1/2 -translate-x-1/2 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 w-[calc(100%-2rem)] max-w-[28rem] bg-surface border-2 border-ink rounded-none overflow-hidden download-controls grid" :class="privateMode ? 'grid-cols-3' : 'grid-cols-4 md:grid-cols-5'" data-testid="download-controls">
+  <div class="fixed left-1/2 -translate-x-1/2 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 w-[calc(100%-2rem)] max-w-[28rem] bg-surface border-2 border-ink rounded-none overflow-hidden download-controls grid" :class="selectedCount === 0 ? (privateMode ? 'grid-cols-1' : 'grid-cols-2') : (privateMode ? 'grid-cols-3' : 'grid-cols-4 md:grid-cols-5')" data-testid="download-controls">
     <button
       class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors text-ink"
       :disabled="totalCount === 0"
       data-testid="select-all"
+      :aria-pressed="allSelected ? 'true' : 'false'"
       @click="$emit('toggle-select-all')"
       :title="allSelected ? t('download.deselectAllHint') : t('download.selectAllHint')"
     >
@@ -61,6 +62,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
     </button>
     <button
       class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors text-ink"
+      v-if="selectedCount > 0"
       :disabled="selectedCount === 0"
       @click="$emit('download-parallel')"
       :title="t('download.downloadHint')"
@@ -77,7 +79,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
     </button>
     <button
       class="dc-btn hidden md:flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors text-ink"
-      v-if="!privateMode"
+      v-if="selectedCount > 0 && !privateMode"
       :disabled="selectedCount === 0"
       data-testid="multi-qr"
       @click="$emit('show-multi-qr')"
@@ -99,6 +101,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
     </button>
     <button
       class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-danger disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      v-if="selectedCount > 0"
       :disabled="selectedCount === 0"
       data-testid="delete-selected"
       @click="$emit('delete-selected')"

@@ -70,13 +70,16 @@ function unlock() {
         ref="inputRef"
         v-model="password"
         type="password"
-        autocomplete="new-password"
+        autocomplete="off"
+        data-1p-ignore
+        data-lpignore="true"
+        data-bwignore
         :placeholder="t('lock.passwordPlaceholder')"
         :aria-label="t('lock.passwordPlaceholder')"
         data-testid="lock-password"
         @keydown.esc.prevent="cancelEdit"
       />
-      <button type="submit" class="lock-apply" :disabled="busy" data-testid="lock-apply">{{ busy ? t('lock.settingUp') : t('lock.apply') }}</button>
+      <button type="submit" class="lock-apply" :disabled="busy || password.length < MIN_LOCK_PASSWORD" data-testid="lock-apply">{{ busy ? t('lock.settingUp') : t('lock.apply') }}</button>
       <button type="button" class="lock-link" @click="cancelEdit">{{ t('notification.cancel') }}</button>
       <p class="lock-hint" :class="{ err: !!error }">{{ error || t('lock.chipHint') }}</p>
     </form>
