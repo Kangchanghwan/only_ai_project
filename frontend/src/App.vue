@@ -1397,7 +1397,6 @@ onUnmounted(() => {
         @pair-invite="pairFlow.invite"
         @pair-cancel="pairFlow.cancel"
         :pair-incoming="pairFlow.incoming.value"
-        @pair-respond="({ accept, legacy }) => pairFlow.respond(accept, accept && !legacy ? { same: true } : {})"
         @pair-confirm="pairFlow.confirmInvite"
         @leave-private="handlePrivateLeave"
         @group-create="groupRooms.createRoom"

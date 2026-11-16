@@ -110,24 +110,11 @@ const BTN = 'h-[26px] w-full min-w-0 inline-flex items-center justify-center gap
         </button>
       </template>
       <template v-else-if="incoming">
-        <button
-          type="button"
-          :class="[BTN, 'bg-scope-private text-white font-bold border-0']"
-          data-testid="card-accept"
-          @click="pair.respond?.(true)"
-        >
-          <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          <span class="truncate">{{ t('pair.request.accept') }}</span>
-        </button>
-        <button
-          type="button"
-          :class="[BTN, 'border border-border text-ink bg-transparent font-semibold']"
-          data-testid="card-decline"
-          @click="pair.respond?.(false)"
-        >
-          <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          <span class="truncate">{{ t('pair.request.decline') }}</span>
-        </button>
+        <!-- 받은 요청: 수락·거절은 그림 확인 창(PairRequestSheet)에서만 한다. 카드에서 바로 수락하면 그림 확인을 건너뛰게 되므로 상태만 보여 준다 -->
+        <span class="flex-1 min-w-0 inline-flex items-center justify-center gap-1 h-[26px] text-[10px] font-bold text-white bg-scope-private truncate" role="status" data-testid="card-incoming">
+          <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="truncate">{{ t('pair.request.title') }}</span>
+        </span>
       </template>
       <template v-else-if="stateName === 'pending'">
         <span class="flex-1 min-w-0 inline-flex items-center justify-center h-[26px] text-[10px] font-semibold text-scope-private bg-scope-private/10 truncate" role="status" data-testid="pair-pending-text">

@@ -49,16 +49,17 @@ describe('DeviceCards', () => {
     expect(ctx.invite).toHaveBeenCalledWith(a)
   })
 
-  it('받은 요청이 있으면 그 카드에 수락/거절이 나오고 respond를 부른다', async () => {
+  it('받은 요청은 카드에 상태만 보이고 수락·거절 버튼은 없다(그림 확인 창에서만 결정)', async () => {
     ctx.incoming.value = { sessionId: 's', state: 'incoming', peer: a }
     const w = build([me, a, b])
     const card = w.findAll('[data-testid="device-card"]')[2]
     expect(card.attributes('data-incoming')).toBe('true')
     expect(card.classes()).toContain('bg-tint')
     expect(card.find('[data-testid="pair-invite-button"]').exists()).toBe(false)
-    await card.find('[data-testid="card-accept"]').trigger('click')
-    await card.find('[data-testid="card-decline"]').trigger('click')
-    expect(ctx.respond.mock.calls).toEqual([[true], [false]])
+    expect(card.find('[data-testid="card-incoming"]').exists()).toBe(true)
+    expect(card.find('[data-testid="card-accept"]').exists()).toBe(false)
+    expect(card.find('[data-testid="card-decline"]').exists()).toBe(false)
+    expect(ctx.respond).not.toHaveBeenCalled()
   })
 
   it('수락 대기 중이면 같은 줄에 대기 표시와 취소가 나온다', async () => {

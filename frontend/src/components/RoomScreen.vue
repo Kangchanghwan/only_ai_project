@@ -123,7 +123,6 @@ const emit = defineEmits([
   'pair-invite',
   'pair-cancel',
   'pair-confirm',
-  'pair-respond',
   'leave-private',
   'group-create',
   'group-add',
@@ -189,7 +188,6 @@ if (props.pairEnabled) {
     cancel: (sessionId) => emit('pair-cancel', sessionId),
     confirm: (sessionId) => emit('pair-confirm', sessionId),
     incoming: computed(() => props.pairIncoming),
-    respond: (accept) => emit('pair-respond', { accept, legacy: !!props.pairIncoming?.legacy }),
     open: (roomId) => emit('select-scope', scopeForPrivateRoom(roomId))
   })
 }
