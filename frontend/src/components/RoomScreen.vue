@@ -232,7 +232,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
             @code-enter="$emit('code-enter')"
           />
         </div>
-        <p v-if="scope === 'ip'" class="m-0 min-w-0 basis-full sm:basis-auto sm:self-center text-xs text-text-secondary" data-testid="ip-notice">{{ t('identity.ipNotice') }}</p>
+        <p v-if="scope === 'ip'" class="m-0 min-w-0 basis-full text-xs text-text-secondary" data-testid="ip-notice">{{ t('identity.ipNotice') }}</p>
       </div>
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->

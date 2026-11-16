@@ -50,7 +50,7 @@ async function revealActive() {
 onMounted(revealActive)
 watch(() => [props.scope, props.privateRooms.length], revealActive)
 
-const TAB = 'shrink-0 min-h-[44px] max-w-[10rem] inline-flex items-center gap-2 px-3 rounded-none bg-transparent border-0 border-b-2 whitespace-nowrap text-sm hover:bg-tint cursor-pointer'
+const TAB = 'shrink-0 min-h-[44px] max-w-[15rem] inline-flex items-center gap-2 px-3 rounded-none bg-transparent border-0 border-b-2 whitespace-nowrap text-sm hover:bg-tint cursor-pointer'
 const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink' : 'text-text-secondary font-semibold border-transparent']
 </script>
 
@@ -95,8 +95,8 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
         data-testid="private-tab-option"
         @click="emit('select', scopeForPrivateRoom(room.roomId))"
       >
-        <span class="shrink-0 w-2 h-2 bg-scope-private" aria-hidden="true" data-testid="scope-mark-private"></span>
-        <svg v-if="isGroup(room)" class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="group-tab-icon">
+        <span v-if="!isGroup(room)" class="shrink-0 w-2 h-2 bg-scope-private" aria-hidden="true" data-testid="scope-mark-private"></span>
+        <svg v-if="isGroup(room)" class="shrink-0 text-scope-private" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="group-tab-icon">
           <circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><circle cx="17" cy="9" r="2.5" /><path d="M17.5 14.2c2.4.3 4 2.1 4 4.8" />
         </svg>
         <PairPeerAvatar v-else :device="room.peer" size="sm" />

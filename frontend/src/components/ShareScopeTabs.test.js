@@ -79,7 +79,7 @@ describe('ShareScopeTabs (늘 보이는 방 탭 바)', () => {
     const names = w.findAll('[data-testid="group-tab-name"]')
     expect(names[0].text()).toBe('이름 없는 방')
     expect(names[1].classes()).toContain('truncate')
-    expect(tabs(w)[3].classes()).toContain('max-w-[10rem]')
+    expect(tabs(w)[3].classes()).toContain('max-w-[15rem]')
   })
 
   it('방이 많아도 모두 탭으로 그려지고 한 줄 가로 스크롤이다', () => {
