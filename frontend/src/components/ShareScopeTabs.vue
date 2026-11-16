@@ -91,7 +91,6 @@ function pick(roomId) {
       :title="t('shareScope.ipDescription')"
       @click="emit('select', 'ip')"
     >
-      <span class="text-[11px] font-bold text-ink-2" aria-hidden="true">01</span>
       {{ t('shareScope.ip') }}
     </button>
     <button
@@ -103,7 +102,6 @@ function pick(roomId) {
       :title="t('shareScope.globalDescription')"
       @click="emit('select', 'global')"
     >
-      <span class="text-[11px] font-bold text-ink-2" aria-hidden="true">02</span>
       {{ t('shareScope.global') }}
     </button>
 

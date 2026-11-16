@@ -360,7 +360,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 
       <!-- 보관/사용 안내 (details 본문은 DOM에 그대로 있어 크롤링 가능) -->
       <details class="mt-6 bg-transparent border-0 border-t-2 border-ink rounded-none pt-4 text-sm" data-testid="usage-notes" open>
-        <summary class="cursor-pointer min-h-[44px] flex items-center font-semibold"><span class="mr-2 inline-block border-2 border-ink px-[5px] text-[11px] font-extrabold leading-4 text-ink" aria-hidden="true">01</span><span class="font-extrabold">{{ t('guide.title') }}</span></summary>
+        <summary class="cursor-pointer min-h-[44px] flex items-center font-semibold"><span class="font-extrabold">{{ t('guide.title') }}</span></summary>
         <ul class="mt-2 flex flex-col list-none p-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
           <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
           <li v-else>{{ t('guide.retention') }}</li>

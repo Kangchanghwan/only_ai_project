@@ -75,7 +75,7 @@ async function confirm() {
           />
           <p class="mt-1 text-xs m-0" :class="lockError ? 'text-red-500' : 'text-text-secondary'">{{ lockError || t('lock.confirmHint') }}</p>
         </div>
-        <p v-else class="mt-3 text-xs text-text-secondary m-0" data-testid="public-confirm-locked">🔒 {{ t('lock.confirmAlreadyLocked') }}</p>
+        <p v-else class="mt-3 text-xs text-text-secondary m-0" data-testid="public-confirm-locked"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>{{ t('lock.confirmAlreadyLocked') }}</p>
         <div class="mt-4 flex gap-2 justify-end flex-wrap">
           <button ref="cancelBtn" type="button" class="min-h-[44px] px-5 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold" data-testid="public-confirm-cancel" @click="emit('cancel')">{{ t('notification.cancel') }}</button>
           <button type="button" class="min-h-[44px] px-5 rounded-none bg-scope-global text-white text-sm font-semibold" data-testid="public-confirm-accept" :disabled="busy" @click="confirm">{{ busy ? t('lock.settingUp') : (password || alreadyLocked ? t('lock.confirmLockedSend') : t('publicConfirm.confirm')) }}</button>

@@ -96,6 +96,6 @@ function handleDrop(event) {
     </p>
     <!-- 1:1 방은 자동 암호화라 비밀번호 잠금 칩을 숨긴다 -->
     <LockChip v-if="!isPrivateScope(scope)" :scope="scope" />
-    <p v-else class="text-xs text-scope-private m-0" data-testid="private-upload-hint">🔒 {{ t('pair.uploadHint') }}</p>
+    <p v-else class="text-xs text-scope-private m-0" data-testid="private-upload-hint"><svg class="inline-block w-3.5 h-3.5 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>{{ t('pair.uploadHint') }}</p>
   </div>
 </template>
