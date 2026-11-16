@@ -6,13 +6,17 @@ export function isMeDevice(device, mySocketId, myIdentity) {
     (isValidIdentity(device.identity) && !!myIdentity && sameIdentity(device.identity, myIdentity))
 }
 
-/** 내 기기를 맨 위로, 나머지는 접속 순서 */
-export function sortDevices(devices, mySocketId, myIdentity) {
+/**
+ * 정렬: 나 → 1:1 연결 요청을 주고받는 중인 기기(priorityIds) → 최근 접속 순(방금 들어온 기기가 앞).
+ * 오래 열어 둔 기기가 앞을 차지해 새로 들어온 기기가 모바일 가로 줄 뒤로 밀리지 않게 한다.
+ */
+export function sortDevices(devices, mySocketId, myIdentity, priorityIds = null) {
+  const rank = (d) => (isMeDevice(d, mySocketId, myIdentity) ? 0 : priorityIds?.has?.(d.socketId) ? 1 : 2)
   return [...devices].sort((a, b) => {
-    const am = isMeDevice(a, mySocketId, myIdentity) ? 0 : 1
-    const bm = isMeDevice(b, mySocketId, myIdentity) ? 0 : 1
-    if (am !== bm) return am - bm
-    return (a.joinedAt ?? 0) - (b.joinedAt ?? 0)
+    const ra = rank(a)
+    const rb = rank(b)
+    if (ra !== rb) return ra - rb
+    return (b.joinedAt ?? 0) - (a.joinedAt ?? 0)
   })
 }
 

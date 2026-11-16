@@ -21,6 +21,14 @@ describe('countOtherDevices (다른 기기 N대)', () => {
     const sorted = sortDevices([d('a', panda, 1), d('me', fox, 9)], 'me', fox)
     expect(isMeDevice(sorted[0], 'me', fox)).toBe(true)
   })
+  it('나 다음은 최근 접속 순(방금 들어온 기기가 앞)', () => {
+    const sorted = sortDevices([d('old', panda, 1), d('me', fox, 5), d('new', { adj: 2, animal: 2 }, 9), d('mid', { adj: 3, animal: 3 }, 4)], 'me', fox)
+    expect(sorted.map((x) => x.socketId)).toEqual(['me', 'new', 'mid', 'old'])
+  })
+  it('1:1 요청 중인 기기는 나 바로 다음', () => {
+    const sorted = sortDevices([d('old', panda, 1), d('me', fox, 5), d('new', { adj: 2, animal: 2 }, 9)], 'me', fox, new Set(['old']))
+    expect(sorted.map((x) => x.socketId)).toEqual(['me', 'old', 'new'])
+  })
 })
 
 describe('isEditableTarget', () => {

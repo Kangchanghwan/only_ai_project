@@ -33,11 +33,12 @@ describe('DeviceCards', () => {
   it('접속 시각 딱지: 지금이면 초록, 아니면 회색', () => {
     const w = build([me, a, b])
     const tags = w.findAll('[data-testid="device-card-status"]')
-    expect(tags[2].text()).toBe('지금')
-    expect(tags[2].classes()).toContain('bg-scope-global')
-    expect(tags[1].text()).toBe('3분 전')
-    expect(tags[1].classes()).toContain('bg-text-secondary')
-    expect(tags[1].classes()).not.toContain('bg-scope-global')
+    // 정렬: 나 → 최근 접속(a, 지금) → b(3분 전)
+    expect(tags[1].text()).toBe('지금')
+    expect(tags[1].classes()).toContain('bg-scope-global')
+    expect(tags[2].text()).toBe('3분 전')
+    expect(tags[2].classes()).toContain('bg-text-secondary')
+    expect(tags[2].classes()).not.toContain('bg-scope-global')
   })
 
   it('연결 버튼은 invite를 부르고 aria-label에 이름이 들어간다', async () => {
@@ -52,7 +53,7 @@ describe('DeviceCards', () => {
   it('받은 요청은 카드에 상태만 보이고 수락·거절 버튼은 없다(그림 확인 창에서만 결정)', async () => {
     ctx.incoming.value = { sessionId: 's', state: 'incoming', peer: a }
     const w = build([me, a, b])
-    const card = w.findAll('[data-testid="device-card"]')[2]
+    const card = w.findAll('[data-testid="device-card"]')[1] // 요청 중인 기기는 나 바로 다음
     expect(card.attributes('data-incoming')).toBe('true')
     expect(card.classes()).toContain('bg-tint')
     expect(card.find('[data-testid="pair-invite-button"]').exists()).toBe(false)

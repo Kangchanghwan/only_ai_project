@@ -22,7 +22,15 @@ const props = defineProps({
 const emit = defineEmits(['reroll'])
 const pair = inject(PAIR_CONTEXT_KEY, null)
 
-const sorted = computed(() => sortDevices(props.devices, props.mySocketId, props.myIdentity))
+// 1:1 요청을 주고받는 중인 기기는 내 카드 바로 다음에 둔다
+const pairingIds = computed(() => {
+  const ids = new Set()
+  for (const [id, st] of Object.entries(pair?.states?.value || {})) if (st?.state === 'pending' || st?.state === 'connecting') ids.add(id)
+  const inId = pair?.incoming?.value?.peer?.socketId
+  if (inId) ids.add(inId)
+  return ids
+})
+const sorted = computed(() => sortDevices(props.devices, props.mySocketId, props.myIdentity, pairingIds.value))
 const isMe = (d) => isMeDevice(d, props.mySocketId, props.myIdentity)
 // 1:1/그룹 방이거나 연결 기능이 꺼져 있으면 다른 기기 카드에 연결 버튼이 없다
 const pairable = computed(() => !!pair && !isPrivateScope(props.scope))
