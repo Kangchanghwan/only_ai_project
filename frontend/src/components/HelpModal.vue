@@ -317,7 +317,7 @@ onUnmounted(() => {
           <!-- 푸터 -->
           <div class="sticky bottom-0 bg-surface border-t border-border px-6 py-4 flex justify-end">
             <button
-              class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
+              class="px-6 py-2 bg-ink text-on-ink rounded-none hover:opacity-90 transition-colors font-extrabold"
               @click="$emit('close')"
             >
               {{ t('help.confirm') }}
