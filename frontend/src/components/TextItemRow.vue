@@ -6,7 +6,7 @@
  * - 복사(남색 채움) + ⋯ 메뉴(삭제). 모든 본문은 텍스트 노드로만 렌더링한다 (v-html 사용 금지)
  * - 보관 중(10분) 남은 시간/보관 취소, 보관 안 된 내 텍스트 안내, 잠긴 텍스트 풀기는 기존 흐름 그대로
  */
-import { ref, computed, onMounted, onUpdated, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUpdated, onUnmounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SenderLabel from './SenderLabel.vue'
 
@@ -19,6 +19,28 @@ const props = defineProps({
 const emit = defineEmits(['remove-text', 'cancel-text', 'unlock-text', 'send-as-file', 'copy-text'])
 
 const openMenu = ref(false)
+const menuRoot = ref(null)
+const moreBtn = ref(null)
+// 열려 있을 때만 문서 리스너를 둔다: 바깥을 누르거나 Esc면 닫힌다(다른 행의 ⋯를 눌러도 닫히므로 한 번에 하나만 열린다)
+const onMenuDown = (e) => { if (menuRoot.value && !menuRoot.value.contains(e.target)) openMenu.value = false }
+const onMenuKey = (e) => {
+  if (e.key !== 'Escape') return
+  openMenu.value = false
+  moreBtn.value?.focus()
+}
+watch(openMenu, (isOpen) => {
+  if (isOpen) {
+    document.addEventListener('pointerdown', onMenuDown)
+    document.addEventListener('keydown', onMenuKey)
+  } else {
+    document.removeEventListener('pointerdown', onMenuDown)
+    document.removeEventListener('keydown', onMenuKey)
+  }
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', onMenuDown)
+  document.removeEventListener('keydown', onMenuKey)
+})
 const expanded = ref(false)
 const lines = computed(() => (typeof props.text.content === 'string' ? props.text.content.split(/\r\n|\r|\n/) : []))
 /** 제목 줄: 비어 있지 않은 첫 줄 */
@@ -158,8 +180,9 @@ function formatTime(timestamp) {
         data-testid="text-unlock-open"
         @click="openUnlock"
       >{{ t('text.unlock') }}</button>
-      <div class="relative">
+      <div ref="menuRoot" class="relative">
         <button
+          ref="moreBtn"
           type="button"
           class="more-btn shrink-0 w-11 h-11 flex items-center justify-center rounded-none border border-border bg-background text-text-primary"
           :title="t('file.moreActions')"
@@ -172,12 +195,14 @@ function formatTime(timestamp) {
           <button
             v-if="text.expiresAt && text.canCancel"
             type="button"
+            role="menuitem"
             class="w-full min-h-[44px] px-4 text-left text-sm text-text-primary whitespace-nowrap"
             data-testid="text-cancel-keep"
             @click="openMenu = false; $emit('cancel-text', text.id)"
           >{{ t('text.cancelKeep') }}</button>
           <button
             type="button"
+            role="menuitem"
             class="w-full min-h-[44px] px-4 text-left text-sm text-red-500"
             data-testid="text-delete"
             @click="openMenu = false; $emit('remove-text', text.id)"

@@ -196,3 +196,31 @@ describe('TextItemRow 빈 곳 눌러 더보기', () => {
     expect(w.find('[data-testid="text-body"]').exists()).toBe(false)
   })
 })
+
+describe('TextItemRow ⋯ 메뉴 닫기', () => {
+  const open = async () => {
+    const w = mount(TextItemRow, { props: { text: { id: '1', content: 'hi', timestamp: Date.now(), sender } }, global: { plugins: [i18n], provide }, attachTo: document.body })
+    await w.find('[data-testid="text-more"]').trigger('click')
+    return w
+  }
+  it('열기 → Esc → 닫히고 포커스가 ⋯ 버튼으로 돌아간다, 메뉴 항목은 menuitem', async () => {
+    const w = await open()
+    expect(w.find('[data-testid="text-menu"]').exists()).toBe(true)
+    expect(w.find('[data-testid="text-delete"]').attributes('role')).toBe('menuitem')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await w.vm.$nextTick()
+    expect(w.find('[data-testid="text-menu"]').exists()).toBe(false)
+    expect(document.activeElement).toBe(w.find('[data-testid="text-more"]').element)
+    w.unmount()
+  })
+  it('열기 → 바깥 pointerdown → 닫히고, 안쪽 pointerdown은 유지된다', async () => {
+    const w = await open()
+    w.find('[data-testid="text-menu"]').element.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    await w.vm.$nextTick()
+    expect(w.find('[data-testid="text-menu"]').exists()).toBe(true)
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    await w.vm.$nextTick()
+    expect(w.find('[data-testid="text-menu"]').exists()).toBe(false)
+    w.unmount()
+  })
+})
