@@ -129,8 +129,6 @@ const emit = defineEmits([
 ])
 
 const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120
-const mobilePanel = ref('files')
-watch(() => props.prefillText, (v) => { if (v) mobilePanel.value = 'text' }, { immediate: true })
 
 
 // 1:1 탭이면 그 방의 접속 기기(나 + 상대)를 보여 준다
@@ -258,35 +256,8 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 
       <div class="workspace">
         <main class="ws-main bg-surface rounded-xl p-4 sm:p-6 border border-border min-w-0">
-          <div
-            class="flex mb-4 w-fit max-w-full rounded-none"
-            role="tablist"
-            :aria-label="t('room.mobilePanelLabel')"
-          >
-            <button
-              type="button"
-              role="tab"
-              :aria-selected="mobilePanel === 'files'"
-              class="min-h-[44px] px-4 rounded-none border border-border text-sm font-semibold transition-colors"
-              :class="mobilePanel === 'files' ? 'bg-ink text-on-ink border-ink' : 'text-text-secondary'"
-              @click="mobilePanel = 'files'"
-            >
-              {{ t('room.filesTab') }} ({{ files.length }})
-            </button>
-            <button
-              type="button"
-              role="tab"
-              :aria-selected="mobilePanel === 'text'"
-              class="min-h-[44px] px-4 rounded-none border border-border -ml-px text-sm font-semibold transition-colors"
-              :class="mobilePanel === 'text' ? 'bg-ink text-on-ink border-ink' : 'text-text-secondary'"
-              @click="mobilePanel = 'text'"
-            >
-              {{ t('room.textTab') }} ({{ texts.length }})
-            </button>
-          </div>
-
           <div class="flex flex-col gap-8">
-            <section :class="{ hidden: mobilePanel !== 'files' }">
+            <section data-testid="workspace-stack">
               <p v-if="peerOffline" class="m-0 mb-2 text-xs text-text-secondary" role="status" data-testid="peer-offline-upload-note">{{ t('pair.offlineUploadNote') }}</p>
               <FileGallery
                 :files="files"
@@ -295,6 +266,13 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 :has-more="hasMore"
                 :scope="scope"
                 :uploads="uploads"
+                :texts="texts"
+                @remove-text="$emit('remove-text', $event)"
+                @cancel-text="$emit('cancel-text', $event)"
+                @unlock-text="$emit('unlock-text', $event)"
+                @send-as-file="$emit('send-text-as-file', $event)"
+                @clear-all-texts="$emit('clear-all-texts')"
+                @copy-text="$emit('copy-text', $event)"
                 @copy-image="$emit('copy-image', $event)"
                 @download-file="$emit('download-file', $event)"
                 @download-parallel="$emit('download-parallel', $event)"
@@ -322,35 +300,20 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                     >{{ t('pair.reconnect') }}</button>
                   </div>
                 </template>
+                <template #composer>
+                  <TextShareBox
+                    :scope="scope"
+                    :prefill="prefillText"
+                    :receiver-count="textReceiverCount"
+                    :storage-mode="textStorageMode"
+                    :compose-disabled="peerLeft || (peerOffline && textStorageMode === 'none') || peerConnecting"
+                    :compose-note="peerOffline && textStorageMode === 'none' ? t('pair.offlineTextNote') : ''"
+                    @share-text="$emit('share-text', $event)"
+                  />
+                </template>
               </FileGallery>
             </section>
 
-            <section :class="{ hidden: mobilePanel !== 'text' }">
-              <TextShareBox
-                :texts="texts"
-                :scope="scope"
-                :prefill="prefillText"
-                :receiver-count="textReceiverCount"
-                :storage-mode="textStorageMode"
-                :compose-disabled="peerLeft || (peerOffline && textStorageMode === 'none') || peerConnecting"
-                :compose-note="peerOffline && textStorageMode === 'none' ? t('pair.offlineTextNote') : ''"
-                @remove-text="$emit('remove-text', $event)"
-                @cancel-text="$emit('cancel-text', $event)"
-                @unlock-text="$emit('unlock-text', $event)"
-                @send-as-file="$emit('send-text-as-file', $event)"
-                @clear-all="$emit('clear-all-texts')"
-                @copy-text="$emit('copy-text', $event)"
-                @share-text="$emit('share-text', $event)"
-                @paste-content="$emit('paste-content')"
-              />
-              <!-- 텍스트 탭에서 붙여넣은 파일 업로드 등도 같은 위치 규칙으로 보이게 -->
-              <TransferProgress
-                v-if="mobilePanel === 'text'"
-                :uploads="uploads"
-                @cancel-upload="$emit('cancel-upload', $event)"
-                @cancel-all="$emit('cancel-all')"
-              />
-            </section>
           </div>
         </main>
       </div>

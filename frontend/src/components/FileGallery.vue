@@ -2,6 +2,8 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import FileCard from './FileCard.vue'
 import LockedFileCard from './LockedFileCard.vue'
+import TextItemRow from './TextItemRow.vue'
+import { useI18n } from 'vue-i18n'
 import FileUploadSection from './FileUploadSection.vue'
 import PasteSection from './PasteSection.vue'
 import TransferProgress from './TransferProgress.vue'
@@ -12,6 +14,11 @@ import { trackEvent } from '../utils/analytics'
 import { isPrivateScope } from '../composables/useShareScope'
 
 const props = defineProps({
+  /** 받은 텍스트: 파일과 한 목록에 시간순(최신 먼저)으로 섞어 보여 준다. 선택·일괄 작업 대상은 아니다 */
+  texts: {
+    type: Array,
+    default: () => []
+  },
   files: {
     type: Array,
     default: () => []
@@ -51,8 +58,42 @@ const emit = defineEmits([
   'paste-content',
   'load-more',
   'cancel-upload',
-  'cancel-all'
+  'cancel-all',
+  'remove-text',
+  'cancel-text',
+  'unlock-text',
+  'send-as-file',
+  'clear-all-texts',
+  'copy-text'
 ])
+
+const { t } = useI18n()
+
+function toMs(v) {
+  if (typeof v === 'number') return v
+  const n = Date.parse(v)
+  return Number.isNaN(n) ? 0 : n
+}
+
+/**
+ * 파일(created)과 텍스트(timestamp)를 한 목록으로: 최신 먼저.
+ * 파일은 받은 순서(이미 최신 먼저)를 그대로 두고, 텍스트만 시각순으로 정렬해 두 줄을 합친다(안정 병합)
+ */
+const items = computed(() => {
+  const fs = props.files.map((file) => ({ kind: 'file', key: 'file:' + fileKey(file), ts: toMs(file.created), file }))
+  const ts = props.texts
+    .map((text, i) => ({ kind: 'text', key: 'text:' + text.id, ts: toMs(text.timestamp), i, text }))
+    .sort((a, b) => b.ts - a.ts || a.i - b.i)
+  const out = []
+  let i = 0
+  let j = 0
+  while (i < fs.length || j < ts.length) {
+    if (j >= ts.length || (i < fs.length && fs[i].ts >= ts[j].ts)) out.push(fs[i++])
+    else out.push(ts[j++])
+  }
+  return out
+})
+const hasItems = computed(() => props.files.length > 0 || props.texts.length > 0)
 
 const selectedFiles = ref(new Set())
 const showMultiQRModal = ref(false)
@@ -182,11 +223,14 @@ onUnmounted(() => {
     <!-- 보내기: 파일 선택(primary) + 붙여넣기(secondary, compact) -->
     <slot name="send">
       <div class="flex flex-col gap-3 mb-2" data-testid="send-area">
-        <FileUploadSection :scope="scope" :compact="files.length > 0" @upload-files="$emit('upload-files', $event)">
+        <FileUploadSection :scope="scope" :compact="hasItems" @upload-files="$emit('upload-files', $event)">
           <PasteSection :scope="scope" @paste-content="$emit('paste-content')" />
         </FileUploadSection>
       </div>
     </slot>
+
+    <!-- 한 줄 텍스트 입력: 업로드 영역 바로 아래 -->
+    <div v-if="$slots.composer" class="mb-2" data-testid="composer-area"><slot name="composer" /></div>
 
     <!-- 진행 상황: 보내기 영역 바로 아래 inline (업로드·다운로드 공통) -->
     <TransferProgress
@@ -200,31 +244,49 @@ onUnmounted(() => {
       <div class="w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin"></div>
     </div>
 
-    <!-- 파일 리스트 (로딩 중이 아닐 때) -->
-    <div v-else class="flex flex-col gap-2 mt-4">
+    <!-- 한 목록: 파일과 텍스트를 시간순(최신 먼저)으로 (로딩 중이 아닐 때) -->
+    <div v-else class="flex flex-col gap-2" :class="{ 'mt-4': hasItems }" data-testid="unified-list">
+      <div v-if="texts.length > 0" class="flex justify-end -mb-1">
+        <button
+          type="button"
+          class="min-h-[44px] px-3 text-xs text-text-secondary hover:text-ink"
+          data-testid="texts-clear-all"
+          @click="$emit('clear-all-texts')"
+        >🗑️ {{ t('text.clearAll') }}</button>
+      </div>
       <TransitionGroup name="card-land" @before-enter="onCardBeforeEnter">
-        <template v-for="file in files">
-        <LockedFileCard
-          v-if="file.locked"
-          :key="'locked:' + fileKey(file)"
-          :file="file"
-          :scope="scope"
-          :selectable="isPrivate"
-          :is-selected="isPrivate && selectedFiles.has(fileKey(file))"
-          @toggle-selection="toggleFileSelection(file)"
-          @delete-file="$emit('delete-file', file)"
-        />
-        <FileCard
-          v-else
-          :key="fileKey(file)"
-          :file="file"
-          :is-selected="selectedFiles.has(fileKey(file))"
-          :scope="scope"
-          @copy-image="$emit('copy-image', file.url)"
-          @toggle-selection="toggleFileSelection(file)"
-          @download-file="$emit('download-file', file)"
-          @delete-file="$emit('delete-file', file)"
-        />
+        <template v-for="item in items">
+          <TextItemRow
+            v-if="item.kind === 'text'"
+            :key="item.key"
+            :text="item.text"
+            @remove-text="$emit('remove-text', $event)"
+            @cancel-text="$emit('cancel-text', $event)"
+            @unlock-text="$emit('unlock-text', $event)"
+            @send-as-file="$emit('send-as-file', $event)"
+            @copy-text="$emit('copy-text', $event)"
+          />
+          <LockedFileCard
+            v-else-if="item.file.locked"
+            :key="'locked:' + fileKey(item.file)"
+            :file="item.file"
+            :scope="scope"
+            :selectable="isPrivate"
+            :is-selected="isPrivate && selectedFiles.has(fileKey(item.file))"
+            @toggle-selection="toggleFileSelection(item.file)"
+            @delete-file="$emit('delete-file', item.file)"
+          />
+          <FileCard
+            v-else
+            :key="item.key"
+            :file="item.file"
+            :is-selected="selectedFiles.has(fileKey(item.file))"
+            :scope="scope"
+            @copy-image="$emit('copy-image', item.file.url)"
+            @toggle-selection="toggleFileSelection(item.file)"
+            @download-file="$emit('download-file', item.file)"
+            @delete-file="$emit('delete-file', item.file)"
+          />
         </template>
       </TransitionGroup>
     </div>
