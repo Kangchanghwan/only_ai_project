@@ -220,8 +220,7 @@ async function handleShare(event) {
     <!-- 받기 (primary) -->
     <button
       type="button"
-      class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none text-white text-sm font-extrabold inline-flex items-center justify-center gap-1"
-      :class="accentBg"
+      class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none bg-ink text-on-ink text-sm font-extrabold inline-flex items-center justify-center gap-1"
       :aria-label="`${t('file.receive')}: ${file.name}`"
       data-testid="file-receive"
       @click="handleDownload"

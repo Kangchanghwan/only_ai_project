@@ -88,17 +88,17 @@ function handleDrop(event) {
     <input ref="fileInputRef" type="file" multiple class="sr-only" tabindex="-1" :aria-label="t('file.inputLabel')" data-testid="file-input" @change="handleFileSelect" @click.stop />
 
     <!-- 컴팩트 막대: 왼쪽 안내 -->
-    <p v-if="compact" class="m-0 flex-1 min-w-[8rem] truncate text-sm text-text-secondary" data-testid="upload-compact-hint">{{ t('file.dropHint') }}</p>
-    <!-- 큰 상태: 제목 (모바일에서는 스크린리더용) -->
-    <p v-else class="m-0 sr-only sm:not-sr-only sm:text-[22px] font-extrabold text-ink tracking-[-0.02em]" data-testid="upload-heading">{{ t('file.dropHint') }}</p>
+    <p v-if="compact" class="m-0 hidden sm:block flex-1 min-w-[8rem] truncate text-sm text-text-secondary" data-testid="upload-compact-hint">{{ t('dropOverlay.title') }}</p>
+    <!-- 큰 상태: 큰 선 아이콘 (넓은 화면만) -->
+    <svg v-else class="hidden sm:block w-12 h-12 text-ink-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
 
     <template v-if="compact">
-      <div class="ml-auto flex flex-wrap items-center justify-end gap-2" @click.stop>
+      <div class="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center justify-end gap-2" @click.stop>
         <LockChip v-if="!isPrivateScope(scope)" :scope="scope" />
         <slot />
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-none text-white font-extrabold text-sm inline-flex items-center justify-center gap-2"
+          class="order-first w-full sm:order-none sm:w-auto min-h-[44px] px-4 rounded-none text-white font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
           :class="accentBg"
           data-testid="choose-files"
           @click.stop="openFileDialog"
@@ -110,7 +110,7 @@ function handleDrop(event) {
     <template v-else>
       <button
         type="button"
-        class="w-full sm:w-auto min-h-[52px] px-8 rounded-none text-white font-extrabold text-base inline-flex items-center justify-center gap-2"
+        class="w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-10 rounded-none text-white font-extrabold text-base sm:text-lg inline-flex items-center justify-center gap-2"
         :class="accentBg"
         data-testid="choose-files"
         @click.stop="openFileDialog"
@@ -122,6 +122,8 @@ function handleDrop(event) {
         </svg>
         {{ t('file.chooseFiles') }}
       </button>
+      <!-- '또는 여기로 끌어다 놓으세요'는 버튼 뒤에 와야 자연스럽다 (모바일은 끌어다 놓기가 없어 스크린리더용) -->
+      <p class="m-0 sr-only sm:not-sr-only sm:text-[15px] sm:font-semibold sm:text-ink-2" data-testid="upload-heading">{{ t('file.dropHint') }}</p>
       <p class="text-xs text-text-secondary m-0" data-testid="upload-limit">
         {{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}
       </p>

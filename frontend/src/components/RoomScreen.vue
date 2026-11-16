@@ -209,7 +209,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 
     <div class="page-shell px-4 sm:px-6">
       <!-- 방 + 기기 줄: 어느 방인지, 누가 있는지 한 줄에 -->
-      <div class="bleed-line-b relative flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-3 mb-3 border-b border-border" data-testid="room-row">
+      <div class="bleed-line-b relative flex flex-wrap items-start gap-x-5 gap-y-2 pb-3 mb-3 border-b border-border" data-testid="room-row">
         <ShareScopeTabs
           :scope="scope"
           :private-rooms="privateRooms"
@@ -218,7 +218,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
           @select="$emit('select-scope', $event)"
           @group-create="$emit('group-add')"
         />
-        <div class="min-w-0 flex-1 sm:flex-none sm:max-w-[60%]">
+        <div class="min-w-0 basis-full sm:basis-auto sm:flex-1">
           <ConnectionCard
             :devices="activeDevices"
             :my-socket-id="mySocketId"
