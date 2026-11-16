@@ -3,7 +3,7 @@
  * 업로드 영역의 비밀번호 잠금 칩. 범위(ip/global)별로 이번 접속 동안만 유지된다.
  * 꺼져 있을 때는 작은 버튼 하나뿐이라 평소 흐름의 클릭 수는 늘지 않는다.
  */
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLockState, MIN_LOCK_PASSWORD } from '../composables/useLockState'
 
@@ -47,25 +47,15 @@ async function apply() {
   }
 }
 
-function unlock() {
-  lockState.clearLock(props.scope)
-}
+// 잠금 줄의 '다시 잠그기'가 입력창을 열어 달라고 요청하면 연다
+watch(() => lockState.editRequest[props.scope], (n, o) => {
+  if (n !== o && !locked.value) startEdit()
+})
 </script>
 
 <template>
-  <div class="lock-chip-wrap" :class="{ 'is-editing': editing && !locked }" data-testid="lock-chip" @click.stop>
-    <template v-if="locked">
-      <span class="lock-chip on lc-on-wide">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
-        <span class="lc-label">{{ t('lock.chipOn') }}</span>
-      </span>
-      <button type="button" class="lock-link lc-on-wide" data-testid="lock-off" @click="unlock">{{ t('lock.chipOff') }}</button>
-      <!-- 좁은 화면: 채워진 자물쇠 하나. 누르면 잠금 해제 -->
-      <button type="button" class="lock-chip on lc-on-narrow" :aria-label="`${t('lock.chipOn')} · ${t('lock.chipOff')}`" :title="`${t('lock.chipOn')} · ${t('lock.chipOff')}`" data-testid="lock-off-narrow" @click="unlock">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
-      </button>
-    </template>
-    <form v-else-if="editing" class="lock-form" @submit.prevent="apply">
+  <div v-if="!locked" class="lock-chip-wrap" :class="{ 'is-editing': editing && !locked }" data-testid="lock-chip" @click.stop>
+    <form v-if="editing" class="lock-form" @submit.prevent="apply">
       <input
         ref="inputRef"
         v-model="password"
@@ -116,13 +106,6 @@ function unlock() {
   color: var(--color-text-secondary);
   font-size: 0.75rem;
   cursor: pointer;
-}
-.lock-chip.on {
-  border-color: var(--color-ink);
-  background: var(--color-ink);
-  color: var(--color-on-ink, #fff);
-  font-weight: 600;
-  cursor: default;
 }
 .lock-chip svg {
   width: 13px;
@@ -187,10 +170,7 @@ function unlock() {
   color: #ef4444;
 }
 /* 좁은 화면: 도구 줄을 한 줄로 두려고 글자는 숨기고 아이콘만 (이름은 aria-label·title로) */
-.lc-on-narrow { display: none; }
 @media (max-width: 639px) {
-  .lc-on-wide { display: none !important; }
-  .lc-on-narrow { display: inline-flex; cursor: pointer; }
   .lc-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .lock-chip { min-width: 44px; justify-content: center; padding: 0 0.5rem; }
   .lock-chip svg { width: 16px; height: 16px; }
