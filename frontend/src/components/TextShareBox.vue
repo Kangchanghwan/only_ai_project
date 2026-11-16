@@ -192,7 +192,7 @@ function onKeydown(event) {
         <input ref="fileInputRef" type="file" multiple class="sr-only" tabindex="-1" :aria-label="t('file.inputLabel')" data-testid="file-input" @change="handleFileSelect" @click.stop />
         <button
           type="button"
-          class="order-1 flex-1 sm:flex-none min-h-[44px] px-2 sm:px-4 rounded-none text-white font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
+          class="order-1 flex-1 sm:flex-none min-h-[44px] px-2 sm:px-4 rounded-none text-on-accent font-extrabold text-sm whitespace-nowrap inline-flex items-center justify-center gap-2"
           :class="accentBg"
           data-testid="choose-files"
           @click="openFileDialog"

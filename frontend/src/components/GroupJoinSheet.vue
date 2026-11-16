@@ -62,7 +62,7 @@ function onKeydown(event) {
           >{{ t('group.cancel') }}</button>
           <button
             type="button"
-            class="min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
+            class="min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-50"
             :disabled="sheet.busy"
             data-testid="group-join-confirm"
             @click="emit('confirm')"

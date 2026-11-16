@@ -108,7 +108,7 @@ function handleCancel() {
             </button>
             <button
               type="button"
-              class="flex-1 rounded-lg py-2.5 text-sm font-semibold text-white"
+              class="flex-1 rounded-lg py-2.5 text-sm font-semibold text-on-accent"
               :class="localScope === 'global' ? globalBg : ipBg"
               @click="handleConfirm"
             >

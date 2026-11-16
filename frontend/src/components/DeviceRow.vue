@@ -96,7 +96,7 @@ const joinedText = computed(() => {
         <button
           v-else-if="st?.state === 'paired'"
           type="button"
-          class="shrink-0 -my-2 min-h-[44px] px-3 text-xs font-semibold rounded-lg bg-scope-private text-white"
+          class="shrink-0 -my-2 min-h-[44px] px-3 text-xs font-semibold rounded-lg bg-scope-private text-on-accent"
           :aria-label="t('pair.openRoom', { name: pairName })"
           data-testid="pair-open-button"
           @click="pair.open(st.roomId)"
@@ -142,7 +142,7 @@ const joinedText = computed(() => {
       <div v-else-if="wide" class="flex flex-col">
         <button
           type="button"
-          class="w-full min-h-[44px] rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+          class="w-full min-h-[44px] rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
           :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"
@@ -160,7 +160,7 @@ const joinedText = computed(() => {
         >{{ t('pair.cancel') }}</button>
         <button
           type="button"
-          class="min-h-[44px] rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+          class="min-h-[44px] rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
           :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"

@@ -53,7 +53,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
         <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
           <rect x="4" y="4" width="16" height="16" rx="4" />
         </svg>
-        <span v-if="totalCount > 0" class="dc-badge absolute left-[13px] -top-[6px] min-w-4 h-4 px-1 bg-ink text-white text-[10px] font-extrabold leading-4 text-center tabular-nums whitespace-nowrap rounded-[2px] ring-[1.5px] ring-surface" aria-hidden="true" data-testid="dc-badge">{{ fmt(selectedCount) + '/' + fmt(totalCount) }}</span>
+        <span v-if="totalCount > 0" class="dc-badge absolute left-[13px] -top-[6px] min-w-4 h-4 px-1 bg-ink text-on-ink text-[10px] font-extrabold leading-4 text-center tabular-nums whitespace-nowrap rounded-[2px] ring-[1.5px] ring-surface" aria-hidden="true" data-testid="dc-badge">{{ fmt(selectedCount) + '/' + fmt(totalCount) }}</span>
       </span>
       <span class="dc-label text-[11px] leading-tight text-center">
         {{ allSelected ? t('download.deselectAll') : t('download.selectAll') }}<span class="sr-only"> ({{ selectedCount }}/{{ totalCount }})</span>
@@ -71,7 +71,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
           <polyline points="7 10 12 15 17 10" />
           <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
-        <span v-if="selectedCount > 0" class="dc-badge absolute left-[13px] -top-[6px] min-w-4 h-4 px-1 bg-ink text-white text-[10px] font-extrabold leading-4 text-center tabular-nums whitespace-nowrap rounded-[2px] ring-[1.5px] ring-surface" aria-hidden="true" data-testid="dc-badge">{{ fmt(selectedCount) }}</span>
+        <span v-if="selectedCount > 0" class="dc-badge absolute left-[13px] -top-[6px] min-w-4 h-4 px-1 bg-ink text-on-ink text-[10px] font-extrabold leading-4 text-center tabular-nums whitespace-nowrap rounded-[2px] ring-[1.5px] ring-surface" aria-hidden="true" data-testid="dc-badge">{{ fmt(selectedCount) }}</span>
       </span>
       <span class="dc-label text-[11px] leading-tight text-center">{{ t('download.downloadSelected') }}<span class="sr-only"> ({{ selectedCount }})</span></span>
     </button>
@@ -93,12 +93,12 @@ const { text: accentText } = useScopeAccent(() => props.scope)
           <rect x="14" y="18" width="3" height="3" rx="0.5" fill="currentColor" stroke="none" />
           <rect x="18" y="14" width="3" height="3" rx="0.5" fill="currentColor" stroke="none" />
         </svg>
-        <span v-if="selectedCount > 0" class="dc-badge absolute left-[13px] -top-[6px] min-w-4 h-4 px-1 bg-ink text-white text-[10px] font-extrabold leading-4 text-center tabular-nums whitespace-nowrap rounded-[2px] ring-[1.5px] ring-surface" aria-hidden="true" data-testid="dc-badge">{{ fmt(selectedCount) }}</span>
+        <span v-if="selectedCount > 0" class="dc-badge absolute left-[13px] -top-[6px] min-w-4 h-4 px-1 bg-ink text-on-ink text-[10px] font-extrabold leading-4 text-center tabular-nums whitespace-nowrap rounded-[2px] ring-[1.5px] ring-surface" aria-hidden="true" data-testid="dc-badge">{{ fmt(selectedCount) }}</span>
       </span>
       <span class="dc-label text-[11px] leading-tight text-center">{{ t('download.qrCode') }}<span class="sr-only"> ({{ selectedCount }})</span></span>
     </button>
     <button
-      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-red-600 disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
+      class="dc-btn flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 text-danger disabled:text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:bg-black/5 transition-colors"
       :disabled="selectedCount === 0"
       data-testid="delete-selected"
       @click="$emit('delete-selected')"
@@ -111,7 +111,7 @@ const { text: accentText } = useScopeAccent(() => props.scope)
           <path d="M14 11v6" />
           <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
         </svg>
-        <span v-if="selectedCount > 0" class="dc-badge absolute left-[13px] -top-[6px] min-w-4 h-4 px-1 bg-red-600 text-white text-[10px] font-extrabold leading-4 text-center tabular-nums whitespace-nowrap rounded-[2px] ring-[1.5px] ring-surface" aria-hidden="true" data-testid="dc-badge">{{ fmt(selectedCount) }}</span>
+        <span v-if="selectedCount > 0" class="dc-badge absolute left-[13px] -top-[6px] min-w-4 h-4 px-1 bg-danger text-on-accent text-[10px] font-extrabold leading-4 text-center tabular-nums whitespace-nowrap rounded-[2px] ring-[1.5px] ring-surface" aria-hidden="true" data-testid="dc-badge">{{ fmt(selectedCount) }}</span>
       </span>
       <span class="dc-label text-[11px] leading-tight text-center">{{ t('file.deleteSelected') }}<span class="sr-only"> ({{ selectedCount }})</span></span>
     </button>

@@ -30,7 +30,7 @@ describe('통합 보내기 상자', () => {
   it('파일 선택은 범위 강조색(주황), 도구 줄 순서는 파일 선택 → 붙여넣기 → 잠금 → 공유', () => {
     const w = mountBox()
     const choose = w.find('[data-testid="choose-files"]')
-    expect(choose.classes()).toEqual(expect.arrayContaining(['font-extrabold', 'min-h-[44px]', 'text-white', 'whitespace-nowrap']))
+    expect(choose.classes()).toEqual(expect.arrayContaining(['font-extrabold', 'min-h-[44px]', 'text-on-accent', 'whitespace-nowrap']))
     expect(choose.classes().join(' ')).toMatch(/bg-/)
     const tb = w.find('[data-testid="send-toolbar"]')
     expect(tb.classes()).toEqual(expect.arrayContaining(['flex', 'flex-wrap', 'p-2', 'border-t', 'border-border']))

@@ -61,7 +61,7 @@ function onKeydown(event) {
           >{{ t('group.close') }}</button>
           <button
             type="button"
-            class="min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold"
+            class="min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold"
             data-testid="legacy-invite-create"
             @click="emit('create')"
           >{{ t('room.legacyInviteCreate') }}</button>

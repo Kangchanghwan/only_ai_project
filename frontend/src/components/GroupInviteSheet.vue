@@ -74,7 +74,7 @@ function onKeydown(event) {
             :aria-selected="tab === k"
             :tabindex="tab === k ? 0 : -1"
             class="flex-1 min-h-[44px] rounded-none text-sm font-semibold transition-colors"
-            :class="tab === k ? 'bg-scope-private text-white' : 'text-text-secondary'"
+            :class="tab === k ? 'bg-scope-private text-on-accent' : 'text-text-secondary'"
             :data-testid="`group-invite-tab-${k}`"
             @click="emit('tab', k)"
             @keydown="onTabKey($event, i)"
@@ -123,7 +123,7 @@ function onKeydown(event) {
           <button
             v-if="tab !== 'picture'"
             type="button"
-            class="min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
+            class="min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-50"
             :disabled="!sheet.url"
             data-testid="group-invite-copy"
             @click="emit('copy')"

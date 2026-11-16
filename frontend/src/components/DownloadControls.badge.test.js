@@ -15,7 +15,7 @@ describe('DownloadControls 숫자 배지', () => {
     const label = w.find('[data-testid="select-all"] .dc-label')
     expect(label.find('.sr-only').text()).toBe('(1/3)')
     expect(label.text().replace(label.find('.sr-only').text(), '').trim()).toBe('전체 선택')
-    expect(w.find('[data-testid="delete-selected"] [data-testid="dc-badge"]').classes()).toContain('bg-red-600')
+    expect(w.find('[data-testid="delete-selected"] [data-testid="dc-badge"]').classes()).toContain('bg-danger')
   })
   it('선택 0개면 전체 선택만 0/N, 나머지 배지는 숨긴다', () => {
     expect(badges(build({ selectedCount: 0, totalCount: 3 }))).toEqual(['0/3'])

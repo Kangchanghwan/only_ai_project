@@ -12,6 +12,8 @@ body.light {
   --color-ink: #0B1F4D;
   --color-ink-2: #2D4270;
   --color-on-ink: #FFFFFF;
+  --color-on-accent: #FFFFFF; /* 파랑·초록·빨강 같은 색 버튼 위 글자 */
+  --color-danger: #DC2626;
   --color-tint: #F1F5FA;
   --color-scope-global: #4F8767;
   --color-scope-global-tint: #E4EEE7;
@@ -32,6 +34,8 @@ body.dark {
   --color-ink: #DCE4F2;
   --color-ink-2: #B7C4DC;
   --color-on-ink: #0A1430;
+  --color-on-accent: #0A1430; /* 다크에서는 밝은 색 버튼이라 어두운 글자 */
+  --color-danger: #F87171;
   --color-tint: #13234A;
   --color-scope-global: #6FAE8A;
   --color-scope-global-tint: #223026;
@@ -49,6 +53,8 @@ body.dark {
   --color-ink: #DCE4F2;
   --color-ink-2: #B7C4DC;
   --color-on-ink: #0A1430;
+  --color-on-accent: #0A1430; /* 다크에서는 밝은 색 버튼이라 어두운 글자 */
+  --color-danger: #F87171;
   --color-tint: #13234A;
   --color-scope-global: #6FAE8A;
   --color-scope-global-tint: #223026;

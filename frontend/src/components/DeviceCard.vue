@@ -78,7 +78,7 @@ const BTN = 'h-[26px] w-full min-w-0 inline-flex items-center justify-center gap
         </span>
         <span
           v-if="tagText"
-          class="absolute -top-px -left-px px-[3px] py-[2px] text-[9px] leading-none font-bold text-white whitespace-nowrap"
+          class="absolute -top-px -left-px px-[3px] py-[2px] text-[9px] leading-none font-bold text-on-accent whitespace-nowrap"
           :class="isNow ? 'bg-scope-global' : 'bg-text-secondary'"
           :data-now="isNow ? 'true' : 'false'"
           :title="t('identity.joinedAgo', { time: tagText })"
@@ -111,7 +111,7 @@ const BTN = 'h-[26px] w-full min-w-0 inline-flex items-center justify-center gap
       </template>
       <template v-else-if="incoming">
         <!-- 받은 요청: 수락·거절은 그림 확인 창(PairRequestSheet)에서만 한다. 카드에서 바로 수락하면 그림 확인을 건너뛰게 되므로 상태만 보여 준다 -->
-        <span class="flex-1 min-w-0 inline-flex items-center justify-center gap-1 h-[26px] text-[10px] font-bold text-white bg-scope-private truncate" role="status" data-testid="card-incoming">
+        <span class="flex-1 min-w-0 inline-flex items-center justify-center gap-1 h-[26px] text-[10px] font-bold text-on-accent bg-scope-private truncate" role="status" data-testid="card-incoming">
           <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
           <span class="truncate">{{ t('pair.request.title') }}</span>
         </span>
@@ -138,7 +138,7 @@ const BTN = 'h-[26px] w-full min-w-0 inline-flex items-center justify-center gap
       <button
         v-else-if="stateName === 'paired'"
         type="button"
-        :class="[BTN, 'bg-scope-private text-white font-bold border-0']"
+        :class="[BTN, 'bg-scope-private text-on-accent font-bold border-0']"
         :aria-label="t('pair.openRoom', { name })"
         data-testid="pair-open-button"
         @click="pair.open(st.roomId)"

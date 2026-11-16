@@ -136,7 +136,7 @@ const showWarn = computed(() => props.warn && (props.status === 'wrong' || props
 
     <p
       class="m-0 mt-3 min-h-[1.25rem] text-sm text-center"
-      :class="isError ? 'text-red-600' : 'text-text-secondary'"
+      :class="isError ? 'text-danger' : 'text-text-secondary'"
       role="status"
       aria-live="polite"
       data-testid="picture-enter-message"
@@ -161,7 +161,7 @@ const showWarn = computed(() => props.warn && (props.status === 'wrong' || props
         >{{ t('code.clear') }}</button>
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
+          class="min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-50"
           :disabled="!canSubmit"
           data-testid="picture-enter-confirm"
           @click="submit"

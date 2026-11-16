@@ -317,7 +317,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                     <button
                       v-else-if="reinviteDevice"
                       type="button"
-                      class="mt-3 min-h-[44px] px-5 rounded-none bg-scope-private text-white text-sm font-semibold"
+                      class="mt-3 min-h-[44px] px-5 rounded-none bg-scope-private text-on-accent text-sm font-semibold"
                       data-testid="pair-reinvite"
                       @click="$emit('pair-invite', reinviteDevice)"
                     >{{ t('pair.reconnect') }}</button>

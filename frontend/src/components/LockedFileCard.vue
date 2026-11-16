@@ -331,7 +331,7 @@ onUnmounted(() => clearInterval(revealTimer))
     <div class="file-actions flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
       <button
         type="button"
-        class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none text-white text-sm font-extrabold inline-flex items-center justify-center gap-1"
+        class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none text-on-accent text-sm font-extrabold inline-flex items-center justify-center gap-1"
         :class="[accentBg, { 'opacity-50': lockedOut && !canReceiveDirectly }]"
         :disabled="busy || (lockedOut && !canReceiveDirectly)"
         :aria-label="busy ? (phase === 'checking' ? t('lock.checking') : t('lock.decrypting', { percent })) : `${canReceiveDirectly ? t('file.receive') : t('lock.unlock')}: ${isPlain ? displayName : t('lock.lockedFile')}`"
@@ -437,7 +437,7 @@ onUnmounted(() => clearInterval(revealTimer))
               >{{ t('notification.cancel') }}</button>
               <button
                 type="submit"
-                class="min-h-[44px] px-5 rounded-none text-white text-sm font-extrabold disabled:opacity-50"
+                class="min-h-[44px] px-5 rounded-none text-on-accent text-sm font-extrabold disabled:opacity-50"
                 :class="accentBg"
                 :disabled="!password || lockedOut || phase === 'checking'"
                 data-testid="locked-submit"

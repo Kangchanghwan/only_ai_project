@@ -105,7 +105,7 @@ function doLeave() {
       </div>
       <button
         type="button"
-        class="shrink-0 min-h-[44px] px-4 rounded-none bg-scope-private text-white text-sm font-semibold"
+        class="shrink-0 min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold"
         data-testid="group-invite"
         @click="emit('invite', room.roomId)"
       >{{ t('group.invite') }}</button>
