@@ -120,3 +120,17 @@ describe('LockBar lapsed', () => {
     expect(ls.lapsed.ip).toBe(false)
   })
 })
+
+describe('LockBar 설명 글', () => {
+  it('텍스트도 잠길 때만 "파일과 텍스트" 설명을 보여 준다 (텍스트 보관 미지원 백엔드에서는 숨김)', async () => {
+    await ls.setLock('ip', 'test1234', FAST)
+    const on = mk()
+    expect(on.find('[data-testid="lock-bar-desc"]').exists()).toBe(true)
+    on.unmount()
+    const filesOnly = mount(LockBar, { props: { scope: 'ip', textLocked: false }, global: { plugins: [i18n] } })
+    expect(filesOnly.find('[data-testid="lock-bar"]').attributes('data-state')).toBe('on')
+    expect(filesOnly.find('[data-testid="lock-bar-desc"]').exists()).toBe(false)
+    expect(filesOnly.find('[data-testid="lock-off"]').exists()).toBe(true)
+    filesOnly.unmount()
+  })
+})

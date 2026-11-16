@@ -10,7 +10,11 @@ import { useI18n } from 'vue-i18n'
 import { useLockState } from '../composables/useLockState'
 
 const { t } = useI18n()
-const props = defineProps({ scope: { type: String, default: 'ip' } })
+const props = defineProps({
+  scope: { type: String, default: 'ip' },
+  /** 텍스트도 잠겨서 가는지. 텍스트 보관을 지원하지 않는 구버전 백엔드에서는 파일만 잠기므로 설명 글을 숨긴다 */
+  textLocked: { type: Boolean, default: true }
+})
 const lockState = useLockState()
 
 const confirming = ref(false)
@@ -57,7 +61,7 @@ async function confirmOff() {
     >
       <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
       <span class="font-extrabold whitespace-nowrap">{{ t('lock.chipOn') }}</span>
-      <span class="opacity-85 min-w-0 truncate"><span class="hidden sm:inline">{{ t('lock.barDesc') }}</span><span class="sm:hidden">{{ t('lock.barDescShort') }}</span></span>
+      <span v-if="textLocked" class="opacity-85 min-w-0 truncate" data-testid="lock-bar-desc"><span class="hidden sm:inline">{{ t('lock.barDesc') }}</span><span class="sm:hidden">{{ t('lock.barDescShort') }}</span></span>
       <button
         ref="offRef"
         type="button"

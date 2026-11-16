@@ -172,7 +172,7 @@ function onKeydown(event) {
       @dragleave="handleDragLeave"
       @drop="handleDrop"
     >
-      <LockBar v-if="!isPrivate" :scope="scope" />
+      <LockBar v-if="!isPrivate" :scope="scope" :text-locked="storageMode !== 'none'" />
       <form class="contents" id="text-compose-form" data-testid="text-compose" @submit.prevent="submit">
         <label class="sr-only" for="text-share-input">{{ t('text.share') }}</label>
         <textarea
