@@ -33,14 +33,13 @@ describe('통합 보내기 상자', () => {
     expect(choose.classes()).toEqual(expect.arrayContaining(['font-extrabold', 'min-h-[44px]', 'text-white', 'whitespace-nowrap']))
     expect(choose.classes().join(' ')).toMatch(/bg-/)
     const tb = w.find('[data-testid="send-toolbar"]')
-    expect(tb.classes()).toEqual(expect.arrayContaining(['flex', 'flex-wrap', 'gap-2', 'p-2', 'border-t', 'border-border']))
+    expect(tb.classes()).toEqual(expect.arrayContaining(['flex', 'flex-wrap', 'p-2', 'border-t', 'border-border']))
     const order = (el) => el.element.className.match(/(?<![:\w-])order-(\d)/)?.[1]
-    const smOrder = (el) => el.element.className.match(/sm:order-(\d)/)?.[1]
-    // 모바일: 1행 = 파일 선택, 공유 / 줄바꿈 / 2행 = 붙여넣기, 잠금
-    expect([order(choose), order(w.find('[data-testid="text-share-button"]')), order(w.find('[data-testid="toolbar-break"]')), order(w.find('[data-testid="paste-row"]')), order(w.find('[data-testid="lock-chip"]'))]).toEqual(['1', '2', '3', '4', '5'])
+    // 모든 폭에서 한 줄: 파일 선택, 붙여넣기, 잠금, 공유(오른쪽 끝). 좁은 화면에서는 붙여넣기·잠금이 아이콘만
+    expect(w.find('[data-testid="toolbar-break"]').exists()).toBe(false)
+    expect([order(choose), order(w.find('[data-testid="paste-row"]')), order(w.find('[data-testid="lock-chip"]')), order(w.find('[data-testid="text-share-button"]'))]).toEqual(['1', '2', '3', '4'])
     expect(choose.classes()).toContain('flex-1')
-    // 데스크톱: 파일 선택, 붙여넣기, 잠금, 공유(오른쪽 끝)
-    expect([smOrder(choose), smOrder(w.find('[data-testid="paste-row"]')), smOrder(w.find('[data-testid="lock-chip"]')), smOrder(w.find('[data-testid="text-share-button"]'))]).toEqual(['1', '2', '3', '4'])
+    expect(w.find('[data-testid="paste-button"] span.hidden').exists()).toBe(true)
     expect(w.find('[data-testid="text-share-button"]').classes()).toEqual(expect.arrayContaining(['sm:ml-auto', 'bg-ink', 'text-on-ink', 'font-extrabold', 'min-h-[44px]']))
   })
 

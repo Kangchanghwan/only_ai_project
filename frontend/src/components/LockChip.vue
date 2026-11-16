@@ -55,11 +55,15 @@ function unlock() {
 <template>
   <div class="lock-chip-wrap" :class="{ 'is-editing': editing && !locked }" data-testid="lock-chip" @click.stop>
     <template v-if="locked">
-      <span class="lock-chip on">
+      <span class="lock-chip on lc-on-wide">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
-        {{ t('lock.chipOn') }}
+        <span class="lc-label">{{ t('lock.chipOn') }}</span>
       </span>
-      <button type="button" class="lock-link" data-testid="lock-off" @click="unlock">{{ t('lock.chipOff') }}</button>
+      <button type="button" class="lock-link lc-on-wide" data-testid="lock-off" @click="unlock">{{ t('lock.chipOff') }}</button>
+      <!-- 좁은 화면: 채워진 자물쇠 하나. 누르면 잠금 해제 -->
+      <button type="button" class="lock-chip on lc-on-narrow" :aria-label="`${t('lock.chipOn')} · ${t('lock.chipOff')}`" :title="`${t('lock.chipOn')} · ${t('lock.chipOff')}`" data-testid="lock-off-narrow" @click="unlock">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+      </button>
     </template>
     <form v-else-if="editing" class="lock-form" @submit.prevent="apply">
       <input
@@ -76,9 +80,9 @@ function unlock() {
       <button type="button" class="lock-link" @click="cancelEdit">{{ t('notification.cancel') }}</button>
       <p class="lock-hint" :class="{ err: !!error }">{{ error || t('lock.chipHint') }}</p>
     </form>
-    <button v-else type="button" class="lock-chip" data-testid="lock-start" @click="startEdit">
+    <button v-else type="button" class="lock-chip" data-testid="lock-start" :aria-label="t('lock.chipStart')" :title="t('lock.chipStart')" @click="startEdit">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
-      {{ t('lock.chipStart') }}
+      <span class="lc-label">{{ t('lock.chipStart') }}</span>
     </button>
   </div>
 </template>
@@ -178,5 +182,13 @@ function unlock() {
 }
 .lock-hint.err {
   color: #ef4444;
+}
+/* 좁은 화면: 도구 줄을 한 줄로 두려고 글자는 숨기고 아이콘만 (이름은 aria-label·title로) */
+.lc-on-narrow { display: none; }
+@media (max-width: 639px) {
+  .lc-on-wide { display: none !important; }
+  .lc-on-narrow { display: inline-flex; cursor: pointer; }
+  .lc-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .lock-chip { min-width: 44px; justify-content: center; padding: 0 0.5rem; }
 }
 </style>

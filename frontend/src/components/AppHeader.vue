@@ -85,12 +85,12 @@ onMounted(async () => {
 
 <template>
   <header class="sticky top-0 z-40 bg-surface border-b border-border mb-4">
-   <div class="mx-auto w-full max-w-[880px] box-border px-4 sm:px-6 py-2 flex justify-between items-center flex-wrap gap-x-4 gap-y-1">
-    <div class="flex items-center gap-3 text-2xl min-w-0">
-      <span class="text-3xl sm:text-4xl" aria-hidden="true">📋</span>
-      <h1 class="font-display font-extrabold text-ink text-xl sm:text-2xl m-0 truncate">{{ t('app.title') }}</h1>
+   <div class="mx-auto w-full max-w-[880px] box-border px-4 sm:px-6 py-2 flex justify-between items-center flex-nowrap gap-x-2 sm:gap-x-4">
+    <div class="flex items-center gap-2 sm:gap-3 text-2xl min-w-0">
+      <span class="hidden min-[360px]:inline text-3xl sm:text-4xl" aria-hidden="true">📋</span>
+      <h1 class="font-display font-extrabold text-ink text-base min-[360px]:text-xl sm:text-2xl m-0 truncate">{{ t('app.title') }}</h1>
     </div>
-    <div class="flex items-center gap-2 sm:gap-4">
+    <div class="flex items-center gap-1.5 sm:gap-4 shrink-0">
       <div ref="moreRoot" class="relative">
         <button
           type="button"
