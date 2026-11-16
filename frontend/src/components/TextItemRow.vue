@@ -125,7 +125,7 @@ function formatTime(timestamp) {
   <!-- 접힌 행은 FileCard의 행과 같은 모양: 더보기를 눌러야 아래로 늘어난다 -->
   <article
     class="text-row file-row flex items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-none border border-border bg-surface transition-colors duration-200"
-    :class="[expanded ? 'flex-wrap' : 'flex-nowrap', toggleable ? 'cursor-pointer' : '']"
+    :class="[expanded || unlocking ? 'flex-wrap' : 'flex-nowrap', toggleable ? 'cursor-pointer' : '']"
     data-testid="text-entry"
     @click="onRowClick"
   >
@@ -235,7 +235,7 @@ function formatTime(timestamp) {
       </button>
     </div>
 
-    <form v-if="unlocking && text.content == null" class="basis-full flex items-center gap-2" data-testid="text-unlock-form" @submit.prevent="submitUnlock">
+    <form v-if="unlocking && text.content == null" class="basis-full min-w-0 flex items-center gap-2 pl-[2.375rem] sm:pl-[3.25rem]" data-testid="text-unlock-form" @submit.prevent="submitUnlock">
       <input
         v-model="unlockPassword"
         ref="unlockInput"
@@ -256,7 +256,7 @@ function formatTime(timestamp) {
         data-testid="text-unlock-submit"
       >{{ unlockBusy ? '…' : t('text.unlock') }}</button>
     </form>
-    <p v-if="unlocking && unlockMessage" class="basis-full m-0 text-xs text-red-500" role="alert" data-testid="text-unlock-message">{{ unlockMessage }}</p>
+    <p v-if="unlocking && unlockMessage" class="basis-full min-w-0 m-0 pl-[2.375rem] sm:pl-[3.25rem] text-xs text-red-500" role="alert" data-testid="text-unlock-message">{{ unlockMessage }}</p>
 
     <!-- 내가 보냈지만 보관되지 않은 텍스트: 지금 열린 기기에만 갔다 -->
     <footer v-if="!text.expiresAt && text.notStored" class="basis-full flex items-center justify-between gap-2 flex-wrap" data-testid="text-not-kept">
