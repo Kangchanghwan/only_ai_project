@@ -7,6 +7,7 @@
 import { computed, ref, watch, inject, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AnimalAvatar from './AnimalAvatar.vue'
+import DeviceTypeIcon from './icons/DeviceTypeIcon.vue'
 import { isValidIdentity, identityName, deviceAndBrowser, formatRelativeTime } from '../utils/identity'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
 import { sasImages } from '../utils/sasImages'
@@ -51,11 +52,6 @@ const sasReady = computed(() => images.value.length === 4 && tilesReady.value)
 const isPending = computed(() => !!pair && st.value?.state === 'pending')
 const confirmed = computed(() => !!st.value?.confirmed)
 
-function icon(deviceType) {
-  if (deviceType === 'mobile') return '📱'
-  if (deviceType === 'tablet') return '📟'
-  return '💻'
-}
 const joinedText = computed(() => {
   const d = props.device
   if (!d.joinedAt) return ''
@@ -64,16 +60,16 @@ const joinedText = computed(() => {
 </script>
 
 <template>
-  <li class="flex flex-col min-w-0" data-testid="device-row">
+  <li class="flex flex-col min-w-0 border-b border-border py-2 last:border-b-0" data-testid="device-row">
     <div class="flex items-center gap-3 min-w-0" data-testid="device-row-header">
       <AnimalAvatar v-if="isValidIdentity(device.identity)" :identity="device.identity" size="md" />
-      <span v-else class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-lg shrink-0">{{ icon(device.deviceType) }}</span>
+      <span v-else class="inline-flex items-center justify-center w-10 h-10 rounded-none bg-tint text-ink shrink-0"><DeviceTypeIcon :type="device.deviceType" /></span>
       <div class="min-w-0 flex-1">
         <div class="flex items-center gap-2 min-w-0">
           <span class="text-sm font-semibold truncate">
             {{ isValidIdentity(device.identity) ? identityName(device.identity, t) : legacyLabel(device) }}
           </span>
-          <span v-if="isMe" class="text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-primary text-white shrink-0" data-testid="me-badge">{{ t('identity.me') }}</span>
+          <span v-if="isMe" class="text-[11px] font-extrabold px-1.5 py-0.5 rounded-[2px] bg-ink text-on-ink shrink-0" data-testid="me-badge">{{ t('identity.me') }}</span>
         </div>
         <div v-if="isValidIdentity(device.identity)" class="text-xs text-text-secondary truncate">{{ deviceAndBrowser(device, t) }}</div>
         <div v-if="joinedText && !isPending" class="text-xs text-text-secondary">{{ joinedText }}</div>
@@ -82,21 +78,21 @@ const joinedText = computed(() => {
       <template v-if="pair && !isMe">
         <span
           v-if="isPending"
-          class="shrink-0 inline-flex items-center whitespace-nowrap text-xs font-semibold px-2.5 py-1 rounded-full bg-scope-private/10 text-scope-private"
+          class="shrink-0 inline-flex items-center whitespace-nowrap text-xs font-semibold px-2.5 py-1 rounded-[2px] bg-scope-private/10 text-scope-private"
           role="status"
           data-testid="pair-pending-text"
         >{{ confirmed ? t('pair.peerChecking') : t('pair.checking') }}<template v-if="seconds !== null"> · {{ t('pair.pendingSeconds', { n: seconds }) }}</template></span>
         <button
           v-else-if="st?.state === 'connecting'"
           type="button"
-          class="shrink-0 -my-2 min-h-[44px] px-3 text-xs font-semibold rounded-lg border border-border text-text-secondary"
+          class="shrink-0 -my-2 min-h-[44px] px-3 text-xs font-semibold rounded-none border border-border text-text-secondary"
           disabled
           data-testid="pair-connecting-button"
         >{{ t('pair.connecting') }}</button>
         <button
           v-else-if="st?.state === 'paired'"
           type="button"
-          class="shrink-0 -my-2 min-h-[44px] px-3 text-xs font-semibold rounded-lg bg-scope-private text-white"
+          class="shrink-0 -my-2 min-h-[44px] px-3 text-xs font-semibold rounded-none bg-scope-private text-on-accent"
           :aria-label="t('pair.openRoom', { name: pairName })"
           data-testid="pair-open-button"
           @click="pair.open(st.roomId)"
@@ -104,7 +100,7 @@ const joinedText = computed(() => {
         <button
           v-else
           type="button"
-          class="shrink-0 -my-2 min-h-[44px] min-w-[44px] px-3 text-xs font-semibold rounded-lg border border-scope-private text-scope-private"
+          class="shrink-0 -my-2 min-h-[44px] min-w-[44px] px-3 text-xs font-semibold rounded-none border border-scope-private text-scope-private"
           :title="t('pair.openWith', { name: pairName })"
           :aria-label="t('pair.openWith', { name: pairName })"
           data-testid="pair-invite-button"
@@ -114,21 +110,21 @@ const joinedText = computed(() => {
       <button
         v-if="isMe && isValidIdentity(device.identity)"
         type="button"
-        class="shrink-0 -my-2 inline-flex items-center justify-center w-11 h-11 text-base text-text-primary rounded-lg border border-border disabled:opacity-50 disabled:cursor-not-allowed"
+        class="shrink-0 -my-2 inline-flex items-center justify-center w-11 h-11 text-base text-ink rounded-none border border-border hover:bg-tint disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="cooling"
         :title="t('identity.rerollTitle')"
         :aria-label="t('identity.rerollTitle')"
         data-testid="reroll-button"
         @click="emit('reroll')"
       >
-        <span aria-hidden="true">🎲</span>
+        <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
         <span class="sr-only">{{ t('identity.reroll') }}</span>
       </button>
     </div>
 
     <div
       v-if="isPending && !isMe"
-      class="mt-2 rounded-xl border border-scope-private/50 bg-scope-private/5 p-2 flex flex-col gap-2"
+      class="mt-2 rounded-none border border-scope-private/50 bg-scope-private/5 p-2 flex flex-col gap-2"
       data-testid="pair-pending-panel"
     >
       <p class="m-0 text-sm font-semibold">{{ t('pair.confirm.askSame') }}</p>
@@ -142,7 +138,7 @@ const joinedText = computed(() => {
       <div v-else-if="wide" class="flex flex-col">
         <button
           type="button"
-          class="w-full min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+          class="w-full min-h-[44px] rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
           :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"
@@ -153,14 +149,14 @@ const joinedText = computed(() => {
       <div v-else class="grid grid-cols-2 gap-2">
         <button
           type="button"
-          class="min-h-[44px] rounded-full border border-border text-sm font-semibold disabled:opacity-50"
+          class="min-h-[44px] rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold disabled:opacity-50"
           :disabled="!st.sessionId"
           data-testid="pair-cancel-button"
           @click="pair.cancel(st.sessionId)"
         >{{ t('pair.cancel') }}</button>
         <button
           type="button"
-          class="min-h-[44px] rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+          class="min-h-[44px] rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
           :disabled="!sasReady"
           :aria-disabled="!sasReady"
           :aria-label="t('pair.confirm.sameInline', { name: pairName })"

@@ -358,12 +358,14 @@ const visibleFiles = computed(() =>
 // 보관 남은 시간 표시·만료 정리용 시계 (15초마다)
 const nowTick = ref(Date.now())
 let nowTimer = null
+/** 삭제 되돌리기 대기 중이라 화면에서만 숨긴 글 id */
+const hiddenTextIds = ref(new Set())
 const visibleTexts = computed(() => {
   void lockState.version.value // 비밀번호를 확인하면 보관 취소 가능 여부가 바뀐다
   void nowTick.value // 15초마다 다시 계산 (텍스트가 바뀔 때도 다시 계산되므로 시각은 지금 값을 쓴다)
   const now = Date.now()
   return textShare.sharedTexts.value
-    .filter(t => t.roomId === activeRoomId.value)
+    .filter(t => t.roomId === activeRoomId.value && !hiddenTextIds.value.has(t.id))
     .map((t) => {
       const queued = textQueue.isQueued(t, now)
       return { ...t, expiresAt: queued ? t.expiresAt : undefined, remainingMs: queued ? t.expiresAt - now : 0, canCancel: textQueue.canCancel(t, now) }
@@ -450,6 +452,7 @@ socket.onIpRoomChanged?.(() => {
 /**
  * 공유 룸에 연결하고 관련 이벤트 리스너를 설정합니다.
  */
+let hasConnectedOnce = false
 async function connectToRoom() {
   isConnecting.value = true
   await new Promise((resolve) => setTimeout(resolve, 245))
@@ -471,7 +474,9 @@ async function connectToRoom() {
     fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
     // 내가 없는 동안 보관된 텍스트(10분)를 받는다 (1:1 방은 다시 입장한 뒤 불러온다)
     textQueue.loadRooms(roomManager.roomIds.value)
-    notification.showSuccess(t('notification.connected'))
+    // 정상적인 첫 연결은 알리지 않는다. 한 번 연결된 뒤 다시 연결될 때만 알린다
+    if (hasConnectedOnce) notification.showSuccess(t('notification.connected'))
+    hasConnectedOnce = true
     // 저장된 1:1 방에 입장권으로 다시 들어간다 (백그라운드)
     rejoinPrivateRooms()
     // 도착 알림을 켜 둔 기기는 구독을 서버에 다시 맞춘다 (꺼져 있으면 아무 일도 없다)
@@ -980,23 +985,58 @@ async function handleShareText({ content, done }) {
   }
 }
 
+// ── 글 삭제 되돌리기: 내 화면에서는 바로 숨기고, 5초 안에 실행 취소하지 않으면 서버·다른 기기에서도 지운다 ──
+const UNDO_MS = 5000
+const undoToast = ref(null)
+let pendingDelete = null
+
+function endPendingDelete(p) {
+  clearTimeout(p.timer)
+  pendingDelete = null
+  undoToast.value = null
+  hiddenTextIds.value = new Set()
+}
+
+/** 대기 중인 삭제를 즉시 실제로 실행한다 */
+function commitPendingDelete() {
+  const p = pendingDelete
+  if (!p) return
+  endPendingDelete(p)
+  Promise.resolve(p.commit()).catch((error) => console.warn('[App] 텍스트 삭제 실패:', error))
+}
+
+/** 실행 취소: 숨긴 글을 그대로(원래 자리·순서) 다시 보이고, 서버에는 아무 요청도 보내지 않는다 */
+function undoPendingDelete() {
+  if (pendingDelete) endPendingDelete(pendingDelete)
+}
+
+function startPendingDelete(ids, message, commit) {
+  commitPendingDelete()
+  const p = { commit, timer: null }
+  p.timer = setTimeout(() => { if (pendingDelete === p) commitPendingDelete() }, UNDO_MS)
+  pendingDelete = p
+  hiddenTextIds.value = new Set(ids)
+  undoToast.value = { message, label: t('notification.undo') }
+}
+
+onUnmounted(() => {
+  // 대기 중에 페이지를 닫으면 삭제는 일어나지 않는다
+  if (pendingDelete) { clearTimeout(pendingDelete.timer); pendingDelete = null }
+})
+
 async function handleRemoveText(textId) {
   if (roomManager.roomIds.value.length === 0) return
 
   const target = textShare.sharedTexts.value.find((x) => x.id === textId)
   if (!target) return
-  // 보관 중이면 서버 대기열에서도 지운다. 지울 증명이 없으면(남이 잠근 텍스트) 이 기기 목록에서만 뺀다
-  const res = await textQueue.removeFromServer(target.roomId, { textIds: [textId] })
-  const removed = textShare.removeText(textId)
-  if (!removed || res?.forbidden?.includes(textId)) return
-
-  const targetScope = publishTargetForRoom(removed.roomId)
-
-  socket.publishMessage({
-    type: 'text-removed',
-    textId,
-    roomId: removed.roomId
-  }, targetScope)
+  const roomId = target.roomId
+  startPendingDelete([textId], t('notification.textRemoved'), async () => {
+    // 보관 중이면 서버 대기열에서도 지운다. 지울 증명이 없으면(남이 잠근 텍스트) 이 기기 목록에서만 뺀다
+    const res = await textQueue.removeFromServer(roomId, { textIds: [textId] })
+    const removed = textShare.removeText(textId)
+    if (!removed || res?.forbidden?.includes(textId)) return
+    socket.publishMessage({ type: 'text-removed', textId, roomId: removed.roomId }, publishTargetForRoom(removed.roomId))
+  })
 }
 
 /** 보관 취소: 서버에서 지우고 다른 기기 목록에서도 사라지게 한다 */
@@ -1047,16 +1087,13 @@ async function handleClearAllTexts() {
   const targetRoomId = activeRoomId.value
   if (!targetRoomId) return
 
-  // 서버 대기열도 함께 지운다 (1:1 방은 모두, 공개 범위는 지울 증명이 있는 잠긴 텍스트만)
-  await textQueue.removeFromServer(targetRoomId, { all: true })
-  textShare.clearTextsForRoom(targetRoomId)
-
-  socket.publishMessage({
-    type: 'texts-cleared',
-    roomId: targetRoomId
-  }, targetScope)
-
-  notification.showInfo(t('text.cleared'))
+  const ids = textShare.sharedTexts.value.filter((x) => x.roomId === targetRoomId).map((x) => x.id)
+  startPendingDelete(ids, t('notification.textsCleared'), async () => {
+    // 서버 대기열도 함께 지운다 (1:1 방은 모두, 공개 범위는 지울 증명이 있는 잠긴 텍스트만)
+    await textQueue.removeFromServer(targetRoomId, { all: true })
+    textShare.clearTextsForRoom(targetRoomId)
+    socket.publishMessage({ type: 'texts-cleared', roomId: targetRoomId }, targetScope)
+  })
 }
 
 async function handleCopyText(textId) {
@@ -1068,6 +1105,7 @@ async function handleCopyText(textId) {
     notification.showError(t('file.copyFailed'))
   }
 }
+
 
 async function handlePasteContent() {
   if (roomManager.roomIds.value.length === 0) return
@@ -1395,6 +1433,7 @@ onUnmounted(() => {
         :highlight-room-id="pairFlow.highlightRoomId.value"
         @pair-invite="pairFlow.invite"
         @pair-cancel="pairFlow.cancel"
+        :pair-incoming="pairFlow.incoming.value"
         @pair-confirm="pairFlow.confirmInvite"
         @leave-private="handlePrivateLeave"
         @group-create="groupRooms.createRoom"
@@ -1441,7 +1480,7 @@ onUnmounted(() => {
       />
 
       <!-- 알림 토스트 -->
-      <NotificationToast :message="notification.notification.value" />
+      <NotificationToast :message="notification.notification.value" :undo="undoToast" @undo="undoPendingDelete" />
 
       <PublicShareConfirm
         :is-open="publicGuard.isOpen.value"
@@ -1519,7 +1558,7 @@ onUnmounted(() => {
   max-width: 100%;
   min-height: 100dvh;
   background-color: var(--color-surface);
-  box-shadow: 0 0 3.125rem rgba(22, 28, 1, 0.1);
+  box-shadow: none;
 }
 
 .app-frame--narrow {

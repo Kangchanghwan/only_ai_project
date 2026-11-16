@@ -34,13 +34,27 @@ describe('LockedFileCard', () => {
     expect(name).toMatch(/^[0-9a-f]{16}…$/)
   })
 
-  it('일반 카드와 같은 틀: 카드 안에 비밀번호 입력란이 없고, 비활성 체크박스·주 버튼·더보기만 있다', () => {
+  it('일반 카드와 같은 틀: 카드 안에 비밀번호 입력란이 없고, 주 버튼·더보기만 있다', () => {
     const w = mountCard()
     expect(w.find('[data-testid="locked-password"]').exists()).toBe(false)
-    expect(w.find('input[type="checkbox"]').attributes('disabled')).toBeDefined()
+    expect(w.find('input[type="checkbox"]').exists()).toBe(false)
+    expect(w.attributes('role')).toBeUndefined()
     expect(w.find('[data-testid="locked-open"]').exists()).toBe(true)
     expect(w.find('[data-testid="locked-more"]').exists()).toBe(true)
     expect(w.classes()).toContain('file-row')
+  })
+
+  it('풀기를 누르면 비밀번호 칸에 포커스가 가고 비밀번호 관리자 무시 속성이 있다', async () => {
+    const w = mount(LockedFileCard, { props: { file }, attachTo: document.body, global: { stubs: { teleport: true, transition: false } } })
+    await w.find('[data-testid="locked-open"]').trigger('click')
+    await flushPromises()
+    const input = w.find('[data-testid="locked-password"]')
+    expect(document.activeElement).toBe(input.element)
+    expect(input.attributes('autocomplete')).toBe('off')
+    expect(input.attributes('data-1p-ignore')).toBeDefined()
+    expect(input.attributes('data-lpignore')).toBe('true')
+    expect(input.attributes('data-bwignore')).toBeDefined()
+    w.unmount()
   })
 
   it('풀기를 누르면 비밀번호 시트가 열리고, 틀리면 시트 안에 남은 시도를 보여 준다', async () => {
@@ -159,18 +173,31 @@ describe('LockChip', () => {
     expect(useLockState().isLocked('ip')).toBe(false)
   })
 
-  it('1:1 방(selectable)이면 체크박스가 켜지고 누르면 toggle-selection을 보낸다', async () => {
+  it('1:1 방(selectable)이면 행을 눌러 toggle-selection을 보내고, 버튼은 보내지 않는다', async () => {
     const w = mountCard({ file, selectable: true, isSelected: false })
-    const box = w.find('[data-testid="locked-select"]')
-    expect(box.exists()).toBe(true)
-    expect(box.attributes('disabled')).toBeUndefined()
-    await box.trigger('change')
+    expect(w.attributes('role')).toBeUndefined()
+    expect(w.find('[data-testid="row-select"]').exists()).toBe(true)
+    await w.find('[data-testid="locked-open"]').trigger('click')
+    expect(w.emitted('toggle-selection')).toBeUndefined()
+    await w.trigger('click')
+    expect(w.emitted('toggle-selection')).toHaveLength(1)
     expect(w.emitted('toggle-selection')[0][0]).toMatchObject({ name: 'abc123' })
+    await w.find('[data-testid="row-select"]').trigger('change')
+    expect(w.emitted('toggle-selection')).toHaveLength(2)
   })
 
-  it('선택된 1:1 카드는 일반 카드처럼 왼쪽 강조선이 생긴다', () => {
+  it('선택 불가 카드에는 체크박스가 없다', () => {
+    const w = mountCard({ file, selectable: false })
+    expect(w.find('[data-testid="row-select"]').exists()).toBe(false)
+  })
+
+  it('선택된 1:1 카드는 테두리만 두껍게, 체크박스 checked, data-selected=true', () => {
     const w = mountCard({ file, selectable: true, isSelected: true })
-    expect(w.classes()).toContain('border-l-4')
-    expect(w.find('[data-testid="locked-select"]').element.checked).toBe(true)
+    expect(w.find('[data-testid="row-select"]').element.checked).toBe(true)
+    expect(w.attributes('data-selected')).toBe('true')
+    expect(w.find('[data-testid="select-thumb"]').exists()).toBe(false)
+    expect(w.classes()).not.toContain('bg-tint')
+    expect(w.classes()).toContain('file-row-selected')
+    expect(w.classes()).toContain('border-ink')
   })
 })

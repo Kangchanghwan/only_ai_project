@@ -11,9 +11,7 @@
     "connectedDevices": "Dispozitive conectate",
     "copyCode": "Copiază codul camerei",
     "copied": "Cod cameră copiat!",
-    "filesTab": "Fișiere",
     "textTab": "Text",
-    "mobilePanelLabel": "Comutare între fișiere și text",
     "qrShareTitle": "Partajează prin cod QR",
     "currentRoomCode": "Codul camerei curente",
     "copy": "Copiază",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "Această cameră a fost creată în modul vechi, deci nu se poate invita",
     "legacyInviteBody": "Creează o cameră nouă și adaugă în ea acest dispozitiv și pe celelalte",
-    "legacyInviteCreate": "Creează o cameră nouă"
+    "legacyInviteCreate": "Creează o cameră nouă",
+    "moreRooms": "Încă {n} camere"
   },
   "nextTime": {
     "iosText": "Data viitoare poți trimite direct din butonul Partajare din aplicația Poze",
@@ -138,7 +137,8 @@
     "manage": "Gestionează eticheta",
     "notAuth": "Eticheta doar deosebește dispozitivele. Nu este verificare de identitate.",
     "globalWarning": "Oricine, inclusiv necunoscuți, poate vedea ce trimiți și informațiile dispozitivului tău (etichetă cu animal, dispozitiv și browser). Pentru conținut sensibil folosește „Aceeași rețea”.",
-    "pairSasLoading": "Se încarcă imaginile…"
+    "pairSasLoading": "Se încarcă imaginile…",
+    "moreDevices": "Arată încă {count}"
   },
   "shareScope": {
     "label": "Distribuie cu",
@@ -170,7 +170,6 @@
     "clearStorage": "Golire stocare",
     "moreActions": "Mai multe",
     "chooseFiles": "Alege fișiere",
-    "dropHint": "sau trage fișierele aici",
     "limitResume": "Până la {size} per fișier · încărcările întrerupte se reiau",
     "receive": "Primește",
     "copyImage": "Copiază imaginea",
@@ -185,10 +184,7 @@
     "removed": "Text eliminat.",
     "clearAll": "Șterge toate textele",
     "cleared": "Toate textele șterse.",
-    "composePlaceholder": "Scrie sau lipește aici, apoi apasă Partajează",
-    "receivedText": "Text primit",
     "autoShareHint": "Textul este partajat automat la lipire (Ctrl+V / Cmd+V)",
-    "noMessages": "Încă nu există mesaje",
     "delete": "Șterge",
     "prefillNote": "Acest text vine dintr-un link. Verifică-l, apoi apasă „Partajează” pentru a-l trimite.",
     "sentStatus": "Partajat. Apare acum în lista de texte a dispozitivelor conectate.",
@@ -220,7 +216,9 @@
     "quotaEvicted": "Fiecare dispozitiv păstrează cel mult ultimele {count} texte. Cel mai vechi nu mai ajunge la dispozitivele care intră.",
     "receiversCount": "Dispozitive care primesc: {count}",
     "deliverOnJoin": "livrat când intră cineva",
-    "notDelivered": "nu va ajunge"
+    "notDelivered": "nu va ajunge",
+    "showMore": "Vezi mai mult",
+    "collapse": "Restrânge"
   },
   "notification": {
     "uploading": "Se încarcă...",
@@ -255,7 +253,10 @@
     "cancel": "Anulează",
     "cancelAll": "Anulează tot",
     "uploadCancelled": "Încărcare anulată",
-    "uploadsCancelled": "{count} încărcări anulate"
+    "uploadsCancelled": "{count} încărcări anulate",
+    "undo": "Anulează",
+    "textsCleared": "Toate textele au fost șterse",
+    "textRemoved": "Textul a fost șters"
   },
   "clipboard": {
     "paste": "Lipește",
@@ -409,6 +410,21 @@
     "downloadHint": "Descarcă fișierele selectate într-un ZIP (peste 200 MB separat)",
     "qrCodeHint": "Generează coduri QR pentru fișierele selectate"
   },
+  "pair": {
+    "button": "Conectează într-o cameră",
+    "buttonShort": "Conectare",
+    "paired": "Aceeași cameră",
+    "connecting": "Se conectează…",
+    "openWith": "Deschide o cameră privată cu {name}",
+    "openRoom": "Mergi la camera ta cu {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Anulează",
+    "checking": "Se verifică",
+    "peerChecking": "Se așteaptă celălalt",
+    "request": {
+      "title": "Cerere de conectare la cameră"
+    }
+  },
   "group": {
     "create": "Creează o cameră de grup",
     "createShort": "Cameră",
@@ -552,5 +568,9 @@
     "textArrived": "Text nou în {where}",
     "fileArrived": "Fișier nou în {where}",
     "textsCleared": "Toate textele din {where} au fost șterse"
+  },
+  "send": {
+    "placeholder": "Scrie aici sau trage și plasează fișiere",
+    "shortcutHint": "Trimite cu Ctrl+Enter (⌘+Enter pe Mac)"
   }
 }

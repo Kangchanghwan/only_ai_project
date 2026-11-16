@@ -5,7 +5,7 @@ import i18n from '../i18n/index.js'
 
 const stubs = {
   AppHeader: true, AppFooter: true, LandingContent: true, TransferProgress: true,
-  FileGallery: { name: 'FileGallery', template: '<div class="gallery"><slot name="send" /></div>', props: ['files'] },
+  FileGallery: { name: 'FileGallery', template: '<div class="gallery"><slot name="send" /><slot name="composer" /></div>', props: ['files'] },
   ConnectionCard: { name: 'ConnectionCard', template: '<div><button data-testid="cc-create" @click="$emit(\'group-create\')" /><button data-testid="cc-code" @click="$emit(\'code-enter\')" /></div>', props: ['otherNetworkDevices', 'devices'], emits: ['group-create', 'code-enter'] }
 }
 const G = 'prv-g-' + 'ab12'.repeat(6)
@@ -54,7 +54,7 @@ describe('RoomScreen 그룹 방', () => {
     expect(w.emitted('code-enter')).toHaveLength(1)
   })
 
-  it('pairEnabled가 꺼져 있으면 "＋ 방" 버튼이 없다', () => {
+  it('pairEnabled가 꺼져 있으면 "＋ 방" 항목이 없다', async () => {
     const w = mountWith({ pairEnabled: false, privateRooms: [], scope: 'ip' })
     expect(w.find('[data-testid="group-create"]').exists()).toBe(false)
   })

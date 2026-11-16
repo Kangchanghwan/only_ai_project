@@ -135,8 +135,8 @@ describe('DeviceList 1:1 버튼', () => {
       const list = wrapper.find('[data-testid="other-network-list"]')
       const buttons = list.findAll('[data-testid="pair-invite-button"]')
       expect(buttons).toHaveLength(2)
-      await buttons[0].trigger('click')
-      expect(ctx.invite).toHaveBeenCalledWith(far1)
+      await buttons[0].trigger('click') // 최근 접속 순: far2(4)가 far1(3)보다 앞
+      expect(ctx.invite).toHaveBeenCalledWith(far2)
     })
 
     it('0대이거나 전체 공유 목록이거나 1:1 컨텍스트가 없으면 숨긴다', () => {

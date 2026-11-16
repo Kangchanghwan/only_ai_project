@@ -11,9 +11,7 @@
     "connectedDevices": "Dispositivos conectados",
     "copyCode": "Copiar Código de Sala",
     "copied": "¡Código de sala copiado!",
-    "filesTab": "Archivos",
     "textTab": "Texto",
-    "mobilePanelLabel": "Cambiar entre archivos y texto",
     "qrShareTitle": "Compartir con código QR",
     "currentRoomCode": "Código de sala actual",
     "copy": "Copiar",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "Esta sala se creó con el método antiguo, así que no se puede invitar",
     "legacyInviteBody": "Crea una sala nueva y añade este dispositivo y los demás",
-    "legacyInviteCreate": "Crear sala nueva"
+    "legacyInviteCreate": "Crear sala nueva",
+    "moreRooms": "{n} salas más"
   },
   "nextTime": {
     "iosText": "La próxima vez, envía directamente desde el botón Compartir de Fotos",
@@ -138,7 +137,8 @@
     "manage": "Gestionar etiqueta",
     "notAuth": "La etiqueta solo distingue dispositivos. No verifica tu identidad.",
     "globalWarning": "Cualquiera, incluso desconocidos, puede ver lo que envías y la información de tu dispositivo (etiqueta de animal, dispositivo y navegador). Usa «Misma red» para contenido sensible.",
-    "pairSasLoading": "Cargando imágenes…"
+    "pairSasLoading": "Cargando imágenes…",
+    "moreDevices": "Ver {count} más"
   },
   "shareScope": {
     "label": "Compartir con",
@@ -170,7 +170,6 @@
     "clearStorage": "Limpiar almacenamiento",
     "moreActions": "Más",
     "chooseFiles": "Elegir archivos",
-    "dropHint": "o arrastra y suelta archivos aquí",
     "limitResume": "Hasta {size} por archivo · se reanuda si se interrumpe",
     "receive": "Recibir",
     "copyImage": "Copiar imagen",
@@ -185,10 +184,7 @@
     "removed": "Texto eliminado.",
     "clearAll": "Borrar Todos los Textos",
     "cleared": "Todos los textos borrados.",
-    "composePlaceholder": "Escribe o pega aquí y pulsa Compartir",
-    "receivedText": "Texto recibido",
     "autoShareHint": "El texto se comparte automáticamente al pegar (Ctrl+V / Cmd+V)",
-    "noMessages": "Aún no hay mensajes",
     "delete": "Eliminar",
     "prefillNote": "Este texto viene de un enlace. Revísalo y pulsa «Compartir» para enviarlo.",
     "sentStatus": "Compartido. Ya aparece en la lista de textos de los dispositivos conectados.",
@@ -220,7 +216,9 @@
     "quotaEvicted": "Cada dispositivo guarda como máximo sus {count} textos más recientes. El más antiguo ya no llegará a los dispositivos que entren.",
     "receiversCount": "Dispositivos que lo reciben: {count}",
     "deliverOnJoin": "se entrega cuando entre uno",
-    "notDelivered": "no se entregará"
+    "notDelivered": "no se entregará",
+    "showMore": "Ver más",
+    "collapse": "Contraer"
   },
   "notification": {
     "uploading": "Subiendo...",
@@ -255,7 +253,10 @@
     "cancel": "Cancelar",
     "cancelAll": "Cancelar todo",
     "uploadCancelled": "Subida cancelada",
-    "uploadsCancelled": "{count} subidas canceladas"
+    "uploadsCancelled": "{count} subidas canceladas",
+    "undo": "Deshacer",
+    "textsCleared": "Se borraron todos los textos",
+    "textRemoved": "Se borró el texto"
   },
   "clipboard": {
     "paste": "Pegar",
@@ -409,6 +410,21 @@
     "downloadHint": "Descargar los archivos seleccionados en un ZIP (los de más de 200 MB por separado)",
     "qrCodeHint": "Generar códigos QR de los archivos seleccionados"
   },
+  "pair": {
+    "button": "Conectar en una sala",
+    "buttonShort": "Conectar",
+    "paired": "Misma sala",
+    "connecting": "Conectando…",
+    "openWith": "Abrir una sala privada con {name}",
+    "openRoom": "Ir a tu sala con {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Cancelar",
+    "checking": "Comprobando",
+    "peerChecking": "Esperando al otro",
+    "request": {
+      "title": "Solicitud de conexión a sala"
+    }
+  },
   "group": {
     "create": "Crear una sala de grupo",
     "createShort": "Sala",
@@ -552,5 +568,9 @@
     "textArrived": "Nuevo texto en {where}",
     "fileArrived": "Nuevo archivo en {where}",
     "textsCleared": "Se borraron todos los textos de {where}"
+  },
+  "send": {
+    "placeholder": "Escribe aquí o arrastra y suelta archivos",
+    "shortcutHint": "Enviar con Ctrl+Enter (⌘+Enter en Mac)"
   }
 }

@@ -2,6 +2,9 @@ import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import RoomScreen from './RoomScreen.vue'
 import i18n from '../i18n/index.js'
+import { createI18n } from 'vue-i18n'
+import koMsgs from '../i18n/locales/ko.json'
+import enMsgs from '../i18n/locales/en.json'
 
 // 하위 컴포넌트 스텁
 const stubs = {
@@ -18,15 +21,15 @@ const stubs = {
   },
   FileGallery: {
     name: 'FileGallery',
-    template: '<div class="file-gallery-stub"></div>',
-    props: ['files', 'isLoading'],
-    emits: ['copy-image', 'download-file', 'download-selected', 'download-parallel', 'download-all', 'copy-selected-to-clipboard', 'upload-files']
+    template: '<div class="file-gallery-stub"><slot name="composer" /></div>',
+    props: ['files', 'texts', 'isLoading'],
+    emits: ['copy-image', 'download-file', 'download-selected', 'download-parallel', 'download-all', 'copy-selected-to-clipboard', 'upload-files', 'remove-text', 'clear-all-texts', 'copy-text']
   },
   TextShareBox: {
     name: 'TextShareBox',
     template: '<div class="text-share-box-stub"></div>',
-    props: ['texts'],
-    emits: ['remove-text', 'clear-all', 'copy-text']
+    props: ['scope'],
+    emits: ['share-text', 'upload-files', 'paste-content']
   },
   AppFooter: {
     name: 'AppFooter',
@@ -50,6 +53,67 @@ describe('RoomScreen.vue', () => {
     ipRoomDevices: [],
     globalRoomDevices: []
   }
+
+  describe('도움말 창 안의 안내·소개·푸터', () => {
+    it('more-info 블록은 더 이상 없고 안내·랜딩·푸터는 AppHeader 슬롯으로 전달된다', () => {
+      const w = mount(RoomScreen, { props: defaultProps, global: { plugins: [i18n], stubs } })
+      expect(w.find('[data-testid="more-info"]').exists()).toBe(false)
+      const h = w.find('.app-header-stub')
+      expect(h.find('[data-testid="usage-notes"]').exists()).toBe(true)
+      expect(h.find('[data-testid="landing-separator"]').exists()).toBe(true)
+      expect(h.find('.app-footer-stub').exists()).toBe(true)
+      expect(w.find('[data-testid="usage-notes"]').element.tagName).toBe('SECTION')
+    })
+
+    it('모달이 닫혀 있어도 landing-content·FAQ·푸터 링크가 DOM에 있고 숨겨져 있다가 ?를 누르면 보인다', async () => {
+      const koI18n = createI18n({ legacy: false, locale: 'ko', fallbackLocale: 'en', messages: { ko: koMsgs, en: enMsgs } })
+      const w = mount(RoomScreen, {
+        props: defaultProps,
+        attachTo: document.body,
+        global: { plugins: [koI18n], stubs: { ...stubs, AppHeader: false, AppFooter: false, LandingContent: false } }
+      })
+      const modal = () => document.body.querySelector('[data-testid="help-modal"]')
+      expect(modal()).not.toBeNull()
+      const overlay = modal().parentElement
+      expect(overlay.style.display).toBe('none')
+      expect(modal().querySelector('[data-testid="landing-content"]')).not.toBeNull()
+      expect(modal().querySelector('[data-testid="usage-notes"]')).not.toBeNull()
+      expect(modal().querySelector('[data-testid="feedback-link"]')).not.toBeNull()
+      expect(document.body.innerHTML).toContain(koI18n.global.t('landing.faqTitle'))
+      expect(document.body.querySelector('[data-testid="more-info"]')).toBeNull()
+
+      await w.find('button[aria-label="' + koI18n.global.t('app.help') + '"]').trigger('click')
+      expect(overlay.style.display).not.toBe('none')
+      w.unmount()
+    })
+  })
+
+  describe('방·기기 줄', () => {
+    const mountScope = (scope, extra = {}) => mount(RoomScreen, {
+      props: { ...defaultProps, scope, ...extra },
+      global: { plugins: [i18n], stubs }
+    })
+
+    it('방 탭 줄(위)과 기기 줄(아래)이 나뉘어 있고 왼쪽 기기 패널(device-panel)은 없다', () => {
+      const w = mountScope('ip', { ipRoomDevices: [{ socketId: 'a', browser: 'x', os: 'y' }] })
+      const row = w.find('[data-testid="room-row"]')
+      expect(row.find('.share-scope-tabs-stub').exists()).toBe(true)
+      expect(row.find('[data-testid="connection-card"]').exists()).toBe(false)
+      expect(w.find('[data-testid="device-row"] [data-testid="connection-card"]').exists()).toBe(true)
+      expect(w.find('[data-testid="device-panel"]').exists()).toBe(false)
+    })
+
+    it('같은 네트워크면 ipNotice 한 줄이 항상 보인다', () => {
+      const w = mountScope('ip')
+      expect(w.find('[data-testid="ip-notice"]').text()).toContain('같은 네트워크를 쓰는 다른 사람도 볼 수 있어요')
+    })
+
+    it('전체 공유면 경고 박스만 보이고 ipNotice 줄은 없다', () => {
+      const w = mountScope('global')
+      expect(w.find('[data-testid="global-warning"]').exists()).toBe(true)
+      expect(w.find('[data-testid="ip-notice"]').exists()).toBe(false)
+    })
+  })
 
   describe('컴포넌트 렌더링', () => {
     it('모든 하위 컴포넌트가 렌더링되어야 한다', () => {
@@ -98,8 +162,8 @@ describe('RoomScreen.vue', () => {
     })
   })
 
-  describe('연결된 기기 배지', () => {
-    it('현재 scope가 ip이면 ipRoomDevices가 배지의 ConnectedDevices에 전달된다', () => {
+  describe('연결된 기기 카드', () => {
+    it('현재 scope가 ip이면 ipRoomDevices가 DeviceCards에 전달된다', () => {
       const wrapper = mount(RoomScreen, {
         props: {
           ...defaultProps,
@@ -110,12 +174,12 @@ describe('RoomScreen.vue', () => {
         global: { plugins: [i18n], stubs }
       })
 
-      const badge = wrapper.findComponent({ name: 'ConnectedDevices' })
+      const badge = wrapper.findComponent({ name: 'DeviceCards' })
       expect(badge.exists()).toBe(true)
       expect(badge.props('devices')).toEqual([{ socketId: 'a', deviceType: 'desktop', browser: 'Chrome', os: 'Windows' }])
     })
 
-    it('현재 scope가 global이면 globalRoomDevices가 배지의 ConnectedDevices에 전달된다', () => {
+    it('현재 scope가 global이면 globalRoomDevices가 DeviceCards에 전달된다', () => {
       const wrapper = mount(RoomScreen, {
         props: {
           ...defaultProps,
@@ -126,7 +190,7 @@ describe('RoomScreen.vue', () => {
         global: { plugins: [i18n], stubs }
       })
 
-      const badge = wrapper.findComponent({ name: 'ConnectedDevices' })
+      const badge = wrapper.findComponent({ name: 'DeviceCards' })
       expect(badge.exists()).toBe(true)
       expect(badge.props('devices')).toEqual([{ socketId: 'b', deviceType: 'mobile', browser: 'Safari', os: 'iOS' }])
     })
@@ -197,53 +261,53 @@ describe('RoomScreen.vue', () => {
       expect(wrapper.emitted('copy-selected-to-clipboard')[0][0]).toEqual(files)
     })
 
-    it('FileGallery에서 upload-files 이벤트가 전파되어야 한다', async () => {
+    it('통합 보내기 상자의 upload-files 이벤트가 전파되어야 한다', async () => {
       const files = [new File(['test'], 'test.png', { type: 'image/png' })]
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
         global: { plugins: [i18n], stubs }
       })
 
-      const fileGallery = wrapper.findComponent({ name: 'FileGallery' })
-      await fileGallery.vm.$emit('upload-files', files)
+      const box = wrapper.findComponent({ name: 'TextShareBox' })
+      await box.vm.$emit('upload-files', files)
 
       expect(wrapper.emitted()).toHaveProperty('upload-files')
       expect(wrapper.emitted('upload-files')[0][0]).toEqual(files)
     })
 
-    it('TextShareBox에서 remove-text 이벤트가 전파되어야 한다', async () => {
+    it('FileGallery(통합 목록)에서 remove-text 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
         global: { plugins: [i18n], stubs }
       })
 
-      const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
-      await textShareBox.vm.$emit('remove-text', 'text-id-123')
+      const gallery = wrapper.findComponent({ name: 'FileGallery' })
+      await gallery.vm.$emit('remove-text', 'text-id-123')
 
       expect(wrapper.emitted()).toHaveProperty('remove-text')
       expect(wrapper.emitted('remove-text')[0][0]).toBe('text-id-123')
     })
 
-    it('TextShareBox에서 clear-all 이벤트가 전파되어야 한다', async () => {
+    it('FileGallery(통합 목록)에서 clear-all-texts 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
         global: { plugins: [i18n], stubs }
       })
 
-      const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
-      await textShareBox.vm.$emit('clear-all')
+      const gallery = wrapper.findComponent({ name: 'FileGallery' })
+      await gallery.vm.$emit('clear-all-texts')
 
       expect(wrapper.emitted()).toHaveProperty('clear-all-texts')
     })
 
-    it('TextShareBox에서 copy-text 이벤트가 전파되어야 한다', async () => {
+    it('FileGallery(통합 목록)에서 copy-text 이벤트가 전파되어야 한다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
         global: { plugins: [i18n], stubs }
       })
 
-      const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
-      await textShareBox.vm.$emit('copy-text', 'text-id-456')
+      const gallery = wrapper.findComponent({ name: 'FileGallery' })
+      await gallery.vm.$emit('copy-text', 'text-id-456')
 
       expect(wrapper.emitted()).toHaveProperty('copy-text')
       expect(wrapper.emitted('copy-text')[0][0]).toBe('text-id-456')
@@ -278,7 +342,7 @@ describe('RoomScreen.vue', () => {
       expect(fileGallery.props('files')).toEqual(files)
     })
 
-    it('texts props가 TextShareBox에 전달되어야 한다', () => {
+    it('texts props가 FileGallery(통합 목록)에 전달되어야 한다', () => {
       const texts = [
         { id: '1', content: 'Hello', timestamp: Date.now() }
       ]
@@ -287,8 +351,8 @@ describe('RoomScreen.vue', () => {
         global: { plugins: [i18n], stubs }
       })
 
-      const textShareBox = wrapper.findComponent({ name: 'TextShareBox' })
-      expect(textShareBox.props('texts')).toEqual(texts)
+      const gallery = wrapper.findComponent({ name: 'FileGallery' })
+      expect(gallery.props('texts')).toEqual(texts)
     })
 
     it('isLoading props가 FileGallery에 전달되어야 한다', () => {
@@ -302,87 +366,28 @@ describe('RoomScreen.vue', () => {
     })
   })
 
-  describe('모바일 파일/텍스트 탭 전환', () => {
-    it('기본값은 파일 탭이며 파일 섹션만 보이고 텍스트 섹션은 숨겨진다', () => {
+  describe('한 화면 작업 영역 (파일/텍스트 탭 없음)', () => {
+    it('파일/텍스트 전환 tablist·tab이 렌더링되지 않는다', () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
         global: { plugins: [i18n], stubs }
       })
 
-      const sections = wrapper.findAll('section')
-      expect(sections).toHaveLength(2)
-      expect(sections[0].classes()).not.toContain('hidden')
-      expect(sections[1].classes()).toContain('hidden')
+      expect(wrapper.find('[role="tablist"]').exists()).toBe(false)
+      expect(wrapper.findAll('[role="tab"]')).toHaveLength(0)
+      expect(wrapper.find('[data-testid="workspace-stack"]').exists()).toBe(true)
     })
 
-    it('role=tablist와 role=tab 버튼 2개를 렌더링한다', () => {
+    it('텍스트 입력(composer)이 FileGallery의 composer 슬롯에 항상 있고 share-text가 올라간다', async () => {
       const wrapper = mount(RoomScreen, {
         props: defaultProps,
         global: { plugins: [i18n], stubs }
       })
 
-      expect(wrapper.find('[role="tablist"]').exists()).toBe(true)
-      expect(wrapper.findAll('[role="tab"]')).toHaveLength(2)
-    })
-
-    it('텍스트 탭 클릭 시 텍스트 섹션이 보이고 파일 섹션은 숨겨진다', async () => {
-      const wrapper = mount(RoomScreen, {
-        props: defaultProps,
-        global: { plugins: [i18n], stubs }
-      })
-
-      const tabs = wrapper.findAll('[role="tab"]')
-      await tabs[1].trigger('click')
-
-      const sections = wrapper.findAll('section')
-      expect(sections[0].classes()).toContain('hidden')
-      expect(sections[1].classes()).not.toContain('hidden')
-      expect(tabs[1].attributes('aria-selected')).toBe('true')
-      expect(tabs[0].attributes('aria-selected')).toBe('false')
-    })
-
-    it('텍스트 탭으로 전환 후 파일 탭을 다시 클릭하면 파일 섹션이 다시 보인다', async () => {
-      const wrapper = mount(RoomScreen, {
-        props: defaultProps,
-        global: { plugins: [i18n], stubs }
-      })
-
-      const tabs = wrapper.findAll('[role="tab"]')
-      await tabs[1].trigger('click')
-      await tabs[0].trigger('click')
-
-      const sections = wrapper.findAll('section')
-      expect(sections[0].classes()).not.toContain('hidden')
-      expect(sections[1].classes()).toContain('hidden')
-    })
-
-    it('탭 라벨에 파일/텍스트 개수가 표시된다', () => {
-      const wrapper = mount(RoomScreen, {
-        props: {
-          ...defaultProps,
-          files: [{ name: 'a.png', roomId: 'room-shared', url: 'https://example.com/a.png' }],
-          texts: [
-            { id: '1', content: 'hi', timestamp: Date.now() },
-            { id: '2', content: 'yo', timestamp: Date.now() }
-          ]
-        },
-        global: { plugins: [i18n], stubs }
-      })
-
-      const tabs = wrapper.findAll('[role="tab"]')
-      expect(tabs[0].text()).toContain('1')
-      expect(tabs[1].text()).toContain('2')
-    })
-
-    it('scope가 global이면 선택된 탭이 coral(bg-primary) 대신 sage(bg-scope-global) 액센트를 사용한다', () => {
-      const wrapper = mount(RoomScreen, {
-        props: { ...defaultProps, scope: 'global' },
-        global: { plugins: [i18n], stubs }
-      })
-
-      const tabs = wrapper.findAll('[role="tab"]')
-      expect(tabs[0].classes()).toContain('bg-scope-global')
-      expect(tabs[0].classes()).not.toContain('bg-primary')
+      const box = wrapper.findComponent({ name: 'TextShareBox' })
+      expect(wrapper.find('.file-gallery-stub .text-share-box-stub').exists()).toBe(true)
+      await box.vm.$emit('share-text', { content: 'hi', done: () => {} })
+      expect(wrapper.emitted('share-text')[0][0].content).toBe('hi')
     })
   })
 

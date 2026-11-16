@@ -118,7 +118,7 @@ onUnmounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: currentColor;
   padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
+  border-radius: 0;
   cursor: pointer;
   font-size: 0.875rem;
   transition: all 0.2s;
@@ -138,14 +138,14 @@ onUnmounted(() => {
   right: 0;
   background: #1a1a2e;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
+  border-radius: 0;
   list-style: none;
   padding: 0.5rem 0;
   margin: 0;
   min-width: 150px;
   max-height: 300px;
   overflow-y: auto;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
   z-index: 1000;
 }
 
@@ -186,12 +186,12 @@ onUnmounted(() => {
 
 .langselector-dropdown-menu::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 .langselector-dropdown-menu::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 .langselector-dropdown-menu::-webkit-scrollbar-thumb:hover {

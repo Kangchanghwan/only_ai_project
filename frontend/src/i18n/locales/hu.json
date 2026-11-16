@@ -11,9 +11,7 @@
     "connectedDevices": "Csatlakoztatott eszközök",
     "copyCode": "Szobakód másolása",
     "copied": "Szobakód másolva!",
-    "filesTab": "Fájlok",
     "textTab": "Szöveg",
-    "mobilePanelLabel": "Váltás fájlok és szöveg között",
     "qrShareTitle": "Megosztás QR-kóddal",
     "currentRoomCode": "Jelenlegi szobakód",
     "copy": "Másolás",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "Ez a szoba a régi módon készült, ezért nem lehet meghívni bele",
     "legacyInviteBody": "Hozz létre új szobát, és tedd bele ezt az eszközt meg a többit",
-    "legacyInviteCreate": "Új szoba létrehozása"
+    "legacyInviteCreate": "Új szoba létrehozása",
+    "moreRooms": "Még {n} szoba"
   },
   "nextTime": {
     "iosText": "Legközelebb közvetlenül a Fotók megosztás gombjával küldhet",
@@ -138,7 +137,8 @@
     "manage": "Névcímke kezelése",
     "notAuth": "A névcímke csak az eszközök megkülönböztetésére szolgál. Nem személyazonosság-ellenőrzés.",
     "globalWarning": "Bárki, idegenek is, láthatja, amit küldesz, és az eszközöd adatait (állatos névcímke, eszköz és böngésző). Érzékeny tartalomhoz használd az „Ugyanaz a hálózat” lehetőséget.",
-    "pairSasLoading": "Képek betöltése…"
+    "pairSasLoading": "Képek betöltése…",
+    "moreDevices": "{count} további megjelenítése"
   },
   "shareScope": {
     "label": "Megosztás ezzel",
@@ -170,7 +170,6 @@
     "clearStorage": "Tároló törlése",
     "moreActions": "Több",
     "chooseFiles": "Fájlok kiválasztása",
-    "dropHint": "vagy húzd ide a fájlokat",
     "limitResume": "Fájlonként legfeljebb {size} · a megszakadt feltöltés folytatódik",
     "receive": "Fogadás",
     "copyImage": "Kép másolása",
@@ -185,10 +184,7 @@
     "removed": "Szöveg eltávolítva.",
     "clearAll": "Összes szöveg törlése",
     "cleared": "Összes szöveg törölve.",
-    "composePlaceholder": "Írj vagy illessz be ide, majd nyomd meg a Megosztás gombot",
-    "receivedText": "Kapott szöveg",
     "autoShareHint": "A szöveg beillesztéskor (Ctrl+V / Cmd+V) automatikusan megosztásra kerül",
-    "noMessages": "Még nincs üzenet",
     "delete": "Törlés",
     "prefillNote": "Ez a szöveg egy linkből érkezett. Ellenőrizd, majd nyomd meg a „Megosztás” gombot a küldéshez.",
     "sentStatus": "Megosztva. Megjelent a csatlakozott eszközök szöveglistájában.",
@@ -220,7 +216,9 @@
     "quotaEvicted": "Eszközönként legfeljebb a legutóbbi {count} szöveget őrizzük meg. A legrégebbi már nem jut el a belépő eszközökhöz.",
     "receiversCount": "Fogadó eszközök: {count}",
     "deliverOnJoin": "megérkezik, ha valaki belép",
-    "notDelivered": "nem érkezik meg"
+    "notDelivered": "nem érkezik meg",
+    "showMore": "Több",
+    "collapse": "Összecsukás"
   },
   "notification": {
     "uploading": "Feltöltés...",
@@ -255,7 +253,10 @@
     "cancel": "Mégse",
     "cancelAll": "Összes megszakítása",
     "uploadCancelled": "Feltöltés megszakítva",
-    "uploadsCancelled": "{count} feltöltés megszakítva"
+    "uploadsCancelled": "{count} feltöltés megszakítva",
+    "undo": "Visszavonás",
+    "textsCleared": "Minden szöveg törölve",
+    "textRemoved": "Szöveg törölve"
   },
   "clipboard": {
     "paste": "Beillesztés",
@@ -409,6 +410,21 @@
     "downloadHint": "A kijelölt fájlok letöltése egy ZIP-ben (200 MB felett külön)",
     "qrCodeHint": "QR-kódok létrehozása a kijelölt fájlokhoz"
   },
+  "pair": {
+    "button": "Csatlakozás szobában",
+    "buttonShort": "Csatlakozás",
+    "paired": "Ugyanaz a szoba",
+    "connecting": "Csatlakozás…",
+    "openWith": "Privát szoba megnyitása vele: {name}",
+    "openRoom": "Ugrás a közös szobához: {name}",
+    "pendingSeconds": "{n} mp",
+    "cancel": "Mégse",
+    "checking": "Ellenőrzés",
+    "peerChecking": "Várakozás a másik félre",
+    "request": {
+      "title": "Szobacsatlakozási kérés"
+    }
+  },
   "group": {
     "create": "Csoportszoba létrehozása",
     "createShort": "Szoba",
@@ -552,5 +568,9 @@
     "textArrived": "Új szöveg itt: {where}",
     "fileArrived": "Új fájl itt: {where}",
     "textsCleared": "Minden szöveg törölve itt: {where}"
+  },
+  "send": {
+    "placeholder": "Írj ide, vagy húzd ide a fájlokat",
+    "shortcutHint": "Küldés: Ctrl+Enter (Macen ⌘+Enter)"
   }
 }

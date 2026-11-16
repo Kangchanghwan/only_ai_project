@@ -175,7 +175,6 @@ async function launchBrowser() {
 
 // index.html의 폰트 CSS <link> (preload + onload 패턴). 프리렌더 결과물에서도 이 패턴이 유지되어야 한다.
 const ASYNC_FONT_CSS = [
-  'https://fonts.googleapis.com/css2?',
   'https://api.fontshare.com/v2/css?'
 ]
 

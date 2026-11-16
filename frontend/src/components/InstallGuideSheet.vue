@@ -47,29 +47,29 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="install-guide-title"
-        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border border-border p-5 shadow-xl"
+        class="w-full sm:max-w-sm bg-surface text-text-primary rounded-none border-2 border-ink p-5"
         @keydown="onKeydown"
       >
         <h2 id="install-guide-title" class="text-base font-semibold m-0">{{ t('pwa.guideTitle') }}</h2>
         <ol class="mt-4 m-0 p-0 list-none flex flex-col gap-3" data-testid="install-guide-steps">
           <li class="flex items-center gap-3 text-sm" data-testid="install-guide-step">
-            <span class="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">1</span>
+            <span class="shrink-0 w-6 h-6 rounded-none bg-tint text-ink text-xs font-bold flex items-center justify-center">1</span>
             <span class="flex-1">{{ t(step1Key) }}</span>
-            <svg class="w-5 h-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="w-5 h-5 shrink-0 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 15V3" /><path d="m8 7 4-4 4 4" /><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" />
             </svg>
           </li>
           <li class="flex items-center gap-3 text-sm" data-testid="install-guide-step">
-            <span class="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">2</span>
+            <span class="shrink-0 w-6 h-6 rounded-none bg-tint text-ink text-xs font-bold flex items-center justify-center">2</span>
             <span class="flex-1">{{ t('pwa.step2') }}</span>
-            <svg class="w-5 h-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="w-5 h-5 shrink-0 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="4" y="4" width="16" height="16" rx="3" /><path d="M12 8v8" /><path d="M8 12h8" />
             </svg>
           </li>
           <li class="flex items-center gap-3 text-sm" data-testid="install-guide-step">
-            <span class="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">3</span>
+            <span class="shrink-0 w-6 h-6 rounded-none bg-tint text-ink text-xs font-bold flex items-center justify-center">3</span>
             <span class="flex-1">{{ t('pwa.step3') }}</span>
-            <svg class="w-5 h-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="w-5 h-5 shrink-0 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="m5 12 5 5L20 7" />
             </svg>
           </li>
@@ -78,7 +78,7 @@ function onKeydown(event) {
         <button
           ref="closeBtn"
           type="button"
-          class="mt-4 w-full min-h-[44px] px-5 rounded-full border border-border text-sm font-semibold"
+          class="mt-4 w-full min-h-[44px] px-5 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
           data-testid="install-guide-close"
           @click="emit('close')"
         >{{ t('pwa.close') }}</button>

@@ -97,7 +97,7 @@ const showWarn = computed(() => props.warn && (props.status === 'wrong' || props
         v-for="i in CODE_LENGTH"
         :key="i"
         type="button"
-        class="aspect-square min-h-[44px] bg-background border rounded-xl p-2 flex items-center justify-center"
+        class="aspect-square min-h-[44px] bg-background border rounded-none p-2 flex items-center justify-center"
         :class="slots.length === i - 1 && !inProgress ? 'border-scope-private border-2' : 'border-border'"
         :aria-label="slots[i - 1] !== undefined ? t('code.slotLabel', { n: i, name: name(slots[i - 1]) }) : t('code.slotEmpty', { n: i })"
         :disabled="inProgress"
@@ -124,7 +124,7 @@ const showWarn = computed(() => props.warn && (props.status === 'wrong' || props
         v-for="pic in pictures"
         :key="pic.index"
         type="button"
-        class="aspect-square min-w-[44px] min-h-[44px] bg-background border border-border rounded-lg p-1.5 flex items-center justify-center disabled:opacity-50"
+        class="aspect-square min-w-[44px] min-h-[44px] bg-background border border-border rounded-none p-1.5 flex items-center justify-center disabled:opacity-50"
         :aria-label="name(pic.index)"
         :disabled="inProgress || slots.length >= CODE_LENGTH"
         :data-testid="`picture-tile-${pic.index}`"
@@ -136,7 +136,7 @@ const showWarn = computed(() => props.warn && (props.status === 'wrong' || props
 
     <p
       class="m-0 mt-3 min-h-[1.25rem] text-sm text-center"
-      :class="isError ? 'text-red-600' : 'text-text-secondary'"
+      :class="isError ? 'text-danger' : 'text-text-secondary'"
       role="status"
       aria-live="polite"
       data-testid="picture-enter-message"
@@ -147,21 +147,21 @@ const showWarn = computed(() => props.warn && (props.status === 'wrong' || props
       <button
         v-if="inProgress"
         type="button"
-        class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+        class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
         data-testid="picture-enter-cancel"
         @click="emit('cancel')"
       >{{ t('group.cancel') }}</button>
       <template v-else>
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold disabled:opacity-50"
+          class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold disabled:opacity-50"
           :disabled="slots.length === 0"
           data-testid="picture-enter-clear"
           @click="clearLast"
         >{{ t('code.clear') }}</button>
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
+          class="min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-50"
           :disabled="!canSubmit"
           data-testid="picture-enter-confirm"
           @click="submit"

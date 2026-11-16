@@ -66,7 +66,7 @@ function onDrop(e) {
   close()
   const files = Array.from(e.dataTransfer?.files || [])
   if (files.length === 0) return
-  const onCard = !!e.target?.closest?.('[data-testid="upload-dropzone"]')
+  const onCard = !!e.target?.closest?.('[data-testid="upload-dropzone"], [data-testid="send-box"]')
   try { trackEvent('window_drop', { file_count: files.length, on_card: onCard }) } catch { /* 무시 */ }
   // 카드 위 drop은 카드 handleDrop이 이미 올린다. 오버레이가 보이지 않던 상태(차단/미연결)도 올리지 않는다.
   if (onCard || !wasVisible) return
@@ -125,7 +125,7 @@ onUnmounted(() => {
   gap: 0.5rem;
   padding: 2.5rem 3rem;
   border: 3px dashed var(--color-primary);
-  border-radius: 1.5rem;
+  border-radius: 0;
   background: color-mix(in srgb, var(--color-surface) 92%, transparent);
   color: var(--color-primary);
   text-align: center;

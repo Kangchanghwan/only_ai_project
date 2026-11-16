@@ -11,9 +11,7 @@
     "connectedDevices": "الأجهزة المتصلة",
     "copyCode": "نسخ رمز الغرفة",
     "copied": "تم نسخ رمز الغرفة!",
-    "filesTab": "الملفات",
     "textTab": "النص",
-    "mobilePanelLabel": "التبديل بين الملفات والنص",
     "qrShareTitle": "المشاركة عبر رمز QR",
     "currentRoomCode": "رمز الغرفة الحالية",
     "copy": "نسخ",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "هذه الغرفة أُنشئت بالطريقة القديمة، لذا لا يمكن الدعوة إليها",
     "legacyInviteBody": "أنشئ غرفة جديدة وأضف هذا الجهاز والأجهزة الأخرى إليها",
-    "legacyInviteCreate": "إنشاء غرفة جديدة"
+    "legacyInviteCreate": "إنشاء غرفة جديدة",
+    "moreRooms": "{n} غرف إضافية"
   },
   "nextTime": {
     "iosText": "في المرة القادمة أرسل مباشرة من زر المشاركة في تطبيق الصور",
@@ -138,7 +137,8 @@
     "manage": "إدارة بطاقة الاسم",
     "notAuth": "بطاقة الاسم تميّز الأجهزة فقط وليست تحققًا من الهوية.",
     "globalWarning": "يمكن لأي شخص، حتى الغرباء، رؤية ما ترسله ومعلومات جهازك (بطاقة الحيوان والجهاز والمتصفح). للمحتوى الحساس استخدم «الشبكة نفسها».",
-    "pairSasLoading": "جارٍ تحميل الصور…"
+    "pairSasLoading": "جارٍ تحميل الصور…",
+    "moreDevices": "عرض {count} أخرى"
   },
   "shareScope": {
     "label": "مشاركة مع",
@@ -170,7 +170,6 @@
     "clearStorage": "مسح التخزين",
     "moreActions": "المزيد",
     "chooseFiles": "اختيار الملفات",
-    "dropHint": "أو اسحب الملفات وأفلتها هنا",
     "limitResume": "حتى {size} لكل ملف · تُستأنف عمليات الرفع المتقطعة",
     "receive": "استلام",
     "copyImage": "نسخ الصورة",
@@ -185,10 +184,7 @@
     "removed": "تم حذف النص.",
     "clearAll": "مسح جميع النصوص",
     "cleared": "تم مسح جميع النصوص.",
-    "composePlaceholder": "اكتب أو الصق هنا ثم اضغط مشاركة",
-    "receivedText": "نص مستلم",
     "autoShareHint": "تتم مشاركة النص تلقائيًا عند اللصق (Ctrl+V / Cmd+V)",
-    "noMessages": "لا توجد رسائل بعد",
     "delete": "حذف",
     "prefillNote": "هذا النص وصل من رابط. راجعه ثم اضغط «مشاركة» لإرساله.",
     "sentStatus": "تمت المشاركة. يظهر الآن في قائمة النصوص على الأجهزة المتصلة.",
@@ -220,7 +216,9 @@
     "quotaEvicted": "يحفظ كل جهاز آخر {count} نصوص فقط. لن يصل أقدمها بعد الآن إلى الأجهزة التي تنضم.",
     "receiversCount": "الأجهزة المستلمة: {count}",
     "deliverOnJoin": "يُسلَّم عند انضمام جهاز",
-    "notDelivered": "لن يصل"
+    "notDelivered": "لن يصل",
+    "showMore": "عرض المزيد",
+    "collapse": "طي"
   },
   "notification": {
     "uploading": "جاري التحميل...",
@@ -255,7 +253,10 @@
     "cancel": "إلغاء",
     "cancelAll": "إلغاء الكل",
     "uploadCancelled": "تم إلغاء الرفع",
-    "uploadsCancelled": "تم إلغاء {count} عمليات رفع"
+    "uploadsCancelled": "تم إلغاء {count} عمليات رفع",
+    "undo": "تراجع",
+    "textsCleared": "تم مسح كل النصوص",
+    "textRemoved": "تم حذف النص"
   },
   "clipboard": {
     "paste": "لصق",
@@ -409,6 +410,21 @@
     "downloadHint": "تنزيل الملفات المحددة في ملف ZIP واحد (الأكبر من 200 ميغابايت بشكل منفصل)",
     "qrCodeHint": "إنشاء رموز QR للملفات المحددة"
   },
+  "pair": {
+    "button": "الاتصال في غرفة",
+    "buttonShort": "اتصال",
+    "paired": "الغرفة نفسها",
+    "connecting": "جارٍ الاتصال…",
+    "openWith": "فتح غرفة خاصة مع {name}",
+    "openRoom": "الانتقال إلى غرفتك مع {name}",
+    "pendingSeconds": "{n} ث",
+    "cancel": "إلغاء",
+    "checking": "جارٍ التحقق",
+    "peerChecking": "بانتظار الطرف الآخر",
+    "request": {
+      "title": "طلب الاتصال بغرفة"
+    }
+  },
   "group": {
     "create": "إنشاء غرفة جماعية",
     "createShort": "غرفة",
@@ -552,5 +568,9 @@
     "textArrived": "نص جديد في {where}",
     "fileArrived": "ملف جديد في {where}",
     "textsCleared": "تم حذف كل النصوص في {where}"
+  },
+  "send": {
+    "placeholder": "اكتب هنا أو اسحب الملفات وأفلتها",
+    "shortcutHint": "أرسل بالضغط على Ctrl+Enter (⌘+Enter على Mac)"
   }
 }

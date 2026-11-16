@@ -94,8 +94,10 @@ const isMe = (d) => isMeDevice(d, props.mySocketId, props.myIdentity)
       {{ t('guide.roomVisibility') }}
     </p>
     <p v-else class="mt-3 text-xs text-text-secondary leading-relaxed" data-testid="device-list-note">
-      {{ scope === 'global' ? t('identity.globalNotice') : t('identity.verifyHint') }}
-      <template v-if="scope !== 'global'"><br />{{ t('identity.ipNotice') }}</template>
+      <!-- 늘 보이는 넓은 화면 패널은 안전 경고 한 줄만, 직접 여는 팝업 목록은 연결 확인 설명까지 -->
+      <template v-if="scope === 'global'">{{ t('identity.globalNotice') }}</template>
+      <template v-else-if="wide">{{ t('identity.ipNotice') }}</template>
+      <template v-else>{{ t('identity.verifyHint') }}<br />{{ t('identity.ipNotice') }}</template>
     </p>
   </div>
 </template>

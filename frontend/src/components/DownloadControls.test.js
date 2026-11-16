@@ -7,7 +7,7 @@ const mountOptions = { global: { plugins: [i18n] } }
 
 function mountControls(props = {}) {
   return mount(DownloadControls, {
-    props: { selectedCount: 0, totalCount: 3, allSelected: false, ...props },
+    props: { selectedCount: 2, totalCount: 3, allSelected: false, ...props },
     ...mountOptions
   })
 }
@@ -17,7 +17,7 @@ describe('DownloadControls.vue - 하단 고정 5열 레이아웃', () => {
     const wrapper = mountControls()
     const root = wrapper.element
     expect(root.className).toContain('fixed')
-    expect(root.className).toContain('rounded-2xl')
+    expect(root.className).toContain('rounded-none')
     expect(root.className).toContain('z-40')
     expect(root.className).toContain('grid-cols-5')
   })
@@ -27,12 +27,22 @@ describe('DownloadControls.vue - 하단 고정 5열 레이아웃', () => {
     expect(wrapper.findAll('button')).toHaveLength(5)
   })
 
-  it('선택된 파일이 없으면 다운로드/QR/선택삭제 버튼이 비활성화된다', () => {
+  it('선택이 없으면 전체 선택과 저장소 초기화 2개만 그린다', () => {
     const wrapper = mountControls({ selectedCount: 0 })
-    const buttons = wrapper.findAll('button')
-    expect(buttons[1].attributes('disabled')).toBeDefined() // 다운로드
-    expect(buttons[2].attributes('disabled')).toBeDefined() // QR
-    expect(buttons[3].attributes('disabled')).toBeDefined() // 선택 삭제
+    expect(wrapper.findAll('button')).toHaveLength(2)
+    expect(wrapper.find('[data-testid="select-all"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="multi-qr"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="delete-selected"]').exists()).toBe(false)
+    expect(wrapper.element.className).toContain('grid-cols-2')
+  })
+
+  it('선택이 1개 이상이면 5개를 모두 그린다', () => {
+    expect(mountControls({ selectedCount: 1 }).findAll('button')).toHaveLength(5)
+  })
+
+  it('select-all의 aria-pressed는 전부 선택됐을 때만 true다', () => {
+    expect(mountControls({ allSelected: true }).find('[data-testid="select-all"]').attributes('aria-pressed')).toBe('true')
+    expect(mountControls({ allSelected: false }).find('[data-testid="select-all"]').attributes('aria-pressed')).toBe('false')
   })
 
   it('전체 선택 버튼 클릭 시 toggle-select-all을 emit한다', async () => {
@@ -60,11 +70,15 @@ describe('DownloadControls.vue - 하단 고정 5열 레이아웃', () => {
 })
 
 describe('DownloadControls.vue - 좁은 폭 줄바꿈', () => {
-  it('루트는 좁은 폭에서 flex-wrap, md 이상에서 5열 grid다', () => {
-    const root = mountControls().element
-    expect(root.className).toContain('flex-wrap')
-    expect(root.className).toContain('md:grid')
+  it('루트는 좁은 폭에서 4열(QR 숨김) 한 줄, md 이상에서 5열 grid다', () => {
+    const wrapper = mountControls()
+    const root = wrapper.element
+    expect(root.className).not.toContain('flex-wrap')
+    expect(root.className).toContain('grid-cols-4')
     expect(root.className).toContain('md:grid-cols-5')
+    const qr = wrapper.find('[data-testid="multi-qr"]')
+    expect(qr.classes()).toContain('hidden')
+    expect(qr.classes()).toContain('md:flex')
   })
 
   it('모든 버튼은 dc-btn, 라벨은 dc-label(nowrap/keep-all 스타일 대상)이다', () => {
@@ -81,7 +95,7 @@ describe('DownloadControls.vue - 방 (privateMode)', () => {
     expect(wrapper.findAll('button')).toHaveLength(3)
     expect(wrapper.find('[data-testid="select-all"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="delete-selected"]').exists()).toBe(true)
-    expect(wrapper.element.className).toContain('md:grid-cols-3')
+    expect(wrapper.element.className).toContain('grid-cols-3')
     expect(wrapper.element.className).not.toContain('grid-cols-5')
     expect(wrapper.text()).not.toContain('QR')
   })

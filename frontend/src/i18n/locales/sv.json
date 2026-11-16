@@ -11,9 +11,7 @@
     "connectedDevices": "Anslutna enheter",
     "copyCode": "Kopiera rumskod",
     "copied": "Rumskod kopierad!",
-    "filesTab": "Filer",
     "textTab": "Text",
-    "mobilePanelLabel": "Växla mellan filer och text",
     "qrShareTitle": "Dela med QR-kod",
     "currentRoomCode": "Aktuell rumskod",
     "copy": "Kopiera",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "Det här rummet skapades på det gamla sättet, så det går inte att bjuda in",
     "legacyInviteBody": "Skapa ett nytt rum och lägg in den här enheten och de andra",
-    "legacyInviteCreate": "Skapa nytt rum"
+    "legacyInviteCreate": "Skapa nytt rum",
+    "moreRooms": "{n} rum till"
   },
   "nextTime": {
     "iosText": "Nästa gång kan du skicka direkt från Dela-knappen i Bilder",
@@ -138,7 +137,8 @@
     "manage": "Hantera namnlapp",
     "notAuth": "Namnlappen skiljer bara enheter åt. Det är ingen identitetskontroll.",
     "globalWarning": "Alla, även okända, kan se det du skickar och din enhetsinformation (djurlapp, enhet och webbläsare). Använd ”Samma nätverk” för känsligt innehåll.",
-    "pairSasLoading": "Läser in bilder…"
+    "pairSasLoading": "Läser in bilder…",
+    "moreDevices": "Visa {count} till"
   },
   "shareScope": {
     "label": "Dela med",
@@ -170,7 +170,6 @@
     "clearStorage": "Rensa lagring",
     "moreActions": "Mer",
     "chooseFiles": "Välj filer",
-    "dropHint": "eller dra och släpp filer här",
     "limitResume": "Upp till {size} per fil · avbrutna uppladdningar återupptas",
     "receive": "Ta emot",
     "copyImage": "Kopiera bild",
@@ -185,10 +184,7 @@
     "removed": "Text borttagen.",
     "clearAll": "Rensa alla texter",
     "cleared": "Alla texter rensade.",
-    "composePlaceholder": "Skriv eller klistra in här och tryck på Dela",
-    "receivedText": "Mottagen text",
     "autoShareHint": "Text delas automatiskt när du klistrar in (Ctrl+V / Cmd+V)",
-    "noMessages": "Inga meddelanden än",
     "delete": "Ta bort",
     "prefillNote": "Den här texten kom från en länk. Kontrollera den och tryck på ”Dela” för att skicka.",
     "sentStatus": "Delat. Texten syns nu i textlistan på anslutna enheter.",
@@ -220,7 +216,9 @@
     "quotaEvicted": "Varje enhet sparar högst sina {count} senaste texter. Den äldsta når inte längre enheter som ansluter.",
     "receiversCount": "Mottagande enheter: {count}",
     "deliverOnJoin": "levereras när någon ansluter",
-    "notDelivered": "levereras inte"
+    "notDelivered": "levereras inte",
+    "showMore": "Visa mer",
+    "collapse": "Dölj"
   },
   "notification": {
     "uploading": "Laddar upp...",
@@ -255,7 +253,10 @@
     "cancel": "Avbryt",
     "cancelAll": "Avbryt alla",
     "uploadCancelled": "Uppladdningen avbröts",
-    "uploadsCancelled": "{count} uppladdningar avbröts"
+    "uploadsCancelled": "{count} uppladdningar avbröts",
+    "undo": "Ångra",
+    "textsCleared": "Alla texter raderades",
+    "textRemoved": "Texten raderades"
   },
   "clipboard": {
     "paste": "Klistra in",
@@ -409,6 +410,21 @@
     "downloadHint": "Ladda ner valda filer som en ZIP (över 200 MB separat)",
     "qrCodeHint": "Skapa QR-koder för markerade filer"
   },
+  "pair": {
+    "button": "Anslut i ett rum",
+    "buttonShort": "Anslut",
+    "paired": "Samma rum",
+    "connecting": "Ansluter…",
+    "openWith": "Öppna ett privat rum med {name}",
+    "openRoom": "Gå till ditt rum med {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Avbryt",
+    "checking": "Kontrollerar",
+    "peerChecking": "Väntar på andra",
+    "request": {
+      "title": "Begäran om rumsanslutning"
+    }
+  },
   "group": {
     "create": "Skapa ett gruppum",
     "createShort": "Rum",
@@ -552,5 +568,9 @@
     "textArrived": "Ny text i {where}",
     "fileArrived": "Ny fil i {where}",
     "textsCleared": "Alla texter i {where} har rensats"
+  },
+  "send": {
+    "placeholder": "Skriv här eller dra och släpp filer",
+    "shortcutHint": "Skicka med Ctrl+Enter (⌘+Enter på Mac)"
   }
 }

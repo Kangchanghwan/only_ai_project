@@ -55,7 +55,7 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="pair-confirm-title"
-        class="w-full sm:max-w-md bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border border-border border-t-4 border-t-scope-private p-5 shadow-xl"
+        class="w-full sm:max-w-md bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <div class="flex items-center justify-center gap-3" aria-hidden="true">
@@ -75,13 +75,13 @@ function onKeydown(event) {
             <button
               ref="diffBtn"
               type="button"
-              class="flex-1 min-h-[44px] px-5 rounded-full border border-border text-sm font-semibold"
+              class="flex-1 min-h-[44px] px-5 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
               data-testid="pair-different"
               @click="emit('confirm', false)"
             >{{ t('pair.confirm.different') }}</button>
             <button
               type="button"
-              class="flex-1 min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
+              class="flex-1 min-h-[44px] px-5 rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
               :disabled="!sasReady"
               :aria-disabled="!sasReady"
               data-testid="pair-same"
@@ -91,7 +91,7 @@ function onKeydown(event) {
           <button
             v-if="waiting || preparing"
             type="button"
-            class="min-h-[44px] px-5 rounded-full border border-border text-sm font-semibold"
+            class="min-h-[44px] px-5 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
             data-testid="pair-confirm-cancel"
             @click="emit('cancel')"
           >{{ t('notification.cancel') }}</button>

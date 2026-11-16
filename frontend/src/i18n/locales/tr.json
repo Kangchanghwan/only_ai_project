@@ -11,9 +11,7 @@
     "connectedDevices": "Bağlı cihazlar",
     "copyCode": "Oda Kodunu Kopyala",
     "copied": "Oda kodu kopyalandı!",
-    "filesTab": "Dosyalar",
     "textTab": "Metin",
-    "mobilePanelLabel": "Dosya ve metin arasında geçiş",
     "qrShareTitle": "QR kodla paylaş",
     "currentRoomCode": "Geçerli oda kodu",
     "copy": "Kopyala",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "Bu oda eski yöntemle oluşturulmuş, bu yüzden davet edilemiyor",
     "legacyInviteBody": "Yeni bir oda oluşturup bu cihazı ve diğerlerini içine ekleyin",
-    "legacyInviteCreate": "Yeni oda oluştur"
+    "legacyInviteCreate": "Yeni oda oluştur",
+    "moreRooms": "{n} oda daha var"
   },
   "nextTime": {
     "iosText": "Bir dahaki sefere doğrudan Fotoğraflar'daki paylaş düğmesinden gönderebilirsiniz",
@@ -138,7 +137,8 @@
     "manage": "Ad etiketini yönet",
     "notAuth": "Ad etiketi yalnızca cihazları ayırt eder. Kimlik doğrulaması değildir.",
     "globalWarning": "Yabancılar dahil herkes gönderdiklerinizi ve cihaz bilginizi (hayvan etiketi, cihaz ve tarayıcı) görebilir. Hassas içerikler için “Aynı ağ”ı kullanın.",
-    "pairSasLoading": "Resimler yükleniyor…"
+    "pairSasLoading": "Resimler yükleniyor…",
+    "moreDevices": "{count} tane daha göster"
   },
   "shareScope": {
     "label": "Paylaşılacak kişiler",
@@ -170,7 +170,6 @@
     "clearStorage": "Depoyu Temizle",
     "moreActions": "Diğer",
     "chooseFiles": "Dosya seç",
-    "dropHint": "veya dosyaları buraya sürükleyip bırakın",
     "limitResume": "Dosya başına en fazla {size} · yarım kalan yüklemeler devam eder",
     "receive": "Al",
     "copyImage": "Görseli kopyala",
@@ -185,10 +184,7 @@
     "removed": "Metin kaldırıldı.",
     "clearAll": "Tüm Metinleri Temizle",
     "cleared": "Tüm metinler temizlendi.",
-    "composePlaceholder": "Buraya yazın veya yapıştırın, sonra Paylaş'a basın",
-    "receivedText": "Alınan metin",
     "autoShareHint": "Yapıştırdığınızda (Ctrl+V / Cmd+V) metin otomatik paylaşılır",
-    "noMessages": "Henüz mesaj yok",
     "delete": "Sil",
     "prefillNote": "Bu metin bir bağlantıdan geldi. Kontrol edip göndermek için \"Paylaş\"a dokunun.",
     "sentStatus": "Paylaşıldı. Bağlı cihazların metin listesinde görünüyor.",
@@ -220,7 +216,9 @@
     "quotaEvicted": "Her cihaz en fazla son {count} metnini saklar. En eskisi artık katılan cihazlara iletilmez.",
     "receiversCount": "Alacak cihaz: {count}",
     "deliverOnJoin": "biri katılınca iletilir",
-    "notDelivered": "iletilmeyecek"
+    "notDelivered": "iletilmeyecek",
+    "showMore": "Daha fazla",
+    "collapse": "Daralt"
   },
   "notification": {
     "uploading": "Yükleniyor...",
@@ -255,7 +253,10 @@
     "cancel": "İptal",
     "cancelAll": "Tümünü iptal et",
     "uploadCancelled": "Yükleme iptal edildi",
-    "uploadsCancelled": "{count} yükleme iptal edildi"
+    "uploadsCancelled": "{count} yükleme iptal edildi",
+    "undo": "Geri al",
+    "textsCleared": "Tüm metinler silindi",
+    "textRemoved": "Metin silindi"
   },
   "clipboard": {
     "paste": "Yapıştır",
@@ -409,6 +410,21 @@
     "downloadHint": "Seçili dosyaları tek ZIP olarak indir (200 MB üstü ayrı)",
     "qrCodeHint": "Seçili dosyalar için QR kod oluştur"
   },
+  "pair": {
+    "button": "Odada bağlan",
+    "buttonShort": "Bağlan",
+    "paired": "Aynı oda",
+    "connecting": "Bağlanıyor…",
+    "openWith": "{name} ile özel oda aç",
+    "openRoom": "{name} ile odana git",
+    "pendingSeconds": "{n} sn",
+    "cancel": "İptal",
+    "checking": "Kontrol ediliyor",
+    "peerChecking": "Karşı taraf bekleniyor",
+    "request": {
+      "title": "Oda bağlantı isteği"
+    }
+  },
   "group": {
     "create": "Grup odası oluştur",
     "createShort": "Oda",
@@ -552,5 +568,9 @@
     "textArrived": "{where} içinde yeni metin",
     "fileArrived": "{where} içinde yeni dosya",
     "textsCleared": "{where} içindeki tüm metinler silindi"
+  },
+  "send": {
+    "placeholder": "Buraya yazın veya dosyaları sürükleyip bırakın",
+    "shortcutHint": "Ctrl+Enter ile gönder (Mac'te ⌘+Enter)"
   }
 }

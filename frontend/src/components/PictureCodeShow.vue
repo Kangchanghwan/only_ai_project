@@ -50,7 +50,7 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
         :key="i"
         role="img"
         :aria-label="tile.name"
-        class="relative aspect-square bg-background border border-border rounded-xl p-2 flex items-center justify-center"
+        class="relative aspect-square bg-background border border-border rounded-none p-2 flex items-center justify-center"
         data-testid="picture-code-tile"
       >
         <span v-if="tileState[i] === 'failed'" class="text-sm font-semibold text-text-primary text-center" data-testid="picture-code-tile-label">{{ tile.name }}</span>
@@ -61,19 +61,19 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
             :class="tileState[i] === 'loaded' ? 'opacity-100' : 'opacity-0 absolute'"
             @load="markTile(i, 'loaded')" @error="markTile(i, 'failed')"
           />
-          <span v-if="!tileState[i]" class="inline-block w-5 h-5 rounded-full border-2 border-scope-private border-t-transparent animate-spin" aria-hidden="true" data-testid="picture-code-tile-spinner"></span>
+          <span v-if="!tileState[i]" class="inline-block w-5 h-5 rounded-none border-2 border-scope-private border-t-transparent animate-spin" aria-hidden="true" data-testid="picture-code-tile-spinner"></span>
         </template>
       </div>
     </div>
     <div v-else class="mt-3 grid grid-cols-4 gap-2" aria-hidden="true" data-testid="picture-code-skeleton">
-      <div v-for="i in 4" :key="i" class="aspect-square bg-background border border-border rounded-xl animate-pulse"></div>
+      <div v-for="i in 4" :key="i" class="aspect-square bg-background border border-border rounded-none animate-pulse"></div>
     </div>
     <p class="m-0 mt-3 text-base font-semibold text-center text-text-primary" data-testid="picture-code-names">{{ namesLine }}</p>
     <div class="mt-2 flex items-center justify-between gap-3">
       <span class="text-xs text-text-secondary" role="timer" data-testid="picture-code-left">{{ code ? leftText : '' }}</span>
       <button
         type="button"
-        class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+        class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
         data-testid="picture-code-renew"
         @click="emit('renew')"
       >{{ t('code.renew') }}</button>
@@ -84,7 +84,7 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
       role="alertdialog"
       aria-live="polite"
       :aria-label="t('code.requestTitle', { name: reqName })"
-      class="mt-4 rounded-xl border border-border border-t-4 border-t-scope-private bg-background p-4"
+      class="mt-4 rounded-none border border-border border-t-4 border-t-scope-private bg-background p-4"
       data-testid="picture-code-request"
     >
       <div class="flex items-center gap-3 min-w-0">
@@ -97,13 +97,13 @@ const reqDevice = computed(() => (from.value ? deviceAndBrowser(from.value, t) :
       <div class="mt-3 flex gap-2 justify-end">
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+          class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
           data-testid="picture-code-reject"
           @click="emit('decide', false)"
         >{{ t('code.reject') }}</button>
         <button
           type="button"
-          class="min-h-[44px] px-4 rounded-full bg-scope-private text-white text-sm font-semibold"
+          class="min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold"
           data-testid="picture-code-approve"
           @click="emit('decide', true)"
         >{{ t('code.approve') }}</button>

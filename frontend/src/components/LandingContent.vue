@@ -74,36 +74,36 @@ const links = computed(() =>
       v-if="altLink"
       :href="altLink.href"
       data-testid="landing-alt-link"
-      class="text-sm text-primary hover:underline"
+      class="text-sm text-ink hover:underline"
     >{{ altLink.label }}</a>
 
-    <div class="bg-surface border border-border rounded-xl p-6">
+    <div class="bg-surface border border-border rounded-none p-6">
       <h2 id="landing-headline" class="font-display font-bold text-xl leading-snug">{{ tc('landing.headline') }}</h2>
       <p class="mt-2 text-base leading-relaxed">{{ tc('landing.intro') }}</p>
     </div>
 
-    <div class="bg-surface border border-border rounded-xl p-6">
+    <div class="bg-surface border border-border rounded-none p-6">
       <h2 class="font-display font-bold text-lg">{{ tc('landing.howTitle') }}</h2>
       <ol class="mt-2 flex flex-col gap-2 list-decimal pl-6 text-base leading-relaxed">
         <li v-for="key in steps" :key="key">{{ tc(key) }}</li>
       </ol>
     </div>
 
-    <div class="bg-surface border border-border rounded-xl p-6">
+    <div class="bg-surface border border-border rounded-none p-6">
       <h2 class="font-display font-bold text-lg">{{ tc('landing.useCasesTitle') }}</h2>
       <ul class="mt-2 flex flex-col gap-2 list-disc pl-6 text-base leading-relaxed">
         <li v-for="key in useCases" :key="key">{{ tc(key) }}</li>
       </ul>
     </div>
 
-    <div class="bg-surface border border-border rounded-xl p-6">
+    <div class="bg-surface border border-border rounded-none p-6">
       <h2 class="font-display font-bold text-lg">{{ tc('landing.safetyTitle') }}</h2>
       <ul class="mt-2 flex flex-col gap-2 list-disc pl-6 text-base leading-relaxed">
         <li v-for="key in safety" :key="key">{{ tc(key) }}</li>
       </ul>
     </div>
 
-    <div class="bg-surface border border-border rounded-xl p-6">
+    <div class="bg-surface border border-border rounded-none p-6">
       <h2 class="font-display font-bold text-lg">{{ tc('landing.faqTitle') }}</h2>
       <div class="mt-2 flex flex-col gap-4">
         <div v-for="faq in faqs" :key="faq.q" data-testid="landing-faq-item">
@@ -117,7 +117,7 @@ const links = computed(() =>
       <h2 id="landing-more-title" class="font-display font-bold text-lg">{{ tc('landing.moreTitle') }}</h2>
       <ul class="mt-2 flex flex-col gap-2 text-base">
         <li v-for="link in links" :key="link.href">
-          <a :href="link.href" data-testid="landing-link" class="text-primary hover:underline">{{ tc(link.key) }}</a>
+          <a :href="link.href" data-testid="landing-link" class="text-ink hover:underline">{{ tc(link.key) }}</a>
         </li>
       </ul>
     </nav>

@@ -50,7 +50,7 @@ const currentYear = new Date().getFullYear()
       <button
         type="button"
         data-testid="pwa-install-button"
-        class="px-3 py-1 rounded-full bg-primary text-white text-xs font-medium hover:bg-primary/90 transition-colors"
+        class="px-3 py-1 min-h-[44px] rounded-none bg-ink text-on-ink text-xs font-extrabold hover:opacity-90 transition-colors"
         @click="promptInstall"
       >
         {{ t('footer.installButton') }}
@@ -66,7 +66,7 @@ const currentYear = new Date().getFullYear()
         type="button"
         data-testid="push-enable"
         :disabled="pushBusy"
-        class="px-3 py-1 rounded-full bg-primary text-white text-xs font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
+        class="px-3 py-1 min-h-[44px] rounded-none bg-ink text-on-ink text-xs font-extrabold hover:opacity-90 transition-colors disabled:opacity-60"
         @click="onPushEnable"
       >
         {{ t('arrival.pushEnable') }}
@@ -78,7 +78,7 @@ const currentYear = new Date().getFullYear()
           type="button"
           data-testid="push-disable"
           :disabled="pushBusy"
-          class="text-primary hover:underline disabled:opacity-60"
+          class="text-ink hover:underline disabled:opacity-60"
           @click="onPushDisable"
         >
           {{ t('arrival.pushOff') }}
@@ -90,7 +90,7 @@ const currentYear = new Date().getFullYear()
         href="https://github.com/Kangchanghwan/only_ai_project/blob/master/PRIVACY.md"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-primary hover:underline"
+        class="text-ink hover:underline"
       >{{ t('footer.privacyPolicy') }}</a>
       <span class="text-text-secondary/50">·</span>
       <a
@@ -98,7 +98,7 @@ const currentYear = new Date().getFullYear()
         target="_blank"
         rel="noopener noreferrer"
         data-testid="feedback-link"
-        class="text-primary hover:underline"
+        class="text-ink hover:underline"
         @click="trackEvent('feedback_click')"
       >{{ t('footer.feedback') }}</a>
       <span class="text-text-secondary/50">·</span>
@@ -106,7 +106,7 @@ const currentYear = new Date().getFullYear()
         href="https://github.com/Kangchanghwan/only_ai_project"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-primary hover:underline"
+        class="text-ink hover:underline"
       >{{ t('footer.sourceOnGitHub') }}</a>
       <span class="text-text-secondary/50">·</span>
       <span>
@@ -115,7 +115,7 @@ const currentYear = new Date().getFullYear()
           href="https://github.com/Kangchanghwan"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-primary hover:underline"
+          class="text-ink hover:underline"
         >Kang Chang Hwan</a>
       </span>
       <span class="text-text-secondary/50">·</span>

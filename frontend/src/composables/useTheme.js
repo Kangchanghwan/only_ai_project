@@ -34,6 +34,13 @@ export function useTheme() {
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme)
     document.body.className = theme
+    // 브라우저 주소창·앱 제목줄 색을 고른 테마의 배경색에 맞춘다(시스템 설정과 다르게 골랐을 때도)
+    if (window.__PRERENDER__) return // 정적 HTML에는 시스템 설정별(media) 값을 그대로 남긴다
+    const themeColor = theme === THEME_DARK ? '#0A1430' : '#FFFFFF'
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+      meta.removeAttribute('media')
+      meta.setAttribute('content', themeColor)
+    })
   }
 
   /**

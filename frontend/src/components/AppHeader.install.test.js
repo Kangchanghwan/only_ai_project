@@ -22,6 +22,7 @@ const stubs = { LanguageSelector: true, ThemeToggleButton: true, HelpModal: true
 async function mountReady() {
   const w = mount(AppHeader, { global: { stubs }, attachTo: document.body })
   await flushPromises()
+  await w.find('[data-testid="header-more-button"]').trigger('click')
   return w
 }
 
@@ -67,5 +68,39 @@ describe('AppHeader 설치 버튼', () => {
     state.standalone = true
     const w = await mountReady()
     expect(w.find('[data-testid="header-install-button"]').exists()).toBe(false)
+  })
+})
+
+describe('AppHeader 더 보기(⋯) 메뉴', () => {
+  beforeEach(() => { state.canInstall.value = true; state.isInstalled.value = false; state.ios = false; state.standalone = false; document.body.innerHTML = '' })
+
+  it('열기 전에는 언어/테마/설치가 없고, 열면 세 가지가 들어 있다', async () => {
+    const w = mount(AppHeader, { global: { stubs }, attachTo: document.body })
+    await flushPromises()
+    expect(w.find('[data-testid="header-more-menu"]').exists()).toBe(false)
+    await w.find('[data-testid="header-more-button"]').trigger('click')
+    const menu = w.find('[data-testid="header-more-menu"]')
+    expect(menu.findComponent({ name: 'LanguageSelector' }).exists()).toBe(true)
+    expect(menu.findComponent({ name: 'ThemeToggleButton' }).exists()).toBe(true)
+    expect(menu.find('[data-testid="header-install-button"]').exists()).toBe(true)
+  })
+
+  it('Esc와 바깥 클릭으로 닫힌다', async () => {
+    const w = mount(AppHeader, { global: { stubs }, attachTo: document.body })
+    await flushPromises()
+    await w.find('[data-testid="header-more-button"]').trigger('click')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await w.vm.$nextTick()
+    expect(w.find('[data-testid="header-more-menu"]').exists()).toBe(false)
+    await w.find('[data-testid="header-more-button"]').trigger('click')
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    await w.vm.$nextTick()
+    expect(w.find('[data-testid="header-more-menu"]').exists()).toBe(false)
+  })
+
+  it('도움말(?)은 메뉴 밖에 그대로 보인다', async () => {
+    const w = mount(AppHeader, { global: { stubs }, attachTo: document.body })
+    await flushPromises()
+    expect(w.find('[aria-label="app.help"]').exists()).toBe(true)
   })
 })

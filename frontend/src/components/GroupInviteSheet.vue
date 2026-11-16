@@ -61,11 +61,11 @@ function onKeydown(event) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="group-invite-title"
-        class="w-full sm:max-w-sm max-h-[92vh] overflow-y-auto bg-surface text-text-primary rounded-t-2xl sm:rounded-2xl border border-border border-t-4 border-t-scope-private p-5 shadow-xl"
+        class="w-full sm:max-w-sm max-h-[92vh] overflow-y-auto bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
         <h2 id="group-invite-title" class="text-base font-semibold m-0">{{ t('group.inviteTitle', { name: sheet.name }) }}</h2>
-        <div role="tablist" class="mt-3 flex gap-1 p-1 rounded-full border border-border bg-background" data-testid="group-invite-tabs">
+        <div role="tablist" class="mt-3 flex gap-1 p-1 rounded-none border border-border bg-background" data-testid="group-invite-tabs">
           <button
             v-for="(k, i) in TABS"
             :key="k"
@@ -73,8 +73,8 @@ function onKeydown(event) {
             role="tab"
             :aria-selected="tab === k"
             :tabindex="tab === k ? 0 : -1"
-            class="flex-1 min-h-[44px] rounded-full text-sm font-semibold transition-colors"
-            :class="tab === k ? 'bg-scope-private text-white' : 'text-text-secondary'"
+            class="flex-1 min-h-[44px] rounded-none text-sm font-semibold transition-colors"
+            :class="tab === k ? 'bg-scope-private text-on-accent' : 'text-text-secondary'"
             :data-testid="`group-invite-tab-${k}`"
             @click="emit('tab', k)"
             @keydown="onTabKey($event, i)"
@@ -99,14 +99,14 @@ function onKeydown(event) {
             width="224"
             height="224"
             alt="QR"
-            class="rounded-lg bg-white"
+            class="rounded-none bg-white"
             data-testid="group-invite-qr"
           />
-          <div v-else class="w-56 h-56 rounded-lg bg-background animate-pulse" aria-hidden="true" data-testid="group-invite-loading"></div>
+          <div v-else class="w-56 h-56 rounded-none bg-background animate-pulse" aria-hidden="true" data-testid="group-invite-loading"></div>
         </div>
         <p
           v-else
-          class="mt-4 mb-0 p-3 rounded-lg bg-background border border-border text-xs text-text-secondary break-all select-all"
+          class="mt-4 mb-0 p-3 rounded-none bg-background border border-border text-xs text-text-secondary break-all select-all"
           data-testid="group-invite-link"
         >{{ sheet.url || '…' }}</p>
         <p class="m-0 mt-4 text-sm text-text-primary" data-testid="group-invite-expiry">{{ t('group.inviteExpiry') }}</p>
@@ -116,14 +116,14 @@ function onKeydown(event) {
           <button
             ref="closeBtn"
             type="button"
-            class="min-h-[44px] px-4 rounded-full border border-border text-sm font-semibold"
+            class="min-h-[44px] px-4 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
             data-testid="group-invite-close"
             @click="emit('close')"
           >{{ t('group.close') }}</button>
           <button
             v-if="tab !== 'picture'"
             type="button"
-            class="min-h-[44px] px-4 rounded-full bg-scope-private text-white text-sm font-semibold disabled:opacity-50"
+            class="min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-50"
             :disabled="!sheet.url"
             data-testid="group-invite-copy"
             @click="emit('copy')"

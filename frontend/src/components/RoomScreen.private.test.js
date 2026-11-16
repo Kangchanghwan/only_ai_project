@@ -5,7 +5,7 @@ import i18n from '../i18n/index.js'
 
 const stubs = {
   AppHeader: true, AppFooter: true, LandingContent: true, ShareScopeTabs: true, TransferProgress: true,
-  FileGallery: { name: 'FileGallery', template: '<div class="gallery"><slot name="send" /></div>', props: ['files'] },
+  FileGallery: { name: 'FileGallery', template: '<div class="gallery"><slot name="send" /><slot name="composer" /></div>', props: ['files'] },
   ConnectionCard: { name: 'ConnectionCard', template: '<div />', props: ['otherNetworkDevices', 'devices'] }
 }
 const me = { socketId: 'me', identity: { adj: 0, animal: 0 } }

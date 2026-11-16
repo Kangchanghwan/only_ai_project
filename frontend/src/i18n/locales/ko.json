@@ -11,9 +11,7 @@
     "connectedDevices": "연결된 기기",
     "copyCode": "룸 코드 복사",
     "copied": "룸 코드 복사됨!",
-    "filesTab": "파일",
     "textTab": "텍스트",
-    "mobilePanelLabel": "파일·텍스트 전환",
     "qrShareTitle": "QR 코드로 공유",
     "currentRoomCode": "현재 룸 코드",
     "copy": "복사",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "예전 방식으로 만든 방이라 초대할 수 없어요",
     "legacyInviteBody": "새 방을 만들어 이 기기와 다른 기기를 함께 넣어 주세요",
-    "legacyInviteCreate": "새 방 만들기"
+    "legacyInviteCreate": "새 방 만들기",
+    "moreRooms": "방 {n}개 더 있어요"
   },
   "nextTime": {
     "iosText": "다음엔 사진 앱 공유 버튼에서 바로 보낼 수 있어요",
@@ -138,7 +137,8 @@
     "manage": "이름표 관리",
     "notAuth": "이름표는 본인 인증이 아니라 기기를 구분하기 위한 표시예요.",
     "globalWarning": "전체 공유는 모르는 사람도 보낸 항목과 기기 정보(동물 이름표, 기기·브라우저)를 볼 수 있고, 잠그지 않은 텍스트는 10분 동안 평문으로 보관돼요. 민감한 파일과 텍스트는 '비밀번호로 잠그기'를 켜고 보내면 비밀번호를 아는 사람만 열 수 있어요.",
-    "pairSasLoading": "그림을 불러오는 중…"
+    "pairSasLoading": "그림을 불러오는 중…",
+    "moreDevices": "+{count}대 더 보기"
   },
   "shareScope": {
     "label": "공유 대상",
@@ -175,7 +175,6 @@
     "clearStorage": "저장소 초기화",
     "moreActions": "더 보기",
     "chooseFiles": "파일 선택",
-    "dropHint": "또는 여기로 파일을 끌어다 놓으세요",
     "limitResume": "파일당 최대 {size} · 끊겨도 이어서 올려요",
     "receive": "받기",
     "copyImage": "이미지 복사",
@@ -189,14 +188,11 @@
     "removed": "텍스트가 삭제되었습니다.",
     "clearAll": "모든 텍스트 삭제",
     "cleared": "모든 텍스트가 삭제되었습니다.",
-    "receivedText": "수신한 텍스트",
     "autoShareHint": "텍스트를 붙여넣으면 자동으로 공유됩니다 (Ctrl+V / Cmd+V)",
-    "noMessages": "메시지가 없습니다",
     "clickToCopy": "클릭하여 복사",
     "delete": "삭제",
     "messageCount": "{count}개 메시지",
     "messageCount_plural": "{count}개 메시지",
-    "composePlaceholder": "여기에 입력하거나 붙여넣은 뒤 '공유'를 누르세요",
     "prefillNote": "링크로 받은 텍스트예요. 내용을 확인한 뒤 '공유'를 누르면 보내져요.",
     "sentStatus": "공유했어요. 연결된 기기의 텍스트 목록에 나타나요.",
     "sendFailedStatus": "공유하지 못했어요. 다시 시도해 주세요.",
@@ -227,7 +223,9 @@
     "quotaEvicted": "보관은 보낸 기기마다 최근 {count}개까지예요. 가장 오래된 보관분은 이제 새로 들어오는 기기에 전달되지 않아요.",
     "receiversCount": "받을 기기 {count}대",
     "deliverOnJoin": "들어오면 전달",
-    "notDelivered": "전달 안 됨"
+    "notDelivered": "전달 안 됨",
+    "showMore": "더보기",
+    "collapse": "접기"
   },
   "notification": {
     "uploading": "업로드 중...",
@@ -262,7 +260,10 @@
     "cancel": "취소",
     "cancelAll": "모두 취소",
     "uploadCancelled": "업로드를 취소했어요",
-    "uploadsCancelled": "{count}개 업로드를 취소했어요"
+    "uploadsCancelled": "{count}개 업로드를 취소했어요",
+    "undo": "실행 취소",
+    "textsCleared": "텍스트를 모두 지웠어요",
+    "textRemoved": "텍스트를 지웠어요"
   },
   "clipboard": {
     "paste": "붙여넣기",
@@ -522,7 +523,6 @@
       "downloadFailed": "받는 중 문제가 생겼어요. 다시 시도해 주세요.",
       "deleteForbidden": "비밀번호를 아는 사람만 이 파일을 지울 수 있어요."
     },
-    "noBulk": "잠긴 파일은 하나씩 받아요",
     "sheetTitle": "비밀번호를 입력하세요",
     "showPassword": "보기",
     "hidePassword": "숨기기",
@@ -551,8 +551,6 @@
     "pending": "수락 기다리는 중",
     "pendingSeconds": "{n}초",
     "cancel": "취소",
-    "hint": "기기를 누르면 둘이 쓰는 방을 만들 수 있어요. 나중에 다른 기기도 초대할 수 있어요",
-    "hintClose": "안내 닫기",
     "unknownDevice": "알 수 없는 기기",
     "request": {
       "title": "방 연결 요청",
@@ -597,8 +595,6 @@
       "leaveFailed": "연결을 끊지 못했어요. 다시 시도해 주세요",
       "noRoom": "방을 찾을 수 없어요"
     },
-    "tab": "방",
-    "tabMany": "방 ({n})",
     "tabTitle": "{name}와(과) 쓰는 방",
     "stripTitle": "{name}와(과) 쓰는 방",
     "stripNote": "여기 올리는 파일·텍스트는 둘만 보고 자동으로 암호화돼요",
@@ -614,7 +610,6 @@
     "unreadableText": "읽을 수 없는 텍스트",
     "waitingAccept": "상대 수락 기다리는 중",
     "otherNetworkGroup": "다른 네트워크 기기 {n}대",
-    "shortcut": "{name}와(과) 쓰는 방",
     "statusOffline": "오프라인",
     "statusConnecting": "연결 중…",
     "offlineUploadNote": "상대가 접속하면 받을 수 있어요 (파일은 최대 1일 보관)",
@@ -778,5 +773,9 @@
     "textArrived": "{where}에 새 텍스트가 왔어요",
     "fileArrived": "{where}에 새 파일이 왔어요",
     "textsCleared": "{where}의 텍스트가 모두 삭제됐어요"
+  },
+  "send": {
+    "placeholder": "여기에 입력하거나 파일을 끌어다 놓으세요",
+    "shortcutHint": "Ctrl+Enter로 보내기 (Mac은 ⌘+Enter)"
   }
 }

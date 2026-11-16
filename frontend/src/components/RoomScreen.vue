@@ -8,7 +8,6 @@ import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import ConnectionCard from './ConnectionCard.vue'
 import TransferProgress from './TransferProgress.vue'
-import { useMediaQuery } from '../composables/useMediaQuery'
 import { formatSizeMB } from '../utils/fileUtils'
 import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 import LandingContent from './LandingContent.vue'
@@ -88,6 +87,8 @@ const props = defineProps({
   privateRooms: { type: Array, default: () => [] },
   privateDevices: { type: Object, default: () => ({}) },
   pairStates: { type: Object, default: () => ({}) },
+  /** 받은 1:1 요청 세션(state === 'incoming') 또는 null: 보낸 기기 카드에서 수락/거절 */
+  pairIncoming: { type: Object, default: null },
   highlightRoomId: { type: String, default: null },
   /** 진행 중인 업로드/다운로드 (App.vue 상태) */
   uploads: {
@@ -130,12 +131,7 @@ const emit = defineEmits([
 ])
 
 const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120
-const mobilePanel = ref('files')
-watch(() => props.prefillText, (v) => { if (v) mobilePanel.value = 'text' }, { immediate: true })
 
-// 넓은 화면(CSS의 @media (min-width: 1100px)와 동일 값)에서는 기기 목록을 왼쪽 패널에 항상 보여준다.
-// 작업 영역은 이 값으로 다시 마운트되지 않는다 (목록 표시 방식만 바뀐다).
-const isWide = useMediaQuery()
 
 // 1:1 탭이면 그 방의 접속 기기(나 + 상대)를 보여 준다
 const currentRoom = computed(() => {
@@ -191,6 +187,7 @@ if (props.pairEnabled) {
     invite: (device) => emit('pair-invite', device),
     cancel: (sessionId) => emit('pair-cancel', sessionId),
     confirm: (sessionId) => emit('pair-confirm', sessionId),
+    incoming: computed(() => props.pairIncoming),
     open: (roomId) => emit('select-scope', scopeForPrivateRoom(roomId))
   })
 }
@@ -204,27 +201,77 @@ provide(SENDER_CONTEXT_KEY, {
 
 /** 1:1·그룹 방(prv:)에서는 같은 네트워크/전체 공유용 안내 대신 방 기준 안내를 보여 준다 */
 const inRoom = computed(() => isPrivateScope(props.scope))
+// 공개 범위(ip/전체)에서 목록이 "비어 있음"으로 확정되면 안내·소개·푸터를 메인 화면 목록 아래에 보인다
+const extraTarget = ref(null)
+const isPrerender = typeof window !== 'undefined' && !!window.__PRERENDER__
+const showExtraInMain = computed(() =>
+  (props.scope === 'ip' || props.scope === 'global') &&
+  props.files.length === 0 && props.texts.length === 0 &&
+  (!props.isLoading || isPrerender)
+)
 const { bg: accentBg } = useScopeAccent(() => props.scope)
 </script>
 
 <template>
   <div :class="['text-text-primary', files.length > 0 && !isLoading ? 'pb-24' : 'pb-6']">
-    <AppHeader :user-count="userCount" :is-connecting="isConnecting" />
+    <AppHeader :user-count="userCount" :is-connecting="isConnecting">
+      <!-- 안내·소개·푸터: 도움말 창 안에 두고 화면에서는 숨김(DOM 유지, SEO) -->
+      <Teleport :to="extraTarget" :disabled="!showExtraInMain || !extraTarget">
+      <div class="help-extra" data-testid="help-extra">
+        <section class="border-t border-border pt-6 text-sm" data-testid="usage-notes">
+          <h3 class="text-lg font-semibold text-text-primary mb-3">{{ t('guide.title') }}</h3>
+          <ul class="flex flex-col list-none p-0 m-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
+            <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
+            <li v-else>{{ t('guide.retention') }}</li>
+            <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>
+            <li v-if="inRoom" data-testid="room-visibility">{{ t('guide.roomVisibility') }}</li>
+            <li v-else>{{ t('identity.ipNotice') }}</li>
+            <li>{{ t('identity.notAuth') }}</li>
+          </ul>
+        </section>
+        <div class="landing-separator border-t border-border pt-6" data-testid="landing-separator">
+          <LandingContent />
+        </div>
+        <div class="border-t border-border pt-6">
+          <AppFooter />
+        </div>
+      </div>
+      </Teleport>
+    </AppHeader>
 
     <div class="page-shell px-4 sm:px-6">
-      <ShareScopeTabs
-        :scope="scope"
-        :private-rooms="privateRooms"
-        :highlight-room-id="highlightRoomId"
-        :group-create="pairEnabled"
-        @select="$emit('select-scope', $event)"
-        @group-create="$emit('group-add')"
-      />
+      <!-- 방 + 기기 줄: 어느 방인지, 누가 있는지 한 줄에 -->
+      <div class="bleed-line-b relative flex items-stretch border-b border-border mb-3" data-testid="room-row">
+        <ShareScopeTabs
+          :scope="scope"
+          :private-rooms="privateRooms"
+          :highlight-room-id="highlightRoomId"
+          :group-create="pairEnabled"
+          @select="$emit('select-scope', $event)"
+          @group-create="$emit('group-add')"
+        />
+      </div>
+      <div class="flex flex-wrap items-start gap-x-5 gap-y-2 mb-3" data-testid="device-row">
+        <div class="min-w-0 basis-full sm:basis-auto sm:flex-1">
+          <ConnectionCard
+            :devices="activeDevices"
+            :my-socket-id="mySocketId"
+            :my-identity="myIdentity"
+            :reroll-available-at="rerollAvailableAt"
+            :scope="scope"
+            :other-network-devices="otherNetworkDevices"
+            @reroll="$emit('reroll-identity')"
+            @hint-copied="$emit('hint-copied', $event)"
+            @group-create="$emit('group-create')"
+            @code-enter="$emit('code-enter')"
+          />
+        </div>
+      </div>
 
       <!-- 전체 공유 경고: 항상 상단에 분명하게 -->
       <div
         v-if="scope === 'global'"
-        class="global-warning mb-4 rounded-xl border border-scope-global bg-scope-global/10 p-3 text-sm text-text-primary"
+        class="global-warning mb-4 rounded-none border border-scope-global bg-scope-global/10 p-3 text-sm text-text-primary"
         role="note"
         data-testid="global-warning"
       >
@@ -243,53 +290,9 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       />
 
       <div class="workspace">
-        <!-- 연결 카드 (좁은 화면: 상단 카드 / 넓은 화면: 왼쪽 패널). grid-area로 위치만 바뀐다 -->
-        <div class="ws-conn">
-          <ConnectionCard
-            :devices="activeDevices"
-            :my-socket-id="mySocketId"
-            :my-identity="myIdentity"
-            :reroll-available-at="rerollAvailableAt"
-            :scope="scope"
-            :other-network-devices="otherNetworkDevices"
-            :wide="isWide"
-            @reroll="$emit('reroll-identity')"
-            @hint-copied="$emit('hint-copied', $event)"
-            @group-create="$emit('group-create')"
-            @code-enter="$emit('code-enter')"
-          />
-        </div>
-
-        <main class="ws-main bg-surface rounded-xl p-4 sm:p-6 border border-border min-w-0">
-          <div
-            class="flex gap-2 mb-4 p-1 w-fit max-w-full rounded-full border border-border bg-background"
-            role="tablist"
-            :aria-label="t('room.mobilePanelLabel')"
-          >
-            <button
-              type="button"
-              role="tab"
-              :aria-selected="mobilePanel === 'files'"
-              class="min-h-[44px] px-4 rounded-full text-sm font-semibold transition-colors"
-              :class="mobilePanel === 'files' ? [accentBg, 'text-white'] : 'text-text-secondary'"
-              @click="mobilePanel = 'files'"
-            >
-              {{ t('room.filesTab') }} ({{ files.length }})
-            </button>
-            <button
-              type="button"
-              role="tab"
-              :aria-selected="mobilePanel === 'text'"
-              class="min-h-[44px] px-4 rounded-full text-sm font-semibold transition-colors"
-              :class="mobilePanel === 'text' ? [accentBg, 'text-white'] : 'text-text-secondary'"
-              @click="mobilePanel = 'text'"
-            >
-              {{ t('room.textTab') }} ({{ texts.length }})
-            </button>
-          </div>
-
+        <main class="ws-main sm:bg-surface sm:rounded-none p-0 sm:p-6 sm:border sm:border-border min-w-0">
           <div class="flex flex-col gap-8">
-            <section :class="{ hidden: mobilePanel !== 'files' }">
+            <section data-testid="workspace-stack">
               <p v-if="peerOffline" class="m-0 mb-2 text-xs text-text-secondary" role="status" data-testid="peer-offline-upload-note">{{ t('pair.offlineUploadNote') }}</p>
               <FileGallery
                 :files="files"
@@ -298,6 +301,13 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 :has-more="hasMore"
                 :scope="scope"
                 :uploads="uploads"
+                :texts="texts"
+                @remove-text="$emit('remove-text', $event)"
+                @cancel-text="$emit('cancel-text', $event)"
+                @unlock-text="$emit('unlock-text', $event)"
+                @send-as-file="$emit('send-text-as-file', $event)"
+                @clear-all-texts="$emit('clear-all-texts')"
+                @copy-text="$emit('copy-text', $event)"
                 @copy-image="$emit('copy-image', $event)"
                 @download-file="$emit('download-file', $event)"
                 @download-parallel="$emit('download-parallel', $event)"
@@ -305,109 +315,73 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 @delete-file="$emit('delete-file', $event)"
                 @delete-selected="$emit('delete-selected', $event)"
                 @clear-storage="$emit('clear-storage')"
-                @upload-files="$emit('upload-files', $event)"
-                @paste-content="$emit('paste-content')"
                 @load-more="$emit('load-more')"
                 @cancel-upload="$emit('cancel-upload', $event)"
                 @cancel-all="$emit('cancel-all')"
               >
                 <!-- 상대가 나간 1:1 방: 업로드 칸 대신 안내 -->
                 <template v-if="peerLeft" #send>
-                  <div class="rounded-xl border border-dashed border-scope-private p-4 mb-2 text-center" data-testid="peer-left-notice">
+                  <div class="rounded-none border border-dashed border-scope-private p-4 mb-2 text-center" data-testid="peer-left-notice">
                     <p class="m-0 text-sm text-text-secondary">{{ t('pair.peerLeftNotice') }}</p>
                     <p v-if="reinviteState?.state === 'pending'" class="m-0 mt-2 text-sm font-semibold text-scope-private" role="status">{{ t('pair.pending') }}</p>
                     <button
                       v-else-if="reinviteDevice"
                       type="button"
-                      class="mt-3 min-h-[44px] px-5 rounded-full bg-scope-private text-white text-sm font-semibold"
+                      class="mt-3 min-h-[44px] px-5 rounded-none bg-scope-private text-on-accent text-sm font-semibold"
                       data-testid="pair-reinvite"
                       @click="$emit('pair-invite', reinviteDevice)"
                     >{{ t('pair.reconnect') }}</button>
                   </div>
                 </template>
+                <template v-if="!peerLeft" #composer>
+                  <TextShareBox
+                    :scope="scope"
+                    :prefill="prefillText"
+                    :receiver-count="textReceiverCount"
+                    :storage-mode="textStorageMode"
+                    :has-items="files.length > 0 || texts.length > 0"
+                    :compose-disabled="peerLeft || (peerOffline && textStorageMode === 'none') || peerConnecting"
+                    :compose-note="peerOffline && textStorageMode === 'none' ? t('pair.offlineTextNote') : ''"
+                    @share-text="$emit('share-text', $event)"
+                    @upload-files="$emit('upload-files', $event)"
+                    @paste-content="$emit('paste-content')"
+                  />
+                </template>
               </FileGallery>
             </section>
 
-            <section :class="{ hidden: mobilePanel !== 'text' }">
-              <TextShareBox
-                :texts="texts"
-                :scope="scope"
-                :prefill="prefillText"
-                :receiver-count="textReceiverCount"
-                :storage-mode="textStorageMode"
-                :compose-disabled="peerLeft || (peerOffline && textStorageMode === 'none') || peerConnecting"
-                :compose-note="peerOffline && textStorageMode === 'none' ? t('pair.offlineTextNote') : ''"
-                @remove-text="$emit('remove-text', $event)"
-                @cancel-text="$emit('cancel-text', $event)"
-                @unlock-text="$emit('unlock-text', $event)"
-                @send-as-file="$emit('send-text-as-file', $event)"
-                @clear-all="$emit('clear-all-texts')"
-                @copy-text="$emit('copy-text', $event)"
-                @share-text="$emit('share-text', $event)"
-                @paste-content="$emit('paste-content')"
-              />
-              <!-- 텍스트 탭에서 붙여넣은 파일 업로드 등도 같은 위치 규칙으로 보이게 -->
-              <TransferProgress
-                v-if="mobilePanel === 'text'"
-                :uploads="uploads"
-                @cancel-upload="$emit('cancel-upload', $event)"
-                @cancel-all="$emit('cancel-all')"
-              />
-            </section>
           </div>
         </main>
       </div>
-
-      <!-- 보관/사용 안내 (details 본문은 DOM에 그대로 있어 크롤링 가능) -->
-      <details class="mt-6 bg-surface border border-border rounded-xl p-4 text-sm" data-testid="usage-notes" open>
-        <summary class="cursor-pointer min-h-[44px] flex items-center font-semibold">{{ t('guide.title') }}</summary>
-        <ul class="mt-2 flex flex-col gap-2 list-disc pl-5 text-text-secondary leading-relaxed">
-          <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
-          <li v-else>{{ t('guide.retention') }}</li>
-          <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>
-          <li v-if="inRoom" data-testid="room-visibility">{{ t('guide.roomVisibility') }}</li>
-          <li v-else>{{ t('identity.ipNotice') }}</li>
-          <li>{{ t('identity.notAuth') }}</li>
-        </ul>
-      </details>
-
-      <!-- 작업 영역과 분리된 서비스 소개(SEO) 영역 -->
-      <div class="landing-separator mt-12 pt-8 border-t border-border" data-testid="landing-separator">
-        <LandingContent />
-      </div>
-
-      <AppFooter />
+      <div ref="extraTarget" :class="showExtraInMain ? 'mt-8' : ''" data-testid="empty-extra-target"></div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* 레이아웃 임계값:
-   - 기본~1099px: 한 열, 전체 최대 760px (연결 카드는 작업 영역 위)
-   - 1100px 이상: 전체 최대 1040px = 왼쪽 기기 패널 240px + 간격 24px + 작업 영역 최대 776px(760px 본문)
-   JS의 WIDE_QUERY(useMediaQuery.js)도 반드시 같은 1100px이어야 한다. */
+/* 한 열 레이아웃: 768px 이상 최대 880px, 그 아래는 760px */
 .page-shell {
   width: 100%;
   max-width: 760px;
   margin: 0 auto;
   box-sizing: border-box;
 }
+@media (min-width: 768px) {
+  .page-shell { max-width: 880px; }
+}
+.help-extra { display: flex; flex-direction: column; gap: 1.5rem; }
+.help-extra :deep(#landing-content),
+.help-extra :deep([data-testid="landing-content"]) { margin: 0; gap: 1.5rem; }
+.help-extra :deep([data-testid="landing-content"] > div) {
+  background: transparent; border: 0; border-radius: 0; padding: 0;
+}
+.help-extra :deep([data-testid="landing-content"] > nav) { padding: 0; }
+.help-extra :deep([data-testid="landing-content"] h2) { font-size: 1.125rem; font-weight: 600; }
+.help-extra :deep([data-testid="landing-content"] p),
+.help-extra :deep([data-testid="landing-content"] li) { font-size: 0.875rem; }
 .workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'conn' 'main';
   gap: 1rem;
-}
-.ws-conn { grid-area: conn; min-width: 0; }
-.ws-main { grid-area: main; }
-@media (min-width: 1100px) {
-  .page-shell { max-width: 1040px; }
-  .workspace {
-    grid-template-columns: 240px minmax(0, 1fr);
-    grid-template-areas: 'conn main';
-    gap: 1.5rem;
-    align-items: start;
-  }
-  .ws-conn { position: sticky; top: 5.5rem; }
 }
 </style>

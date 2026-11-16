@@ -11,9 +11,7 @@
     "connectedDevices": "已连接的设备",
     "copyCode": "复制房间代码",
     "copied": "房间代码已复制！",
-    "filesTab": "文件",
     "textTab": "文本",
-    "mobilePanelLabel": "在文件和文本之间切换",
     "qrShareTitle": "通过二维码分享",
     "currentRoomCode": "当前房间代码",
     "copy": "复制",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "这个房间是用旧方式创建的，无法邀请",
     "legacyInviteBody": "请新建一个房间，把这台设备和其他设备一起加进去",
-    "legacyInviteCreate": "新建房间"
+    "legacyInviteCreate": "新建房间",
+    "moreRooms": "还有 {n} 个房间"
   },
   "nextTime": {
     "iosText": "下次可以直接从相册的分享按钮发送",
@@ -138,7 +137,8 @@
     "manage": "管理名牌",
     "notAuth": "名牌只用于区分设备，不是身份验证。",
     "globalWarning": "全体共享时，陌生人也能看到你发送的文件、文本以及设备信息（动物名牌、设备和浏览器）。敏感内容请用“同一网络”发送。",
-    "pairSasLoading": "正在加载图片…"
+    "pairSasLoading": "正在加载图片…",
+    "moreDevices": "再显示 {count} 台"
   },
   "shareScope": {
     "label": "共享对象",
@@ -170,7 +170,6 @@
     "clearStorage": "清空存储",
     "moreActions": "更多",
     "chooseFiles": "选择文件",
-    "dropHint": "或将文件拖放到这里",
     "limitResume": "每个文件最大 {size} · 中断后可续传",
     "receive": "接收",
     "copyImage": "复制图片",
@@ -185,10 +184,7 @@
     "removed": "文本已删除。",
     "clearAll": "清除所有文本",
     "cleared": "所有文本已清除。",
-    "composePlaceholder": "在此输入或粘贴，然后点击“分享”",
-    "receivedText": "收到的文字",
     "autoShareHint": "粘贴(Ctrl+V / Cmd+V)后文字会自动分享",
-    "noMessages": "还没有消息",
     "delete": "删除",
     "prefillNote": "这段文字来自链接。确认内容后点击“分享”即可发送。",
     "sentStatus": "已分享，已出现在已连接设备的文本列表中。",
@@ -220,7 +216,9 @@
     "quotaEvicted": "每台发送设备最多保存最近 {count} 条。最早的一条将不再发送给之后加入的设备。",
     "receiversCount": "可接收设备 {count} 台",
     "deliverOnJoin": "有设备加入时发送",
-    "notDelivered": "不会送达"
+    "notDelivered": "不会送达",
+    "showMore": "查看更多",
+    "collapse": "收起"
   },
   "notification": {
     "uploading": "上传中...",
@@ -255,7 +253,10 @@
     "cancel": "取消",
     "cancelAll": "全部取消",
     "uploadCancelled": "已取消上传",
-    "uploadsCancelled": "已取消 {count} 个上传"
+    "uploadsCancelled": "已取消 {count} 个上传",
+    "undo": "撤销",
+    "textsCleared": "已清除全部文本",
+    "textRemoved": "已删除文本"
   },
   "clipboard": {
     "paste": "粘贴",
@@ -409,6 +410,21 @@
     "downloadHint": "将所选文件打包为一个 ZIP 下载(超过 200MB 的文件单独下载)",
     "qrCodeHint": "为所选文件生成二维码"
   },
+  "pair": {
+    "button": "在房间中连接",
+    "buttonShort": "连接",
+    "paired": "同一房间",
+    "connecting": "连接中…",
+    "openWith": "与 {name} 打开私密房间",
+    "openRoom": "前往与 {name} 的房间",
+    "pendingSeconds": "{n} 秒",
+    "cancel": "取消",
+    "checking": "检查中",
+    "peerChecking": "等待对方",
+    "request": {
+      "title": "房间连接请求"
+    }
+  },
   "group": {
     "create": "创建群组房间",
     "createShort": "房间",
@@ -552,5 +568,9 @@
     "textArrived": "{where}有新文本",
     "fileArrived": "{where}有新文件",
     "textsCleared": "{where}的文本已全部删除"
+  },
+  "send": {
+    "placeholder": "在此输入，或将文件拖放到这里",
+    "shortcutHint": "按 Ctrl+Enter 发送（Mac 为 ⌘+Enter）"
   }
 }

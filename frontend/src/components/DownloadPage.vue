@@ -92,17 +92,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-[#1a1a2e] to-[#16213e] text-white flex flex-col">
+  <div class="min-h-screen bg-background text-text-primary flex flex-col">
     <div class="flex-1 flex items-center justify-center p-4">
       <div class="max-w-2xl w-full">
         <!-- 에러 화면 -->
-        <div v-if="hasError" class="bg-surface rounded-2xl p-8 border border-red-500/30 shadow-2xl" data-testid="download-page-error">
+        <div v-if="hasError" class="bg-surface rounded-none p-8 border-2 border-danger" data-testid="download-page-error">
           <div class="text-center">
-            <div class="text-6xl mb-4">❌</div>
-            <h1 class="text-2xl font-bold mb-4 text-red-400">{{ t('download.error') }}</h1>
+            <svg class="w-14 h-14 mb-4 mx-auto text-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+            <h1 class="text-2xl font-bold mb-4 text-danger">{{ t('download.error') }}</h1>
             <p class="text-text-secondary mb-6">{{ errorMessage }}</p>
             <button
-              class="bg-primary text-white px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
+              class="bg-ink text-on-ink px-6 py-3 rounded-none font-bold cursor-pointer hover:opacity-90 transition-colors"
               @click="goHome"
             >
               {{ t('download.backToMain') }}
@@ -111,9 +111,9 @@ onMounted(async () => {
         </div>
 
         <!-- 받기 목록 -->
-        <div v-else class="bg-surface rounded-2xl p-6 sm:p-8 border border-border shadow-2xl text-text-primary" data-testid="download-page">
+        <div v-else class="bg-surface rounded-none p-6 sm:p-8 border-2 border-ink text-text-primary" data-testid="download-page">
           <div class="text-center mb-6">
-            <div class="text-5xl mb-4">📥</div>
+            <svg class="w-12 h-12 mb-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg>
             <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ totalFiles === 1 ? t('multiDownload.titleOne') : t('multiDownload.title') }}</h1>
             <p class="text-text-secondary m-0">{{ t('multiDownload.pageIntro', { count: totalFiles }) }}</p>
           </div>
@@ -122,7 +122,7 @@ onMounted(async () => {
           <p v-if="!loading && items.length > 1" class="mt-4 mb-0 text-xs text-text-secondary leading-relaxed">{{ t('multiDownload.note') }}</p>
           <div class="mt-6 text-center">
             <button
-              class="bg-primary text-white px-8 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
+              class="bg-ink text-on-ink px-8 py-3 rounded-none font-bold cursor-pointer hover:opacity-90 transition-colors"
               @click="goHome"
             >
               {{ t('download.backToMain') }}
@@ -144,12 +144,12 @@ onMounted(async () => {
 
 .overflow-y-auto::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
   background: rgba(66, 184, 131, 0.5);
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {

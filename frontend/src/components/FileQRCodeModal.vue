@@ -121,7 +121,7 @@ async function handleCopyUrl() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="file-qr-title"
-        class="bg-surface rounded-2xl p-8 max-w-md w-full border border-border shadow-2xl"
+        class="bg-surface rounded-none p-8 max-w-md w-full border-2 border-ink"
         @click.stop
       >
         <!-- 헤더 -->
@@ -130,16 +130,16 @@ async function handleCopyUrl() {
             {{ t('qrModal.fileTitle') }}
           </h2>
           <button
-            class="text-text-secondary hover:text-text-primary transition-colors text-2xl leading-none w-8 h-8 flex items-center justify-center"
+            class="text-text-secondary hover:text-text-primary transition-colors leading-none w-11 h-11 flex items-center justify-center"
             @click="handleClose"
             :aria-label="t('help.close')"
           >
-            ×
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
         </div>
 
         <!-- QR 코드 영역 -->
-        <div class="bg-white rounded-xl p-6 flex flex-col items-center mb-6">
+        <div class="bg-white border border-border rounded-none p-6 flex flex-col items-center mb-6">
           <canvas
             ref="canvasRef"
             class="max-w-full"
@@ -163,17 +163,17 @@ async function handleCopyUrl() {
         </div>
 
         <!-- URL 복사 영역 -->
-        <div class="bg-black/10 rounded-lg p-4 mb-6">
+        <div class="bg-tint border border-border rounded-none p-4 mb-6">
           <p class="text-text-secondary text-sm mb-2">{{ t('qrModal.address') }}</p>
           <div class="flex gap-2">
             <input
               type="text"
               :value="file.url"
               readonly
-              class="flex-1 bg-black/20 text-text-primary px-3 py-2 rounded-lg text-sm font-mono border border-border focus:outline-none focus:border-primary"
+              class="flex-1 bg-surface text-text-primary px-3 py-2 rounded-none text-sm font-mono border border-border focus:outline-none focus:border-ink"
             />
             <button
-              class="bg-primary text-white px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors text-sm whitespace-nowrap"
+              class="bg-ink text-on-ink px-4 py-2 min-h-[44px] rounded-none font-bold cursor-pointer hover:opacity-90 transition-colors text-sm whitespace-nowrap"
               @click="handleCopyUrl"
             >
               {{ copySuccess ? '✓ ' + t('qrModal.copied') : t('qrModal.copy') }}
@@ -182,22 +182,22 @@ async function handleCopyUrl() {
         </div>
 
         <!-- 안내 메시지 -->
-        <div class="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6">
+        <div class="bg-tint border border-ink rounded-none p-4 mb-6">
           <p class="text-text-primary text-sm leading-relaxed">
-            💡 {{ hint || t('qrModal.fileHint') }}
+            {{ hint || t('qrModal.fileHint') }}
           </p>
         </div>
 
         <!-- 액션 버튼 -->
         <div class="flex gap-3">
           <button
-            class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
+            class="flex-1 bg-ink text-on-ink px-6 py-3 rounded-none font-bold cursor-pointer hover:opacity-90 transition-colors"
             @click="handleDownload"
           >
             {{ t('qrModal.download') }}
           </button>
           <button
-            class="flex-1 bg-transparent border border-border text-text-primary px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-border transition-colors"
+            class="flex-1 bg-surface border-2 border-ink text-ink px-6 py-3 rounded-none font-bold cursor-pointer hover:bg-tint transition-colors"
             @click="handleClose"
           >
             {{ t('help.close') }}

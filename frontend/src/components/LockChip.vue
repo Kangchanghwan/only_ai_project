@@ -53,32 +53,39 @@ function unlock() {
 </script>
 
 <template>
-  <div class="lock-chip-wrap" data-testid="lock-chip" @click.stop>
+  <div class="lock-chip-wrap" :class="{ 'is-editing': editing && !locked }" data-testid="lock-chip" @click.stop>
     <template v-if="locked">
-      <span class="lock-chip on">
+      <span class="lock-chip on lc-on-wide">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
-        {{ t('lock.chipOn') }}
+        <span class="lc-label">{{ t('lock.chipOn') }}</span>
       </span>
-      <button type="button" class="lock-link" data-testid="lock-off" @click="unlock">{{ t('lock.chipOff') }}</button>
+      <button type="button" class="lock-link lc-on-wide" data-testid="lock-off" @click="unlock">{{ t('lock.chipOff') }}</button>
+      <!-- 좁은 화면: 채워진 자물쇠 하나. 누르면 잠금 해제 -->
+      <button type="button" class="lock-chip on lc-on-narrow" :aria-label="`${t('lock.chipOn')} · ${t('lock.chipOff')}`" :title="`${t('lock.chipOn')} · ${t('lock.chipOff')}`" data-testid="lock-off-narrow" @click="unlock">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+      </button>
     </template>
     <form v-else-if="editing" class="lock-form" @submit.prevent="apply">
       <input
         ref="inputRef"
         v-model="password"
         type="password"
-        autocomplete="new-password"
+        autocomplete="off"
+        data-1p-ignore
+        data-lpignore="true"
+        data-bwignore
         :placeholder="t('lock.passwordPlaceholder')"
         :aria-label="t('lock.passwordPlaceholder')"
         data-testid="lock-password"
         @keydown.esc.prevent="cancelEdit"
       />
-      <button type="submit" class="lock-apply" :disabled="busy" data-testid="lock-apply">{{ busy ? t('lock.settingUp') : t('lock.apply') }}</button>
+      <button type="submit" class="lock-apply" :disabled="busy || password.length < MIN_LOCK_PASSWORD" data-testid="lock-apply">{{ busy ? t('lock.settingUp') : t('lock.apply') }}</button>
       <button type="button" class="lock-link" @click="cancelEdit">{{ t('notification.cancel') }}</button>
       <p class="lock-hint" :class="{ err: !!error }">{{ error || t('lock.chipHint') }}</p>
     </form>
-    <button v-else type="button" class="lock-chip" data-testid="lock-start" @click="startEdit">
+    <button v-else type="button" class="lock-chip" data-testid="lock-start" :aria-label="t('lock.chipStart')" :title="t('lock.chipStart')" @click="startEdit">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
-      {{ t('lock.chipStart') }}
+      <span class="lc-label">{{ t('lock.chipStart') }}</span>
     </button>
   </div>
 </template>
@@ -88,17 +95,22 @@ function unlock() {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.375rem;
   cursor: default;
+}
+/* 비밀번호 입력 중에는 도구 줄 아래 한 줄을 전부 쓴다 */
+.lock-chip-wrap.is-editing {
+  flex-basis: 100%;
+  order: 99;
 }
 .lock-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  min-height: 32px;
+  min-height: 44px;
   padding: 0 0.75rem;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid var(--color-border);
   background: transparent;
   color: var(--color-text-secondary);
@@ -106,9 +118,9 @@ function unlock() {
   cursor: pointer;
 }
 .lock-chip.on {
-  border-color: transparent;
-  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
-  color: var(--color-primary);
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-on-ink, #fff);
   font-weight: 600;
   cursor: default;
 }
@@ -135,17 +147,17 @@ function unlock() {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.375rem;
   width: 100%;
-  max-width: 22rem;
+  max-width: 28rem;
 }
 .lock-form input {
   flex: 1 1 10rem;
   min-width: 0;
   min-height: 36px;
   padding: 0 0.625rem;
-  border-radius: 0.5rem;
+  border-radius: 0;
   border: 1px solid var(--color-border);
   background: var(--color-background);
   color: var(--color-text-primary);
@@ -154,9 +166,9 @@ function unlock() {
 .lock-apply {
   min-height: 36px;
   padding: 0 0.875rem;
-  border-radius: 0.5rem;
+  border-radius: 0;
   border: 0;
-  background: var(--color-primary);
+  background: var(--color-ink);
   color: #fff;
   font-size: 0.75rem;
   font-weight: 600;
@@ -173,5 +185,14 @@ function unlock() {
 }
 .lock-hint.err {
   color: #ef4444;
+}
+/* 좁은 화면: 도구 줄을 한 줄로 두려고 글자는 숨기고 아이콘만 (이름은 aria-label·title로) */
+.lc-on-narrow { display: none; }
+@media (max-width: 639px) {
+  .lc-on-wide { display: none !important; }
+  .lc-on-narrow { display: inline-flex; cursor: pointer; }
+  .lc-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .lock-chip { min-width: 44px; justify-content: center; padding: 0 0.5rem; }
+  .lock-chip svg { width: 16px; height: 16px; }
 }
 </style>

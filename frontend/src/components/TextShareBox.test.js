@@ -42,39 +42,22 @@ describe('TextShareBox 직접 입력', () => {
     expect(ta.element.value).toBe('keep me')
   })
 
-  it('붙여넣기 버튼은 paste-content를 emit한다', async () => {
+  it('Enter는 줄바꿈이고 Ctrl+Enter(⌘+Enter)로 전송한다, 붙여넣기 버튼은 이 상자에 없다', async () => {
     const w = mountBox()
-    await w.find('[data-testid="text-paste-button"]').trigger('click')
-    expect(w.emitted('paste-content')).toHaveLength(1)
-  })
-})
-
-describe('TextShareBox 받은 텍스트', () => {
-  const time = Date.now() - 3 * 60_000
-  it('보낸 사람+시간 헤더는 항목당 한 번이고, 복사 버튼은 hover 없이 보인다', async () => {
-    const w = mountBox({ texts: [{ id: '1', content: 'hi', timestamp: time, sender }] })
-    const entry = w.find('[data-testid="text-entry"]')
-    expect(entry.findAll('[data-testid="sender-label"]')).toHaveLength(1)
-    expect(entry.find('[data-testid="text-time"]').exists()).toBe(false)
-    expect(entry.text().match(/3분 전/g)).toHaveLength(1)
-    const copy = entry.find('[data-testid="text-copy"]')
-    expect(copy.classes().join(' ')).not.toContain('opacity-0')
-    await copy.trigger('click')
-    expect(w.emitted('copy-text')[0]).toEqual(['1'])
+    const ta = w.find('[data-testid="text-input"]')
+    expect(ta.attributes('rows')).toBe('1')
+    expect(w.find('[data-testid="text-paste-button"]').exists()).toBe(false)
+    await ta.setValue('go')
+    await ta.trigger('keydown', { key: 'Enter' })
+    expect(w.emitted('share-text')).toBeFalsy()
+    await ta.trigger('keydown', { key: 'Enter', ctrlKey: true })
+    expect(w.emitted('share-text')[0][0].content).toBe('go')
   })
 
-  it('삭제는 더보기 메뉴에서 한다', async () => {
-    const w = mountBox({ texts: [{ id: '1', content: 'hi', timestamp: time }] })
-    expect(w.find('[data-testid="text-delete"]').exists()).toBe(false)
-    await w.find('[data-testid="text-more"]').trigger('click')
-    await w.find('[data-testid="text-delete"]').trigger('click')
-    expect(w.emitted('remove-text')[0]).toEqual(['1'])
-  })
-
-  it('본문은 일반 텍스트로만 렌더링된다 (HTML 주입 없음)', () => {
-    const w = mountBox({ texts: [{ id: '1', content: '<img src=x onerror=alert(1)><b>x</b>', timestamp: time }] })
-    expect(w.find('[data-testid="text-body"] img').exists()).toBe(false)
-    expect(w.find('[data-testid="text-body"]').text()).toContain('<img src=x')
+  it('공유 버튼은 주황(bg-primary)이 아니라 남색(bg-ink)이다', () => {
+    const btn = mountBox().find('[data-testid="text-share-button"]')
+    expect(btn.classes()).toContain('bg-ink')
+    expect(btn.classes().join(' ')).not.toContain('bg-primary')
   })
 })
 

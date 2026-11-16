@@ -5,8 +5,8 @@
   "description": "회원가입·앱 설치 없이 같은 와이파이의 PC와 스마트폰 사이에서 텍스트, 스크린샷, 파일을 바로 주고받는 무료 온라인 클립보드",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1C1917",
-  "theme_color": "#FF6B4A",
+  "background_color": "#0A1430",
+  "theme_color": "#0A1430",
   "scope": "/",
   "lang": "ko-KR",
   "categories": [

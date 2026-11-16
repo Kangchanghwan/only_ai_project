@@ -7,14 +7,20 @@ import TransferProgress from './TransferProgress.vue'
 
 defineProps({
   message: { type: String, default: null },
-  uploads: { type: Map, default: () => new Map() }
+  uploads: { type: Map, default: () => new Map() },
+  /** 동작 버튼이 달린 알림: { message, label }. 있으면 일반 알림 대신 보인다 */
+  undo: { type: Object, default: null }
 })
-const emit = defineEmits(['cancel-upload', 'cancel-all'])
+const emit = defineEmits(['cancel-upload', 'cancel-all', 'undo'])
 </script>
 
 <template>
   <transition name="fade">
-    <div v-if="message" class="notification" role="status" aria-live="polite" data-prerender-strip>
+    <div v-if="undo" key="undo" class="notification flex items-center gap-3" role="status" aria-live="polite" data-testid="undo-toast">
+      <span>{{ undo.message }}</span>
+      <button type="button" class="shrink-0 min-h-[32px] px-3 border border-on-ink bg-transparent text-on-ink font-bold text-sm cursor-pointer rounded-none" data-testid="undo-button" @click="emit('undo')">{{ undo.label }}</button>
+    </div>
+    <div v-else-if="message" key="msg" class="notification" role="status" aria-live="polite" data-prerender-strip>
       {{ message }}
     </div>
   </transition>
@@ -28,7 +34,7 @@ const emit = defineEmits(['cancel-upload', 'cancel-all'])
 
 <style scoped>
 /* 하단 중앙 단일 위치. 안전 영역 + 하단 고정 액션바(약 4.5rem) 위에 띄운다.
-   넓은 화면(>=1100px)에서는 왼쪽 240px 패널을 뺀 작업 영역 중앙에 맞춘다. */
+   왼쪽 기기 패널이 없어진 한 열 화면이라 모든 폭에서 화면 가운데에 둔다. */
 .notification {
   position: fixed;
   left: 50%;
@@ -36,18 +42,15 @@ const emit = defineEmits(['cancel-upload', 'cancel-all'])
   transform: translateX(-50%);
   width: max-content;
   max-width: calc(100vw - 2rem);
-  background: rgba(20, 18, 16, 0.92);
-  color: #fff;
+  background: var(--color-ink);
+  color: var(--color-on-ink);
   padding: 0.75rem 1.25rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 0;
+  box-shadow: none;
   z-index: 1000;
   overflow-wrap: anywhere;
   text-align: center;
   font-size: 0.875rem;
-}
-@media (min-width: 1100px) {
-  .notification { left: calc(50% + 140px); }
 }
 .fade-enter-active,
 .fade-leave-active { transition: opacity 0.3s ease; }

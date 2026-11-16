@@ -167,7 +167,7 @@ async function handleCopyUrl() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="multi-qr-title"
-        class="bg-surface rounded-2xl p-8 max-w-md w-full border border-border shadow-2xl max-h-[90vh] overflow-y-auto"
+        class="bg-surface rounded-none p-8 max-w-md w-full border-2 border-ink max-h-[90vh] overflow-y-auto"
         @click.stop
       >
         <!-- 헤더 -->
@@ -176,16 +176,16 @@ async function handleCopyUrl() {
             {{ files.length === 1 ? t('qrModal.singleTitle') : t('qrModal.multiTitle') }}
           </h2>
           <button
-            class="text-text-secondary hover:text-text-primary transition-colors text-2xl leading-none w-8 h-8 flex items-center justify-center"
+            class="text-text-secondary hover:text-text-primary transition-colors leading-none w-11 h-11 flex items-center justify-center"
             @click="handleClose"
             :aria-label="t('help.close')"
           >
-            ×
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
         </div>
 
         <!-- QR 코드 영역 -->
-        <div class="bg-white rounded-xl p-6 flex flex-col items-center mb-6">
+        <div class="bg-white border border-border rounded-none p-6 flex flex-col items-center mb-6">
           <canvas
             ref="canvasRef"
             class="max-w-full"
@@ -197,7 +197,7 @@ async function handleCopyUrl() {
               {{ t('qrModal.multiScan', { count: files.length }) }}
             </p>
             <div class="flex items-center justify-center gap-2 mb-1">
-              <span class="text-2xl">📦</span>
+              <svg class="w-6 h-6 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg>
               <p class="text-gray-800 font-bold text-lg">
                 {{ t('qrModal.filesCount', { count: files.length }) }}
               </p>
@@ -206,7 +206,7 @@ async function handleCopyUrl() {
         </div>
 
         <!-- 파일 목록 -->
-        <div class="bg-black/10 rounded-lg p-4 mb-4 max-h-48 overflow-y-auto">
+        <div class="bg-tint border border-border rounded-none p-4 mb-4 max-h-48 overflow-y-auto">
           <p class="text-sm font-semibold text-text-secondary mb-2">{{ t('qrModal.included') }}</p>
           <ul class="space-y-1">
             <li
@@ -214,7 +214,7 @@ async function handleCopyUrl() {
               :key="file.name"
               class="text-sm text-text-primary truncate"
             >
-              📄 {{ file.name }}
+              <svg class="inline-block w-4 h-4 mr-1 -mt-0.5 align-middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>{{ file.name }}
             </li>
           </ul>
           <p v-if="remainingCount > 0" class="text-sm text-text-secondary mt-2 italic">
@@ -223,24 +223,24 @@ async function handleCopyUrl() {
         </div>
 
         <!-- URL 길이 경고 -->
-        <div v-if="urlValidation.isTooLong" class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
-          <p class="text-yellow-400 text-sm leading-relaxed">
-            ⚠️ {{ t('qrModal.tooLong', { length: urlValidation.length }) }}
+        <div v-if="urlValidation.isTooLong" class="bg-tint border border-ink rounded-none p-4 mb-4">
+          <p class="text-text-primary text-sm leading-relaxed">
+            {{ t('qrModal.tooLong', { length: urlValidation.length }) }}
           </p>
         </div>
 
         <!-- URL 복사 영역 -->
-        <div class="bg-black/10 rounded-lg p-4 mb-4">
+        <div class="bg-tint border border-border rounded-none p-4 mb-4">
           <p class="text-text-secondary text-sm mb-2">{{ t('qrModal.address') }}</p>
           <div class="flex gap-2">
             <input
               type="text"
               :value="downloadUrl"
               readonly
-              class="flex-1 bg-black/20 text-text-primary px-3 py-2 rounded-lg text-sm font-mono border border-border focus:outline-none focus:border-primary"
+              class="flex-1 bg-surface text-text-primary px-3 py-2 rounded-none text-sm font-mono border border-border focus:outline-none focus:border-ink"
             />
             <button
-              class="bg-primary text-white px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors text-sm whitespace-nowrap"
+              class="bg-ink text-on-ink px-4 py-2 min-h-[44px] rounded-none font-bold cursor-pointer hover:opacity-90 transition-colors text-sm whitespace-nowrap"
               @click="handleCopyUrl"
             >
               {{ copySuccess ? '✓ ' + t('qrModal.copied') : t('qrModal.copy') }}
@@ -254,9 +254,9 @@ async function handleCopyUrl() {
             class="text-sm text-text-secondary hover:text-text-primary transition-colors mb-2"
             @click="toggleUrlPreview"
           >
-            {{ showUrlPreview ? '▼' : '▶' }} {{ t('qrModal.urlDetail') }}
+            {{ t('qrModal.urlDetail') }}
           </button>
-          <div v-if="showUrlPreview" class="bg-black/20 rounded-lg p-3">
+          <div v-if="showUrlPreview" class="bg-surface rounded-none p-3">
             <p class="text-xs text-text-secondary break-all font-mono">
               {{ downloadUrl }}
             </p>
@@ -267,22 +267,22 @@ async function handleCopyUrl() {
         </div>
 
         <!-- 안내 메시지 -->
-        <div class="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6">
+        <div class="bg-tint border border-ink rounded-none p-4 mb-6">
           <p class="text-text-primary text-sm leading-relaxed">
-            💡 {{ t('qrModal.multiHint') }}
+            {{ t('qrModal.multiHint') }}
           </p>
         </div>
 
         <!-- 액션 버튼 -->
         <div class="flex gap-3">
           <button
-            class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-primary/90 transition-colors"
+            class="flex-1 bg-ink text-on-ink px-6 py-3 rounded-none font-bold cursor-pointer hover:opacity-90 transition-colors"
             @click="handleDownload"
           >
             {{ t('qrModal.download') }}
           </button>
           <button
-            class="flex-1 bg-transparent border border-border text-text-primary px-6 py-3 rounded-lg font-bold cursor-pointer hover:bg-border transition-colors"
+            class="flex-1 bg-surface border-2 border-ink text-ink px-6 py-3 rounded-none font-bold cursor-pointer hover:bg-tint transition-colors"
             @click="handleClose"
           >
             {{ t('help.close') }}
@@ -322,12 +322,12 @@ async function handleCopyUrl() {
 
 .overflow-y-auto::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
   background: rgba(66, 184, 131, 0.3);
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {

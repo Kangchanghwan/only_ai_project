@@ -16,53 +16,28 @@ const build = (devices, extra = {}) => mount(ConnectionCard, {
   global: { plugins: [i18n], provide: { [PAIR_CONTEXT_KEY]: ctx } }
 })
 
-describe('ConnectionCard 1:1 첫 안내(폰)', () => {
-  beforeEach(() => localStorage.removeItem('pair-hint-dismissed'))
-
-  it('다른 기기가 2대 이상이면 한 줄 안내, 닫으면 localStorage에 기록되고 사라진다', async () => {
+describe('ConnectionCard 안내 제거', () => {
+  it('첫 안내 문구·바로가기 버튼은 더 이상 없고 카드의 연결 버튼이 대신한다', () => {
     const w = build([me, other, other2])
-    expect(w.find('[data-testid="pair-hint"]').text()).toContain('둘이 쓰는 방을 만들 수 있어요')
-    await w.find('[data-testid="pair-hint-close"]').trigger('click')
     expect(w.find('[data-testid="pair-hint"]').exists()).toBe(false)
-    expect(localStorage.getItem('pair-hint-dismissed')).toBe('1')
-    expect(build([me, other, other2]).find('[data-testid="pair-hint"]').exists()).toBe(false)
-  })
-
-  it('나 혼자거나 넓은 화면이면 안내가 없다', () => {
-    expect(build([me]).find('[data-testid="pair-hint"]').exists()).toBe(false)
-    expect(build([me, other], { wide: true }).find('[data-testid="pair-hint"]').exists()).toBe(false)
+    expect(w.find('[data-testid="pair-shortcut"]').exists()).toBe(false)
+    expect(w.findAll('[data-testid="pair-invite-button"]')).toHaveLength(2)
   })
 })
 
-describe('ConnectionCard 폰 바로가기', () => {
+describe('ConnectionCard 연결 진행', () => {
   beforeEach(() => { localStorage.removeItem('pair-hint-dismissed'); ctx.states.value = {}; ctx.invite.mockClear() })
 
-  it('다른 기기가 정확히 1대면 "○○와 1:1" 44px 버튼을 바로 보여 주고 안내 문구는 숨긴다', async () => {
+  it('다른 기기 카드의 연결 버튼이 invite를 부른다', async () => {
     const w = build([me, other])
-    const btn = w.find('[data-testid="pair-shortcut"]')
-    expect(btn.exists()).toBe(true)
-    expect(btn.text()).toMatch(/와 쓰는 방$/)
-    expect(btn.classes()).toContain('min-h-[44px]')
-    expect(w.find('[data-testid="pair-hint"]').exists()).toBe(false)
-    await btn.trigger('click')
+    await w.find('[data-testid="pair-invite-button"]').trigger('click')
     expect(ctx.invite).toHaveBeenCalledWith(other)
-  })
-
-  it('2대 이상, 나 혼자, 넓은 화면에서는 바로가기가 없다', () => {
-    expect(build([me, other, other2]).find('[data-testid="pair-shortcut"]').exists()).toBe(false)
-    expect(build([me]).find('[data-testid="pair-shortcut"]').exists()).toBe(false)
-    expect(build([me, other], { wide: true }).find('[data-testid="pair-shortcut"]').exists()).toBe(false)
-  })
-
-  it('이미 연결 중/연결된 상대면 바로가기가 없다', () => {
-    ctx.states.value = { p1: { state: 'paired', roomId: 'prv-1' } }
-    expect(build([me, other]).find('[data-testid="pair-shortcut"]').exists()).toBe(false)
   })
 
   it('수락 대기 중이면 바로가기 자리에 그림 확인 행이 나오고 "같아요"가 confirm을 부른다', async () => {
     ctx.states.value = { p1: { state: 'pending', sessionId: 's1', expiresAt: Date.now() + 20000, sas: [1, 2, 3, 4], confirmed: false } }
     const w = build([me, other])
-    expect(w.find('[data-testid="pair-shortcut"]').exists()).toBe(false)
+    expect(w.find('[data-testid="pair-invite-button"]').exists()).toBe(false)
     await loadAllSas(w.element)
     await w.find('[data-testid="pair-same-inline"]').trigger('click')
     expect(ctx.confirm).toHaveBeenCalledWith('s1')

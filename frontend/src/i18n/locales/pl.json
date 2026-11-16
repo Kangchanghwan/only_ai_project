@@ -11,9 +11,7 @@
     "connectedDevices": "Połączone urządzenia",
     "copyCode": "Kopiuj kod pokoju",
     "copied": "Kod pokoju skopiowany!",
-    "filesTab": "Pliki",
     "textTab": "Tekst",
-    "mobilePanelLabel": "Przełączanie między plikami a tekstem",
     "qrShareTitle": "Udostępnij kodem QR",
     "currentRoomCode": "Kod bieżącego pokoju",
     "copy": "Kopiuj",
@@ -30,7 +28,8 @@
     },
     "legacyInviteTitle": "Ten pokój utworzono starą metodą, więc nie można do niego zapraszać",
     "legacyInviteBody": "Utwórz nowy pokój i dodaj do niego to urządzenie oraz pozostałe",
-    "legacyInviteCreate": "Utwórz nowy pokój"
+    "legacyInviteCreate": "Utwórz nowy pokój",
+    "moreRooms": "Jeszcze pokoi: {n}"
   },
   "nextTime": {
     "iosText": "Następnym razem wyślesz prosto z przycisku Udostępnij w aplikacji Zdjęcia",
@@ -138,7 +137,8 @@
     "manage": "Zarządzaj plakietką",
     "notAuth": "Plakietka tylko odróżnia urządzenia. To nie jest weryfikacja tożsamości.",
     "globalWarning": "Każdy, także obcy, widzi to, co wysyłasz, oraz dane Twojego urządzenia (zwierzę-plakietka, urządzenie i przeglądarka). Dla danych wrażliwych wybierz „Ta sama sieć”.",
-    "pairSasLoading": "Wczytywanie obrazków…"
+    "pairSasLoading": "Wczytywanie obrazków…",
+    "moreDevices": "Pokaż jeszcze {count}"
   },
   "shareScope": {
     "label": "Udostępnij dla",
@@ -170,7 +170,6 @@
     "clearStorage": "Wyczyść magazyn",
     "moreActions": "Więcej",
     "chooseFiles": "Wybierz pliki",
-    "dropHint": "lub przeciągnij pliki tutaj",
     "limitResume": "Do {size} na plik · przerwane wysyłanie zostanie wznowione",
     "receive": "Odbierz",
     "copyImage": "Kopiuj obraz",
@@ -185,10 +184,7 @@
     "removed": "Tekst usunięty.",
     "clearAll": "Wyczyść wszystkie teksty",
     "cleared": "Wszystkie teksty wyczyszczone.",
-    "composePlaceholder": "Wpisz lub wklej tutaj, a potem naciśnij Udostępnij",
-    "receivedText": "Otrzymany tekst",
     "autoShareHint": "Tekst jest udostępniany automatycznie po wklejeniu (Ctrl+V / Cmd+V)",
-    "noMessages": "Brak wiadomości",
     "delete": "Usuń",
     "prefillNote": "Ten tekst pochodzi z linku. Sprawdź go i naciśnij „Udostępnij”, aby wysłać.",
     "sentStatus": "Udostępniono. Tekst pojawił się na liście na połączonych urządzeniach.",
@@ -220,7 +216,9 @@
     "quotaEvicted": "Każde urządzenie przechowuje najwyżej {count} ostatnich tekstów. Najstarszy nie trafi już do nowych urządzeń.",
     "receiversCount": "Odbiorców: {count}",
     "deliverOnJoin": "dotrze, gdy ktoś dołączy",
-    "notDelivered": "nie dotrze"
+    "notDelivered": "nie dotrze",
+    "showMore": "Pokaż więcej",
+    "collapse": "Zwiń"
   },
   "notification": {
     "uploading": "Przesyłanie...",
@@ -255,7 +253,10 @@
     "cancel": "Anuluj",
     "cancelAll": "Anuluj wszystko",
     "uploadCancelled": "Anulowano przesyłanie",
-    "uploadsCancelled": "Anulowano przesyłanie plików: {count}"
+    "uploadsCancelled": "Anulowano przesyłanie plików: {count}",
+    "undo": "Cofnij",
+    "textsCleared": "Usunięto wszystkie teksty",
+    "textRemoved": "Usunięto tekst"
   },
   "clipboard": {
     "paste": "Wklej",
@@ -409,6 +410,21 @@
     "downloadHint": "Pobierz wybrane pliki w jednym ZIP (powyżej 200 MB osobno)",
     "qrCodeHint": "Utwórz kody QR dla zaznaczonych plików"
   },
+  "pair": {
+    "button": "Połącz w pokoju",
+    "buttonShort": "Połącz",
+    "paired": "Ten sam pokój",
+    "connecting": "Łączenie…",
+    "openWith": "Otwórz prywatny pokój z {name}",
+    "openRoom": "Przejdź do pokoju z {name}",
+    "pendingSeconds": "{n} s",
+    "cancel": "Anuluj",
+    "checking": "Sprawdzanie",
+    "peerChecking": "Czekanie na drugą stronę",
+    "request": {
+      "title": "Prośba o połączenie w pokoju"
+    }
+  },
   "group": {
     "create": "Utwórz pokój grupowy",
     "createShort": "Pokój",
@@ -552,5 +568,9 @@
     "textArrived": "Nowy tekst: {where}",
     "fileArrived": "Nowy plik: {where}",
     "textsCleared": "Usunięto wszystkie teksty: {where}"
+  },
+  "send": {
+    "placeholder": "Wpisz tutaj lub przeciągnij i upuść pliki",
+    "shortcutHint": "Wyślij przez Ctrl+Enter (⌘+Enter na Macu)"
   }
 }

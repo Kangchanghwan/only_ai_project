@@ -28,20 +28,20 @@ const { t } = useI18n()
   justify-content: center;
   max-width: calc(100vw - 2rem);
   padding: 0.5rem 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 0;
   font-size: 0.8125rem;
-  background: rgba(20, 18, 16, 0.92);
-  color: #fff;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+  box-shadow: none;
 }
 .arrival-prompt__btn {
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid color-mix(in srgb, var(--color-on-ink) 40%, transparent);
   background: transparent;
   color: inherit;
-  border-radius: 0.5rem;
+  border-radius: 0;
   padding: 0.25rem 0.625rem;
   font-size: 0.8125rem;
   cursor: pointer;
 }
-.arrival-prompt__btn--primary { background: #f97316; border-color: #f97316; color: #fff; font-weight: 600; }
+.arrival-prompt__btn--primary { background: var(--color-on-ink); border-color: var(--color-on-ink); border-width: 2px; font-weight: 800; color: var(--color-ink); }
 </style>

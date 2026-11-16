@@ -64,11 +64,11 @@ async function receive() {
 
 <template>
   <main class="min-h-screen flex flex-col items-center justify-center p-4 bg-background text-text-primary" data-testid="locked-link-page">
-    <div class="w-full max-w-sm bg-surface border border-border rounded-2xl p-5 shadow-xl">
+    <div class="w-full max-w-sm bg-surface border-2 border-ink rounded-none p-5">
       <p class="text-xs text-text-secondary m-0 mb-3">Clipboard Share · {{ t('lock.link.title') }}</p>
 
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-md flex items-center justify-center shrink-0 bg-primary/10 text-primary" aria-hidden="true">
+        <div class="w-10 h-10 rounded-none flex items-center justify-center shrink-0 bg-tint text-ink" aria-hidden="true">
           <svg v-if="phase === 'done'" class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
           <svg v-else class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
         </div>
@@ -84,16 +84,16 @@ async function receive() {
         </div>
       </div>
 
-      <div v-if="phase === 'downloading'" class="mt-3 h-1 rounded-full bg-black/10 overflow-hidden" aria-hidden="true">
-        <div class="h-full bg-primary transition-[width] duration-100 ease-linear" :style="{ width: percent + '%' }"></div>
+      <div v-if="phase === 'downloading'" class="mt-3 h-1 rounded-none bg-border overflow-hidden" aria-hidden="true">
+        <div class="h-full bg-ink transition-[width] duration-100 ease-linear" :style="{ width: percent + '%' }"></div>
       </div>
 
-      <p v-if="errorText" class="text-xs text-red-500 mt-3 m-0" role="alert" data-testid="locked-link-error">{{ errorText }}</p>
+      <p v-if="errorText" class="text-xs text-danger mt-3 m-0" role="alert" data-testid="locked-link-error">{{ errorText }}</p>
 
       <button
         v-if="phase === 'ready' || phase === 'downloading' || phase === 'done'"
         type="button"
-        class="mt-4 w-full min-h-[48px] rounded-full bg-primary text-white text-sm font-semibold inline-flex items-center justify-center gap-1.5 disabled:opacity-60"
+        class="mt-4 w-full min-h-[48px] rounded-none bg-ink text-on-ink text-sm font-extrabold inline-flex items-center justify-center gap-1.5 disabled:opacity-60"
         :disabled="phase === 'downloading'"
         data-testid="locked-link-receive"
         @click="receive"
@@ -108,7 +108,7 @@ async function receive() {
 
       <a
         href="/"
-        class="mt-2 w-full min-h-[44px] rounded-full border border-border text-sm font-semibold text-text-primary inline-flex items-center justify-center no-underline"
+        class="mt-2 w-full min-h-[44px] rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold inline-flex items-center justify-center no-underline"
         data-testid="locked-link-home"
       >{{ t('lock.link.openApp') }}</a>
     </div>

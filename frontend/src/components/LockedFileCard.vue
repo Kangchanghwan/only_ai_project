@@ -46,6 +46,12 @@ const {
 const lockState = useLockState()
 const notification = useNotification()
 
+function onRowClick(event) {
+  if (!props.selectable) return
+  if (event.target.closest && event.target.closest('button, a, input, textarea, select, [role="menu"], [role="dialog"]')) return
+  emit('toggle-selection', props.file)
+}
+
 const HEX = '0123456789abcdef'
 const scramble = (n) => Array.from({ length: n }, () => HEX[Math.floor(Math.random() * 16)]).join('')
 const placeholderName = scramble(16) + '…'
@@ -271,54 +277,45 @@ onUnmounted(() => clearInterval(revealTimer))
 
 <template>
   <div
-    class="file-row relative overflow-hidden flex flex-wrap sm:flex-nowrap items-center gap-2 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
-    :class="[accentHoverBorder50, isSelected ? ['border-l-4', accentBgSoft5, accentBorderL] : '']"
+    class="group file-row relative overflow-hidden flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-none border bg-surface transition-colors duration-200"
+    :class="[isSelected ? 'border-ink file-row-selected' : 'border-border', selectable ? 'cursor-pointer select-none' : '']"
+    :data-selected="isSelected ? 'true' : undefined"
     data-testid="locked-file"
+    @click="onRowClick"
   >
-    <!-- 1:1 방: 방 키로 지울 수 있으니 일괄 삭제용으로 고를 수 있다 -->
-    <label v-if="selectable" class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 cursor-pointer">
-      <input
-        type="checkbox"
-        class="select-checkbox w-5 h-5 cursor-pointer"
-        :class="accentColor"
-        :checked="isSelected"
-        :aria-label="t('file.selectFile', { name: isPlain ? displayName : t('lock.lockedFile') })"
-        data-testid="locked-select"
-        @change="$emit('toggle-selection', file)"
-      />
-    </label>
-    <!-- 체크박스 자리: 잠긴 파일은 하나씩 받으므로 선택할 수 없다 (정렬을 맞추려고 자리는 둔다) -->
-    <label v-else class="inline-flex items-center justify-center w-11 h-11 -mx-1 shrink-0 opacity-40" :title="t('lock.noBulk')">
-      <input
-        type="checkbox"
-        class="select-checkbox w-5 h-5"
-        :class="accentColor"
-        disabled
-        :aria-label="t('lock.noBulk')"
-      />
-    </label>
-
-    <!-- 아이콘 칸: 자물쇠 (풀리면 열린 자물쇠) -->
-    <div
-      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center flex-shrink-0"
-      :class="[accentBgSoft10, accentText]"
-      :title="phase === 'done' ? t('lock.unlockedHere') : t('lock.lockedFile')"
-      data-testid="locked-icon"
-      :data-state="phase === 'done' ? 'open' : 'locked'"
-    >
-      <svg v-if="phase === 'done'" class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
-      <svg v-else class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+    <input
+      v-if="selectable"
+      type="checkbox"
+      class="sr-only"
+      :checked="isSelected"
+      :aria-label="t('file.selectFile', { name: isPlain ? displayName : t('lock.lockedFile') })"
+      data-testid="row-select"
+      @change="emit('toggle-selection', file)"
+      @keydown.enter.prevent="emit('toggle-selection', file)"
+    />
+    <!-- 아이콘 칸: 자물쇠 (풀리면 열린 자물쇠). 선택 표시는 행 테두리만 두껍게 -->
+    <div class="relative w-8 h-8 sm:w-10 sm:h-10 shrink-0">
+        <div
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-none flex items-center justify-center"
+          :class="[accentBgSoft10, accentText]"
+          :title="phase === 'done' ? t('lock.unlockedHere') : t('lock.lockedFile')"
+          data-testid="locked-icon"
+          :data-state="phase === 'done' ? 'open' : 'locked'"
+        >
+          <svg v-if="phase === 'done'" class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
+          <svg v-else class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+        </div>
     </div>
 
     <!-- 이름 + 2행 "보낸 사람 · 용량 · 시간(상태)" — 일반 카드와 같은 순서 -->
-    <div class="file-info flex-1 min-w-[8rem] sm:min-w-0">
+    <div class="file-info flex-1 min-w-0">
       <p
         class="file-name text-sm font-medium truncate m-0"
         :class="isPlain ? 'text-text-primary' : 'text-text-secondary'"
         :title="isPlain ? displayName : t('lock.hiddenName')"
         data-testid="locked-name"
       >{{ displayName }}</p>
-      <p class="file-meta flex flex-wrap items-center gap-x-1 text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="locked-meta">
+      <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="locked-meta">
         <SenderLabel v-if="file.uploader" :sender="file.uploader" class="shrink min-w-0" />
         <span v-if="file.uploader" aria-hidden="true">·</span>
         <span class="whitespace-nowrap">{{ meta.size }}</span>
@@ -328,10 +325,10 @@ onUnmounted(() => clearInterval(revealTimer))
     </div>
 
     <!-- 액션 영역: 일반 카드와 같은 버튼 2개 -->
-    <div class="file-actions flex items-center gap-2 shrink-0 ml-auto">
+    <div class="file-actions flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
       <button
         type="button"
-        class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-full text-white text-sm font-semibold inline-flex items-center justify-center gap-1"
+        class="download-btn shrink-0 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-none text-on-accent text-sm font-extrabold inline-flex items-center justify-center gap-1"
         :class="[accentBg, { 'opacity-50': lockedOut && !canReceiveDirectly }]"
         :disabled="busy || (lockedOut && !canReceiveDirectly)"
         :aria-label="busy ? (phase === 'checking' ? t('lock.checking') : t('lock.decrypting', { percent })) : `${canReceiveDirectly ? t('file.receive') : t('lock.unlock')}: ${isPlain ? displayName : t('lock.lockedFile')}`"
@@ -353,7 +350,7 @@ onUnmounted(() => clearInterval(revealTimer))
 
       <button
         type="button"
-        class="more-btn shrink-0 w-11 h-11 flex items-center justify-center rounded-full border border-border bg-background text-text-primary"
+        class="more-btn shrink-0 w-11 h-11 flex items-center justify-center rounded-none border border-border bg-background text-text-primary"
         :title="t('file.moreActions')"
         :aria-label="t('file.moreActions')"
         aria-haspopup="dialog"
@@ -392,7 +389,7 @@ onUnmounted(() => clearInterval(revealTimer))
           @keydown.esc="closePasswordSheet"
         >
           <form
-            class="w-full sm:w-80 bg-surface rounded-t-2xl sm:rounded-2xl p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
+            class="w-full sm:w-80 bg-surface rounded-none p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
             :class="{ shake: shaking }"
             @submit.prevent="submitPassword"
             @animationend="shaking = false"
@@ -408,12 +405,15 @@ onUnmounted(() => clearInterval(revealTimer))
                 <SenderLabel :sender="file.uploader" class="shrink min-w-0" />
               </template>
             </p>
-            <div class="flex items-center min-h-[44px] rounded-lg border border-border bg-background pl-3 pr-1">
+            <div class="flex items-center min-h-[44px] rounded-none border border-border bg-background pl-3 pr-1">
               <input
                 ref="passwordInput"
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
                 autocomplete="off"
+                data-1p-ignore
+                data-lpignore="true"
+                data-bwignore
                 :placeholder="t('lock.passwordPlaceholder')"
                 :aria-label="t('lock.passwordPlaceholder')"
                 :disabled="lockedOut || phase === 'checking'"
@@ -431,13 +431,13 @@ onUnmounted(() => clearInterval(revealTimer))
             <div class="flex gap-2 justify-end mt-2">
               <button
                 type="button"
-                class="min-h-[44px] px-5 rounded-full border border-border text-sm font-semibold text-text-primary"
+                class="min-h-[44px] px-5 rounded-none border-2 border-ink text-ink hover:bg-tint text-sm font-bold"
                 :disabled="phase === 'checking'"
                 @click="closePasswordSheet"
               >{{ t('notification.cancel') }}</button>
               <button
                 type="submit"
-                class="min-h-[44px] px-5 rounded-full text-white text-sm font-semibold disabled:opacity-50"
+                class="min-h-[44px] px-5 rounded-none text-on-accent text-sm font-extrabold disabled:opacity-50"
                 :class="accentBg"
                 :disabled="!password || lockedOut || phase === 'checking'"
                 data-testid="locked-submit"
@@ -472,25 +472,25 @@ onUnmounted(() => clearInterval(revealTimer))
           @click="handleActionsBackdrop"
           @keydown.esc="closeActionsSheet"
         >
-          <div class="w-full sm:w-80 bg-surface rounded-t-2xl sm:rounded-2xl p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
+          <div class="w-full sm:w-80 bg-surface rounded-none p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
             <p class="px-4 py-2 text-xs text-text-secondary truncate m-0">{{ isPlain ? displayName : t('lock.lockedFile') }}</p>
             <button
               v-if="canShareQR"
-              class="sheet-qr w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-black/5 text-text-primary disabled:opacity-60"
+              class="sheet-qr w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary disabled:opacity-60"
               :disabled="qrPreparing"
               data-testid="locked-qr"
               @click="handleSheetQR"
             >
-              <span aria-hidden="true">▦</span>
+              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="5" height="5" x="3" y="3"/><rect width="5" height="5" x="16" y="3"/><rect width="5" height="5" x="3" y="16"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/></svg>
               <span class="text-sm font-medium">{{ qrPreparing ? t('lock.qrPreparing') : t('room.qrShareTitle') }}</span>
             </button>
             <button
               v-if="canDelete"
-              class="sheet-delete w-full flex items-center gap-3 px-4 min-h-[48px] rounded-lg hover:bg-red-500/10 text-red-500"
+              class="sheet-delete w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-red-500/10 text-red-500"
               data-testid="locked-delete"
               @click="handleSheetDelete"
             >
-              <span aria-hidden="true">🗑</span>
+              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               <span class="text-sm font-medium">{{ t('file.delete') }}</span>
             </button>
             <p v-else class="px-4 py-3 text-sm text-text-secondary m-0" data-testid="locked-delete-note">{{ t('lock.errors.deleteForbidden') }}</p>

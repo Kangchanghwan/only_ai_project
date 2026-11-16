@@ -56,7 +56,7 @@ const { currentTheme, toggleTheme } = useTheme()
   padding: 0.5rem;
   background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+  border-radius: 0;
   color: var(--color-text-primary);
   font-size: 1.25rem;
   cursor: pointer;
@@ -66,9 +66,8 @@ const { currentTheme, toggleTheme } = useTheme()
 }
 
 .theme-toggle-button:hover {
-  background: var(--color-surface);
-  border-color: var(--color-primary);
-  transform: translateY(-1px);
+  background: var(--color-tint);
+  border-color: var(--color-ink);
 }
 
 .theme-toggle-button:active {
@@ -82,6 +81,6 @@ const { currentTheme, toggleTheme } = useTheme()
 }
 
 .theme-toggle-button:hover svg {
-  transform: rotate(20deg);
+  transform: none;
 }
 </style>
