@@ -87,6 +87,19 @@ function handleThumbError() {
   }
 }
 
+function onRowClick(event) {
+  if (event.target.closest && event.target.closest('button, a, input, textarea, select, [role="menu"], [role="dialog"]')) return
+  emit('toggle-selection', props.file)
+}
+
+function onRowKeydown(event) {
+  if (event.target !== event.currentTarget) return
+  if (event.key === ' ' || event.key === 'Enter') {
+    event.preventDefault()
+    emit('toggle-selection', props.file)
+  }
+}
+
 function handleDownload(event) {
   event.stopPropagation()
   emit('download-file', props.file)
@@ -169,38 +182,48 @@ async function handleShare(event) {
 <template>
   <!-- 행 전체 클릭으로 복사하지 않는다. 받기(primary)와 더보기(복사/QR/공유/삭제)를 명시 버튼으로 둔다. -->
   <div
-    class="file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
-    :class="[accentHoverBorder50, isSelected ? ['border-l-4', accentBgSoft5, accentBorderL] : '']"
+    class="group file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200 cursor-pointer select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+    :class="[isSelected ? 'border-ink bg-tint outline outline-2 -outline-offset-2 outline-ink' : 'border-border']"
+    role="checkbox"
+    :aria-checked="isSelected ? 'true' : 'false'"
+    tabindex="0"
+    :aria-label="t('file.selectFile', { name: file.name })"
+    @click="onRowClick"
+    @keydown="onRowKeydown"
   >
-    <!-- 체크박스: 44px 터치 영역의 label로 감싸 접근 가능한 이름을 준다 -->
-    <label class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 -mx-1 shrink-0 cursor-pointer">
-      <input
-        type="checkbox"
-        class="select-checkbox w-5 h-5 cursor-pointer"
-        :class="accentColor"
-        :checked="isSelected"
-        :aria-label="t('file.selectFile', { name: file.name })"
-        @change="$emit('toggle-selection', file)"
-      />
-    </label>
-
-    <img
-      v-if="showImagePreview"
-      :src="previewSrc"
-      :alt="file.name"
-      loading="lazy"
-      decoding="async"
-      width="40"
-      height="40"
-      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md object-cover flex-shrink-0"
-      @error="handleThumbError"
-    />
-    <div
-      v-else
-      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center flex-shrink-0"
-      :class="accentBgSoft10"
-    >
-      <span class="text-xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
+    <!-- 썸네일 칸: 선택되면 같은 크기의 남색 체크 칸으로 바뀐다 (자리 이동 없음) -->
+    <div class="relative w-8 h-8 sm:w-10 sm:h-10 shrink-0">
+      <div
+        v-if="isSelected"
+        class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-ink text-on-ink"
+        data-testid="select-thumb"
+      ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <template v-else>
+        <img
+          v-if="showImagePreview"
+          :src="previewSrc"
+          :alt="file.name"
+          loading="lazy"
+          decoding="async"
+          width="40"
+          height="40"
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-md object-cover"
+          @error="handleThumbError"
+        />
+        <div
+          v-else
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center"
+          :class="accentBgSoft10"
+        >
+          <span class="text-xl" :title="fileMetadata.type">{{ fileMetadata.icon }}</span>
+        </div>
+        <span
+        v-if="!isSelected"
+        class="select-hint pointer-events-none absolute inset-0 border-[1.5px] border-ink bg-transparent opacity-0 transition-opacity duration-150 [@media(pointer:fine)]:group-hover:opacity-100"
+        aria-hidden="true"
+        data-testid="select-hint"
+      ></span>
+      </template>
     </div>
 
     <!-- 파일명(ellipsis, 전체는 title) + 2행 "보낸 사람 · 용량 · 시간" (시간은 한 번만) -->

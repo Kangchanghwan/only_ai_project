@@ -141,8 +141,8 @@ describe('TextItemRow 더보기', () => {
 describe('TextItemRow 접힌 행은 파일 행과 같은 모양', () => {
   const fileRowClasses = () => {
     const src = readFileSync('src/components/FileCard.vue', 'utf8')
-    const m = src.match(/class="file-row ([^"]+)"/)
-    return m[1].split(/\s+/)
+    const m = src.match(/class="group file-row ([^"]+)"/)
+    return m[1].split(/\s+/).filter((c) => !['cursor-pointer', 'select-none', 'border'].includes(c) && !c.startsWith('focus-visible'))
   }
   it('루트·컨테이너 클래스가 FileCard 행과 같고 제목은 truncate(여러 줄 줄임 없음), 삭제 시각은 메타 줄 안에 있다', () => {
     const w = mountRow({ id: 'p', content: '첫 줄\n둘째 줄', timestamp: Date.now(), expiresAt: 1, remainingMs: 5 * 60000, canCancel: true, sender })
@@ -152,6 +152,7 @@ describe('TextItemRow 접힌 행은 파일 행과 같은 모양', () => {
       expect(classes).toContain(c)
     }
     expect(classes).toContain('file-row')
+    expect(classes).toContain('border-border')
     const title = w.find('[data-testid="text-title"]')
     expect(title.classes()).toContain('truncate')
     expect(w.html()).not.toContain('line-clamp')
@@ -161,5 +162,37 @@ describe('TextItemRow 접힌 행은 파일 행과 같은 모양', () => {
     // 복사/더보기 버튼: FileCard의 받기/더보기와 같은 크기 클래스
     expect(w.find('[data-testid="text-copy"]').classes()).toEqual(expect.arrayContaining(['bg-ink', 'min-h-[44px]', 'min-w-[44px]', 'px-3', 'sm:px-4']))
     expect(w.find('[data-testid="text-more"]').classes()).toEqual(expect.arrayContaining(['w-11', 'h-11', 'border-border', 'bg-background']))
+  })
+})
+
+describe('TextItemRow 빈 곳 눌러 더보기', () => {
+  const multi = { id: 'm', content: '첫 줄\n둘째 줄', timestamp: Date.now() }
+  it('체크박스·빈 자리가 없다', () => {
+    const w = mountRow(multi)
+    expect(w.find('input[type="checkbox"]').exists()).toBe(false)
+    expect(w.find('[data-testid="text-spacer"]').exists()).toBe(false)
+  })
+  it('펼칠 수 있는 행의 빈 곳을 누르면 펼쳐지고 다시 누르면 접힌다', async () => {
+    const w = mountRow(multi)
+    await w.find('[data-testid="text-entry"]').trigger('click')
+    expect(w.find('[data-testid="text-body"]').exists()).toBe(true)
+    await w.find('[data-testid="text-entry"]').trigger('click')
+    expect(w.find('[data-testid="text-body"]').exists()).toBe(false)
+  })
+  it('한 줄짜리(펼칠 수 없는) 행은 눌러도 변하지 않는다', async () => {
+    const w = mountRow({ id: 's', content: 'hi', timestamp: Date.now() })
+    await w.find('[data-testid="text-entry"]').trigger('click')
+    expect(w.find('[data-testid="text-body"]').exists()).toBe(false)
+  })
+  it('펼친 본문 안을 눌러도 접히지 않는다', async () => {
+    const w = mountRow(multi)
+    await w.find('[data-testid="text-entry"]').trigger('click')
+    await w.find('[data-testid="text-body"]').trigger('click')
+    expect(w.find('[data-testid="text-body"]').exists()).toBe(true)
+  })
+  it('복사 버튼을 눌러도 펼쳐지지 않는다', async () => {
+    const w = mountRow(multi)
+    await w.find('[data-testid="text-copy"]').trigger('click')
+    expect(w.find('[data-testid="text-body"]').exists()).toBe(false)
   })
 })

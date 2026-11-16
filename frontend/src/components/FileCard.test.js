@@ -142,3 +142,43 @@ describe('FileCard.vue - 더보기 메뉴', () => {
     expect(wrapper.emitted('delete-file')).toBeFalsy()
   })
 })
+
+describe('FileCard 행 눌러 선택 (체크박스 없음)', () => {
+  it('체크박스 input이 없고 role=checkbox 행이다', () => {
+    mountCard()
+    expect(wrapper.find('input[type="checkbox"]').exists()).toBe(false)
+    const row = wrapper.find('.file-row')
+    expect(row.attributes('role')).toBe('checkbox')
+    expect(row.attributes('aria-checked')).toBe('false')
+    expect(row.attributes('tabindex')).toBe('0')
+    expect(row.attributes('aria-label')).toBe('file.selectFile')
+    expect(wrapper.find('[data-testid="select-thumb"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="select-hint"]').exists()).toBe(true)
+  })
+  it('행을 누르면 toggle-selection을 보낸다', async () => {
+    mountCard()
+    await wrapper.find('.file-row').trigger('click')
+    expect(wrapper.emitted('toggle-selection')[0][0]).toMatchObject({ name: 'photo.png' })
+  })
+  it('받기·더보기 버튼은 선택을 바꾸지 않는다', async () => {
+    mountCard()
+    await wrapper.find('.download-btn').trigger('click')
+    await wrapper.find('.more-btn').trigger('click')
+    expect(wrapper.emitted('toggle-selection')).toBeUndefined()
+  })
+  it('포커스된 행에서 Space/Enter로 선택한다', async () => {
+    mountCard()
+    await wrapper.find('.file-row').trigger('keydown', { key: ' ' })
+    await wrapper.find('.file-row').trigger('keydown', { key: 'Enter' })
+    expect(wrapper.emitted('toggle-selection')).toHaveLength(2)
+  })
+  it('선택되면 체크 칸·aria-checked=true·강조 배경', () => {
+    mountCard({ isSelected: true })
+    const row = wrapper.find('.file-row')
+    expect(row.attributes('aria-checked')).toBe('true')
+    expect(row.classes()).toContain('bg-tint')
+    expect(wrapper.find('[data-testid="select-thumb"]').exists()).toBe(true)
+    expect(wrapper.find('img').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="select-hint"]').exists()).toBe(false)
+  })
+})

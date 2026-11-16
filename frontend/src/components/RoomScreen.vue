@@ -278,7 +278,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
       />
 
       <div class="workspace">
-        <main class="ws-main bg-surface rounded-xl p-4 sm:p-6 border border-border min-w-0">
+        <main class="ws-main sm:bg-surface sm:rounded-xl p-0 sm:p-6 sm:border sm:border-border min-w-0">
           <div class="flex flex-col gap-8">
             <section data-testid="workspace-stack">
               <p v-if="peerOffline" class="m-0 mb-2 text-xs text-text-secondary" role="status" data-testid="peer-offline-upload-note">{{ t('pair.offlineUploadNote') }}</p>

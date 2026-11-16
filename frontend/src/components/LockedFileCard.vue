@@ -46,6 +46,21 @@ const {
 const lockState = useLockState()
 const notification = useNotification()
 
+function onRowClick(event) {
+  if (!props.selectable) return
+  if (event.target.closest && event.target.closest('button, a, input, textarea, select, [role="menu"], [role="dialog"]')) return
+  emit('toggle-selection', props.file)
+}
+
+function onRowKeydown(event) {
+  if (!props.selectable) return
+  if (event.target !== event.currentTarget) return
+  if (event.key === ' ' || event.key === 'Enter') {
+    event.preventDefault()
+    emit('toggle-selection', props.file)
+  }
+}
+
 const HEX = '0123456789abcdef'
 const scramble = (n) => Array.from({ length: n }, () => HEX[Math.floor(Math.random() * 16)]).join('')
 const placeholderName = scramble(16) + '…'
@@ -271,43 +286,41 @@ onUnmounted(() => clearInterval(revealTimer))
 
 <template>
   <div
-    class="file-row relative overflow-hidden flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
-    :class="[accentHoverBorder50, isSelected ? ['border-l-4', accentBgSoft5, accentBorderL] : '']"
+    class="group file-row relative overflow-hidden flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border bg-surface transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+    :class="[isSelected ? 'border-ink bg-tint outline outline-2 -outline-offset-2 outline-ink' : 'border-border', selectable ? 'cursor-pointer select-none' : '']"
+    :role="selectable ? 'checkbox' : undefined"
+    :aria-checked="selectable ? (isSelected ? 'true' : 'false') : undefined"
+    :tabindex="selectable ? 0 : undefined"
+    :aria-label="selectable ? t('file.selectFile', { name: isPlain ? displayName : t('lock.lockedFile') }) : undefined"
     data-testid="locked-file"
+    @click="onRowClick"
+    @keydown="onRowKeydown"
   >
-    <!-- 1:1 방: 방 키로 지울 수 있으니 일괄 삭제용으로 고를 수 있다 -->
-    <label v-if="selectable" class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 -mx-1 shrink-0 cursor-pointer">
-      <input
-        type="checkbox"
-        class="select-checkbox w-5 h-5 cursor-pointer"
-        :class="accentColor"
-        :checked="isSelected"
-        :aria-label="t('file.selectFile', { name: isPlain ? displayName : t('lock.lockedFile') })"
-        data-testid="locked-select"
-        @change="$emit('toggle-selection', file)"
-      />
-    </label>
-    <!-- 체크박스 자리: 잠긴 파일은 하나씩 받으므로 선택할 수 없다 (정렬을 맞추려고 자리는 둔다) -->
-    <label v-else class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 -mx-1 shrink-0 opacity-40" :title="t('lock.noBulk')">
-      <input
-        type="checkbox"
-        class="select-checkbox w-5 h-5"
-        :class="accentColor"
-        disabled
-        :aria-label="t('lock.noBulk')"
-      />
-    </label>
-
-    <!-- 아이콘 칸: 자물쇠 (풀리면 열린 자물쇠) -->
-    <div
-      class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center flex-shrink-0"
-      :class="[accentBgSoft10, accentText]"
-      :title="phase === 'done' ? t('lock.unlockedHere') : t('lock.lockedFile')"
-      data-testid="locked-icon"
-      :data-state="phase === 'done' ? 'open' : 'locked'"
-    >
-      <svg v-if="phase === 'done'" class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
-      <svg v-else class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+    <!-- 아이콘 칸: 자물쇠 (풀리면 열린 자물쇠). 1:1 방에서 선택되면 남색 체크 칸 -->
+    <div class="relative w-8 h-8 sm:w-10 sm:h-10 shrink-0">
+      <div
+        v-if="isSelected"
+        class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-ink text-on-ink"
+        data-testid="select-thumb"
+      ><svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <template v-else>
+        <div
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center"
+          :class="[accentBgSoft10, accentText]"
+          :title="phase === 'done' ? t('lock.unlockedHere') : t('lock.lockedFile')"
+          data-testid="locked-icon"
+          :data-state="phase === 'done' ? 'open' : 'locked'"
+        >
+          <svg v-if="phase === 'done'" class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 7.5-2" /></svg>
+          <svg v-else class="lock-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+        </div>
+        <span
+          v-if="selectable"
+          class="select-hint pointer-events-none absolute inset-0 border-[1.5px] border-ink bg-transparent opacity-0 transition-opacity duration-150 [@media(pointer:fine)]:group-hover:opacity-100"
+          aria-hidden="true"
+          data-testid="select-hint"
+        ></span>
+      </template>
     </div>
 
     <!-- 이름 + 2행 "보낸 사람 · 용량 · 시간(상태)" — 일반 카드와 같은 순서 -->

@@ -23,12 +23,7 @@ const stubs = {
     // roomId 정보가 유실되어 복합 키 충돌 버그가 재발할 수 있다).
     template: `
       <div class="file-card-stub" :data-name="file.name" :data-room="file.roomId" :data-selected="isSelected">
-        <input
-          type="checkbox"
-          class="select-checkbox"
-          :checked="isSelected"
-          @change="$emit('toggle-selection', file)"
-        />
+        <button type="button" class="select-btn" @click="$emit('toggle-selection', file)"></button>
       </div>
     `
   },
@@ -72,7 +67,7 @@ describe('FileGallery.vue - 선택 충돌(다른 룸, 동일 파일명) 수정',
     expect(cards).toHaveLength(2)
 
     // room-a의 dup.png만 선택
-    await cards[0].find('.select-checkbox').setValue(true)
+    await cards[0].find('.select-btn').trigger('click')
 
     // delete-selected를 통해 selectedFilesArray의 실제 내용을 공개 인터페이스로 검증
     await wrapper.find('.delete-selected-btn').trigger('click')

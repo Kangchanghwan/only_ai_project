@@ -1,7 +1,7 @@
 <script setup>
 /**
  * TextItemRow.vue - 한 목록 안의 텍스트 행 (FileCard와 같은 행 모양)
- * - 접힌 모양은 FileCard와 같다: 왼쪽 44px 자리, 사각 썸네일 자리(텍스트 아이콘), 한 줄 제목(첫 줄), 메타 줄(보낸 사람 · 시간 · 삭제 시각 · 더보기)
+ * - 접힌 모양은 FileCard와 같다: 사각 썸네일 자리(텍스트 아이콘), 한 줄 제목(첫 줄), 메타 줄(보낸 사람 · 시간 · 삭제 시각 · 더보기)
  * - 더보기를 눌러야 행이 늘어나며 전체 본문을 보여 준다
  * - 복사(남색 채움) + ⋯ 메뉴(삭제). 모든 본문은 텍스트 노드로만 렌더링한다 (v-html 사용 금지)
  * - 보관 중(10분) 남은 시간/보관 취소, 보관 안 된 내 텍스트 안내, 잠긴 텍스트 풀기는 기존 흐름 그대로
@@ -38,6 +38,16 @@ onMounted(() => {
 onUpdated(measureOverflow)
 onUnmounted(() => window.removeEventListener('resize', measureOverflow))
 const canExpand = computed(() => props.text.content != null && (hasMoreLines.value || truncated.value))
+
+const toggleable = computed(() => props.text.content != null && (canExpand.value || expanded.value))
+function onRowClick(event) {
+  if (!toggleable.value) return
+  const el = event.target
+  if (el.closest && el.closest('button, a, input, textarea, select, form, footer, [role="menu"], [data-testid="text-expanded"], [data-testid="text-menu"]')) return
+  const sel = typeof window !== 'undefined' && window.getSelection ? window.getSelection() : null
+  if (sel && sel.toString().length > 0) return
+  expanded.value = !expanded.value
+}
 
 function expiresLabel(text) {
   const minutes = Math.min(10, Math.ceil((text.remainingMs || 0) / 60000))
@@ -88,11 +98,10 @@ function formatTime(timestamp) {
   <!-- 접힌 행은 FileCard의 행과 같은 모양: 더보기를 눌러야 아래로 늘어난다 -->
   <article
     class="text-row file-row flex items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-lg border border-border bg-surface transition-colors duration-200"
-    :class="expanded ? 'flex-wrap' : 'flex-nowrap'"
+    :class="[expanded ? 'flex-wrap' : 'flex-nowrap', toggleable ? 'cursor-pointer' : '']"
     data-testid="text-entry"
+    @click="onRowClick"
   >
-    <!-- 파일 행의 체크박스 자리 -->
-    <span class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 -mx-1 shrink-0" aria-hidden="true" data-testid="text-spacer"></span>
     <div
       class="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center flex-shrink-0 bg-tint text-ink"
       data-testid="text-tag"
@@ -159,7 +168,7 @@ function formatTime(timestamp) {
           data-testid="text-more"
           @click="openMenu = !openMenu"
         ><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg></button>
-        <div v-if="openMenu" class="absolute right-0 top-full z-20 bg-surface border-2 border-ink min-w-[8rem]">
+        <div v-if="openMenu" role="menu" data-testid="text-menu" class="absolute right-0 top-full z-20 bg-surface border-2 border-ink min-w-[8rem]">
           <button
             v-if="text.expiresAt && text.canCancel"
             type="button"
@@ -178,7 +187,7 @@ function formatTime(timestamp) {
     </div>
 
     <!-- 펼친 상태: 행 아래로 전체 본문 + 접기 -->
-    <div v-if="expanded && text.content != null" class="basis-full min-w-0 pl-[5.25rem] sm:pl-[6.25rem]" data-testid="text-expanded">
+    <div v-if="expanded && text.content != null" class="basis-full min-w-0 pl-[2.375rem] sm:pl-[3.25rem]" data-testid="text-expanded">
       <p
         class="m-0 p-3 text-sm text-text-primary whitespace-pre-wrap break-words select-text max-h-[60vh] overflow-y-auto border border-border bg-background"
         data-testid="text-body"
