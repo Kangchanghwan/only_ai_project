@@ -30,6 +30,8 @@ const props = defineProps({
   prefill: { type: String, default: '' },
   /** 지금 범위에서 받을 수 있는 다른 기기 수 (null이면 표시하지 않음) */
   receiverCount: { type: Number, default: null },
+  /** 서버 연결 전, 지난번 받을 기기 수(1 이상). 글자 자리만 잡고 보이지 않게 그려 연결 뒤 줄바꿈이 달라지지 않게 한다 */
+  receiverHint: { type: Number, default: null },
   /** 보내는 텍스트의 보관 방식: private(1:1 방 키) | locked(범위 잠금) | plain(평문) | none(보관 안 함) */
   storageMode: { type: String, default: 'none' },
   /** 이 범위의 한 목록(파일+텍스트)에 항목이 있는지: 없으면 입력 영역을 크게 */
@@ -247,9 +249,15 @@ function onKeydown(event) {
           :class="storageMode === 'plain' && scope === 'global' ? 'font-semibold text-text-primary' : ''"
           data-testid="text-storage-label"
         >{{ storageLabel }}</span>
-        <span v-if="receiverCount !== null" aria-hidden="true"> · </span>
         <span
-          v-if="receiverCount !== null"
+          v-if="receiverCount !== null && receiverHint !== null && receiverHint > 0"
+          class="tabular-nums invisible"
+          aria-hidden="true"
+          data-testid="text-receivers-placeholder"
+        > · {{ t('text.receiversCount', { count: receiverHint }) }}</span>
+        <span v-else-if="receiverCount !== null" aria-hidden="true"> · </span>
+        <span
+          v-if="receiverCount !== null && !(receiverHint !== null && receiverHint > 0)"
           class="tabular-nums"
           :class="{ 'font-semibold text-text-primary': receiverCount === 0 && !willQueue }"
           data-testid="text-receivers"

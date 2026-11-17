@@ -192,3 +192,41 @@ describe('FileGallery 로딩 자리 표시', () => {
     w.unmount()
   })
 })
+
+describe('FileGallery 로딩 자리 표시: 지난번 목록 크기', () => {
+  const mk = async (loadingHint) => {
+    const { mount } = await import('@vue/test-utils')
+    const { default: Gallery } = await import('./FileGallery.vue')
+    const { default: i18nPlugin } = await import('../i18n/index.js')
+    return mount(Gallery, { props: { files: [], roomId: 'room-a', isLoading: true, loadingHint }, global: { plugins: [i18nPlugin] } })
+  }
+  const rows = (w) => w.findAll('[data-testid="list-loading-row"]')
+  it('모르면(null) 두 줄, 텍스트 삭제 줄 자리는 없다', async () => {
+    const w = await mk(null)
+    expect(rows(w)).toHaveLength(2)
+    expect(w.find('[data-testid="list-loading-clear"]').exists()).toBe(false)
+    w.unmount()
+  })
+  it('지난번 줄 수만큼 그린다 (최대 3줄)', async () => {
+    const one = await mk({ rows: 1, hasTexts: false })
+    expect(rows(one)).toHaveLength(1)
+    one.unmount()
+    const many = await mk({ rows: 9, hasTexts: false })
+    expect(rows(many)).toHaveLength(3)
+    many.unmount()
+  })
+  it('지난번에 비어 있었으면 줄을 그리지 않는다', async () => {
+    const w = await mk({ rows: 0, hasTexts: false })
+    expect(rows(w)).toHaveLength(0)
+    expect(w.find('[data-testid="list-loading"]').attributes('aria-busy')).toBe('true')
+    w.unmount()
+  })
+  it('지난번에 텍스트가 있었으면 "모든 텍스트 삭제" 줄 높이(44px)만큼 자리를 둔다', async () => {
+    const w = await mk({ rows: 2, hasTexts: true })
+    const c = w.find('[data-testid="list-loading-clear"]')
+    expect(c.exists()).toBe(true)
+    expect(c.classes()).toEqual(expect.arrayContaining(['min-h-[44px]', '-mb-1']))
+    expect(c.attributes('aria-hidden')).toBe('true')
+    w.unmount()
+  })
+})

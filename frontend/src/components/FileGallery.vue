@@ -42,6 +42,11 @@ const props = defineProps({
   uploads: {
     type: Map,
     default: () => new Map()
+  },
+  /** 로딩 자리 표시를 지난번 목록과 같은 크기로: { rows 줄 수, hasTexts "모든 텍스트 삭제" 줄 자리 }. 모르면 null(두 줄) */
+  loadingHint: {
+    type: Object,
+    default: null
   }
 })
 
@@ -91,6 +96,8 @@ const items = computed(() => {
   return out
 })
 const hasItems = computed(() => props.files.length > 0 || props.texts.length > 0)
+/** 로딩 자리 표시 줄 수: 지난번 목록을 기억하면 그만큼(비어 있었으면 0), 모르면 두 줄 */
+const loadingRows = computed(() => (props.loadingHint ? Math.max(0, Math.min(3, Number(props.loadingHint.rows) || 0)) : 2))
 
 const selectedFiles = ref(new Set())
 const showMultiQRModal = ref(false)
@@ -248,8 +255,10 @@ onUnmounted(() => {
 
     <!-- 로딩 중: 실제 목록 줄과 같은 모양·높이의 자리 표시 두 줄 (목록이 뜰 때 화면이 덜 움직인다) -->
     <div v-if="isLoading" class="flex flex-col gap-2 mt-4" aria-busy="true" data-testid="list-loading">
+      <!-- "모든 텍스트 삭제" 줄 자리 (지난번에 텍스트가 있었을 때) -->
+      <div v-if="loadingHint && loadingHint.hasTexts" class="min-h-[44px] -mb-1" aria-hidden="true" data-testid="list-loading-clear"></div>
       <div
-        v-for="i in 2"
+        v-for="i in loadingRows"
         :key="i"
         class="file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-none border border-border bg-surface"
         aria-hidden="true"

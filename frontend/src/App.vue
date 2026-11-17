@@ -79,6 +79,10 @@ const lockState = useLockState()
 // 로케일에 맞춰 title/description/og/canonical/lang을 갱신 (언어 전환 시 자동 반영)
 useSeoMeta()
 const isConnecting = ref(false)
+// 접속 직후 보관 텍스트를 받아 오는 동안 (목록이 파일만 먼저 뜬 뒤 텍스트가 들어와 다시 밀리지 않게 로딩에 포함한다)
+const initialTextsLoading = ref(false)
+let initialTextsGeneration = 0
+const INITIAL_TEXTS_WAIT_MS = 4000
 const privateRooms = usePrivateRooms()
 // 텍스트 10분 보관: 1:1 방은 방 키 암호문, 같은 네트워크·전체 공유는 잠금 꺼짐이면 평문, 켜짐이면 암호문
 const textQueue = useTextQueue({ textShare, privateRooms, lockState, t, getMySocketId: () => socket.mySocketId?.value ?? null })
@@ -473,7 +477,12 @@ async function connectToRoom() {
     // 파일 로딩을 백그라운드에서 실행 (룸별 최신 FILE_PAGE_SIZE개, 나머지는 "더 보기")
     fileManager.loadFilesFromRooms(roomManager.roomIds.value, { limit: FILE_PAGE_SIZE })
     // 내가 없는 동안 보관된 텍스트(10분)를 받는다 (1:1 방은 다시 입장한 뒤 불러온다)
-    textQueue.loadRooms(roomManager.roomIds.value)
+    const textsGeneration = ++initialTextsGeneration
+    initialTextsLoading.value = true
+    const releaseTexts = () => { if (textsGeneration === initialTextsGeneration) initialTextsLoading.value = false }
+    // 응답이 늦어도 목록을 계속 가리지 않도록 기다리는 시간에 상한을 둔다
+    const textsTimer = setTimeout(releaseTexts, INITIAL_TEXTS_WAIT_MS)
+    Promise.resolve(textQueue.loadRooms(roomManager.roomIds.value)).catch(() => {}).finally(() => { clearTimeout(textsTimer); releaseTexts() })
     // 정상적인 첫 연결은 알리지 않는다. 한 번 연결된 뒤 다시 연결될 때만 알린다
     if (hasConnectedOnce) notification.showSuccess(t('notification.connected'))
     hasConnectedOnce = true
@@ -1418,7 +1427,7 @@ onUnmounted(() => {
         :texts="visibleTexts"
         :text-receiver-count="textReceiverCount"
         :text-storage-mode="textStorageMode"
-        :is-loading="fileManager.isLoading.value || isConnecting"
+        :is-loading="fileManager.isLoading.value || isConnecting || initialTextsLoading"
         :user-count="socket.usersInRoom.value"
         :scope="shareScope.scope.value"
         :ip-room-devices="socket.ipRoomDevices.value"

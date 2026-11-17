@@ -122,3 +122,27 @@ describe('TextShareBox 링크 미리 채우기 (#/send?t=)', () => {
     expect(w.find('[data-testid="text-input"]').element.value).toBe('내가 쓰던 글')
   })
 })
+
+describe('TextShareBox 연결 전 받을 기기 글자 자리', () => {
+  it('receiverHint가 있으면 지난번 글자를 보이지 않게 그려 자리만 잡는다', () => {
+    const w = mountBox({ receiverCount: 0, receiverHint: 7 })
+    const ph = w.find('[data-testid="text-receivers-placeholder"]')
+    expect(ph.exists()).toBe(true)
+    expect(ph.classes()).toContain('invisible')
+    expect(ph.attributes('aria-hidden')).toBe('true')
+    expect(ph.text()).toContain('7')
+    // 연결 전의 "0대 · 들어오면 전달"은 같이 그리지 않는다
+    expect(w.find('[data-testid="text-receivers"]').exists()).toBe(false)
+    expect(w.find('[data-testid="upload-limit"]').exists()).toBe(true)
+  })
+  it('receiverHint가 없으면 원래대로 받을 기기 수를 보여 준다', () => {
+    const w = mountBox({ receiverCount: 3 })
+    expect(w.find('[data-testid="text-receivers-placeholder"]').exists()).toBe(false)
+    expect(w.find('[data-testid="text-receivers"]').text()).toContain('3')
+  })
+  it('receiverCount를 쓰지 않는 화면에서는 자리도 잡지 않는다', () => {
+    const w = mountBox({ receiverHint: 7 })
+    expect(w.find('[data-testid="text-receivers-placeholder"]').exists()).toBe(false)
+    expect(w.find('[data-testid="text-receivers"]').exists()).toBe(false)
+  })
+})
