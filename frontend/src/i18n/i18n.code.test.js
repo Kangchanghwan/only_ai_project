@@ -8,7 +8,7 @@ const en = locales['./locales/en.json'].default || locales['./locales/en.json']
 const KEYS = [
   'tabPicture', 'tabQr', 'tabLink', 'showTitle', 'expiresIn', 'renew', 'enter', 'enterTitle', 'clear', 'confirm',
   'waiting', 'wrong', 'warn', 'wait', 'declined', 'timeout', 'busy', 'requestTitle', 'requestDevice', 'approve',
-  'reject', 'approved', 'slotLabel', 'slotEmpty', 'pickerLabel', 'openFailed',
+  'reject', 'slotLabel', 'slotEmpty', 'pickerLabel', 'openFailed',
   'addTitle', 'addCreateTitle', 'addCreateDesc', 'addEnterDesc', 'showNote'
 ].map((k) => `code.${k}`)
 const PIC_KEYS = PICTURE_IDS.map((id) => `code.pic.${id}`)
@@ -53,7 +53,6 @@ describe('i18n 그림 코드(code) 블록', () => {
       'code.wait': ['{sec}'],
       'code.requestTitle': ['{name}'],
       'code.requestDevice': ['{device}'],
-      'code.approved': ['{name}'],
       'code.slotLabel': ['{n}', '{name}'],
       'code.slotEmpty': ['{n}']
     }

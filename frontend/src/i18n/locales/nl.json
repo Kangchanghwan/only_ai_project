@@ -5,19 +5,10 @@
     "helpTitle": "Hoe te gebruiken"
   },
   "room": {
-    "connecting": "Verbinden...",
-    "connected": "Verbonden met kamer {roomId}.",
-    "userCount": "{count} gebruiker(s) in de kamer.",
     "connectedDevices": "Verbonden apparaten",
-    "copyCode": "Kamercode kopiëren",
-    "copied": "Kamercode gekopieerd!",
     "textTab": "Tekst",
     "qrShareTitle": "Delen via QR-code",
-    "currentRoomCode": "Huidige ruimtecode",
     "copy": "Kopiëren",
-    "qr": "QR",
-    "joinOtherRoom": "Deelnemen aan een andere ruimte",
-    "enterCode": "Voer ruimtecode in",
     "otherDevices": "Andere apparaten: {count}",
     "waiting": "Wachten op apparaten",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "mmmmnmmmmmmmmmmmmmmmnmmm",
     "nameFormat": "{adj} {animal}",
     "me": "Ik",
-    "youAre": "Ik: {name} (dit apparaat)",
     "reroll": "Opnieuw loten",
     "rerollTitle": "Een andere dierennaam krijgen",
     "connectedAs": "{name} op {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Ook andere mensen op hetzelfde netwerk (school, kantoor, café) kunnen het zien.",
-    "manage": "Naamlabel beheren",
     "notAuth": "Het naamlabel onderscheidt alleen apparaten. Het is geen identiteitscontrole.",
     "globalWarning": "Iedereen, ook onbekenden, kan zien wat je hier verstuurt. Vergrendel gevoelige inhoud eerst met een wachtwoord.",
     "pairSasLoading": "Afbeeldingen laden…",
@@ -155,14 +144,10 @@
     "confirm": "Delen"
   },
   "file": {
-    "upload": "Bestand uploaden",
     "download": "Downloaden",
     "share": "Delen",
-    "downloading": "Downloaden...",
     "downloadComplete": "Download voltooid!",
     "downloadFailed": "Download mislukt",
-    "uploaded": "Nieuw bestand geüpload!",
-    "copyToClipboard": "Kopiëren naar klembord",
     "copied": "Gekopieerd naar klembord!",
     "copyFailed": "Kopiëren mislukt",
     "delete": "Verwijderen",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Tekst delen",
     "shared": "Tekst gedeeld!",
-    "newText": "Nieuwe tekst gedeeld!",
-    "removed": "Tekst verwijderd.",
     "clearAll": "Alle teksten wissen",
-    "cleared": "Alle teksten gewist.",
     "autoShareHint": "Tekst wordt automatisch gedeeld bij plakken (Ctrl+V / Cmd+V)",
     "delete": "Verwijderen",
     "prefillNote": "Deze tekst komt uit een link. Controleer hem en tik op 'Delen' om te verzenden.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Niet meer bewaren",
     "keepCancelled": "Deze tekst wordt niet meer bewaard.",
     "cancelFailed": "Bewaren kon niet worden gestopt. Probeer het opnieuw.",
-    "storagePlainIp": "Platte tekst, 10 min · iedereen op dit netwerk ziet het",
-    "storagePlainGlobal": "Platte tekst, 10 min · ook onbekenden zien het",
-    "storageLocked": "Versleuteld, 10 min · alleen apparaten met wachtwoord",
-    "storagePrivate": "Versleuteld met de 1:1-kamersleutel, 10 min",
     "storageNone": "Niet bewaard · alleen apparaten die nu open zijn",
     "keepLine": "Tekst 10 min bewaard · bestanden tot 1 dag",
     "notKeptTooLarge": "Groter dan 96 KB, niet bewaard · alleen apparaten die nu open zijn hebben het gekregen",
@@ -223,9 +201,7 @@
     "collapse": "Inklappen"
   },
   "notification": {
-    "uploading": "Uploaden...",
     "uploadComplete": "{count} bestand(en) geüpload!",
-    "uploadFailed": "Upload mislukt: {message}",
     "sizeLimitExceeded": "Totale uploadgrootte overschrijdt limiet ({limit}). Huidig: {current}, Upload: {upload}",
     "reconnected": "Opnieuw verbonden",
     "connected": "Verbonden.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Het bestand is leeg",
     "copying": "Kopiëren...",
     "openedNewTab": "Geopend in een nieuw tabblad.",
-    "downloadingCount": "{count} bestand(en) downloaden...",
-    "downloadPartial": "{success} gelukt, {fail} mislukt",
-    "downloadCountComplete": "{count} bestand(en) gedownload!",
     "copyFirstOnly": "Alleen het eerste bestand wordt naar het klembord gekopieerd...",
     "copyingToClipboard": "Kopiëren naar klembord...",
     "copiedWithCount": "{name} gekopieerd naar het klembord! (1 van {total})\nGebruik voor meerdere bestanden \"Selectie downloaden\".",
     "deleted": "{name} verwijderd",
-    "deleteFailed": "Verwijderen mislukt: {message}",
     "confirmDeleteSelected": "De {count} geselecteerde bestand(en) verwijderen?",
     "confirmClearStorage": "Alle bestanden in de opslag verwijderen? Dit kan niet ongedaan worden gemaakt.",
     "storageCleared": "De opslag is leeggemaakt",
@@ -261,7 +233,6 @@
     "textRemoved": "Tekst gewist"
   },
   "clipboard": {
-    "paste": "Plakken",
     "empty": "Klembord is leeg.",
     "permissionDenied": "Toegangsrechten voor klembord vereist.",
     "pasteTitle": "Plakken",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Geen bestanden om naar het klembord te kopiëren",
-    "noFilesToDownload": "Geen bestanden om te downloaden",
     "textNotFound": "Tekst niet gevonden",
     "noPresignedUrl": "Upload-URL kon niet worden opgehaald",
     "invalidRoomCode": "Ongeldige ruimtecode.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Dit bestand overschrijdt de limiet voor enkelvoudige uploads (100 MB). Ververs de pagina en probeer het opnieuw.",
     "sizeMismatch": "De grootte van het geüploade bestand klopte niet en is verwijderd. Upload het opnieuw.",
     "multipartFailed": "Uploaden van groot bestand mislukt: {status}",
-    "serverRoomSizeExceeded": "Dit zou de opslaglimiet van de ruimte overschrijden."
+    "serverRoomSizeExceeded": "Dit zou de opslaglimiet van de ruimte overschrijden.",
+    "connectUser": "Kan geen verbinding maken met de server. Controleer je internetverbinding en vernieuw de pagina.",
+    "uploadUser": "Uploaden van '{name}' is mislukt. Probeer het opnieuw.",
+    "downloadUser": "Het bestand kon niet worden gedownload. Misschien is het al verwijderd.",
+    "deleteUser": "Verwijderen is mislukt. Probeer het opnieuw."
   },
   "qrModal": {
     "roomTitle": "Ruimte delen via QR-code",
@@ -402,7 +376,6 @@
     "roomVisibility": "Alleen apparaten in deze kamer kunnen ze zien."
   },
   "download": {
-    "title": "Bestanden downloaden...",
     "selectAll": "Alles selecteren",
     "deselectAll": "Selectie opheffen",
     "downloadSelected": "Downloaden",
@@ -454,7 +427,6 @@
     "leave": "Ruimte verlaten",
     "leaveConfirm": "Hiermee verdwijnt de ruimte alleen van dit apparaat. Andere apparaten kunnen hem blijven gebruiken",
     "unnamed": "Naamloze ruimte",
-    "textNote": "Versleuteld met de kamersleutel, 10 min",
     "expired": "Je toegang tot de ruimte is verlopen. Vraag een nieuwe uitnodiging",
     "noRoom": "Ruimte niet gevonden",
     "leaveFailed": "Je kon de ruimte niet verlaten. Probeer het opnieuw",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Toelaten",
     "reject": "Weigeren",
-    "approved": "{name} is toegetreden",
     "slotLabel": "Plaatje {n}: {name}",
     "slotEmpty": "Plaatje {n}: leeg",
     "pickerLabel": "24 plaatjes",

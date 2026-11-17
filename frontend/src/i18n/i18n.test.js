@@ -263,7 +263,6 @@ describe('i18n identity (기기 정체성)', () => {
       expect(identity.connectedAs, `${path} connectedAs`).toMatch(/\{device\}/)
       expect(identity.connectedAs, `${path} connectedAs`).toMatch(/\{browser\}/)
       expect(identity.toastJoined, `${path} toastJoined`).toMatch(/\{desc\}/)
-      expect(identity.youAre, `${path} youAre`).toMatch(/\{name\}/)
       expect(identity.listTitle, `${path} listTitle`).toMatch(/\{count\}/)
       expect(identity.joinedAgo, `${path} joinedAgo`).toMatch(/\{time\}/)
     }
@@ -272,11 +271,12 @@ describe('i18n identity (기기 정체성)', () => {
 
 describe('i18n 반응형 작업 영역 신규 문구', () => {
   const required = [
-    'identity.ipNotice', 'identity.manage', 'identity.notAuth', 'identity.globalWarning',
+    'identity.ipNotice', 'identity.notAuth', 'identity.globalWarning',
     'room.otherDevices', 'room.waiting',
     'file.chooseFiles', 'file.limitResume', 'file.receive', 'file.copyImage', 'file.selectFile',
     'publicConfirm.title', 'publicConfirm.body', 'publicConfirm.confirm',
-    'guide.title', 'guide.retention'
+    'guide.title', 'guide.retention',
+    'errors.connectUser', 'errors.uploadUser', 'errors.downloadUser', 'errors.deleteUser'
   ]
   const get = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj)
 

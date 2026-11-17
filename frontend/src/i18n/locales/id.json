@@ -5,19 +5,10 @@
     "helpTitle": "Cara Menggunakan"
   },
   "room": {
-    "connecting": "Menghubungkan...",
-    "connected": "Terhubung ke ruangan {roomId}.",
-    "userCount": "{count} pengguna di ruangan.",
     "connectedDevices": "Perangkat yang terhubung",
-    "copyCode": "Salin kode ruangan",
-    "copied": "Kode ruangan disalin!",
     "textTab": "Teks",
     "qrShareTitle": "Bagikan lewat kode QR",
-    "currentRoomCode": "Kode ruang saat ini",
     "copy": "Salin",
-    "qr": "QR",
-    "joinOtherRoom": "Gabung ke ruang lain",
-    "enterCode": "Masukkan kode ruang",
     "otherDevices": "Perangkat lain: {count}",
     "waiting": "Menunggu perangkat",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "",
     "nameFormat": "{animal} {adj}",
     "me": "Saya",
-    "youAre": "Saya: {name} (perangkat ini)",
     "reroll": "Acak ulang",
     "rerollTitle": "Dapatkan nama hewan lain",
     "connectedAs": "{name} di {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Orang lain di jaringan yang sama (sekolah, kantor, kafe) juga bisa melihatnya.",
-    "manage": "Kelola label nama",
     "notAuth": "Label nama hanya membedakan perangkat. Ini bukan verifikasi identitas.",
     "globalWarning": "Di sini siapa pun, termasuk orang asing, bisa melihat yang Anda kirim. Kunci hal sensitif dengan kata sandi sebelum mengirim.",
     "pairSasLoading": "Memuat gambar…",
@@ -155,14 +144,10 @@
     "confirm": "Bagikan"
   },
   "file": {
-    "upload": "Unggah File",
     "download": "Unduh",
     "share": "Bagikan",
-    "downloading": "Mengunduh...",
     "downloadComplete": "Unduhan selesai!",
     "downloadFailed": "Unduhan gagal",
-    "uploaded": "File baru diunggah!",
-    "copyToClipboard": "Salin ke Clipboard",
     "copied": "Disalin ke clipboard!",
     "copyFailed": "Gagal menyalin",
     "delete": "Hapus",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Bagikan Teks",
     "shared": "Teks dibagikan!",
-    "newText": "Teks baru dibagikan!",
-    "removed": "Teks dihapus.",
     "clearAll": "Hapus Semua Teks",
-    "cleared": "Semua teks dihapus.",
     "autoShareHint": "Teks dibagikan otomatis saat ditempel (Ctrl+V / Cmd+V)",
     "delete": "Hapus",
     "prefillNote": "Teks ini berasal dari tautan. Periksa, lalu tekan \"Bagikan\" untuk mengirim.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Berhenti simpan",
     "keepCancelled": "Teks ini tidak disimpan lagi.",
     "cancelFailed": "Gagal berhenti menyimpan. Coba lagi.",
-    "storagePlainIp": "Teks biasa, 10 menit · siapa pun di jaringan ini bisa lihat",
-    "storagePlainGlobal": "Teks biasa, 10 menit · orang asing juga bisa lihat",
-    "storageLocked": "Terenkripsi, 10 menit · hanya perangkat dengan kata sandi",
-    "storagePrivate": "Dienkripsi dengan kunci ruang 1:1, 10 menit",
     "storageNone": "Tidak disimpan · hanya perangkat yang terbuka sekarang",
     "keepLine": "Teks disimpan 10 menit · file hingga 1 hari",
     "notKeptTooLarge": "Lebih dari 96KB, tidak disimpan · hanya perangkat yang terbuka sekarang yang menerima",
@@ -223,9 +201,7 @@
     "collapse": "Tutup"
   },
   "notification": {
-    "uploading": "Mengunggah...",
     "uploadComplete": "{count} file diunggah!",
-    "uploadFailed": "Unggahan gagal: {message}",
     "sizeLimitExceeded": "Ukuran total unggahan melebihi batas ({limit}). Saat ini: {current}, Unggah: {upload}",
     "reconnected": "Tersambung kembali",
     "connected": "Terhubung.",
@@ -235,14 +211,10 @@
     "fileEmpty": "File kosong",
     "copying": "Menyalin...",
     "openedNewTab": "Dibuka di tab baru.",
-    "downloadingCount": "Mengunduh {count} file...",
-    "downloadPartial": "{success} berhasil, {fail} gagal",
-    "downloadCountComplete": "{count} file berhasil diunduh!",
     "copyFirstOnly": "Hanya file pertama yang akan disalin ke clipboard...",
     "copyingToClipboard": "Menyalin ke clipboard...",
     "copiedWithCount": "{name} disalin ke clipboard! (1 dari {total})\nUntuk banyak file, gunakan \"Unduh yang dipilih\".",
     "deleted": "{name} dihapus",
-    "deleteFailed": "Gagal menghapus: {message}",
     "confirmDeleteSelected": "Hapus {count} file yang dipilih?",
     "confirmClearStorage": "Hapus semua file di penyimpanan? Tindakan ini tidak dapat dibatalkan.",
     "storageCleared": "Penyimpanan telah dikosongkan",
@@ -261,7 +233,6 @@
     "textRemoved": "Teks telah dihapus"
   },
   "clipboard": {
-    "paste": "Tempel",
     "empty": "Clipboard kosong.",
     "permissionDenied": "Izin akses clipboard diperlukan.",
     "pasteTitle": "Tempel",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Tidak ada file untuk disalin ke clipboard",
-    "noFilesToDownload": "Tidak ada file untuk diunduh",
     "textNotFound": "Teks tidak ditemukan",
     "noPresignedUrl": "Tidak dapat memperoleh URL unggah",
     "invalidRoomCode": "Kode ruang tidak valid.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "File ini melebihi batas unggahan tunggal (100 MB). Muat ulang halaman lalu coba lagi.",
     "sizeMismatch": "Ukuran file yang diunggah tidak cocok dan dibuang. Silakan unggah ulang.",
     "multipartFailed": "Gagal mengunggah file besar: {status}",
-    "serverRoomSizeExceeded": "Ini akan melebihi batas penyimpanan ruangan."
+    "serverRoomSizeExceeded": "Ini akan melebihi batas penyimpanan ruangan.",
+    "connectUser": "Tidak dapat terhubung ke server. Periksa koneksi internet lalu muat ulang halaman.",
+    "uploadUser": "Gagal mengunggah '{name}'. Coba lagi.",
+    "downloadUser": "Gagal mengunduh file. Mungkin file sudah dihapus.",
+    "deleteUser": "Gagal menghapus. Coba lagi."
   },
   "qrModal": {
     "roomTitle": "Bagikan ruang lewat kode QR",
@@ -402,7 +376,6 @@
     "roomVisibility": "Hanya perangkat yang berada di ruang ini yang dapat melihatnya."
   },
   "download": {
-    "title": "Mengunduh file...",
     "selectAll": "Pilih semua",
     "deselectAll": "Batalkan semua",
     "downloadSelected": "Unduh",
@@ -454,7 +427,6 @@
     "leave": "Keluar dari ruang",
     "leaveConfirm": "Ini hanya menghapus ruang dari perangkat ini. Perangkat lain tetap bisa memakainya",
     "unnamed": "Ruang tanpa nama",
-    "textNote": "Dienkripsi dengan kunci ruang, 10 menit",
     "expired": "Akses ruang sudah kedaluwarsa. Minta undangan baru",
     "noRoom": "Ruang tidak ditemukan",
     "leaveFailed": "Gagal keluar dari ruang. Coba lagi",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Izinkan",
     "reject": "Tolak",
-    "approved": "{name} sudah masuk",
     "slotLabel": "Gambar {n}: {name}",
     "slotEmpty": "Gambar {n}: kosong",
     "pickerLabel": "24 gambar",

@@ -5,19 +5,10 @@
     "helpTitle": "Nasıl Kullanılır"
   },
   "room": {
-    "connecting": "Bağlanıyor...",
-    "connected": "Oda {roomId}'ye bağlandı.",
-    "userCount": "Odada {count} kullanıcı.",
     "connectedDevices": "Bağlı cihazlar",
-    "copyCode": "Oda Kodunu Kopyala",
-    "copied": "Oda kodu kopyalandı!",
     "textTab": "Metin",
     "qrShareTitle": "QR kodla paylaş",
-    "currentRoomCode": "Geçerli oda kodu",
     "copy": "Kopyala",
-    "qr": "QR",
-    "joinOtherRoom": "Başka bir odaya katıl",
-    "enterCode": "Oda kodunu girin",
     "otherDevices": "Diğer cihazlar: {count}",
     "waiting": "Cihazlar bekleniyor",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "",
     "nameFormat": "{adj} {animal}",
     "me": "Ben",
-    "youAre": "Ben: {name} (bu cihaz)",
     "reroll": "Yeniden seç",
     "rerollTitle": "Başka bir hayvan adı al",
     "connectedAs": "{device} {browser} ile bağlanan {name}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Aynı ağdaki diğer kişiler de (okul, ofis, kafe) bunu görebilir.",
-    "manage": "Ad etiketini yönet",
     "notAuth": "Ad etiketi yalnızca cihazları ayırt eder. Kimlik doğrulaması değildir.",
     "globalWarning": "Burada yabancılar dahil herkes gönderdiklerinizi görebilir. Hassas içerikleri göndermeden önce şifreyle kilitleyin.",
     "pairSasLoading": "Resimler yükleniyor…",
@@ -155,14 +144,10 @@
     "confirm": "Paylaş"
   },
   "file": {
-    "upload": "Dosya Yükle",
     "download": "İndir",
     "share": "Paylaş",
-    "downloading": "İndiriliyor...",
     "downloadComplete": "İndirme tamamlandı!",
     "downloadFailed": "İndirme başarısız",
-    "uploaded": "Yeni dosya yüklendi!",
-    "copyToClipboard": "Panoya Kopyala",
     "copied": "Panoya kopyalandı!",
     "copyFailed": "Kopyalama başarısız",
     "delete": "Sil",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Metin Paylaş",
     "shared": "Metin paylaşıldı!",
-    "newText": "Yeni metin paylaşıldı!",
-    "removed": "Metin kaldırıldı.",
     "clearAll": "Tüm Metinleri Temizle",
-    "cleared": "Tüm metinler temizlendi.",
     "autoShareHint": "Yapıştırdığınızda (Ctrl+V / Cmd+V) metin otomatik paylaşılır",
     "delete": "Sil",
     "prefillNote": "Bu metin bir bağlantıdan geldi. Kontrol edip göndermek için \"Paylaş\"a dokunun.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Saklamayı durdur",
     "keepCancelled": "Bu metin artık saklanmıyor.",
     "cancelFailed": "Saklama durdurulamadı. Lütfen tekrar deneyin.",
-    "storagePlainIp": "Düz metin, 10 dk · bu ağdaki herkes görür",
-    "storagePlainGlobal": "Düz metin, 10 dk · yabancılar da görür",
-    "storageLocked": "Şifreli, 10 dk · yalnızca şifreyi bilen cihazlar",
-    "storagePrivate": "1:1 oda anahtarıyla şifreli, 10 dk",
     "storageNone": "Saklanmaz · yalnızca şu an açık cihazlar",
     "keepLine": "Metin 10 dk · dosyalar en fazla 1 gün saklanır",
     "notKeptTooLarge": "96 KB'ı aştığı için saklanmadı · yalnızca şu an açık cihazlar aldı",
@@ -223,9 +201,7 @@
     "collapse": "Daralt"
   },
   "notification": {
-    "uploading": "Yükleniyor...",
     "uploadComplete": "{count} dosya yüklendi!",
-    "uploadFailed": "Yükleme başarısız: {message}",
     "sizeLimitExceeded": "Toplam yükleme boyutu sınırı ({limit}) aşıyor. Mevcut: {current}, Yükleme: {upload}",
     "reconnected": "Yeniden bağlanıldı",
     "connected": "Bağlandı.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Dosya boş",
     "copying": "Kopyalanıyor...",
     "openedNewTab": "Yeni sekmede açıldı.",
-    "downloadingCount": "{count} dosya indiriliyor...",
-    "downloadPartial": "{success} başarılı, {fail} başarısız",
-    "downloadCountComplete": "{count} dosya indirildi!",
     "copyFirstOnly": "Panoya yalnızca ilk dosya kopyalanacak...",
     "copyingToClipboard": "Panoya kopyalanıyor...",
     "copiedWithCount": "{name} panoya kopyalandı! ({total} dosyadan 1'i)\nBirden fazla dosya için \"Seçilenleri indir\"i kullanın.",
     "deleted": "{name} silindi",
-    "deleteFailed": "Silme başarısız: {message}",
     "confirmDeleteSelected": "Seçilen {count} dosya silinsin mi?",
     "confirmClearStorage": "Depodaki tüm dosyalar silinsin mi? Bu işlem geri alınamaz.",
     "storageCleared": "Depo sıfırlandı",
@@ -261,7 +233,6 @@
     "textRemoved": "Metin silindi"
   },
   "clipboard": {
-    "paste": "Yapıştır",
     "empty": "Pano boş.",
     "permissionDenied": "Pano erişim izni gerekli.",
     "pasteTitle": "Yapıştır",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Panoya kopyalanacak dosya yok",
-    "noFilesToDownload": "İndirilecek dosya yok",
     "textNotFound": "Metin bulunamadı",
     "noPresignedUrl": "Yükleme URL'si alınamadı",
     "invalidRoomCode": "Geçersiz oda kodu.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Bu dosya tekli yükleme sınırını (100 MB) aşıyor. Sayfayı yenileyip tekrar deneyin.",
     "sizeMismatch": "Yüklenen dosyanın boyutu uyuşmadı ve silindi. Lütfen yeniden yükleyin.",
     "multipartFailed": "Büyük dosya yüklenemedi: {status}",
-    "serverRoomSizeExceeded": "Bu, odanın depolama sınırını aşacak."
+    "serverRoomSizeExceeded": "Bu, odanın depolama sınırını aşacak.",
+    "connectUser": "Sunucuya bağlanılamadı. İnternet bağlantınızı kontrol edip sayfayı yenileyin.",
+    "uploadUser": "“{name}” yüklenemedi. Lütfen tekrar deneyin.",
+    "downloadUser": "Dosya indirilemedi. Silinmiş olabilir.",
+    "deleteUser": "Silinemedi. Lütfen tekrar deneyin."
   },
   "qrModal": {
     "roomTitle": "Odayı QR kodla paylaş",
@@ -402,7 +376,6 @@
     "roomVisibility": "Yalnızca bu odadaki cihazlar bunları görebilir."
   },
   "download": {
-    "title": "Dosyalar indiriliyor...",
     "selectAll": "Tümünü seç",
     "deselectAll": "Seçimi kaldır",
     "downloadSelected": "İndir",
@@ -454,7 +427,6 @@
     "leave": "Odadan çık",
     "leaveConfirm": "Oda yalnızca bu cihazdan silinir. Diğer cihazlar kullanmaya devam edebilir",
     "unnamed": "Adsız oda",
-    "textNote": "Oda anahtarıyla şifreli, 10 dk",
     "expired": "Oda girişinizin süresi doldu. Yeni bir davet isteyin",
     "noRoom": "Oda bulunamadı",
     "leaveFailed": "Odadan çıkılamadı. Lütfen tekrar deneyin",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "İçeri al",
     "reject": "Reddet",
-    "approved": "{name} katıldı",
     "slotLabel": "Resim {n}: {name}",
     "slotEmpty": "Resim {n}: boş",
     "pickerLabel": "24 resim",

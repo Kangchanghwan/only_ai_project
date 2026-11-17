@@ -5,19 +5,10 @@
     "helpTitle": "Cómo Usar"
   },
   "room": {
-    "connecting": "Conectando...",
-    "connected": "Conectado a la sala {roomId}.",
-    "userCount": "{count} usuario(s) en la sala.",
     "connectedDevices": "Dispositivos conectados",
-    "copyCode": "Copiar Código de Sala",
-    "copied": "¡Código de sala copiado!",
     "textTab": "Texto",
     "qrShareTitle": "Compartir con código QR",
-    "currentRoomCode": "Código de sala actual",
     "copy": "Copiar",
-    "qr": "QR",
-    "joinOtherRoom": "Unirse a otra sala",
-    "enterCode": "Introduce el código de sala",
     "otherDevices": "Otros dispositivos: {count}",
     "waiting": "Esperando dispositivos",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "mmmmmmmmmmmfmmfmfmfmmmmm",
     "nameFormat": "{animal} {adj}",
     "me": "Yo",
-    "youAre": "Yo: {name} (este dispositivo)",
     "reroll": "Cambiar",
     "rerollTitle": "Obtener otro nombre de animal",
     "connectedAs": "{name} en {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Otras personas de la misma red (escuela, oficina, cafetería) también pueden verlo.",
-    "manage": "Gestionar etiqueta",
     "notAuth": "La etiqueta solo distingue dispositivos. No verifica tu identidad.",
     "globalWarning": "Cualquiera, incluso desconocidos, puede ver lo que envías aquí. Protege con contraseña lo sensible antes de enviarlo.",
     "pairSasLoading": "Cargando imágenes…",
@@ -155,14 +144,10 @@
     "confirm": "Compartir"
   },
   "file": {
-    "upload": "Subir Archivo",
     "download": "Descargar",
     "share": "Compartir",
-    "downloading": "Descargando...",
     "downloadComplete": "¡Descarga completa!",
     "downloadFailed": "Descarga fallida",
-    "uploaded": "¡Nuevo archivo subido!",
-    "copyToClipboard": "Copiar al Portapapeles",
     "copied": "¡Copiado al portapapeles!",
     "copyFailed": "Copia fallida",
     "delete": "Eliminar",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Compartir Texto",
     "shared": "¡Texto compartido!",
-    "newText": "¡Nuevo texto compartido!",
-    "removed": "Texto eliminado.",
     "clearAll": "Borrar Todos los Textos",
-    "cleared": "Todos los textos borrados.",
     "autoShareHint": "El texto se comparte automáticamente al pegar (Ctrl+V / Cmd+V)",
     "delete": "Eliminar",
     "prefillNote": "Este texto viene de un enlace. Revísalo y pulsa «Compartir» para enviarlo.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Dejar de guardar",
     "keepCancelled": "Se dejó de guardar este texto.",
     "cancelFailed": "No se pudo dejar de guardar. Inténtalo de nuevo.",
-    "storagePlainIp": "Texto sin cifrar, 10 min · cualquiera en esta red lo ve",
-    "storagePlainGlobal": "Texto sin cifrar, 10 min · también lo ven desconocidos",
-    "storageLocked": "Cifrado, 10 min · solo dispositivos con la contraseña",
-    "storagePrivate": "Cifrado con la clave de la sala 1:1, 10 min",
     "storageNone": "No se guarda · solo dispositivos abiertos ahora",
     "keepLine": "Texto guardado 10 min · archivos hasta 1 día",
     "notKeptTooLarge": "Supera 96 KB, no se guardó · solo lo recibieron los dispositivos abiertos ahora",
@@ -223,9 +201,7 @@
     "collapse": "Contraer"
   },
   "notification": {
-    "uploading": "Subiendo...",
     "uploadComplete": "¡{count} archivo(s) subido(s)!",
-    "uploadFailed": "Subida fallida: {message}",
     "sizeLimitExceeded": "El tamaño total de la carga supera el límite ({limit}). Actual: {current}, Carga: {upload}",
     "reconnected": "Reconectado",
     "connected": "Conectado.",
@@ -235,14 +211,10 @@
     "fileEmpty": "El archivo está vacío",
     "copying": "Copiando...",
     "openedNewTab": "Abierto en una pestaña nueva.",
-    "downloadingCount": "Descargando {count} archivo(s)...",
-    "downloadPartial": "{success} correcto(s), {fail} con error",
-    "downloadCountComplete": "¡{count} archivo(s) descargado(s)!",
     "copyFirstOnly": "Solo se copiará el primer archivo al portapapeles...",
     "copyingToClipboard": "Copiando al portapapeles...",
     "copiedWithCount": "¡{name} copiado al portapapeles! (1 de {total})\nPara varios archivos, usa \"Descargar seleccionados\".",
     "deleted": "{name} eliminado",
-    "deleteFailed": "Error al eliminar: {message}",
     "confirmDeleteSelected": "¿Eliminar los {count} archivo(s) seleccionados?",
     "confirmClearStorage": "¿Eliminar todos los archivos del almacenamiento? Esta acción no se puede deshacer.",
     "storageCleared": "Se vació el almacenamiento",
@@ -261,7 +233,6 @@
     "textRemoved": "Se borró el texto"
   },
   "clipboard": {
-    "paste": "Pegar",
     "empty": "El portapapeles está vacío.",
     "permissionDenied": "Se requiere permiso de acceso al portapapeles.",
     "pasteTitle": "Pegar",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "No hay archivos para copiar al portapapeles",
-    "noFilesToDownload": "No hay archivos para descargar",
     "textNotFound": "No se encontró el texto",
     "noPresignedUrl": "No se pudo obtener la URL de subida",
     "invalidRoomCode": "Código de sala no válido.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Este archivo supera el límite de subida simple (100 MB). Actualiza la página e inténtalo de nuevo.",
     "sizeMismatch": "El tamaño del archivo subido no coincide y se descartó. Vuelve a subirlo.",
     "multipartFailed": "Error al subir el archivo grande: {status}",
-    "serverRoomSizeExceeded": "Se superaría el límite de almacenamiento de la sala."
+    "serverRoomSizeExceeded": "Se superaría el límite de almacenamiento de la sala.",
+    "connectUser": "No se pudo conectar con el servidor. Comprueba tu conexión a internet y recarga la página.",
+    "uploadUser": "No se pudo subir «{name}». Inténtalo de nuevo.",
+    "downloadUser": "No se pudo descargar el archivo. Puede que ya se haya eliminado.",
+    "deleteUser": "No se pudo eliminar. Inténtalo de nuevo."
   },
   "qrModal": {
     "roomTitle": "Compartir sala con código QR",
@@ -402,7 +376,6 @@
     "roomVisibility": "Solo los dispositivos que están en esta sala pueden verlos."
   },
   "download": {
-    "title": "Descargando archivos...",
     "selectAll": "Seleccionar todo",
     "deselectAll": "Deseleccionar todo",
     "downloadSelected": "Descargar",
@@ -454,7 +427,6 @@
     "leave": "Salir de la sala",
     "leaveConfirm": "Solo borra la sala de este dispositivo. Los demás pueden seguir usándola",
     "unnamed": "Sala sin nombre",
-    "textNote": "Cifrado con la clave de la sala, 10 min",
     "expired": "La entrada a la sala ha caducado. Pide una invitación nueva",
     "noRoom": "No se encontró la sala",
     "leaveFailed": "No se pudo salir de la sala. Inténtalo de nuevo",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Dejar entrar",
     "reject": "Rechazar",
-    "approved": "{name} ha entrado",
     "slotLabel": "Imagen {n}: {name}",
     "slotEmpty": "Imagen {n}: vacía",
     "pickerLabel": "24 imágenes",

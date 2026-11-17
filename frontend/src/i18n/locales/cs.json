@@ -5,19 +5,10 @@
     "helpTitle": "Jak používat"
   },
   "room": {
-    "connecting": "Připojování...",
-    "connected": "Připojeno k místnosti {roomId}.",
-    "userCount": "{count} uživatel(ů) v místnosti.",
     "connectedDevices": "Připojená zařízení",
-    "copyCode": "Kopírovat kód místnosti",
-    "copied": "Kód místnosti zkopírován!",
     "textTab": "Text",
     "qrShareTitle": "Sdílet přes QR kód",
-    "currentRoomCode": "Kód aktuální místnosti",
     "copy": "Kopírovat",
-    "qr": "QR",
-    "joinOtherRoom": "Připojit se do jiné místnosti",
-    "enterCode": "Zadejte kód místnosti",
     "otherDevices": "Další zařízení: {count}",
     "waiting": "Čekání na zařízení",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "fffmmmfmmmfffmfmfmffnmmm",
     "nameFormat": "{adj} {animal}",
     "me": "Já",
-    "youAre": "Já: {name} (toto zařízení)",
     "reroll": "Vylosovat znovu",
     "rerollTitle": "Získat jiné zvířecí jméno",
     "connectedAs": "{name} na {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Vidět to mohou i další lidé ve stejné síti (škola, kancelář, kavárna).",
-    "manage": "Spravovat jmenovku",
     "notAuth": "Jmenovka jen rozlišuje zařízení. Není to ověření totožnosti.",
     "globalWarning": "Tady může kdokoli, i cizí lidé, vidět, co posíláte. Citlivé věci před odesláním zamkněte heslem.",
     "pairSasLoading": "Načítání obrázků…",
@@ -155,14 +144,10 @@
     "confirm": "Sdílet"
   },
   "file": {
-    "upload": "Nahrát soubor",
     "download": "Stáhnout",
     "share": "Sdílet",
-    "downloading": "Stahování...",
     "downloadComplete": "Stahování dokončeno!",
     "downloadFailed": "Stahování selhalo",
-    "uploaded": "Nový soubor nahrán!",
-    "copyToClipboard": "Kopírovat do schránky",
     "copied": "Zkopírováno do schránky!",
     "copyFailed": "Kopírování selhalo",
     "delete": "Smazat",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Sdílet text",
     "shared": "Text sdílen!",
-    "newText": "Nový text sdílen!",
-    "removed": "Text odstraněn.",
     "clearAll": "Vymazat všechny texty",
-    "cleared": "Všechny texty vymazány.",
     "autoShareHint": "Text se po vložení (Ctrl+V / Cmd+V) sdílí automaticky",
     "delete": "Smazat",
     "prefillNote": "Tento text přišel z odkazu. Zkontrolujte ho a stiskněte „Sdílet“ pro odeslání.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Neuchovávat",
     "keepCancelled": "Text se už neuchovává.",
     "cancelFailed": "Uchovávání se nepodařilo zrušit. Zkuste to znovu.",
-    "storagePlainIp": "Prostý text, 10 min · vidí ho kdokoli v síti",
-    "storagePlainGlobal": "Prostý text, 10 min · vidí ho i cizí lidé",
-    "storageLocked": "Zašifrováno, 10 min · jen zařízení s heslem",
-    "storagePrivate": "Zašifrováno klíčem místnosti 1:1, 10 min",
     "storageNone": "Neuchovává se · jen zařízení otevřená teď",
     "keepLine": "Text uložen 10 min · soubory až 1 den",
     "notKeptTooLarge": "Přes 96 KB, neuloženo · dostala ho jen zařízení otevřená teď",
@@ -223,9 +201,7 @@
     "collapse": "Sbalit"
   },
   "notification": {
-    "uploading": "Nahrávání...",
     "uploadComplete": "{count} soubor(ů) nahráno!",
-    "uploadFailed": "Nahrávání selhalo: {message}",
     "sizeLimitExceeded": "Celková velikost nahrávání překračuje limit ({limit}). Aktuální: {current}, Nahrávání: {upload}",
     "reconnected": "Znovu připojeno",
     "connected": "Připojeno.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Soubor je prázdný",
     "copying": "Kopírování...",
     "openedNewTab": "Otevřeno na nové kartě.",
-    "downloadingCount": "Stahování souborů: {count}...",
-    "downloadPartial": "Úspěšně: {success}, neúspěšně: {fail}",
-    "downloadCountComplete": "Staženo souborů: {count}!",
     "copyFirstOnly": "Do schránky se zkopíruje pouze první soubor...",
     "copyingToClipboard": "Kopírování do schránky...",
     "copiedWithCount": "Soubor {name} byl zkopírován do schránky! (1 z {total})\nPro více souborů použijte „Stáhnout vybrané“.",
     "deleted": "Smazáno: {name}",
-    "deleteFailed": "Smazání se nezdařilo: {message}",
     "confirmDeleteSelected": "Smazat vybrané soubory ({count})?",
     "confirmClearStorage": "Smazat všechny soubory z úložiště? Tuto akci nelze vrátit zpět.",
     "storageCleared": "Úložiště bylo vymazáno",
@@ -261,7 +233,6 @@
     "textRemoved": "Text byl smazán"
   },
   "clipboard": {
-    "paste": "Vložit",
     "empty": "Schránka je prázdná.",
     "permissionDenied": "Vyžadováno oprávnění k přístupu ke schránce.",
     "pasteTitle": "Vložit",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Žádné soubory ke zkopírování do schránky",
-    "noFilesToDownload": "Žádné soubory ke stažení",
     "textNotFound": "Text nenalezen",
     "noPresignedUrl": "Nepodařilo se získat URL pro nahrání",
     "invalidRoomCode": "Neplatný kód místnosti.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Tento soubor překračuje limit jednoduchého nahrání (100 MB). Obnovte stránku a zkuste to znovu.",
     "sizeMismatch": "Velikost nahraného souboru nesouhlasila a soubor byl zahozen. Nahrajte ho prosím znovu.",
     "multipartFailed": "Nahrání velkého souboru se nezdařilo: {status}",
-    "serverRoomSizeExceeded": "Došlo by k překročení limitu úložiště místnosti."
+    "serverRoomSizeExceeded": "Došlo by k překročení limitu úložiště místnosti.",
+    "connectUser": "Nepodařilo se připojit k serveru. Zkontrolujte internet a obnovte stránku.",
+    "uploadUser": "Soubor „{name}“ se nepodařilo nahrát. Zkuste to znovu.",
+    "downloadUser": "Soubor se nepodařilo stáhnout. Možná už byl smazán.",
+    "deleteUser": "Nepodařilo se smazat. Zkuste to znovu."
   },
   "qrModal": {
     "roomTitle": "Sdílet místnost přes QR kód",
@@ -402,7 +376,6 @@
     "roomVisibility": "Vidí je jen zařízení, která jsou v této místnosti."
   },
   "download": {
-    "title": "Stahování souborů...",
     "selectAll": "Vybrat vše",
     "deselectAll": "Zrušit výběr",
     "downloadSelected": "Stáhnout",
@@ -454,7 +427,6 @@
     "leave": "Opustit místnost",
     "leaveConfirm": "Místnost se odstraní jen z tohoto zařízení. Ostatní zařízení ji mohou dál používat",
     "unnamed": "Nepojmenovaná místnost",
-    "textNote": "Zašifrováno klíčem místnosti, 10 min",
     "expired": "Platnost vstupu do místnosti vypršela. Požádejte o novou pozvánku",
     "noRoom": "Místnost nenalezena",
     "leaveFailed": "Místnost se nepodařilo opustit. Zkuste to znovu",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Pustit dovnitř",
     "reject": "Odmítnout",
-    "approved": "{name} se připojil do místnosti",
     "slotLabel": "Obrázek {n}: {name}",
     "slotEmpty": "Obrázek {n}: prázdný",
     "pickerLabel": "24 obrázků",

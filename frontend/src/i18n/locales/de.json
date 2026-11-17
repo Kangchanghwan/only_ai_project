@@ -5,19 +5,10 @@
     "helpTitle": "Wie zu verwenden"
   },
   "room": {
-    "connecting": "Verbinden...",
-    "connected": "Verbunden mit Raum {roomId}.",
-    "userCount": "{count} Benutzer im Raum.",
     "connectedDevices": "Verbundene Geräte",
-    "copyCode": "Raumcode kopieren",
-    "copied": "Raumcode kopiert!",
     "textTab": "Text",
     "qrShareTitle": "Per QR-Code teilen",
-    "currentRoomCode": "Aktueller Raumcode",
     "copy": "Kopieren",
-    "qr": "QR",
-    "joinOtherRoom": "Anderem Raum beitreten",
-    "enterCode": "Raumcode eingeben",
     "otherDevices": "Andere Geräte: {count}",
     "waiting": "Warte auf Geräte",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "mmfmnmmmmmfmmmmmfmmmnnmn",
     "nameFormat": "{adj} {animal}",
     "me": "Ich",
-    "youAre": "Ich: {name} (dieses Gerät)",
     "reroll": "Neu würfeln",
     "rerollTitle": "Einen anderen Tiernamen bekommen",
     "connectedAs": "{name} auf {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Auch andere Personen im selben Netzwerk (Schule, Büro, Café) können es sehen.",
-    "manage": "Namensschild verwalten",
     "notAuth": "Das Namensschild unterscheidet nur Geräte. Es ist keine Identitätsprüfung.",
     "globalWarning": "Hier kann jeder, auch Fremde, sehen, was du sendest. Sperre Sensibles vor dem Senden mit einem Passwort.",
     "pairSasLoading": "Bilder werden geladen…",
@@ -155,14 +144,10 @@
     "confirm": "Teilen"
   },
   "file": {
-    "upload": "Datei hochladen",
     "download": "Herunterladen",
     "share": "Teilen",
-    "downloading": "Wird heruntergeladen...",
     "downloadComplete": "Download abgeschlossen!",
     "downloadFailed": "Download fehlgeschlagen",
-    "uploaded": "Neue Datei hochgeladen!",
-    "copyToClipboard": "In Zwischenablage kopieren",
     "copied": "In Zwischenablage kopiert!",
     "copyFailed": "Kopieren fehlgeschlagen",
     "delete": "Löschen",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Text teilen",
     "shared": "Text geteilt!",
-    "newText": "Neuer Text geteilt!",
-    "removed": "Text entfernt.",
     "clearAll": "Alle Texte löschen",
-    "cleared": "Alle Texte gelöscht.",
     "autoShareHint": "Text wird beim Einfügen automatisch geteilt (Strg+V / Cmd+V)",
     "delete": "Löschen",
     "prefillNote": "Dieser Text stammt aus einem Link. Prüfe ihn und tippe dann auf „Teilen“, um ihn zu senden.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Nicht mehr aufbewahren",
     "keepCancelled": "Der Text wird nicht mehr aufbewahrt.",
     "cancelFailed": "Aufbewahrung konnte nicht beendet werden. Bitte versuche es erneut.",
-    "storagePlainIp": "Klartext, 10 Min. aufbewahrt · alle in diesem Netzwerk sehen ihn",
-    "storagePlainGlobal": "Klartext, 10 Min. aufbewahrt · auch Fremde sehen ihn",
-    "storageLocked": "Verschlüsselt, 10 Min. aufbewahrt · nur Geräte mit Passwort",
-    "storagePrivate": "Mit 1:1-Raumschlüssel verschlüsselt, 10 Min. aufbewahrt",
     "storageNone": "Nicht aufbewahrt · nur gerade geöffnete Geräte",
     "keepLine": "Text 10 Min. · Dateien bis zu 1 Tag gespeichert",
     "notKeptTooLarge": "Über 96 KB, daher nicht aufbewahrt · nur gerade geöffnete Geräte haben ihn erhalten",
@@ -223,9 +201,7 @@
     "collapse": "Zuklappen"
   },
   "notification": {
-    "uploading": "Hochladen...",
     "uploadComplete": "{count} Datei(en) hochgeladen!",
-    "uploadFailed": "Upload fehlgeschlagen: {message}",
     "sizeLimitExceeded": "Gesamtgröße des Uploads überschreitet das Limit ({limit}). Aktuell: {current}, Upload: {upload}",
     "reconnected": "Wieder verbunden",
     "connected": "Verbunden.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Die Datei ist leer",
     "copying": "Wird kopiert...",
     "openedNewTab": "In neuem Tab geöffnet.",
-    "downloadingCount": "{count} Datei(en) werden heruntergeladen...",
-    "downloadPartial": "{success} erfolgreich, {fail} fehlgeschlagen",
-    "downloadCountComplete": "{count} Datei(en) heruntergeladen!",
     "copyFirstOnly": "Nur die erste Datei wird in die Zwischenablage kopiert...",
     "copyingToClipboard": "Wird in die Zwischenablage kopiert...",
     "copiedWithCount": "{name} in die Zwischenablage kopiert! (1 von {total})\nFür mehrere Dateien nutze „Auswahl herunterladen“.",
     "deleted": "{name} gelöscht",
-    "deleteFailed": "Löschen fehlgeschlagen: {message}",
     "confirmDeleteSelected": "Die {count} ausgewählte(n) Datei(en) löschen?",
     "confirmClearStorage": "Alle Dateien im Speicher löschen? Das lässt sich nicht rückgängig machen.",
     "storageCleared": "Der Speicher wurde geleert",
@@ -261,7 +233,6 @@
     "textRemoved": "Text gelöscht"
   },
   "clipboard": {
-    "paste": "Einfügen",
     "empty": "Zwischenablage ist leer.",
     "permissionDenied": "Zugriffsberechtigung für Zwischenablage erforderlich.",
     "pasteTitle": "Einfügen",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Keine Dateien zum Kopieren in die Zwischenablage",
-    "noFilesToDownload": "Keine Dateien zum Herunterladen",
     "textNotFound": "Text nicht gefunden",
     "noPresignedUrl": "Upload-URL konnte nicht abgerufen werden",
     "invalidRoomCode": "Ungültiger Raumcode.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Diese Datei überschreitet das Limit für einfache Uploads (100 MB). Lade die Seite neu und versuche es erneut.",
     "sizeMismatch": "Die Größe der hochgeladenen Datei stimmte nicht überein und wurde verworfen. Bitte erneut hochladen.",
     "multipartFailed": "Upload der großen Datei fehlgeschlagen: {status}",
-    "serverRoomSizeExceeded": "Das würde das Speicherlimit des Raums überschreiten."
+    "serverRoomSizeExceeded": "Das würde das Speicherlimit des Raums überschreiten.",
+    "connectUser": "Keine Verbindung zum Server. Prüfe deine Internetverbindung und lade die Seite neu.",
+    "uploadUser": "„{name}“ konnte nicht hochgeladen werden. Bitte versuche es erneut.",
+    "downloadUser": "Die Datei konnte nicht heruntergeladen werden. Vielleicht wurde sie schon gelöscht.",
+    "deleteUser": "Löschen fehlgeschlagen. Bitte versuche es erneut."
   },
   "qrModal": {
     "roomTitle": "Raum per QR-Code teilen",
@@ -402,7 +376,6 @@
     "roomVisibility": "Nur Geräte in diesem Raum können sie sehen."
   },
   "download": {
-    "title": "Dateien werden heruntergeladen...",
     "selectAll": "Alle auswählen",
     "deselectAll": "Auswahl aufheben",
     "downloadSelected": "Herunterladen",
@@ -454,7 +427,6 @@
     "leave": "Raum verlassen",
     "leaveConfirm": "Der Raum wird nur von diesem Gerät entfernt. Andere Geräte können ihn weiter nutzen",
     "unnamed": "Unbenannter Raum",
-    "textNote": "Mit dem Raumschlüssel verschlüsselt, 10 Min. aufbewahrt",
     "expired": "Dein Raumzugang ist abgelaufen. Lass dich erneut einladen",
     "noRoom": "Raum nicht gefunden",
     "leaveFailed": "Der Raum konnte nicht verlassen werden. Bitte versuche es erneut",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Hereinlassen",
     "reject": "Ablehnen",
-    "approved": "{name} ist beigetreten",
     "slotLabel": "Bild {n}: {name}",
     "slotEmpty": "Bild {n}: leer",
     "pickerLabel": "24 Bilder",

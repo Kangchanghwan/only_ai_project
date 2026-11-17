@@ -5,19 +5,10 @@
     "helpTitle": "Comment utiliser"
   },
   "room": {
-    "connecting": "Connexion...",
-    "connected": "Connecté à la salle {roomId}.",
-    "userCount": "{count} utilisateur(s) dans la salle.",
     "connectedDevices": "Appareils connectés",
-    "copyCode": "Copier le code de la salle",
-    "copied": "Code de la salle copié!",
     "textTab": "Texte",
     "qrShareTitle": "Partager par code QR",
-    "currentRoomCode": "Code de la salle actuelle",
     "copy": "Copier",
-    "qr": "QR",
-    "joinOtherRoom": "Rejoindre une autre salle",
-    "enterCode": "Saisir le code de la salle",
     "otherDevices": "Autres appareils : {count}",
     "waiting": "En attente d'appareils",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "mmmmmmmmmmmfmmfmfmffmfmm",
     "nameFormat": "{animal} {adj}",
     "me": "Moi",
-    "youAre": "Moi : {name} (cet appareil)",
     "reroll": "Relancer",
     "rerollTitle": "Obtenir un autre nom d'animal",
     "connectedAs": "{name} sur {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Les autres personnes du même réseau (école, bureau, café) peuvent aussi le voir.",
-    "manage": "Gérer l'étiquette",
     "notAuth": "L'étiquette sert seulement à distinguer les appareils. Ce n'est pas une vérification d'identité.",
     "globalWarning": "Tout le monde, y compris des inconnus, peut voir ce que vous envoyez ici. Verrouillez le contenu sensible avec un mot de passe avant de l'envoyer.",
     "pairSasLoading": "Chargement des images…",
@@ -155,14 +144,10 @@
     "confirm": "Partager"
   },
   "file": {
-    "upload": "Télécharger le fichier",
     "download": "Télécharger",
     "share": "Partager",
-    "downloading": "Téléchargement...",
     "downloadComplete": "Téléchargement terminé!",
     "downloadFailed": "Échec du téléchargement",
-    "uploaded": "Nouveau fichier téléchargé!",
-    "copyToClipboard": "Copier dans le presse-papiers",
     "copied": "Copié dans le presse-papiers!",
     "copyFailed": "Échec de la copie",
     "delete": "Supprimer",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Partager le texte",
     "shared": "Texte partagé!",
-    "newText": "Nouveau texte partagé!",
-    "removed": "Texte supprimé.",
     "clearAll": "Effacer tous les textes",
-    "cleared": "Tous les textes effacés.",
     "autoShareHint": "Le texte est partagé automatiquement lorsque vous collez (Ctrl+V / Cmd+V)",
     "delete": "Supprimer",
     "prefillNote": "Ce texte provient d'un lien. Vérifiez-le, puis appuyez sur « Partager » pour l'envoyer.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Ne plus conserver",
     "keepCancelled": "Ce texte n'est plus conservé.",
     "cancelFailed": "Impossible d'arrêter la conservation. Réessayez.",
-    "storagePlainIp": "En clair, conservé 10 min · tout le réseau peut le voir",
-    "storagePlainGlobal": "En clair, conservé 10 min · des inconnus peuvent le voir",
-    "storageLocked": "Chiffré, conservé 10 min · appareils avec le mot de passe",
-    "storagePrivate": "Chiffré avec la clé du salon 1:1, conservé 10 min",
     "storageNone": "Non conservé · appareils ouverts maintenant seulement",
     "keepLine": "Texte conservé 10 min · fichiers jusqu'à 1 jour",
     "notKeptTooLarge": "Plus de 96 Ko, non conservé · seuls les appareils ouverts maintenant l'ont reçu",
@@ -223,9 +201,7 @@
     "collapse": "Réduire"
   },
   "notification": {
-    "uploading": "Téléchargement...",
     "uploadComplete": "{count} fichier(s) téléchargé(s)!",
-    "uploadFailed": "Échec du téléchargement: {message}",
     "sizeLimitExceeded": "La taille totale du téléchargement dépasse la limite ({limit}). Actuel: {current}, Téléchargement: {upload}",
     "reconnected": "Reconnecté",
     "connected": "Connecté.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Le fichier est vide",
     "copying": "Copie en cours...",
     "openedNewTab": "Ouvert dans un nouvel onglet.",
-    "downloadingCount": "Téléchargement de {count} fichier(s)...",
-    "downloadPartial": "{success} réussi(s), {fail} échec(s)",
-    "downloadCountComplete": "{count} fichier(s) téléchargé(s) !",
     "copyFirstOnly": "Seul le premier fichier sera copié dans le presse-papiers...",
     "copyingToClipboard": "Copie dans le presse-papiers...",
     "copiedWithCount": "{name} copié dans le presse-papiers ! (1 sur {total})\nPour plusieurs fichiers, utilisez « Télécharger la sélection ».",
     "deleted": "{name} supprimé",
-    "deleteFailed": "Échec de la suppression : {message}",
     "confirmDeleteSelected": "Supprimer les {count} fichier(s) sélectionné(s) ?",
     "confirmClearStorage": "Supprimer tous les fichiers du stockage ? Cette action est irréversible.",
     "storageCleared": "Le stockage a été vidé",
@@ -261,7 +233,6 @@
     "textRemoved": "Texte supprimé"
   },
   "clipboard": {
-    "paste": "Coller",
     "empty": "Le presse-papiers est vide.",
     "permissionDenied": "Permission d'accès au presse-papiers requise.",
     "pasteTitle": "Coller",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Aucun fichier à copier dans le presse-papiers",
-    "noFilesToDownload": "Aucun fichier à télécharger",
     "textNotFound": "Texte introuvable",
     "noPresignedUrl": "Impossible d'obtenir l'URL d'envoi",
     "invalidRoomCode": "Code de salle invalide.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Ce fichier dépasse la limite d'envoi simple (100 Mo). Actualisez la page et réessayez.",
     "sizeMismatch": "La taille du fichier envoyé ne correspond pas, il a été supprimé. Veuillez le renvoyer.",
     "multipartFailed": "Échec de l'envoi du gros fichier : {status}",
-    "serverRoomSizeExceeded": "Cela dépasserait la limite de stockage de la salle."
+    "serverRoomSizeExceeded": "Cela dépasserait la limite de stockage de la salle.",
+    "connectUser": "Impossible de se connecter au serveur. Vérifiez votre connexion Internet et actualisez la page.",
+    "uploadUser": "Impossible d'envoyer « {name} ». Veuillez réessayer.",
+    "downloadUser": "Impossible de télécharger le fichier. Il a peut-être déjà été supprimé.",
+    "deleteUser": "Impossible de supprimer. Veuillez réessayer."
   },
   "qrModal": {
     "roomTitle": "Partager la salle par code QR",
@@ -402,7 +376,6 @@
     "roomVisibility": "Seuls les appareils présents dans ce salon peuvent les voir."
   },
   "download": {
-    "title": "Téléchargement des fichiers...",
     "selectAll": "Tout sélectionner",
     "deselectAll": "Tout désélectionner",
     "downloadSelected": "Télécharger",
@@ -454,7 +427,6 @@
     "leave": "Quitter la salle",
     "leaveConfirm": "Cela supprime la salle uniquement de cet appareil. Les autres appareils peuvent continuer à l'utiliser",
     "unnamed": "Salle sans nom",
-    "textNote": "Chiffré avec la clé de la salle, conservé 10 min",
     "expired": "Votre accès à la salle a expiré. Demandez une nouvelle invitation",
     "noRoom": "Salle introuvable",
     "leaveFailed": "Impossible de quitter la salle. Réessayez",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Laisser entrer",
     "reject": "Refuser",
-    "approved": "{name} a rejoint la salle",
     "slotLabel": "Image {n} : {name}",
     "slotEmpty": "Image {n} : vide",
     "pickerLabel": "24 images",

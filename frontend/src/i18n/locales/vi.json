@@ -5,19 +5,10 @@
     "helpTitle": "Cách sử dụng"
   },
   "room": {
-    "connecting": "Đang kết nối...",
-    "connected": "Đã kết nối vào phòng {roomId}.",
-    "userCount": "{count} người dùng trong phòng.",
     "connectedDevices": "Thiết bị đã kết nối",
-    "copyCode": "Sao chép mã phòng",
-    "copied": "Đã sao chép mã phòng!",
     "textTab": "Văn bản",
     "qrShareTitle": "Chia sẻ bằng mã QR",
-    "currentRoomCode": "Mã phòng hiện tại",
     "copy": "Sao chép",
-    "qr": "QR",
-    "joinOtherRoom": "Vào phòng khác",
-    "enterCode": "Nhập mã phòng",
     "otherDevices": "Thiết bị khác: {count}",
     "waiting": "Đang chờ thiết bị",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "",
     "nameFormat": "{animal} {adj}",
     "me": "Tôi",
-    "youAre": "Tôi: {name} (thiết bị này)",
     "reroll": "Chọn lại",
     "rerollTitle": "Đổi sang tên thú khác",
     "connectedAs": "{name} trên {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Những người khác trong cùng mạng (trường học, văn phòng, quán cà phê) cũng có thể thấy.",
-    "manage": "Quản lý thẻ tên",
     "notAuth": "Thẻ tên chỉ để phân biệt thiết bị, không phải xác thực danh tính.",
     "globalWarning": "Ở đây bất kỳ ai, kể cả người lạ, đều thấy nội dung bạn gửi. Hãy khóa nội dung nhạy cảm bằng mật khẩu trước khi gửi.",
     "pairSasLoading": "Đang tải hình ảnh…",
@@ -155,14 +144,10 @@
     "confirm": "Chia sẻ"
   },
   "file": {
-    "upload": "Tải lên tệp",
     "download": "Tải xuống",
     "share": "Chia sẻ",
-    "downloading": "Đang tải xuống...",
     "downloadComplete": "Tải xuống hoàn tất!",
     "downloadFailed": "Tải xuống thất bại",
-    "uploaded": "Tệp mới đã được tải lên!",
-    "copyToClipboard": "Sao chép vào Clipboard",
     "copied": "Đã sao chép vào clipboard!",
     "copyFailed": "Sao chép thất bại",
     "delete": "Xóa",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Chia sẻ văn bản",
     "shared": "Đã chia sẻ văn bản!",
-    "newText": "Văn bản mới đã được chia sẻ!",
-    "removed": "Văn bản đã bị xóa.",
     "clearAll": "Xóa tất cả văn bản",
-    "cleared": "Đã xóa tất cả văn bản.",
     "autoShareHint": "Văn bản được chia sẻ tự động khi bạn dán (Ctrl+V / Cmd+V)",
     "delete": "Xóa",
     "prefillNote": "Văn bản này đến từ một liên kết. Kiểm tra rồi nhấn \"Chia sẻ\" để gửi.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Ngừng lưu giữ",
     "keepCancelled": "Đã ngừng lưu giữ văn bản này.",
     "cancelFailed": "Không thể ngừng lưu giữ. Vui lòng thử lại.",
-    "storagePlainIp": "Văn bản thường, lưu 10 phút · ai trong mạng cũng xem được",
-    "storagePlainGlobal": "Văn bản thường, lưu 10 phút · người lạ cũng xem được",
-    "storageLocked": "Đã mã hóa, lưu 10 phút · chỉ thiết bị biết mật khẩu",
-    "storagePrivate": "Mã hóa bằng khóa phòng 1:1, lưu 10 phút",
     "storageNone": "Không lưu · chỉ thiết bị đang mở",
     "keepLine": "Văn bản lưu 10 phút · tệp tối đa 1 ngày",
     "notKeptTooLarge": "Quá 96KB nên không lưu · chỉ thiết bị đang mở đã nhận được",
@@ -223,9 +201,7 @@
     "collapse": "Thu gọn"
   },
   "notification": {
-    "uploading": "Đang tải lên...",
     "uploadComplete": "Đã tải lên {count} tệp!",
-    "uploadFailed": "Tải lên thất bại: {message}",
     "sizeLimitExceeded": "Tổng kích thước tải lên vượt quá giới hạn ({limit}). Hiện tại: {current}, Tải lên: {upload}",
     "reconnected": "Đã kết nối lại",
     "connected": "Đã kết nối.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Tệp trống",
     "copying": "Đang sao chép...",
     "openedNewTab": "Đã mở trong tab mới.",
-    "downloadingCount": "Đang tải xuống {count} tệp...",
-    "downloadPartial": "Thành công {success}, thất bại {fail}",
-    "downloadCountComplete": "Đã tải xuống {count} tệp!",
     "copyFirstOnly": "Chỉ tệp đầu tiên được sao chép vào bộ nhớ tạm...",
     "copyingToClipboard": "Đang sao chép vào bộ nhớ tạm...",
     "copiedWithCount": "Đã sao chép {name} vào bộ nhớ tạm! (1 trong {total})\nVới nhiều tệp, hãy dùng \"Tải xuống mục đã chọn\".",
     "deleted": "Đã xóa {name}",
-    "deleteFailed": "Xóa thất bại: {message}",
     "confirmDeleteSelected": "Xóa {count} tệp đã chọn?",
     "confirmClearStorage": "Xóa tất cả tệp trong kho lưu trữ? Hành động này không thể hoàn tác.",
     "storageCleared": "Đã xóa sạch kho lưu trữ",
@@ -261,7 +233,6 @@
     "textRemoved": "Đã xóa văn bản"
   },
   "clipboard": {
-    "paste": "Dán",
     "empty": "Clipboard trống.",
     "permissionDenied": "Cần quyền truy cập clipboard.",
     "pasteTitle": "Dán",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Không có tệp nào để sao chép vào bộ nhớ tạm",
-    "noFilesToDownload": "Không có tệp nào để tải xuống",
     "textNotFound": "Không tìm thấy văn bản",
     "noPresignedUrl": "Không lấy được URL tải lên",
     "invalidRoomCode": "Mã phòng không hợp lệ.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Tệp này vượt quá giới hạn tải lên đơn (100 MB). Hãy làm mới trang và thử lại.",
     "sizeMismatch": "Kích thước tệp đã tải lên không khớp nên đã bị hủy. Vui lòng tải lại.",
     "multipartFailed": "Tải tệp lớn thất bại: {status}",
-    "serverRoomSizeExceeded": "Việc này sẽ vượt quá giới hạn dung lượng của phòng."
+    "serverRoomSizeExceeded": "Việc này sẽ vượt quá giới hạn dung lượng của phòng.",
+    "connectUser": "Không kết nối được máy chủ. Hãy kiểm tra Internet rồi tải lại trang.",
+    "uploadUser": "Không tải lên được “{name}”. Vui lòng thử lại.",
+    "downloadUser": "Không tải xuống được tệp. Có thể tệp đã bị xóa.",
+    "deleteUser": "Không xóa được. Vui lòng thử lại."
   },
   "qrModal": {
     "roomTitle": "Chia sẻ phòng bằng mã QR",
@@ -402,7 +376,6 @@
     "roomVisibility": "Chỉ các thiết bị đang ở trong phòng này mới thấy được."
   },
   "download": {
-    "title": "Đang tải tệp...",
     "selectAll": "Chọn tất cả",
     "deselectAll": "Bỏ chọn tất cả",
     "downloadSelected": "Tải xuống",
@@ -454,7 +427,6 @@
     "leave": "Rời phòng",
     "leaveConfirm": "Chỉ xóa phòng khỏi thiết bị này. Các thiết bị khác vẫn dùng tiếp được",
     "unnamed": "Phòng chưa đặt tên",
-    "textNote": "Mã hóa bằng khóa phòng, lưu 10 phút",
     "expired": "Quyền vào phòng đã hết hạn. Hãy xin lời mời mới",
     "noRoom": "Không tìm thấy phòng",
     "leaveFailed": "Không thể rời phòng. Hãy thử lại",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Cho vào",
     "reject": "Từ chối",
-    "approved": "{name} đã vào phòng",
     "slotLabel": "Hình {n}: {name}",
     "slotEmpty": "Hình {n}: trống",
     "pickerLabel": "24 hình",

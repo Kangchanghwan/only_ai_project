@@ -5,19 +5,10 @@
     "helpTitle": "Cum se folosește"
   },
   "room": {
-    "connecting": "Se conectează...",
-    "connected": "Conectat la camera {roomId}.",
-    "userCount": "{count} utilizator(i) în cameră.",
     "connectedDevices": "Dispozitive conectate",
-    "copyCode": "Copiază codul camerei",
-    "copied": "Cod cameră copiat!",
     "textTab": "Text",
     "qrShareTitle": "Partajează prin cod QR",
-    "currentRoomCode": "Codul camerei curente",
     "copy": "Copiază",
-    "qr": "QR",
-    "joinOtherRoom": "Intră în altă cameră",
-    "enterCode": "Introdu codul camerei",
     "otherDevices": "Alte dispozitive: {count}",
     "waiting": "Se așteaptă dispozitive",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "mffmmmmmmmfffmfmfmffmmmm",
     "nameFormat": "{animal} {adj}",
     "me": "Eu",
-    "youAre": "Eu: {name} (acest dispozitiv)",
     "reroll": "Trage din nou",
     "rerollTitle": "Primește alt nume de animal",
     "connectedAs": "{name} pe {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Și alte persoane din aceeași rețea (școală, birou, cafenea) o pot vedea.",
-    "manage": "Gestionează eticheta",
     "notAuth": "Eticheta doar deosebește dispozitivele. Nu este verificare de identitate.",
     "globalWarning": "Aici oricine, inclusiv necunoscuți, poate vedea ce trimiți. Blochează cu parolă conținutul sensibil înainte de trimitere.",
     "pairSasLoading": "Se încarcă imaginile…",
@@ -155,14 +144,10 @@
     "confirm": "Distribuie"
   },
   "file": {
-    "upload": "Încarcă fișier",
     "download": "Descarcă",
     "share": "Partajează",
-    "downloading": "Se descarcă...",
     "downloadComplete": "Descărcare completă!",
     "downloadFailed": "Descărcare eșuată",
-    "uploaded": "Fișier nou încărcat!",
-    "copyToClipboard": "Copiază în clipboard",
     "copied": "Copiat în clipboard!",
     "copyFailed": "Copiere eșuată",
     "delete": "Șterge",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Partajează text",
     "shared": "Text partajat!",
-    "newText": "Text nou partajat!",
-    "removed": "Text eliminat.",
     "clearAll": "Șterge toate textele",
-    "cleared": "Toate textele șterse.",
     "autoShareHint": "Textul este partajat automat la lipire (Ctrl+V / Cmd+V)",
     "delete": "Șterge",
     "prefillNote": "Acest text vine dintr-un link. Verifică-l, apoi apasă „Partajează” pentru a-l trimite.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Nu mai păstra",
     "keepCancelled": "Textul nu mai este păstrat.",
     "cancelFailed": "Nu s-a putut opri păstrarea. Încearcă din nou.",
-    "storagePlainIp": "Text simplu, 10 min · oricine din rețea îl vede",
-    "storagePlainGlobal": "Text simplu, 10 min · îl văd și necunoscuți",
-    "storageLocked": "Criptat, 10 min · doar dispozitive cu parola",
-    "storagePrivate": "Criptat cu cheia camerei 1:1, 10 min",
     "storageNone": "Nu se păstrează · doar dispozitivele deschise acum",
     "keepLine": "Text păstrat 10 min · fișiere până la 1 zi",
     "notKeptTooLarge": "Peste 96 KB, nu a fost păstrat · l-au primit doar dispozitivele deschise acum",
@@ -223,9 +201,7 @@
     "collapse": "Restrânge"
   },
   "notification": {
-    "uploading": "Se încarcă...",
     "uploadComplete": "{count} fișier(e) încărcat(e)!",
-    "uploadFailed": "Încărcare eșuată: {message}",
     "sizeLimitExceeded": "Dimensiunea totală de încărcare depășește limita ({limit}). Actual: {current}, Încărcare: {upload}",
     "reconnected": "Reconectat",
     "connected": "Conectat.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Fișierul este gol",
     "copying": "Se copiază...",
     "openedNewTab": "Deschis într-o filă nouă.",
-    "downloadingCount": "Se descarcă {count} fișier(e)...",
-    "downloadPartial": "{success} reușite, {fail} eșuate",
-    "downloadCountComplete": "{count} fișier(e) descărcat(e)!",
     "copyFirstOnly": "Doar primul fișier va fi copiat în clipboard...",
     "copyingToClipboard": "Se copiază în clipboard...",
     "copiedWithCount": "{name} a fost copiat în clipboard! (1 din {total})\nPentru mai multe fișiere folosește „Descarcă selecția”.",
     "deleted": "{name} a fost șters",
-    "deleteFailed": "Ștergerea a eșuat: {message}",
     "confirmDeleteSelected": "Ștergi cele {count} fișier(e) selectate?",
     "confirmClearStorage": "Ștergi toate fișierele din spațiul de stocare? Această acțiune nu poate fi anulată.",
     "storageCleared": "Spațiul de stocare a fost golit",
@@ -261,7 +233,6 @@
     "textRemoved": "Textul a fost șters"
   },
   "clipboard": {
-    "paste": "Lipește",
     "empty": "Clipboard-ul este gol.",
     "permissionDenied": "Permisiune de acces la clipboard necesară.",
     "pasteTitle": "Lipește",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Nu există fișiere de copiat în clipboard",
-    "noFilesToDownload": "Nu există fișiere de descărcat",
     "textNotFound": "Textul nu a fost găsit",
     "noPresignedUrl": "Nu s-a putut obține URL-ul de încărcare",
     "invalidRoomCode": "Cod de cameră invalid.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Acest fișier depășește limita de încărcare simplă (100 MB). Reîncarcă pagina și încearcă din nou.",
     "sizeMismatch": "Dimensiunea fișierului încărcat nu s-a potrivit și a fost eliminat. Încarcă-l din nou.",
     "multipartFailed": "Încărcarea fișierului mare a eșuat: {status}",
-    "serverRoomSizeExceeded": "Aceasta ar depăși limita de stocare a camerei."
+    "serverRoomSizeExceeded": "Aceasta ar depăși limita de stocare a camerei.",
+    "connectUser": "Nu ne-am putut conecta la server. Verifică internetul și reîncarcă pagina.",
+    "uploadUser": "Nu am putut încărca „{name}”. Încearcă din nou.",
+    "downloadUser": "Nu am putut descărca fișierul. Este posibil să fi fost deja șters.",
+    "deleteUser": "Nu am putut șterge. Încearcă din nou."
   },
   "qrModal": {
     "roomTitle": "Partajează camera prin cod QR",
@@ -402,7 +376,6 @@
     "roomVisibility": "Le pot vedea doar dispozitivele aflate în această cameră."
   },
   "download": {
-    "title": "Se descarcă fișierele...",
     "selectAll": "Selectează tot",
     "deselectAll": "Deselectează tot",
     "downloadSelected": "Descarcă",
@@ -454,7 +427,6 @@
     "leave": "Ieși din cameră",
     "leaveConfirm": "Camera se șterge doar de pe acest dispozitiv. Celelalte dispozitive o pot folosi în continuare",
     "unnamed": "Cameră fără nume",
-    "textNote": "Criptat cu cheia camerei, 10 min",
     "expired": "Accesul în cameră a expirat. Cere o invitație nouă",
     "noRoom": "Camera nu a fost găsită",
     "leaveFailed": "Nu s-a putut ieși din cameră. Încearcă din nou",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Lasă să intre",
     "reject": "Refuză",
-    "approved": "{name} a intrat",
     "slotLabel": "Imaginea {n}: {name}",
     "slotEmpty": "Imaginea {n}: goală",
     "pickerLabel": "24 de imagini",
