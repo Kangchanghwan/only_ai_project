@@ -27,3 +27,5 @@ grep "텍스트 탭|Text tab" 0(판독 끝난 페이지 기준). 페이지별 7�
   - 남은 대상: copy-verification-code-phone-to-pc(0042 7일 판독 11-21 뒤), how-to-use(E1 7일 11-22 뒤), copy-text-phone-to-pc(0034 28일 12-06 뒤). 남은 grep 수: 각 8·1·5.
   - 측정: 4개 페이지 7일 노출(네이버·GSC)이 정정 전과 비슷한지 11-25에 확인.
 - 2026-11-18 추가 점검(11-16 피드백 절차: 머지된 화면 PR의 사라진 ko/en 키 값을 공개 페이지에서 grep, fd52926 → 1ad543b): **"파일 업로드" 카드/버튼(file.upload·file.uploadTitle 삭제, 지금은 입력 상자의 '파일 선택'/en 'Choose files')을 누르라는 안내가 17개 페이지**(`<strong>파일 업로드</strong>`·`<strong>Upload File</strong>` 기준, 한국어 상위 유입 가이드 포함). "클립보드에 복사"(file.copyToClipboard 삭제) 6개 페이지, "공유 범위"(help.scopeTitle) 2개. 텍스트 탭보다 범위가 커서 2차로 묶는다: 판독 중이 아닌 페이지부터 하루 1건(여러 페이지 한 번에), 버튼 이름은 라이브 화면과 대조.
+
+- 2026-11-18 (owner 대화 세션): send-file-with-password의 "파일 선택 버튼 아래 \"비밀번호로 잠그기\"" → "입력 상자 아래 도구 줄(파일 선택·붙여넣기 옆)의 \"비밀번호로 잠그기\"" (11-17 #89로 잠금 칩이 통합 보내기 상자 도구 줄로 옮겨짐, TextShareBox.vue LockChip). 0045에서 고친 문장이 화면 전환으로 다시 틀린 경우.
