@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "{n} enheter till online",
-    "findTitle": "Sök på namn",
+    "findTitle": "Hitta en enhet",
     "findHint": "Välj namnet som visas på den andra enhetens „Jag”-kort",
     "adjLabel": "Adjektiv",
     "animalLabel": "Djur",
@@ -596,7 +596,6 @@
     "find": "Sök",
     "notFound": "Ingen ansluten enhet har det här namnet just nu",
     "rateLimited": "Försök igen om en stund",
-    "findError": "Hittades inte. Försök igen",
-    "moreFindInline": "hitta {n} till efter namn"
+    "findError": "Hittades inte. Försök igen"
   }
 }

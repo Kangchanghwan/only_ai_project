@@ -137,7 +137,7 @@ const otherOpenManual = ref(false)
 const otherList = computed(() => (!props.wide && props.scope === 'ip' && pair
   ? sortDevices(props.otherNetworkDevices, props.mySocketId, props.myIdentity).filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity))
   : []))
-// 기준 인원 초과 시 '이름으로 찾기' 한 줄 (묶음과 같은 조건에서만)
+// 기준 인원 초과 시 '기기 찾기' 링크 (묶음과 같은 조건에서만)
 const showOtherMore = computed(() => !props.wide && props.scope === 'ip' && !!pair && props.otherNetworkMore > 0)
 // 내가 보낸 1:1 요청이 진행 중인 기기가 묶음 안에 있으면 접어 둘 수 없다 (그림 확인 패널이 가려지지 않게)
 const otherBusy = computed(() => otherList.value.some((d) => { const st = stateOf(d)?.state; return st === 'pending' || st === 'connecting' }))
@@ -256,7 +256,7 @@ watch(
         <span>{{ t('pair.otherNetworkGroup', { n: otherList.length }) }}</span>
         <span aria-hidden="true">{{ otherOpen ? '▴' : '▾' }}</span>
       </button>
-      <!-- 기준 인원 초과: 펼치기와 "이름으로 찾기"를 한 줄에 -->
+      <!-- 기준 인원 초과: 펼치기와 "기기 찾기"를 한 줄에 -->
       <div v-else class="flex flex-wrap items-center gap-x-2 -my-2" data-testid="other-network-row">
         <button
           v-if="otherList.length > 0"
@@ -276,7 +276,7 @@ watch(
           data-testid="roster-go-find"
           @click="emit('go-find')"
         >
-          {{ t('roster.moreFindInline', { n: otherNetworkMore }) }}
+          {{ t('roster.findTitle') }}
         </button>
       </div>
       <ul v-if="otherOpen" class="mt-3 flex flex-col gap-2 list-none p-0" data-testid="other-network-list">

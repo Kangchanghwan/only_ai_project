@@ -664,7 +664,7 @@
   },
   "roster": {
     "moreCount": "ほか{n}台が接続中",
-    "findTitle": "名前で探す",
+    "findTitle": "端末を探す",
     "findHint": "相手の端末の「自分」カードに表示されている名前を選んでください",
     "adjLabel": "形容詞",
     "animalLabel": "動物",
@@ -673,7 +673,6 @@
     "find": "探す",
     "notFound": "今接続中の端末にこの名前はありません",
     "rateLimited": "しばらくしてからもう一度お試しください",
-    "findError": "見つかりませんでした。もう一度お試しください",
-    "moreFindInline": "残り{n}台は名前で検索"
+    "findError": "見つかりませんでした。もう一度お試しください"
   }
 }

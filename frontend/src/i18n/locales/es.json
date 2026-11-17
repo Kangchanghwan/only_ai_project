@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "{n} dispositivos más conectados",
-    "findTitle": "Buscar por nombre",
+    "findTitle": "Buscar un dispositivo",
     "findHint": "Elige el nombre que aparece en la tarjeta «Yo» del otro dispositivo",
     "adjLabel": "Adjetivo",
     "animalLabel": "Animal",
@@ -596,7 +596,6 @@
     "find": "Buscar",
     "notFound": "Ningún dispositivo conectado tiene este nombre ahora",
     "rateLimited": "Inténtalo de nuevo en un momento",
-    "findError": "No se encontró. Inténtalo de nuevo",
-    "moreFindInline": "buscar los otros {n} por nombre"
+    "findError": "No se encontró. Inténtalo de nuevo"
   }
 }

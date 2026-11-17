@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "Még {n} eszköz online",
-    "findTitle": "Keresés név alapján",
+    "findTitle": "Eszköz keresése",
     "findHint": "Válaszd ki a másik eszköz „Én” kártyáján látható nevet",
     "adjLabel": "Melléknév",
     "animalLabel": "Állat",
@@ -596,7 +596,6 @@
     "find": "Keresés",
     "notFound": "Jelenleg nincs ilyen nevű csatlakozott eszköz",
     "rateLimited": "Kérjük, próbáld újra egy kicsit később",
-    "findError": "Nem található. Próbáld újra",
-    "moreFindInline": "további {n} keresése név alapján"
+    "findError": "Nem található. Próbáld újra"
   }
 }

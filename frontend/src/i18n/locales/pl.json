@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "Jeszcze {n} urządzeń online",
-    "findTitle": "Szukaj po nazwie",
+    "findTitle": "Znajdź urządzenie",
     "findHint": "Wybierz nazwę widoczną na karcie „Ja” na drugim urządzeniu",
     "adjLabel": "Przymiotnik",
     "animalLabel": "Zwierzę",
@@ -596,7 +596,6 @@
     "find": "Szukaj",
     "notFound": "Żadne połączone urządzenie nie ma teraz tej nazwy",
     "rateLimited": "Spróbuj ponownie za chwilę",
-    "findError": "Nie znaleziono. Spróbuj ponownie",
-    "moreFindInline": "znajdź {n} kolejnych po nazwie"
+    "findError": "Nie znaleziono. Spróbuj ponownie"
   }
 }

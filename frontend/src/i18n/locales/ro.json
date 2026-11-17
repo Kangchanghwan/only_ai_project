@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "Încă {n} dispozitive online",
-    "findTitle": "Caută după nume",
+    "findTitle": "Găsește un dispozitiv",
     "findHint": "Alege numele afișat pe cardul „Eu” al celuilalt dispozitiv",
     "adjLabel": "Adjectiv",
     "animalLabel": "Animal",
@@ -596,7 +596,6 @@
     "find": "Caută",
     "notFound": "Niciun dispozitiv conectat nu are acest nume acum",
     "rateLimited": "Încearcă din nou peste puțin timp",
-    "findError": "Nu a fost găsit. Încearcă din nou",
-    "moreFindInline": "găsește încă {n} după nume"
+    "findError": "Nu a fost găsit. Încearcă din nou"
   }
 }

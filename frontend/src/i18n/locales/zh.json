@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "另有 {n} 台设备在线",
-    "findTitle": "按名称查找",
+    "findTitle": "查找设备",
     "findHint": "请选择对方设备“我”卡片上显示的名称",
     "adjLabel": "形容词",
     "animalLabel": "动物",
@@ -596,7 +596,6 @@
     "find": "查找",
     "notFound": "当前在线的设备中没有这个名称",
     "rateLimited": "请稍后再试",
-    "findError": "没有找到，请重试",
-    "moreFindInline": "其余 {n} 台按名称查找"
+    "findError": "没有找到，请重试"
   }
 }

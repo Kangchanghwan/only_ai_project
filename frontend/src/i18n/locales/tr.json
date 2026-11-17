@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "{n} cihaz daha çevrimiçi",
-    "findTitle": "Ada göre bul",
+    "findTitle": "Cihaz bul",
     "findHint": "Karşı cihazın «Ben» kartında görünen adı seçin",
     "adjLabel": "Sıfat",
     "animalLabel": "Hayvan",
@@ -596,7 +596,6 @@
     "find": "Bul",
     "notFound": "Şu anda bağlı cihazlar arasında bu ad yok",
     "rateLimited": "Lütfen biraz sonra tekrar deneyin",
-    "findError": "Bulunamadı. Lütfen tekrar deneyin",
-    "moreFindInline": "diğer {n} cihazı adla bul"
+    "findError": "Bulunamadı. Lütfen tekrar deneyin"
   }
 }

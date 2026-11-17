@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "{n} weitere Geräte online",
-    "findTitle": "Nach Namen suchen",
+    "findTitle": "Gerät finden",
     "findHint": "Wähle den Namen, der auf der „Ich“-Karte des anderen Geräts steht",
     "adjLabel": "Adjektiv",
     "animalLabel": "Tier",
@@ -596,7 +596,6 @@
     "find": "Suchen",
     "notFound": "Aktuell ist kein verbundenes Gerät mit diesem Namen online",
     "rateLimited": "Bitte versuche es gleich noch einmal",
-    "findError": "Nicht gefunden. Bitte erneut versuchen",
-    "moreFindInline": "{n} weitere per Name suchen"
+    "findError": "Nicht gefunden. Bitte erneut versuchen"
   }
 }

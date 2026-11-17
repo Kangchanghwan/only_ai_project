@@ -787,7 +787,7 @@
   },
   "roster": {
     "moreCount": "{n} more devices online",
-    "findTitle": "Find by name",
+    "findTitle": "Find a device",
     "findHint": "Pick the name shown on the other device's \"Me\" card",
     "adjLabel": "Adjective",
     "animalLabel": "Animal",
@@ -796,7 +796,6 @@
     "find": "Find",
     "notFound": "No connected device has this name right now",
     "rateLimited": "Please try again in a moment",
-    "findError": "Couldn't find it. Please try again",
-    "moreFindInline": "find {n} more by name"
+    "findError": "Couldn't find it. Please try again"
   }
 }

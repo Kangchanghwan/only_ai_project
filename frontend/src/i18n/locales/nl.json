@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "Nog {n} apparaten online",
-    "findTitle": "Zoeken op naam",
+    "findTitle": "Apparaat zoeken",
     "findHint": "Kies de naam op de kaart „Ik” van het andere apparaat",
     "adjLabel": "Bijvoeglijk naamwoord",
     "animalLabel": "Dier",
@@ -596,7 +596,6 @@
     "find": "Zoeken",
     "notFound": "Geen verbonden apparaat heeft nu deze naam",
     "rateLimited": "Probeer het zo meteen opnieuw",
-    "findError": "Niet gevonden. Probeer het opnieuw",
-    "moreFindInline": "nog {n} zoeken op naam"
+    "findError": "Niet gevonden. Probeer het opnieuw"
   }
 }

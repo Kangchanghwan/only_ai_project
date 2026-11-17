@@ -1,8 +1,8 @@
 <script setup>
 /**
  * 전체 공유 방이 커서 목록이 최근 기기만 보일 때만 나타나는 보조 영역.
- * - 전체 공유 탭: "외 n대 접속 중" 한 줄 + "이름으로 찾기" 묶음
- * - 같은 네트워크 탭: "다른 네트워크 기기 n대 더 · 이름으로 찾기" 텍스트 버튼 (누르면 전체 공유 탭의 찾기 묶음으로)
+ * - 전체 공유 탭: "외 n대 접속 중" 한 줄 + "기기 찾기" 묶음
+ * - 같은 네트워크 탭의 "기기 찾기" 링크는 ConnectionCard에 있고, 누르면 goFind()로 전체 공유 탭의 찾기 묶음으로 간다
  * 잘리지 않았으면(truncated=false) 아무것도 그리지 않는다.
  */
 import { computed, ref, watch, nextTick } from 'vue'
@@ -72,7 +72,7 @@ watch(
   }
 )
 
-/** 같은 네트워크 탭의 "이름으로 찾기" 줄(ConnectionCard)이 부른다 */
+/** 같은 네트워크 탭의 "기기 찾기" 링크(ConnectionCard)가 부른다 */
 defineExpose({ goFind })
 
 const selectClass = 'min-h-[44px] min-w-0 rounded-none border border-border bg-surface text-ink text-sm px-2'

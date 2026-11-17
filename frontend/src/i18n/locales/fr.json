@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "{n} autres appareils connectés",
-    "findTitle": "Chercher par nom",
+    "findTitle": "Trouver un appareil",
     "findHint": "Choisissez le nom affiché sur la carte « Moi » de l'autre appareil",
     "adjLabel": "Adjectif",
     "animalLabel": "Animal",
@@ -596,7 +596,6 @@
     "find": "Chercher",
     "notFound": "Aucun appareil connecté n'a ce nom pour le moment",
     "rateLimited": "Réessayez dans un instant",
-    "findError": "Introuvable. Veuillez réessayer",
-    "moreFindInline": "trouver les {n} autres par nom"
+    "findError": "Introuvable. Veuillez réessayer"
   }
 }

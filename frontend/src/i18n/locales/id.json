@@ -587,7 +587,7 @@
   },
   "roster": {
     "moreCount": "{n} perangkat lain online",
-    "findTitle": "Cari berdasarkan nama",
+    "findTitle": "Cari perangkat",
     "findHint": "Pilih nama yang tampil di kartu \"Saya\" pada perangkat lawan",
     "adjLabel": "Kata sifat",
     "animalLabel": "Hewan",
@@ -596,7 +596,6 @@
     "find": "Cari",
     "notFound": "Tidak ada perangkat terhubung dengan nama ini saat ini",
     "rateLimited": "Coba lagi sebentar lagi",
-    "findError": "Tidak ditemukan. Silakan coba lagi",
-    "moreFindInline": "cari {n} lainnya berdasarkan nama"
+    "findError": "Tidak ditemukan. Silakan coba lagi"
   }
 }
