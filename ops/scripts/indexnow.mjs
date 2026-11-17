@@ -18,6 +18,8 @@ const sitemapUrls = new Set([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m 
 const fileToUrls = (f) => {
   if (f === 'frontend/src/i18n/locales/ko.json' || f === 'frontend/index.html') return [`${ORIGIN}/`]
   if (f === 'frontend/src/i18n/locales/en.json') return [`${ORIGIN}/en/`]
+  if (f === 'frontend/src/i18n/locales/ja.json') return [`${ORIGIN}/ja/`]
+  if (f === 'frontend/src/i18n/locales/ru.json') return [`${ORIGIN}/ru/`]
   const m = f.match(/^frontend\/public\/(.+\.html)$/)
   if (!m) return []
   return [`${ORIGIN}/${m[1].replace(/(^|\/)index\.html$/, '$1')}`]

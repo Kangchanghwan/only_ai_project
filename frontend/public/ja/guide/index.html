@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Clipboard Share ガイド一覧｜スマホとPCのファイル・写真・テキスト転送</title>
+  <meta name="description" content="iPhone・Android・Windows・Macのあいだで、写真・ファイル・クリップボードのテキストを、ケーブルやアプリや会員登録なしで渡す方法をまとめたガイド一覧です。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.clipboardapp.org/ja/guide/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.clipboardapp.org/ja/guide/" />
+  <meta property="og:title" content="Clipboard Share ガイド一覧｜スマホとPCのファイル・写真・テキスト転送" />
+  <meta property="og:description" content="iPhone・Android・Windows・Macのあいだで、写真・ファイル・クリップボードのテキストを、ケーブルやアプリや会員登録なしで渡す方法をまとめたガイド一覧です。" />
+  <meta property="og:image" content="https://www.clipboardapp.org/og-image.png" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:site_name" content="Clipboard Share" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Clipboard Share ガイド",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "PCとスマホでクリップボードを共有する方法",
+        "url": "https://www.clipboardapp.org/ja/guide/clipboard-share-pc-smartphone.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "スマホとPCのファイル転送をWi-Fiで行う方法",
+        "url": "https://www.clipboardapp.org/ja/guide/smartphone-pc-file-transfer-wifi.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "iPhoneからWindowsへ写真を無線で転送する方法",
+        "url": "https://www.clipboardapp.org/ja/guide/iphone-windows-photo-transfer-wireless.html"
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "ホーム",
+        "item": "https://www.clipboardapp.org/ja/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "ガイド",
+        "item": "https://www.clipboardapp.org/ja/guide/"
+      }
+    ]
+  }
+  </script>
+
+<style>
+    :root {
+      --bg: #FAF8F5;
+      --surface: #FFFFFF;
+      --border: #E9E3DA;
+      --text: #2A2622;
+      --muted: #8A8178;
+      --accent: #FF6B4A;
+      --accent-text: #C8432A;
+      --cta-text: #2A2622;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1C1917;
+        --surface: #262220;
+        --border: #3A3430;
+        --text: #F2EDE7;
+        --muted: #A69A8D;
+        --accent: #FF7A5C;
+        --accent-text: #FF7A5C;
+        --cta-text: #1C1917;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      word-break: normal; line-break: strict;
+      overflow-wrap: anywhere;
+    }
+
+    .wrap { max-width: 40rem; margin: 0 auto; padding: 8px 16px 64px; }
+
+    header.site { display: flex; align-items: center; gap: 16px; padding: 16px 0 32px; }
+    .brand { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); text-decoration: none; }
+    .brand em { font-style: normal; color: var(--accent-text); }
+
+    h1 { font-size: 28px; font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; margin: 0 0 16px; }
+    h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin: 40px 0 12px; }
+    h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+    p { margin: 0 0 16px; }
+    .lead { color: var(--text); }
+
+    a { color: var(--accent-text); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    ol, ul { margin: 0 0 16px; padding-left: 24px; }
+    li { margin: 0 0 8px; }
+    li:last-child { margin-bottom: 0; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .card > :last-child { margin-bottom: 0; }
+    .card h3:first-child { margin-top: 0; }
+
+    kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px 6px;
+    }
+
+    .cta {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--cta-text);
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 600;
+      text-decoration: none;
+      margin: 8px 0 0;
+    }
+    .cta:hover { opacity: 0.88; text-decoration: none; }
+    .cta-secondary { background: transparent; color: var(--accent-text); border: 1px solid var(--accent-text); margin-left: 8px; }
+
+    .related ul { list-style: none; padding: 0; }
+
+    footer.site {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+      font-size: 14px;
+    }
+    footer.site nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 12px; }
+    footer.site p { margin: 0; }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 24px; }
+      h2 { font-size: 18px; }
+    }
+    ul.hub { list-style: none; padding: 0; margin: 0 0 8px; }
+    ul.hub li { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; margin: 0 0 8px; display: flex; flex-direction: column; gap: 2px; }
+    ul.hub li a { font-weight: 600; }
+    ul.hub li span { color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site">
+      <a class="brand" href="/ja/">Clipboard <em>Share</em></a>
+    </header>
+
+    <main>
+      <article>
+        <h1>端末とやりたいことで選ぶガイド</h1>
+        <p class="lead">iPhoneからWindows、AndroidからMac、職場の共有PCなど、端末の組み合わせは違っても、やり方は同じです。両方の端末を同じWi-Fiにつなぎ、それぞれのブラウザでこのサイトを開くと、自動でつながります。</p>
+        <p class="lead">状況に近いガイドを選んでください。WindowsでのHEIC写真のように、組み合わせごとにつまずきやすい点も説明しています。</p>
+        <p class="lead">大事なファイルには、送る前にブラウザ内でパスワードをかけられます。特定の端末とだけ共有したいときは、「接続」をタップして2台だけのルームを作ると、ルーム内のファイルとテキストは自動で暗号化されます。</p>
+
+        <h2>ガイド</h2>
+        <ul class="hub">
+          <li><a href="/ja/guide/clipboard-share-pc-smartphone.html">PCとスマホでクリップボードを共有する方法</a><span>Windows・iPhone・Android、オンラインで</span></li>
+          <li><a href="/ja/guide/smartphone-pc-file-transfer-wifi.html">スマホとPCのファイル転送をWi-Fiで行う方法</a><span>ケーブルもアプリも不要</span></li>
+          <li><a href="/ja/guide/iphone-windows-photo-transfer-wireless.html">iPhoneからWindowsへ写真を無線で転送する方法</a><span>iTunesもiCloudも使わずに</span></li>
+        </ul>
+
+        <p><a class="cta" href="/ja/">今すぐ使ってみる</a></p>
+      </article>
+    </main>
+
+    <footer class="site">
+      <nav>
+      <a href="/ja/">ホーム</a>
+      <a href="/ja/guide/">ガイド一覧</a>
+      <a href="https://github.com/Kangchanghwan/only_ai_project" rel="noopener">GitHub</a>
+      </nav>
+      <p>ブラウザのタブを開くだけで共有できるクリップボード。アプリも会員登録も不要です。</p>
+    </footer>
+  </div>
+</body>
+</html>

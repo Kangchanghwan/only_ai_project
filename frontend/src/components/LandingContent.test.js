@@ -6,6 +6,8 @@ import LandingContent from './LandingContent.vue'
 import { savedLocale, setSavedLocale } from '../i18n/index.js'
 import ko from '../i18n/locales/ko.json'
 import en from '../i18n/locales/en.json'
+import ja from '../i18n/locales/ja.json'
+import ru from '../i18n/locales/ru.json'
 
 const KO_HREFS = [
   '/how-to-use.html',
@@ -139,6 +141,18 @@ describe('LandingContent.vue', () => {
       expect(alt.text()).toBe('이 페이지를 한국어로 보기')
     })
 
+    it('한국어 카피가 보이는 일본어 UI에서는 일본어 페이지로 가는 링크를 보여준다', () => {
+      const { w } = mountWith('ja', { messages: { ko, en, ja } })
+      const alt = w.find('[data-testid="landing-alt-link"]')
+      expect(alt.attributes('href')).toBe('/ja/')
+      expect(alt.text()).toBe('このページを日本語で見る')
+    })
+
+    it('경로 페이지가 없는 언어(독일어 UI)는 영어 페이지로 안내한다', () => {
+      const { w } = mountWith('de', { messages: { ko, en, de: { app: { title: 'x' } } } })
+      expect(w.find('[data-testid="landing-alt-link"]').attributes('href')).toBe('/en/')
+    })
+
     it('UI 언어와 카피 언어가 같으면 안내 링크가 없다', () => {
       const { w } = mountWith('ko', { saved: 'ko' })
       expect(w.find('[data-testid="landing-alt-link"]').exists()).toBe(false)
@@ -180,5 +194,16 @@ describe('LandingContent.vue', () => {
     expect(section.classes()).toContain('text-text-primary')
     expect(section.classes()).toContain('mb-4')
     expect(section.html()).not.toContain('text-text-secondary')
+  })
+
+  it('/ja/ 와 /ru/ 에서는 그 언어 가이드로 링크한다', () => {
+    window.history.replaceState({}, '', '/ja/')
+    const a = mountWith('ja', { messages: { ko, en, ja } }).w
+    expect(hrefs(a).every((h) => h.startsWith('/ja/guide/'))).toBe(true)
+    expect(hrefs(a)).toHaveLength(3)
+    window.history.replaceState({}, '', '/ru/')
+    const b = mountWith('ru', { messages: { ko, en, ru } }).w
+    expect(hrefs(b).every((h) => h.startsWith('/ru/guide/'))).toBe(true)
+    expect(hrefs(b)).toHaveLength(3)
   })
 })

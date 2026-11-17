@@ -38,6 +38,24 @@ const EN_KEYWORDS = [
   'screenshot sharing',
   'text sharing'
 ].join(', ')
+const JA_KEYWORDS = [
+  'オンラインクリップボード',
+  'クリップボード 共有',
+  'スマホ PC ファイル 転送',
+  'Wi-Fi ファイル共有',
+  'iPhone Windows 写真 転送',
+  '登録不要',
+  'アプリ不要'
+].join(', ')
+const RU_KEYWORDS = [
+  'онлайн буфер обмена',
+  'общий буфер обмена',
+  'передать файл с телефона на компьютер',
+  'передача файлов по Wi-Fi',
+  'фото с iPhone на компьютер',
+  'без регистрации',
+  'аналог Snapdrop'
+].join(', ')
 
 const routes = [
   {
@@ -62,6 +80,30 @@ const routes = [
       canonical: 'https://www.clipboardapp.org/en/',
       headline: 'The online clipboard between',
       faqFirstQuestion: 'Is it really free?'
+    }
+  },
+  {
+    path: '/ja/',
+    locale: 'ja',
+    language: 'ja-JP',
+    keywords: JA_KEYWORDS,
+    expect: {
+      lang: '<html lang="ja"',
+      canonical: 'https://www.clipboardapp.org/ja/',
+      headline: 'スマホとPCをつなぐオンラインクリップボード',
+      faqFirstQuestion: '本当に無料ですか？'
+    }
+  },
+  {
+    path: '/ru/',
+    locale: 'ru',
+    language: 'ru-RU',
+    keywords: RU_KEYWORDS,
+    expect: {
+      lang: '<html lang="ru"',
+      canonical: 'https://www.clipboardapp.org/ru/',
+      headline: 'Онлайн-буфер обмена между вашим телефоном и PC',
+      faqFirstQuestion: 'Это правда бесплатно?'
     }
   }
 ]

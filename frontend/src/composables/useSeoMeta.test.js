@@ -14,6 +14,11 @@ describe('canonicalFor', () => {
     expect(canonicalFor('/')).toBe('https://www.clipboardapp.org/')
     expect(canonicalFor('/#/download?r=x')).toBe('https://www.clipboardapp.org/')
   })
+
+  it('/ja, /ru 경로는 각자의 canonical', () => {
+    expect(canonicalFor('/ja/')).toBe('https://www.clipboardapp.org/ja/')
+    expect(canonicalFor('/ru')).toBe('https://www.clipboardapp.org/ru/')
+  })
 })
 
 describe('ogLocaleFor', () => {

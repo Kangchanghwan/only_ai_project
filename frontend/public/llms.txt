@@ -71,6 +71,19 @@ Full text of every guide below, as Markdown: https://www.clipboardapp.org/llms-f
 - [Guide index (Korean)](https://www.clipboardapp.org/guide/): All Korean guides grouped by device combination and task.
 - [Guide index (English)](https://www.clipboardapp.org/en/guide/): All English guides grouped by task.
 
+## Japanese and Russian pages
+
+- [Home (Japanese)](https://www.clipboardapp.org/ja/): Japanese version of the app and its landing page.
+- [Home (Russian)](https://www.clipboardapp.org/ru/): Russian version of the app and its landing page.
+- [Clipboard Share ガイド一覧](https://www.clipboardapp.org/ja/guide/): iPhone・Android・Windows・Macのあいだで、写真・ファイル・クリップボードのテキストを、ケーブルやアプリや会員登録なしで渡す方法をまとめたガイド一覧です。 (Japanese).
+- [PCとスマホでクリップボードを共有する方法](https://www.clipboardapp.org/ja/guide/clipboard-share-pc-smartphone.html): Windows・iPhone・Android・Macのあいだでクリップボードを共有する方法です。オンラインのブラウザだけで、テキストも画像もファイルも渡せます。登録もアプリも不要です。 (Japanese).
+- [スマホとPCのファイル転送をWi-Fiで行う方法](https://www.clipboardapp.org/ja/guide/smartphone-pc-file-transfer-wifi.html): スマホとPCのファイル転送をWi-Fiで行う方法です。iPhone・Android・Windows・Macのどの組み合わせでも、ブラウザを開くだけ。ケーブルもアプリも会員登録も不要です。 (Japanese).
+- [iPhoneからWindowsへ写真を無線で転送する方法](https://www.clipboardapp.org/ja/guide/iphone-windows-photo-transfer-wireless.html): iPhoneの写真や動画をWindows PCへ無線で転送する方法です。ケーブルもiTunesもアプリも不要。同じWi-Fiでブラウザを開くだけで、元の画質のまま届きます。 (Japanese).
+- [Руководства Clipboard Share: файлы, фото, текст](https://www.clipboardapp.org/ru/guide/): Как передавать фото, файлы и текст между iPhone, Android, Windows и Mac без провода, приложений и аккаунта. Выберите руководство для своей пары устройств. (Russian).
+- [Передать файл с телефона на компьютер по Wi-Fi без провода](https://www.clipboardapp.org/ru/guide/peredat-fajl-s-telefona-na-kompyuter-po-wi-fi.html): Как передать файл с телефона на компьютер по Wi-Fi онлайн, без провода и приложений. iPhone, Android, Windows и Mac: просто откройте сайт, регистрация не нужна. (Russian).
+- [Как скинуть фото с айфона на компьютер без провода](https://www.clipboardapp.org/ru/guide/foto-s-iphone-na-kompyuter-bez-provoda.html): Как скинуть фото с айфона на компьютер с Windows без шнура, iTunes и приложений: откройте сайт в браузере по одному Wi-Fi, и фото придут в исходном качестве. (Russian).
+- [Аналог Snapdrop и PairDrop с общим буфером обмена](https://www.clipboardapp.org/ru/guide/analog-snapdrop.html): Ищете аналог Snapdrop? Clipboard Share работает в браузере без аккаунта: передаёт файлы до 5GB и скопированный текст между устройствами в одной сети Wi-Fi. (Russian).
+
 ## Source
 
 - [GitHub repository](https://github.com/Kangchanghwan/only_ai_project): Source code for the Socket.IO server and the Vue 3 frontend.

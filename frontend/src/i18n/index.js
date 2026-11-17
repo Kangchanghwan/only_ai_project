@@ -50,9 +50,13 @@ export const languages = [
 
 const SUPPORTED = new Set(languages.map((lang) => lang.code))
 
-/** `/en` 또는 `/en/...` 경로면 'en', 아니면 null */
+/** 언어별 정적 경로가 있는 로케일. `/en`, `/ja/...`처럼 경로가 시작하면 그 언어 */
+export const PATH_LOCALES = ['en', 'ja', 'ru']
+
+/** `/en`, `/ja/`, `/ru/guide/...` 같은 경로면 그 언어 코드, 아니면 null */
 export function pathLocale(pathname) {
-  return /^\/en(\/|$)/.test(pathname || '') ? 'en' : null
+  const m = /^\/(en|ja|ru)(\/|$)/.exec(pathname || '')
+  return m ? m[1] : null
 }
 
 /** 저장된 로케일 > URL 경로 > 브라우저 언어 > 'ko' */
