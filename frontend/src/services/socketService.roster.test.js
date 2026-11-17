@@ -35,6 +35,20 @@ describe('SocketService - 명단 증분', () => {
     expect(socketService.globalRoomTruncated.value).toBe(false)
   })
 
+  it('delta에 truncated true가 오면 잘린 모드로 바꾸고 최근 기기만 남긴다 (나는 유지)', () => {
+    const many = [dev('me', 0), ...Array.from({ length: 20 }, (_, i) => dev('d' + i, i + 1))]
+    socketService._applyRoomUsers({ roomId: 'room-shared', devices: many, rev: 1, total: 21, truncated: false })
+    expect(socketService.globalRoomTruncated.value).toBe(false)
+    socketService._applyRoomDelta({ roomId: 'room-shared', rev: 2, total: 22, truncated: true, op: 'add', device: dev('new', 100) })
+    expect(socketService.globalRoomTruncated.value).toBe(true)
+    const ids = socketService.globalRoomDevices.value.map((d) => d.socketId)
+    expect(ids.length).toBe(ROSTER_RECENT + 1)
+    expect(ids).toContain('me')
+    expect(ids).toContain('new')
+    expect(ids).not.toContain('d0')
+    expect(socketService.globalRoomTotal.value).toBe(22)
+  })
+
   it('add / update / remove 를 순서대로 적용하고 total을 반영한다', () => {
     socketService._applyRoomUsers({ roomId: 'ip-1', devices: [dev('me')], rev: 1, total: 1 })
     socketService._applyRoomDelta({ roomId: 'ip-1', rev: 2, total: 2, op: 'add', device: dev('a') })

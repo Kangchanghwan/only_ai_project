@@ -378,7 +378,7 @@ class SocketService {
   }
 
   /** room-delta 한 건 반영 */
-  _applyRoomDelta({ roomId, rev, total, op, device, socketId }) {
+  _applyRoomDelta({ roomId, rev, total, truncated, op, device, socketId }) {
     const isIp = roomId === this.ipRoomId.value
     const isGlobal = roomId === this.globalRoomId.value
     if (!isIp && !isGlobal) return
@@ -403,6 +403,8 @@ class SocketService {
       this.ipRoomDevices.value = next
       return
     }
+    // 서버가 기준 인원을 넘었다고 알리면 잘린 모드로 바꾼다 (내려올 때는 서버가 전체 스냅샷을 다시 보낸다)
+    if (truncated === true) this.globalRoomTruncated.value = true
     if (this.globalRoomTruncated.value && next.length > ROSTER_RECENT) {
       const me = this.mySocketId.value
       const sorted = [...next].sort((a, b) => (b.joinedAt || 0) - (a.joinedAt || 0))

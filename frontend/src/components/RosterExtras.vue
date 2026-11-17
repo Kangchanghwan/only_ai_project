@@ -21,7 +21,9 @@ const props = defineProps({
   mySocketId: { type: String, default: null },
   myIdentity: { type: Object, default: null },
   /** 같은 네트워크 방의 기기 수 */
-  ipCount: { type: Number, default: 0 }
+  ipCount: { type: Number, default: 0 },
+  /** 같은 네트워크 탭의 '다른 네트워크 기기' 묶음에 이미 보이는 기기 수 */
+  otherNetworkCount: { type: Number, default: 0 }
 })
 const emit = defineEmits(['select-scope'])
 
@@ -32,7 +34,7 @@ const moreCount = computed(() => {
   const others = props.devices.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)).length
   return total.value - 1 - others
 })
-const otherNetworkMore = computed(() => Math.max(0, total.value - props.ipCount))
+const otherNetworkMore = computed(() => Math.max(0, total.value - props.ipCount - props.otherNetworkCount))
 
 const adj = ref(0)
 const animal = ref(0)

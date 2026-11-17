@@ -164,44 +164,56 @@ const roomSocketIds = (io: Server, roomId: string): string[] => [...(io.sockets.
 const emitFull = (io: Server, roomManager: RoomManager, roomId: string, id: string) => {
     io.to(id).emit('room-users', buildSnapshot(roomId, roomManager.getRoomUsers(roomId), id));
 };
-const emitLegacyFull = (io: Server, roomManager: RoomManager, roomId: string, id: string) => {
-    io.to(id).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
+
+/** 방 소켓을 legacy / v2(본인 제외)로 나눈다. 같은 메시지는 묶어서 한 번만 직렬화한다 */
+const splitTargets = (io: Server, roomId: string, exceptId?: string) => {
+    const legacy: string[] = [];
+    const v2: string[] = [];
+    for (const id of roomSocketIds(io, roomId)) {
+        if (legacySockets.has(id)) legacy.push(id);
+        else if (id !== exceptId) v2.push(id);
+    }
+    return { legacy, v2 };
 };
+const emitLegacyFull = (io: Server, roomManager: RoomManager, roomId: string, ids: string[]) => {
+    if (ids.length) io.to(ids).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
+};
+/** 전체 공유 방이 기준 인원을 넘었는지 (delta에 실어 클라이언트가 잘린 모드로 바꾸게 한다) */
+const isTruncated = (roomId: string, total: number) => roomId === SHARED_ROOM_ID && total > getRosterFullMax();
 
 /** 기기가 들어왔다 (신규·복구): 본인에게 스냅샷, 다른 v2에 add, legacy에 전체 */
 const rosterJoined = (io: Server, roomManager: RoomManager, roomId: string, joinerId: string) => {
     const rev = bumpRev(roomId);
-    const devices = roomManager.getRoomUsers(roomId);
+    const total = roomManager.getRoomUserCount(roomId);
     const device = roomManager.getUser(roomId, joinerId);
-    for (const id of roomSocketIds(io, roomId)) {
-        if (legacySockets.has(id)) emitLegacyFull(io, roomManager, roomId, id);
-        else if (id === joinerId) emitFull(io, roomManager, roomId, id);
-        else io.to(id).emit('room-delta', { roomId, rev, total: devices.length, op: 'add', device });
-    }
+    const { legacy, v2 } = splitTargets(io, roomId, joinerId);
+    if (!legacySockets.has(joinerId)) emitFull(io, roomManager, roomId, joinerId);
+    else legacy.push(joinerId);
+    if (v2.length) io.to(v2).emit('room-delta', { roomId, rev, total, truncated: isTruncated(roomId, total), op: 'add', device });
+    emitLegacyFull(io, roomManager, roomId, legacy);
 };
 
 /** 기기가 나갔다 (이미 방 명단에서 뺀 뒤 호출) */
 const rosterLeft = (io: Server, roomManager: RoomManager, roomId: string, socketId: string) => {
     const rev = bumpRev(roomId);
-    const total = roomManager.getRoomUsers(roomId).length;
+    const total = roomManager.getRoomUserCount(roomId);
+    // 기준 인원 바로 위에서 기준으로 내려왔다: 최근 기기만 가진 v2에게 각자 전체 스냅샷
     const crossed = roomId === SHARED_ROOM_ID && total === getRosterFullMax();
-    for (const id of roomSocketIds(io, roomId)) {
-        if (legacySockets.has(id)) emitLegacyFull(io, roomManager, roomId, id);
-        else if (crossed) emitFull(io, roomManager, roomId, id);
-        else io.to(id).emit('room-delta', { roomId, rev, total, op: 'remove', socketId });
-    }
+    const { legacy, v2 } = splitTargets(io, roomId, socketId);
+    if (crossed) for (const id of v2) emitFull(io, roomManager, roomId, id);
+    else if (v2.length) io.to(v2).emit('room-delta', { roomId, rev, total, truncated: isTruncated(roomId, total), op: 'remove', socketId });
+    emitLegacyFull(io, roomManager, roomId, legacy);
     if (total === 0) dropRev(roomId);
 };
 
 /** 이름이 바뀌었다 */
 const rosterUpdated = (io: Server, roomManager: RoomManager, roomId: string, socketId: string) => {
     const rev = bumpRev(roomId);
-    const devices = roomManager.getRoomUsers(roomId);
+    const total = roomManager.getRoomUserCount(roomId);
     const device = roomManager.getUser(roomId, socketId);
-    for (const id of roomSocketIds(io, roomId)) {
-        if (legacySockets.has(id)) emitLegacyFull(io, roomManager, roomId, id);
-        else io.to(id).emit('room-delta', { roomId, rev, total: devices.length, op: 'update', device });
-    }
+    const { legacy, v2 } = splitTargets(io, roomId);
+    if (v2.length) io.to(v2).emit('room-delta', { roomId, rev, total, truncated: isTruncated(roomId, total), op: 'update', device });
+    emitLegacyFull(io, roomManager, roomId, legacy);
 };
 
 /** room-snapshot / devices:find 이벤트 등록 */

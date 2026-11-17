@@ -298,6 +298,7 @@ watch(
             :my-socket-id="mySocketId"
             :my-identity="myIdentity"
             :ip-count="ipRoomDevices.length"
+            :other-network-count="otherNetworkDevices.length"
             @select-scope="$emit('select-scope', $event)"
           />
         </div>

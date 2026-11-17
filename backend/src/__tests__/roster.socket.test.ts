@@ -80,6 +80,20 @@ describe('Socket.IO - 명단 증분(room-delta)', () => {
     expect(c3.c.id).toBeTruthy();
   });
 
+  test('들어옴: 전체 공유 방이 한도를 넘으면 add delta에 truncated true', async () => {
+    process.env.ROSTER_FULL_MAX = '1';
+    const a = await connect(freshIp());
+    await wait();
+    a.log.length = 0;
+    await connect(freshIp());
+    await wait();
+    const add = a.log.find((e) => e.ev === 'room-delta' && e.roomId === 'room-shared' && e.op === 'add');
+    expect(add).toBeTruthy();
+    expect(add.truncated).toBe(true);
+    const ipAdd = a.log.find((e) => e.ev === 'room-delta' && e.roomId !== 'room-shared');
+    expect(ipAdd).toBeUndefined();
+  });
+
   test('나감: 전체 공유 방이 한도+1에서 한도로 내려가면 v2 전원 전체 스냅샷', async () => {
     const base = await connect(freshIp());
     await wait();

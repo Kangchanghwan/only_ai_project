@@ -67,8 +67,9 @@ describe('RosterExtras', () => {
   it('같은 네트워크 탭: 한 줄 버튼이 전체 공유 탭 전환을 요청한다', async () => {
     socketService.globalRoomTruncated.value = true
     socketService.globalRoomTotal.value = 60
-    const w = mountIt({ scope: 'ip', ipCount: 2 })
-    expect(w.find('[data-testid="roster-go-find"]').text()).toBe('다른 네트워크 기기 58대 더 · 이름으로 찾기')
+    // 총 60 = 같은 네트워크 2 + 이미 보이는 다른 네트워크 19 + 안 보이는 39
+    const w = mountIt({ scope: 'ip', ipCount: 2, otherNetworkCount: 19 })
+    expect(w.find('[data-testid="roster-go-find"]').text()).toBe('다른 네트워크 기기 39대 더 · 이름으로 찾기')
     await w.find('[data-testid="roster-go-find"]').trigger('click')
     expect(w.emitted('select-scope')[0]).toEqual(['global'])
   })
