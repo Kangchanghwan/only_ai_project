@@ -228,7 +228,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
 
 // ── 지난번 목록 배치 기억: 로딩 중 입력 칸 높이와 자리 표시 줄 수를 지난번과 같게 잡아 목록이 움직이지 않게 한다 ──
 const listHint = computed(() => (props.isLoading && !isPrerender ? readListHint(props.scope) : null))
-/** 서버 연결 전(기기 목록이 아직 없음)에 지난번 받을 기기 수: 안내 글의 글자 자리를 잡는 데만 쓴다 */
+/** 서버 연결 전(기기 목록이 아직 없음)에 지난번 받을 기기 수: 연결 전에 '받을 기기 0대'를 잠깐 그렸다 지우는 일을 막는 데만 쓴다 */
 const receiverHint = computed(() => {
   if (isPrerender || activeDevices.value.length > 0) return null
   const others = (readDeviceHint(props.scope)?.cards || 0) - 1
@@ -249,20 +249,21 @@ watch(
 <template>
   <div :class="['text-text-primary', files.length > 0 && !isLoading ? 'pb-24' : 'pb-6']">
     <AppHeader :user-count="userCount" :is-connecting="isConnecting">
-      <!-- 안내·소개·푸터: 도움말 창 안에 두고 화면에서는 숨김(DOM 유지, SEO) -->
+      <!-- 보관·사용 안내: 항상 도움말 창 안에만 둔다 (첫 화면에는 입력 칸 아래 한 줄로 충분) -->
+      <section class="border-t border-border pt-6 text-sm" data-testid="usage-notes">
+        <h3 class="text-lg font-semibold text-text-primary mb-3">{{ t('guide.title') }}</h3>
+        <ul class="flex flex-col list-none p-0 m-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
+          <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
+          <li v-else>{{ t('guide.retention') }}</li>
+          <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>
+          <li v-if="inRoom" data-testid="room-visibility">{{ t('guide.roomVisibility') }}</li>
+          <li v-else>{{ t('identity.ipNotice') }}</li>
+          <li>{{ t('identity.notAuth') }}</li>
+        </ul>
+      </section>
+      <!-- 소개·푸터: 도움말 창 안에 두고 화면에서는 숨김(DOM 유지, SEO). 목록이 비면 메인 화면 아래로 옮긴다 -->
       <Teleport :to="extraTarget" :disabled="!showExtraInMain || !extraTarget">
       <div class="help-extra" data-testid="help-extra">
-        <section class="border-t border-border pt-6 text-sm" data-testid="usage-notes">
-          <h3 class="text-lg font-semibold text-text-primary mb-3">{{ t('guide.title') }}</h3>
-          <ul class="flex flex-col list-none p-0 m-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
-            <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
-            <li v-else>{{ t('guide.retention') }}</li>
-            <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>
-            <li v-if="inRoom" data-testid="room-visibility">{{ t('guide.roomVisibility') }}</li>
-            <li v-else>{{ t('identity.ipNotice') }}</li>
-            <li>{{ t('identity.notAuth') }}</li>
-          </ul>
-        </section>
         <div class="landing-separator border-t border-border pt-6" data-testid="landing-separator">
           <LandingContent />
         </div>
@@ -320,7 +321,7 @@ watch(
         role="note"
         data-testid="global-warning"
       >
-        {{ t('identity.globalWarning') }}
+        {{ t('identity.globalWarning', { lock: t('lock.chipStart') }) }}
       </div>
 
       <!-- 1:1 안내 띠: 전체 공유 경고와 같은 자리 -->

@@ -9,6 +9,8 @@ import { useQRCode } from '../composables/useQRCode'
 import InstallGuideSheet from './InstallGuideSheet.vue'
 import { trackEvent } from '../utils/analytics'
 import { usePWAInstall, isIOS, isStandalone } from '../composables/usePWAInstall'
+import { usePush } from '../composables/usePush'
+import { useNotification } from '../composables/useNotification'
 
 const { t } = useI18n()
 const { qrCodeDataUrl, generateQRCodeForUrl } = useQRCode()
@@ -25,6 +27,27 @@ const props = defineProps({
 })
 
 const isHelpModalOpen = ref(false)
+
+// 도착 알림: 더 보기 메뉴에서 켜고 끈다 (페이지 맨 아래 버튼과 같은 동작)
+const push = usePush()
+const notification = useNotification()
+const pushBusy = ref(false)
+async function onPushToggle() {
+  if (pushBusy.value) return
+  pushBusy.value = true
+  try {
+    if (push.enabled.value) {
+      await push.disable()
+      notification.showInfo(t('arrival.pushDisabled'))
+    } else {
+      const r = await push.enable()
+      if (r.ok) notification.showSuccess(t('arrival.pushEnabled'))
+      else if (r.reason === 'error') notification.showError(t('arrival.pushError'))
+    }
+  } finally {
+    pushBusy.value = false
+  }
+}
 const isQrZoomOpen = ref(false)
 const isInstallGuideOpen = ref(false)
 
@@ -122,6 +145,23 @@ onMounted(async () => {
               <path d="M12 3v11" /><path d="m8 10 4 4 4-4" /><rect x="4" y="15" width="16" height="6" rx="2" />
             </svg>
             <span class="hidden sm:inline whitespace-nowrap">{{ t('pwa.installLabel') }}</span>
+          </button>
+          <button
+            v-if="push.supported.value && push.permission.value !== 'denied'"
+            type="button"
+            class="header-push-button h-11 w-full px-0 sm:px-4 rounded-none font-bold text-sm transition-colors duration-200 flex items-center justify-center gap-2 border-2 border-ink disabled:opacity-60"
+            :class="push.enabled.value ? 'bg-ink text-on-ink hover:opacity-90' : 'bg-transparent text-ink hover:bg-tint'"
+            :title="push.enabled.value ? `${t('arrival.pushOn')} · ${t('arrival.pushOff')}` : t('arrival.pushEnable')"
+            :aria-label="push.enabled.value ? `${t('arrival.pushOn')} · ${t('arrival.pushOff')}` : t('arrival.pushEnable')"
+            :aria-pressed="push.enabled.value ? 'true' : 'false'"
+            :disabled="pushBusy"
+            data-testid="header-push-button"
+            @click="moreOpen = false; onPushToggle()"
+          >
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+            </svg>
+            <span class="hidden sm:inline whitespace-nowrap">{{ push.enabled.value ? t('arrival.pushOn') : t('arrival.pushEnable') }}</span>
           </button>
           <a
             href="https://github.com/Kangchanghwan/only_ai_project/blob/master/PRIVACY.md"

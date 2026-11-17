@@ -11,34 +11,32 @@ const mountBox = (props = {}) => mount(TextShareBox, { props: { texts: [], ...pr
 describe('TextShareBox 보관 방식·받는 기기 수 안내', () => {
   const label = (w) => w.find('[data-testid="text-storage-label"]').text()
 
-  it('잠금 꺼짐(평문): 같은 네트워크·전체 공유 각각 누가 볼 수 있는지 보여 준다 (잠금 칩은 도구 줄에 하나)', () => {
-    const ip = mountBox({ storageMode: 'plain', scope: 'ip' })
-    expect(label(ip)).toBe('평문 10분 보관 · 같은 네트워크 누구나 볼 수 있어요')
-    expect(ip.findAll('[data-testid="lock-chip"]')).toHaveLength(1)
-    const global = mountBox({ storageMode: 'plain', scope: 'global' })
-    expect(label(global)).toBe('평문 10분 보관 · 모르는 사람도 누구나 볼 수 있어요')
-    expect(global.find('[data-testid="text-storage-label"]').classes()).toContain('font-semibold')
+  it('보관하는 모드(평문·잠금·방)는 모두 보관 기간과 파일 한도만 보여 준다', () => {
+    for (const [mode, scope] of [['plain', 'ip'], ['plain', 'global'], ['locked', 'ip'], ['private', 'prv:prv-1']]) {
+      const w = mountBox({ storageMode: mode, scope })
+      expect(label(w)).toBe('텍스트 10분 · 파일 최대 1일 보관')
+      expect(w.find('[data-testid="text-storage"]').text()).toBe('텍스트 10분 · 파일 최대 1일 보관 · 파일당 5GB')
+    }
+    expect(mountBox({ storageMode: 'plain', scope: 'ip' }).findAll('[data-testid="lock-chip"]')).toHaveLength(1)
+    expect(mountBox({ storageMode: 'private', scope: 'prv:prv-1' }).find('[data-testid="lock-chip"]').exists()).toBe(false)
   })
 
-  it('잠금 켜짐·1:1 방·보관 안 함(구버전 서버) 문구', () => {
-    expect(label(mountBox({ storageMode: 'locked', scope: 'ip' }))).toBe('암호화해서 10분 보관 · 비밀번호 아는 기기만 봐요')
-    const prv = mountBox({ storageMode: 'private', scope: 'prv:prv-1' })
-    expect(label(prv)).toBe('방 키로 암호화해서 10분 보관')
-    expect(prv.find('[data-testid="lock-chip"]').exists()).toBe(false)
+  it('보관 안 함(구버전 서버) 문구는 그대로', () => {
     const none = mountBox({ storageMode: 'none' })
     expect(label(none)).toBe('보관 안 함 · 지금 열린 기기에만 전달')
     expect(none.findAll('[data-testid="lock-chip"]')).toHaveLength(1)
   })
 
-  it('받을 기기 수는 보관 방식 박스 안에 짧게: 0대면 들어오면 전달(보관 안 하면 전달 안 됨)', () => {
+  it('받을 기기는 0대일 때만: 들어오면 전달(보관 안 하면 전달 안 됨). 1대 이상이면 줄에 없다', () => {
     const many = mountBox({ receiverCount: 2, storageMode: 'plain' })
-    expect(many.find('[data-testid="text-storage"] [data-testid="text-receivers"]').text()).toBe('받을 기기 2대')
+    expect(many.find('[data-testid="text-receivers"]').exists()).toBe(false)
+    expect(many.text()).not.toContain('받을 기기')
     const queued = mountBox({ receiverCount: 0, storageMode: 'plain' }).find('[data-testid="text-receivers"]')
     expect(queued.attributes('data-state')).toBe('queued')
-    expect(queued.text()).toBe('받을 기기 0대 · 들어오면 전달')
+    expect(queued.text()).toBe('· 받을 기기 0대 · 들어오면 전달')
     const live = mountBox({ receiverCount: 0, storageMode: 'none' }).find('[data-testid="text-receivers"]')
     expect(live.attributes('data-state')).toBe('nobody')
-    expect(live.text()).toBe('받을 기기 0대 · 전달 안 됨')
+    expect(live.text()).toBe('· 받을 기기 0대 · 전달 안 됨')
   })
 
   it('수를 모르면(null) 표시하지 않는다', () => {
