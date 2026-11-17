@@ -10,8 +10,7 @@
  */
 import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { privateRoomIdOfScope, isPrivateScope } from '../composables/useShareScope'
-import { isGroupRoomId } from '../utils/groupRoom'
+import { isPrivateScope } from '../composables/useShareScope'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import { formatSizeMB } from '../utils/fileUtils'
 import PasteSection from './PasteSection.vue'
@@ -30,7 +29,7 @@ const props = defineProps({
   prefill: { type: String, default: '' },
   /** 지금 범위에서 받을 수 있는 다른 기기 수 (null이면 표시하지 않음) */
   receiverCount: { type: Number, default: null },
-  /** 서버 연결 전, 지난번 받을 기기 수(1 이상). 글자 자리만 잡고 보이지 않게 그려 연결 뒤 줄바꿈이 달라지지 않게 한다 */
+  /** 서버 연결 전, 지난번 받을 기기 수(1 이상). 있으면 연결 전의 '받을 기기 0대'를 그리지 않아 연결 뒤 줄이 바뀌지 않게 한다 */
   receiverHint: { type: Number, default: null },
   /** 보내는 텍스트의 보관 방식: private(1:1 방 키) | locked(범위 잠금) | plain(평문) | none(보관 안 함) */
   storageMode: { type: String, default: 'none' },
@@ -99,12 +98,7 @@ function handleDrop(event) {
 }
 
 const willQueue = computed(() => props.storageMode !== 'none')
-const storageLabel = computed(() => {
-  if (props.storageMode === 'plain') return props.scope === 'global' ? t('text.storagePlainGlobal') : t('text.storagePlainIp')
-  if (props.storageMode === 'locked') return t('text.storageLocked')
-  if (props.storageMode === 'private') return isGroupRoomId(privateRoomIdOfScope(props.scope)) ? t('group.textNote') : t('text.storagePrivate')
-  return t('text.storageNone')
-})
+const storageLabel = computed(() => (props.storageMode === 'none' ? t('text.storageNone') : t('text.keepLine')))
 
 
 const draft = ref('')
@@ -242,30 +236,20 @@ function onKeydown(event) {
       aria-live="polite"
       data-testid="text-share-result"
     >{{ lastResult === 'ok' ? t('text.sentStatus') : lastResult === 'fail' ? t('text.sendFailedStatus') : '' }}</p>
-    <!-- 상자 아래 작은 한 줄: 보관 방식 · 받을 기기 수 · 파일 한도 -->
-    <div class="mt-2 text-xs text-text-secondary" data-testid="text-storage" :data-mode="storageMode">
+    <!-- 상자 아래 작은 한 줄: 보관 기간 · 파일 한도 (받을 기기가 없을 때만 전달 안내를 덧붙인다) -->
+    <div class="mt-2 text-xs text-text-secondary" dir="auto" data-testid="text-storage" :data-mode="storageMode">
       <template v-if="!composeDisabled">
-        <span
-          :class="storageMode === 'plain' && scope === 'global' ? 'font-semibold text-text-primary' : ''"
-          data-testid="text-storage-label"
-        >{{ storageLabel }}</span>
-        <span
-          v-if="receiverCount !== null && receiverHint !== null && receiverHint > 0"
-          class="tabular-nums invisible"
-          aria-hidden="true"
-          data-testid="text-receivers-placeholder"
-        > · {{ t('text.receiversCount', { count: receiverHint }) }}</span>
-        <span v-else-if="receiverCount !== null" aria-hidden="true"> · </span>
-        <span
-          v-if="receiverCount !== null && !(receiverHint !== null && receiverHint > 0)"
-          class="tabular-nums"
-          :class="{ 'font-semibold text-text-primary': receiverCount === 0 && !willQueue }"
-          data-testid="text-receivers"
-          :data-state="receiverCount === 0 ? (willQueue ? 'queued' : 'nobody') : 'live'"
-        >{{ t('text.receiversCount', { count: receiverCount }) }}<template v-if="receiverCount === 0"> · {{ willQueue ? t('text.deliverOnJoin') : t('text.notDelivered') }}</template></span>
+        <span data-testid="text-storage-label">{{ storageLabel }}</span>
         <span aria-hidden="true"> · </span>
       </template>
-      <span data-testid="upload-limit">{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</span>
+      <span data-testid="upload-limit">{{ t('file.limitShort', { size: formatSizeMB(maxFileSizeMB) }) }}</span>
+      <span
+        v-if="!composeDisabled && receiverCount === 0 && !(receiverHint > 0)"
+        class="tabular-nums"
+        :class="{ 'font-semibold text-text-primary': !willQueue }"
+        data-testid="text-receivers"
+        :data-state="willQueue ? 'queued' : 'nobody'"
+      > · {{ t('text.receiversCount', { count: 0 }) }} · {{ willQueue ? t('text.deliverOnJoin') : t('text.notDelivered') }}</span>
     </div>
   </div>
 </template>

@@ -30,17 +30,15 @@ describe('DeviceCards', () => {
     expect(cards[0].classes()).toContain('border-ink')
   })
 
-  it('접속 시각 딱지: 지금이면 초록, 아니면 회색', () => {
+  it('접속 시각 딱지: 방금 들어온 기기에만 "지금", 나머지는 표시하지 않는다', () => {
     const w = build([me, a, b])
     const tags = w.findAll('[data-testid="device-card-status"]')
-    // 정렬: 나(딱지 없음) → 최근 접속(a, 지금) → b(3분 전)
-    expect(tags).toHaveLength(2)
+    // 정렬: 나(딱지 없음) → 최근 접속(a, 지금) → b(3분 전, 딱지 없음)
+    expect(tags).toHaveLength(1)
     expect(w.findAll('[data-testid="device-card"]')[0].find('[data-testid="device-card-status"]').exists()).toBe(false)
     expect(tags[0].text()).toBe('지금')
     expect(tags[0].classes()).toContain('bg-scope-global')
-    expect(tags[1].text()).toBe('3분 전')
-    expect(tags[1].classes()).toContain('bg-text-secondary')
-    expect(tags[1].classes()).not.toContain('bg-scope-global')
+    expect(w.text()).not.toContain('3분 전')
   })
 
   it('연결 버튼은 invite를 부르고 aria-label에 이름이 들어간다', async () => {

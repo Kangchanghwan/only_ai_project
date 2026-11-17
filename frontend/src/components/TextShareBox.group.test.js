@@ -10,22 +10,22 @@ const mountBox = (props = {}) => mount(TextShareBox, { props: { texts: [], stora
 const label = (w) => w.find('[data-testid="text-storage-label"]').text()
 const G = 'prv-g-' + 'ab12'.repeat(6)
 
-describe('TextShareBox 보관 안내: 그룹 방 vs 1:1 방', () => {
-  it('그룹 방은 1:1 이라는 말 없이 "방 키" 문구를 쓴다', () => {
+describe('TextShareBox 보관 안내: 방에서도 보관 기간만 짧게', () => {
+  it('그룹 방도 보관 기간 한 줄 (1:1이라는 말 없음)', () => {
     const w = mountBox({ scope: 'prv:' + G })
-    expect(label(w)).toBe('방 키로 암호화해서 10분 보관')
+    expect(label(w)).toBe('텍스트 10분 · 파일 최대 1일 보관')
     expect(label(w)).not.toContain('1:1')
   })
 
   it('예전 방도 같은 문구', () => {
-    expect(label(mountBox({ scope: 'prv:prv-' + 'a'.repeat(24) }))).toBe('방 키로 암호화해서 10분 보관')
+    expect(label(mountBox({ scope: 'prv:prv-' + 'a'.repeat(24) }))).toBe('텍스트 10분 · 파일 최대 1일 보관')
   })
 
   it('영어도 1:1 없이', () => {
     i18n.global.locale.value = 'en'
     try {
-      expect(label(mountBox({ scope: 'prv:' + G }))).toBe('Encrypted with the room key, kept 10 min')
-      expect(label(mountBox({ scope: 'prv:prv-' + 'a'.repeat(24) }))).toBe('Encrypted with the room key, kept 10 min')
+      expect(label(mountBox({ scope: 'prv:' + G }))).toBe('Text kept 10 min · files up to 1 day')
+      expect(label(mountBox({ scope: 'prv:prv-' + 'a'.repeat(24) }))).toBe('Text kept 10 min · files up to 1 day')
     } finally {
       i18n.global.locale.value = 'ko'
     }
