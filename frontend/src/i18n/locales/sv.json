@@ -586,7 +586,6 @@
     "tag": "Låst"
   },
   "roster": {
-    "moreCount": "{n} enheter till online",
     "findTitle": "Hitta en enhet",
     "findHint": "Välj namnet som visas på den andra enhetens „Jag”-kort",
     "adjLabel": "Adjektiv",

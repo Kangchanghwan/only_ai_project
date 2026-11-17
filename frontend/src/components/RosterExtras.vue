@@ -1,16 +1,15 @@
 <script setup>
 /**
  * 전체 공유 방이 커서 목록이 최근 기기만 보일 때만 나타나는 보조 영역.
- * - 전체 공유 탭: "외 n대 접속 중" 한 줄 + "기기 찾기" 묶음
+ * - 전체 공유 탭: "기기 찾기" 묶음
  * - 같은 네트워크 탭의 "기기 찾기" 링크는 ConnectionCard에 있고, 누르면 goFind()로 전체 공유 탭의 찾기 묶음으로 간다
  * 잘리지 않았으면(truncated=false) 아무것도 그리지 않는다.
  */
-import { computed, ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DeviceRow from './DeviceRow.vue'
 import { socketService } from '../services/socketService'
 import { ADJ_COUNT, ANIMAL_COUNT } from '../utils/identity'
-import { isMeDevice } from '../utils/devices'
 
 const { t } = useI18n()
 
@@ -25,12 +24,7 @@ const props = defineProps({
 const emit = defineEmits(['select-scope'])
 
 const truncated = socketService.globalRoomTruncated
-const total = socketService.globalRoomTotal
 
-const moreCount = computed(() => {
-  const others = props.devices.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)).length
-  return total.value - 1 - others
-})
 
 const adj = ref(0)
 const animal = ref(0)
@@ -80,7 +74,6 @@ const selectClass = 'min-h-[44px] min-w-0 rounded-none border border-border bg-s
 
 <template>
   <div v-if="truncated && scope === 'global'" class="mb-3" data-testid="roster-extras">
-    <p v-if="moreCount > 0" class="m-0 mt-2 text-sm text-text-secondary" data-testid="roster-more">{{ t('roster.moreCount', { n: moreCount }) }}</p>
     <div ref="findEl" class="mt-3 pt-3 border-t border-border" data-testid="roster-find">
       <h3 class="m-0 text-sm font-bold text-ink">{{ t('roster.findTitle') }}</h3>
       <p class="m-0 mt-1 text-xs text-text-secondary">{{ t('roster.findHint') }}</p>

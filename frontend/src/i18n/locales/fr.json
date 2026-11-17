@@ -586,7 +586,6 @@
     "tag": "Verrouillé"
   },
   "roster": {
-    "moreCount": "{n} autres appareils connectés",
     "findTitle": "Trouver un appareil",
     "findHint": "Choisissez le nom affiché sur la carte « Moi » de l'autre appareil",
     "adjLabel": "Adjectif",

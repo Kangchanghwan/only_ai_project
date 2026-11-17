@@ -586,7 +586,6 @@
     "tag": "Zablokowane"
   },
   "roster": {
-    "moreCount": "Jeszcze {n} urządzeń online",
     "findTitle": "Znajdź urządzenie",
     "findHint": "Wybierz nazwę widoczną na karcie „Ja” na drugim urządzeniu",
     "adjLabel": "Przymiotnik",

@@ -786,7 +786,6 @@
     "shortcutHint": "Ctrl+Enter로 보내기 (Mac은 ⌘+Enter)"
   },
   "roster": {
-    "moreCount": "외 {n}대 접속 중",
     "findTitle": "기기 찾기",
     "findHint": "상대 기기의 '나' 카드에 보이는 이름을 고르세요",
     "adjLabel": "형용사",

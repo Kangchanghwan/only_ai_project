@@ -586,7 +586,6 @@
     "tag": "Bloqueado"
   },
   "roster": {
-    "moreCount": "Mais {n} dispositivos conectados",
     "findTitle": "Encontrar um dispositivo",
     "findHint": "Escolha o nome que aparece no cartão «Eu» do outro dispositivo",
     "adjLabel": "Adjetivo",

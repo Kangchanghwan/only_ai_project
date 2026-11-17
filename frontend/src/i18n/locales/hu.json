@@ -586,7 +586,6 @@
     "tag": "Zárolt"
   },
   "roster": {
-    "moreCount": "Még {n} eszköz online",
     "findTitle": "Eszköz keresése",
     "findHint": "Válaszd ki a másik eszköz „Én” kártyáján látható nevet",
     "adjLabel": "Melléknév",

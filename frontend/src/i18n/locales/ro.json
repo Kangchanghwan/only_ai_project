@@ -586,7 +586,6 @@
     "tag": "Blocat"
   },
   "roster": {
-    "moreCount": "Încă {n} dispozitive online",
     "findTitle": "Găsește un dispozitiv",
     "findHint": "Alege numele afișat pe cardul „Eu” al celuilalt dispozitiv",
     "adjLabel": "Adjectiv",

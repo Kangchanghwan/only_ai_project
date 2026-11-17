@@ -586,7 +586,6 @@
     "tag": "Gesperrt"
   },
   "roster": {
-    "moreCount": "{n} weitere Geräte online",
     "findTitle": "Gerät finden",
     "findHint": "Wähle den Namen, der auf der „Ich“-Karte des anderen Geräts steht",
     "adjLabel": "Adjektiv",

@@ -586,7 +586,6 @@
     "tag": "已锁定"
   },
   "roster": {
-    "moreCount": "另有 {n} 台设备在线",
     "findTitle": "查找设备",
     "findHint": "请选择对方设备“我”卡片上显示的名称",
     "adjLabel": "形容词",

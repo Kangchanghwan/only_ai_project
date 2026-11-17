@@ -786,7 +786,6 @@
     "shortcutHint": "Send with Ctrl+Enter (⌘+Enter on Mac)"
   },
   "roster": {
-    "moreCount": "{n} more devices online",
     "findTitle": "Find a device",
     "findHint": "Pick the name shown on the other device's \"Me\" card",
     "adjLabel": "Adjective",

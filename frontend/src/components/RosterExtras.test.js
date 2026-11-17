@@ -24,19 +24,14 @@ describe('RosterExtras', () => {
     expect(w.text()).toBe('')
   })
 
-  it('잘렸으면 "외 n대"와 찾기 묶음이 보인다 (n = 총 − 나 − 보이는 다른 기기)', () => {
+  it('잘렸으면 찾기 묶음이 보이고, 전체 인원 줄은 없다', () => {
     socketService.globalRoomTruncated.value = true
     socketService.globalRoomTotal.value = 60
     const w = mountIt()
-    expect(w.find('[data-testid="roster-more"]').text()).toBe('외 58대 접속 중')
+    expect(w.find('[data-testid="roster-more"]').exists()).toBe(false)
+    expect(w.text()).not.toContain('접속 중')
     expect(w.find('[data-testid="roster-find"]').exists()).toBe(true)
     expect(w.findAll('select')).toHaveLength(3)
-  })
-
-  it('n이 0 이하면 "외 n대" 줄을 숨긴다', () => {
-    socketService.globalRoomTruncated.value = true
-    socketService.globalRoomTotal.value = 2
-    expect(mountIt().find('[data-testid="roster-more"]').exists()).toBe(false)
   })
 
   it('찾기 결과 3종: 찾음 / 없음 / 제한 / 오류', async () => {
