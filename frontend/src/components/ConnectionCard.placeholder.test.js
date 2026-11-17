@@ -106,3 +106,38 @@ describe('ConnectionCard 지난번 배치로 자리 잡기', () => {
     if (hasBox) expect(w.find('[data-testid="empty-state-qr-placeholder"]').classes()).toEqual(expect.arrayContaining(['w-[140px]', 'h-[140px]', 'mb-1']))
   })
 })
+
+describe('ConnectionCard 다른 네트워크 묶음 자리: 전체 공유 목록을 기다리는 동안', () => {
+  const others = [dev('b', { adj: 2, animal: 2 })]
+  const far = [dev('z', { adj: 9, animal: 9 })]
+  it('같은 네트워크 목록만 먼저 와도 자리는 유지된다 (접혔다 펴지지 않는다)', async () => {
+    saveDeviceHint('ip', { cards: 2, otherNet: true, soloHeight: 0 })
+    const w = mount(ConnectionCard, { props: { devices: [], mySocketId: 'me', myIdentity: fox, wide: false, scope: 'ip', otherNetworkPending: true }, global })
+    expect(w.find('[data-testid="other-network-placeholder"]').exists()).toBe(true)
+    await w.setProps({ devices: [dev('me', fox), ...others] })
+    expect(w.find('[data-testid="device-cards"]').exists()).toBe(true)
+    expect(w.find('[data-testid="other-network-placeholder"]').exists()).toBe(true)
+    await w.setProps({ otherNetworkPending: false })
+    expect(w.find('[data-testid="other-network-placeholder"]').exists()).toBe(false)
+  })
+  it('기다리는 동안에는 "묶음 없음"으로 기억을 덮어쓰지 않는다', async () => {
+    saveDeviceHint('ip', { cards: 2, otherNet: true, soloHeight: 0 })
+    const w = mount(ConnectionCard, { props: { devices: [], mySocketId: 'me', myIdentity: fox, wide: false, scope: 'ip', otherNetworkPending: true }, global })
+    await w.setProps({ devices: [dev('me', fox), ...others] })
+    await flush()
+    expect(readDeviceHint('ip')).toMatchObject({ cards: 2, otherNet: true })
+    await w.setProps({ otherNetworkPending: false, otherNetworkDevices: [] })
+    await flush()
+    expect(readDeviceHint('ip')).toMatchObject({ cards: 2, otherNet: false })
+  })
+  it('기억에 묶음이 없었으면 기다리는 동안에도 자리를 잡지 않는다', async () => {
+    saveDeviceHint('ip', { cards: 2, otherNet: false, soloHeight: 0 })
+    const w = mount(ConnectionCard, { props: { devices: [dev('me', fox), ...others], mySocketId: 'me', myIdentity: fox, wide: false, scope: 'ip', otherNetworkPending: true }, global })
+    expect(w.find('[data-testid="other-network-placeholder"]').exists()).toBe(false)
+  })
+  it('연결된 뒤에는 혼자일 때 자리 블록을 다시 그리지 않는다', async () => {
+    saveDeviceHint('ip', { cards: 1, otherNet: true, soloHeight: 251 })
+    const w = mount(ConnectionCard, { props: { devices: [dev('me', fox), ...others], mySocketId: 'me', myIdentity: fox, wide: false, scope: 'ip', otherNetworkPending: true, otherNetworkDevices: far }, global })
+    expect(w.find('[data-testid="empty-state-placeholder"]').exists()).toBe(false)
+  })
+})

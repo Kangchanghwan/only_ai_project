@@ -280,6 +280,7 @@ watch(
             :reroll-available-at="rerollAvailableAt"
             :scope="scope"
             :other-network-devices="otherNetworkDevices"
+            :other-network-pending="scope === 'ip' && globalRoomDevices.length === 0"
             @reroll="$emit('reroll-identity')"
             @hint-copied="$emit('hint-copied', $event)"
             @group-create="$emit('group-create')"
