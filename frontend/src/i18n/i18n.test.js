@@ -111,6 +111,14 @@ describe('resolveLocale', () => {
     expect(pathLocale('/english')).toBeNull()
   })
 
+  it('/ja, /ru 경로도 그 언어로 본다 (일본어·러시아어 검색용 페이지)', () => {
+    expect(pathLocale('/ja/')).toBe('ja')
+    expect(pathLocale('/ru/guide/analog-snapdrop.html')).toBe('ru')
+    expect(pathLocale('/japan')).toBeNull()
+    expect(pathLocale('/ruby/')).toBeNull()
+    expect(resolveLocale({ savedLocale: null, pathname: '/ja/', browserLanguage: 'ko-KR' })).toBe('ja')
+  })
+
   it('저장된 로케일 > 경로 > 브라우저 언어 > ko 순으로 결정한다', () => {
     expect(resolveLocale({ savedLocale: 'ja', pathname: '/en/', browserLanguage: 'de-DE' })).toBe('ja')
     expect(resolveLocale({ savedLocale: null, pathname: '/en/', browserLanguage: 'de-DE' })).toBe('en')

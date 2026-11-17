@@ -26,6 +26,25 @@ const EN_LINKS = [
   { key: 'landing.guide1', href: '/en/guide/share-clipboard-between-phone-and-pc.html' },
   { key: 'landing.guide2', href: '/en/guide/airdrop-alternative-android-windows-mac.html' }
 ]
+const JA_LINKS = [
+  { key: 'landing.guide1', href: '/ja/guide/clipboard-share-pc-smartphone.html' },
+  { key: 'landing.guide2', href: '/ja/guide/smartphone-pc-file-transfer-wifi.html' },
+  { key: 'landing.guide3', href: '/ja/guide/iphone-windows-photo-transfer-wireless.html' }
+]
+const RU_LINKS = [
+  { key: 'landing.guide1', href: '/ru/guide/peredat-fajl-s-telefona-na-kompyuter-po-wi-fi.html' },
+  { key: 'landing.guide2', href: '/ru/guide/foto-s-iphone-na-kompyuter-bez-provoda.html' },
+  { key: 'landing.guide3', href: '/ru/guide/analog-snapdrop.html' }
+]
+const LINKS = { ko: KO_LINKS, ja: JA_LINKS, ru: RU_LINKS }
+
+// 언어별 페이지와, 그 언어로 고정한 '이 언어로 보기' 문구 (보는 사람이 읽을 수 있어야 해서 i18n 키를 쓰지 않는다)
+const LANG_PAGES = {
+  ko: { href: '/', label: '이 페이지를 한국어로 보기' },
+  en: { href: '/en/', label: 'Read this page in English' },
+  ja: { href: '/ja/', label: 'このページを日本語で見る' },
+  ru: { href: '/ru/', label: 'Открыть эту страницу на русском' }
+}
 
 // locale과 savedLocale 모두 반응형이라, 언어를 고르면 새로고침 없이 카피가 따라온다.
 const copyLocale = computed(() =>
@@ -43,9 +62,9 @@ const copyLocale = computed(() =>
  */
 const altLink = computed(() => {
   if (locale.value === copyLocale.value) return null
-  return copyLocale.value === 'ko'
-    ? { href: '/en/', label: 'Read this page in English' }
-    : { href: '/', label: '이 페이지를 한국어로 보기' }
+  // 보는 사람의 언어 페이지가 있으면 그쪽, 없으면 영어 페이지(이미 영어면 한국어)
+  if (LANG_PAGES[locale.value]) return LANG_PAGES[locale.value]
+  return copyLocale.value === 'en' ? LANG_PAGES.ko : LANG_PAGES.en
 })
 
 /** copyLocale 기준으로 번역한다. te()로 먼저 막으므로 폴백(한국어)이 새지 않는다. */
@@ -57,7 +76,7 @@ const useCases = ['landing.useCase1', 'landing.useCase2', 'landing.useCase3', 'l
 const safety = ['landing.safety1', 'landing.safety2', 'landing.safety3']
 const faqs = [1, 2, 3, 4, 5].map((n) => ({ q: `landing.faq${n}q`, a: `landing.faq${n}a` }))
 const links = computed(() =>
-  (copyLocale.value === 'ko' ? KO_LINKS : EN_LINKS).filter(
+  (LINKS[copyLocale.value] || EN_LINKS).filter(
     (l) => te(l.key, copyLocale.value) && tc(l.key).trim().length > 0
   )
 )

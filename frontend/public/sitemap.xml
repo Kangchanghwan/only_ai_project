@@ -5,6 +5,8 @@
     <lastmod>2026-09-12</lastmod>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.clipboardapp.org/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.clipboardapp.org/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.clipboardapp.org/ja/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.clipboardapp.org/ru/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.clipboardapp.org/" />
   </url>
   <url>
@@ -12,6 +14,8 @@
     <lastmod>2026-09-12</lastmod>
     <xhtml:link rel="alternate" hreflang="ko" href="https://www.clipboardapp.org/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.clipboardapp.org/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.clipboardapp.org/ja/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.clipboardapp.org/ru/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.clipboardapp.org/" />
   </url>
   <url>
@@ -75,4 +79,54 @@
   <url><loc>https://www.clipboardapp.org/guide/same-wifi-file-share.html</loc><lastmod>2026-10-24</lastmod></url>
   <url><loc>https://www.clipboardapp.org/en/guide/best-online-clipboards-compared.html</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://www.clipboardapp.org/en/guide/end-to-end-encrypted-online-clipboard.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url>
+    <loc>https://www.clipboardapp.org/ja/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.clipboardapp.org/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.clipboardapp.org/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.clipboardapp.org/ja/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.clipboardapp.org/ru/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.clipboardapp.org/" />
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ru/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.clipboardapp.org/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.clipboardapp.org/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.clipboardapp.org/ja/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.clipboardapp.org/ru/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.clipboardapp.org/" />
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ja/guide/</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ja/guide/clipboard-share-pc-smartphone.html</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ja/guide/smartphone-pc-file-transfer-wifi.html</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ja/guide/iphone-windows-photo-transfer-wireless.html</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ru/guide/</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ru/guide/peredat-fajl-s-telefona-na-kompyuter-po-wi-fi.html</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ru/guide/foto-s-iphone-na-kompyuter-bez-provoda.html</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://www.clipboardapp.org/ru/guide/analog-snapdrop.html</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
 </urlset>

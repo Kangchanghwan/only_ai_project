@@ -14,9 +14,10 @@ export function ogLocaleFor(code) {
   return OG_LOCALES[code] || 'en_US'
 }
 
-/** 경로 기준 canonical: /en 계열이면 영어 페이지, 그 외는 루트 */
+/** 경로 기준 canonical: /en·/ja·/ru 계열이면 그 언어 페이지, 그 외는 루트 */
 export function canonicalFor(pathname) {
-  return pathLocale(pathname) === 'en' ? `${SITE}/en/` : `${SITE}/`
+  const l = pathLocale(pathname)
+  return l ? `${SITE}/${l}/` : `${SITE}/`
 }
 
 function setAttr(selector, attr, value) {

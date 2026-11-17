@@ -19,7 +19,7 @@ const llms = readFileSync(join(PUB, 'llms.txt'), 'utf8')
 const llmsUrls = [...new Set([...llms.matchAll(/\((https:\/\/www\.clipboardapp\.org[^)\s]*)\)/g)].map(m => m[1]))]
 
 // SPA가 렌더링하는 경로 (정적 파일 아님)
-const SPA = new Set([`${ORIGIN}/`, `${ORIGIN}/en/`])
+const SPA = new Set([`${ORIGIN}/`, `${ORIGIN}/en/`, `${ORIGIN}/ja/`, `${ORIGIN}/ru/`])
 
 const fileFor = (url) => {
   let p = url.replace(ORIGIN, '')
@@ -36,7 +36,7 @@ for (const url of sitemapUrls) {
   if (!existsSync(fileFor(url))) err(`sitemap URL에 해당하는 파일 없음: ${url}`)
 }
 
-for (const dir of ['guide', 'en/guide']) {
+for (const dir of ['guide', 'en/guide', 'ja/guide', 'ru/guide']) {
   for (const f of readdirSync(join(PUB, dir)).filter(f => f.endsWith('.html'))) {
     const url = `${ORIGIN}/${dir}/${f === 'index.html' ? '' : f}`
     if (sitemapUrls.includes(url)) continue
