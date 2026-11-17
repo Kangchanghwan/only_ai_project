@@ -14,6 +14,7 @@ import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
 import { isPrivateScope } from '../composables/useShareScope'
 import QRCode from 'qrcode'
 import { trackEvent } from '../utils/analytics'
+import { markAlone, onEmptyStateView, onIpConnected } from '../utils/activationMetrics'
 import { isMobileUa } from '../services/p2pProbe'
 import { isIOS } from '../composables/usePWAInstall'
 import { IOS_SHORTCUT_GUIDE, IOS_SHORTCUT_FILE_LINK } from '../utils/iosShortcut'
@@ -79,6 +80,7 @@ watch(showEmpty, (now, before) => {
   if (now) {
     sawEmpty = true
     if (emptySince === null) emptySince = Date.now()
+    markAlone()
     makeQr()
     if (!viewSent && !viewTimer) {
       viewTimer = setTimeout(() => {
@@ -87,6 +89,7 @@ watch(showEmpty, (now, before) => {
         viewSent = true
         flagSet(VIEW_FLAG)
         safeTrack('empty_state_view', { is_mobile: isMobile, locale: locale.value })
+        onEmptyStateView()
       }, 3000)
     }
   } else {
@@ -106,6 +109,10 @@ watch(otherCount, (n, prev) => {
     })
   }
 })
+// 같은 네트워크 탭에 다른 기기가 1대 이상 (처음부터 있었던 경우 포함): connected_any
+watch([otherCount, () => props.scope], ([n, sc]) => {
+  if (sc === 'ip' && n >= 1) onIpConnected()
+}, { immediate: true })
 onBeforeUnmount(clearViewTimer)
 
 async function copyHint(target) {

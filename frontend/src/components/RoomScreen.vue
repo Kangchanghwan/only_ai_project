@@ -7,6 +7,7 @@ import ShareScopeTabs from './ShareScopeTabs.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import ConnectionCard from './ConnectionCard.vue'
+import { onRoomConnected } from '../utils/activationMetrics'
 import TransferProgress from './TransferProgress.vue'
 import { formatSizeMB } from '../utils/fileUtils'
 import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
@@ -159,6 +160,10 @@ const groupOthers = computed(() => {
   const devs = id ? props.privateDevices[id] : null
   return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)) : []
 })
+// 비공개 방(1:1·그룹)에 다른 기기가 실제 접속 중이면 connected_any (측정 전용, 화면 변화 없음)
+watch([() => groupOthers.value.length, () => props.scope], ([n, sc]) => {
+  if (n >= 1 && isPrivateScope(sc)) onRoomConnected()
+}, { immediate: true })
 // 상대가 나갔을 때 "다시 연결": 같은 상대가 ip/전체 공유 목록에 보이면 다시 초대할 수 있다
 const peerLeft = computed(() => !isGroupRoom.value && currentRoom.value?.status === 'left')
 // 상대 오프라인: 파일은 올릴 수 있고(상대가 나중에 받음), 텍스트도 10분 보관되므로 보낼 수 있다

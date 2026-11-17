@@ -19,6 +19,7 @@ import { useTextQueue, textBytes, TEXT_QUEUE_MAX_BYTES, TEXT_QUEUE_SENDER_QUOTA 
 import { roomDisplayName } from './utils/roomDisplayName'
 import { useShareScope, isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from './composables/useShareScope'
 import { usePrivateRooms } from './composables/usePrivateRooms'
+import { checkReturn as checkReturnVisit } from './utils/activationMetrics'
 import { usePairFlow } from './composables/usePairFlow'
 import { useGroupRooms } from './composables/useGroupRooms'
 import { useSeoMeta } from './composables/useSeoMeta'
@@ -262,7 +263,7 @@ watch(
 )
 
 // 저장된 1:1 방을 시작하자마자 "연결 중…" 탭으로 보여 준다 (IndexedDB 불가 시 빈 목록)
-privateRooms.hydrate()
+privateRooms.hydrate().then(() => checkReturnVisit(privateRooms.rooms.length > 0)).catch(() => {})
 
 let rejoinRunning = null
 /** 정원이 찬 그룹 방 안내는 방마다 한 번만 */
