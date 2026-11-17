@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Inne osoby w tej samej sieci (szkoła, biuro, kawiarnia) też mogą to zobaczyć.",
-    "notAuth": "Plakietka tylko odróżnia urządzenia. To nie jest weryfikacja tożsamości.",
     "globalWarning": "Tutaj każdy, także obcy, widzi to, co wysyłasz. Dane wrażliwe przed wysłaniem zabezpiecz hasłem.",
     "pairSasLoading": "Wczytywanie obrazków…",
     "moreDevices": "Pokaż jeszcze {count}"
@@ -250,18 +249,43 @@
     "backgroundHint": "Zeskanuj, aby otworzyć tę samą przestrzeń"
   },
   "help": {
-    "pwaTitle": "Zainstaluj jako aplikację",
-    "pwaIntro": "Po instalacji uruchomisz ją bezpośrednio z ekranu głównego, a udostępnienie pliku z innej aplikacji do tej aplikacji automatycznie go prześle.",
-    "pwaAndroidTitle": "Android / komputer (Chrome, Edge)",
-    "pwaAndroidDesc": "Dotknij ikony instalacji na pasku adresu lub baner instalacji u dołu ekranu.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Dotknij przycisku Udostępnij, a następnie wybierz „Dodaj do ekranu głównego”.",
-    "downloadSingleDesc": "Naciśnij przycisk Odbierz obok pliku, aby go pobrać. Przycisk ⋯ (Więcej) pozwala udostępnić kod QR, pobrać i usunąć (obrazy można też skopiować). Na komputerze i telefonie działa tak samo.",
-    "textShareCopyDesc": "Naciśnij Kopiuj przy udostępnionym tekście, aby skopiować go do schowka. Tekst wpisany lub wklejony w pole wysyłasz przyciskiem Udostępnij.",
-    "textShareDeleteDesc": "Otwórz przycisk ⋯ po prawej stronie tekstu i wybierz Usuń.",
-    "scopeDevicesDesc": "Karta połączenia (na szerokich ekranach lewy panel) pokazuje inne urządzenia w tym samym zakresie.",
-    "limit4": "Nawet gdy pozostajesz połączony, pliki są przechowywane maksymalnie około 1 dnia (wkrótce po wyjściu wszystkich urządzeń są usuwane)",
-    "tip4": "Przycisk „⋯” na karcie pliku otwiera menu kodu QR/pobierania/usuwania (dla obrazów także kopiowanie)"
+    "close": "Zamknij",
+    "confirm": "Rozumiem",
+    "aboutTitle": "Informacje",
+    "title": "Jak korzystać",
+    "connectTitle": "Łączenie",
+    "connect1": "Urządzenia w tej samej sieci Wi-Fi łączą się automatycznie, gdy tylko otworzą tę stronę.",
+    "connect2": "Na telefonie zeskanuj aparatem kod QR z ekranu komputera albo wpisz w pasku adresu clipboardapp.org.",
+    "connect3": "Aby połączyć urządzenie w innej sieci Wi-Fi lub na danych mobilnych, utwórz pokój. Utwórz nowy pokój przyciskiem „＋ Pokój” i zaproś drugie urządzenie kodem QR, obrazkami lub linkiem. Kod QR zaproszenia działa przez 10 minut.",
+    "connect4": "Na nowym urządzeniu stuknij „Dołącz za pomocą obrazków” i po kolei stuknij 4 obrazki widoczne na urządzeniu w pokoju. Ktoś przy tym urządzeniu musi stuknąć „Wpuść”, zanim będziesz mógł dołączyć.",
+    "connect5": "Stuknij „Połącz” na karcie urządzenia, aby otworzyć pokój tylko dla was dwóch. Połączycie się po sprawdzeniu, że oba ekrany pokazują ten sam obrazek.",
+    "connect6": "Aby sprawdzić połączenie, zobacz nazwę zwierzęcia na karcie „Ja” na ekranie drugiego urządzenia i znajdź tę nazwę na swojej liście.",
+    "connect7": "Gdy w grupie „Wszyscy” jest dużo urządzeń, widać tylko najnowsze. Użyj „Znajdź urządzenie” i wybierz nazwę zwierzęcia drugiego urządzenia.",
+    "sendTitle": "Wysyłanie",
+    "send1": "Wklej skopiowany tekst lub obrazy w dowolnym miejscu strony skrótem Ctrl+V (⌘+V na Macu), a zostaną wysłane od razu.",
+    "send2": "W przypadku plików stuknij „Wybierz pliki” albo przeciągnij je na stronę.",
+    "send3": "Tekst wpisany w polu wysyłasz przyciskiem „Udostępnij” lub skrótem Ctrl+Enter (⌘+Enter na Macu).",
+    "send4": "Każdy plik może mieć do 5GB, a przesyłanie po przerwaniu połączenia jest wznawiane od miejsca, w którym się zatrzymało.",
+    "send5": "Na iPhonie i iPadzie dodaj skrót, aby wysyłać prosto z przycisku Udostępnij w aplikacji Zdjęcia.",
+    "receiveTitle": "Odbieranie",
+    "receive1": "Stuknij „Odbierz”, aby pobrać plik, i „Kopiuj”, aby skopiować tekst do schowka.",
+    "receive2": "Jeśli plików jest kilka, zaznacz je i stuknij „Pobierz”, aby dostać jeden plik ZIP. Pliki większe niż 200MB są pobierane osobno.",
+    "receive3": "Wybierz „Udostępnij kodem QR” w menu ⋯ pliku, a potem zeskanuj kod aparatem innego urządzenia, aby dostać ten plik. Obrazy można też skopiować z tego samego menu.",
+    "whoTitle": "Kto to widzi",
+    "who1": "Ta sama sieć: widzą to urządzenia w tym samym połączeniu internetowym. W szkołach, biurach i kawiarniach mogą to zobaczyć także obcy.",
+    "who2": "Wszyscy: widzi to każdy, kto ma teraz otwartą tę usługę.",
+    "who3": "Pokoje: widzą to tylko urządzenia w pokoju, a pliki i tekst w pokoju są szyfrowane automatycznie. W pokoju może być do 10 urządzeń.",
+    "who4": "Zablokuj hasłem: ustaw hasło z co najmniej 4 znaków, a podczas tej wizyty pliki i tekst wysyłane w tej karcie zostaną zablokowane na tym urządzeniu przed wysłaniem. Hasło przekaż odbiorcy osobno.",
+    "who5": "Kod QR i link zablokowanego pliku zawierają jego klucz, więc każdy, kto je ma, może dostać plik bez hasła. Pokazuj je tylko odbiorcy.",
+    "who6": "Nazwy zwierząt oraz informacje o urządzeniu i przeglądarce pozostają widoczne nawet po zablokowaniu. Nazwa pozwala odróżnić urządzenia, ale nie dowodzi, kim ktoś jest.",
+    "keepTitle": "Jak długo to zostaje",
+    "keep1": "Tekst jest przechowywany 10 minut, więc urządzenia, które w tym czasie dołączą, nadal mogą go dostać.",
+    "keep2": "Tekst powyżej 96KB nie jest przechowywany i trafia tylko do urządzeń otwartych w tej chwili. Wyślij go jako plik .txt, aby został przez dzień.",
+    "keep3": "Pliki są przechowywane do 1 dnia. Mogą zostać usunięte wcześniej, gdy wszystkie urządzenia wyjdą, więc to, czego potrzebujesz, pobierz od razu.",
+    "moreTitle": "Przydatne dodatki",
+    "more1": "Instalacja aplikacji: otwieraj ją prosto z ekranu głównego i wybieraj ją w przycisku Udostępnij innych aplikacji, aby wysyłać pliki. Na Androidzie i komputerze (Chrome, Edge) użyj ikony instalacji w pasku adresu; na iPhonie (Safari) stuknij przycisk Udostępnij i wybierz „Do ekranu głównego”.",
+    "more2": "Powiadomienia o nowych plikach: włącz je w menu ⋯, aby dostawać powiadomienia o nowych plikach i tekście, nawet gdy karta jest w tle.",
+    "more3": "Skróty: Ctrl+V wklej, aby wysłać · Ctrl+Enter wyślij wpisany tekst · Ctrl+C skopiuj jeden zaznaczony plik (na Macu ⌘ zamiast Ctrl)"
   },
   "seo": {
     "title": "Schowek online między telefonem a PC",
@@ -370,9 +394,6 @@
     "confirm": "Wyślij publicznie"
   },
   "guide": {
-    "title": "Przechowywanie i użytkowanie",
-    "retention": "Nawet podczas połączenia pliki są automatycznie usuwane najpóźniej po 1 dniu. Czyszczenie działa okresowo, więc dokładna godzina (co do sekundy) nie jest gwarantowana, a po wyjściu wszystkich urządzeń usunięcie może nastąpić wcześniej. Pobierz potrzebne pliki od razu.",
-    "roomRetention": "Pliki w tym pokoju są przechowywane maksymalnie przez około 1 dzień. Nie są usuwane od razu, gdy wszystkie urządzenia wyjdą. Czyszczenie działa okresowo, więc dokładna godzina nie jest gwarantowana. Teksty są przechowywane tylko 10 minut.",
     "roomVisibility": "Widzą je tylko urządzenia znajdujące się w tym pokoju."
   },
   "download": {

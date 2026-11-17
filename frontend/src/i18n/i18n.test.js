@@ -78,18 +78,26 @@ describe('i18n footer install', () => {
   })
 })
 
-describe('i18n help.pwa', () => {
-  it('모든 로케일 파일에 help의 PWA 설치 안내 키가 모두 있어야 한다', () => {
+describe('i18n help (사용 방법)', () => {
+  const sections = { connect: 7, send: 5, receive: 3, who: 6, keep: 3, more: 3 }
+  const requiredKeys = ['title', ...Object.entries(sections).flatMap(([id, n]) => [`${id}Title`, ...Array.from({ length: n }, (_, i) => `${id}${i + 1}`)])]
+  it('모든 로케일에 새 도움말 34개 키가 있고, en이 아닌 로케일은 영어를 그대로 쓰지 않는다', () => {
     const entries = Object.entries(locales)
     expect(entries.length).toBeGreaterThanOrEqual(21)
-    const requiredKeys = ['pwaTitle', 'pwaIntro', 'pwaAndroidTitle', 'pwaAndroidDesc', 'pwaIOSTitle', 'pwaIOSDesc']
+    const en = (locales['./locales/en.json'].default || locales['./locales/en.json']).help
+    expect(requiredKeys).toHaveLength(34)
     for (const [path, mod] of entries) {
-      const json = mod.default || mod
-      expect(json.help, `${path}에 help 섹션 없음`).toBeTruthy()
+      const help = (mod.default || mod).help
+      expect(help, `${path}에 help 섹션 없음`).toBeTruthy()
       for (const key of requiredKeys) {
-        expect(typeof json.help[key], `${path}의 help.${key} 없음`).toBe('string')
-        expect(json.help[key].length, `${path}의 help.${key} 비어있음`).toBeGreaterThan(0)
+        expect(typeof help[key], `${path}의 help.${key} 없음`).toBe('string')
+        expect(help[key].length, `${path}의 help.${key} 비어있음`).toBeGreaterThan(0)
+        if (!path.endsWith('en.json')) expect(help[key], `${path}의 help.${key}가 영어와 동일`).not.toBe(en[key])
       }
+      // 옛 도움말 키는 남지 않는다
+      for (const old of ['intro', 'features', 'tip1', 'limit1', 'pwaTitle', 'downloadMultiStep2']) expect(help[old], `${path} help.${old}`).toBeUndefined()
+      // 짧은 주소 핑.한국은 한국어에서만
+      if (!path.endsWith('ko.json')) expect(help.connect2, `${path} connect2`).not.toContain('핑.한국')
     }
   })
 })
@@ -271,11 +279,12 @@ describe('i18n identity (기기 정체성)', () => {
 
 describe('i18n 반응형 작업 영역 신규 문구', () => {
   const required = [
-    'identity.ipNotice', 'identity.notAuth', 'identity.globalWarning',
+    'identity.ipNotice', 'identity.globalWarning',
     'room.otherDevices', 'room.waiting',
     'file.chooseFiles', 'file.limitResume', 'file.receive', 'file.copyImage', 'file.selectFile',
     'publicConfirm.title', 'publicConfirm.body', 'publicConfirm.confirm',
-    'guide.title', 'guide.retention',
+    'help.title', 'help.connectTitle', 'help.connect1', 'help.connect7', 'help.sendTitle', 'help.send5', 'help.receiveTitle', 'help.receive3',
+    'help.whoTitle', 'help.who6', 'help.keepTitle', 'help.keep3', 'help.moreTitle', 'help.more3',
     'errors.connectUser', 'errors.uploadUser', 'errors.downloadUser', 'errors.deleteUser'
   ]
   const get = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj)
@@ -310,9 +319,8 @@ describe('i18n 도움말 보완/붙여넣기 번역', () => {
     ['file', 'uploadPasteHint'],
     ['clipboard', 'pasteTitle'],
     ['clipboard', 'pasteDescription'],
-    ['help', 'limit4'],
-    ['help', 'downloadSingleDesc'],
-    ['help', 'tip4']
+    ['help', 'keep3'],
+    ['help', 'receive3']
   ]
 
   it('모든 로케일에 보관 1일/더보기/붙여넣기 키가 있고 en 이외 로케일은 영어 폴백이 아니다', () => {
@@ -340,10 +348,6 @@ describe('i18n 도움말 보완/붙여넣기 번역', () => {
     expect(ja.clipboard.pasteDescription).toBe('クリップボードのテキスト・画像を共有')
     expect(ja.file.uploadPasteHint).toBe('(Ctrl+Vで貼り付け)')
     expect(ja.clipboard.pasteDescription.endsWith('を')).toBe(false)
-  })
-
-  it('영어 intro는 공백으로 시작한다 (strong 뒤 결합)', () => {
-    expect(en.help.intro.startsWith(' ')).toBe(true)
   })
 
   it('ko 이외 한글 비포함, 플레이스홀더 {size} 등 변수 유지(ja limitResume)', () => {

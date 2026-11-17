@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Những người khác trong cùng mạng (trường học, văn phòng, quán cà phê) cũng có thể thấy.",
-    "notAuth": "Thẻ tên chỉ để phân biệt thiết bị, không phải xác thực danh tính.",
     "globalWarning": "Ở đây bất kỳ ai, kể cả người lạ, đều thấy nội dung bạn gửi. Hãy khóa nội dung nhạy cảm bằng mật khẩu trước khi gửi.",
     "pairSasLoading": "Đang tải hình ảnh…",
     "moreDevices": "Xem thêm {count}"
@@ -250,18 +249,43 @@
     "backgroundHint": "Quét để mở cùng không gian"
   },
   "help": {
-    "pwaTitle": "Cài đặt như ứng dụng",
-    "pwaIntro": "Sau khi cài đặt, bạn có thể mở trực tiếp từ màn hình chính, và khi chia sẻ tệp từ ứng dụng khác đến ứng dụng này, tệp sẽ tự động được tải lên.",
-    "pwaAndroidTitle": "Android / Máy tính (Chrome, Edge)",
-    "pwaAndroidDesc": "Chạm vào biểu tượng cài đặt trên thanh địa chỉ hoặc biểu ngữ cài đặt ở cuối màn hình.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Chạm vào nút Chia sẻ, sau đó chọn \"Thêm vào Màn hình chính\".",
-    "downloadSingleDesc": "Nhấn nút Nhận bên cạnh tệp để tải xuống. Nút ⋯ (Thêm) cho phép chia sẻ bằng mã QR, tải xuống và xóa (hình ảnh còn có thể sao chép). Trên máy tính và điện thoại đều giống nhau.",
-    "textShareCopyDesc": "Nhấn Sao chép ở văn bản được chia sẻ để chép vào bộ nhớ tạm. Văn bản bạn nhập hoặc dán vào ô sẽ được gửi bằng nút Chia sẻ.",
-    "textShareDeleteDesc": "Mở nút ⋯ bên phải văn bản và chọn Xóa.",
-    "scopeDevicesDesc": "Thẻ kết nối (bảng bên trái trên màn hình rộng) hiển thị các thiết bị khác đang kết nối trong cùng phạm vi.",
-    "limit4": "Dù vẫn đang kết nối, tệp chỉ được lưu tối đa khoảng 1 ngày (sẽ bị xóa ngay sau khi tất cả thiết bị rời đi)",
-    "tip4": "Dùng nút \"⋯\" trên thẻ tệp để mở menu mã QR/tải xuống/xóa (hình ảnh có thêm sao chép)"
+    "close": "Đóng",
+    "confirm": "Đã hiểu",
+    "aboutTitle": "Giới thiệu",
+    "title": "Cách dùng",
+    "connectTitle": "Kết nối",
+    "connect1": "Các thiết bị dùng chung Wi-Fi sẽ tự động kết nối ngay khi mở trang này.",
+    "connect2": "Trên điện thoại, hãy quét mã QR trên màn hình máy tính bằng camera, hoặc gõ clipboardapp.org vào thanh địa chỉ.",
+    "connect3": "Để kết nối thiết bị ở Wi-Fi khác hoặc dùng dữ liệu di động, hãy tạo một phòng. Tạo phòng mới từ “＋ Phòng” rồi mời thiết bị còn lại vào bằng mã QR, hình hoặc liên kết. Mã QR mời có hiệu lực trong 10 phút.",
+    "connect4": "Trên thiết bị mới, chạm vào “Vào bằng hình” rồi chạm lần lượt vào 4 hình đang hiện trên một thiết bị trong phòng. Người ở thiết bị đó phải chạm vào “Cho vào” thì bạn mới vào được.",
+    "connect5": "Chạm vào “Kết nối” trên thẻ thiết bị để mở một phòng chỉ dành cho hai bạn. Hai thiết bị được kết nối sau khi bạn kiểm tra thấy cả hai màn hình hiện cùng một hình.",
+    "connect6": "Để kiểm tra đã kết nối chưa, hãy xem tên con vật trên thẻ “Tôi” ở màn hình thiết bị kia, rồi tìm tên đó trong danh sách của bạn.",
+    "connect7": "Khi có nhiều thiết bị trong “Mọi người”, chỉ những thiết bị mới nhất được hiển thị. Hãy dùng “Tìm thiết bị” rồi chọn tên con vật của thiết bị kia.",
+    "sendTitle": "Gửi",
+    "send1": "Dán văn bản hoặc hình ảnh đã sao chép vào bất kỳ đâu trên trang bằng Ctrl+V (⌘+V trên Mac) và chúng được gửi đi ngay.",
+    "send2": "Với tệp, hãy chạm vào “Chọn tệp” hoặc kéo tệp vào trang.",
+    "send3": "Văn bản bạn gõ trong ô được gửi bằng “Chia sẻ” hoặc Ctrl+Enter (⌘+Enter trên Mac).",
+    "send4": "Mỗi tệp có thể nặng tới 5GB, và việc tải lên sẽ tiếp tục từ chỗ đã dừng nếu mất kết nối.",
+    "send5": "Trên iPhone và iPad, hãy thêm phím tắt để gửi thẳng từ nút Chia sẻ trong ứng dụng Ảnh.",
+    "receiveTitle": "Nhận",
+    "receive1": "Chạm vào “Nhận” để tải tệp xuống và “Sao chép” để sao chép văn bản vào bộ nhớ tạm.",
+    "receive2": "Với nhiều tệp, hãy chọn chúng rồi chạm vào “Tải xuống” để nhận một tệp ZIP. Các tệp trên 200MB được tải xuống riêng.",
+    "receive3": "Chọn “Chia sẻ bằng mã QR” trong menu ⋯ của tệp, rồi quét bằng camera của thiết bị khác để nhận tệp đó. Hình ảnh cũng có thể được sao chép từ cùng menu này.",
+    "whoTitle": "Ai có thể xem",
+    "who1": "Cùng mạng: hiển thị với các thiết bị dùng cùng một kết nối internet. Ở trường học, văn phòng và quán cà phê, người lạ cũng có thể thấy.",
+    "who2": "Mọi người: bất kỳ ai đang mở dịch vụ này lúc này đều có thể xem.",
+    "who3": "Phòng: chỉ các thiết bị trong phòng mới xem được, và tệp cùng văn bản trong phòng được mã hóa tự động. Một phòng chứa tối đa 10 thiết bị.",
+    "who4": "Khóa bằng mật khẩu: đặt mật khẩu từ 4 ký tự trở lên, và trong lần truy cập này, tệp và văn bản bạn gửi trong thẻ đó sẽ được khóa trên thiết bị này trước khi gửi. Hãy báo mật khẩu cho người nhận riêng.",
+    "who5": "Mã QR và liên kết của tệp đã khóa chứa khóa của tệp, nên bất kỳ ai có chúng đều có thể lấy tệp mà không cần mật khẩu. Chỉ cho người nhận xem chúng.",
+    "who6": "Thẻ tên con vật cùng thông tin thiết bị và trình duyệt vẫn hiển thị dù đã khóa. Thẻ tên giúp phân biệt các thiết bị, chứ không chứng minh ai là ai.",
+    "keepTitle": "Lưu giữ bao lâu",
+    "keep1": "Văn bản được lưu 10 phút, nên các thiết bị tham gia trong lúc đó vẫn nhận được.",
+    "keep2": "Văn bản trên 96KB không được lưu và chỉ tới các thiết bị đang mở lúc này. Hãy gửi dưới dạng tệp .txt để lưu một ngày.",
+    "keep3": "Tệp được lưu tối đa 1 ngày. Tệp có thể bị xóa sớm hơn khi mọi thiết bị đã rời đi, nên hãy tải ngay thứ bạn cần.",
+    "moreTitle": "Tiện ích thêm",
+    "more1": "Cài ứng dụng: mở thẳng từ màn hình chính, và chọn nó trong nút Chia sẻ của các ứng dụng khác để gửi tệp. Trên Android và PC (Chrome, Edge), dùng biểu tượng cài đặt ở thanh địa chỉ; trên iPhone (Safari), chạm vào nút Chia sẻ rồi chọn “Thêm vào Màn hình chính”.",
+    "more2": "Thông báo khi có tệp đến: bật trong menu ⋯ để nhận thông báo về tệp và văn bản mới, kể cả khi tab đang chạy nền.",
+    "more3": "Phím tắt: Ctrl+V dán để gửi · Ctrl+Enter gửi văn bản đã gõ · Ctrl+C sao chép một tệp đã chọn (dùng ⌘ thay cho Ctrl trên Mac)"
   },
   "seo": {
     "title": "Clipboard Trực Tuyến – Chia Sẻ Văn Bản & Tệp Giữa Điện Thoại, PC",
@@ -370,9 +394,6 @@
     "confirm": "Gửi công khai"
   },
   "guide": {
-    "title": "Lưu trữ và sử dụng",
-    "retention": "Dù đang kết nối, tệp vẫn được tự động dọn sau tối đa 1 ngày. Việc dọn chạy định kỳ nên không đảm bảo thời điểm chính xác (đến từng giây), và có thể xóa sớm hơn khi mọi thiết bị đã rời đi. Hãy tải ngay những gì bạn cần.",
-    "roomRetention": "Tệp trong phòng này được giữ tối đa khoảng 1 ngày. Tệp không bị xóa ngay khi tất cả thiết bị rời đi. Việc dọn dẹp chạy định kỳ nên không đảm bảo thời điểm chính xác. Văn bản chỉ được giữ 10 phút.",
     "roomVisibility": "Chỉ các thiết bị đang ở trong phòng này mới thấy được."
   },
   "download": {

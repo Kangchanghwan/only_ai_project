@@ -13,20 +13,25 @@ function modalText(locale) {
 }
 
 describe('HelpModal 실제 번역 렌더', () => {
-  it('영어 intro는 굵은 제목 뒤에 공백이 있다 ("Clipboard Share is")', () => {
-    const m = modalText('en')
-    expect(m.text()).toContain('Clipboard Share is a web application')
-    expect(m.text()).not.toContain('Clipboard Shareis')
+  it('한국어: 화면과 같은 말(방, 받기, ZIP)과 확인한 사실(5GB, 10분, 1일)을 쓴다', () => {
+    const m = modalText('ko')
+    const text = m.text()
+    expect(text).toContain('사용 방법')
+    expect(text).toContain("'그림으로 들어가기'")
+    expect(text).toContain('ZIP 하나로 받아요')
+    expect(text).toContain('5GB')
+    expect(text).toContain('텍스트는 10분 동안 보관')
+    expect(text).toContain('최대 1일')
+    expect(text).not.toContain('룸')
+    expect(text).not.toContain('순차')
+    i18n.global.locale.value = 'ko'
   })
 
-  it('보관 1일 제한 문구와 ⋯ 더보기 설명이 렌더된다 (ko/en)', () => {
-    let m = modalText('ko')
-    expect(m.text()).toContain('최대 약 1일 보관')
-    expect(m.text()).toContain('QR 코드 공유 · 다운로드 · 삭제')
-    wrapper.unmount()
-    m = modalText('en')
-    expect(m.text()).toContain('about 1 day at most')
-    expect(m.text()).toContain('QR code sharing, download and delete')
+  it('영어: 같은 6개 묶음, 짧은 주소는 clipboardapp.org', () => {
+    const m = modalText('en')
+    expect(m.text()).toContain('How to use')
+    expect(m.text()).toContain('clipboardapp.org')
+    expect(m.text()).not.toContain('핑.한국')
     i18n.global.locale.value = 'ko'
   })
 })

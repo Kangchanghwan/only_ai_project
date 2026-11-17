@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Ook andere mensen op hetzelfde netwerk (school, kantoor, café) kunnen het zien.",
-    "notAuth": "Het naamlabel onderscheidt alleen apparaten. Het is geen identiteitscontrole.",
     "globalWarning": "Iedereen, ook onbekenden, kan zien wat je hier verstuurt. Vergrendel gevoelige inhoud eerst met een wachtwoord.",
     "pairSasLoading": "Afbeeldingen laden…",
     "moreDevices": "Nog {count} tonen"
@@ -250,18 +249,43 @@
     "backgroundHint": "Scan om dezelfde ruimte te openen"
   },
   "help": {
-    "pwaTitle": "Installeren als app",
-    "pwaIntro": "Na installatie start je direct vanaf het startscherm, en als je een bestand vanuit een andere app naar deze app deelt, wordt het automatisch geüpload.",
-    "pwaAndroidTitle": "Android / desktop (Chrome, Edge)",
-    "pwaAndroidDesc": "Tik op het installatiepictogram in de adresbalk of de installatiebanner onderaan het scherm.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Tik op de deelknop en kies vervolgens \"Zet op beginscherm\".",
-    "downloadSingleDesc": "Tik naast een bestand op Ontvangen om het te downloaden. Met de knop ⋯ (Meer) kun je delen via QR-code, downloaden en verwijderen (afbeeldingen kun je ook kopiëren). Op computer en mobiel hetzelfde.",
-    "textShareCopyDesc": "Druk bij een gedeelde tekst op Kopiëren om die naar het klembord te kopiëren. Tekst die je typt of plakt in het vak verstuur je met Delen.",
-    "textShareDeleteDesc": "Open de knop ⋯ rechts van de tekst en kies Verwijderen.",
-    "scopeDevicesDesc": "De verbindingskaart (op brede schermen het linkerpaneel) toont andere apparaten in hetzelfde bereik.",
-    "limit4": "Ook als je verbonden blijft, worden bestanden hooguit ongeveer 1 dag bewaard (kort nadat alle apparaten weg zijn, worden ze verwijderd)",
-    "tip4": "Met de knop \"⋯\" op een bestandskaart open je het menu voor QR-code/downloaden/verwijderen (bij afbeeldingen ook kopiëren)"
+    "close": "Sluiten",
+    "confirm": "Begrepen",
+    "aboutTitle": "Over",
+    "title": "Zo gebruik je het",
+    "connectTitle": "Verbinden",
+    "connect1": "Apparaten op hetzelfde wifi-netwerk verbinden automatisch zodra ze deze pagina openen.",
+    "connect2": "Scan op een telefoon met de camera de QR-code op het pc-scherm, of typ clipboardapp.org in de adresbalk.",
+    "connect3": "Wil je een apparaat op een ander wifi-netwerk of met mobiele data verbinden, maak dan een ruimte. Maak een nieuwe ruimte via ‘＋ Ruimte’ en haal het andere apparaat erbij met een QR-code, plaatjes of een link. Een QR-code voor een uitnodiging werkt 10 minuten.",
+    "connect4": "Tik op het nieuwe apparaat op ‘Meedoen met plaatjes’ en tik op volgorde op de 4 plaatjes die op een apparaat in de ruimte staan. Iemand op dat apparaat moet op ‘Toelaten’ tikken voordat je kunt meedoen.",
+    "connect5": "Tik op een apparaatkaart op ‘Verbind’ om een ruimte alleen voor jullie tweeën te openen. Jullie zijn verbonden nadat jullie hebben gecontroleerd dat beide schermen hetzelfde plaatje tonen.",
+    "connect6": "Controleer de verbinding zo: kijk op het scherm van het andere apparaat naar de dierennaam op de kaart ‘Ik’ en zoek die naam in je lijst.",
+    "connect7": "Als er veel apparaten bij ‘Iedereen’ staan, worden alleen de nieuwste getoond. Gebruik ‘Apparaat zoeken’ en kies de dierennaam van het andere apparaat.",
+    "sendTitle": "Versturen",
+    "send1": "Plak gekopieerde tekst of afbeeldingen overal op de pagina met Ctrl+V (⌘+V op een Mac) en ze worden meteen verstuurd.",
+    "send2": "Tik voor bestanden op ‘Bestanden kiezen’ of sleep ze naar de pagina.",
+    "send3": "Tekst die je in het vak typt, verstuur je met ‘Delen’ of Ctrl+Enter (⌘+Enter op een Mac).",
+    "send4": "Elk bestand mag maximaal 5GB zijn, en uploads gaan verder waar ze gebleven waren als de verbinding wegvalt.",
+    "send5": "Voeg op iPhone en iPad de snelkoppeling toe om direct te versturen vanuit de Deel-knop in de Foto’s-app.",
+    "receiveTitle": "Ontvangen",
+    "receive1": "Tik op ‘Ontvangen’ om een bestand te downloaden en op ‘Kopiëren’ om tekst naar het klembord te kopiëren.",
+    "receive2": "Vink meerdere bestanden aan en tik op ‘Downloaden’ om één ZIP te krijgen. Bestanden groter dan 200MB worden apart gedownload.",
+    "receive3": "Kies ‘Delen via QR-code’ in het ⋯-menu van een bestand en scan de code met de camera van een ander apparaat om dat bestand te krijgen. Afbeeldingen kun je via hetzelfde menu ook kopiëren.",
+    "whoTitle": "Wie het kan zien",
+    "who1": "Zelfde netwerk: zichtbaar voor apparaten op dezelfde internetverbinding. Op scholen, kantoren en in cafés kunnen ook vreemden het zien.",
+    "who2": "Iedereen: iedereen die deze dienst nu open heeft, kan het zien.",
+    "who3": "Ruimtes: alleen apparaten in de ruimte kunnen het zien, en bestanden en tekst in een ruimte worden automatisch versleuteld. In een ruimte passen maximaal 10 apparaten.",
+    "who4": "Met wachtwoord vergrendelen: stel een wachtwoord van minimaal 4 tekens in, en voor dit bezoek worden de bestanden en tekst die je in dat tabblad stuurt op dit apparaat vergrendeld voordat ze worden verzonden. Geef de ontvanger het wachtwoord apart door.",
+    "who5": "De QR-code en de link van een vergrendeld bestand bevatten de sleutel, dus iedereen die ze heeft, kan het bestand zonder wachtwoord krijgen. Laat ze alleen aan de ontvanger zien.",
+    "who6": "Dierennaamkaartjes en apparaat- en browserinfo blijven ook bij vergrendeling zichtbaar. Een naamkaartje onderscheidt apparaten, maar bewijst niet wie iemand is.",
+    "keepTitle": "Hoe lang het blijft",
+    "keep1": "Tekst wordt 10 minuten bewaard, zodat apparaten die in die tijd meedoen hem nog kunnen krijgen.",
+    "keep2": "Tekst boven 96KB wordt niet bewaard en komt alleen aan bij apparaten die nu open zijn. Verstuur hem als .txt-bestand om hem een dag te bewaren.",
+    "keep3": "Bestanden worden maximaal 1 dag bewaard. Ze kunnen eerder worden verwijderd als alle apparaten weg zijn, dus download wat je nodig hebt meteen.",
+    "moreTitle": "Handige extra’s",
+    "more1": "De app installeren: open hem direct vanaf je beginscherm en kies hem in de Deel-knop van andere apps om bestanden te versturen. Gebruik op Android en pc (Chrome, Edge) het installatiepictogram in de adresbalk; tik op de iPhone (Safari) op de Deel-knop en kies ‘Zet op beginscherm’.",
+    "more2": "Aankomstmeldingen: zet ze aan in het ⋯-menu om meldingen over nieuwe bestanden en tekst te krijgen, ook als het tabblad op de achtergrond staat.",
+    "more3": "Sneltoetsen: Ctrl+V plakken om te versturen · Ctrl+Enter getypte tekst versturen · Ctrl+C één geselecteerd bestand kopiëren (⌘ in plaats van Ctrl op een Mac)"
   },
   "seo": {
     "title": "Online Klembord – Tekst & Bestanden Delen tussen Telefoon en PC",
@@ -370,9 +394,6 @@
     "confirm": "Openbaar versturen"
   },
   "guide": {
-    "title": "Opslag en gebruik",
-    "retention": "Ook terwijl je verbonden bent, worden bestanden na uiterlijk 1 dag automatisch opgeruimd. Het opruimen draait periodiek, dus de exacte tijd (op de seconde) is niet gegarandeerd, en zodra alle apparaten weg zijn kan het eerder gebeuren. Download wat je nodig hebt meteen.",
-    "roomRetention": "Bestanden in deze kamer worden maximaal ongeveer 1 dag bewaard. Ze worden niet meteen verwijderd als alle apparaten vertrekken. Het opruimen draait periodiek, dus het exacte tijdstip is niet gegarandeerd. Teksten worden slechts 10 minuten bewaard.",
     "roomVisibility": "Alleen apparaten in deze kamer kunnen ze zien."
   },
   "download": {

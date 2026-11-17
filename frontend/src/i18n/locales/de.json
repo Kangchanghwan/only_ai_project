@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Auch andere Personen im selben Netzwerk (Schule, Büro, Café) können es sehen.",
-    "notAuth": "Das Namensschild unterscheidet nur Geräte. Es ist keine Identitätsprüfung.",
     "globalWarning": "Hier kann jeder, auch Fremde, sehen, was du sendest. Sperre Sensibles vor dem Senden mit einem Passwort.",
     "pairSasLoading": "Bilder werden geladen…",
     "moreDevices": "{count} weitere anzeigen"
@@ -250,18 +249,43 @@
     "backgroundHint": "Scannen, um denselben Raum zu öffnen"
   },
   "help": {
-    "pwaTitle": "Als App installieren",
-    "pwaIntro": "Nach der Installation startest du direkt vom Startbildschirm, und wenn du eine Datei aus einer anderen App mit dieser App teilst, wird sie automatisch hochgeladen.",
-    "pwaAndroidTitle": "Android / Desktop (Chrome, Edge)",
-    "pwaAndroidDesc": "Tippe auf das Installationssymbol in der Adressleiste oder auf das Installationsbanner am unteren Bildschirmrand.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Tippe auf die Teilen-Schaltfläche und wähle „Zum Home-Bildschirm“.",
-    "downloadSingleDesc": "Tippen Sie neben einer Datei auf „Empfangen“, um sie herunterzuladen. Über die Schaltfläche ⋯ (Mehr) können Sie per QR-Code teilen, herunterladen und löschen (Bilder lassen sich auch kopieren). Am Computer und auf dem Handy gleich.",
-    "textShareCopyDesc": "Tippe bei einem geteilten Text auf Kopieren, um ihn in die Zwischenablage zu kopieren. Was du ins Feld tippst oder einfügst, sendest du mit Teilen.",
-    "textShareDeleteDesc": "Öffne die Schaltfläche ⋯ rechts neben dem Text und wähle Löschen.",
-    "scopeDevicesDesc": "Die Verbindungskarte (auf breiten Bildschirmen das linke Panel) zeigt andere Geräte im selben Bereich.",
-    "limit4": "Auch während Sie verbunden bleiben, werden Dateien höchstens etwa 1 Tag gespeichert (kurz nachdem alle Geräte weg sind, werden sie gelöscht)",
-    "tip4": "Mit der Schaltfläche „⋯“ auf einer Dateikarte öffnen Sie das Menü für QR-Code/Download/Löschen (bei Bildern auch Kopieren)"
+    "close": "Schließen",
+    "confirm": "Verstanden",
+    "aboutTitle": "Info",
+    "title": "So funktioniert's",
+    "connectTitle": "Verbinden",
+    "connect1": "Geräte im selben WLAN verbinden sich automatisch, sobald sie diese Seite öffnen.",
+    "connect2": "Scanne am Smartphone den QR-Code auf dem PC-Bildschirm mit der Kamera oder gib clipboardapp.org in die Adressleiste ein.",
+    "connect3": "Um ein Gerät in einem anderen WLAN oder mit mobilen Daten zu verbinden, erstelle einen Raum. Erstelle über „＋ Raum“ einen neuen Raum und hole das andere Gerät per QR-Code, Bildern oder Link dazu. Ein QR-Code zur Einladung gilt 10 Minuten.",
+    "connect4": "Tippe auf dem neuen Gerät auf „Mit Bildern beitreten“ und tippe der Reihe nach auf die 4 Bilder, die auf einem Gerät im Raum angezeigt werden. Jemand an diesem Gerät muss auf „Hereinlassen“ tippen, bevor du beitreten kannst.",
+    "connect5": "Tippe auf einer Gerätekarte auf „Verbinden“, um einen Raum nur für euch beide zu öffnen. Ihr seid verbunden, sobald ihr geprüft habt, dass beide Bildschirme dasselbe Bild zeigen.",
+    "connect6": "Ob ihr verbunden seid: Schau auf dem Bildschirm des anderen Geräts nach dem Tiernamen auf der Karte „Ich“ und such diesen Namen in deiner Liste.",
+    "connect7": "Wenn viele Geräte bei „Alle“ sind, werden nur die neuesten angezeigt. Nutze „Gerät finden“ und wähle den Tiernamen des anderen Geräts.",
+    "sendTitle": "Senden",
+    "send1": "Füge kopierten Text oder Bilder überall auf der Seite mit Strg+V (⌘+V am Mac) ein, dann werden sie sofort gesendet.",
+    "send2": "Für Dateien tippe auf „Dateien auswählen“ oder ziehe sie auf die Seite.",
+    "send3": "Text, den du in das Feld tippst, wird mit „Teilen“ oder Ctrl+Enter (⌘+Enter am Mac) gesendet.",
+    "send4": "Jede Datei darf bis zu 5GB groß sein, und Uploads werden nach einem Verbindungsabbruch dort fortgesetzt, wo sie aufgehört haben.",
+    "send5": "Füge auf iPhone und iPad den Kurzbefehl hinzu, um direkt über die Teilen-Taste in der Fotos-App zu senden.",
+    "receiveTitle": "Empfangen",
+    "receive1": "Tippe auf „Empfangen“, um eine Datei herunterzuladen, und auf „Kopieren“, um Text in die Zwischenablage zu kopieren.",
+    "receive2": "Bei mehreren Dateien hakst du sie an und tippst auf „Herunterladen“, um ein ZIP zu erhalten. Dateien über 200MB werden einzeln heruntergeladen.",
+    "receive3": "Wähle im ⋯-Menü einer Datei „Per QR-Code teilen“ und scanne den Code mit der Kamera eines anderen Geräts, um die Datei zu erhalten. Bilder lassen sich über dasselbe Menü auch kopieren.",
+    "whoTitle": "Wer es sehen kann",
+    "who1": "Gleiches Netzwerk: sichtbar für Geräte in derselben Internetverbindung. In Schulen, Büros und Cafés können es auch Fremde sehen.",
+    "who2": "Alle: Jeder, der diesen Dienst gerade geöffnet hat, kann es sehen.",
+    "who3": "Räume: Nur Geräte im Raum können es sehen, und Dateien und Text in einem Raum werden automatisch verschlüsselt. Ein Raum fasst bis zu 10 Geräte.",
+    "who4": "Mit Passwort sperren: Lege ein Passwort mit mindestens 4 Zeichen fest, dann werden für diesen Besuch die Dateien und Texte, die du in diesem Tab sendest, auf diesem Gerät gesperrt, bevor sie gesendet werden. Teile dem Empfänger das Passwort separat mit.",
+    "who5": "Der QR-Code und der Link einer gesperrten Datei enthalten ihren Schlüssel, daher kann jeder, der sie hat, die Datei ohne Passwort erhalten. Zeige sie nur dem Empfänger.",
+    "who6": "Tiernamen-Schilder sowie Geräte- und Browserinfos bleiben auch bei gesperrten Inhalten sichtbar. Ein Namensschild unterscheidet Geräte, es beweist nicht, wer jemand ist.",
+    "keepTitle": "Wie lange etwas bleibt",
+    "keep1": "Text wird 10 Minuten aufbewahrt, sodass auch Geräte, die in der Zwischenzeit beitreten, ihn noch erhalten.",
+    "keep2": "Text über 96KB wird nicht aufbewahrt und erreicht nur Geräte, die gerade geöffnet sind. Sende ihn als .txt-Datei, um ihn einen Tag aufzubewahren.",
+    "keep3": "Dateien werden bis zu 1 Tag aufbewahrt. Sie können früher entfernt werden, sobald kein Gerät mehr verbunden ist, also lade gleich herunter, was du brauchst.",
+    "moreTitle": "Praktische Extras",
+    "more1": "App installieren: Öffne sie direkt vom Home-Bildschirm und wähle sie in der Teilen-Taste anderer Apps aus, um Dateien zu senden. Auf Android und am PC (Chrome, Edge) nutzt du das Installationssymbol in der Adressleiste, auf dem iPhone (Safari) tippst du auf die Teilen-Taste und wählst „Zum Home-Bildschirm“.",
+    "more2": "Ankunftsbenachrichtigungen: Schalte sie im ⋯-Menü ein, um über neue Dateien und Texte benachrichtigt zu werden, auch wenn der Tab im Hintergrund ist.",
+    "more3": "Tastenkürzel: Ctrl+V einfügen zum Senden · Ctrl+Enter getippten Text senden · Ctrl+C eine ausgewählte Datei kopieren (am Mac ⌘ statt Ctrl)"
   },
   "seo": {
     "title": "Zwischenablage online: Text, Bilder & Dateien – Handy zu PC",
@@ -370,9 +394,6 @@
     "confirm": "Öffentlich senden"
   },
   "guide": {
-    "title": "Hinweise zu Speicherung und Nutzung",
-    "retention": "Auch während du verbunden bist, werden Dateien nach spätestens 1 Tag automatisch bereinigt. Die Bereinigung läuft periodisch, daher ist der genaue Zeitpunkt (auf die Sekunde) nicht garantiert; sobald alle Geräte weg sind, kann früher gelöscht werden. Lade Benötigtes gleich herunter.",
-    "roomRetention": "Dateien in diesem Raum werden bis zu etwa 1 Tag aufbewahrt. Sie werden nicht sofort gelöscht, wenn alle Geräte den Raum verlassen. Die Bereinigung läuft regelmäßig, daher ist der genaue Zeitpunkt nicht garantiert. Texte werden nur 10 Minuten aufbewahrt.",
     "roomVisibility": "Nur Geräte in diesem Raum können sie sehen."
   },
   "download": {

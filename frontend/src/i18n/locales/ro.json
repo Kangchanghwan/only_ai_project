@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Și alte persoane din aceeași rețea (școală, birou, cafenea) o pot vedea.",
-    "notAuth": "Eticheta doar deosebește dispozitivele. Nu este verificare de identitate.",
     "globalWarning": "Aici oricine, inclusiv necunoscuți, poate vedea ce trimiți. Blochează cu parolă conținutul sensibil înainte de trimitere.",
     "pairSasLoading": "Se încarcă imaginile…",
     "moreDevices": "Arată încă {count}"
@@ -250,18 +249,43 @@
     "backgroundHint": "Scanează pentru a deschide același spațiu"
   },
   "help": {
-    "pwaTitle": "Instalare ca aplicație",
-    "pwaIntro": "După instalare, o poți deschide direct de pe ecranul de start, iar distribuirea unui fișier din altă aplicație către aceasta îl încarcă automat.",
-    "pwaAndroidTitle": "Android / desktop (Chrome, Edge)",
-    "pwaAndroidDesc": "Atinge pictograma de instalare din bara de adrese sau bannerul de instalare din partea de jos a ecranului.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Atinge butonul de distribuire, apoi alege „Adaugă la ecranul de start”.",
-    "downloadSingleDesc": "Apasă butonul Primește de lângă fișier pentru a-l descărca. Butonul ⋯ (Mai mult) permite partajarea prin cod QR, descărcarea și ștergerea (imaginile se pot și copia). La fel pe computer și pe mobil.",
-    "textShareCopyDesc": "Apasă Copiază la un text partajat ca să-l copiezi în clipboard. Textul scris sau lipit în casetă se trimite cu butonul Partajează.",
-    "textShareDeleteDesc": "Deschide butonul ⋯ din dreapta textului și alege Șterge.",
-    "scopeDevicesDesc": "Cardul de conexiune (panoul din stânga pe ecrane late) arată celelalte dispozitive conectate în același domeniu.",
-    "limit4": "Chiar dacă rămâi conectat, fișierele sunt păstrate cel mult aproximativ 1 zi (se șterg la scurt timp după ce toate dispozitivele ies)",
-    "tip4": "Butonul „⋯” de pe cardul unui fișier deschide meniul cod QR/descărcare/ștergere (la imagini și copiere)"
+    "close": "Închide",
+    "confirm": "Am înțeles",
+    "aboutTitle": "Despre",
+    "title": "Cum se folosește",
+    "connectTitle": "Conectare",
+    "connect1": "Dispozitivele din aceeași rețea Wi-Fi se conectează automat imediat ce deschid această pagină.",
+    "connect2": "Pe telefon, scanează cu camera codul QR de pe ecranul PC-ului sau scrie clipboardapp.org în bara de adrese.",
+    "connect3": "Ca să conectezi un dispozitiv aflat în altă rețea Wi-Fi sau pe date mobile, creează o cameră. Creează o cameră nouă din „＋ Cameră” și adu celălalt dispozitiv cu un cod QR, imagini sau un link. Un cod QR de invitație funcționează 10 minute.",
+    "connect4": "Pe dispozitivul nou, atinge „Intră cu imagini” și atinge în ordine cele 4 imagini afișate pe un dispozitiv din cameră. Cineva de la acel dispozitiv trebuie să atingă „Lasă să intre” înainte să poți intra.",
+    "connect5": "Atinge „Conectare” pe cardul unui dispozitiv ca să deschizi o cameră doar pentru voi doi. Vă conectați după ce verificați că ambele ecrane arată aceeași imagine.",
+    "connect6": "Ca să verifici conexiunea, uită-te la numele animalului de pe cardul „Eu” de pe ecranul celuilalt dispozitiv și caută acel nume în lista ta.",
+    "connect7": "Când sunt multe dispozitive la „Toată lumea”, se arată doar cele mai recente. Folosește „Găsește un dispozitiv” și alege numele animalului celuilalt dispozitiv.",
+    "sendTitle": "Trimitere",
+    "send1": "Lipește text sau imagini copiate oriunde pe pagină cu Ctrl+V (⌘+V pe Mac) și se trimit imediat.",
+    "send2": "Pentru fișiere, atinge „Alege fișiere” sau trage-le pe pagină.",
+    "send3": "Textul scris în casetă se trimite cu „Partajează” sau cu Ctrl+Enter (⌘+Enter pe Mac).",
+    "send4": "Fiecare fișier poate avea până la 5GB, iar încărcările continuă de unde au rămas dacă se întrerupe conexiunea.",
+    "send5": "Pe iPhone și iPad, adaugă comanda rapidă ca să trimiți direct din butonul Partajare al aplicației Fotografii.",
+    "receiveTitle": "Primire",
+    "receive1": "Atinge „Primește” ca să descarci un fișier și „Copiază” ca să copiezi textul în clipboard.",
+    "receive2": "Pentru mai multe fișiere, bifează-le și atinge „Descarcă” ca să primești un singur ZIP. Fișierele de peste 200MB se descarcă separat.",
+    "receive3": "Alege „Partajează prin cod QR” din meniul ⋯ al unui fișier, apoi scanează codul cu camera altui dispozitiv ca să primești fișierul. Imaginile pot fi copiate și din același meniu.",
+    "whoTitle": "Cine poate vedea",
+    "who1": "Aceeași rețea: vizibil pentru dispozitivele aflate în aceeași conexiune la internet. În școli, birouri și cafenele, îl pot vedea și persoane străine.",
+    "who2": "Toată lumea: oricine are acum acest serviciu deschis îl poate vedea.",
+    "who3": "Camere: îl văd doar dispozitivele din cameră, iar fișierele și textul dintr-o cameră sunt criptate automat. O cameră poate avea până la 10 dispozitive.",
+    "who4": "Blochează cu parolă: setează o parolă de cel puțin 4 caractere, iar pe durata acestei vizite fișierele și textul pe care le trimiți din acea filă sunt blocate pe acest dispozitiv înainte de trimitere. Spune-i destinatarului parola separat.",
+    "who5": "Codul QR și linkul unui fișier blocat conțin cheia acestuia, deci oricine le are poate primi fișierul fără parolă. Arată-le doar destinatarului.",
+    "who6": "Etichetele cu nume de animale și informațiile despre dispozitiv și browser rămân vizibile chiar și când este blocat. O etichetă diferențiază dispozitivele, dar nu dovedește cine este cineva.",
+    "keepTitle": "Cât timp rămân",
+    "keep1": "Textul este păstrat 10 minute, deci dispozitivele care se alătură între timp îl pot primi.",
+    "keep2": "Textul de peste 96KB nu este păstrat și ajunge doar la dispozitivele deschise în acest moment. Trimite-l ca fișier .txt ca să fie păstrat o zi.",
+    "keep3": "Fișierele sunt păstrate cel mult 1 zi. Pot fi șterse mai devreme, după ce toate dispozitivele au plecat, așa că descarcă imediat ce ai nevoie.",
+    "moreTitle": "Extra utile",
+    "more1": "Instalarea aplicației: deschide-o direct de pe ecranul principal și alege-o din butonul Partajare al altor aplicații ca să trimiți fișiere. Pe Android și PC (Chrome, Edge) folosește pictograma de instalare din bara de adrese; pe iPhone (Safari) atinge butonul Partajare și alege „Adaugă pe ecranul principal”.",
+    "more2": "Notificări de sosire: activează-le din meniul ⋯ ca să fii anunțat despre fișiere și texte noi chiar și când fila este în fundal.",
+    "more3": "Comenzi rapide: Ctrl+V lipește pentru trimitere · Ctrl+Enter trimite textul scris · Ctrl+C copiază un fișier selectat (⌘ în loc de Ctrl pe Mac)"
   },
   "seo": {
     "title": "Clipboard Online – Distribuie Text și Fișiere Între Telefon și PC",
@@ -370,9 +394,6 @@
     "confirm": "Trimite public"
   },
   "guide": {
-    "title": "Stocare și utilizare",
-    "retention": "Chiar și cât ești conectat, fișierele sunt șterse automat după cel mult 1 zi. Curățarea rulează periodic, deci ora exactă (la secundă) nu este garantată, iar după ce pleacă toate dispozitivele se poate șterge mai devreme. Descarcă imediat ce ai nevoie.",
-    "roomRetention": "Fișierele din această cameră sunt păstrate cel mult aproximativ 1 zi. Nu sunt șterse imediat când toate dispozitivele pleacă. Curățarea rulează periodic, deci ora exactă nu este garantată. Textele sunt păstrate doar 10 minute.",
     "roomVisibility": "Le pot vedea doar dispozitivele aflate în această cameră."
   },
   "download": {

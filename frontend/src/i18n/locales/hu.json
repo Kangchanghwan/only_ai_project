@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Az ugyanazon a hálózaton lévő más személyek (iskola, iroda, kávézó) is láthatják.",
-    "notAuth": "A névcímke csak az eszközök megkülönböztetésére szolgál. Nem személyazonosság-ellenőrzés.",
     "globalWarning": "Itt bárki, idegenek is láthatják, amit küldesz. Az érzékeny tartalmat küldés előtt zárd le jelszóval.",
     "pairSasLoading": "Képek betöltése…",
     "moreDevices": "{count} további megjelenítése"
@@ -250,18 +249,43 @@
     "backgroundHint": "Olvassa be ugyanennek a térnek a megnyitásához"
   },
   "help": {
-    "pwaTitle": "Telepítés alkalmazásként",
-    "pwaIntro": "Telepítés után közvetlenül a kezdőképernyőről indíthatod, és ha egy másik alkalmazásból megosztasz egy fájlt ide, az automatikusan feltöltődik.",
-    "pwaAndroidTitle": "Android / asztali (Chrome, Edge)",
-    "pwaAndroidDesc": "Koppints a címsorban lévő telepítési ikonra vagy a képernyő alján megjelenő telepítési sávra.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Koppints a Megosztás gombra, majd válaszd a „Főképernyőhöz adás” lehetőséget.",
-    "downloadSingleDesc": "A fájl melletti Fogadás gombbal letöltheti. A ⋯ (Több) gombbal QR-kódos megosztás, letöltés és törlés érhető el (a képek másolhatók is). Számítógépen és mobilon ugyanígy.",
-    "textShareCopyDesc": "Nyomd meg a megosztott szövegnél a Másolás gombot a vágólapra másoláshoz. A mezőbe írt vagy beillesztett szöveget a Megosztás gombbal küldheted el.",
-    "textShareDeleteDesc": "Nyisd meg a szöveg jobb oldalán lévő ⋯ gombot, és válaszd a Törlést.",
-    "scopeDevicesDesc": "A kapcsolat kártya (széles képernyőn a bal oldali panel) mutatja az azonos körben csatlakozó többi eszközt.",
-    "limit4": "Akkor is, ha csatlakozva marad, a fájlok legfeljebb kb. 1 napig maradnak meg (miután minden eszköz kilépett, hamarosan törlődnek)",
-    "tip4": "A fájlkártya „⋯” gombja megnyitja a QR-kód/letöltés/törlés menüt (képeknél másolással)"
+    "close": "Bezárás",
+    "confirm": "Értem",
+    "aboutTitle": "Névjegy",
+    "title": "Használati útmutató",
+    "connectTitle": "Csatlakozás",
+    "connect1": "Az azonos Wi-Fi-n lévő eszközök automatikusan csatlakoznak, amint megnyitják ezt az oldalt.",
+    "connect2": "Telefonon olvasd be a kamerával a számítógép képernyőjén lévő QR-kódot, vagy írd be a címsorba: clipboardapp.org.",
+    "connect3": "Másik Wi-Fi-n vagy mobiladaton lévő eszköz csatlakoztatásához hozz létre egy szobát. Hozz létre új szobát a „＋ Szoba” gombbal, és a másik eszközt QR-kóddal, képekkel vagy linkkel hívd be. A meghívó QR-kód 10 percig működik.",
+    "connect4": "Az új eszközön koppints a „Csatlakozás képekkel” gombra, majd sorrendben koppints a szoba egyik eszközén megjelenő 4 képre. Az eszköz előtt ülő valakinek a „Beengedés” gombra kell koppintania, mielőtt csatlakozhatsz.",
+    "connect5": "Koppints egy eszközkártyán a „Csatlakozás” gombra, hogy csak kettőtök számára nyíljon szoba. Akkor kapcsolódtok, ha ellenőriztétek, hogy mindkét képernyőn ugyanaz a kép látszik.",
+    "connect6": "A kapcsolat ellenőrzéséhez nézd meg a másik eszköz képernyőjén a(z) „Én” kártyán lévő állatnevet, és keresd meg ezt a nevet a saját listádban.",
+    "connect7": "Ha sok eszköz van a „Mindenki” csoportban, csak a legfrissebbek látszanak. Használd az „Eszköz keresése” funkciót, és válaszd ki a másik eszköz állatnevét.",
+    "sendTitle": "Küldés",
+    "send1": "A kimásolt szöveget vagy képet az oldal bármely pontján beillesztheted a Ctrl+V (Macen ⌘+V) billentyűvel, és azonnal elküldődik.",
+    "send2": "Fájlokhoz koppints a „Fájlok kiválasztása” gombra, vagy húzd őket az oldalra.",
+    "send3": "A mezőbe írt szöveget a „Megosztás” gombbal vagy a Ctrl+Enter (Macen ⌘+Enter) billentyűvel küldheted el.",
+    "send4": "Egy fájl legfeljebb 5GB lehet, és ha megszakad a kapcsolat, a feltöltés ott folytatódik, ahol abbamaradt.",
+    "send5": "iPhone-on és iPaden add hozzá a parancsikont, hogy közvetlenül a Fotók app Megosztás gombjáról küldhess.",
+    "receiveTitle": "Fogadás",
+    "receive1": "Koppints a „Fogadás” gombra egy fájl letöltéséhez, és a „Másolás” gombra a szöveg vágólapra másolásához.",
+    "receive2": "Több fájlnál jelöld be őket, és koppints a „Letöltés” gombra, így egyetlen ZIP-et kapsz. A 200MB-nál nagyobb fájlok külön töltődnek le.",
+    "receive3": "Válaszd a „Megosztás QR-kóddal” lehetőséget egy fájl ⋯ menüjében, majd olvasd be egy másik eszköz kamerájával, hogy megkapd azt a fájlt. A képeket ugyanebből a menüből másolni is lehet.",
+    "whoTitle": "Ki láthatja",
+    "who1": "Azonos hálózat: az ugyanazon az internetkapcsolaton lévő eszközök látják. Iskolákban, irodákban és kávézókban idegenek is láthatják.",
+    "who2": "Mindenki: bárki látja, akinek éppen meg van nyitva ez a szolgáltatás.",
+    "who3": "Szobák: csak a szobában lévő eszközök látják, és a szobában lévő fájlok és szövegek automatikusan titkosítva vannak. Egy szobában legfeljebb 10 eszköz lehet.",
+    "who4": "Zárolás jelszóval: adj meg legalább 4 karakteres jelszót, és erre a látogatásra azon a fülön küldött fájlok és szövegek még elküldés előtt zárolódnak ezen az eszközön. A jelszót külön mondd meg a címzettnek.",
+    "who5": "A zárolt fájl QR-kódja és linkje tartalmazza a kulcsát, így bárki, akinél megvan, jelszó nélkül megkaphatja a fájlt. Csak a címzettnek mutasd meg.",
+    "who6": "Az állatnév-címkék, valamint az eszköz- és böngészőinfók zárolás esetén is láthatók maradnak. A névcímke az eszközöket különbözteti meg, nem bizonyítja, hogy ki valaki.",
+    "keepTitle": "Meddig maradnak meg",
+    "keep1": "A szöveg 10 percig marad meg, így a közben csatlakozó eszközök is megkaphatják.",
+    "keep2": "A 96KB-nál nagyobb szöveg nem marad meg, és csak a most nyitott eszközökhöz jut el. Küldd .txt fájlként, hogy egy napig megmaradjon.",
+    "keep3": "A fájlok legfeljebb 1 napig maradnak meg. Korábban is törlődhetnek, ha minden eszköz kilépett, ezért a szükségeset töltsd le rögtön.",
+    "moreTitle": "Hasznos extrák",
+    "more1": "Az app telepítése: nyisd meg közvetlenül a kezdőképernyőről, és fájlküldéshez válaszd ki más appok Megosztás gombjában. Androidon és számítógépen (Chrome, Edge) használd a címsor telepítés ikonját; iPhone-on (Safari) koppints a Megosztás gombra, és válaszd a „Főképernyőhöz adás” lehetőséget.",
+    "more2": "Érkezési értesítések: kapcsold be a ⋯ menüben, hogy értesítést kapj az új fájlokról és szövegekről akkor is, ha a lap a háttérben van.",
+    "more3": "Billentyűparancsok: Ctrl+V beillesztés küldéshez · Ctrl+Enter a beírt szöveg küldése · Ctrl+C egy kijelölt fájl másolása (Macen ⌘ a Ctrl helyett)"
   },
   "seo": {
     "title": "Online vágólap – szöveg, kép és fájl megosztása telefon és PC között",
@@ -370,9 +394,6 @@
     "confirm": "Küldés nyilvánosan"
   },
   "guide": {
-    "title": "Tárolás és használat",
-    "retention": "Akkor is, ha csatlakozva vagy, a fájlok legfeljebb 1 nap után automatikusan törlődnek. A takarítás időszakosan fut, ezért a pontos idő (másodpercre) nem garantált, és ha minden eszköz kilép, korábban is törlődhet. A szükséges fájlokat azonnal töltsd le.",
-    "roomRetention": "A szoba fájljait legfeljebb körülbelül 1 napig őrizzük meg. Nem törlődnek azonnal, amikor minden eszköz kilép. A takarítás rendszeresen fut, ezért a pontos időpont nem garantált. A szövegeket csak 10 percig őrizzük.",
     "roomVisibility": "Csak a szobában lévő eszközök láthatják őket."
   },
   "download": {

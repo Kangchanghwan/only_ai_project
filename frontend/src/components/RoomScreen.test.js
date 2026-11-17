@@ -59,10 +59,9 @@ describe('RoomScreen.vue', () => {
       const w = mount(RoomScreen, { props: defaultProps, global: { plugins: [i18n], stubs } })
       expect(w.find('[data-testid="more-info"]').exists()).toBe(false)
       const h = w.find('.app-header-stub')
-      expect(h.find('[data-testid="usage-notes"]').exists()).toBe(true)
+      expect(h.find('[data-testid="usage-notes"]').exists()).toBe(false)
       expect(h.find('[data-testid="landing-separator"]').exists()).toBe(true)
       expect(h.find('.app-footer-stub').exists()).toBe(true)
-      expect(w.find('[data-testid="usage-notes"]').element.tagName).toBe('SECTION')
     })
 
     it('모달이 닫혀 있어도 landing-content·FAQ·푸터 링크가 DOM에 있고 숨겨져 있다가 ?를 누르면 보인다', async () => {
@@ -77,7 +76,7 @@ describe('RoomScreen.vue', () => {
       const overlay = modal().parentElement
       expect(overlay.style.display).toBe('none')
       expect(modal().querySelector('[data-testid="landing-content"]')).not.toBeNull()
-      expect(modal().querySelector('[data-testid="usage-notes"]')).not.toBeNull()
+      expect(modal().querySelector('[data-testid="help-section-keep"]')).not.toBeNull()
       expect(modal().querySelector('[data-testid="feedback-link"]')).not.toBeNull()
       expect(document.body.innerHTML).toContain(koI18n.global.t('landing.faqTitle'))
       expect(document.body.querySelector('[data-testid="more-info"]')).toBeNull()
