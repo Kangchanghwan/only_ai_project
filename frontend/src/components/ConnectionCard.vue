@@ -37,7 +37,9 @@ const props = defineProps({
   scope: { type: String, default: 'ip' },
   wide: { type: Boolean, default: false },
   /** 전체 공유 방에만 있는 기기 (같은 네트워크 목록 아래 "다른 네트워크 기기 n대") */
-  otherNetworkDevices: { type: Array, default: () => [] }
+  otherNetworkDevices: { type: Array, default: () => [] },
+  /** 전체 공유 방의 기기 목록이 아직 오지 않았다 ("다른 네트워크 기기" 묶음이 있을지 아직 모른다) */
+  otherNetworkPending: { type: Boolean, default: false }
 })
 const emit = defineEmits(['reroll', 'hint-copied', 'group-create', 'code-enter'])
 
@@ -133,16 +135,17 @@ const otherOpen = computed(() => otherOpenManual.value || otherBusy.value)
 // ── 지난번 배치 기억: 서버 연결 전 자리 표시를 지난번과 같은 크기로 잡아 아래 입력 상자·목록이 움직이지 않게 한다 ──
 const isPrerender = typeof window !== 'undefined' && !!window.__PRERENDER__
 const emptyStateEl = ref(null)
-/** 아직 기기 목록이 없을 때만 쓴다 (연결되면 실제 카드가 자리를 잡는다) */
-const layoutHint = computed(() => (!props.wide && props.devices.length === 0 ? readDeviceHint(props.scope) : null))
+/** 기기 목록이 아직 없거나, 같은 네트워크 목록만 먼저 오고 전체 공유 목록을 기다리는 동안 쓴다 (다 오면 실제 블록이 자리를 잡는다) */
+const layoutHint = computed(() => (!props.wide && (props.devices.length === 0 || props.otherNetworkPending) ? readDeviceHint(props.scope) : null))
 const placeholderCards = computed(() => layoutHint.value?.cards || 1)
 watch(
-  [() => props.devices.length, () => otherList.value.length, showEmpty, qrDataUrl, () => props.scope],
+  [() => props.devices.length, () => otherList.value.length, showEmpty, qrDataUrl, () => props.scope, () => props.otherNetworkPending],
   async () => {
-    if (isPrerender || props.wide || props.devices.length === 0) return
+    // 전체 공유 목록을 기다리는 동안에는 저장하지 않는다 (묶음이 없다고 잘못 기억하지 않도록)
+    if (isPrerender || props.wide || props.devices.length === 0 || props.otherNetworkPending) return
     const scope = props.scope
     await nextTick()
-    if (scope !== props.scope || props.devices.length === 0) return
+    if (scope !== props.scope || props.devices.length === 0 || props.otherNetworkPending) return
     const soloHeight = showEmpty.value ? Math.round(emptyStateEl.value?.getBoundingClientRect?.().height || 0) : 0
     saveDeviceHint(scope, { cards: props.devices.length, otherNet: otherList.value.length > 0, soloHeight })
   },
@@ -177,15 +180,12 @@ watch(
     </div>
     <!-- 지난번에 있던 블록의 자리: 혼자일 때 안내, 다른 네트워크 기기 묶음 (연결되면 실제 블록으로 바뀐다) -->
     <div
-      v-if="layoutHint && layoutHint.soloHeight > 0"
+      v-if="layoutHint && layoutHint.soloHeight > 0 && devices.length === 0"
       class="mt-3 border-t border-border"
       :style="{ height: layoutHint.soloHeight + 'px' }"
       aria-hidden="true"
       data-testid="empty-state-placeholder"
     ></div>
-    <div v-if="layoutHint && layoutHint.otherNet" class="mt-3 pt-3 border-t border-border" aria-hidden="true" data-testid="other-network-placeholder">
-      <div class="min-h-[44px] -my-2"></div>
-    </div>
     <div v-if="showEmpty" ref="emptyStateEl" class="mt-3 pt-3.5 border-t border-border flex flex-col items-center gap-1.5 text-center" data-testid="empty-state">
       <!-- QR은 PC와 폰 모두에서 보인다 (폰끼리 연결할 때 상대 폰이 이 화면을 찍는다) -->
       <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="EMPTY_STATE_QR_URL" width="140" height="140" alt="QR" class="block mb-1 rounded-none bg-white border border-border" data-testid="empty-state-qr" />
@@ -247,6 +247,10 @@ watch(
       <ul v-if="otherOpen" class="mt-3 flex flex-col gap-2 list-none p-0" data-testid="other-network-list">
         <DeviceRow v-for="device in otherList" :key="device.socketId" :device="device" />
       </ul>
+    </div>
+    <!-- "다른 네트워크 기기" 묶음 자리: 지난번에 있었고 아직 목록이 오지 않았을 때 (같은 네트워크 목록이 먼저 와도 유지해 한 프레임 접혔다 펴지지 않게) -->
+    <div v-else-if="layoutHint && layoutHint.otherNet" class="mt-3 pt-3 border-t border-border" aria-hidden="true" data-testid="other-network-placeholder">
+      <div class="min-h-[44px] -my-2"></div>
     </div>
     <div v-if="wide && devices.length > 0" class="mt-3 pt-3 border-t border-border" data-testid="device-panel">
       <DeviceList

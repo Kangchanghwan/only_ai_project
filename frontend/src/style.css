@@ -119,6 +119,13 @@ body.dark {
     overflow-x: clip;
   }
 
+  /* 스크롤 막대 자리를 항상 잡아 둔다: 목록이 길어지거나 짧아져 막대가 생기고 없어질 때 화면이 옆으로 밀리거나
+     글 줄바꿈이 바뀌지 않게. (scrollbar-gutter는 아래의 직접 꾸민 막대에는 적용되지 않아 overflow-y로 잡는다.
+     막대가 내용 위에 겹쳐 뜨는 기기에서는 달라지는 것이 없다) */
+  html {
+    overflow-y: scroll;
+  }
+
   /* Simple scrollbar styling - 테마 적응형 */
   ::-webkit-scrollbar {
     width: 8px;
