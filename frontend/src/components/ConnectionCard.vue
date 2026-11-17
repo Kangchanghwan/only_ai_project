@@ -4,7 +4,7 @@
  * 넓은 화면(wide): 같은 DeviceList를 왼쪽 패널에 항상 펼쳐 보여준다.
  * 어느 쪽이든 기기 데이터(devices)는 하나이고, 목록은 한 번에 한 곳에만 마운트된다(포커스/다이얼로그 중복 없음).
  */
-import { computed, inject, ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { computed, inject, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DeviceCards from './DeviceCards.vue'
 import DeviceList from './DeviceList.vue'
@@ -19,6 +19,7 @@ import { isIOS } from '../composables/usePWAInstall'
 import { IOS_SHORTCUT_GUIDE, IOS_SHORTCUT_FILE_LINK } from '../utils/iosShortcut'
 
 import { EMPTY_STATE_QR_URL } from '../utils/emptyState'
+import { readDeviceHint, saveDeviceHint } from '../utils/layoutHint'
 // 끝의 '/'는 필수: Safari(및 일부 Chrome)는 한글 최상위 도메인만 치면 검색어로 처리한다. '/'를 붙이면 주소로 연다.
 const PING_ADDRESS = '핑.한국/'
 const SITE_ADDRESS = 'clipboardapp.org'
@@ -128,6 +129,25 @@ const otherList = computed(() => (!props.wide && props.scope === 'ip' && pair
 // 내가 보낸 1:1 요청이 진행 중인 기기가 묶음 안에 있으면 접어 둘 수 없다 (그림 확인 패널이 가려지지 않게)
 const otherBusy = computed(() => otherList.value.some((d) => { const st = stateOf(d)?.state; return st === 'pending' || st === 'connecting' }))
 const otherOpen = computed(() => otherOpenManual.value || otherBusy.value)
+
+// ── 지난번 배치 기억: 서버 연결 전 자리 표시를 지난번과 같은 크기로 잡아 아래 입력 상자·목록이 움직이지 않게 한다 ──
+const isPrerender = typeof window !== 'undefined' && !!window.__PRERENDER__
+const emptyStateEl = ref(null)
+/** 아직 기기 목록이 없을 때만 쓴다 (연결되면 실제 카드가 자리를 잡는다) */
+const layoutHint = computed(() => (!props.wide && props.devices.length === 0 ? readDeviceHint(props.scope) : null))
+const placeholderCards = computed(() => layoutHint.value?.cards || 1)
+watch(
+  [() => props.devices.length, () => otherList.value.length, showEmpty, qrDataUrl, () => props.scope],
+  async () => {
+    if (isPrerender || props.wide || props.devices.length === 0) return
+    const scope = props.scope
+    await nextTick()
+    if (scope !== props.scope || props.devices.length === 0) return
+    const soloHeight = showEmpty.value ? Math.round(emptyStateEl.value?.getBoundingClientRect?.().height || 0) : 0
+    saveDeviceHint(scope, { cards: props.devices.length, otherNet: otherList.value.length > 0, soloHeight })
+  },
+  { flush: 'post' }
+)
 </script>
 
 <template>
@@ -148,15 +168,29 @@ const otherOpen = computed(() => otherOpenManual.value || otherBusy.value)
       :reroll-available-at="rerollAvailableAt"
       @reroll="emit('reroll')"
     />
-    <!-- 서버 연결 전 자리표시: 실제 카드 줄과 같은 높이(85px)로 자리를 잡아 아래 입력 상자가 밀리지 않게 한다 -->
+    <!-- 서버 연결 전 자리표시: 실제 카드와 같은 높이(85px)·같은 격자로 자리를 잡아 아래 입력 상자가 밀리지 않게 한다.
+         지난번 카드 수를 기억하고 있으면 그만큼 그린다 (넓은 화면은 실제와 같이 두 줄까지: 85 + 6 + 85 = 176px) -->
     <div v-else-if="!wide" class="relative min-w-0" aria-hidden="true" data-testid="device-cards-placeholder">
-      <ul class="list-none m-0 p-0 flex flex-nowrap gap-[6px] overflow-hidden sm:grid sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] items-stretch">
-        <li class="flex-[0_0_146px] sm:flex-auto h-[85px] border border-border bg-tint list-none m-0"></li>
+      <ul class="list-none m-0 p-0 flex flex-nowrap gap-[6px] overflow-hidden sm:grid sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] sm:max-h-[176px] items-stretch">
+        <li v-for="i in placeholderCards" :key="i" class="flex-[0_0_146px] sm:flex-auto h-[85px] border border-border bg-tint list-none m-0" data-testid="device-card-placeholder"></li>
       </ul>
     </div>
-    <div v-if="showEmpty" class="mt-3 pt-3.5 border-t border-border flex flex-col items-center gap-1.5 text-center" data-testid="empty-state">
+    <!-- 지난번에 있던 블록의 자리: 혼자일 때 안내, 다른 네트워크 기기 묶음 (연결되면 실제 블록으로 바뀐다) -->
+    <div
+      v-if="layoutHint && layoutHint.soloHeight > 0"
+      class="mt-3 border-t border-border"
+      :style="{ height: layoutHint.soloHeight + 'px' }"
+      aria-hidden="true"
+      data-testid="empty-state-placeholder"
+    ></div>
+    <div v-if="layoutHint && layoutHint.otherNet" class="mt-3 pt-3 border-t border-border" aria-hidden="true" data-testid="other-network-placeholder">
+      <div class="min-h-[44px] -my-2"></div>
+    </div>
+    <div v-if="showEmpty" ref="emptyStateEl" class="mt-3 pt-3.5 border-t border-border flex flex-col items-center gap-1.5 text-center" data-testid="empty-state">
       <!-- QR은 PC와 폰 모두에서 보인다 (폰끼리 연결할 때 상대 폰이 이 화면을 찍는다) -->
       <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="EMPTY_STATE_QR_URL" width="140" height="140" alt="QR" class="block mb-1 rounded-none bg-white border border-border" data-testid="empty-state-qr" />
+      <!-- QR을 만드는 동안에도 같은 크기의 자리를 잡아 둔다 (QR이 뒤늦게 끼어들어 아래가 밀리지 않게) -->
+      <div v-else class="mb-1 w-[140px] h-[140px] rounded-none bg-tint border border-border" aria-hidden="true" data-testid="empty-state-qr-placeholder"></div>
       <p class="m-0 text-sm font-bold text-ink" data-testid="empty-state-line1">{{ t('room.emptyState.qrLine') }}</p>
       <i18n-t v-if="!isMobile && isKo" keypath="room.emptyState.pingLine" tag="p" class="m-0 text-xs text-text-secondary" data-testid="empty-state-ping">
         <template #ping>

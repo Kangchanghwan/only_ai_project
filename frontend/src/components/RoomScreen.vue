@@ -18,6 +18,7 @@ import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../co
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
 import { isMeDevice } from '../utils/devices'
 import { sameIdentity } from '../utils/identity'
+import { readListHint, saveListHint, readDeviceHint } from '../utils/layoutHint'
 import { isGroupRoomId } from '../utils/groupRoom'
 
 const { t } = useI18n()
@@ -210,6 +211,25 @@ const showExtraInMain = computed(() =>
   (!props.isLoading || isPrerender)
 )
 const { bg: accentBg } = useScopeAccent(() => props.scope)
+
+// ── 지난번 목록 배치 기억: 로딩 중 입력 칸 높이와 자리 표시 줄 수를 지난번과 같게 잡아 목록이 움직이지 않게 한다 ──
+const listHint = computed(() => (props.isLoading && !isPrerender ? readListHint(props.scope) : null))
+/** 서버 연결 전(기기 목록이 아직 없음)에 지난번 받을 기기 수: 안내 글의 글자 자리를 잡는 데만 쓴다 */
+const receiverHint = computed(() => {
+  if (isPrerender || activeDevices.value.length > 0) return null
+  const others = (readDeviceHint(props.scope)?.cards || 0) - 1
+  return others > 0 ? others : null
+})
+/** 입력 칸을 낮게 그릴지: 항목이 있거나, 로딩 중인데 지난번에 항목이 있었을 때 */
+const composerHasItems = computed(() => props.files.length > 0 || props.texts.length > 0 || (listHint.value?.rows || 0) > 0)
+// 로딩이 끝난 뒤의 목록 상태만 기억한다 (연결 전의 빈 목록은 저장하지 않도록 즉시 실행하지 않는다)
+watch(
+  [() => props.isLoading, () => props.files.length, () => props.texts.length, () => props.scope],
+  ([loading, nFiles, nTexts, scope]) => {
+    if (loading || isPrerender) return
+    saveListHint(scope, { files: nFiles, texts: nTexts })
+  }
+)
 </script>
 
 <template>
@@ -302,6 +322,7 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                 :scope="scope"
                 :uploads="uploads"
                 :texts="texts"
+                :loading-hint="listHint"
                 @remove-text="$emit('remove-text', $event)"
                 @cancel-text="$emit('cancel-text', $event)"
                 @unlock-text="$emit('unlock-text', $event)"
@@ -338,8 +359,9 @@ const { bg: accentBg } = useScopeAccent(() => props.scope)
                     :scope="scope"
                     :prefill="prefillText"
                     :receiver-count="textReceiverCount"
+                    :receiver-hint="receiverHint"
                     :storage-mode="textStorageMode"
-                    :has-items="files.length > 0 || texts.length > 0"
+                    :has-items="composerHasItems"
                     :compose-disabled="peerLeft || (peerOffline && textStorageMode === 'none') || peerConnecting"
                     :compose-note="peerOffline && textStorageMode === 'none' ? t('pair.offlineTextNote') : ''"
                     @share-text="$emit('share-text', $event)"
