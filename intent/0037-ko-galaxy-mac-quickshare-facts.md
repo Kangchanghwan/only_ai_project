@@ -22,3 +22,4 @@ Trigger: bands.mjs 최고 등급은 0033(gsc_impr7 diagnose, proposed) 진단 �
 
 ## Result
 - 2026-11-11 배포 (master 843439f, Actions auto-merge 성공). 라이브 반영, JSON-LD 4종(Article·BreadcrumbList·HowTo·FAQPage) 파싱, 390px 가로 넘침 없음(scrollWidth 390 = clientWidth 390) 확인. GSC 색인 생성 요청 완료, 네이버 웹 페이지 수집 요청 완료. 7일 판독 11-18, 28일 12-09.
+- 2026-11-18 7일 판독: 네이버 서치어드바이저 7일(11-17 갱신) 이 웹문서 노출 589 / 클릭 6 (기준 533/6, 노출 +10%, 클릭 같음). GSC 정확일치 11-11–11-15(5일) 노출 2 / 클릭 0 / 순위 9.5 (기준 28일 2/0) → 구글은 여전히 거의 안 보임. 네이버 중심 페이지라는 판단 유지, 28일 판독 12-09.
