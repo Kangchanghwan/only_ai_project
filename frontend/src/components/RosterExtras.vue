@@ -21,9 +21,6 @@ const props = defineProps({
   mySocketId: { type: String, default: null },
   myIdentity: { type: Object, default: null },
   /** 같은 네트워크 방의 기기 수 */
-  ipCount: { type: Number, default: 0 },
-  /** 같은 네트워크 탭의 '다른 네트워크 기기' 묶음에 이미 보이는 기기 수 */
-  otherNetworkCount: { type: Number, default: 0 }
 })
 const emit = defineEmits(['select-scope'])
 
@@ -34,7 +31,6 @@ const moreCount = computed(() => {
   const others = props.devices.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)).length
   return total.value - 1 - others
 })
-const otherNetworkMore = computed(() => Math.max(0, total.value - props.ipCount - props.otherNetworkCount))
 
 const adj = ref(0)
 const animal = ref(0)
@@ -75,6 +71,9 @@ watch(
     findEl.value?.scrollIntoView?.({ block: 'center' })
   }
 )
+
+/** 같은 네트워크 탭의 "이름으로 찾기" 줄(ConnectionCard)이 부른다 */
+defineExpose({ goFind })
 
 const selectClass = 'min-h-[44px] min-w-0 rounded-none border border-border bg-surface text-ink text-sm px-2'
 </script>
@@ -122,10 +121,5 @@ const selectClass = 'min-h-[44px] min-w-0 rounded-none border border-border bg-s
         {{ failure === 'notFound' ? t('roster.notFound') : failure === 'rateLimited' ? t('roster.rateLimited') : t('roster.findError') }}
       </p>
     </div>
-  </div>
-  <div v-else-if="truncated && scope === 'ip' && otherNetworkMore > 0" class="mb-3" data-testid="roster-other-more">
-    <button type="button" class="min-h-[44px] -my-2 p-0 text-sm text-ink hover:underline bg-transparent border-0 text-left" data-testid="roster-go-find" @click="goFind">
-      {{ t('roster.moreOtherNetwork', { n: otherNetworkMore }) }} · {{ t('roster.goFind') }}
-    </button>
   </div>
 </template>

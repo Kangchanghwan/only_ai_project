@@ -674,7 +674,6 @@
     "notFound": "今接続中の端末にこの名前はありません",
     "rateLimited": "しばらくしてからもう一度お試しください",
     "findError": "見つかりませんでした。もう一度お試しください",
-    "moreOtherNetwork": "ほかのネットワークの端末があと{n}台",
-    "goFind": "名前で探す"
+    "moreFindInline": "残り{n}台は名前で検索"
   }
 }

@@ -597,7 +597,6 @@
     "notFound": "Mezi připojenými zařízeními teď toto jméno není",
     "rateLimited": "Zkuste to prosím za chvíli znovu",
     "findError": "Nenalezeno. Zkuste to prosím znovu",
-    "moreOtherNetwork": "Dalších {n} zařízení v jiných sítích",
-    "goFind": "Najít podle jména"
+    "moreFindInline": "najít dalších {n} podle jména"
   }
 }

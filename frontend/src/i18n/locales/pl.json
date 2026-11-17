@@ -597,7 +597,6 @@
     "notFound": "Żadne połączone urządzenie nie ma teraz tej nazwy",
     "rateLimited": "Spróbuj ponownie za chwilę",
     "findError": "Nie znaleziono. Spróbuj ponownie",
-    "moreOtherNetwork": "Jeszcze {n} urządzeń w innych sieciach",
-    "goFind": "Szukaj po nazwie"
+    "moreFindInline": "znajdź {n} kolejnych po nazwie"
   }
 }

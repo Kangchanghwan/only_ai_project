@@ -797,7 +797,6 @@
     "notFound": "No connected device has this name right now",
     "rateLimited": "Please try again in a moment",
     "findError": "Couldn't find it. Please try again",
-    "moreOtherNetwork": "{n} more devices on other networks",
-    "goFind": "Find by name"
+    "moreFindInline": "find {n} more by name"
   }
 }

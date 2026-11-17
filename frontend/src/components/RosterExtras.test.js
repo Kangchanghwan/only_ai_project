@@ -8,7 +8,7 @@ import { socketService } from '../services/socketService'
 const i18n = createI18n({ legacy: false, locale: 'ko', fallbackLocale: 'ko', messages: { ko } })
 const dev = (id) => ({ socketId: id, joinedAt: 1, deviceType: 'desktop', browser: 'Chrome', os: 'macOS', identity: { adj: 0, animal: 1 } })
 const mountIt = (props = {}) =>
-  mount(RosterExtras, { props: { scope: 'global', devices: [dev('me'), dev('a')], mySocketId: 'me', ipCount: 1, ...props }, global: { plugins: [i18n] } })
+  mount(RosterExtras, { props: { scope: 'global', devices: [dev('me'), dev('a')], mySocketId: 'me', ...props }, global: { plugins: [i18n] } })
 
 describe('RosterExtras', () => {
   beforeEach(() => {
@@ -64,13 +64,12 @@ describe('RosterExtras', () => {
     spy.mockRestore()
   })
 
-  it('같은 네트워크 탭: 한 줄 버튼이 전체 공유 탭 전환을 요청한다', async () => {
+  it('goFind(같은 네트워크 탭의 한 줄이 부름)는 전체 공유 탭 전환을 요청한다', () => {
     socketService.globalRoomTruncated.value = true
     socketService.globalRoomTotal.value = 60
-    // 총 60 = 같은 네트워크 2 + 이미 보이는 다른 네트워크 19 + 안 보이는 39
-    const w = mountIt({ scope: 'ip', ipCount: 2, otherNetworkCount: 19 })
-    expect(w.find('[data-testid="roster-go-find"]').text()).toBe('다른 네트워크 기기 39대 더 · 이름으로 찾기')
-    await w.find('[data-testid="roster-go-find"]').trigger('click')
+    const w = mountIt({ scope: 'ip' })
+    expect(w.find('[data-testid="roster-go-find"]').exists()).toBe(false)
+    w.vm.goFind()
     expect(w.emitted('select-scope')[0]).toEqual(['global'])
   })
 })

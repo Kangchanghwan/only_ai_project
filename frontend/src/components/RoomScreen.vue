@@ -19,6 +19,7 @@ import { useScopeAccent } from '../composables/useScopeAccent'
 import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
 import { isMeDevice } from '../utils/devices'
+import { socketService } from '../services/socketService'
 import { sameIdentity } from '../utils/identity'
 import { readListHint, saveListHint, readDeviceHint } from '../utils/layoutHint'
 import { isGroupRoomId } from '../utils/groupRoom'
@@ -177,6 +178,13 @@ const otherNetworkDevices = computed(() => {
   const inIp = new Set(props.ipRoomDevices.map((d) => d.socketId))
   return props.globalRoomDevices.filter((d) => !inIp.has(d.socketId) && !isMeDevice(d, props.mySocketId, props.myIdentity))
 })
+
+/** 전체 공유 방이 기준 인원을 넘었을 때, 같은 네트워크 탭에서 목록에 안 보이는 다른 네트워크 기기 수 */
+const rosterRef = ref(null)
+const otherNetworkMore = computed(() => {
+  if (props.scope !== 'ip' || !socketService.globalRoomTruncated.value) return 0
+  return Math.max(0, socketService.globalRoomTotal.value - props.ipRoomDevices.length - otherNetworkDevices.value.length)
+})
 const reinviteDevice = computed(() => {
   const peer = isGroupRoom.value ? null : currentRoom.value?.peer
   if (!peer || !peerLeft.value) return null
@@ -287,18 +295,19 @@ watch(
             :scope="scope"
             :other-network-devices="otherNetworkDevices"
             :other-network-pending="scope === 'ip' && globalRoomDevices.length === 0"
+            :other-network-more="otherNetworkMore"
+            @go-find="rosterRef?.goFind()"
             @reroll="$emit('reroll-identity')"
             @hint-copied="$emit('hint-copied', $event)"
             @group-create="$emit('group-create')"
             @code-enter="$emit('code-enter')"
           />
           <RosterExtras
+            ref="rosterRef"
             :scope="scope"
             :devices="activeDevices"
             :my-socket-id="mySocketId"
             :my-identity="myIdentity"
-            :ip-count="ipRoomDevices.length"
-            :other-network-count="otherNetworkDevices.length"
             @select-scope="$emit('select-scope', $event)"
           />
         </div>

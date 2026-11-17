@@ -597,7 +597,6 @@
     "notFound": "Ningún dispositivo conectado tiene este nombre ahora",
     "rateLimited": "Inténtalo de nuevo en un momento",
     "findError": "No se encontró. Inténtalo de nuevo",
-    "moreOtherNetwork": "{n} dispositivos más en otras redes",
-    "goFind": "Buscar por nombre"
+    "moreFindInline": "buscar los otros {n} por nombre"
   }
 }

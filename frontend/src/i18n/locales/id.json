@@ -597,7 +597,6 @@
     "notFound": "Tidak ada perangkat terhubung dengan nama ini saat ini",
     "rateLimited": "Coba lagi sebentar lagi",
     "findError": "Tidak ditemukan. Silakan coba lagi",
-    "moreOtherNetwork": "{n} perangkat lagi di jaringan lain",
-    "goFind": "Cari berdasarkan nama"
+    "moreFindInline": "cari {n} lainnya berdasarkan nama"
   }
 }

@@ -797,7 +797,6 @@
     "notFound": "지금 접속한 기기 중 이 이름이 없어요",
     "rateLimited": "잠시 후 다시 찾아 주세요",
     "findError": "찾지 못했어요. 다시 시도해 주세요",
-    "moreOtherNetwork": "다른 네트워크 기기 {n}대 더",
-    "goFind": "이름으로 찾기"
+    "moreFindInline": "{n}대 더는 이름으로 찾기"
   }
 }

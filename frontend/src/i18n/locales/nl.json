@@ -597,7 +597,6 @@
     "notFound": "Geen verbonden apparaat heeft nu deze naam",
     "rateLimited": "Probeer het zo meteen opnieuw",
     "findError": "Niet gevonden. Probeer het opnieuw",
-    "moreOtherNetwork": "Nog {n} apparaten op andere netwerken",
-    "goFind": "Zoeken op naam"
+    "moreFindInline": "nog {n} zoeken op naam"
   }
 }

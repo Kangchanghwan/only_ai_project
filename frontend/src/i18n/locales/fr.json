@@ -597,7 +597,6 @@
     "notFound": "Aucun appareil connecté n'a ce nom pour le moment",
     "rateLimited": "Réessayez dans un instant",
     "findError": "Introuvable. Veuillez réessayer",
-    "moreOtherNetwork": "{n} autres appareils sur d'autres réseaux",
-    "goFind": "Chercher par nom"
+    "moreFindInline": "trouver les {n} autres par nom"
   }
 }

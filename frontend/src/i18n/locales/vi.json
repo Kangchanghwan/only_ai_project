@@ -597,7 +597,6 @@
     "notFound": "Hiện không có thiết bị nào đang kết nối có tên này",
     "rateLimited": "Vui lòng thử lại sau giây lát",
     "findError": "Không tìm thấy. Vui lòng thử lại",
-    "moreOtherNetwork": "Còn {n} thiết bị ở mạng khác",
-    "goFind": "Tìm theo tên"
+    "moreFindInline": "tìm {n} thiết bị khác theo tên"
   }
 }

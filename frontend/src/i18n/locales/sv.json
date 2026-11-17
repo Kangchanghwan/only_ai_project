@@ -597,7 +597,6 @@
     "notFound": "Ingen ansluten enhet har det här namnet just nu",
     "rateLimited": "Försök igen om en stund",
     "findError": "Hittades inte. Försök igen",
-    "moreOtherNetwork": "{n} enheter till på andra nätverk",
-    "goFind": "Sök på namn"
+    "moreFindInline": "hitta {n} till efter namn"
   }
 }

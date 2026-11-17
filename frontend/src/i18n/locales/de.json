@@ -597,7 +597,6 @@
     "notFound": "Aktuell ist kein verbundenes Gerät mit diesem Namen online",
     "rateLimited": "Bitte versuche es gleich noch einmal",
     "findError": "Nicht gefunden. Bitte erneut versuchen",
-    "moreOtherNetwork": "{n} weitere Geräte in anderen Netzwerken",
-    "goFind": "Nach Namen suchen"
+    "moreFindInline": "{n} weitere per Name suchen"
   }
 }

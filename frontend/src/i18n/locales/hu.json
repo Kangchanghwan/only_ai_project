@@ -597,7 +597,6 @@
     "notFound": "Jelenleg nincs ilyen nevű csatlakozott eszköz",
     "rateLimited": "Kérjük, próbáld újra egy kicsit később",
     "findError": "Nem található. Próbáld újra",
-    "moreOtherNetwork": "Még {n} eszköz más hálózatokon",
-    "goFind": "Keresés név alapján"
+    "moreFindInline": "további {n} keresése név alapján"
   }
 }
