@@ -14,6 +14,7 @@ import { TextQueue, QueuedText, getTextQueue, toPublicText } from '../utils/text
 import { getPushNotifier } from '../services/pushNotifier';
 import { isValidPid } from '../services/pushStore';
 import { setupCodeHandlers } from './codeHandlers';
+import { buildSnapshot, bumpRev, dropRev, getRosterFullMax, parseFindQuery, findDevice, allowFind } from '../utils/roster';
 import logger from '../utils/logger';
 
 // === 유틸리티 함수 ===
@@ -151,6 +152,78 @@ const endSession = (io: Server, s: PairSession, reason: string, targets: string[
 
 const broadcastUsers = (io: Server, roomManager: RoomManager, roomId: string) => {
     io.to(roomId).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
+};
+
+// === 명단 증분 전송 (ip 방·전체 공유 방) ===
+
+/** auth.roster === 2 로 접속한 소켓 (그 밖은 legacy: 전체 명단을 그대로 받는다) */
+const legacySockets = new Set<string>();
+
+const roomSocketIds = (io: Server, roomId: string): string[] => [...(io.sockets.adapter.rooms.get(roomId) ?? [])];
+
+const emitFull = (io: Server, roomManager: RoomManager, roomId: string, id: string) => {
+    io.to(id).emit('room-users', buildSnapshot(roomId, roomManager.getRoomUsers(roomId), id));
+};
+const emitLegacyFull = (io: Server, roomManager: RoomManager, roomId: string, id: string) => {
+    io.to(id).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
+};
+
+/** 기기가 들어왔다 (신규·복구): 본인에게 스냅샷, 다른 v2에 add, legacy에 전체 */
+const rosterJoined = (io: Server, roomManager: RoomManager, roomId: string, joinerId: string) => {
+    const rev = bumpRev(roomId);
+    const devices = roomManager.getRoomUsers(roomId);
+    const device = roomManager.getUser(roomId, joinerId);
+    for (const id of roomSocketIds(io, roomId)) {
+        if (legacySockets.has(id)) emitLegacyFull(io, roomManager, roomId, id);
+        else if (id === joinerId) emitFull(io, roomManager, roomId, id);
+        else io.to(id).emit('room-delta', { roomId, rev, total: devices.length, op: 'add', device });
+    }
+};
+
+/** 기기가 나갔다 (이미 방 명단에서 뺀 뒤 호출) */
+const rosterLeft = (io: Server, roomManager: RoomManager, roomId: string, socketId: string) => {
+    const rev = bumpRev(roomId);
+    const total = roomManager.getRoomUsers(roomId).length;
+    const crossed = roomId === SHARED_ROOM_ID && total === getRosterFullMax();
+    for (const id of roomSocketIds(io, roomId)) {
+        if (legacySockets.has(id)) emitLegacyFull(io, roomManager, roomId, id);
+        else if (crossed) emitFull(io, roomManager, roomId, id);
+        else io.to(id).emit('room-delta', { roomId, rev, total, op: 'remove', socketId });
+    }
+    if (total === 0) dropRev(roomId);
+};
+
+/** 이름이 바뀌었다 */
+const rosterUpdated = (io: Server, roomManager: RoomManager, roomId: string, socketId: string) => {
+    const rev = bumpRev(roomId);
+    const devices = roomManager.getRoomUsers(roomId);
+    const device = roomManager.getUser(roomId, socketId);
+    for (const id of roomSocketIds(io, roomId)) {
+        if (legacySockets.has(id)) emitLegacyFull(io, roomManager, roomId, id);
+        else io.to(id).emit('room-delta', { roomId, rev, total: devices.length, op: 'update', device });
+    }
+};
+
+/** room-snapshot / devices:find 이벤트 등록 */
+const setupRosterHandlers = (socket: ExtendedSocket, roomManager: RoomManager) => {
+    const finds: number[] = [];
+    socket.on('room-snapshot', (payload: unknown, ack?: Ack) => {
+        const roomId = (payload as { roomId?: unknown } | null)?.roomId;
+        if (typeof ack !== 'function') return;
+        if (typeof roomId !== 'string' || (roomId !== socket.globalRoomId && roomId !== socket.ipRoomId)) {
+            ack({ ok: false });
+            return;
+        }
+        ack({ ok: true, snapshot: buildSnapshot(roomId, roomManager.getRoomUsers(roomId), socket.id) });
+    });
+    socket.on('devices:find', (payload: unknown, ack?: Ack) => {
+        if (typeof ack !== 'function') return;
+        const q = parseFindQuery(payload);
+        if (!q) { ack({ ok: false, code: 'INVALID' }); return; }
+        if (!allowFind(finds)) { ack({ ok: false, code: 'RATE_LIMITED' }); return; }
+        const device = findDevice(roomManager.getRoomUsers(SHARED_ROOM_ID), q, socket.id);
+        ack(device ? { ok: true, device } : { ok: false, code: 'NOT_FOUND' });
+    });
 };
 
 /** 둘 다 확인된 세션의 비공개 방 생성. 멤버가 사라졌으면 세션을 끝내고 false */
@@ -435,7 +508,7 @@ const handleIdentityReroll = (
         for (const roomId of rooms) {
             const device = roomManager.getUser(roomId, socket.id);
             if (device) device.identity = next;
-            io.to(roomId).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
+            rosterUpdated(io, roomManager, roomId, socket.id);
         }
         socket.emit('identity', { identity: next });
         if (typeof ack === 'function') ack({ ok: true, identity: next });
@@ -479,9 +552,11 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQu
             `[conn] connect ${socket.recovered ? 'recovered' : 'fresh'} transport=${socket.conn?.transport?.name ?? '-'} sid=${short(socket.id)} client=${short(clientId)}`
         );
 
+        if ((socket.handshake.auth as Record<string, unknown> | undefined)?.roster !== 2) legacySockets.add(socket.id);
         handleConnection(socket, io, roomManager);
 
         socket.on('disconnect', (reason: string) => {
+            legacySockets.delete(socket.id);
             if (clientId && clientSockets.get(clientId) === socket.id) clientSockets.delete(clientId);
             logger.info(`[conn] disconnect sid=${short(socket.id)} reason=${reason} secs=${Math.round((Date.now() - connectedAt) / 1000)}`);
             handleDisconnect(socket, io, roomManager, pairs);
@@ -489,6 +564,7 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQu
 
         setupPairHandlers(socket, io, roomManager, pairs);
         setupCodeHandlers(socket, io, roomManager);
+        setupRosterHandlers(socket, roomManager);
 
         socket.on('publish', (msg: any, target: PublishTarget, ack?: (error: Error | null, response?: PublishResponse) => void) =>
             handlePublish(socket, io, roomManager, textQueue, msg, target, ack)
@@ -546,15 +622,15 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
             if (ipChanged) {
                 // IP가 바뀐 채 복구됐다: 옛 IP 룸에서 빼고 새 IP 룸으로 옮긴다
                 socket.leave(oldIpRoomId);
-                void roomManager.removeUserFromRoom(oldIpRoomId, socket.id).then(() => broadcastUsers(io, roomManager, oldIpRoomId));
+                void roomManager.removeUserFromRoom(oldIpRoomId, socket.id).then(() => rosterLeft(io, roomManager, oldIpRoomId, socket.id));
                 socket.join(recoveredIpRoomId);
                 socket.data.ipRoomId = recoveredIpRoomId;
                 logger.info(`[conn] recovery room move sid=${short(socket.id)} ${shortRoom(oldIpRoomId)} -> ${shortRoom(recoveredIpRoomId)}`);
             }
             roomManager.addUserToRoom(recoveredGlobalRoomId, socket.id, deviceInfo);
             roomManager.addUserToRoom(recoveredIpRoomId, socket.id, deviceInfo);
-            io.to(recoveredIpRoomId).emit('room-users', { roomId: recoveredIpRoomId, devices: roomManager.getRoomUsers(recoveredIpRoomId) });
-            io.to(recoveredGlobalRoomId).emit('room-users', { roomId: recoveredGlobalRoomId, devices: roomManager.getRoomUsers(recoveredGlobalRoomId) });
+            rosterJoined(io, roomManager, recoveredIpRoomId, socket.id);
+            rosterJoined(io, roomManager, recoveredGlobalRoomId, socket.id);
             // 1:1 비공개 방 복구 (adapter가 소켓 룸은 복원, 서버 메모리 멤버십만 다시 채운다)
             for (const roomId of getPrivateRooms(socket)) {
                 roomManager.addUserToRoom(roomId, socket.id, deviceInfo);
@@ -583,8 +659,8 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
         roomManager.addUserToRoom(ipRoomId, socket.id, deviceInfo);
 
         socket.emit('registered', { globalRoomId, ipRoomId, identity: deviceInfo.identity, ...buildRoomTokenPayload(socket) });
-        io.to(ipRoomId).emit('room-users', { roomId: ipRoomId, devices: roomManager.getRoomUsers(ipRoomId) });
-        io.to(globalRoomId).emit('room-users', { roomId: globalRoomId, devices: roomManager.getRoomUsers(globalRoomId) });
+        rosterJoined(io, roomManager, ipRoomId, socket.id);
+        rosterJoined(io, roomManager, globalRoomId, socket.id);
 
         logger.log(`사용자 등록 [${socket.id}] → ${globalRoomId} / ${ipRoomId}`);
     } catch (error) {
@@ -618,7 +694,7 @@ const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager:
         try {
             const remainingUsers = await roomManager.removeUserFromRoom(roomId, socket.id);
             io.to(roomId).emit('user-left', remainingUsers);
-            io.to(roomId).emit('room-users', { roomId, devices: roomManager.getRoomUsers(roomId) });
+            rosterLeft(io, roomManager, roomId, socket.id);
 
             logger.log(`사용자 퇴장 [${socket.id}] ← ${roomId} (남은 인원: ${remainingUsers})`);
         } catch (error) {

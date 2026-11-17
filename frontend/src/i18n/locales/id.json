@@ -584,5 +584,20 @@
     "reloadOff": "Kunci mati saat halaman dimuat ulang. Yang Anda kirim sekarang tidak terkunci.",
     "reloadRelock": "Kunci lagi",
     "tag": "Terkunci"
+  },
+  "roster": {
+    "moreCount": "{n} perangkat lain online",
+    "findTitle": "Cari berdasarkan nama",
+    "findHint": "Pilih nama yang tampil di kartu \"Saya\" pada perangkat lawan",
+    "adjLabel": "Kata sifat",
+    "animalLabel": "Hewan",
+    "suffixLabel": "Nomor",
+    "noSuffix": "Tidak ada",
+    "find": "Cari",
+    "notFound": "Tidak ada perangkat terhubung dengan nama ini saat ini",
+    "rateLimited": "Coba lagi sebentar lagi",
+    "findError": "Tidak ditemukan. Silakan coba lagi",
+    "moreOtherNetwork": "{n} perangkat lagi di jaringan lain",
+    "goFind": "Cari berdasarkan nama"
   }
 }

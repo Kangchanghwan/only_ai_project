@@ -7,6 +7,7 @@ import ShareScopeTabs from './ShareScopeTabs.vue'
 import FileGallery from './FileGallery.vue'
 import TextShareBox from './TextShareBox.vue'
 import ConnectionCard from './ConnectionCard.vue'
+import RosterExtras from './RosterExtras.vue'
 import { onRoomConnected } from '../utils/activationMetrics'
 import TransferProgress from './TransferProgress.vue'
 import { formatSizeMB } from '../utils/fileUtils'
@@ -290,6 +291,14 @@ watch(
             @hint-copied="$emit('hint-copied', $event)"
             @group-create="$emit('group-create')"
             @code-enter="$emit('code-enter')"
+          />
+          <RosterExtras
+            :scope="scope"
+            :devices="activeDevices"
+            :my-socket-id="mySocketId"
+            :my-identity="myIdentity"
+            :ip-count="ipRoomDevices.length"
+            @select-scope="$emit('select-scope', $event)"
           />
         </div>
       </div>

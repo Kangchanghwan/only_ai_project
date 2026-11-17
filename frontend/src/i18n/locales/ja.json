@@ -661,5 +661,20 @@
     "reloadOff": "ページの再読み込みでロックが解除されました。今送るものはロックされません。",
     "reloadRelock": "再ロック",
     "tag": "ロック"
+  },
+  "roster": {
+    "moreCount": "ほか{n}台が接続中",
+    "findTitle": "名前で探す",
+    "findHint": "相手の端末の「自分」カードに表示されている名前を選んでください",
+    "adjLabel": "形容詞",
+    "animalLabel": "動物",
+    "suffixLabel": "番号",
+    "noSuffix": "なし",
+    "find": "探す",
+    "notFound": "今接続中の端末にこの名前はありません",
+    "rateLimited": "しばらくしてからもう一度お試しください",
+    "findError": "見つかりませんでした。もう一度お試しください",
+    "moreOtherNetwork": "ほかのネットワークの端末があと{n}台",
+    "goFind": "名前で探す"
   }
 }

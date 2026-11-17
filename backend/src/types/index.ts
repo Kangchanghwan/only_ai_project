@@ -84,6 +84,13 @@ export interface ClientToServerEvents {
     'p2p:signal': (payload: { to: string; data: unknown }) => void;
     /** 이름표(동물+형용사) 다시 뽑기. 소켓당 3초 쿨다운 */
     'identity:reroll': (callback?: (res: RerollResponse) => void) => void;
+    /** rev 구멍이 났을 때 자기 방(ip 또는 global)의 스냅샷을 다시 받는다 */
+    'room-snapshot': (payload: { roomId: string }, callback: (res: { ok: boolean; snapshot?: unknown }) => void) => void;
+    /** 전체 공유 방에서 이름(형용사+동물+번호)으로 기기 찾기. 소켓당 분당 10회 */
+    'devices:find': (
+        payload: { adj: number; animal: number; suffix?: number },
+        callback: (res: { ok: boolean; device?: DeviceInfo; code?: 'INVALID' | 'RATE_LIMITED' | 'NOT_FOUND' }) => void
+    ) => void;
     /** 도착 알림 기기 ID 묶기 (접속 중인 기기에는 푸시를 보내지 않는다) */
     'push:bind': (payload: { pid: string }) => void;
 }
@@ -94,7 +101,11 @@ export interface ServerToClientEvents {
     message: (msg: any) => void;
     'user-left': (userCount: number) => void;
     /** 룸(ip 또는 global)의 접속 기기 목록이 바뀔 때마다 해당 룸의 전체 목록을 브로드캐스트 */
-    'room-users': (payload: { roomId: string; devices: DeviceInfo[] }) => void;
+    'room-users': (payload: { roomId: string; devices: DeviceInfo[]; rev?: number; total?: number; truncated?: boolean }) => void;
+    /** 명단 증분 (auth.roster === 2 인 소켓만 받는다) */
+    'room-delta': (payload:
+        | { roomId: string; rev: number; total: number; op: 'add' | 'update'; device: DeviceInfo }
+        | { roomId: string; rev: number; total: number; op: 'remove'; socketId: string }) => void;
     'p2p:signal': (payload: { from: string; data: unknown }) => void;
     /** 이 기기의 정체성이 (재)할당됐을 때 */
     identity: (payload: { identity: Identity }) => void;

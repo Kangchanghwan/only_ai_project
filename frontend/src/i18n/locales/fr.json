@@ -584,5 +584,20 @@
     "reloadOff": "Le verrou s'est désactivé au rechargement de la page. Ce que vous envoyez maintenant n'est pas verrouillé.",
     "reloadRelock": "Reverrouiller",
     "tag": "Verrouillé"
+  },
+  "roster": {
+    "moreCount": "{n} autres appareils connectés",
+    "findTitle": "Chercher par nom",
+    "findHint": "Choisissez le nom affiché sur la carte « Moi » de l'autre appareil",
+    "adjLabel": "Adjectif",
+    "animalLabel": "Animal",
+    "suffixLabel": "Numéro",
+    "noSuffix": "Aucun",
+    "find": "Chercher",
+    "notFound": "Aucun appareil connecté n'a ce nom pour le moment",
+    "rateLimited": "Réessayez dans un instant",
+    "findError": "Introuvable. Veuillez réessayer",
+    "moreOtherNetwork": "{n} autres appareils sur d'autres réseaux",
+    "goFind": "Chercher par nom"
   }
 }

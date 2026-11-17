@@ -584,5 +584,20 @@
     "reloadOff": "Sayfa yenilenince kilit kalktı. Şimdi göndereceğiniz kilitlenmez.",
     "reloadRelock": "Tekrar kilitle",
     "tag": "Kilitli"
+  },
+  "roster": {
+    "moreCount": "{n} cihaz daha çevrimiçi",
+    "findTitle": "Ada göre bul",
+    "findHint": "Karşı cihazın «Ben» kartında görünen adı seçin",
+    "adjLabel": "Sıfat",
+    "animalLabel": "Hayvan",
+    "suffixLabel": "Numara",
+    "noSuffix": "Yok",
+    "find": "Bul",
+    "notFound": "Şu anda bağlı cihazlar arasında bu ad yok",
+    "rateLimited": "Lütfen biraz sonra tekrar deneyin",
+    "findError": "Bulunamadı. Lütfen tekrar deneyin",
+    "moreOtherNetwork": "Diğer ağlarda {n} cihaz daha",
+    "goFind": "Ada göre bul"
   }
 }

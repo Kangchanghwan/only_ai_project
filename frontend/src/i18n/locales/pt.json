@@ -584,5 +584,20 @@
     "reloadOff": "O bloqueio foi desativado ao recarregar a página. O que você enviar agora não ficará bloqueado.",
     "reloadRelock": "Bloquear de novo",
     "tag": "Bloqueado"
+  },
+  "roster": {
+    "moreCount": "Mais {n} dispositivos conectados",
+    "findTitle": "Buscar por nome",
+    "findHint": "Escolha o nome que aparece no cartão «Eu» do outro dispositivo",
+    "adjLabel": "Adjetivo",
+    "animalLabel": "Animal",
+    "suffixLabel": "Número",
+    "noSuffix": "Nenhum",
+    "find": "Buscar",
+    "notFound": "Nenhum dispositivo conectado tem este nome agora",
+    "rateLimited": "Tente novamente em instantes",
+    "findError": "Não encontrado. Tente novamente",
+    "moreOtherNetwork": "Mais {n} dispositivos em outras redes",
+    "goFind": "Buscar por nome"
   }
 }

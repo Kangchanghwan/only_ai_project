@@ -584,5 +584,20 @@
     "reloadOff": "Khóa đã tắt khi tải lại trang. Nội dung gửi bây giờ sẽ không được khóa.",
     "reloadRelock": "Khóa lại",
     "tag": "Đã khóa"
+  },
+  "roster": {
+    "moreCount": "Còn {n} thiết bị đang trực tuyến",
+    "findTitle": "Tìm theo tên",
+    "findHint": "Chọn tên hiển thị trên thẻ \"Tôi\" của thiết bị kia",
+    "adjLabel": "Tính từ",
+    "animalLabel": "Động vật",
+    "suffixLabel": "Số",
+    "noSuffix": "Không",
+    "find": "Tìm",
+    "notFound": "Hiện không có thiết bị nào đang kết nối có tên này",
+    "rateLimited": "Vui lòng thử lại sau giây lát",
+    "findError": "Không tìm thấy. Vui lòng thử lại",
+    "moreOtherNetwork": "Còn {n} thiết bị ở mạng khác",
+    "goFind": "Tìm theo tên"
   }
 }

@@ -584,5 +584,20 @@
     "reloadOff": "Blocarea s-a oprit la reîncărcarea paginii. Ce trimiți acum nu este blocat.",
     "reloadRelock": "Blochează din nou",
     "tag": "Blocat"
+  },
+  "roster": {
+    "moreCount": "Încă {n} dispozitive online",
+    "findTitle": "Caută după nume",
+    "findHint": "Alege numele afișat pe cardul „Eu” al celuilalt dispozitiv",
+    "adjLabel": "Adjectiv",
+    "animalLabel": "Animal",
+    "suffixLabel": "Număr",
+    "noSuffix": "Niciunul",
+    "find": "Caută",
+    "notFound": "Niciun dispozitiv conectat nu are acest nume acum",
+    "rateLimited": "Încearcă din nou peste puțin timp",
+    "findError": "Nu a fost găsit. Încearcă din nou",
+    "moreOtherNetwork": "Încă {n} dispozitive în alte rețele",
+    "goFind": "Caută după nume"
   }
 }

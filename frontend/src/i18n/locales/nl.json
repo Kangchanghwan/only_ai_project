@@ -584,5 +584,20 @@
     "reloadOff": "Het slot ging uit toen de pagina opnieuw laadde. Wat je nu stuurt is niet vergrendeld.",
     "reloadRelock": "Opnieuw vergrendelen",
     "tag": "Vergrendeld"
+  },
+  "roster": {
+    "moreCount": "Nog {n} apparaten online",
+    "findTitle": "Zoeken op naam",
+    "findHint": "Kies de naam op de kaart „Ik” van het andere apparaat",
+    "adjLabel": "Bijvoeglijk naamwoord",
+    "animalLabel": "Dier",
+    "suffixLabel": "Nummer",
+    "noSuffix": "Geen",
+    "find": "Zoeken",
+    "notFound": "Geen verbonden apparaat heeft nu deze naam",
+    "rateLimited": "Probeer het zo meteen opnieuw",
+    "findError": "Niet gevonden. Probeer het opnieuw",
+    "moreOtherNetwork": "Nog {n} apparaten op andere netwerken",
+    "goFind": "Zoeken op naam"
   }
 }
