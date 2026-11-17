@@ -32,7 +32,7 @@
     "description": "Ask your AI assistant for a Clipboard Share link that pre-fills your text, open it on the phone and press Share. Link format, steps for people and browser agents, and safety notes.",
     "inLanguage": "en-US",
     "datePublished": "2026-10-23",
-    "dateModified": "2026-10-23",
+    "dateModified": "2026-11-18",
     "author": {
       "@type": "Organization",
       "name": "Clipboard Share",
@@ -95,7 +95,7 @@
         "@type": "HowToStep",
         "position": 2,
         "name": "Open the link",
-        "text": "Open it in a browser on the device that should receive the text. The Text tab opens with the box already filled in. Nothing has been sent at this point.",
+        "text": "Open it in a browser on the device that should receive the text. The box above the list is already filled in. Nothing has been sent at this point.",
         "url": "https://www.clipboardapp.org/en/guide/ask-ai-to-send-text-to-your-phone.html#step-2"
       },
       {
@@ -116,7 +116,7 @@
         "@type": "HowToStep",
         "position": 5,
         "name": "Pick it up on the other device",
-        "text": "Open https://www.clipboardapp.org/en/ on another device on the same Wi-Fi. The text appears in the list; tap it to copy.",
+        "text": "Open https://www.clipboardapp.org/en/ on another device on the same Wi-Fi. The text appears in the list; press its Copy button to copy it.",
         "url": "https://www.clipboardapp.org/en/guide/ask-ai-to-send-text-to-your-phone.html#step-5"
       }
     ]
@@ -281,7 +281,7 @@
           <p><code>https://www.clipboardapp.org/#/send?t=&lt;URL-encoded text&gt;</code></p>
           <p>For example, the word "hello" becomes <code>https://www.clipboardapp.org/#/send?t=hello</code>, and a space is written as <code>%20</code>.</p>
           <ul>
-            <li>Opening the link switches to the Text tab and fills the box. A note under it says the text came from a link and asks you to check it and press Share.</li>
+            <li>Opening the link fills the box above the list ("Type here, or drag and drop files"). A note under it says the text came from a link and asks you to check it and press Share.</li>
             <li>Nothing is sent automatically. A person, or an agent acting for one, has to press Share.</li>
             <li>The link can pre-fill up to 20,000 characters. If the box already has text in it, the link does not overwrite it.</li>
             <li>The link cannot choose the audience. The text goes to whichever scope is selected on screen, Same network or Everyone.</li>
@@ -295,14 +295,14 @@
           <li id="step-2">Open the link in a browser on the device that should receive the text. If getting the link onto the phone is the hard part, open the link on your PC instead and keep <a href="/en/">https://www.clipboardapp.org/en/</a> open on the phone.</li>
           <li id="step-3">Check that <strong>Share with</strong> is set to <strong>Same network</strong>. Both devices need to be on the same Wi-Fi to see each other.</li>
           <li id="step-4">Read the text in the box, then press <strong>Share</strong>. The line under the box says "Shared. It now appears in the text list on connected devices." when it worked.</li>
-          <li id="step-5">On the other device, open <a href="/en/">the site</a>, go to the <strong>Text</strong> tab and tap the item to copy it.</li>
+          <li id="step-5">On the other device, open <a href="/en/">the site</a>, find the text in the list and press its <strong>Copy</strong> button (an icon of two overlapping squares on narrow screens).</li>
         </ol>
 
         <h2>Steps for a browser agent</h2>
         <p>If you let an agent control your browser, this is the sequence. Keep it to the task you gave it, and tell the user what you are about to press.</p>
         <ol>
           <li>Open <code>https://www.clipboardapp.org/#/send?t=…</code>.</li>
-          <li>Check that the <strong>Share Text</strong> box on the <strong>Text</strong> tab now contains the text.</li>
+          <li>Check that the box above the list now contains the text.</li>
           <li>Check that <strong>Share with</strong> matches what the user wanted. If you are unsure, ask, and leave the default <strong>Same network</strong> alone.</li>
           <li>Press <strong>Share</strong>. The first time you send to Everyone, a confirmation dialog appears.</li>
           <li>Read the status line under the box. "Shared…" means success; "Couldn't share. Please try again." means it failed.</li>

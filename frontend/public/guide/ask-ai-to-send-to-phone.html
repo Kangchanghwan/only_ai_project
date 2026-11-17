@@ -32,7 +32,7 @@
     "description": "AI에게 '폰으로 보내 줘'라고 하면 텍스트가 미리 채워진 링크를 만들어 달라고 하세요. 그 링크를 폰에서 열고 '공유'를 누르면 끝납니다. 링크 형식과 안전 수칙까지 정리했습니다.",
     "inLanguage": "ko-KR",
     "datePublished": "2026-10-23",
-    "dateModified": "2026-10-23",
+    "dateModified": "2026-11-18",
     "author": {
       "@type": "Organization",
       "name": "Clipboard Share",
@@ -95,7 +95,7 @@
         "@type": "HowToStep",
         "position": 2,
         "name": "링크를 연다",
-        "text": "받을 기기의 브라우저에서 링크를 엽니다. 텍스트 탭의 입력란에 내용이 미리 채워집니다. 이 시점에는 아무것도 전송되지 않습니다.",
+        "text": "받을 기기의 브라우저에서 링크를 엽니다. 목록 위 입력 상자에 내용이 미리 채워집니다. 이 시점에는 아무것도 전송되지 않습니다.",
         "url": "https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html#step-2"
       },
       {
@@ -116,7 +116,7 @@
         "@type": "HowToStep",
         "position": 5,
         "name": "다른 기기에서 확인한다",
-        "text": "같은 와이파이의 다른 기기에서 https://www.clipboardapp.org/ 를 열면 텍스트 목록에 나타납니다. 항목을 탭하면 복사됩니다.",
+        "text": "같은 와이파이의 다른 기기에서 https://www.clipboardapp.org/ 를 열면 목록에 나타납니다. 그 글의 '복사' 버튼을 누르면 복사됩니다.",
         "url": "https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html#step-5"
       }
     ]
@@ -281,7 +281,7 @@
           <p><code>https://www.clipboardapp.org/#/send?t=&lt;URL 인코딩한 텍스트&gt;</code></p>
           <p>예를 들어 '안녕'을 보내려면 <code>https://www.clipboardapp.org/#/send?t=%EC%95%88%EB%85%95</code> 처럼 만듭니다.</p>
           <ul>
-            <li>링크를 열면 텍스트 탭의 입력란이 채워지고, '링크로 받은 텍스트예요. 내용을 확인한 뒤 ‘공유’를 누르면 보내져요.'라는 안내가 나옵니다.</li>
+            <li>링크를 열면 목록 위 입력 상자('여기에 입력하거나 파일을 끌어다 놓으세요')가 채워지고, '링크로 받은 텍스트예요. 내용을 확인한 뒤 ‘공유’를 누르면 보내져요.'라는 안내가 나옵니다.</li>
             <li>자동으로 전송되지 않습니다. 사람이든 에이전트든 '공유'를 눌러야 보내집니다.</li>
             <li>링크로 미리 채울 수 있는 텍스트는 최대 20000자입니다. 입력란에 이미 내용이 있으면 덮어쓰지 않습니다.</li>
             <li>공유 범위는 링크로 정할 수 없습니다. 화면에서 고른 탭('같은 네트워크' 또는 '전체 공유') 그대로 보내집니다.</li>
@@ -295,14 +295,14 @@
           <li id="step-2">받을 기기(폰)의 브라우저에서 링크를 엽니다. 링크를 폰으로 옮기기 번거롭다면, 폰에서 <a href="/">https://www.clipboardapp.org/</a> 를 열어 두고 PC에서 링크를 열어 '공유'를 눌러도 됩니다.</li>
           <li id="step-3">화면 위쪽 '공유 대상'이 <strong>같은 네트워크</strong>인지 확인합니다. 보내는 기기와 받는 기기가 같은 와이파이에 있어야 서로 보입니다.</li>
           <li id="step-4">입력란에 채워진 내용을 확인하고 <strong>공유</strong> 버튼을 누릅니다. 입력란 아래에 '공유했어요. 연결된 기기의 텍스트 목록에 나타나요.'가 나오면 성공입니다.</li>
-          <li id="step-5">받는 기기에서 <a href="/">https://www.clipboardapp.org/</a> 를 열고 <strong>텍스트</strong> 탭의 목록에서 항목을 탭하면 복사됩니다.</li>
+          <li id="step-5">받는 기기에서 <a href="/">https://www.clipboardapp.org/</a> 를 열면 목록에 그 글이 보입니다. 글 오른쪽의 <strong>복사</strong> 버튼(좁은 화면에서는 겹친 네모 아이콘)을 누르면 복사됩니다.</li>
         </ol>
 
         <h2>브라우저 에이전트가 하는 단계</h2>
         <p>사용자의 브라우저를 조작할 수 있는 에이전트에게 맡기는 경우의 순서입니다. 사용자가 맡긴 작업만 하도록 하고, 아래 순서도 사용자에게 먼저 알려 주세요.</p>
         <ol>
           <li>링크 <code>https://www.clipboardapp.org/#/send?t=…</code> 를 엽니다.</li>
-          <li><strong>텍스트</strong> 탭의 <strong>텍스트 공유</strong> 입력란에 내용이 채워졌는지 확인합니다.</li>
+          <li>목록 위 입력 상자에 내용이 채워졌는지 확인합니다.</li>
           <li>'공유 대상'이 사용자가 원한 범위인지 확인합니다. 모르면 사용자에게 묻고, 기본값 '같은 네트워크'를 바꾸지 않습니다.</li>
           <li><strong>공유</strong> 버튼을 누릅니다. 전체 공유로 처음 보낼 때는 확인 창이 뜹니다.</li>
           <li>입력란 아래 상태 문구가 '공유했어요…'인지 읽어 결과를 확인합니다. '공유하지 못했어요. 다시 시도해 주세요.'가 나오면 실패입니다.</li>

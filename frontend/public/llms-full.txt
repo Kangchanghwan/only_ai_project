@@ -1189,7 +1189,7 @@ Clipboard Share에서는 보낼 파일만 골라 비밀번호로 잠글 수 있�
 ### 잠기는 것
 - 파일 내용과 파일 이름. 받는 화면에는 원래 이름 대신 알아볼 수 없는 문자열이 보입니다.
 - 비밀번호는 PBKDF2-SHA256(60만 회)으로 열쇠를 만들고, 파일마다 새로 만든 무작위 열쇠로 AES-GCM 암호화합니다. 서버에는 암호문과 비밀번호 확인값만 갑니다.
-- 잠금을 켠 동안 텍스트 탭으로 보낸 글. 받을 기기가 없어도 10분 동안 암호문으로 보관됩니다.
+- 잠금을 켠 동안 입력 상자로 보낸 글. 받을 기기가 없어도 10분 동안 암호문으로 보관됩니다.
 
 ### 잠기지 않는 것
 - 기기 이름표(동물 이름)와 기기·브라우저 정보
@@ -1257,7 +1257,7 @@ Clipboard Share에서는 올린 파일마다 QR코드를 바로 만들 수 있�
 - 잠그지 않은 파일의 QR은 찍은 사람 누구나 받을 수 있습니다. 화면을 여러 사람이 볼 수 있는 곳이라면 민감한 파일은 [비밀번호로 잠근 뒤](https://www.clipboardapp.org/guide/send-file-with-password.html) QR을 만드세요.
 - 파일이 남아 있는 동안만 QR이 열립니다. 모두 받을 때까지 보낸 컴퓨터의 탭을 닫지 마세요.
 - QR 창에는 주소도 함께 보입니다. QR을 찍기 어려운 기기에는 "복사"로 주소를 넘겨도 됩니다.
-- 공용 PC라면 다 보낸 뒤 파일의 "⋯" → 삭제를 눌러 두세요. 잠그지 않고 보낸 텍스트 탭의 글은 10분 동안 평문으로 보관되니 함께 지워 두세요.
+- 공용 PC라면 다 보낸 뒤 파일의 "⋯" → 삭제를 눌러 두세요. 잠그지 않고 보낸 글(텍스트)은 10분 동안 평문으로 보관되니 함께 지워 두세요.
 
 ## 다른 방법과 비교
 
@@ -1784,7 +1784,7 @@ Source: https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html
 `https://www.clipboardapp.org/#/send?t=<URL 인코딩한 텍스트>`
 
 예를 들어 '안녕'을 보내려면 `https://www.clipboardapp.org/#/send?t=%EC%95%88%EB%85%95` 처럼 만듭니다.
-- 링크를 열면 텍스트 탭의 입력란이 채워지고, '링크로 받은 텍스트예요. 내용을 확인한 뒤 ‘공유’를 누르면 보내져요.'라는 안내가 나옵니다.
+- 링크를 열면 목록 위 입력 상자('여기에 입력하거나 파일을 끌어다 놓으세요')가 채워지고, '링크로 받은 텍스트예요. 내용을 확인한 뒤 ‘공유’를 누르면 보내져요.'라는 안내가 나옵니다.
 - 자동으로 전송되지 않습니다. 사람이든 에이전트든 '공유'를 눌러야 보내집니다.
 - 링크로 미리 채울 수 있는 텍스트는 최대 20000자입니다. 입력란에 이미 내용이 있으면 덮어쓰지 않습니다.
 - 공유 범위는 링크로 정할 수 없습니다. 화면에서 고른 탭('같은 네트워크' 또는 '전체 공유') 그대로 보내집니다.
@@ -1795,13 +1795,13 @@ Source: https://www.clipboardapp.org/guide/ask-ai-to-send-to-phone.html
 - 받을 기기(폰)의 브라우저에서 링크를 엽니다. 링크를 폰으로 옮기기 번거롭다면, 폰에서 [https://www.clipboardapp.org/](https://www.clipboardapp.org/) 를 열어 두고 PC에서 링크를 열어 '공유'를 눌러도 됩니다.
 - 화면 위쪽 '공유 대상'이 **같은 네트워크**인지 확인합니다. 보내는 기기와 받는 기기가 같은 와이파이에 있어야 서로 보입니다.
 - 입력란에 채워진 내용을 확인하고 **공유** 버튼을 누릅니다. 입력란 아래에 '공유했어요. 연결된 기기의 텍스트 목록에 나타나요.'가 나오면 성공입니다.
-- 받는 기기에서 [https://www.clipboardapp.org/](https://www.clipboardapp.org/) 를 열고 **텍스트** 탭의 목록에서 항목을 탭하면 복사됩니다.
+- 받는 기기에서 [https://www.clipboardapp.org/](https://www.clipboardapp.org/) 를 열면 목록에 그 글이 보입니다. 글 오른쪽의 **복사** 버튼(좁은 화면에서는 겹친 네모 아이콘)을 누르면 복사됩니다.
 
 ## 브라우저 에이전트가 하는 단계
 
 사용자의 브라우저를 조작할 수 있는 에이전트에게 맡기는 경우의 순서입니다. 사용자가 맡긴 작업만 하도록 하고, 아래 순서도 사용자에게 먼저 알려 주세요.
 - 링크 `https://www.clipboardapp.org/#/send?t=…` 를 엽니다.
-- **텍스트** 탭의 **텍스트 공유** 입력란에 내용이 채워졌는지 확인합니다.
+- 목록 위 입력 상자에 내용이 채워졌는지 확인합니다.
 - '공유 대상'이 사용자가 원한 범위인지 확인합니다. 모르면 사용자에게 묻고, 기본값 '같은 네트워크'를 바꾸지 않습니다.
 - **공유** 버튼을 누릅니다. 전체 공유로 처음 보낼 때는 확인 창이 뜹니다.
 - 입력란 아래 상태 문구가 '공유했어요…'인지 읽어 결과를 확인합니다. '공유하지 못했어요. 다시 시도해 주세요.'가 나오면 실패입니다.
@@ -1845,7 +1845,7 @@ Devices on the same Wi-Fi connect automatically in the browser. There is no sign
 `https://www.clipboardapp.org/#/send?t=<URL-encoded text>`
 
 For example, the word "hello" becomes `https://www.clipboardapp.org/#/send?t=hello`, and a space is written as `%20`.
-- Opening the link switches to the Text tab and fills the box. A note under it says the text came from a link and asks you to check it and press Share.
+- Opening the link fills the box above the list ("Type here, or drag and drop files"). A note under it says the text came from a link and asks you to check it and press Share.
 - Nothing is sent automatically. A person, or an agent acting for one, has to press Share.
 - The link can pre-fill up to 20,000 characters. If the box already has text in it, the link does not overwrite it.
 - The link cannot choose the audience. The text goes to whichever scope is selected on screen, Same network or Everyone.
@@ -1856,13 +1856,13 @@ For example, the word "hello" becomes `https://www.clipboardapp.org/#/send?t=hel
 - Open the link in a browser on the device that should receive the text. If getting the link onto the phone is the hard part, open the link on your PC instead and keep [https://www.clipboardapp.org/en/](https://www.clipboardapp.org/en/) open on the phone.
 - Check that **Share with** is set to **Same network**. Both devices need to be on the same Wi-Fi to see each other.
 - Read the text in the box, then press **Share**. The line under the box says "Shared. It now appears in the text list on connected devices." when it worked.
-- On the other device, open [the site](https://www.clipboardapp.org/en/), go to the **Text** tab and tap the item to copy it.
+- On the other device, open [the site](https://www.clipboardapp.org/en/), find the text in the list and press its **Copy** button (an icon of two overlapping squares on narrow screens).
 
 ## Steps for a browser agent
 
 If you let an agent control your browser, this is the sequence. Keep it to the task you gave it, and tell the user what you are about to press.
 - Open `https://www.clipboardapp.org/#/send?t=…`.
-- Check that the **Share Text** box on the **Text** tab now contains the text.
+- Check that the box above the list now contains the text.
 - Check that **Share with** matches what the user wanted. If you are unsure, ask, and leave the default **Same network** alone.
 - Press **Share**. The first time you send to Everyone, a confirmation dialog appears.
 - Read the status line under the box. "Shared…" means success; "Couldn't share. Please try again." means it failed.
