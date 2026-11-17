@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Andra personer i samma nätverk (skola, kontor, kafé) kan också se det.",
-    "notAuth": "Namnlappen skiljer bara enheter åt. Det är ingen identitetskontroll.",
     "globalWarning": "Här kan alla, även okända, se det du skickar. Lås känsligt innehåll med ett lösenord innan du skickar.",
     "pairSasLoading": "Läser in bilder…",
     "moreDevices": "Visa {count} till"
@@ -250,18 +249,43 @@
     "backgroundHint": "Skanna för att öppna samma utrymme"
   },
   "help": {
-    "pwaTitle": "Installera som app",
-    "pwaIntro": "Efter installationen kan du öppna appen direkt från hemskärmen, och om du delar en fil från en annan app till den här appen laddas den upp automatiskt.",
-    "pwaAndroidTitle": "Android / dator (Chrome, Edge)",
-    "pwaAndroidDesc": "Tryck på installationsikonen i adressfältet eller installationsbannern längst ner på skärmen.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Tryck på delningsknappen och välj sedan \"Lägg till på hemskärmen\".",
-    "downloadSingleDesc": "Tryck på Ta emot bredvid en fil för att ladda ner den. Knappen ⋯ (Mer) ger QR-kodsdelning, nedladdning och borttagning (bilder kan även kopieras). Fungerar likadant på dator och mobil.",
-    "textShareCopyDesc": "Tryck på Kopiera vid en delad text för att kopiera den till urklipp. Text du skriver eller klistrar in i rutan skickas med Dela.",
-    "textShareDeleteDesc": "Öppna knappen ⋯ till höger om texten och välj Ta bort.",
-    "scopeDevicesDesc": "Anslutningskortet (på breda skärmar vänsterpanelen) visar andra enheter i samma omfång.",
-    "limit4": "Även om du är ansluten sparas filer högst cirka 1 dag (de tas bort strax efter att alla enheter lämnat)",
-    "tip4": "Knappen \"⋯\" på ett filkort öppnar menyn för QR-kod/nedladdning/borttagning (bilder kan även kopieras)"
+    "close": "Stäng",
+    "confirm": "Uppfattat",
+    "aboutTitle": "Om",
+    "title": "Så använder du det",
+    "connectTitle": "Anslut",
+    "connect1": "Enheter på samma Wi-Fi ansluter automatiskt så fort de öppnar den här sidan.",
+    "connect2": "På en mobil skannar du QR-koden på datorskärmen med kameran, eller skriver clipboardapp.org i adressfältet.",
+    "connect3": "Vill du ansluta en enhet på ett annat Wi-Fi eller med mobildata, skapa ett rum. Skapa ett nytt rum med ”＋ Rum” och ta in den andra enheten med en QR-kod, bilder eller en länk. En QR-kod för inbjudan fungerar i 10 minuter.",
+    "connect4": "Tryck på ”Gå med via bilder” på den nya enheten och tryck i ordning på de 4 bilder som visas på en enhet i rummet. Någon vid den enheten måste trycka på ”Släpp in” innan du kan gå med.",
+    "connect5": "Tryck på ”Anslut” på ett enhetskort för att öppna ett rum bara för er två. Ni är anslutna när ni har kontrollerat att båda skärmarna visar samma bild.",
+    "connect6": "Kontrollera anslutningen så här: titta på djurnamnet på kortet ”Jag” på den andra enhetens skärm och leta efter det namnet i din lista.",
+    "connect7": "När många enheter finns i ”Alla” visas bara de senaste. Använd ”Hitta en enhet” och välj den andra enhetens djurnamn.",
+    "sendTitle": "Skicka",
+    "send1": "Klistra in kopierad text eller bilder var som helst på sidan med Ctrl+V (⌘+V på Mac) så skickas de direkt.",
+    "send2": "För filer trycker du på ”Välj filer” eller drar dem till sidan.",
+    "send3": "Text du skriver i rutan skickas med ”Dela” eller Ctrl+Enter (⌘+Enter på Mac).",
+    "send4": "Varje fil kan vara upp till 5GB, och uppladdningar fortsätter där de slutade om anslutningen bryts.",
+    "send5": "På iPhone och iPad lägger du till genvägen för att skicka direkt från Dela-knappen i appen Bilder.",
+    "receiveTitle": "Ta emot",
+    "receive1": "Tryck på ”Ta emot” för att ladda ner en fil och på ”Kopiera” för att kopiera text till urklipp.",
+    "receive2": "För flera filer markerar du dem och trycker på ”Ladda ner” för att få en enda ZIP. Filer över 200MB laddas ner separat.",
+    "receive3": "Välj ”Dela med QR-kod” i en fils ⋯-meny och skanna sedan med en annan enhets kamera för att få den filen. Bilder kan också kopieras från samma meny.",
+    "whoTitle": "Vem som kan se det",
+    "who1": "Samma nätverk: syns för enheter på samma internetanslutning. På skolor, kontor och caféer kan även främlingar se det.",
+    "who2": "Alla: alla som har den här tjänsten öppen just nu kan se det.",
+    "who3": "Rum: bara enheter i rummet kan se det, och filer och text i ett rum krypteras automatiskt. Ett rum rymmer upp till 10 enheter.",
+    "who4": "Lås med lösenord: ange ett lösenord på minst 4 tecken, så låses under det här besöket de filer och den text du skickar i den fliken på den här enheten innan de skickas. Berätta lösenordet för mottagaren separat.",
+    "who5": "QR-koden och länken till en låst fil innehåller dess nyckel, så alla som har dem kan få filen utan lösenord. Visa dem bara för mottagaren.",
+    "who6": "Djurnamnsbrickor samt enhets- och webbläsarinfo syns även när det är låst. En namnbricka skiljer enheter åt, men bevisar inte vem någon är.",
+    "keepTitle": "Hur länge det finns kvar",
+    "keep1": "Text sparas i 10 minuter, så enheter som går med under tiden kan fortfarande få den.",
+    "keep2": "Text över 96KB sparas inte och når bara enheter som är öppna just nu. Skicka den som en .txt-fil för att spara den en dag.",
+    "keep3": "Filer sparas i upp till 1 dag. De kan tas bort tidigare när alla enheter har lämnat, så ladda ner det du behöver direkt.",
+    "moreTitle": "Smarta extrafunktioner",
+    "more1": "Installera appen: öppna den direkt från hemskärmen och välj den i andra appars Dela-knapp för att skicka filer. På Android och dator (Chrome, Edge) använder du installationsikonen i adressfältet; på iPhone (Safari) trycker du på Dela-knappen och väljer ”Lägg till på hemskärmen”.",
+    "more2": "Ankomstaviseringar: aktivera dem i ⋯-menyn för att få besked om nya filer och text även när fliken ligger i bakgrunden.",
+    "more3": "Kortkommandon: Ctrl+V klistra in för att skicka · Ctrl+Enter skicka skriven text · Ctrl+C kopiera en markerad fil (⌘ i stället för Ctrl på Mac)"
   },
   "seo": {
     "title": "Online-urklipp – dela text, bilder och filer mellan mobil och dator",
@@ -370,9 +394,6 @@
     "confirm": "Skicka offentligt"
   },
   "guide": {
-    "title": "Lagring och användning",
-    "retention": "Även när du är ansluten rensas filer automatiskt efter högst 1 dag. Rensningen körs periodiskt, så exakt tid (på sekunden) garanteras inte, och när alla enheter lämnat kan det ske tidigare. Ladda ner det du behöver direkt.",
-    "roomRetention": "Filer i det här rummet sparas i högst ungefär 1 dygn. De tas inte bort direkt när alla enheter lämnar. Rensningen körs regelbundet, så den exakta tiden är inte garanterad. Texter sparas bara i 10 minuter.",
     "roomVisibility": "Bara enheter som är i det här rummet kan se dem."
   },
   "download": {

@@ -40,6 +40,17 @@ watch(() => props.isOpen, async (open) => {
 
 const currentYear = new Date().getFullYear()
 
+/** 사용자가 묻는 순서대로: 연결 → 보내기 → 받기 → 누가 보나 → 얼마나 남나 → 더 편하게. 항목 문구는 help.{id}{번호} */
+const HELP_SECTIONS = [
+  { id: 'connect', count: 7 },
+  { id: 'send', count: 5 },
+  { id: 'receive', count: 3 },
+  { id: 'who', count: 6 },
+  { id: 'keep', count: 3 },
+  { id: 'more', count: 3 }
+]
+const itemsOf = (s) => Array.from({ length: s.count }, (_, i) => `help.${s.id}${i + 1}`)
+
 /**
  * ESC 키로 모달 닫기
  */
@@ -105,189 +116,11 @@ onUnmounted(() => {
 
           <!-- 본문 -->
           <div class="px-6 py-6 space-y-6">
-            <!-- 소개 -->
-            <section>
-              <p class="text-text-secondary leading-relaxed">
-                <strong class="text-text-primary">{{ t('app.title') }}</strong>{{ t('help.intro') }}
-              </p>
-            </section>
-
-            <!-- 주요 기능 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                {{ t('help.features') }}
-              </h3>
-              <ul class="space-y-2 text-text-secondary">
-                <li class="flex items-start gap-2">
-                  <span class="text-ink mt-0.5">•</span>
-                  <span><strong class="text-text-primary">{{ t('help.feature1') }}</strong> {{ t('help.feature1Desc') }}</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-ink mt-0.5">•</span>
-                  <span><strong class="text-text-primary">{{ t('help.feature2') }}</strong> {{ t('help.feature2Desc') }}</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-ink mt-0.5">•</span>
-                  <span><strong class="text-text-primary">{{ t('help.feature3') }}</strong> {{ t('help.feature3Desc') }}</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-ink mt-0.5">•</span>
-                  <span><strong class="text-text-primary">{{ t('help.feature4') }}</strong> {{ t('help.feature4Desc') }}</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-ink mt-0.5">•</span>
-                  <span><strong class="text-text-primary">{{ t('help.feature5') }}</strong> {{ t('help.feature5Desc') }}</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-ink mt-0.5">•</span>
-                  <span><strong class="text-text-primary">{{ t('help.feature6') }}</strong> {{ t('help.feature6Desc') }}</span>
-                </li>
-              </ul>
-            </section>
-
-            <!-- 공유 범위 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                {{ t('help.scopeTitle') }}
-              </h3>
-              <div class="space-y-3">
-                <div class="bg-background border border-border rounded-none p-4">
-                  <h4 class="font-semibold text-text-primary mb-1">{{ t('shareScope.ip') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('shareScope.ipDescription') }}</p>
-                </div>
-                <div class="bg-background border border-border rounded-none p-4">
-                  <h4 class="font-semibold text-text-primary mb-1">{{ t('shareScope.global') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('shareScope.globalDescription') }}</p>
-                </div>
-              </div>
-              <p class="text-sm text-text-secondary mt-3">{{ t('help.scopeDevicesDesc') }}</p>
-              <p class="text-sm text-text-secondary mt-1">{{ t('identity.verifyHint') }}</p>
-            </section>
-
-            <!-- 파일 공유 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                {{ t('help.fileShareTitle') }}
-              </h3>
-              <div class="space-y-3">
-                <div class="bg-background border border-border rounded-none p-4">
-                  <h4 class="font-semibold text-text-primary mb-2">{{ t('help.fileShare1') }}</h4>
-                  <p class="text-sm text-text-secondary mb-2">{{ t('help.fileShare1Desc') }}</p>
-                  <ul class="text-sm text-text-secondary space-y-1 ml-4">
-                    <li>• {{ t('help.fileShare1Step1') }}</li>
-                    <li>• {{ t('help.fileShare1Step2') }}</li>
-                    <li>• {{ t('help.fileShare1Step3') }}</li>
-                  </ul>
-                </div>
-                <div class="bg-background border border-border rounded-none p-4">
-                  <h4 class="font-semibold text-text-primary mb-2">{{ t('help.fileShare2') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('help.fileShare2Desc') }}</p>
-                </div>
-              </div>
-            </section>
-
-            <!-- 텍스트 공유 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                {{ t('help.textShareTitle') }}
-              </h3>
-              <div class="bg-background border border-border rounded-none p-4 space-y-2">
-                <p class="text-sm text-text-secondary">
-                  <strong class="text-text-primary">{{ t('help.textShareAuto') }}</strong> {{ t('help.textShareAutoDesc') }}
-                </p>
-                <p class="text-sm text-text-secondary">
-                  <strong class="text-text-primary">{{ t('help.textShareCopy') }}</strong> {{ t('help.textShareCopyDesc') }}
-                </p>
-                <p class="text-sm text-text-secondary">
-                  <strong class="text-text-primary">{{ t('help.textShareDelete') }}</strong> {{ t('help.textShareDeleteDesc') }}
-                </p>
-              </div>
-            </section>
-
-            <!-- 파일 다운로드 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                {{ t('help.downloadTitle') }}
-              </h3>
-              <div class="space-y-3">
-                <div class="bg-background border border-border rounded-none p-4">
-                  <h4 class="font-semibold text-text-primary mb-2">{{ t('help.downloadSingle') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('help.downloadSingleDesc') }}</p>
-                </div>
-                <div class="bg-background border border-border rounded-none p-4">
-                  <h4 class="font-semibold text-text-primary mb-2">{{ t('help.downloadMulti') }}</h4>
-                  <ul class="text-sm text-text-secondary space-y-1 ml-4">
-                    <li>• {{ t('help.downloadMultiStep1') }}</li>
-                    <li>• {{ t('help.downloadMultiStep2') }}</li>
-                    <li>• {{ t('help.downloadMultiStep3') }}</li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            <!-- 키보드 단축키 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                {{ t('help.shortcutTitle') }}
-              </h3>
-              <div class="bg-background border border-border rounded-none p-4">
-                <ul class="text-sm text-text-secondary space-y-2">
-                  <li class="flex justify-between">
-                    <span>{{ t('help.shortcutShare') }}</span>
-                    <code class="bg-surface px-2 py-1 rounded-none text-xs border border-border">Ctrl+V / Cmd+V</code>
-                  </li>
-                  <li class="flex justify-between">
-                    <span>{{ t('help.shortcutCopy') }}</span>
-                    <code class="bg-surface px-2 py-1 rounded-none text-xs border border-border">Ctrl+C / Cmd+C</code>
-                  </li>
-                </ul>
-              </div>
-            </section>
-
-            <!-- 제한사항 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                {{ t('help.limitTitle') }}
-              </h3>
-              <div class="bg-background border border-border rounded-none p-4">
-                <ul class="text-sm text-text-secondary space-y-1 ml-4">
-                  <li>• {{ t('help.limit1') }}</li>
-                  <li>• {{ t('help.limit2') }}</li>
-                  <li>• {{ t('help.limit3') }}</li>
-                  <li>• {{ t('help.limit4') }}</li>
-                </ul>
-              </div>
-            </section>
-
-            <!-- 앱 설치 -->
-            <section>
-              <h3 class="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
-                {{ t('help.pwaTitle') }}
-              </h3>
-              <div class="space-y-3">
-                <p class="text-sm text-text-secondary">{{ t('help.pwaIntro') }}</p>
-                <div class="bg-background border border-border rounded-none p-4">
-                  <h4 class="font-semibold text-text-primary mb-1">{{ t('help.pwaAndroidTitle') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('help.pwaAndroidDesc') }}</p>
-                </div>
-                <div class="bg-background border border-border rounded-none p-4">
-                  <h4 class="font-semibold text-text-primary mb-1">{{ t('help.pwaIOSTitle') }}</h4>
-                  <p class="text-sm text-text-secondary">{{ t('help.pwaIOSDesc') }}</p>
-                </div>
-              </div>
-            </section>
-
-            <!-- 팁 -->
-            <section class="bg-tint border border-ink rounded-none p-4">
-              <h3 class="text-lg font-semibold text-ink mb-2 flex items-center gap-2">
-                {{ t('help.tipsTitle') }}
-              </h3>
-              <ul class="text-sm text-text-secondary space-y-1 ml-4">
-                <li>• {{ t('help.tip1') }}</li>
-                <li>• {{ t('help.tip2') }}</li>
-                <li>• {{ t('help.tip3') }}</li>
-                <li>• {{ t('help.tip4') }}</li>
-              </ul>
+            <section v-for="s in HELP_SECTIONS" :key="s.id" :data-testid="`help-section-${s.id}`">
+              <h3 class="text-lg font-semibold text-text-primary mb-2">{{ t(`help.${s.id}Title`) }}</h3>
+              <ol class="m-0 pl-5 list-decimal text-sm text-text-secondary leading-relaxed space-y-1.5 marker:text-text-secondary">
+                <li v-for="k in itemsOf(s)" :key="k" dir="auto">{{ t(k) }}</li>
+              </ol>
             </section>
 
             <!-- 정보 -->

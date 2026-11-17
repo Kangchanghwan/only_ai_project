@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Orang lain di jaringan yang sama (sekolah, kantor, kafe) juga bisa melihatnya.",
-    "notAuth": "Label nama hanya membedakan perangkat. Ini bukan verifikasi identitas.",
     "globalWarning": "Di sini siapa pun, termasuk orang asing, bisa melihat yang Anda kirim. Kunci hal sensitif dengan kata sandi sebelum mengirim.",
     "pairSasLoading": "Memuat gambar…",
     "moreDevices": "Tampilkan {count} lagi"
@@ -250,18 +249,43 @@
     "backgroundHint": "Pindai untuk membuka ruang yang sama"
   },
   "help": {
-    "pwaTitle": "Instal sebagai Aplikasi",
-    "pwaIntro": "Setelah diinstal, kamu bisa langsung membukanya dari layar utama, dan membagikan file dari aplikasi lain ke aplikasi ini akan mengunggahnya secara otomatis.",
-    "pwaAndroidTitle": "Android / Desktop (Chrome, Edge)",
-    "pwaAndroidDesc": "Ketuk ikon instal di address bar atau banner instal di bagian bawah layar.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Ketuk tombol Bagikan, lalu pilih \"Tambah ke Layar Utama\".",
-    "downloadSingleDesc": "Tekan tombol Terima di samping file untuk mengunduhnya. Tombol ⋯ (Lainnya) menyediakan berbagi kode QR, unduh, dan hapus (gambar juga bisa disalin). Sama di komputer maupun ponsel.",
-    "textShareCopyDesc": "Tekan Salin pada teks yang dibagikan untuk menyalinnya ke papan klip. Teks yang Anda ketik atau tempel di kotak dikirim dengan tombol Bagikan.",
-    "textShareDeleteDesc": "Buka tombol ⋯ di sebelah kanan teks lalu pilih Hapus.",
-    "scopeDevicesDesc": "Kartu koneksi (panel kiri pada layar lebar) menampilkan perangkat lain yang terhubung dalam cakupan yang sama.",
-    "limit4": "Meski tetap terhubung, file disimpan paling lama sekitar 1 hari (dihapus tak lama setelah semua perangkat keluar)",
-    "tip4": "Gunakan tombol \"⋯\" pada kartu file untuk membuka menu kode QR/unduh/hapus (gambar juga bisa disalin)"
+    "close": "Tutup",
+    "confirm": "Mengerti",
+    "aboutTitle": "Tentang",
+    "title": "Cara pakai",
+    "connectTitle": "Hubungkan",
+    "connect1": "Perangkat di Wi-Fi yang sama terhubung otomatis begitu membuka halaman ini.",
+    "connect2": "Di ponsel, pindai kode QR di layar PC dengan kamera, atau ketik clipboardapp.org di bilah alamat.",
+    "connect3": "Untuk menghubungkan perangkat di Wi-Fi lain atau dengan data seluler, buat ruang. Buat ruang baru dari “＋ Ruang” lalu ajak perangkat lain masuk dengan kode QR, gambar, atau tautan. Kode QR undangan berlaku selama 10 menit.",
+    "connect4": "Di perangkat baru, ketuk “Masuk dengan gambar” lalu ketuk 4 gambar yang tampil di salah satu perangkat dalam ruang sesuai urutan. Seseorang di perangkat itu harus mengetuk “Izinkan” sebelum kamu bisa bergabung.",
+    "connect5": "Ketuk “Hubungkan” pada kartu perangkat untuk membuka ruang khusus untuk kalian berdua. Kalian terhubung setelah memastikan kedua layar menampilkan gambar yang sama.",
+    "connect6": "Untuk memastikan sudah terhubung, lihat nama hewan di kartu “Saya” pada layar perangkat lain, lalu cari nama itu di daftarmu.",
+    "connect7": "Saat banyak perangkat ada di “Semua orang”, hanya yang terbaru yang ditampilkan. Gunakan “Cari perangkat” dan pilih nama hewan perangkat lain tersebut.",
+    "sendTitle": "Kirim",
+    "send1": "Tempel teks atau gambar yang disalin di mana saja pada halaman dengan Ctrl+V (⌘+V di Mac) dan langsung terkirim.",
+    "send2": "Untuk file, ketuk “Pilih file” atau seret ke halaman.",
+    "send3": "Teks yang kamu ketik di kotak dikirim dengan “Bagikan” atau Ctrl+Enter (⌘+Enter di Mac).",
+    "send4": "Setiap file bisa sampai 5GB, dan unggahan dilanjutkan dari titik terakhir jika koneksi terputus.",
+    "send5": "Di iPhone dan iPad, tambahkan pintasan agar bisa mengirim langsung dari tombol Bagikan di aplikasi Foto.",
+    "receiveTitle": "Terima",
+    "receive1": "Ketuk “Terima” untuk mengunduh file, dan “Salin” untuk menyalin teks ke papan klip.",
+    "receive2": "Untuk beberapa file, centang lalu ketuk “Unduh” untuk mendapatkan satu ZIP. File di atas 200MB diunduh terpisah.",
+    "receive3": "Pilih “Bagikan lewat kode QR” di menu ⋯ sebuah file, lalu pindai dengan kamera perangkat lain untuk mendapatkan file itu. Gambar juga bisa disalin dari menu yang sama.",
+    "whoTitle": "Siapa yang bisa melihat",
+    "who1": "Jaringan yang sama: terlihat oleh perangkat di koneksi internet yang sama. Di sekolah, kantor, dan kafe, orang asing mungkin juga bisa melihatnya.",
+    "who2": "Semua orang: siapa pun yang sedang membuka layanan ini saat ini bisa melihatnya.",
+    "who3": "Ruang: hanya perangkat di dalam ruang yang bisa melihatnya, dan file serta teks di ruang dienkripsi otomatis. Satu ruang menampung hingga 10 perangkat.",
+    "who4": "Kunci dengan kata sandi: atur kata sandi minimal 4 karakter, dan selama kunjungan ini file serta teks yang kamu kirim di tab itu dikunci di perangkat ini sebelum dikirim. Beri tahu penerima kata sandinya secara terpisah.",
+    "who5": "Kode QR dan tautan file yang terkunci berisi kuncinya, jadi siapa pun yang memilikinya bisa mendapatkan file tanpa kata sandi. Tunjukkan hanya kepada penerima.",
+    "who6": "Label nama hewan serta info perangkat dan browser tetap terlihat meski terkunci. Label nama membedakan perangkat, bukan membuktikan siapa seseorang.",
+    "keepTitle": "Berapa lama tersimpan",
+    "keep1": "Teks disimpan selama 10 menit, jadi perangkat yang bergabung dalam waktu itu masih bisa mendapatkannya.",
+    "keep2": "Teks di atas 96KB tidak disimpan dan hanya sampai ke perangkat yang sedang terbuka. Kirim sebagai file .txt agar tersimpan sehari.",
+    "keep3": "File disimpan paling lama 1 hari. File bisa dihapus lebih cepat setelah semua perangkat keluar, jadi unduh yang kamu butuhkan segera.",
+    "moreTitle": "Fitur tambahan",
+    "more1": "Pasang aplikasi: buka langsung dari layar utama, dan pilih dari tombol Bagikan aplikasi lain untuk mengirim file. Di Android dan PC (Chrome, Edge), pakai ikon pasang di bilah alamat; di iPhone (Safari), ketuk tombol Bagikan lalu pilih “Tambah ke Layar Utama”.",
+    "more2": "Notifikasi kedatangan: aktifkan di menu ⋯ untuk mendapat pemberitahuan file dan teks baru, bahkan saat tab berada di latar belakang.",
+    "more3": "Pintasan: Ctrl+V tempel untuk mengirim · Ctrl+Enter kirim teks yang diketik · Ctrl+C salin satu file terpilih (⌘ sebagai ganti Ctrl di Mac)"
   },
   "seo": {
     "title": "Clipboard Online – Bagikan Teks, Gambar & File di HP dan PC",
@@ -370,9 +394,6 @@
     "confirm": "Kirim secara publik"
   },
   "guide": {
-    "title": "Penyimpanan dan penggunaan",
-    "retention": "Meski Anda masih terhubung, file dibersihkan otomatis paling lama setelah 1 hari. Pembersihan berjalan berkala sehingga waktu persisnya (hingga detik) tidak dijamin, dan bisa lebih cepat setelah semua perangkat keluar. Unduh yang Anda perlukan segera.",
-    "roomRetention": "File di ruang ini disimpan hingga sekitar 1 hari. File tidak langsung dihapus saat semua perangkat keluar. Pembersihan berjalan berkala, jadi waktu persisnya tidak dijamin. Teks hanya disimpan selama 10 menit.",
     "roomVisibility": "Hanya perangkat yang berada di ruang ini yang dapat melihatnya."
   },
   "download": {

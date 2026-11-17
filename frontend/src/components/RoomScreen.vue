@@ -10,7 +10,6 @@ import ConnectionCard from './ConnectionCard.vue'
 import RosterExtras from './RosterExtras.vue'
 import { onRoomConnected } from '../utils/activationMetrics'
 import TransferProgress from './TransferProgress.vue'
-import { formatSizeMB } from '../utils/fileUtils'
 import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 import LandingContent from './LandingContent.vue'
 import { roomDisplayName } from '../utils/roomDisplayName'
@@ -134,7 +133,6 @@ const emit = defineEmits([
   'group-invite'
 ])
 
-const maxFileSizeMB = import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120
 
 
 // 1:1 탭이면 그 방의 접속 기기(나 + 상대)를 보여 준다
@@ -214,8 +212,6 @@ provide(SENDER_CONTEXT_KEY, {
   devices: activeDevices
 })
 
-/** 1:1·그룹 방(prv:)에서는 같은 네트워크/전체 공유용 안내 대신 방 기준 안내를 보여 준다 */
-const inRoom = computed(() => isPrivateScope(props.scope))
 // 공개 범위(ip/전체)에서 목록이 "비어 있음"으로 확정되면 안내·소개·푸터를 메인 화면 목록 아래에 보인다
 const extraTarget = ref(null)
 const isPrerender = typeof window !== 'undefined' && !!window.__PRERENDER__
@@ -249,18 +245,6 @@ watch(
 <template>
   <div :class="['text-text-primary', files.length > 0 && !isLoading ? 'pb-24' : 'pb-6']">
     <AppHeader :user-count="userCount" :is-connecting="isConnecting">
-      <!-- 보관·사용 안내: 항상 도움말 창 안에만 둔다 (첫 화면에는 입력 칸 아래 한 줄로 충분) -->
-      <section class="border-t border-border pt-6 text-sm" data-testid="usage-notes">
-        <h3 class="text-lg font-semibold text-text-primary mb-3">{{ t('guide.title') }}</h3>
-        <ul class="flex flex-col list-none p-0 m-0 text-text-secondary leading-relaxed [&>li]:border-b [&>li]:border-border [&>li]:py-2">
-          <li v-if="inRoom" data-testid="room-retention">{{ t('guide.roomRetention') }}</li>
-          <li v-else>{{ t('guide.retention') }}</li>
-          <li>{{ t('file.limitResume', { size: formatSizeMB(maxFileSizeMB) }) }}</li>
-          <li v-if="inRoom" data-testid="room-visibility">{{ t('guide.roomVisibility') }}</li>
-          <li v-else>{{ t('identity.ipNotice') }}</li>
-          <li>{{ t('identity.notAuth') }}</li>
-        </ul>
-      </section>
       <!-- 소개·푸터: 도움말 창 안에 두고 화면에서는 숨김(DOM 유지, SEO). 목록이 비면 메인 화면 아래로 옮긴다 -->
       <Teleport :to="extraTarget" :disabled="!showExtraInMain || !extraTarget">
       <div class="help-extra" data-testid="help-extra">

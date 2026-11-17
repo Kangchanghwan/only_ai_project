@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Otras personas de la misma red (escuela, oficina, cafetería) también pueden verlo.",
-    "notAuth": "La etiqueta solo distingue dispositivos. No verifica tu identidad.",
     "globalWarning": "Cualquiera, incluso desconocidos, puede ver lo que envías aquí. Protege con contraseña lo sensible antes de enviarlo.",
     "pairSasLoading": "Cargando imágenes…",
     "moreDevices": "Ver {count} más"
@@ -250,18 +249,43 @@
     "backgroundHint": "Escanea para abrir el mismo espacio"
   },
   "help": {
-    "pwaTitle": "Instalar como app",
-    "pwaIntro": "Al instalarla podrás abrirla directamente desde la pantalla de inicio, y si compartes un archivo desde otra app hacia esta, se subirá automáticamente.",
-    "pwaAndroidTitle": "Android / escritorio (Chrome, Edge)",
-    "pwaAndroidDesc": "Toca el icono de instalación en la barra de direcciones o el banner de instalación en la parte inferior.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Toca el botón de compartir y luego elige \"Añadir a pantalla de inicio\".",
-    "downloadSingleDesc": "Pulsa el botón Recibir junto al archivo para descargarlo. El botón ⋯ (Más) permite compartir por código QR, descargar y eliminar (las imágenes también se pueden copiar). Funciona igual en ordenador y móvil.",
-    "textShareCopyDesc": "Pulsa Copiar en un texto compartido para copiarlo al portapapeles. Lo que escribas o pegues en el cuadro se envía con el botón Compartir.",
-    "textShareDeleteDesc": "Abre el botón ⋯ a la derecha del texto y elige Eliminar.",
-    "scopeDevicesDesc": "La tarjeta de conexión (el panel izquierdo en pantallas anchas) muestra los otros dispositivos conectados en el mismo ámbito.",
-    "limit4": "Aunque sigas conectado, los archivos se guardan como máximo cerca de 1 día (se eliminan poco después de que todos los dispositivos salgan)",
-    "tip4": "Usa el botón \"⋯\" de la tarjeta de un archivo para abrir el menú de código QR/descarga/eliminar (las imágenes también se pueden copiar)"
+    "close": "Cerrar",
+    "confirm": "Entendido",
+    "aboutTitle": "Información",
+    "title": "Cómo se usa",
+    "connectTitle": "Conectar",
+    "connect1": "Los dispositivos en la misma red Wi-Fi se conectan automáticamente en cuanto abren esta página.",
+    "connect2": "En el móvil, escanea con la cámara el código QR de la pantalla del PC, o escribe clipboardapp.org en la barra de direcciones.",
+    "connect3": "Para conectar un dispositivo en otra red Wi-Fi o con datos móviles, crea una sala. Crea una sala nueva desde «＋ Sala» y trae el otro dispositivo con un código QR, imágenes o un enlace. Un código QR de invitación funciona durante 10 minutos.",
+    "connect4": "En el dispositivo nuevo, toca «Entrar con imágenes» y toca en orden las 4 imágenes que se muestran en un dispositivo de la sala. Alguien de ese dispositivo tiene que tocar «Dejar entrar» antes de que puedas entrar.",
+    "connect5": "Toca «Conectar» en la tarjeta de un dispositivo para abrir una sala solo para vosotros dos. Quedáis conectados cuando comprobáis que ambas pantallas muestran la misma imagen.",
+    "connect6": "Para comprobar la conexión, mira el nombre del animal en la tarjeta «Yo» de la pantalla del otro dispositivo y busca ese nombre en tu lista.",
+    "connect7": "Cuando hay muchos dispositivos en «Todos», solo se muestran los más recientes. Usa «Buscar un dispositivo» y elige el nombre del animal del otro dispositivo.",
+    "sendTitle": "Enviar",
+    "send1": "Pega texto o imágenes copiados en cualquier parte de la página con Ctrl+V (⌘+V en Mac) y se envían al instante.",
+    "send2": "Para archivos, toca «Elegir archivos» o arrástralos a la página.",
+    "send3": "El texto que escribes en el cuadro se envía con «Compartir» o con Ctrl+Enter (⌘+Enter en Mac).",
+    "send4": "Cada archivo puede pesar hasta 5GB, y las subidas continúan donde se quedaron si se corta la conexión.",
+    "send5": "En iPhone y iPad, añade el atajo para enviar directamente desde el botón Compartir de la app Fotos.",
+    "receiveTitle": "Recibir",
+    "receive1": "Toca «Recibir» para descargar un archivo y «Copiar» para copiar texto al portapapeles.",
+    "receive2": "Si son varios archivos, márcalos y toca «Descargar» para obtener un solo ZIP. Los archivos de más de 200MB se descargan por separado.",
+    "receive3": "Elige «Compartir con código QR» en el menú ⋯ de un archivo y escanéalo con la cámara de otro dispositivo para obtener ese archivo. Las imágenes también se pueden copiar desde el mismo menú.",
+    "whoTitle": "Quién puede verlo",
+    "who1": "Misma red: lo ven los dispositivos con la misma conexión a internet. En colegios, oficinas y cafeterías, también pueden verlo desconocidos.",
+    "who2": "Todos: cualquiera que tenga este servicio abierto ahora mismo puede verlo.",
+    "who3": "Salas: solo lo ven los dispositivos de la sala, y los archivos y el texto de una sala se cifran automáticamente. Una sala admite hasta 10 dispositivos.",
+    "who4": "Bloquear con contraseña: pon una contraseña de 4 o más caracteres y, durante esta visita, los archivos y el texto que envíes en esa pestaña se bloquean en este dispositivo antes de enviarse. Dile la contraseña al destinatario por separado.",
+    "who5": "El código QR y el enlace de un archivo bloqueado contienen su clave, así que cualquiera que los tenga puede obtener el archivo sin la contraseña. Muéstraselos solo al destinatario.",
+    "who6": "Los nombres de animales y la información del dispositivo y del navegador siguen visibles aunque esté bloqueado. Un nombre sirve para distinguir dispositivos, no demuestra quién es alguien.",
+    "keepTitle": "Cuánto tiempo se guarda",
+    "keep1": "El texto se guarda 10 minutos, así que los dispositivos que se unan mientras tanto aún pueden recibirlo.",
+    "keep2": "El texto de más de 96KB no se guarda y solo llega a los dispositivos abiertos ahora. Envíalo como archivo .txt para guardarlo un día.",
+    "keep3": "Los archivos se guardan hasta 1 día. Pueden eliminarse antes cuando todos los dispositivos se hayan ido, así que descarga lo que necesites enseguida.",
+    "moreTitle": "Extras útiles",
+    "more1": "Instalar la app: ábrela directamente desde la pantalla de inicio y elígela en el botón Compartir de otras apps para enviar archivos. En Android y PC (Chrome, Edge), usa el icono de instalación de la barra de direcciones; en iPhone (Safari), toca el botón Compartir y elige «Añadir a pantalla de inicio».",
+    "more2": "Avisos de llegada: actívalos en el menú ⋯ para recibir notificaciones de archivos y texto nuevos aunque la pestaña esté en segundo plano.",
+    "more3": "Atajos: Ctrl+V pegar para enviar · Ctrl+Enter enviar el texto escrito · Ctrl+C copiar un archivo seleccionado (⌘ en lugar de Ctrl en Mac)"
   },
   "seo": {
     "title": "Portapapeles online: comparte texto, imágenes y archivos",
@@ -370,9 +394,6 @@
     "confirm": "Enviar públicamente"
   },
   "guide": {
-    "title": "Notas de almacenamiento y uso",
-    "retention": "Aunque sigas conectado, los archivos se eliminan automáticamente como máximo tras 1 día. La limpieza se ejecuta periódicamente, así que no se garantiza la hora exacta (al segundo), y pueden borrarse antes cuando todos los dispositivos salen. Descarga lo que necesites enseguida.",
-    "roomRetention": "Los archivos de esta sala se conservan hasta aproximadamente 1 día. No se borran de inmediato cuando todos los dispositivos salen. La limpieza se ejecuta periódicamente, así que no se garantiza la hora exacta. Los textos se conservan solo 10 minutos.",
     "roomVisibility": "Solo los dispositivos que están en esta sala pueden verlos."
   },
   "download": {

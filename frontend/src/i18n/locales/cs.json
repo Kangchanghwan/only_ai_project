@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Vidět to mohou i další lidé ve stejné síti (škola, kancelář, kavárna).",
-    "notAuth": "Jmenovka jen rozlišuje zařízení. Není to ověření totožnosti.",
     "globalWarning": "Tady může kdokoli, i cizí lidé, vidět, co posíláte. Citlivé věci před odesláním zamkněte heslem.",
     "pairSasLoading": "Načítání obrázků…",
     "moreDevices": "Zobrazit dalších {count}"
@@ -250,18 +249,43 @@
     "backgroundHint": "Naskenujte pro otevření stejného prostoru"
   },
   "help": {
-    "pwaTitle": "Instalace jako aplikace",
-    "pwaIntro": "Po instalaci ji spustíte přímo z domovské obrazovky a sdílením souboru z jiné aplikace do této aplikace se soubor automaticky nahraje.",
-    "pwaAndroidTitle": "Android / počítač (Chrome, Edge)",
-    "pwaAndroidDesc": "Klepněte na ikonu instalace v adresním řádku nebo na banner instalace ve spodní části obrazovky.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Klepněte na tlačítko sdílení a poté vyberte „Přidat na plochu“.",
-    "downloadSingleDesc": "Stisknutím tlačítka Přijmout vedle souboru jej stáhnete. Tlačítko ⋯ (Více) nabízí sdílení QR kódem, stažení a smazání (obrázky lze i zkopírovat). Na počítači i mobilu stejně.",
-    "textShareCopyDesc": "Stiskněte Kopírovat u sdíleného textu a zkopíruje se do schránky. Text napsaný nebo vložený do pole odešlete tlačítkem Sdílet.",
-    "textShareDeleteDesc": "Otevřete tlačítko ⋯ vpravo od textu a zvolte Smazat.",
-    "scopeDevicesDesc": "Karta připojení (na širokých obrazovkách levý panel) ukazuje další zařízení ve stejném rozsahu.",
-    "limit4": "I když zůstanete připojeni, soubory se uchovávají nejvýše asi 1 den (krátce poté, co odejdou všechna zařízení, se smažou)",
-    "tip4": "Tlačítko „⋯“ na kartě souboru otevře nabídku QR kód/stažení/smazání (u obrázků i kopírování)"
+    "close": "Zavřít",
+    "confirm": "Rozumím",
+    "aboutTitle": "O aplikaci",
+    "title": "Jak to používat",
+    "connectTitle": "Připojení",
+    "connect1": "Zařízení na stejné síti Wi-Fi se připojí automaticky, jakmile tuto stránku otevřou.",
+    "connect2": "V telefonu naskenujte fotoaparátem QR kód na obrazovce počítače, nebo do adresního řádku napište clipboardapp.org.",
+    "connect3": "Chcete-li připojit zařízení na jiné síti Wi-Fi nebo s mobilními daty, vytvořte místnost. Novou místnost vytvoříte přes „＋ Místnost“ a druhé zařízení přizvete pomocí QR kódu, obrázků nebo odkazu. QR kód pozvánky platí 10 minut.",
+    "connect4": "Na novém zařízení klepněte na „Připojit se obrázky“ a v pořadí klepněte na 4 obrázky zobrazené na některém zařízení v místnosti. Někdo u tohoto zařízení musí klepnout na „Pustit dovnitř“, než se budete moci připojit.",
+    "connect5": "Klepnutím na „Připojit“ na kartě zařízení otevřete místnost jen pro vás dva. Připojíte se poté, co ověříte, že obě obrazovky ukazují stejný obrázek.",
+    "connect6": "Připojení ověříte tak, že se na obrazovce druhého zařízení podíváte na jméno zvířete na kartě „Já“ a najdete ho ve svém seznamu.",
+    "connect7": "Když je ve skupině „Všichni“ mnoho zařízení, zobrazí se jen ta nejnovější. Použijte „Najít zařízení“ a vyberte jméno zvířete druhého zařízení.",
+    "sendTitle": "Odeslání",
+    "send1": "Zkopírovaný text nebo obrázky vložte kamkoli na stránku pomocí Ctrl+V (⌘+V na Macu) a odešlou se hned.",
+    "send2": "U souborů klepněte na „Vybrat soubory“ nebo je přetáhněte na stránku.",
+    "send3": "Text napsaný do pole se odešle tlačítkem „Sdílet“ nebo klávesami Ctrl+Enter (⌘+Enter na Macu).",
+    "send4": "Každý soubor může mít až 5GB a při přerušení připojení se nahrávání obnoví tam, kde skončilo.",
+    "send5": "Na iPhonu a iPadu přidejte zkratku, abyste mohli odesílat přímo z tlačítka Sdílet v aplikaci Fotky.",
+    "receiveTitle": "Příjem",
+    "receive1": "Klepnutím na „Přijmout“ stáhnete soubor a klepnutím na „Kopírovat“ zkopírujete text do schránky.",
+    "receive2": "U více souborů je zaškrtněte a klepnutím na „Stáhnout“ získáte jeden ZIP. Soubory větší než 200MB se stahují zvlášť.",
+    "receive3": "V nabídce ⋯ u souboru zvolte „Sdílet přes QR kód“ a naskenujte kód fotoaparátem jiného zařízení, abyste soubor dostali. Obrázky lze ze stejné nabídky také zkopírovat.",
+    "whoTitle": "Kdo to vidí",
+    "who1": "Stejná síť: vidí to zařízení ve stejném připojení k internetu. Ve školách, kancelářích a kavárnách to mohou vidět i cizí lidé.",
+    "who2": "Všichni: vidí to každý, kdo má tuto službu právě otevřenou.",
+    "who3": "Místnosti: vidí to jen zařízení v místnosti a soubory a text v místnosti se automaticky šifrují. V místnosti může být až 10 zařízení.",
+    "who4": "Zamknout heslem: nastavte heslo o 4 nebo více znacích a po dobu této návštěvy se soubory a text, které v této kartě posíláte, před odesláním na tomto zařízení zamknou. Heslo sdělte příjemci zvlášť.",
+    "who5": "QR kód a odkaz zamčeného souboru obsahují jeho klíč, takže soubor získá bez hesla každý, kdo je má. Ukazujte je jen příjemci.",
+    "who6": "Jmenovky se zvířaty a informace o zařízení a prohlížeči zůstávají vidět i při zamknutí. Jmenovka pomáhá rozlišit zařízení, ale nedokazuje, kdo je kdo.",
+    "keepTitle": "Jak dlouho se věci uchovávají",
+    "keep1": "Text se uchovává 10 minut, takže ho dostanou i zařízení, která se mezitím připojí.",
+    "keep2": "Text přes 96KB se neuchovává a dorazí jen na zařízení, která jsou právě otevřená. Pošlete ho jako soubor .txt a uchová se den.",
+    "keep3": "Soubory se uchovávají nejdéle 1 den. Mohou být odstraněny dříve, jakmile odejdou všechna zařízení, proto si potřebné soubory stáhněte hned.",
+    "moreTitle": "Užitečné doplňky",
+    "more1": "Instalace aplikace: otevřete ji rovnou z plochy a soubory odešlete tak, že ji vyberete v tlačítku Sdílet jiných aplikací. V Androidu a na počítači (Chrome, Edge) použijte ikonu instalace v adresním řádku, na iPhonu (Safari) klepněte na tlačítko Sdílet a zvolte „Přidat na plochu“.",
+    "more2": "Upozornění na příchod: zapněte je v nabídce ⋯ a dostanete oznámení o nových souborech a textu, i když je karta na pozadí.",
+    "more3": "Zkratky: Ctrl+V vložení k odeslání · Ctrl+Enter odeslání napsaného textu · Ctrl+C zkopírování jednoho vybraného souboru (na Macu ⌘ místo Ctrl)"
   },
   "seo": {
     "title": "Online schránka – sdílejte text a soubory mezi telefonem a PC",
@@ -370,9 +394,6 @@
     "confirm": "Odeslat veřejně"
   },
   "guide": {
-    "title": "Uložení a používání",
-    "retention": "I když jste připojeni, soubory se automaticky mažou nejpozději po 1 dni. Úklid probíhá pravidelně, takže přesný čas (na sekundu) není zaručen a po odchodu všech zařízení může dojít ke smazání dříve. Potřebné soubory si stáhněte hned.",
-    "roomRetention": "Soubory v této místnosti se uchovávají nejvýše zhruba 1 den. Nesmažou se hned, když odejdou všechna zařízení. Úklid probíhá pravidelně, takže přesný čas není zaručen. Texty se uchovávají jen 10 minut.",
     "roomVisibility": "Vidí je jen zařízení, která jsou v této místnosti."
   },
   "download": {

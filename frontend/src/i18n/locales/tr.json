@@ -124,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Aynı ağdaki diğer kişiler de (okul, ofis, kafe) bunu görebilir.",
-    "notAuth": "Ad etiketi yalnızca cihazları ayırt eder. Kimlik doğrulaması değildir.",
     "globalWarning": "Burada yabancılar dahil herkes gönderdiklerinizi görebilir. Hassas içerikleri göndermeden önce şifreyle kilitleyin.",
     "pairSasLoading": "Resimler yükleniyor…",
     "moreDevices": "{count} tane daha göster"
@@ -250,18 +249,43 @@
     "backgroundHint": "Aynı alanı açmak için tarayın"
   },
   "help": {
-    "pwaTitle": "Uygulama Olarak Yükle",
-    "pwaIntro": "Yükledikten sonra doğrudan ana ekrandan açabilir, başka bir uygulamadan bu uygulamaya dosya paylaştığınızda otomatik olarak yüklenir.",
-    "pwaAndroidTitle": "Android / Masaüstü (Chrome, Edge)",
-    "pwaAndroidDesc": "Adres çubuğundaki yükleme simgesine veya ekranın altındaki yükleme bannerına dokunun.",
-    "pwaIOSTitle": "iOS (Safari)",
-    "pwaIOSDesc": "Paylaş düğmesine dokunun, ardından \"Ana Ekrana Ekle\" seçeneğini seçin.",
-    "downloadSingleDesc": "İndirmek için dosyanın yanındaki Al düğmesine basın. ⋯ (Daha fazla) düğmesiyle QR kod paylaşımı, indirme ve silme yapılır (görseller kopyalanabilir). Bilgisayarda ve mobilde aynıdır.",
-    "textShareCopyDesc": "Paylaşılan metinde Kopyala'ya basarak panoya kopyalayın. Kutuya yazdığınız veya yapıştırdığınız metin Paylaş düğmesiyle gönderilir.",
-    "textShareDeleteDesc": "Metnin sağındaki ⋯ düğmesini açıp Sil'i seçin.",
-    "scopeDevicesDesc": "Bağlantı kartı (geniş ekranlarda sol panel) aynı kapsamda bağlı diğer cihazları gösterir.",
-    "limit4": "Bağlı kalsanız bile dosyalar en fazla yaklaşık 1 gün saklanır (tüm cihazlar ayrıldıktan kısa süre sonra silinir)",
-    "tip4": "Dosya kartındaki \"⋯\" düğmesi QR kod/indirme/silme menüsünü açar (görseller için kopyalama da var)"
+    "close": "Kapat",
+    "confirm": "Anladım",
+    "aboutTitle": "Hakkında",
+    "title": "Nasıl kullanılır",
+    "connectTitle": "Bağlan",
+    "connect1": "Aynı Wi-Fi üzerindeki cihazlar bu sayfayı açar açmaz otomatik olarak bağlanır.",
+    "connect2": "Telefonda, PC ekranındaki QR kodunu kameranızla tarayın veya adres çubuğuna clipboardapp.org yazın.",
+    "connect3": "Farklı bir Wi-Fi ağındaki ya da mobil verideki bir cihazı bağlamak için oda oluşturun. “＋ Oda” ile yeni bir oda oluşturun ve diğer cihazı QR kodu, resimler veya bağlantıyla davet edin. Davet QR kodu 10 dakika çalışır.",
+    "connect4": "Yeni cihazda “Resimlerle katıl” düğmesine dokunun ve odadaki bir cihazda gösterilen 4 resme sırayla dokunun. Siz katılmadan önce o cihazdaki birinin “İçeri al” düğmesine dokunması gerekir.",
+    "connect5": "İki kişilik özel bir oda açmak için bir cihaz kartında “Bağlan” düğmesine dokunun. İki ekranın da aynı resmi gösterdiğini doğruladıktan sonra bağlanırsınız.",
+    "connect6": "Bağlantıyı kontrol etmek için diğer cihazın ekranındaki “Ben” kartında yazan hayvan adına bakın ve bu adı kendi listenizde bulun.",
+    "connect7": "“Herkes” içinde çok sayıda cihaz olduğunda yalnızca en yeniler gösterilir. “Cihaz bul” özelliğini kullanın ve diğer cihazın hayvan adını seçin.",
+    "sendTitle": "Gönder",
+    "send1": "Kopyaladığınız metni veya resimleri sayfanın herhangi bir yerine Ctrl+V (Mac’te ⌘+V) ile yapıştırın, hemen gönderilir.",
+    "send2": "Dosyalar için “Dosya seç” düğmesine dokunun veya dosyaları sayfaya sürükleyin.",
+    "send3": "Kutuya yazdığınız metin “Paylaş” veya Ctrl+Enter (Mac’te ⌘+Enter) ile gönderilir.",
+    "send4": "Her dosya en fazla 5GB olabilir ve bağlantı koparsa yükleme kaldığı yerden devam eder.",
+    "send5": "iPhone ve iPad’de, Fotoğraflar uygulamasındaki Paylaş düğmesinden doğrudan göndermek için kısayolu ekleyin.",
+    "receiveTitle": "Al",
+    "receive1": "Dosya indirmek için “Al”, metni panoya kopyalamak için “Kopyala” düğmesine dokunun.",
+    "receive2": "Birden fazla dosya için onları işaretleyin ve tek bir ZIP almak için “İndir” düğmesine dokunun. 200MB’tan büyük dosyalar ayrı ayrı indirilir.",
+    "receive3": "Bir dosyanın ⋯ menüsünden “QR kodla paylaş” seçeneğini seçin, sonra o dosyayı almak için başka bir cihazın kamerasıyla tarayın. Görseller de aynı menüden kopyalanabilir.",
+    "whoTitle": "Kimler görebilir",
+    "who1": "Aynı ağ: aynı internet bağlantısındaki cihazlar görebilir. Okullarda, ofislerde ve kafelerde yabancılar da görebilir.",
+    "who2": "Herkes: bu hizmeti şu anda açık tutan herkes görebilir.",
+    "who3": "Odalar: yalnızca odadaki cihazlar görebilir ve bir odadaki dosyalar ile metinler otomatik olarak şifrelenir. Bir odada en fazla 10 cihaz olabilir.",
+    "who4": "Parolayla kilitle: en az 4 karakterlik bir parola belirleyin; bu ziyaret boyunca o sekmede gönderdiğiniz dosyalar ve metinler gönderilmeden önce bu cihazda kilitlenir. Parolayı alıcıya ayrıca söyleyin.",
+    "who5": "Kilitli bir dosyanın QR kodu ve bağlantısı anahtarını içerir, bu yüzden ikisine sahip olan herkes dosyayı parolasız alabilir. Bunları yalnızca alıcıya gösterin.",
+    "who6": "Hayvan adı etiketleri ile cihaz ve tarayıcı bilgileri, kilitli olsa bile görünür kalır. Ad etiketi cihazları ayırt etmeye yarar; birinin kim olduğunu kanıtlamaz.",
+    "keepTitle": "Ne kadar süre kalır",
+    "keep1": "Metin 10 dakika saklanır, böylece bu sürede katılan cihazlar da onu alabilir.",
+    "keep2": "96KB’tan büyük metin saklanmaz ve yalnızca şu anda açık olan cihazlara ulaşır. Bir gün saklanması için .txt dosyası olarak gönderin.",
+    "keep3": "Dosyalar en fazla 1 gün saklanır. Tüm cihazlar ayrıldığında daha erken silinebilirler, bu yüzden ihtiyacınız olanı hemen indirin.",
+    "moreTitle": "Kullanışlı ekstralar",
+    "more1": "Uygulamayı yükleme: doğrudan ana ekrandan açın ve dosya göndermek için diğer uygulamaların Paylaş düğmesinden seçin. Android’de ve PC’de (Chrome, Edge) adres çubuğundaki yükleme simgesini kullanın; iPhone’da (Safari) Paylaş düğmesine dokunup “Ana Ekrana Ekle” seçeneğini seçin.",
+    "more2": "Varış bildirimleri: sekme arka plandayken bile yeni dosya ve metinlerden haberdar olmak için ⋯ menüsünden açın.",
+    "more3": "Kısayollar: Ctrl+V yapıştırıp gönder · Ctrl+Enter yazılan metni gönder · Ctrl+C seçili bir dosyayı kopyala (Mac’te Ctrl yerine ⌘)"
   },
   "seo": {
     "title": "Online Pano – Telefon ve PC Arasında Metin/Dosya Paylaşımı",
@@ -370,9 +394,6 @@
     "confirm": "Herkese açık gönder"
   },
   "guide": {
-    "title": "Saklama ve kullanım",
-    "retention": "Bağlı olsanız bile dosyalar en geç 1 gün sonra otomatik temizlenir. Temizlik düzenli aralıklarla çalışır, bu yüzden tam saat (saniyesine kadar) garanti edilmez; tüm cihazlar çıkınca daha erken silinebilir. İhtiyacınız olan dosyaları hemen indirin.",
-    "roomRetention": "Bu odadaki dosyalar en fazla yaklaşık 1 gün saklanır. Tüm cihazlar çıksa bile hemen silinmez. Temizlik düzenli aralıklarla çalışır, bu yüzden kesin zaman garanti edilmez. Metinler yalnızca 10 dakika saklanır.",
     "roomVisibility": "Yalnızca bu odadaki cihazlar bunları görebilir."
   },
   "download": {
