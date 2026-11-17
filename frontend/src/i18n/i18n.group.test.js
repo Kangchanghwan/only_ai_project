@@ -7,7 +7,7 @@ describe('i18n 그룹 방 문구', () => {
     'create', 'createShort', 'defaultName', 'emptyCta', 'invite', 'inviteTitle', 'inviteCopy', 'inviteCopied', 'inviteExpiry',
     'inviteWarning', 'inviteInvalid', 'inviteExpired', 'joinTitle', 'joinBody', 'joinAction', 'cancel', 'close', 'joined',
     'alreadyIn', 'full', 'tooMany', 'members', 'alone', 'leave', 'leaveConfirm', 'unnamed',
-    'textNote', 'expired', 'noRoom', 'leaveFailed', 'failed', 'dropTo'
+    'expired', 'noRoom', 'leaveFailed', 'failed', 'dropTo'
   ]
   const en = locales['./locales/en.json'].default || locales['./locales/en.json']
 
@@ -63,7 +63,6 @@ describe('i18n 그룹 방 문구', () => {
     expect(group.inviteTitle).toBe("'{name}'에 초대하기")
     expect(group.joinTitle).toBe("'{name}'에 들어갈까요?")
     expect(group.joined).toBe("'{name}'에 들어왔어요")
-    expect(group.textNote).toBe('방 키로 암호화해서 10분 보관')
     expect(group.expired).toBe('방 입장권이 만료됐어요. 초대를 다시 받아 주세요')
   })
 

@@ -250,7 +250,7 @@ class SocketService {
       // 연결 타임아웃 설정
       const connectionTimeout = setTimeout(() => {
         this.connectionError.value = 'Connection timeout'
-        reject(new Error(t('errors.connectTimeout')))
+        reject(Object.assign(new Error(t('errors.connectTimeout')), { code: 'CONNECT_TIMEOUT' }))
       }, this.reconnectionConfig.timeout)
 
       /**
@@ -658,7 +658,7 @@ class SocketService {
         reject(new Error('Socket not connected'))
         return
       }
-      const timer = setTimeout(() => reject(new Error(t('errors.tokenTimeout'))), ROOM_TOKEN_REQUEST_TIMEOUT_MS)
+      const timer = setTimeout(() => reject(Object.assign(new Error(t('errors.tokenTimeout')), { code: 'TOKEN_TIMEOUT' })), ROOM_TOKEN_REQUEST_TIMEOUT_MS)
       this.socket.emit('room-tokens', (payload) => {
         clearTimeout(timer)
         resolve(payload)

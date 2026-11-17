@@ -5,19 +5,10 @@
     "helpTitle": "使用方法"
   },
   "room": {
-    "connecting": "连接中...",
-    "connected": "已连接到房间 {roomId}。",
-    "userCount": "房间内有 {count} 位用户。",
     "connectedDevices": "已连接的设备",
-    "copyCode": "复制房间代码",
-    "copied": "房间代码已复制！",
     "textTab": "文本",
     "qrShareTitle": "通过二维码分享",
-    "currentRoomCode": "当前房间代码",
     "copy": "复制",
-    "qr": "二维码",
-    "joinOtherRoom": "加入其他房间",
-    "enterCode": "输入房间代码",
     "otherDevices": "其他设备 {count} 台",
     "waiting": "等待连接",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "",
     "nameFormat": "{adj}{animal}",
     "me": "我",
-    "youAre": "我：{name}（本设备）",
     "reroll": "重新抽取",
     "rerollTitle": "换一个动物名字",
     "connectedAs": "使用{device} {browser}连接的{name}",
@@ -134,7 +124,6 @@
       "Unknown": "浏览器"
     },
     "ipNotice": "学校、公司、咖啡馆等使用同一网络的其他人也可能看到。",
-    "manage": "管理名牌",
     "notAuth": "名牌只用于区分设备，不是身份验证。",
     "globalWarning": "在这里发送的内容，陌生人也能看到。敏感内容请先用密码锁定再发送。",
     "pairSasLoading": "正在加载图片…",
@@ -155,14 +144,10 @@
     "confirm": "分享"
   },
   "file": {
-    "upload": "上传文件",
     "download": "下载",
     "share": "分享",
-    "downloading": "下载中...",
     "downloadComplete": "下载完成！",
     "downloadFailed": "下载失败",
-    "uploaded": "新文件已上传！",
-    "copyToClipboard": "复制到剪贴板",
     "copied": "已复制到剪贴板！",
     "copyFailed": "复制失败",
     "delete": "删除",
@@ -181,10 +166,7 @@
   "text": {
     "share": "分享文本",
     "shared": "文本已分享！",
-    "newText": "新文本已分享！",
-    "removed": "文本已删除。",
     "clearAll": "清除所有文本",
-    "cleared": "所有文本已清除。",
     "autoShareHint": "粘贴(Ctrl+V / Cmd+V)后文字会自动分享",
     "delete": "删除",
     "prefillNote": "这段文字来自链接。确认内容后点击“分享”即可发送。",
@@ -204,10 +186,6 @@
     "cancelKeep": "取消保存",
     "keepCancelled": "已取消保存。",
     "cancelFailed": "无法取消保存，请重试。",
-    "storagePlainIp": "明文保存 10 分钟 · 同一网络的任何人都能看到",
-    "storagePlainGlobal": "明文保存 10 分钟 · 陌生人也能看到",
-    "storageLocked": "加密保存 10 分钟 · 仅知道密码的设备",
-    "storagePrivate": "用 1:1 房间密钥加密，保存 10 分钟",
     "storageNone": "不保存 · 仅发送给现在打开的设备",
     "keepLine": "文本保留 10 分钟 · 文件最长 1 天",
     "notKeptTooLarge": "超过 96KB，未保存 · 只发送给了现在打开的设备",
@@ -223,9 +201,7 @@
     "collapse": "收起"
   },
   "notification": {
-    "uploading": "上传中...",
     "uploadComplete": "{count} 个文件上传完成！",
-    "uploadFailed": "上传失败：{message}",
     "sizeLimitExceeded": "总上传大小超出限制（{limit}）。当前：{current}，上传：{upload}",
     "reconnected": "已重新连接",
     "connected": "已连接。",
@@ -235,14 +211,10 @@
     "fileEmpty": "文件为空",
     "copying": "正在复制...",
     "openedNewTab": "已在新标签页中打开。",
-    "downloadingCount": "正在下载 {count} 个文件...",
-    "downloadPartial": "成功 {success} 个，失败 {fail} 个",
-    "downloadCountComplete": "已下载 {count} 个文件！",
     "copyFirstOnly": "只会将第一个文件复制到剪贴板...",
     "copyingToClipboard": "正在复制到剪贴板...",
     "copiedWithCount": "已将 {name} 复制到剪贴板！（共 {total} 个中的 1 个）\n如需多个文件，请使用“下载所选项目”。",
     "deleted": "已删除 {name}",
-    "deleteFailed": "删除失败：{message}",
     "confirmDeleteSelected": "要删除所选的 {count} 个文件吗？",
     "confirmClearStorage": "要删除存储中的所有文件吗？此操作无法撤销。",
     "storageCleared": "存储已清空",
@@ -261,7 +233,6 @@
     "textRemoved": "已删除文本"
   },
   "clipboard": {
-    "paste": "粘贴",
     "empty": "剪贴板为空。",
     "permissionDenied": "需要剪贴板访问权限。",
     "pasteTitle": "粘贴",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "没有可复制到剪贴板的文件",
-    "noFilesToDownload": "没有可下载的文件",
     "textNotFound": "找不到文本",
     "noPresignedUrl": "无法获取上传链接",
     "invalidRoomCode": "房间代码无效。",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "此文件超过单次上传限制（100MB），请刷新页面后重试。",
     "sizeMismatch": "上传文件的大小不一致，已被丢弃，请重新上传。",
     "multipartFailed": "大文件上传失败：{status}",
-    "serverRoomSizeExceeded": "将超过房间存储容量上限。"
+    "serverRoomSizeExceeded": "将超过房间存储容量上限。",
+    "connectUser": "无法连接到服务器。请检查网络后刷新页面。",
+    "uploadUser": "“{name}”上传失败，请重新上传。",
+    "downloadUser": "无法下载文件，文件可能已被删除。",
+    "deleteUser": "删除失败，请重试。"
   },
   "qrModal": {
     "roomTitle": "通过二维码分享房间",
@@ -402,7 +376,6 @@
     "roomVisibility": "只有进入此房间的设备才能看到。"
   },
   "download": {
-    "title": "正在下载文件...",
     "selectAll": "全选",
     "deselectAll": "取消全选",
     "downloadSelected": "下载",
@@ -454,7 +427,6 @@
     "leave": "退出房间",
     "leaveConfirm": "只会在这台设备上删除房间，其他设备仍可继续使用",
     "unnamed": "未命名房间",
-    "textNote": "用房间密钥加密，保存 10 分钟",
     "expired": "房间入场券已过期，请重新获取邀请",
     "noRoom": "找不到房间",
     "leaveFailed": "无法退出房间，请重试",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "放行",
     "reject": "拒绝",
-    "approved": "{name} 已加入",
     "slotLabel": "第 {n} 张图片：{name}",
     "slotEmpty": "第 {n} 张图片：空",
     "pickerLabel": "24 张图片",

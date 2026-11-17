@@ -1,3 +1,4 @@
+import { reportError } from './userErrors.js'
 import { t } from '../i18n/translate.js'
 import { FRIENDLY_ERROR_CODES } from './apiErrors.js'
 import { trackEvent } from './analytics.js'
@@ -74,9 +75,11 @@ export function createUploadProgress(notification) {
     setTimeout(() => notification.removeUpload(uploadId), delay)
   }
 
-  function errorMessage(error) {
+  /** 이미 할 일을 알려 주는 서버 오류(한도·크기 등)는 그대로, 나머지는 원인 대신 "다시 올려 주세요" */
+  function errorMessage(file, error) {
     if (error?.code === 'FILE_EMPTY' || FRIENDLY_ERROR_CODES.has(error?.code)) return error.message
-    return t('notification.uploadFailed', { message: error?.message ?? '' })
+    reportError('upload', error)
+    return t('errors.uploadUser', { name: file?.name ?? '' })
   }
 
   return {
@@ -122,11 +125,14 @@ export function createUploadProgress(notification) {
       if (uploadId) {
         cancelers.delete(uploadId)
         percents.delete(file)
-        notification.failUpload(uploadId, error?.message)
+      }
+      const message = errorMessage(file, error)
+      if (uploadId) {
+        notification.failUpload(uploadId, message)
         remove(uploadId, FAILED_UPLOAD_REMOVE_DELAY_MS)
         ids.delete(file)
       }
-      notification.showError(errorMessage(error))
+      notification.showError(message)
     }
   }
 }

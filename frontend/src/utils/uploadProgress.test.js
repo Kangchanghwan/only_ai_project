@@ -52,7 +52,7 @@ describe('업로드 진행 카드 (거절/실패 파일)', () => {
     })
 
     expect(notificationService.uploads.value.size).toBe(0)
-    expect(notificationService.notification.value).toBe('✗ Upload failed: Failed to create upload URL: 413')
+    expect(notificationService.notification.value).toBe("✗ Couldn't upload 'a.bin'. Please try again.")
   })
 
   it('전송 중 실패(네트워크)한 카드는 실패로 표시된 뒤 자동 제거된다', () => {

@@ -206,12 +206,12 @@ class R2Service {
         if (xhr.status >= 200 && xhr.status < 300) {
           resolve()
         } else {
-          reject(new Error(t('errors.r2UploadFailed', { status: xhr.status })))
+          reject(Object.assign(new Error(t('errors.r2UploadFailed', { status: xhr.status })), { status: xhr.status }))
         }
       })
 
-      xhr.addEventListener('error', () => reject(new Error(t('errors.networkUploadFailed'))))
-      xhr.addEventListener('timeout', () => reject(new Error(t('errors.uploadTimeout'))))
+      xhr.addEventListener('error', () => reject(Object.assign(new Error(t('errors.networkUploadFailed')), { code: 'NETWORK' })))
+      xhr.addEventListener('timeout', () => reject(Object.assign(new Error(t('errors.uploadTimeout')), { code: 'TIMEOUT' })))
       xhr.addEventListener('abort', () => reject(Object.assign(new Error('Upload canceled'), { code: 'UPLOAD_CANCELED' })))
 
       if (signal) {
@@ -358,7 +358,7 @@ class R2Service {
     )
 
     if (!response.ok) {
-      throw new Error(t('errors.downloadUrlFailed', { status: response.status }))
+      throw Object.assign(new Error(t('errors.downloadUrlFailed', { status: response.status })), { status: response.status })
     }
 
     const { url } = await response.json()
@@ -380,7 +380,7 @@ class R2Service {
     })
 
     if (!response.ok) {
-      throw new Error(t('errors.downloadUrlFailed', { status: response.status }))
+      throw Object.assign(new Error(t('errors.downloadUrlFailed', { status: response.status })), { status: response.status })
     }
 
     const { urls } = await response.json()
@@ -656,7 +656,7 @@ class R2Service {
       )
 
       if (!response.ok) {
-        throw new Error(t('errors.deleteFailed', { status: response.status }))
+        throw Object.assign(new Error(t('errors.deleteFailed', { status: response.status })), { status: response.status })
       }
 
       const data = await response.json()

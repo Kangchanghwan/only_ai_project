@@ -5,19 +5,10 @@
     "helpTitle": "Hur man använder"
   },
   "room": {
-    "connecting": "Ansluter...",
-    "connected": "Ansluten till rum {roomId}.",
-    "userCount": "{count} användare i rummet.",
     "connectedDevices": "Anslutna enheter",
-    "copyCode": "Kopiera rumskod",
-    "copied": "Rumskod kopierad!",
     "textTab": "Text",
     "qrShareTitle": "Dela med QR-kod",
-    "currentRoomCode": "Aktuell rumskod",
     "copy": "Kopiera",
-    "qr": "QR",
-    "joinOtherRoom": "Gå med i ett annat rum",
-    "enterCode": "Ange rumskod",
     "otherDevices": "Andra enheter: {count}",
     "waiting": "Väntar på enheter",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "mmmmmmmmnmmmmmmmmmmmmmmm",
     "nameFormat": "{adj} {animal}",
     "me": "Jag",
-    "youAre": "Jag: {name} (den här enheten)",
     "reroll": "Slumpa om",
     "rerollTitle": "Få ett annat djurnamn",
     "connectedAs": "{name} på {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Andra personer i samma nätverk (skola, kontor, kafé) kan också se det.",
-    "manage": "Hantera namnlapp",
     "notAuth": "Namnlappen skiljer bara enheter åt. Det är ingen identitetskontroll.",
     "globalWarning": "Här kan alla, även okända, se det du skickar. Lås känsligt innehåll med ett lösenord innan du skickar.",
     "pairSasLoading": "Läser in bilder…",
@@ -155,14 +144,10 @@
     "confirm": "Dela"
   },
   "file": {
-    "upload": "Ladda upp fil",
     "download": "Ladda ner",
     "share": "Dela",
-    "downloading": "Laddar ner...",
     "downloadComplete": "Nedladdning klar!",
     "downloadFailed": "Nedladdning misslyckades",
-    "uploaded": "Ny fil uppladdad!",
-    "copyToClipboard": "Kopiera till urklipp",
     "copied": "Kopierat till urklipp!",
     "copyFailed": "Kopiering misslyckades",
     "delete": "Ta bort",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Dela text",
     "shared": "Text delad!",
-    "newText": "Ny text delad!",
-    "removed": "Text borttagen.",
     "clearAll": "Rensa alla texter",
-    "cleared": "Alla texter rensade.",
     "autoShareHint": "Text delas automatiskt när du klistrar in (Ctrl+V / Cmd+V)",
     "delete": "Ta bort",
     "prefillNote": "Den här texten kom från en länk. Kontrollera den och tryck på ”Dela” för att skicka.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Sluta spara",
     "keepCancelled": "Texten sparas inte längre.",
     "cancelFailed": "Det gick inte att sluta spara. Försök igen.",
-    "storagePlainIp": "Klartext, 10 min · alla på nätverket ser den",
-    "storagePlainGlobal": "Klartext, 10 min · även okända ser den",
-    "storageLocked": "Krypterad, 10 min · bara enheter med lösenordet",
-    "storagePrivate": "Krypterad med 1:1-rummets nyckel, 10 min",
     "storageNone": "Sparas inte · bara enheter som är öppna nu",
     "keepLine": "Text sparas 10 min · filer upp till 1 dag",
     "notKeptTooLarge": "Över 96 KB, sparades inte · bara enheter som är öppna nu fick den",
@@ -223,9 +201,7 @@
     "collapse": "Dölj"
   },
   "notification": {
-    "uploading": "Laddar upp...",
     "uploadComplete": "{count} fil(er) uppladdade!",
-    "uploadFailed": "Uppladdning misslyckades: {message}",
     "sizeLimitExceeded": "Total uppladdningsstorlek överstiger gränsen ({limit}). Nuvarande: {current}, Uppladdning: {upload}",
     "reconnected": "Återansluten",
     "connected": "Ansluten.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Filen är tom",
     "copying": "Kopierar...",
     "openedNewTab": "Öppnades i en ny flik.",
-    "downloadingCount": "Laddar ned {count} fil(er)...",
-    "downloadPartial": "{success} lyckades, {fail} misslyckades",
-    "downloadCountComplete": "{count} fil(er) nedladdade!",
     "copyFirstOnly": "Endast den första filen kopieras till urklipp...",
     "copyingToClipboard": "Kopierar till urklipp...",
     "copiedWithCount": "{name} kopierades till urklipp! (1 av {total})\nAnvänd \"Ladda ned valda\" för flera filer.",
     "deleted": "{name} raderades",
-    "deleteFailed": "Radering misslyckades: {message}",
     "confirmDeleteSelected": "Radera de {count} valda filerna?",
     "confirmClearStorage": "Radera alla filer i lagringen? Det går inte att ångra.",
     "storageCleared": "Lagringen har rensats",
@@ -261,7 +233,6 @@
     "textRemoved": "Texten raderades"
   },
   "clipboard": {
-    "paste": "Klistra in",
     "empty": "Urklipp är tomt.",
     "permissionDenied": "Åtkomstbehörighet till urklipp krävs.",
     "pasteTitle": "Klistra in",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Det finns inga filer att kopiera till urklipp",
-    "noFilesToDownload": "Det finns inga filer att ladda ned",
     "textNotFound": "Texten hittades inte",
     "noPresignedUrl": "Det gick inte att hämta uppladdnings-URL",
     "invalidRoomCode": "Ogiltig rumskod.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Filen överskrider gränsen för enkel uppladdning (100 MB). Uppdatera sidan och försök igen.",
     "sizeMismatch": "Den uppladdade filens storlek stämde inte och togs bort. Ladda upp den igen.",
     "multipartFailed": "Uppladdningen av den stora filen misslyckades: {status}",
-    "serverRoomSizeExceeded": "Det skulle överskrida rummets lagringsgräns."
+    "serverRoomSizeExceeded": "Det skulle överskrida rummets lagringsgräns.",
+    "connectUser": "Det gick inte att ansluta till servern. Kontrollera internetanslutningen och ladda om sidan.",
+    "uploadUser": "Det gick inte att ladda upp ”{name}”. Försök igen.",
+    "downloadUser": "Det gick inte att ladda ner filen. Den kan redan ha tagits bort.",
+    "deleteUser": "Det gick inte att ta bort. Försök igen."
   },
   "qrModal": {
     "roomTitle": "Dela rum med QR-kod",
@@ -402,7 +376,6 @@
     "roomVisibility": "Bara enheter som är i det här rummet kan se dem."
   },
   "download": {
-    "title": "Laddar ner filer...",
     "selectAll": "Markera alla",
     "deselectAll": "Avmarkera alla",
     "downloadSelected": "Ladda ner",
@@ -454,7 +427,6 @@
     "leave": "Lämna rummet",
     "leaveConfirm": "Rummet tas bara bort från den här enheten. Andra enheter kan fortsätta använda det",
     "unnamed": "Rum utan namn",
-    "textNote": "Krypterad med rummets nyckel, 10 min",
     "expired": "Din åtkomst till rummet har gått ut. Be om en ny inbjudan",
     "noRoom": "Rummet hittades inte",
     "leaveFailed": "Det gick inte att lämna rummet. Försök igen",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Släpp in",
     "reject": "Avvisa",
-    "approved": "{name} gick med",
     "slotLabel": "Bild {n}: {name}",
     "slotEmpty": "Bild {n}: tom",
     "pickerLabel": "24 bilder",

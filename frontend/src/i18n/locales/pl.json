@@ -5,19 +5,10 @@
     "helpTitle": "Jak używać"
   },
   "room": {
-    "connecting": "Łączenie...",
-    "connected": "Połączono z pokojem {roomId}.",
-    "userCount": "{count} użytkownik(ów) w pokoju.",
     "connectedDevices": "Połączone urządzenia",
-    "copyCode": "Kopiuj kod pokoju",
-    "copied": "Kod pokoju skopiowany!",
     "textTab": "Tekst",
     "qrShareTitle": "Udostępnij kodem QR",
-    "currentRoomCode": "Kod bieżącego pokoju",
     "copy": "Kopiuj",
-    "qr": "QR",
-    "joinOtherRoom": "Dołącz do innego pokoju",
-    "enterCode": "Wpisz kod pokoju",
     "otherDevices": "Inne urządzenia: {count}",
     "waiting": "Oczekiwanie na urządzenia",
     "emptyState": {
@@ -95,7 +86,6 @@
     "gender": "fmmmmmfmmmfffmfmmmmfmmmm",
     "nameFormat": "{adj} {animal}",
     "me": "Ja",
-    "youAre": "Ja: {name} (to urządzenie)",
     "reroll": "Losuj ponownie",
     "rerollTitle": "Zmień imię zwierzaka",
     "connectedAs": "{name} na {device} {browser}",
@@ -134,7 +124,6 @@
       "Unknown": "browser"
     },
     "ipNotice": "Inne osoby w tej samej sieci (szkoła, biuro, kawiarnia) też mogą to zobaczyć.",
-    "manage": "Zarządzaj plakietką",
     "notAuth": "Plakietka tylko odróżnia urządzenia. To nie jest weryfikacja tożsamości.",
     "globalWarning": "Tutaj każdy, także obcy, widzi to, co wysyłasz. Dane wrażliwe przed wysłaniem zabezpiecz hasłem.",
     "pairSasLoading": "Wczytywanie obrazków…",
@@ -155,14 +144,10 @@
     "confirm": "Udostępnij"
   },
   "file": {
-    "upload": "Prześlij plik",
     "download": "Pobierz",
     "share": "Udostępnij",
-    "downloading": "Pobieranie...",
     "downloadComplete": "Pobieranie zakończone!",
     "downloadFailed": "Pobieranie nieudane",
-    "uploaded": "Nowy plik przesłany!",
-    "copyToClipboard": "Kopiuj do schowka",
     "copied": "Skopiowano do schowka!",
     "copyFailed": "Kopiowanie nieudane",
     "delete": "Usuń",
@@ -181,10 +166,7 @@
   "text": {
     "share": "Udostępnij tekst",
     "shared": "Tekst udostępniony!",
-    "newText": "Nowy tekst udostępniony!",
-    "removed": "Tekst usunięty.",
     "clearAll": "Wyczyść wszystkie teksty",
-    "cleared": "Wszystkie teksty wyczyszczone.",
     "autoShareHint": "Tekst jest udostępniany automatycznie po wklejeniu (Ctrl+V / Cmd+V)",
     "delete": "Usuń",
     "prefillNote": "Ten tekst pochodzi z linku. Sprawdź go i naciśnij „Udostępnij”, aby wysłać.",
@@ -204,10 +186,6 @@
     "cancelKeep": "Nie przechowuj",
     "keepCancelled": "Tekst nie jest już przechowywany.",
     "cancelFailed": "Nie udało się zakończyć przechowywania. Spróbuj ponownie.",
-    "storagePlainIp": "Zwykły tekst, 10 min · widzi każdy w tej sieci",
-    "storagePlainGlobal": "Zwykły tekst, 10 min · widzą go też obcy",
-    "storageLocked": "Zaszyfrowany, 10 min · tylko urządzenia z hasłem",
-    "storagePrivate": "Zaszyfrowany kluczem pokoju 1:1, 10 min",
     "storageNone": "Nie przechowywany · tylko otwarte teraz urządzenia",
     "keepLine": "Tekst przechowywany 10 min · pliki do 1 dnia",
     "notKeptTooLarge": "Ponad 96 KB, nie zapisano · dostały go tylko urządzenia otwarte teraz",
@@ -223,9 +201,7 @@
     "collapse": "Zwiń"
   },
   "notification": {
-    "uploading": "Przesyłanie...",
     "uploadComplete": "{count} plik(ów) przesłano!",
-    "uploadFailed": "Przesyłanie nieudane: {message}",
     "sizeLimitExceeded": "Całkowity rozmiar przesyłania przekracza limit ({limit}). Aktualny: {current}, Przesyłanie: {upload}",
     "reconnected": "Połączono ponownie",
     "connected": "Połączono.",
@@ -235,14 +211,10 @@
     "fileEmpty": "Plik jest pusty",
     "copying": "Kopiowanie...",
     "openedNewTab": "Otwarto w nowej karcie.",
-    "downloadingCount": "Pobieranie plików: {count}...",
-    "downloadPartial": "Udane: {success}, nieudane: {fail}",
-    "downloadCountComplete": "Pobrano plików: {count}!",
     "copyFirstOnly": "Do schowka zostanie skopiowany tylko pierwszy plik...",
     "copyingToClipboard": "Kopiowanie do schowka...",
     "copiedWithCount": "Skopiowano {name} do schowka! (1 z {total})\nDla wielu plików użyj „Pobierz zaznaczone”.",
     "deleted": "Usunięto {name}",
-    "deleteFailed": "Nie udało się usunąć: {message}",
     "confirmDeleteSelected": "Usunąć zaznaczone pliki ({count})?",
     "confirmClearStorage": "Usunąć wszystkie pliki z magazynu? Tej operacji nie można cofnąć.",
     "storageCleared": "Magazyn został wyczyszczony",
@@ -261,7 +233,6 @@
     "textRemoved": "Usunięto tekst"
   },
   "clipboard": {
-    "paste": "Wklej",
     "empty": "Schowek jest pusty.",
     "permissionDenied": "Wymagane uprawnienie dostępu do schowka.",
     "pasteTitle": "Wklej",
@@ -333,7 +304,6 @@
   },
   "errors": {
     "noFilesToCopy": "Brak plików do skopiowania do schowka",
-    "noFilesToDownload": "Brak plików do pobrania",
     "textNotFound": "Nie znaleziono tekstu",
     "noPresignedUrl": "Nie udało się uzyskać adresu URL przesyłania",
     "invalidRoomCode": "Nieprawidłowy kod pokoju.",
@@ -358,7 +328,11 @@
     "singlePutTooLarge": "Ten plik przekracza limit pojedynczego przesyłania (100 MB). Odśwież stronę i spróbuj ponownie.",
     "sizeMismatch": "Rozmiar przesłanego pliku się nie zgadzał, więc go odrzucono. Prześlij go ponownie.",
     "multipartFailed": "Nie udało się przesłać dużego pliku: {status}",
-    "serverRoomSizeExceeded": "Przekroczyłoby to limit miejsca w pokoju."
+    "serverRoomSizeExceeded": "Przekroczyłoby to limit miejsca w pokoju.",
+    "connectUser": "Nie udało się połączyć z serwerem. Sprawdź internet i odśwież stronę.",
+    "uploadUser": "Nie udało się przesłać „{name}”. Spróbuj ponownie.",
+    "downloadUser": "Nie udało się pobrać pliku. Mógł już zostać usunięty.",
+    "deleteUser": "Nie udało się usunąć. Spróbuj ponownie."
   },
   "qrModal": {
     "roomTitle": "Udostępnij pokój kodem QR",
@@ -402,7 +376,6 @@
     "roomVisibility": "Widzą je tylko urządzenia znajdujące się w tym pokoju."
   },
   "download": {
-    "title": "Pobieranie plików...",
     "selectAll": "Zaznacz wszystko",
     "deselectAll": "Odznacz wszystko",
     "downloadSelected": "Pobierz",
@@ -454,7 +427,6 @@
     "leave": "Opuść pokój",
     "leaveConfirm": "Pokój zostanie usunięty tylko z tego urządzenia. Inne urządzenia mogą dalej z niego korzystać",
     "unnamed": "Pokój bez nazwy",
-    "textNote": "Zaszyfrowany kluczem pokoju, 10 min",
     "expired": "Dostęp do pokoju wygasł. Poproś o nowe zaproszenie",
     "noRoom": "Nie znaleziono pokoju",
     "leaveFailed": "Nie udało się opuścić pokoju. Spróbuj ponownie",
@@ -483,7 +455,6 @@
     "requestDevice": "{device}",
     "approve": "Wpuść",
     "reject": "Odrzuć",
-    "approved": "{name} dołączył do pokoju",
     "slotLabel": "Obrazek {n}: {name}",
     "slotEmpty": "Obrazek {n}: pusty",
     "pickerLabel": "24 obrazki",

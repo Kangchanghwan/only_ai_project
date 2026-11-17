@@ -31,6 +31,7 @@ import { parseInvite } from './utils/groupInvite'
 import { isGroupRoomId } from './utils/groupRoom'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
+import { reportError } from './utils/userErrors.js'
 import { useArrivalBadge } from './composables/useArrivalBadge'
 import { usePush } from './composables/usePush'
 import ArrivalNotifyPrompt from './components/ArrivalNotifyPrompt.vue'
@@ -499,7 +500,8 @@ async function connectToRoom() {
     startP2pProbe(socketService)
   } catch (error) {
     console.error('[App] 연결 실패:', error)
-    notification.showError(error.message || t('notification.connectFailed'))
+    reportError('connect', error)
+    notification.showError(t('errors.connectUser'))
     roomManager.leaveRoom()
   } finally {
     isConnecting.value = false
@@ -798,11 +800,12 @@ async function handleDownloadFile(file) {
     notification.showSuccess(t('file.downloadComplete'))
     nextTime.markSuccess('download')
   } else {
-    notification.failUpload(downloadId, result.error?.message || t('file.downloadFailed'))
+    reportError('download', result.error)
+    notification.failUpload(downloadId, t('errors.downloadUser'))
     setTimeout(() => {
       notification.removeUpload(downloadId)
     }, 5000)
-    notification.showError(t('file.downloadFailed'))
+    notification.showError(t('errors.downloadUser'))
   }
 }
 
@@ -1167,7 +1170,10 @@ async function handleDeleteFile(file) {
     const shownName = file.locked ? (lockState.nameFor(file.roomId, file.name) || t('lock.lockedFile')) : file.name
     notification.showSuccess(t('notification.deleted', { name: shownName }))
   } catch (error) {
-    notification.showError(t('notification.deleteFailed', { message: error.message }))
+    // 잠긴 파일(비밀번호를 아는 사람만 삭제)·시도 초과는 이미 할 일을 알려 주는 문구라 그대로
+    const known = error?.code === 'LOCKED_OUT' || error?.status === 403
+    if (!known) reportError('delete', error)
+    notification.showError(known ? error.message : t('errors.deleteUser'))
   }
 }
 
