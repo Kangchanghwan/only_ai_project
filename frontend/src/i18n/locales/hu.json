@@ -584,5 +584,17 @@
     "reloadOff": "Az oldal újratöltésekor a zár kikapcsolt. Amit most küld, nem lesz zárolva.",
     "reloadRelock": "Zárolás újra",
     "tag": "Zárolt"
+  },
+  "roster": {
+    "findTitle": "Eszköz keresése",
+    "findHint": "Válaszd ki a másik eszköz „Én” kártyáján látható nevet",
+    "adjLabel": "Melléknév",
+    "animalLabel": "Állat",
+    "suffixLabel": "Szám",
+    "noSuffix": "Nincs",
+    "find": "Keresés",
+    "notFound": "Jelenleg nincs ilyen nevű csatlakozott eszköz",
+    "rateLimited": "Kérjük, próbáld újra egy kicsit később",
+    "findError": "Nem található. Próbáld újra"
   }
 }

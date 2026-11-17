@@ -784,5 +784,17 @@
   "send": {
     "placeholder": "여기에 입력하거나 파일을 끌어다 놓으세요",
     "shortcutHint": "Ctrl+Enter로 보내기 (Mac은 ⌘+Enter)"
+  },
+  "roster": {
+    "findTitle": "기기 찾기",
+    "findHint": "상대 기기의 '나' 카드에 보이는 이름을 고르세요",
+    "adjLabel": "형용사",
+    "animalLabel": "동물",
+    "suffixLabel": "번호",
+    "noSuffix": "없음",
+    "find": "찾기",
+    "notFound": "지금 접속한 기기 중 이 이름이 없어요",
+    "rateLimited": "잠시 후 다시 찾아 주세요",
+    "findError": "찾지 못했어요. 다시 시도해 주세요"
   }
 }

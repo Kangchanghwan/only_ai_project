@@ -584,5 +584,17 @@
     "reloadOff": "El bloqueo se quitó al recargar la página. Lo que envíes ahora no estará bloqueado.",
     "reloadRelock": "Bloquear de nuevo",
     "tag": "Bloqueado"
+  },
+  "roster": {
+    "findTitle": "Buscar un dispositivo",
+    "findHint": "Elige el nombre que aparece en la tarjeta «Yo» del otro dispositivo",
+    "adjLabel": "Adjetivo",
+    "animalLabel": "Animal",
+    "suffixLabel": "Número",
+    "noSuffix": "Ninguno",
+    "find": "Buscar",
+    "notFound": "Ningún dispositivo conectado tiene este nombre ahora",
+    "rateLimited": "Inténtalo de nuevo en un momento",
+    "findError": "No se encontró. Inténtalo de nuevo"
   }
 }

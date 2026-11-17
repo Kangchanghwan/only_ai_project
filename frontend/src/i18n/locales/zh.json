@@ -584,5 +584,17 @@
     "reloadOff": "页面刷新后锁定已关闭。现在发送的内容不会被锁定。",
     "reloadRelock": "重新锁定",
     "tag": "已锁定"
+  },
+  "roster": {
+    "findTitle": "查找设备",
+    "findHint": "请选择对方设备“我”卡片上显示的名称",
+    "adjLabel": "形容词",
+    "animalLabel": "动物",
+    "suffixLabel": "编号",
+    "noSuffix": "无",
+    "find": "查找",
+    "notFound": "当前在线的设备中没有这个名称",
+    "rateLimited": "请稍后再试",
+    "findError": "没有找到，请重试"
   }
 }

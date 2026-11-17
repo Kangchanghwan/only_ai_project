@@ -584,5 +584,17 @@
     "reloadOff": "Låset stängdes av när sidan laddades om. Det du skickar nu är inte låst.",
     "reloadRelock": "Lås igen",
     "tag": "Låst"
+  },
+  "roster": {
+    "findTitle": "Hitta en enhet",
+    "findHint": "Välj namnet som visas på den andra enhetens „Jag”-kort",
+    "adjLabel": "Adjektiv",
+    "animalLabel": "Djur",
+    "suffixLabel": "Nummer",
+    "noSuffix": "Ingen",
+    "find": "Sök",
+    "notFound": "Ingen ansluten enhet har det här namnet just nu",
+    "rateLimited": "Försök igen om en stund",
+    "findError": "Hittades inte. Försök igen"
   }
 }

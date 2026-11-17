@@ -584,5 +584,17 @@
     "reloadOff": "Zámek se po znovunačtení stránky vypnul. Co teď odešlete, nebude zamčené.",
     "reloadRelock": "Zamknout znovu",
     "tag": "Zamčeno"
+  },
+  "roster": {
+    "findTitle": "Najít zařízení",
+    "findHint": "Vyberte jméno zobrazené na kartě „Já“ na druhém zařízení",
+    "adjLabel": "Přídavné jméno",
+    "animalLabel": "Zvíře",
+    "suffixLabel": "Číslo",
+    "noSuffix": "Žádné",
+    "find": "Najít",
+    "notFound": "Mezi připojenými zařízeními teď toto jméno není",
+    "rateLimited": "Zkuste to prosím za chvíli znovu",
+    "findError": "Nenalezeno. Zkuste to prosím znovu"
   }
 }

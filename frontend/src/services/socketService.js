@@ -21,6 +21,11 @@ function createClientId() {
   return `c-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}${Math.random().toString(36).slice(2, 12)}`
 }
 
+/** 전체 공유 방이 잘렸을 때 들고 있을 최근 기기 수 (서버 ROSTER_RECENT와 같다) */
+export const ROSTER_RECENT = 20
+/** room-snapshot / devices:find ack 대기 시간 */
+const ROSTER_ACK_TIMEOUT_MS = 5000
+
 /** pair/private ack 대기 시간 */
 const PAIR_ACK_TIMEOUT_MS = 5000
 
@@ -52,6 +57,11 @@ class SocketService {
     this.usersInRoom = ref(0)
     this.ipRoomDevices = ref([])
     this.globalRoomDevices = ref([])
+    /** 전체 공유 방 총 접속 수 / 목록이 최근 기기만으로 잘렸는지 (잘렸을 때만 UI가 바뀐다) */
+    this.globalRoomTotal = ref(0)
+    this.globalRoomTruncated = ref(false)
+    /** 방별 마지막으로 반영한 명단 순번 { [roomId]: number } */
+    this._rosterRevs = {}
     /** 1:1 비공개 방별 접속 기기 { [roomId]: DeviceInfo[] } */
     this.privateRoomDevices = ref({})
     this.connectionError = ref(null)
@@ -230,7 +240,7 @@ class SocketService {
         auth: (cb) => {
           collectClientHints()
             .catch(() => ({}))
-            .then((hints) => cb({ identity: loadIdentity(), hints, clientId: this.clientId }))
+            .then((hints) => cb({ identity: loadIdentity(), hints, clientId: this.clientId, roster: 2 }))
         },
         ...this.reconnectionConfig
       })
@@ -266,6 +276,7 @@ class SocketService {
         const ipChanged = !!prevIpRoomId && prevIpRoomId !== payload.ipRoomId
         if (ipChanged) {
           this.ipRoomDevices.value = []
+          delete this._rosterRevs[prevIpRoomId]
           // 복구 없이 새로 등록된 연결은 onReconnected가 목록을 다시 불러오므로 여기서는 복구된 연결만 알린다
           if (this.socket?.recovered) this._emitIpRoomChanged(prevIpRoomId, payload.ipRoomId)
         }
@@ -341,14 +352,90 @@ class SocketService {
       this.socket.on('identity', (payload) => this._applyIdentity(payload?.identity))
 
       // 룸(ip/global)의 접속 기기 목록 갱신 — payload.roomId로 어느 룸인지 분기한다
-      this.socket.on('room-users', ({ roomId, devices }) => {
-        if (roomId === this.ipRoomId.value) {
-          this.ipRoomDevices.value = devices
-        } else if (roomId === this.globalRoomId.value) {
-          this.globalRoomDevices.value = devices
-        } else if (typeof roomId === 'string' && roomId.startsWith('prv-') && Array.isArray(devices)) {
-          this.privateRoomDevices.value = { ...this.privateRoomDevices.value, [roomId]: devices }
-        }
+      this.socket.on('room-users', (payload) => this._applyRoomUsers(payload))
+      // 명단 증분 (rev 순서대로 적용, 구멍이 나면 스냅샷을 다시 받는다)
+      this.socket.on('room-delta', (payload) => this._applyRoomDelta(payload))
+    })
+  }
+
+  /** room-users 전체 목록 반영 (rev/total/truncated는 새 서버만 보낸다) */
+  _applyRoomUsers({ roomId, devices, rev, total, truncated }) {
+    if (!Array.isArray(devices)) return
+    if (roomId === this.ipRoomId.value) {
+      this.ipRoomDevices.value = devices
+    } else if (roomId === this.globalRoomId.value) {
+      this.globalRoomDevices.value = devices
+      this.globalRoomTotal.value = typeof total === 'number' ? total : devices.length
+      this.globalRoomTruncated.value = truncated === true
+    } else if (typeof roomId === 'string' && roomId.startsWith('prv-')) {
+      this.privateRoomDevices.value = { ...this.privateRoomDevices.value, [roomId]: devices }
+      return
+    } else {
+      return
+    }
+    if (typeof rev === 'number') this._rosterRevs[roomId] = rev
+    else delete this._rosterRevs[roomId]
+  }
+
+  /** room-delta 한 건 반영 */
+  _applyRoomDelta({ roomId, rev, total, truncated, op, device, socketId }) {
+    const isIp = roomId === this.ipRoomId.value
+    const isGlobal = roomId === this.globalRoomId.value
+    if (!isIp && !isGlobal) return
+    const last = this._rosterRevs[roomId]
+    if (typeof rev !== 'number') return
+    if (typeof last === 'number' && rev <= last) return
+    if (typeof last !== 'number' || rev > last + 1) {
+      this._requestRoomSnapshot(roomId)
+      return
+    }
+    this._rosterRevs[roomId] = rev
+    const current = isIp ? this.ipRoomDevices.value : this.globalRoomDevices.value
+    let next = current
+    if (op === 'add' && device) {
+      next = [...current.filter((d) => d.socketId !== device.socketId), device]
+    } else if (op === 'remove') {
+      next = current.filter((d) => d.socketId !== socketId)
+    } else if (op === 'update' && device) {
+      next = current.map((d) => (d.socketId === device.socketId ? device : d))
+    }
+    if (isIp) {
+      this.ipRoomDevices.value = next
+      return
+    }
+    // 서버가 기준 인원을 넘었다고 알리면 잘린 모드로 바꾼다 (내려올 때는 서버가 전체 스냅샷을 다시 보낸다)
+    if (truncated === true) this.globalRoomTruncated.value = true
+    if (this.globalRoomTruncated.value && next.length > ROSTER_RECENT) {
+      const me = this.mySocketId.value
+      const sorted = [...next].sort((a, b) => (b.joinedAt || 0) - (a.joinedAt || 0))
+      const kept = sorted.slice(0, ROSTER_RECENT)
+      const mine = me && !kept.some((d) => d.socketId === me) ? sorted.find((d) => d.socketId === me) : null
+      next = mine ? [...kept, mine] : kept
+    }
+    this.globalRoomDevices.value = next
+    if (typeof total === 'number') this.globalRoomTotal.value = total
+  }
+
+  /** rev 구멍이 났을 때 그 방의 스냅샷으로 교체한다 */
+  _requestRoomSnapshot(roomId) {
+    if (!this.socket?.connected) return
+    this.socket.emit('room-snapshot', { roomId }, (res) => {
+      if (res?.ok && res.snapshot) this._applyRoomUsers(res.snapshot)
+    })
+  }
+
+  /** 전체 공유 방에서 이름으로 기기 찾기 */
+  findDevice({ adj, animal, suffix }) {
+    return new Promise((resolve) => {
+      if (!this.socket?.connected) {
+        resolve({ ok: false, code: 'TIMEOUT' })
+        return
+      }
+      const timer = setTimeout(() => resolve({ ok: false, code: 'TIMEOUT' }), ROSTER_ACK_TIMEOUT_MS)
+      const payload = suffix ? { adj, animal, suffix } : { adj, animal }
+      this.socket.emit('devices:find', payload, (res) => {
+        clearTimeout(timer)
+        resolve(res || { ok: false, code: 'TIMEOUT' })
       })
     })
   }
@@ -609,6 +696,9 @@ class SocketService {
       this.usersInRoom.value = 0
       this.ipRoomDevices.value = []
       this.globalRoomDevices.value = []
+      this.globalRoomTotal.value = 0
+      this.globalRoomTruncated.value = false
+      this._rosterRevs = {}
       this.privateRoomDevices.value = {}
       this.mySocketId.value = null
       this.connectionError.value = null

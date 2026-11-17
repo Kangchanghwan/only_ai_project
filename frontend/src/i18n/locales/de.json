@@ -584,5 +584,17 @@
     "reloadOff": "Die Sperre wurde beim Neuladen der Seite aufgehoben. Was Sie jetzt senden, ist nicht gesperrt.",
     "reloadRelock": "Erneut sperren",
     "tag": "Gesperrt"
+  },
+  "roster": {
+    "findTitle": "Gerät finden",
+    "findHint": "Wähle den Namen, der auf der „Ich“-Karte des anderen Geräts steht",
+    "adjLabel": "Adjektiv",
+    "animalLabel": "Tier",
+    "suffixLabel": "Nummer",
+    "noSuffix": "Keine",
+    "find": "Suchen",
+    "notFound": "Aktuell ist kein verbundenes Gerät mit diesem Namen online",
+    "rateLimited": "Bitte versuche es gleich noch einmal",
+    "findError": "Nicht gefunden. Bitte erneut versuchen"
   }
 }

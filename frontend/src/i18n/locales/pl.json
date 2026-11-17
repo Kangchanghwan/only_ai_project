@@ -584,5 +584,17 @@
     "reloadOff": "Blokada wyłączyła się po odświeżeniu strony. To, co teraz wyślesz, nie będzie zablokowane.",
     "reloadRelock": "Zablokuj ponownie",
     "tag": "Zablokowane"
+  },
+  "roster": {
+    "findTitle": "Znajdź urządzenie",
+    "findHint": "Wybierz nazwę widoczną na karcie „Ja” na drugim urządzeniu",
+    "adjLabel": "Przymiotnik",
+    "animalLabel": "Zwierzę",
+    "suffixLabel": "Numer",
+    "noSuffix": "Brak",
+    "find": "Szukaj",
+    "notFound": "Żadne połączone urządzenie nie ma teraz tej nazwy",
+    "rateLimited": "Spróbuj ponownie za chwilę",
+    "findError": "Nie znaleziono. Spróbuj ponownie"
   }
 }

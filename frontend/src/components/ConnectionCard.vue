@@ -40,9 +40,11 @@ const props = defineProps({
   /** 전체 공유 방에만 있는 기기 (같은 네트워크 목록 아래 "다른 네트워크 기기 n대") */
   otherNetworkDevices: { type: Array, default: () => [] },
   /** 전체 공유 방의 기기 목록이 아직 오지 않았다 ("다른 네트워크 기기" 묶음이 있을지 아직 모른다) */
-  otherNetworkPending: { type: Boolean, default: false }
+  otherNetworkPending: { type: Boolean, default: false },
+  /** 전체 공유 방이 기준 인원을 넘어 목록에 안 보이는 다른 네트워크 기기 수 (0이면 화면 변화 없음) */
+  otherNetworkMore: { type: Number, default: 0 }
 })
-const emit = defineEmits(['reroll', 'hint-copied', 'group-create', 'code-enter'])
+const emit = defineEmits(['reroll', 'hint-copied', 'group-create', 'code-enter', 'go-find'])
 
 const pair = inject(PAIR_CONTEXT_KEY, null)
 
@@ -135,6 +137,8 @@ const otherOpenManual = ref(false)
 const otherList = computed(() => (!props.wide && props.scope === 'ip' && pair
   ? sortDevices(props.otherNetworkDevices, props.mySocketId, props.myIdentity).filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity))
   : []))
+// 기준 인원 초과 시 '기기 찾기' 링크 (묶음과 같은 조건에서만)
+const showOtherMore = computed(() => !props.wide && props.scope === 'ip' && !!pair && props.otherNetworkMore > 0)
 // 내가 보낸 1:1 요청이 진행 중인 기기가 묶음 안에 있으면 접어 둘 수 없다 (그림 확인 패널이 가려지지 않게)
 const otherBusy = computed(() => otherList.value.some((d) => { const st = stateOf(d)?.state; return st === 'pending' || st === 'connecting' }))
 const otherOpen = computed(() => otherOpenManual.value || otherBusy.value)
@@ -240,8 +244,9 @@ watch(
     <ul v-if="pendingDevices.length > 0" class="mt-3 pt-3 border-t border-border flex flex-col gap-2 list-none p-0 m-0" data-testid="pair-pending-rows">
       <DeviceRow v-for="d in pendingDevices" :key="d.socketId" :device="d" />
     </ul>
-    <div v-if="otherList.length > 0" class="mt-3 pt-3 border-t border-border" data-testid="other-network-group">
+    <div v-if="otherList.length > 0 || showOtherMore" class="mt-3 pt-3 border-t border-border" data-testid="other-network-group">
       <button
+        v-if="!showOtherMore"
         type="button"
         class="w-full flex items-center justify-between gap-2 min-h-[44px] -my-2 text-sm font-semibold text-text-secondary"
         :aria-expanded="otherOpen"
@@ -251,6 +256,29 @@ watch(
         <span>{{ t('pair.otherNetworkGroup', { n: otherList.length }) }}</span>
         <span aria-hidden="true">{{ otherOpen ? '▴' : '▾' }}</span>
       </button>
+      <!-- 기준 인원 초과: 펼치기와 "기기 찾기"를 한 줄에 -->
+      <div v-else class="flex flex-wrap items-center gap-x-2 -my-2" data-testid="other-network-row">
+        <button
+          v-if="otherList.length > 0"
+          type="button"
+          class="flex items-center gap-2 min-h-[44px] text-sm font-semibold text-text-secondary"
+          :aria-expanded="otherOpen"
+          data-testid="other-network-toggle"
+          @click="otherOpenManual = !otherOpenManual"
+        >
+          <span>{{ t('pair.otherNetworkGroup', { n: otherList.length }) }}</span>
+          <span aria-hidden="true">{{ otherOpen ? '▴' : '▾' }}</span>
+        </button>
+        <span v-if="otherList.length > 0" class="text-sm text-text-secondary" aria-hidden="true">·</span>
+        <button
+          type="button"
+          class="min-h-[44px] p-0 text-sm text-ink underline underline-offset-2 bg-transparent border-0 text-left"
+          data-testid="roster-go-find"
+          @click="emit('go-find')"
+        >
+          {{ t('roster.findTitle') }}
+        </button>
+      </div>
       <ul v-if="otherOpen" class="mt-3 flex flex-col gap-2 list-none p-0" data-testid="other-network-list">
         <DeviceRow v-for="device in otherList" :key="device.socketId" :device="device" />
       </ul>

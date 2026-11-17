@@ -784,5 +784,17 @@
   "send": {
     "placeholder": "Type here, or drag and drop files",
     "shortcutHint": "Send with Ctrl+Enter (⌘+Enter on Mac)"
+  },
+  "roster": {
+    "findTitle": "Find a device",
+    "findHint": "Pick the name shown on the other device's \"Me\" card",
+    "adjLabel": "Adjective",
+    "animalLabel": "Animal",
+    "suffixLabel": "Number",
+    "noSuffix": "None",
+    "find": "Find",
+    "notFound": "No connected device has this name right now",
+    "rateLimited": "Please try again in a moment",
+    "findError": "Couldn't find it. Please try again"
   }
 }
