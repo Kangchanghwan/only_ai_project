@@ -16,17 +16,17 @@ Source: https://www.clipboardapp.org/how-to-use.html
 
 보내는 기기와 받는 기기를 같은 와이파이에 연결한 뒤, 양쪽 브라우저에서 [https://www.clipboardapp.org/](https://www.clipboardapp.org/) 를 엽니다. 같은 네트워크의 기기는 **같은 네트워크** 탭에 자동으로 묶입니다. 가입, 로그인, 입력할 코드는 없습니다.
 
-## 52초 영상으로 먼저 보기
+## 46초 영상으로 먼저 보기
 
 아래 순서를 읽기 전에 실제 화면을 먼저 보고 싶다면 이 영상이 빠릅니다. 나레이션 없이 장면마다 제목 한 줄이 붙어 있어서 소리를 꺼도 따라갈 수 있습니다.
 - **0:02** 폰에서 사이트를 열면 PC의 기기 목록에 폰의 동물 이름표가 나타납니다. 코드를 입력하거나 QR을 찍는 과정이 없습니다.
-- **0:05** 폰의 텍스트 탭에 쓰고 "공유"를 누르면 PC의 수신한 텍스트에 바로 뜹니다.
-- **0:12** 폰에서 사진 4장을 고르면 PC 목록에 썸네일과 함께 도착합니다.
-- **0:18** PC에서 "전체 선택" 뒤 "다운로드"를 누르면 4개가 ZIP 하나로 받아집니다.
-- **0:24** PC에서 방을 만들면 그림 4개가 뜹니다. 폰에서 같은 그림을 순서대로 누르고, PC에서 "들이기"를 누르면 폰이 방에 들어옵니다.
-- **0:39** 방에 올린 PDF는 파일 이름까지 폰에서 암호화되어 올라가고, PC에서 풀려 원래 이름으로 보입니다.
+- **0:05** 폰의 입력 상자에 쓰고 "공유"를 누르면 PC 목록에 바로 뜹니다.
+- **0:11** 폰에서 사진 4장을 고르면 PC 목록에 썸네일과 함께 도착합니다.
+- **0:15** PC에서 "전체 선택" 뒤 "다운로드"를 누르면 4개가 ZIP 하나로 받아집니다.
+- **0:22** PC에서 방을 만들면 그림 4개가 뜹니다. 폰에서 같은 그림을 순서대로 누르고, PC에서 "들이기"를 누르면 폰이 방에 들어옵니다.
+- **0:36** 방에 올린 PDF는 파일 이름까지 폰에서 암호화되어 올라가고, PC에서 풀려 원래 이름으로 보입니다.
 
-장면별 표는 [영상 페이지](https://www.clipboardapp.org/guide/clipboard-share-video.html)에 정리했습니다. 영어판 영상은 [유튜브](https://youtu.be/-x0xVxSTHlg)에 있습니다.
+장면별 표는 [영상 페이지](https://www.clipboardapp.org/guide/clipboard-share-video.html)에 정리했습니다. 영어판 영상은 [유튜브](https://youtu.be/tQPI6wA79OA)에 있습니다.
 
 ## 파일 보내기
 - PC에서는 파일을 페이지 위로 끌어다 놓거나, **파일 업로드** 카드를 눌러 파일을 고릅니다.
@@ -656,7 +656,7 @@ Source: https://www.clipboardapp.org/guide/galaxy-photo-to-pc-transfer.html
 
 갤럭시와 컴퓨터를 같은 와이파이에 두고 양쪽에서 브라우저를 열면 바로 연결됩니다. 갤럭시에서 올린 사진이 몇 초 뒤 컴퓨터 화면에 나타나고, 메신저처럼 압축되지 않은 원본으로 저장됩니다.
 
-실제 사이트 화면 5초: 폰에서 사진 4장을 고르면 컴퓨터 목록에 바로 도착합니다. 전체 과정은 [사용법 영상(52초)](https://www.clipboardapp.org/how-to-use.html)에 있습니다.
+실제 사이트 화면 5초: 폰에서 사진 4장을 고르면 컴퓨터 목록에 바로 도착합니다. 전체 과정은 [사용법 영상(46초)](https://www.clipboardapp.org/how-to-use.html)에 있습니다.
 
 ## 옮기는 방법
 - 갤럭시와 컴퓨터를 같은 와이파이에 연결합니다. 데스크톱처럼 유선으로 연결된 PC라도 같은 공유기에 물려 있으면 됩니다.
@@ -1475,9 +1475,9 @@ Getting photos off an iPhone onto a Windows PC usually means finding the cable, 
 
 With both devices on the same Wi-Fi, a browser tab on each side is enough. Pick the photos on the iPhone, and they appear on the PC a few seconds later at their original size.
 
-## Watch it first (53 seconds)
+## Watch it first (45 seconds)
 
-The video was recorded on the live site with no narration. Photos from the phone reach the computer at **0:12**, and **0:18** shows several files downloaded as one ZIP.
+The video was recorded on the live site with no narration. Photos from the phone reach the computer at **0:11**, and **0:15** shows several files downloaded as one ZIP.
 
 ## How to do it
 - Put the iPhone and the Windows PC on the same Wi-Fi network. A desktop on Ethernet counts as long as it is behind the same router.

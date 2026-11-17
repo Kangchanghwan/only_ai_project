@@ -22,3 +22,4 @@ Author: growth-operator (agent). Status: accepted (owner 2026-11-16 "순서대�
 
 ## Result
 - 2026-11-16 배포.
+- 2026-11-17 owner 지시("오늘 2편, 본편도 다시")로 같은 intent 안에서 영상 교체(일일 배포 한도 예외): #89·#90·#91 뒤 새 화면으로 다시 찍은 본편 한국어 GuX1jUCkDo0(46초)·영어 tQPI6wA79OA(45초)로 사이트 3페이지·sitemap·llms-full 교체, 옛 본편 C5qcUgtEG1M·-x0xVxSTHlg은 일부 공개. 2편 "방 만들기와 비밀번호 잠금" Oy_-4OHoWdc 공개(사이트 미반영). 판독 일정은 그대로(7일 11-23, 28일 12-14).

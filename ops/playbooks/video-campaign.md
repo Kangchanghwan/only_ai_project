@@ -58,8 +58,11 @@ owner 지시(2026-11-16): "순서대로 다해줘. 영상 업로드도 다해주
 | 종류 | 주소 | 비고 |
 |---|---|---|
 | 채널 | https://www.youtube.com/@ClipboardShareApp (UCxY3QULZpupEvTNXgjvYkKw) | owner 지시(11-16 "The Trend Why를 바꿔서 사용해줘. 새로 만들지말고")로 The Trend Why(@TheTrendWhyTV, 원래 강창환 채널)를 이름 Clipboard Share·핸들 @ClipboardShareApp로 바꿔 씀. 휴대폰 인증된 채널. The Trend Why 공개 쇼츠 2편(1c3hrSSEyD8, bd4Adha0UuM)은 비공개로 돌림(되돌리기 가능). 옛 영상 DqPto5orZ1s·2i_LNpqvL-Y는 같은 채널에 일부 공개 |
-| 한국어 본편 52초 | https://youtu.be/C5qcUgtEG1M | how-to-use.html·영상 페이지에 넣음 |
-| 영어 본편 53초 | https://youtu.be/-x0xVxSTHlg | /en/guide/transfer-photos-iphone-to-windows-without-cable.html에 넣음 |
+| 한국어 본편 46초 (11-17 새 화면) | https://youtu.be/GuX1jUCkDo0 | how-to-use.html·영상 페이지에 넣음. 카드(0:22 → 2편)·최종 화면(0:40~ 2편+구독)·고정 댓글 |
+| 영어 본편 45초 (11-17 새 화면) | https://youtu.be/tQPI6wA79OA | /en/guide/transfer-photos-iphone-to-windows-without-cable.html에 넣음 |
+| 사용법 2편 44초 | https://youtu.be/Oy_-4OHoWdc | 방 만들기(연결·초대 QR/링크)·비밀번호 잠금. 사이트에는 아직 안 넣음(후보: send-file-with-password, how-to-use 방 절) |
+| 재생목록 | 한국어 https://www.youtube.com/playlist?list=PLd3kF_Vk9IrA · 영어 https://www.youtube.com/playlist?list=PLYjjT8zSWwRI | 공개 |
+| 옛 본편(11-16, #89 전 화면) | C5qcUgtEG1M · -x0xVxSTHlg | 11-17 일부 공개로 돌림(삭제 안 함). 옛 쇼츠 3편·장면 클립 5초·README GIF는 옛 화면 그대로(owner 결정 대기) |
 | 쇼츠 A 12초 | https://youtube.com/shorts/q2SRH8RpVBw | 폰 사진 → 컴퓨터 |
 | 쇼츠 B 13초 | https://youtube.com/shorts/Xp5Q_VW2MIo | 폰 텍스트 → 컴퓨터 |
 | 쇼츠 C 27초 | https://youtube.com/shorts/v2Nb9StmKts | 그림 4개로 방 + 방 암호화 |
