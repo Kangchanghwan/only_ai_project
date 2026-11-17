@@ -237,7 +237,7 @@ function onKeydown(event) {
       data-testid="text-share-result"
     >{{ lastResult === 'ok' ? t('text.sentStatus') : lastResult === 'fail' ? t('text.sendFailedStatus') : '' }}</p>
     <!-- 상자 아래 작은 한 줄: 보관 기간 · 파일 한도 (받을 기기가 없을 때만 전달 안내를 덧붙인다) -->
-    <div class="mt-2 text-xs text-text-secondary" data-testid="text-storage" :data-mode="storageMode">
+    <div class="mt-2 text-xs text-text-secondary" dir="auto" data-testid="text-storage" :data-mode="storageMode">
       <template v-if="!composeDisabled">
         <span data-testid="text-storage-label">{{ storageLabel }}</span>
         <span aria-hidden="true"> · </span>

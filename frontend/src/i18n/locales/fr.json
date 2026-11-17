@@ -136,7 +136,7 @@
     "ipNotice": "Les autres personnes du même réseau (école, bureau, café) peuvent aussi le voir.",
     "manage": "Gérer l'étiquette",
     "notAuth": "L'étiquette sert seulement à distinguer les appareils. Ce n'est pas une vérification d'identité.",
-    "globalWarning": "Tout le monde, y compris des inconnus, peut voir ce que vous envoyez ici. Pour du contenu sensible, activez « {lock} » avant d'envoyer.",
+    "globalWarning": "Tout le monde, y compris des inconnus, peut voir ce que vous envoyez ici. Verrouillez le contenu sensible avec un mot de passe avant de l'envoyer.",
     "pairSasLoading": "Chargement des images…",
     "moreDevices": "Afficher {count} de plus"
   },

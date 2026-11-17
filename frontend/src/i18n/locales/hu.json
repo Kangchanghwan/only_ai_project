@@ -136,7 +136,7 @@
     "ipNotice": "Az ugyanazon a hálózaton lévő más személyek (iskola, iroda, kávézó) is láthatják.",
     "manage": "Névcímke kezelése",
     "notAuth": "A névcímke csak az eszközök megkülönböztetésére szolgál. Nem személyazonosság-ellenőrzés.",
-    "globalWarning": "Itt bárki, idegenek is láthatják, amit küldesz. Érzékeny tartalomnál előbb kapcsold be: „{lock}”.",
+    "globalWarning": "Itt bárki, idegenek is láthatják, amit küldesz. Az érzékeny tartalmat küldés előtt zárd le jelszóval.",
     "pairSasLoading": "Képek betöltése…",
     "moreDevices": "{count} további megjelenítése"
   },

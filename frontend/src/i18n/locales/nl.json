@@ -136,7 +136,7 @@
     "ipNotice": "Ook andere mensen op hetzelfde netwerk (school, kantoor, café) kunnen het zien.",
     "manage": "Naamlabel beheren",
     "notAuth": "Het naamlabel onderscheidt alleen apparaten. Het is geen identiteitscontrole.",
-    "globalWarning": "Iedereen, ook onbekenden, kan zien wat je hier verstuurt. Zet voor gevoelige inhoud eerst '{lock}' aan.",
+    "globalWarning": "Iedereen, ook onbekenden, kan zien wat je hier verstuurt. Vergrendel gevoelige inhoud eerst met een wachtwoord.",
     "pairSasLoading": "Afbeeldingen laden…",
     "moreDevices": "Nog {count} tonen"
   },

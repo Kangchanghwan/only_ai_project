@@ -136,7 +136,7 @@
     "ipNotice": "Những người khác trong cùng mạng (trường học, văn phòng, quán cà phê) cũng có thể thấy.",
     "manage": "Quản lý thẻ tên",
     "notAuth": "Thẻ tên chỉ để phân biệt thiết bị, không phải xác thực danh tính.",
-    "globalWarning": "Ở đây bất kỳ ai, kể cả người lạ, đều thấy nội dung bạn gửi. Với nội dung nhạy cảm, hãy bật “{lock}” trước khi gửi.",
+    "globalWarning": "Ở đây bất kỳ ai, kể cả người lạ, đều thấy nội dung bạn gửi. Hãy khóa nội dung nhạy cảm bằng mật khẩu trước khi gửi.",
     "pairSasLoading": "Đang tải hình ảnh…",
     "moreDevices": "Xem thêm {count}"
   },

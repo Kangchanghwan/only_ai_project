@@ -136,7 +136,7 @@
     "ipNotice": "学校、公司、咖啡馆等使用同一网络的其他人也可能看到。",
     "manage": "管理名牌",
     "notAuth": "名牌只用于区分设备，不是身份验证。",
-    "globalWarning": "全体共享时，陌生人也能看到。敏感内容请先开启“{lock}”再发送。",
+    "globalWarning": "在这里发送的内容，陌生人也能看到。敏感内容请先用密码锁定再发送。",
     "pairSasLoading": "正在加载图片…",
     "moreDevices": "再显示 {count} 台"
   },
@@ -209,7 +209,7 @@
     "storageLocked": "加密保存 10 分钟 · 仅知道密码的设备",
     "storagePrivate": "用 1:1 房间密钥加密，保存 10 分钟",
     "storageNone": "不保存 · 仅发送给现在打开的设备",
-    "keepLine": "文本保留10分钟 · 文件最长1天",
+    "keepLine": "文本保留 10 分钟 · 文件最长 1 天",
     "notKeptTooLarge": "超过 96KB，未保存 · 只发送给了现在打开的设备",
     "notKeptFull": "服务器存储已满，未保存 · 只发送给了现在打开的设备",
     "sendAsFile": "以文件(.txt)发送 · 保存一天",

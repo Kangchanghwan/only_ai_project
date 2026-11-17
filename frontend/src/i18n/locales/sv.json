@@ -136,7 +136,7 @@
     "ipNotice": "Andra personer i samma nätverk (skola, kontor, kafé) kan också se det.",
     "manage": "Hantera namnlapp",
     "notAuth": "Namnlappen skiljer bara enheter åt. Det är ingen identitetskontroll.",
-    "globalWarning": "Här kan alla, även okända, se det du skickar. Slå på ”{lock}” först för känsligt innehåll.",
+    "globalWarning": "Här kan alla, även okända, se det du skickar. Lås känsligt innehåll med ett lösenord innan du skickar.",
     "pairSasLoading": "Läser in bilder…",
     "moreDevices": "Visa {count} till"
   },

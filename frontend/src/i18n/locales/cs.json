@@ -136,7 +136,7 @@
     "ipNotice": "Vidět to mohou i další lidé ve stejné síti (škola, kancelář, kavárna).",
     "manage": "Spravovat jmenovku",
     "notAuth": "Jmenovka jen rozlišuje zařízení. Není to ověření totožnosti.",
-    "globalWarning": "Tady vidí, co posíláte, kdokoli, i cizí lidé. U citlivých věcí nejdřív zapněte „{lock}“.",
+    "globalWarning": "Tady může kdokoli, i cizí lidé, vidět, co posíláte. Citlivé věci před odesláním zamkněte heslem.",
     "pairSasLoading": "Načítání obrázků…",
     "moreDevices": "Zobrazit dalších {count}"
   },

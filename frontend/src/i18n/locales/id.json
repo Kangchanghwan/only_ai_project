@@ -136,7 +136,7 @@
     "ipNotice": "Orang lain di jaringan yang sama (sekolah, kantor, kafe) juga bisa melihatnya.",
     "manage": "Kelola label nama",
     "notAuth": "Label nama hanya membedakan perangkat. Ini bukan verifikasi identitas.",
-    "globalWarning": "Di sini siapa pun, termasuk orang asing, bisa melihat yang Anda kirim. Untuk hal sensitif, aktifkan '{lock}' sebelum mengirim.",
+    "globalWarning": "Di sini siapa pun, termasuk orang asing, bisa melihat yang Anda kirim. Kunci hal sensitif dengan kata sandi sebelum mengirim.",
     "pairSasLoading": "Memuat gambar…",
     "moreDevices": "Tampilkan {count} lagi"
   },

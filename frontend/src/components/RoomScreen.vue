@@ -319,6 +319,7 @@ watch(
         v-if="scope === 'global'"
         class="global-warning mb-4 rounded-none border border-scope-global bg-scope-global/10 p-3 text-sm text-text-primary"
         role="note"
+        dir="auto"
         data-testid="global-warning"
       >
         {{ t('identity.globalWarning', { lock: t('lock.chipStart') }) }}

@@ -136,7 +136,7 @@
     "ipNotice": "Aynı ağdaki diğer kişiler de (okul, ofis, kafe) bunu görebilir.",
     "manage": "Ad etiketini yönet",
     "notAuth": "Ad etiketi yalnızca cihazları ayırt eder. Kimlik doğrulaması değildir.",
-    "globalWarning": "Burada yabancılar dahil herkes gönderdiklerinizi görebilir. Hassas içerikler için önce “{lock}” seçeneğini açın.",
+    "globalWarning": "Burada yabancılar dahil herkes gönderdiklerinizi görebilir. Hassas içerikleri göndermeden önce şifreyle kilitleyin.",
     "pairSasLoading": "Resimler yükleniyor…",
     "moreDevices": "{count} tane daha göster"
   },

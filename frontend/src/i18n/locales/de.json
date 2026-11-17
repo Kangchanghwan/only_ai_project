@@ -136,7 +136,7 @@
     "ipNotice": "Auch andere Personen im selben Netzwerk (Schule, Büro, Café) können es sehen.",
     "manage": "Namensschild verwalten",
     "notAuth": "Das Namensschild unterscheidet nur Geräte. Es ist keine Identitätsprüfung.",
-    "globalWarning": "Hier kann jeder mitlesen, auch Fremde. Schalte für Sensibles vor dem Senden „{lock}“ ein.",
+    "globalWarning": "Hier kann jeder, auch Fremde, sehen, was du sendest. Sperre Sensibles vor dem Senden mit einem Passwort.",
     "pairSasLoading": "Bilder werden geladen…",
     "moreDevices": "{count} weitere anzeigen"
   },

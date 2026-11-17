@@ -136,7 +136,7 @@
     "ipNotice": "Inne osoby w tej samej sieci (szkoła, biuro, kawiarnia) też mogą to zobaczyć.",
     "manage": "Zarządzaj plakietką",
     "notAuth": "Plakietka tylko odróżnia urządzenia. To nie jest weryfikacja tożsamości.",
-    "globalWarning": "Tutaj każdy, także obcy, widzi to, co wysyłasz. Dla danych wrażliwych włącz najpierw „{lock}”.",
+    "globalWarning": "Tutaj każdy, także obcy, widzi to, co wysyłasz. Dane wrażliwe przed wysłaniem zabezpiecz hasłem.",
     "pairSasLoading": "Wczytywanie obrazków…",
     "moreDevices": "Pokaż jeszcze {count}"
   },

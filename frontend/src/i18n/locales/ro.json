@@ -136,7 +136,7 @@
     "ipNotice": "Și alte persoane din aceeași rețea (școală, birou, cafenea) o pot vedea.",
     "manage": "Gestionează eticheta",
     "notAuth": "Eticheta doar deosebește dispozitivele. Nu este verificare de identitate.",
-    "globalWarning": "Aici oricine, inclusiv necunoscuți, poate vedea ce trimiți. Pentru conținut sensibil, activează mai întâi „{lock}”.",
+    "globalWarning": "Aici oricine, inclusiv necunoscuți, poate vedea ce trimiți. Blochează cu parolă conținutul sensibil înainte de trimitere.",
     "pairSasLoading": "Se încarcă imaginile…",
     "moreDevices": "Arată încă {count}"
   },
