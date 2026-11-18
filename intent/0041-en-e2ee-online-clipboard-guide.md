@@ -33,4 +33,5 @@ Author: growth-operator (agent). Status: shipped (2026-11-17). Created: 2026-11-
 - 색인 속도: 0025(영어 비교 가이드)는 21일 미색인이었다. 허브·관련 글 링크 + GSC 색인 요청으로 보완.
 
 ## Result
-(배포 후 에이전트가 채움)
+- 2026-11-17 배포 (master 3be2f1c). 11-18 URL 검사 "Google에 등록되어 있지 않음"(재요청 안 함).
+- **2026-11-19 URL 검사 "URL이 Google에 등록되어 있음"** → 색인 확인일 11-19. 7일 판독 11-26, 28일 판독 12-17 (GSC 정확일치 노출·클릭, 쿼리 secure online clipboard / e2ee 계열).

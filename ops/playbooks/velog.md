@@ -26,6 +26,8 @@
 9. Claude Code로 하루에 PR 여러 개 머지한 날: 2026-10-01 PR #36~#46 (.claude/ 디렉터리, 기능 브랜치 → PR → 머지 흐름, 실제로 뭘 시켰고 뭘 손봤나). PR 개수·순서는 git log로 확인 후 기재.
 10. 21개 언어 i18n을 혼자 관리하는 방법 (frontend/src/i18n/i18n.test.js, 코드의 t() 키 존재 검사 테스트, fallbackLocale en, 하드코딩 한국어 i18n 이관)
 11 이후: 최근 머지된 PR 중 글감이 될 만한 것.
+- (발행 2026-11-19, e2ee 캠페인 편, owner 승인 초안) 그림 4개로 방 열쇠 넘기기: 브라우저에서 SPAKE2(RFC 9382) 구현기: https://velog.io/@ch_kang/그림-4개로-방-열쇠-넘기기-브라우저에서-SPAKE2RFC-9382-구현기-온라인-클립보드-개발기 / DEV.to https://dev.to/kangchanghwan/passing-a-room-key-with-4-pictures-implementing-spake2-rfc-9382-in-the-browser-ah9
+
 
 
 ## 작성과 발행

@@ -29,3 +29,11 @@ grep "텍스트 탭|Text tab" 0(판독 끝난 페이지 기준). 페이지별 7�
 - 2026-11-18 추가 점검(11-16 피드백 절차: 머지된 화면 PR의 사라진 ko/en 키 값을 공개 페이지에서 grep, fd52926 → 1ad543b): **"파일 업로드" 카드/버튼(file.upload·file.uploadTitle 삭제, 지금은 입력 상자의 '파일 선택'/en 'Choose files')을 누르라는 안내가 17개 페이지**(`<strong>파일 업로드</strong>`·`<strong>Upload File</strong>` 기준, 한국어 상위 유입 가이드 포함). "클립보드에 복사"(file.copyToClipboard 삭제) 6개 페이지, "공유 범위"(help.scopeTitle) 2개. 텍스트 탭보다 범위가 커서 2차로 묶는다: 판독 중이 아닌 페이지부터 하루 1건(여러 페이지 한 번에), 버튼 이름은 라이브 화면과 대조.
 
 - 2026-11-18 (owner 대화 세션): send-file-with-password의 "파일 선택 버튼 아래 \"비밀번호로 잠그기\"" → "입력 상자 아래 도구 줄(파일 선택·붙여넣기 옆)의 \"비밀번호로 잠그기\"" (11-17 #89로 잠금 칩이 통합 보내기 상자 도구 줄로 옮겨짐, TextShareBox.vue LockChip). 0045에서 고친 문장이 화면 전환으로 다시 틀린 경우.
+- 2026-11-19 2차 배포 (master 9c11155, Actions auto-merge 성공, 라이브 반영 확인). 판독 중이 아닌 5개 페이지:
+  - en/guide/online-clipboard-for-files-and-images (0019 판독 11-17 종료): "Upload File card" → "Choose files below the text box"(본문·HowTo·FAQ JSON-LD 4곳), "Paste card" → "Paste button below the text box"(2곳).
+  - guide/ipad-to-windows-photo-transfer: "다운로드 버튼으로 저장하거나, 항목을 눌러 클립보드에 복사" → "'받기' 버튼으로 내려받거나, 사진의 ⋯ 메뉴에서 '이미지 복사'".
+  - guide/office-pc-file-transfer-without-messenger, guide/mac-to-windows-file-transfer: → "파일은 '받기' 버튼, 텍스트는 글 오른쪽의 '복사' 버튼".
+  - guide/send-link-from-pc-to-phone: "항목을 탭하면 클립보드에 복사" → "글 오른쪽의 복사 버튼(좁은 화면은 겹친 네모 아이콘)" (행 누르기는 펼치기).
+  - 근거: 11-19 master ko/en help.receive1·receive3·send2, file.receive '받기'(FileCard.vue 241, 넓은 화면 글자), file.copyImage(⋯ 메뉴, 이미지일 때만), file.chooseFiles, upload.pasteTitle. dateModified·sitemap lastmod 2026-11-19, llms-full.txt 재생성, check-seo 통과.
+  - 남은 대상("파일 업로드" 16개 페이지 중 판독 중인 것): 0045 남겨 둔 표의 날짜대로(E2 11-23, 0021·0023·0004 11-27, 0026 11-28, 0027 11-30, 0029 12-01, 0030 12-02, 0031 12-03, 0024 12-04, 0035 12-07, 0036 12-08, 0037 12-09). how-to-use는 E1 11-22 뒤. "공유 범위" 2개(ask-ai 0022 11-27 뒤, how-to-use).
+  - 측정: 5개 페이지 7일 노출(네이버·GSC) 유지 여부 11-26.
