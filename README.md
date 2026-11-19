@@ -2,7 +2,7 @@
 
 회원가입·앱 설치 없이 같은 와이파이의 PC와 스마트폰이 브라우저에서 자동 연결돼 복사한 텍스트, 스크린샷, 파일을 바로 주고받는 무료 온라인 클립보드입니다. 영어 페이지: https://www.clipboardapp.org/en/
 
-![Clipboard Share 사용 장면: 같은 와이파이에서 폰과 PC가 서로를 찾고, 폰에서 보낸 텍스트와 사진이 PC에 도착하는 16초](docs/media/demo-ko.gif)
+![Clipboard Share 사용 장면: 같은 와이파이에서 폰과 PC가 서로를 찾고, 폰에서 보낸 텍스트와 사진이 PC에 도착하는 15초](docs/media/demo-ko.gif)
 
 사용법 영상: [한국어 46초](https://youtu.be/GuX1jUCkDo0) · [English 45s](https://youtu.be/tQPI6wA79OA) · [2편: 방 만들기와 비밀번호 잠금](https://youtu.be/Oy_-4OHoWdc)
 
