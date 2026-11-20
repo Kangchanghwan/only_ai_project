@@ -48,7 +48,7 @@ body.ed #editor-root { display: flex; flex-direction: column; position: fixed; i
 @media (max-width: 639px) {
   .bar .wide { display: none; }
   .bar .narrow { display: inline-block; }
-  .bar-msg { display: none; }
-  .bar-name { max-width: none; flex: 1; }
+  .bar-name { max-width: 38vw; flex: none; }
+  .bar-msg { font-size: 0.75rem; }
 }
 [hidden] { display: none !important; }
