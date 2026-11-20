@@ -153,6 +153,7 @@
     "deleteSelected": "Видалити вибране",
     "clearStorage": "Очистити всі файли",
     "moreActions": "Ще",
+    "previewHwp": "Перегляд",
     "chooseFiles": "Вибрати файли",
     "limitResume": "До {size} на файл · перервані завантаження продовжуються",
     "limitShort": "до {size} на файл",

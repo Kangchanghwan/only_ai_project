@@ -154,6 +154,7 @@
     "deleteSelected": "선택 삭제",
     "clearStorage": "모든 파일 삭제",
     "moreActions": "더 보기",
+    "previewHwp": "미리보기",
     "chooseFiles": "파일 선택",
     "limitResume": "파일당 최대 {size} · 끊겨도 이어서 올려요",
     "limitShort": "파일당 {size}",

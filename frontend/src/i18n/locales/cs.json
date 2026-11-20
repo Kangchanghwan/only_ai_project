@@ -153,6 +153,7 @@
     "deleteSelected": "Smazat vybrané",
     "clearStorage": "Vymazat všechny soubory",
     "moreActions": "Více",
+    "previewHwp": "Náhled",
     "chooseFiles": "Vybrat soubory",
     "limitResume": "Až {size} na soubor · přerušené nahrávání se obnoví",
     "limitShort": "až {size} na soubor",

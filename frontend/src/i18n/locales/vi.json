@@ -153,6 +153,7 @@
     "deleteSelected": "Xóa đã chọn",
     "clearStorage": "Xóa tất cả tệp",
     "moreActions": "Thêm",
+    "previewHwp": "Xem trước",
     "chooseFiles": "Chọn tệp",
     "limitResume": "Tối đa {size} mỗi tệp · tải lên bị gián đoạn sẽ tiếp tục",
     "limitShort": "{size} mỗi tệp",

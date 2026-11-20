@@ -153,6 +153,7 @@
     "deleteSelected": "Seçilenleri Sil",
     "clearStorage": "Tüm Dosyaları Temizle",
     "moreActions": "Diğer",
+    "previewHwp": "Önizleme",
     "chooseFiles": "Dosya seç",
     "limitResume": "Dosya başına en fazla {size} · yarım kalan yüklemeler devam eder",
     "limitShort": "dosya başına {size}",

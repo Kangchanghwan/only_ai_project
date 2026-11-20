@@ -153,6 +153,7 @@
     "deleteSelected": "حذف المحدد",
     "clearStorage": "مسح جميع الملفات",
     "moreActions": "المزيد",
+    "previewHwp": "معاينة",
     "chooseFiles": "اختيار الملفات",
     "limitResume": "حتى {size} لكل ملف · تُستأنف عمليات الرفع المتقطعة",
     "limitShort": "{size} لكل ملف",

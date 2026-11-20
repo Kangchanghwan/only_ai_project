@@ -153,6 +153,7 @@
     "deleteSelected": "Hapus Terpilih",
     "clearStorage": "Hapus Semua File",
     "moreActions": "Lainnya",
+    "previewHwp": "Pratinjau",
     "chooseFiles": "Pilih file",
     "limitResume": "Hingga {size} per file · unggahan terputus dilanjutkan",
     "limitShort": "{size} per file",

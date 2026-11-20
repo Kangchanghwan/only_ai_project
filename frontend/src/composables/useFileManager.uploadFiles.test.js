@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useFileManager } from './useFileManager'
 import { r2Service } from '../services/r2Service'
 import { createImageThumbnail } from '../utils/thumbnail'
+import { createHwpThumbnail } from '../services/hwpThumb'
 import { trackEvent } from '../utils/analytics'
 
 vi.mock('../services/r2Service', () => ({
@@ -20,6 +21,7 @@ vi.mock('../services/r2Service', () => ({
 
 vi.mock('../utils/analytics', () => ({ trackEvent: vi.fn() }))
 
+vi.mock('../services/hwpThumb', () => ({ createHwpThumbnail: vi.fn() }))
 vi.mock('../utils/thumbnail', () => ({
   THUMBNAIL_CONTENT_TYPE: 'image/jpeg',
   createImageThumbnail: vi.fn()
@@ -167,6 +169,26 @@ describe('useFileManager - uploadFiles (배치 presign + 제한 병렬 + 썸네�
     )
     const thumbPuts = r2Service.putToPresignedUrl.mock.calls.filter(([url]) => url.includes('/thumbs/'))
     expect(thumbPuts).toHaveLength(1)
+  })
+
+  it('한글 문서는 hwp 썸네일 경로(지연 로드)를 쓰고, 이미지 썸네일 함수는 부르지 않는다. 실패해도 원본 업로드는 성공', async () => {
+    const doc = makeFile('a.hwpx', 'application/octet-stream')
+    const thumbBlob = new Blob(['thumb'], { type: 'image/jpeg' })
+    r2Service.getUploadUrls.mockImplementation(async (roomId, files) => files.map(({ fileName }) => ({
+      uploadUrl: `https://r2/put/${roomId}/${fileName}`, fileUrl: `https://store/${roomId}/${fileName}`, fileName,
+      thumbUploadUrl: `https://r2/put/thumbs/${roomId}/${fileName}.jpg`, thumbUrl: `https://store/thumbs/${roomId}/${fileName}.jpg`
+    })))
+    createHwpThumbnail.mockResolvedValue(thumbBlob)
+
+    await fm.uploadFiles('room-x', [doc])
+
+    expect(createHwpThumbnail).toHaveBeenCalledTimes(1)
+    expect(createImageThumbnail).not.toHaveBeenCalled()
+    expect(r2Service.putToPresignedUrl).toHaveBeenCalledWith('https://r2/put/thumbs/room-x/a.hwpx.jpg', thumbBlob, 'image/jpeg')
+
+    createHwpThumbnail.mockRejectedValue(new Error('boom'))
+    const summary = await fm.uploadFiles('room-x', [makeFile('b.hwp', 'application/octet-stream')])
+    expect(summary.successCount).toBe(1)
   })
 
   it('썸네일 업로드가 실패해도 원본 업로드는 성공으로 처리한다', async () => {
