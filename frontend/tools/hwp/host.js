@@ -18,6 +18,8 @@
  */
 import './../tools.css'
 import { trackEvent } from '../ga.js'
+import { isPhone } from '../../src/utils/isPhone.js'
+import { renderPages } from '../../src/services/hwpViewer.js'
 
 const STUDIO_URL = '/tools/hwp/studio/'
 const $ = (id) => document.getElementById(id)
@@ -28,6 +30,11 @@ const barMsg = $('bar-msg')
 let studioPromise = null
 let studio = null
 let currentName = '문서' // 저장 파일 이름(확장자 없음)
+// 폰은 보기 전용: studio는 화면 밖에 숨기고 쪽을 SVG 목록으로만 보여 준다 (메뉴·툴바·입력 없음)
+const phone = isPhone()
+if (phone) document.body.classList.add('phone')
+const viewerEl = $('viewer')
+let viewer = null
 let layoutState = 'landing'
 let dirty = false
 let pushed = false
@@ -115,7 +122,7 @@ function ensure() {
     setLayout('editor')
     setStatus('편집기를 불러오는 중입니다. 처음에는 30MB 정도를 받아 시간이 걸릴 수 있습니다.')
     studioPromise = import('@rhwp/editor')
-      .then(({ createStudio }) => createStudio(wrap, { studioUrl: STUDIO_URL, plugins: ['hwpctrl'] }))
+      .then(({ createStudio }) => createStudio(wrap, { studioUrl: STUDIO_URL, plugins: ['hwpctrl'], ...(phone ? { chrome: { menu: false, toolbar: false, statusbar: false } } : {}) }))
       .then((s) => {
         studio = s
         if (typeof s.onDocumentChanged === 'function') s.onDocumentChanged(() => setDirty(true))
@@ -143,6 +150,10 @@ async function open(bytes, name) {
   setName(name || currentName + '.hwpx')
   const res = await s.loadFile(bytes, name || currentName + '.hwpx')
   syncBarColors()
+  if (phone) {
+    viewer?.destroy()
+    viewer = renderPages(viewerEl, s, res.pageCount)
+  }
   setDirty(false)
   trackEvent('tool_hwp_open', { file_type: /\.hwp$/i.test(name || '') ? 'hwp' : 'hwpx' })
   setStatus('')
