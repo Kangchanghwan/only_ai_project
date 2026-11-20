@@ -53,6 +53,7 @@ const props = defineProps({
 const emit = defineEmits([
   'copy-image',
   'download-file',
+  'preview-hwp',
   'download-parallel',
   'copy-selected-to-clipboard',
   'delete-file',
@@ -304,6 +305,7 @@ onUnmounted(() => {
             :is-selected="isPrivate && selectedFiles.has(fileKey(item.file))"
             @toggle-selection="toggleFileSelection(item.file)"
             @delete-file="$emit('delete-file', item.file)"
+            @preview-hwp="$emit('preview-hwp', item.file)"
           />
           <FileCard
             v-else
@@ -314,6 +316,7 @@ onUnmounted(() => {
             @copy-image="$emit('copy-image', item.file.url)"
             @toggle-selection="toggleFileSelection(item.file)"
             @download-file="$emit('download-file', item.file)"
+            @preview-hwp="$emit('preview-hwp', item.file)"
             @delete-file="$emit('delete-file', item.file)"
           />
         </template>

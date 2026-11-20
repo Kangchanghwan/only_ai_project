@@ -31,6 +31,8 @@ export default defineConfig(({ command, mode }) => {
         },
       } : {},
       sourcemap: false,
+      // 최신 브라우저는 modulepreload를 기본 지원한다. 폴리필은 메인과 /tools/ 엔트리가 공유 청크로 따로 받게 되므로 끈다(옛 사파리는 미리 받기만 못 할 뿐 동작은 같다)
+      modulePreload: { polyfill: false },
       cssCodeSplit: true, // CSS 코드 스플리팅 활성화
       rollupOptions: {
         // 메인 앱 + 도구 페이지(/tools/, /tools/hwp/). 도구 페이지는 Vue를 쓰지 않아 메인 번들에 영향이 없다

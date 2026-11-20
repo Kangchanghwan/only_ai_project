@@ -153,6 +153,7 @@
     "deleteSelected": "حذف انتخاب‌شده‌ها",
     "clearStorage": "پاک کردن همه فایل‌ها",
     "moreActions": "بیشتر",
+    "previewHwp": "پیش‌نمایش",
     "chooseFiles": "انتخاب فایل",
     "limitResume": "حداکثر {size} برای هر فایل · آپلود قطع‌شده ادامه می‌یابد",
     "limitShort": "{size} برای هر فایل",

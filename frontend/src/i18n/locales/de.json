@@ -153,6 +153,7 @@
     "deleteSelected": "Auswahl löschen",
     "clearStorage": "Alle Dateien löschen",
     "moreActions": "Mehr",
+    "previewHwp": "Vorschau",
     "chooseFiles": "Dateien auswählen",
     "limitResume": "Bis zu {size} pro Datei · Unterbrochene Uploads werden fortgesetzt",
     "limitShort": "{size} pro Datei",

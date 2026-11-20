@@ -153,6 +153,7 @@
     "deleteSelected": "Excluir selecionados",
     "clearStorage": "Limpar todos os arquivos",
     "moreActions": "Mais",
+    "previewHwp": "Pré-visualizar",
     "chooseFiles": "Escolher arquivos",
     "limitResume": "Até {size} por arquivo · retoma se for interrompido",
     "limitShort": "{size} por arquivo",

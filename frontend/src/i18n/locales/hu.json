@@ -153,6 +153,7 @@
     "deleteSelected": "Kiválasztottak törlése",
     "clearStorage": "Összes fájl törlése",
     "moreActions": "Több",
+    "previewHwp": "Előnézet",
     "chooseFiles": "Fájlok kiválasztása",
     "limitResume": "Fájlonként legfeljebb {size} · a megszakadt feltöltés folytatódik",
     "limitShort": "fájlonként {size}",

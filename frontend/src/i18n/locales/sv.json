@@ -153,6 +153,7 @@
     "deleteSelected": "Ta bort valda",
     "clearStorage": "Rensa alla filer",
     "moreActions": "Mer",
+    "previewHwp": "Förhandsgranska",
     "chooseFiles": "Välj filer",
     "limitResume": "Upp till {size} per fil · avbrutna uppladdningar återupptas",
     "limitShort": "{size} per fil",
