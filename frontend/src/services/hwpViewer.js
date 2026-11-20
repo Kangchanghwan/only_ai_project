@@ -66,6 +66,6 @@ export function renderPages(container, studio, pageCount, { first = 4, batch = 4
   }
   const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) more(batch) }, { root: container, rootMargin: '600px' })
   io.observe(sentinel)
-  more(first)
-  return { destroy() { dead = true; io.disconnect() } }
+  const ready = more(first)
+  return { ready, destroy() { dead = true; io.disconnect() } }
 }

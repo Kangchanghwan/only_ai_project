@@ -89,3 +89,10 @@ body.ed #editor-root { display: flex; flex-direction: column; position: fixed; i
 body.phone #btn-new, body.phone #bar-menu-btn, body.phone #bar-dot { display: none; }
 body.phone #editor-wrap { position: fixed; left: -10000px; top: 0; width: 1024px; height: 768px; flex: none; }
 body.phone .viewer { display: block; }
+
+/* 엔진 받는 진행률 */
+.boot { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 5; width: min(420px, calc(100% - 32px)); padding: 16px; background: var(--color-surface); color: var(--color-text-primary); border: 2px solid var(--color-ink); }
+.boot p { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.boot-bar { height: 8px; background: var(--color-tint); border: 1px solid var(--color-border); }
+.boot-fill { height: 100%; width: 0; background: var(--color-ink); transition: width .15s linear; }
+.boot-fill.busy { width: 100%; opacity: .35; }

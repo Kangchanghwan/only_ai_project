@@ -20,6 +20,7 @@ import './../tools.css'
 import { trackEvent } from '../ga.js'
 import { isPhone } from '../../src/utils/isPhone.js'
 import { renderPages } from '../../src/services/hwpViewer.js'
+import { preloadEngine, progressText } from '../../src/services/hwpEngine.js'
 
 const STUDIO_URL = '/tools/hwp/studio/'
 const $ = (id) => document.getElementById(id)
@@ -41,6 +42,16 @@ let pushed = false
 let skipConfirm = false
 
 // 상태 문구: 첫 화면은 안내 문단에, 편집 화면은 상단 바 안에 보인다
+const bootEl = $('boot')
+function bootShow(p) {
+  bootEl.hidden = false
+  $('boot-text').textContent = progressText(p)
+  const fill = $('boot-fill')
+  fill.classList.toggle('busy', p.phase !== 'download')
+  fill.style.width = p.phase === 'download' ? Math.min(100, (p.loaded / p.total) * 100) + '%' : ''
+}
+const bootHide = () => { bootEl.hidden = true }
+
 let msgTimer = null
 const setStatus = (msg) => {
   statusEl.textContent = msg
@@ -121,7 +132,9 @@ function ensure() {
     syncStudioTheme()
     setLayout('editor')
     setStatus('편집기를 불러오는 중입니다. 처음에는 30MB 정도를 받아 시간이 걸릴 수 있습니다.')
-    studioPromise = import('@rhwp/editor')
+    studioPromise = preloadEngine(bootShow)
+      .then(() => { bootShow({ phase: 'render' }) })
+      .then(() => import('@rhwp/editor'))
       .then(({ createStudio }) => createStudio(wrap, { studioUrl: STUDIO_URL, plugins: ['hwpctrl'], ...(phone ? { chrome: { menu: false, toolbar: false, statusbar: false } } : {}) }))
       .then((s) => {
         studio = s
@@ -133,6 +146,7 @@ function ensure() {
       })
       .catch((e) => {
         studioPromise = null
+        bootHide()
         setLayout('landing')
         setStatus('편집기를 불러오지 못했습니다: ' + (e && e.message ? e.message : e))
         throw e
@@ -153,7 +167,9 @@ async function open(bytes, name) {
   if (phone) {
     viewer?.destroy()
     viewer = renderPages(viewerEl, s, res.pageCount)
+    await viewer.ready
   }
+  bootHide()
   setDirty(false)
   trackEvent('tool_hwp_open', { file_type: /\.hwp$/i.test(name || '') ? 'hwp' : 'hwpx' })
   setStatus('')
@@ -166,6 +182,7 @@ async function newDocument() {
   currentName = '새 문서'
   setName('새 문서')
   const r = await s.commands.execute('file:new-doc', {}, { allowDialog: true })
+  bootHide()
   setDirty(false)
   trackEvent('tool_hwp_open', { file_type: 'new' })
   return r

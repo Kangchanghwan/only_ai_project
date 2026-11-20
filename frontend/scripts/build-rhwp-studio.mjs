@@ -10,6 +10,7 @@
  * Usage: node scripts/build-rhwp-studio.mjs   (vite build 이후, frontend/dist 가 있어야 함)
  */
 import { execFileSync } from 'node:child_process'
+import { brotliCompressSync, constants as zc } from 'node:zlib'
 import { createHash } from 'node:crypto'
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -91,6 +92,25 @@ if (!existsSync(join(cachedDist, 'index.html'))) {
   rmSync(tgz, { force: true })
 } else {
   console.log(`[rhwp-studio] 캐시 사용: ${cachedDist}`)
+}
+
+// 진행률 표시용 manifest: 시작할 때 꼭 받는 파일(해시 URL)과 크기(원본, 전송량 추정=brotli)
+if (!existsSync(join(cachedDist, 'manifest.json'))) {
+  const assets = readdirSync(join(cachedDist, 'assets'))
+  const find = (re) => assets.find((f) => re.test(f))
+  const mainJs = find(/^index-.*\.js$/)
+  const mainCss = find(/^index-.*\.css$/)
+  const plugin = find(/^studio-plugin-.*\.js$/)
+  const wasmName = readFileSync(join(cachedDist, 'assets', mainJs), 'utf8').match(/rhwp_bg-[\w-]+\.wasm/)?.[0]
+  if (!mainJs || !wasmName) fail('manifest: 시작 파일을 찾지 못했습니다 (studio 번들 구조가 바뀜)')
+  const rels = [`assets/${wasmName}`, `assets/${mainJs}`, mainCss && `assets/${mainCss}`, plugin && `assets/${plugin}`,
+    'fonts/RHWPOldHangul-Regular.woff2', 'fonts/Pretendard-Regular.woff2', 'fonts/NotoSansKR-Regular.woff2', 'fonts/NotoSansKR-Bold.woff2'].filter(Boolean)
+  const files = rels.filter((r) => existsSync(join(cachedDist, r))).map((rel) => {
+    const buf = readFileSync(join(cachedDist, rel))
+    const est = /\.woff2$/.test(rel) ? buf.length : brotliCompressSync(buf, { params: { [zc.BROTLI_PARAM_QUALITY]: 9 } }).length
+    return { url: pin.base + rel, raw: buf.length, est }
+  })
+  writeFileSync(join(cachedDist, 'manifest.json'), JSON.stringify({ v: 1, tag: pin.tag, files }))
 }
 
 rmSync(outDir, { recursive: true, force: true })
