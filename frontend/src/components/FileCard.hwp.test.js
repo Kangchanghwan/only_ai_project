@@ -49,3 +49,23 @@ describe('FileCard 한글 편집 메뉴', () => {
     expect(wrapper.emitted('preview-hwp')).toBeFalsy()
   })
 })
+
+describe('FileCard 한글 문서 썸네일', () => {
+  const mk = (name, extra = {}) => mount(FileCard, { props: { file: { name, roomId: 'room-x', url: 'https://example.com/orig.hwpx', size: 10, created: '2026-01-01T00:00:00.000Z', ...extra } }, global: { stubs } })
+  it('썸네일 URL로 보여 준다 (원본 URL이 아니다)', () => {
+    wrapper = mk('a.hwpx')
+    const img = wrapper.find('img')
+    expect(img.exists()).toBe(true)
+    expect(img.attributes('src')).toContain('thumbs/room-x/a.hwpx.jpg')
+    expect(img.attributes('src')).not.toContain('orig.hwpx')
+  })
+  it('썸네일을 못 받으면 원본으로 돌아가지 않고 파일 아이콘', async () => {
+    wrapper = mk('a.hwp')
+    await wrapper.find('img').trigger('error')
+    expect(wrapper.find('img').exists()).toBe(false)
+  })
+  it('다른 문서(pdf)는 이미지 칸을 쓰지 않는다', () => {
+    wrapper = mk('a.pdf')
+    expect(wrapper.find('img').exists()).toBe(false)
+  })
+})

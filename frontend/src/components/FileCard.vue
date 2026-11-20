@@ -68,13 +68,18 @@ watch(() => `${props.file.roomId}::${props.file.name}`, () => {
 // (큰 원본을 미리보기로 내려받거나 presigned를 남발하지 않기 위함).
 const MAX_ORIGINAL_PREVIEW_BYTES = 5 * 1024 * 1024
 
+// 한글 문서(.hwp/.hwpx): 업로드 때 만든 첫 쪽 썸네일. 없으면(이전에 올린 파일 등) 원본 URL로 돌아가지 않고 파일 아이콘을 보인다
+const isHwp = computed(() => isHwpName(props.file.name))
+
 const showImagePreview = computed(() => {
+  if (isHwp.value) return !thumbFailed.value && !!(props.file.thumbUrl || props.file.roomId)
   if (!fileMetadata.value.isImage) return false
   if (!thumbFailed.value) return true
   return (props.file.size || 0) <= MAX_ORIGINAL_PREVIEW_BYTES
 })
 
 const previewSrc = computed(() => {
+  if (isHwp.value) return props.file.thumbUrl || (props.file.roomId ? r2Service.getThumbUrl(props.file.roomId, props.file.name) : '')
   if (thumbFailed.value) return props.file.url
   if (props.file.thumbUrl) return props.file.thumbUrl
   if (props.file.roomId) return r2Service.getThumbUrl(props.file.roomId, props.file.name)
@@ -82,6 +87,7 @@ const previewSrc = computed(() => {
 })
 
 function handleThumbError() {
+  if (isHwp.value) { thumbFailed.value = true; return }
   if (!thumbFailed.value && previewSrc.value !== props.file.url) {
     thumbFailed.value = true
     if (showImagePreview.value) trackStoreFallback('preview', props.file.size, 'thumb_failed')
@@ -213,6 +219,7 @@ async function handleShare(event) {
           width="40"
           height="40"
           class="w-8 h-8 sm:w-10 sm:h-10 rounded-none object-cover"
+          :class="isHwp ? 'object-top' : ''"
           @error="handleThumbError"
         />
         <div
