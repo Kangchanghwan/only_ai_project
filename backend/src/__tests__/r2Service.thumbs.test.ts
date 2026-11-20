@@ -80,6 +80,25 @@ describe('R2Service - thumbnails and deletion', () => {
     expect(result[1].fileUrl).toBe('https://store.test/room-x/doc.pdf');
   });
 
+  test('한글 문서(.hwp/.hwpx, 대소문자 무시)에도 같은 키 규칙의 jpeg 썸네일 URL을 붙인다', async () => {
+    const result = await service.getUploadPresignedUrls('room-x', [
+      { fileName: 'a.hwp', contentType: 'application/octet-stream' },
+      { fileName: 'B.HWPX', contentType: 'application/octet-stream' },
+      { fileName: '보 고서.hwpx', contentType: 'application/x-hwpx' },
+      { fileName: 'a.hwp.zip', contentType: 'application/zip' },
+      { fileName: 'hwp', contentType: 'text/plain' },
+      { fileName: 'notes.hwpx.txt', contentType: 'text/plain' },
+    ]);
+
+    expect(result[0].thumbUploadUrl).toContain('/thumbs/room-x/a.hwp.jpg');
+    expect(result[0].thumbUrl).toBe('https://store.test/thumbs/room-x/a.hwp.jpg');
+    expect(result[1].thumbUploadUrl).toContain('/thumbs/room-x/B.HWPX.jpg');
+    expect(result[2].thumbUrl).toBe('https://store.test/thumbs/room-x/보_고서.hwpx.jpg');
+    expect(result[3].thumbUploadUrl).toBeUndefined();
+    expect(result[4].thumbUploadUrl).toBeUndefined();
+    expect(result[5].thumbUploadUrl).toBeUndefined();
+  });
+
   test('getDownloadPresignedUrl은 attachment content-disposition을 서명한다', async () => {
     const url = await service.getDownloadPresignedUrl('room-x', 'photo.png');
 
