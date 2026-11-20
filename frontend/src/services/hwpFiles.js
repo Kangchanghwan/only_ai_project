@@ -25,7 +25,8 @@ export function editedName(name, existingNames = []) {
 }
 
 /** 수정해서 올린 .hwp(.hwpx 아님) 파일인지: 안에 든 미리보기가 옛것이라 Stage 1에서 그림을 쓰지 않는다 */
-export const isEditedHwp = (name) => /\s\(수정[^)]*\)\.hwp$/i.test(name || '')
+// 서버는 올릴 때 이름을 정리하므로(공백→_, 괄호 제거) "a (수정).hwp"는 "a_수정.hwp", "a (수정 2).hwp"는 "a_수정_2.hwp"로 저장된다. 둘 다 본다.
+export const isEditedHwp = (name) => /(\s\(수정[^)]*\)|_수정(_\d+)?)\.hwp$/i.test(name || '')
 
 /** 올리기 전 검증: 확장자, 비어 있지 않음, 크기 한도(일반 업로드와 같은 값) */
 export function validateUpload(file, { maxBytes }) {

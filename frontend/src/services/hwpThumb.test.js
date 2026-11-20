@@ -49,6 +49,13 @@ describe('createHwpThumbnail', () => {
     expect(await createHwpThumbnail(fileOf('a (수정).hwp', new Uint8Array([0xd0, 0xcf])), {}, d)).toBeNull()
     expect(d.createImageBitmap).not.toHaveBeenCalled()
   })
+  it('서버가 정리한 수정본 이름(report_수정.hwp, report_수정_2.hwp)도 건너뛴다', async () => {
+    const d = deps()
+    for (const n of ['report_수정.hwp', 'report_수정_2.hwp']) {
+      expect(await createHwpThumbnail(fileOf(n, new Uint8Array([0xd0, 0xcf])), {}, d)).toBeNull()
+    }
+    expect(d.createImageBitmap).not.toHaveBeenCalled()
+  })
   it('수정해서 올리는 .hwpx는 새로 쓴 미리보기로 썸네일을 만든다', async () => {
     const blob = await createHwpThumbnail(fileOf('a (수정).hwpx', zip([['Preview/PrvImage.png', PNG]])), {}, deps())
     expect(blob).not.toBeNull()

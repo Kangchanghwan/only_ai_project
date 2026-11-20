@@ -140,6 +140,13 @@ describe('이름·검증 규칙', () => {
     expect(isEditedHwp('a (수정).hwp')).toBe(true)
     expect(isEditedHwp('a (수정 2).hwp')).toBe(true)
     expect(isEditedHwp('a (수정).hwpx')).toBe(false)
+    // 서버가 정리한 이름(공백→_, 괄호 제거)
+    expect(isEditedHwp('report_수정.hwp')).toBe(true)
+    expect(isEditedHwp('report_수정_2.hwp')).toBe(true)
+    expect(isEditedHwp('report_수정.HWP')).toBe(true)
+    expect(isEditedHwp('report_수정.hwpx')).toBe(false)
+    expect(isEditedHwp('report_수정정.hwp')).toBe(false)
+    expect(isEditedHwp('수정.hwp')).toBe(false)
     expect(isEditedHwp('a.hwp')).toBe(false)
   })
   it('올리기 검증: 확장자, 빈 파일, 크기', () => {

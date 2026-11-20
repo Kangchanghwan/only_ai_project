@@ -283,6 +283,7 @@ onBeforeUnmount(() => {
     <div class="hp-panel" :class="{ 'hp-edit': stage === 'edit', 'hp-phone': phone }" role="dialog" aria-modal="true" :aria-label="name">
       <div v-if="stage !== 'edit'" class="hp-head">
         <span class="hp-title" :title="name">{{ name }}</span>
+        <span v-if="sizeText" class="hp-size">{{ sizeText }}</span>
         <button type="button" class="hp-x" :aria-label="s.close" :title="s.close" data-testid="hwp-close" @click="requestClose">✕</button>
       </div>
       <div v-else ref="barEl" class="hp-bar">
@@ -300,14 +301,13 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <div v-show="stage === 'p1'" class="hp-body">
+      <div v-show="stage === 'p1'" class="hp-body hp-p1" :class="{ 'hp-p1-img': !!imgUrl }">
         <p v-if="loading" class="hp-note">{{ s.loading }}</p>
         <p v-else-if="error" class="hp-note">{{ error }}</p>
         <template v-else>
           <img v-if="imgUrl" :src="imgUrl" :alt="name" class="hp-img" data-testid="hwp-prv-img" />
           <p v-if="staleSkip" class="hp-note">{{ s.stale }}</p>
           <p v-else-if="noPreview" class="hp-note">{{ s.none }}</p>
-          <p class="hp-meta">{{ s.size }}: {{ sizeText }}</p>
         </template>
       </div>
 
@@ -338,7 +338,9 @@ onBeforeUnmount(() => {
 .hp-panel { position: relative; display: flex; flex-direction: column; width: min(880px, 100%); height: min(92dvh, 100%); background: var(--color-surface); color: var(--color-text-primary); border: 2px solid var(--color-ink); border-radius: 0; overflow: hidden; }
 .hp-panel.hp-phone, .hp-panel.hp-edit { width: 100%; height: 100dvh; border: 0; }
 .hp-head { display: flex; align-items: center; gap: 8px; flex: none; min-height: 52px; padding: 0 4px 0 16px; border-bottom: 1px solid var(--color-border); }
-.hp-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.hp-title { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.hp-size { flex: none; color: var(--color-text-secondary); font-size: 12px; white-space: nowrap; }
+.hp-head .hp-x { margin-left: auto; flex: none; }
 .hp-x { width: 44px; height: 44px; border: 1px solid var(--color-border); border-radius: 0; background: transparent; color: var(--color-ink); font-size: 18px; font-weight: 700; cursor: pointer; }
 .hp-x:hover { background: var(--color-tint); }
 .hp-body { flex: 1; min-height: 0; overflow: auto; padding: 12px 16px 16px; }
@@ -346,9 +348,10 @@ onBeforeUnmount(() => {
 .hp-viewer { flex: 1; min-height: 0; overflow: auto; padding: 8px; }
 .hp-viewer :deep(.cb-page) { max-width: 820px; margin: 0 auto 8px; background: #fff; box-shadow: 0 0 0 1px var(--color-border); }
 .hp-viewer :deep(.cb-page svg) { display: block; width: 100%; height: auto; }
-.hp-img { display: block; width: auto; max-width: 100%; max-height: 56dvh; height: auto; margin: 0 auto; background: #fff; border: 1px solid var(--color-border); }
+.hp-p1-img { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+/* 1단계 그림: 본문 높이를 가득 채우고(확대 허용) 가운데, 비율 유지 */
+.hp-img { display: block; height: 100%; width: auto; max-width: 100%; object-fit: contain; background: #fff; border: 1px solid var(--color-border); }
 .hp-note { margin: 12px 0; color: var(--color-text-secondary); font-size: 14px; }
-.hp-meta { margin: 8px 0; color: var(--color-text-secondary); font-size: 13px; }
 
 .hp-pad { padding: 12px 16px; }
 .hp-foot { display: flex; align-items: center; gap: 8px; flex: none; padding: 8px 12px; background: var(--color-surface); border-top: 1px solid var(--color-border); }
