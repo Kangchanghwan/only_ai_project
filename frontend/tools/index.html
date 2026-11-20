@@ -15,8 +15,12 @@
   <script type="module" src="./hub.js"></script>
 </head>
 <body>
-  <header class="site"><div><a href="/">Clipboard Share</a><a class="sub" href="/tools/">도구</a></div></header>
-  <main>
+  <script src="/tools/theme-init.js"></script>
+  <header class="site"><div class="wrap">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true">📋</span><span class="word">Clipboard Share</span></a>
+    <a class="btn" href="/tools/">도구</a>
+  </div></header>
+  <main class="page wrap">
     <h1>온라인 도구</h1>
     <p class="lead">설치 없이 브라우저에서 쓰는 도구입니다.</p>
     <a class="card" href="/tools/hwp/">
@@ -24,6 +28,6 @@
       <span>맥이나 휴대폰처럼 한글 프로그램이 없는 환경에서 HWP, HWPX 문서를 열어 고치고 저장합니다.</span>
     </a>
   </main>
-  <footer><p><a href="/">Clipboard Share 홈</a></p></footer>
+  <footer class="page wrap"><p><a href="/">Clipboard Share 홈</a></p></footer>
 </body>
 </html>
