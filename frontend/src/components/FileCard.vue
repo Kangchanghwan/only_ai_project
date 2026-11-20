@@ -218,8 +218,8 @@ async function handleShare(event) {
           decoding="async"
           width="40"
           height="40"
-          class="w-8 h-8 sm:w-10 sm:h-10 rounded-none object-cover"
-          :class="isHwp ? 'object-top' : ''"
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-none"
+          :class="isHwp ? 'object-contain bg-white border border-border' : 'object-cover'"
           @error="handleThumbError"
         />
         <div
