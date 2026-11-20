@@ -61,8 +61,23 @@ async function confirmLeave() {
   return !(await isDirty()) || window.confirm('저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?')
 }
 
+/**
+ * 같은 출처의 studio는 부팅 전에 localStorage 'rhwp-settings'(theme.mode/skin)를 읽는다.
+ * 이 페이지의 실제 테마(라이트/다크)와 스킨을 미리 넣어 편집기도 같은 테마로 열게 한다. 다른 설정은 그대로 둔다.
+ */
+const STUDIO_SKIN = 'flat'
+function syncStudioTheme() {
+  try {
+    const effective = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+    const settings = JSON.parse(localStorage.getItem('rhwp-settings') || '{}') || {}
+    settings.theme = { ...(settings.theme || {}), mode: effective, skin: STUDIO_SKIN }
+    localStorage.setItem('rhwp-settings', JSON.stringify(settings))
+  } catch { /* 저장소를 못 쓰면 studio 기본 테마로 열린다 */ }
+}
+
 function ensure() {
   if (!studioPromise) {
+    syncStudioTheme()
     setLayout('editor')
     setStatus('편집기를 불러오는 중입니다. 처음에는 30MB 정도를 받아 시간이 걸릴 수 있습니다.')
     studioPromise = import('@rhwp/editor')
