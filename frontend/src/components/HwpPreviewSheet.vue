@@ -11,6 +11,7 @@ import { useI18n } from 'vue-i18n'
 import { formatFileSize } from '../utils/fileUtils'
 import { isPhone } from '../utils/isPhone'
 import { extractPreview } from '../services/hwpPreview'
+import { preloadEngine, progressText } from '../services/hwpEngine'
 import { renderPages } from '../services/hwpViewer'
 import { editedName, isEditedHwp, validateUpload, svgToPng, refreshHwpxPreview } from '../services/hwpFiles'
 
@@ -23,22 +24,22 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 const STR = {
-  ko: { all: '모든 쪽 보기', phoneHint: '약 13MB, 처음 한 번만', edit: '수정', loading: '불러오는 중…', fail: '파일을 불러오지 못했습니다.', none: '이 파일에는 미리보기가 들어 있지 않습니다.', stale: '수정한 파일이라 저장된 미리보기를 쓰지 않습니다.', text: '글 미리보기', close: '닫기', engine: '편집기를 불러오는 중…', save: '저장 ▾', up: '방에 올리기', dlx: 'HWPX로 내려받기', dl: 'HWP로 내려받기', changed: '변경됨', confirm: '저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?', upping: '방에 올리는 중…', upok: '방에 올렸습니다: ', upfail: '방에 올리지 못했습니다.', home: '미리보기', size: '크기' },
-  en: { all: 'View all pages', phoneHint: 'about 13 MB, first time only', edit: 'Edit', loading: 'Loading…', fail: 'Could not load the file.', none: 'This file has no embedded preview.', stale: 'This file was edited, so its stored preview is not used.', text: 'Text preview', close: 'Close', engine: 'Loading the editor…', save: 'Save ▾', up: 'Upload to room', dlx: 'Download as HWPX', dl: 'Download as HWP', changed: 'Modified', confirm: 'You have unsaved changes. They will be lost if you close. Close anyway?', upping: 'Uploading…', upok: 'Uploaded to the room: ', upfail: 'Could not upload to the room.', home: 'Preview', size: 'Size' },
+  ko: { all: '모든 쪽 보기', edit: '수정', loading: '불러오는 중…', fail: '파일을 불러오지 못했습니다.', none: '이 파일에는 미리보기가 들어 있지 않습니다.', stale: '수정한 파일이라 저장된 미리보기를 쓰지 않습니다.', file: '파일 받는 중…', close: '닫기', engine: '편집기를 불러오는 중…', save: '저장 ▾', up: '방에 올리기', dlx: 'HWPX로 내려받기', dl: 'HWP로 내려받기', changed: '변경됨', confirm: '저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?', upping: '방에 올리는 중…', upok: '방에 올렸습니다: ', upfail: '방에 올리지 못했습니다.', home: '미리보기', size: '크기' },
+  en: { all: 'View all pages', edit: 'Edit', loading: 'Loading…', fail: 'Could not load the file.', none: 'This file has no embedded preview.', stale: 'This file was edited, so its stored preview is not used.', file: 'Fetching the file…', close: 'Close', engine: 'Loading the editor…', save: 'Save ▾', up: 'Upload to room', dlx: 'Download as HWPX', dl: 'Download as HWP', changed: 'Modified', confirm: 'You have unsaved changes. They will be lost if you close. Close anyway?', upping: 'Uploading…', upok: 'Uploaded to the room: ', upfail: 'Could not upload to the room.', home: 'Preview', size: 'Size' },
 }
 const { locale } = useI18n()
 const s = computed(() => (String(locale.value).startsWith('ko') ? STR.ko : STR.en))
 
 const phone = isPhone()
-const stage = ref('p1') // p1 | p2 | edit
+const stage = ref(phone ? 'p2' : 'p1') // p1(데스크톱만) | p2 | edit
+const boot = ref(null) // 엔진 받는 진행률 / 그리는 중
 const name = ref(props.file.name)
 const loading = ref(true)
 const error = ref('')
 const sizeText = ref('')
 const imgUrl = ref('')
-const prvText = ref('')
 const staleSkip = ref(false)
-const noPreview = computed(() => !loading.value && !error.value && !imgUrl.value && !prvText.value)
+const noPreview = computed(() => !loading.value && !error.value && !imgUrl.value)
 const engineBusy = ref(false)
 const dirty = ref(false)
 const barMsg = ref('')
@@ -58,17 +59,21 @@ let skipConfirm = false
 const setMsg = (m) => { barMsg.value = m; clearTimeout(msgTimer); if (m && !/…$/.test(m)) msgTimer = setTimeout(() => { barMsg.value = '' }, 6000) }
 const isHwpx = () => /\.hwpx$/i.test(name.value)
 
+async function loadBytes() {
+  const r = await props.hooks.getBytes(props.file)
+  name.value = r.name
+  bytes = new Uint8Array(r.bytes)
+  sizeText.value = formatFileSize(bytes.length)
+}
+
+/** 데스크톱 1단계: 파일 안의 미리보기 그림만 즉시 (엔진 없음). 폰은 1단계 없이 바로 모든 쪽 */
 async function loadStage1() {
   try {
-    const r = await props.hooks.getBytes(props.file)
-    name.value = r.name
-    bytes = new Uint8Array(r.bytes)
-    sizeText.value = formatFileSize(bytes.length)
-    staleSkip.value = isEditedHwp(r.name)
+    await loadBytes()
+    staleSkip.value = isEditedHwp(name.value)
     if (!staleSkip.value) {
       const p = await extractPreview(bytes)
       if (p.image) imgUrl.value = URL.createObjectURL(p.image)
-      prvText.value = (p.text || '').trim().slice(0, 1500)
     }
   } catch {
     error.value = s.value.fail
@@ -76,6 +81,23 @@ async function loadStage1() {
     loading.value = false
   }
 }
+
+async function startPhone() {
+  boot.value = { phase: 'file' }
+  try {
+    await loadBytes()
+  } catch {
+    boot.value = null
+    error.value = s.value.fail
+    loading.value = false
+    return
+  }
+  loading.value = false
+  await showAll()
+}
+
+const bootText = computed(() => (boot.value?.phase === 'file' ? s.value.file : progressText(boot.value, String(locale.value).startsWith('ko') ? 'ko' : 'en')))
+const bootPct = computed(() => (boot.value?.phase === 'download' ? Math.min(100, (boot.value.loaded / boot.value.total) * 100) : 100))
 
 /** 같은 출처의 studio는 부팅 전에 localStorage 'rhwp-settings'를 읽는다: 지금 앱 테마(라이트/다크)와 flat 스킨 */
 function syncStudioTheme() {
@@ -108,6 +130,8 @@ function syncBarColors() {
 async function ensureStudio() {
   if (studio) return studio
   syncStudioTheme()
+  await preloadEngine((p) => { boot.value = p }) // 받는 동안 진행률, 캐시에 있으면 건너뜀
+  boot.value = { phase: 'render' }
   const { createStudio } = await import('@rhwp/editor')
   const st = await createStudio(hostEl.value, {
     studioUrl: '/tools/hwp/studio/',
@@ -126,15 +150,17 @@ async function showAll() {
   if (engineBusy.value) return
   engineBusy.value = true
   error.value = ''
+  stage.value = 'p2'
   try {
     const st = await ensureStudio()
-    stage.value = 'p2'
     await nextTick()
     viewer?.destroy()
     viewer = renderPages(viewerEl.value, st, pageCount)
+    await viewer.ready
   } catch {
     error.value = s.value.fail
   } finally {
+    boot.value = null
     engineBusy.value = false
   }
 }
@@ -154,6 +180,7 @@ async function startEdit() {
   } catch {
     error.value = s.value.fail
   } finally {
+    boot.value = null
     engineBusy.value = false
   }
 }
@@ -238,7 +265,8 @@ onMounted(() => {
   pushed = true
   window.addEventListener('popstate', onPop)
   document.addEventListener('keydown', onKey)
-  loadStage1()
+  if (phone) startPhone()
+  else loadStage1()
 })
 onBeforeUnmount(() => {
   window.removeEventListener('popstate', onPop)
@@ -279,25 +307,25 @@ onBeforeUnmount(() => {
           <img v-if="imgUrl" :src="imgUrl" :alt="name" class="hp-img" data-testid="hwp-prv-img" />
           <p v-if="staleSkip" class="hp-note">{{ s.stale }}</p>
           <p v-else-if="noPreview" class="hp-note">{{ s.none }}</p>
-          <details v-if="prvText" class="hp-text">
-            <summary>{{ s.text }}</summary>
-            <pre>{{ prvText }}</pre>
-          </details>
           <p class="hp-meta">{{ s.size }}: {{ sizeText }}</p>
-          <div class="hp-actions">
-            <button type="button" class="hp-btn hp-btn-primary" :disabled="engineBusy" data-testid="hwp-all" @click="showAll">
-              {{ engineBusy ? s.engine : s.all }}<span v-if="phone && !engineBusy" class="hp-hint"> ({{ s.phoneHint }})</span>
-            </button>
-            <button v-if="!phone" type="button" class="hp-btn" :disabled="engineBusy" data-testid="hwp-edit" @click="startEdit">{{ s.edit }}</button>
-          </div>
         </template>
       </div>
 
       <div v-show="stage === 'p2'" class="hp-body hp-pages">
+        <p v-if="error" class="hp-note hp-pad">{{ error }}</p>
         <div ref="viewerEl" class="hp-viewer" data-testid="hwp-pages"></div>
-        <div v-if="!phone" class="hp-actions hp-sticky">
-          <button type="button" class="hp-btn hp-btn-primary" :disabled="engineBusy" data-testid="hwp-edit2" @click="startEdit">{{ engineBusy ? s.engine : s.edit }}</button>
-        </div>
+      </div>
+
+      <div v-if="boot" class="hp-boot" role="status" data-testid="hwp-boot">
+        <p>{{ bootText }}</p>
+        <div class="hp-boot-bar"><div class="hp-boot-fill" :class="{ busy: boot.phase !== 'download' }" :style="{ width: boot.phase === 'download' ? bootPct + '%' : '' }"></div></div>
+      </div>
+
+      <!-- 데스크톱 하단: 왼쪽 "모든 쪽 보기"(1단계), 오른쪽 "수정" (폰은 수정 없음) -->
+      <div v-if="stage !== 'edit' && !phone" class="hp-foot">
+        <button v-if="stage === 'p1'" type="button" class="hp-btn hp-btn-primary" :disabled="engineBusy || loading || !!error" data-testid="hwp-all" @click="showAll">{{ engineBusy ? s.engine : s.all }}</button>
+        <span class="hp-spacer"></span>
+        <button type="button" class="hp-btn" :class="{ 'hp-btn-primary': stage === 'p2' }" :disabled="engineBusy || loading" data-testid="hwp-edit" @click="startEdit">{{ s.edit }}</button>
       </div>
 
       <div ref="hostEl" class="hp-studio" :class="{ 'hp-studio-on': stage === 'edit' }"></div>
@@ -307,7 +335,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .hp-root { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.7); }
-.hp-panel { display: flex; flex-direction: column; width: min(880px, 100%); height: min(92dvh, 100%); background: var(--color-surface); color: var(--color-text-primary); border: 2px solid var(--color-ink); border-radius: 0; overflow: hidden; }
+.hp-panel { position: relative; display: flex; flex-direction: column; width: min(880px, 100%); height: min(92dvh, 100%); background: var(--color-surface); color: var(--color-text-primary); border: 2px solid var(--color-ink); border-radius: 0; overflow: hidden; }
 .hp-panel.hp-phone, .hp-panel.hp-edit { width: 100%; height: 100dvh; border: 0; }
 .hp-head { display: flex; align-items: center; gap: 8px; flex: none; min-height: 52px; padding: 0 4px 0 16px; border-bottom: 1px solid var(--color-border); }
 .hp-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
@@ -321,18 +349,20 @@ onBeforeUnmount(() => {
 .hp-img { display: block; width: auto; max-width: 100%; max-height: 56dvh; height: auto; margin: 0 auto; background: #fff; border: 1px solid var(--color-border); }
 .hp-note { margin: 12px 0; color: var(--color-text-secondary); font-size: 14px; }
 .hp-meta { margin: 8px 0; color: var(--color-text-secondary); font-size: 13px; }
-.hp-text { margin: 12px 0; border: 1px solid var(--color-border); padding: 8px 12px; }
-.hp-text summary { cursor: pointer; font-weight: 700; font-size: 14px; }
-.hp-text pre { margin-top: 8px; white-space: pre-wrap; word-break: break-word; font: inherit; font-size: 13px; color: var(--color-text-secondary); max-height: 240px; overflow: auto; }
-.hp-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.hp-body > .hp-actions { position: sticky; bottom: -16px; margin: 12px -16px -16px; padding: 10px 16px; background: var(--color-surface); border-top: 1px solid var(--color-border); }
-.hp-sticky { flex: none; margin: 0; padding: 8px; background: var(--color-surface); border-top: 1px solid var(--color-border); }
+
+.hp-pad { padding: 12px 16px; }
+.hp-foot { display: flex; align-items: center; gap: 8px; flex: none; padding: 8px 12px; background: var(--color-surface); border-top: 1px solid var(--color-border); }
+.hp-spacer { flex: 1; }
+.hp-boot { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 3; width: min(420px, calc(100% - 32px)); padding: 16px; background: var(--color-surface); border: 2px solid var(--color-ink); }
+.hp-boot p { margin: 0 0 10px; font-size: 14px; font-weight: 700; }
+.hp-boot-bar { height: 8px; background: var(--color-tint); border: 1px solid var(--color-border); }
+.hp-boot-fill { height: 100%; width: 0; background: var(--color-ink); transition: width 0.15s linear; }
+.hp-boot-fill.busy { width: 100%; opacity: 0.35; }
 .hp-btn { min-height: 44px; padding: 0 16px; border: 2px solid var(--color-ink); border-radius: 0; background: transparent; color: var(--color-ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
 .hp-btn:hover { background: var(--color-tint); }
 .hp-btn:disabled { opacity: 0.6; cursor: default; }
 .hp-btn-primary { background: var(--color-ink); color: var(--color-on-ink); font-weight: 800; }
 .hp-btn-primary:hover { background: var(--color-ink); opacity: 0.9; }
-.hp-hint { font-weight: 400; font-size: 12px; }
 
 /* studio: 1·2단계에서는 화면 밖(다시 만들지 않으려고 같은 요소를 그대로 둔다), 3단계에서 화면 가득 */
 .hp-studio { position: fixed; left: -10000px; top: 0; width: 1024px; height: 768px; }
