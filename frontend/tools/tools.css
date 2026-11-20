@@ -67,23 +67,17 @@ body.ed { overflow: hidden; }
 body.ed > header.site, body.ed > main, body.ed > footer { display: none; }
 body.ed #editor-root { display: flex; flex-direction: column; position: fixed; inset: 0; height: 100dvh; background: var(--color-surface); z-index: 10; }
 #editor-wrap { flex: 1; min-height: 0; background: #fff; }
-.bar { position: relative; display: flex; align-items: center; gap: 12px; height: 60px; flex: none; padding: 0 16px; background: var(--color-surface); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
-.bar .brand .mark { font-size: 1.5rem; }
-.bar .brand .word { font-size: 1.125rem; }
-.bar-sep { width: 1px; height: 24px; background: var(--color-border); flex: none; }
-.bar-name { font-weight: 700; font-size: 0.9375rem; max-width: 32vw; overflow: hidden; text-overflow: ellipsis; color: var(--color-text-primary); }
-.bar-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); }
-.bar-dot::before { content: ""; width: 8px; height: 8px; background: var(--color-primary); }
-.bar-msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--color-text-secondary); font-size: 0.8125rem; }
-.bar-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex: none; }
-.bar .narrow { display: none; }
-.bar-menu { position: absolute; right: 16px; top: calc(100% + 4px); z-index: 50; display: flex; flex-direction: column; align-items: stretch; gap: 12px; min-width: 200px; padding: 12px; background: var(--color-surface); border: 2px solid var(--color-ink); border-radius: 0; }
-.bar-menu .btn { width: 100%; }
-@media (max-width: 639px) {
-  .bar { gap: 8px; padding: 0 12px; }
-  .bar .wide, .bar .brand .word, .bar-sep { display: none; }
-  .bar .narrow { display: inline-flex; }
-  .bar-name { max-width: 34vw; }
-  .bar-msg { font-size: 0.75rem; }
-  .bar-menu { right: 12px; }
-}
+/* 상단 바: studio 자신의 메뉴 줄 색을 런타임에 읽어(--bar-*) 같은 색으로 보이게 한다. 못 읽으면 토큰 색 */
+#editor-root { --bar-bg: var(--color-surface); --bar-fg: var(--color-text-primary); --bar-bd: var(--color-border); --bar-bd-w: 1px; }
+.bar { position: relative; display: flex; align-items: center; gap: 8px; height: 32px; flex: none; padding: 0 6px 0 10px; background: var(--bar-bg); color: var(--bar-fg); border-bottom: var(--bar-bd-w) solid var(--bar-bd); white-space: nowrap; font-size: 13px; }
+.bar-home { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; font-size: 16px; line-height: 1; text-decoration: none; }
+.bar-name { font-weight: 400; font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.bar-dot { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; opacity: .75; }
+.bar-dot::before { content: ""; width: 7px; height: 7px; background: var(--color-primary); }
+.bar-msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 12px; opacity: .75; }
+.bar-actions { display: flex; align-items: center; gap: 2px; margin-left: auto; flex: none; }
+.gbtn { height: 28px; padding: 0 8px; border: 0; border-radius: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.gbtn.icon { width: 28px; padding: 0; }
+.gbtn:hover, .bar-menu button:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+.bar-menu { position: absolute; right: 6px; top: calc(100% + 1px); z-index: 50; display: flex; flex-direction: column; min-width: 160px; background: var(--bar-bg); color: var(--bar-fg); border: 1px solid color-mix(in srgb, currentColor 35%, transparent); border-radius: 0; }
+.bar-menu button { font: inherit; text-align: left; height: 32px; padding: 0 12px; border: 0; background: transparent; color: inherit; cursor: pointer; }

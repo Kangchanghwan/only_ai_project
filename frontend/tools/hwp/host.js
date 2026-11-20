@@ -34,7 +34,41 @@ let pushed = false
 let skipConfirm = false
 
 // 상태 문구: 첫 화면은 안내 문단에, 편집 화면은 상단 바 안에 보인다
-const setStatus = (msg) => { statusEl.textContent = msg; barMsg.textContent = msg; barMsg.title = msg }
+let msgTimer = null
+const setStatus = (msg) => {
+  statusEl.textContent = msg
+  barMsg.textContent = msg
+  barMsg.title = msg
+  // 바 안의 문구는 몇 초 뒤 사라진다 (진행 중 문구는 끝나면 다른 문구로 바뀐다)
+  clearTimeout(msgTimer)
+  if (msg && !/중입니다/.test(msg)) msgTimer = setTimeout(() => { barMsg.textContent = ''; barMsg.title = '' }, 6000)
+}
+
+/** studio 메뉴 줄의 배경·글자·아래 테두리 색을 읽어 우리 바에 같은 색을 준다 (같은 출처 iframe) */
+function syncBarColors() {
+  const root = $('editor-root')
+  try {
+    const doc = wrap.querySelector('iframe').contentDocument
+    const el = doc.getElementById('menu-bar')
+    if (!el) throw new Error('no menu')
+    const cs = doc.defaultView.getComputedStyle(el)
+    root.style.setProperty('--bar-bg', cs.backgroundColor)
+    root.style.setProperty('--bar-fg', cs.color)
+    const w = parseFloat(cs.borderBottomWidth) || 0
+    root.style.setProperty('--bar-bd-w', w > 0 && cs.borderBottomStyle !== 'none' ? w + 'px' : '0px')
+    root.style.setProperty('--bar-bd', cs.borderBottomColor)
+    return true
+  } catch {
+    for (const k of ['--bar-bg', '--bar-fg', '--bar-bd', '--bar-bd-w']) root.style.removeProperty(k) // 토큰 색으로
+    return false
+  }
+}
+function watchStudioTheme() {
+  try {
+    const de = wrap.querySelector('iframe').contentDocument.documentElement
+    new MutationObserver(() => requestAnimationFrame(syncBarColors)).observe(de, { attributes: true })
+  } catch { /* 읽을 수 없으면 토큰 색 */ }
+}
 
 function setName(n) {
   $('bar-name').textContent = n
@@ -85,6 +119,8 @@ function ensure() {
       .then((s) => {
         studio = s
         if (typeof s.onDocumentChanged === 'function') s.onDocumentChanged(() => setDirty(true))
+        wrap.querySelector('iframe').addEventListener('load', () => { syncBarColors(); watchStudioTheme() })
+        syncBarColors(); watchStudioTheme()
         setStatus('')
         return s
       })
@@ -106,6 +142,7 @@ async function open(bytes, name) {
   currentName = baseName(name)
   setName(name || currentName + '.hwpx')
   const res = await s.loadFile(bytes, name || currentName + '.hwpx')
+  syncBarColors()
   setDirty(false)
   trackEvent('tool_hwp_open', { file_type: /\.hwp$/i.test(name || '') ? 'hwp' : 'hwpx' })
   setStatus('')
