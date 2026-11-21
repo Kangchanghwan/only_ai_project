@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오피스 문서 편집 (시험) | Clipboard Share</title>
+  <!-- 숨김 페이지: 어디에도 링크하지 않고 sitemap/llms 에도 넣지 않는다 -->
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <script type="module" src="./host.js"></script>
+</head>
+<body>
+  <script src="/tools/theme-init.js"></script>
+  <header class="site"><div class="wrap">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true">📋</span><span class="word">Clipboard Share</span></a>
+  </div></header>
+  <main class="page wrap" id="landing">
+    <h1>오피스 문서 편집 (시험)</h1>
+    <p class="lead">워드(docx), 엑셀(xlsx), 파워포인트(pptx) 파일을 브라우저에서 고치고 내 기기로 저장합니다. 편집기가 저장하면서 바꾸는 글꼴, 테두리, 메모 같은 부분은 원래대로 되돌려 저장합니다.</p>
+    <div id="not-ready" class="drop" hidden><p>편집기 준비 중입니다.</p></div>
+    <div id="picker" class="drop" hidden>
+      <p>.docx, .xlsx, .pptx 파일을 골라 주세요. 파일은 서버로 올라가지 않습니다.</p>
+      <div class="toolbar"><button id="btn-open" class="btn primary" type="button">파일 열기</button></div>
+    </div>
+    <p id="status" role="status"></p>
+  </main>
+  <input id="file" type="file" accept=".docx,.xlsx,.pptx" hidden />
+  <div id="editor-root" hidden>
+    <div class="office-bar">
+      <span id="bar-name" class="office-name"></span>
+      <span id="bar-msg" class="office-msg" role="status"></span>
+      <button id="btn-save" class="btn primary" type="button" disabled>내 기기로 저장</button>
+      <button id="btn-close" class="btn icon" type="button" title="닫기" aria-label="닫기">✕</button>
+    </div>
+    <div id="notice" class="office-notice" hidden></div>
+    <div id="report" class="office-report" hidden></div>
+    <div class="office-frame"><div id="editor-wrap"></div><div id="frame-cover" class="office-cover" hidden>문서를 여는 중입니다</div></div>
+  </div>
+</body>
+</html>

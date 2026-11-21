@@ -35,11 +35,13 @@ export default defineConfig(({ command, mode }) => {
       modulePreload: { polyfill: false },
       cssCodeSplit: true, // CSS 코드 스플리팅 활성화
       rollupOptions: {
-        // 메인 앱 + 도구 페이지(/tools/, /tools/hwp/). 도구 페이지는 Vue를 쓰지 않아 메인 번들에 영향이 없다
+        // 메인 앱 + 도구 페이지(/tools/, /tools/hwp/, /tools/office/). 도구 페이지는 Vue를 쓰지 않아 메인 번들에 영향이 없다
         input: {
           main: resolve(import.meta.dirname, 'index.html'),
           tools: resolve(import.meta.dirname, 'tools/index.html'),
           toolsHwp: resolve(import.meta.dirname, 'tools/hwp/index.html'),
+          // 숨김 페이지(링크·sitemap 없음). 무결성 모듈은 이 페이지에서만 나중에 불러온다
+          toolsOffice: resolve(import.meta.dirname, 'tools/office/index.html'),
         },
         output: {
           // 청크 분리 최적화

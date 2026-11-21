@@ -4,6 +4,7 @@
 
 /* /tools/ 페이지는 자체 CSS(tools/tools.css)를 쓰므로 Tailwind가 그 파일의 문자열을 훑어 메인 CSS에 유틸리티를 만들지 않게 한다 */
 @source not "../tools";
+@source not "./services/officeIntegrity"; /* 오피스 무결성 모듈(도구 페이지 전용)의 단어가 유틸리티 클래스로 잡히지 않게 */
 
 @theme {
   --color-background: #0A1430;
