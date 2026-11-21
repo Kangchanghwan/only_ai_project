@@ -157,13 +157,6 @@ function handleSheetDownload(event) {
   closeActionsSheet()
 }
 
-// 한글 파일은 이름을 누르면 미리보기가 열린다 (행의 나머지 부분은 기존처럼 선택 토글)
-function onNameClick(event) {
-  if (!isPreviewName(props.file.name)) return
-  event.stopPropagation()
-  emit('preview-file', props.file)
-}
-
 function handleSheetPreviewHwp() {
   emit('preview-file', props.file)
   closeActionsSheet()
@@ -233,7 +226,7 @@ async function handleShare(event) {
 
     <!-- 파일명(ellipsis, 전체는 title) + 2행 "보낸 사람 · 용량 · 시간" (시간은 한 번만) -->
     <div class="file-info flex-1 min-w-0">
-      <p class="file-name text-sm font-medium text-text-primary truncate m-0" :class="isPreviewName(file.name) ? 'cursor-pointer' : ''" :title="file.name" data-testid="file-name" @click="onNameClick">{{ file.name }}</p>
+      <p class="file-name text-sm font-medium text-text-primary truncate m-0" :title="file.name" data-testid="file-name">{{ file.name }}</p>
       <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="file-meta">
         <SenderLabel v-if="file.uploader" :sender="file.uploader" class="shrink min-w-0" />
         <span v-if="file.uploader" aria-hidden="true">·</span>

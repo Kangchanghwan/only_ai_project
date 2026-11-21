@@ -42,16 +42,19 @@ describe('FileCard 한글 편집 메뉴', () => {
     expect(document.body.querySelector('.file-actions-sheet')).toBeNull()
   })
 
-  it('한글 파일 이름을 누르면 미리보기 이벤트, 다른 파일은 아니다', async () => {
-    const mk = (name) => mount(FileCard, { props: { file: { name, roomId: 'r', url: 'u', size: 1, created: '2026-01-01T00:00:00.000Z' } }, global: { stubs } })
-    wrapper = mk('a.hwpx')
-    await wrapper.find('[data-testid="file-name"]').trigger('click')
+  it.each(['a.hwp', 'a.hwpx', 'a.docx', 'a.xlsx', 'a.pptx', 'A.PPTX'])('⋯ 메뉴의 미리보기 항목이 %s에서 preview-file을 내보낸다', async (name) => {
+    const { file, sheet } = await openSheet(name)
+    await sheet.find('[data-testid="sheet-preview-file"]').trigger('click')
     expect(wrapper.emitted('preview-file')).toHaveLength(1)
-    expect(wrapper.emitted('toggle-selection')).toBeFalsy()
-    wrapper.unmount()
-    wrapper = mk('a.pdf')
+    expect(wrapper.emitted('preview-file')[0]).toEqual([file])
+  })
+
+  it.each(['a.hwp', 'a.hwpx', 'a.docx', 'a.xlsx', 'a.pptx', 'a.pdf'])('%s: 이름을 누르면 선택이 토글되고 미리보기는 열리지 않는다 (카드 클릭은 원래대로)', async (name) => {
+    wrapper = mount(FileCard, { props: { file: { name, roomId: 'r', url: 'u', size: 1, created: '2026-01-01T00:00:00.000Z' } }, global: { stubs } })
     await wrapper.find('[data-testid="file-name"]').trigger('click')
+    expect(wrapper.emitted('toggle-selection')).toHaveLength(1)
     expect(wrapper.emitted('preview-file')).toBeFalsy()
+    expect(wrapper.find('[data-testid="file-name"]').classes()).not.toContain('cursor-pointer')
   })
 })
 
@@ -69,10 +72,8 @@ describe('FileCard 한글 문서 썸네일', () => {
     await wrapper.find('img').trigger('error')
     expect(wrapper.find('img').exists()).toBe(false)
   })
-  it('Office 파일 이름을 눌러도 미리보기 이벤트 (썸네일은 만들지 않는다)', async () => {
+  it('Office 파일은 썸네일을 만들지 않는다', () => {
     wrapper = mk('a.docx')
-    await wrapper.find('[data-testid="file-name"]').trigger('click')
-    expect(wrapper.emitted('preview-file')).toHaveLength(1)
     expect(wrapper.find('img').exists()).toBe(false)
   })
   it('다른 문서(pdf)는 이미지 칸을 쓰지 않는다', () => {
