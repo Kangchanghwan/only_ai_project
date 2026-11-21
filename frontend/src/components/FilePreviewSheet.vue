@@ -29,8 +29,8 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 const STR = {
-  ko: { notice: '간단히 보기예요. 글상자·도형 등 정확한 모양은 원본 앱에서 확인하세요.', recv: '받기', tooBig: '파일이 커서 미리보기를 건너뛰었어요', cantMake: '미리보기를 만들 수 없어요', all: '모든 쪽 보기', edit: '수정', loading: '불러오는 중…', fail: '파일을 불러오지 못했습니다.', none: '이 파일에는 미리보기가 들어 있지 않습니다.', stale: '수정한 파일이라 저장된 미리보기를 쓰지 않습니다.', file: '파일 받는 중…', close: '닫기', engine: '편집기를 불러오는 중…', save: '저장 ▾', up: '방에 올리기', dlx: 'HWPX로 내려받기', dl: 'HWP로 내려받기', changed: '변경됨', confirm: '저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?', upping: '방에 올리는 중…', upok: '방에 올렸습니다: ', upfail: '방에 올리지 못했습니다.', home: '미리보기', size: '크기' },
-  en: { notice: 'This is a simple view. Check text boxes, shapes and exact layout in the original app.', recv: 'Download', tooBig: 'The file is large, so the preview was skipped', cantMake: 'Could not create a preview', all: 'View all pages', edit: 'Edit', loading: 'Loading…', fail: 'Could not load the file.', none: 'This file has no embedded preview.', stale: 'This file was edited, so its stored preview is not used.', file: 'Fetching the file…', close: 'Close', engine: 'Loading the editor…', save: 'Save ▾', up: 'Upload to room', dlx: 'Download as HWPX', dl: 'Download as HWP', changed: 'Modified', confirm: 'You have unsaved changes. They will be lost if you close. Close anyway?', upping: 'Uploading…', upok: 'Uploaded to the room: ', upfail: 'Could not upload to the room.', home: 'Preview', size: 'Size' },
+  ko: { recv: '받기', tooBig: '파일이 커서 미리보기를 건너뛰었어요', cantMake: '미리보기를 만들 수 없어요', all: '모든 쪽 보기', edit: '수정', loading: '불러오는 중…', fail: '파일을 불러오지 못했습니다.', none: '이 파일에는 미리보기가 들어 있지 않습니다.', stale: '수정한 파일이라 저장된 미리보기를 쓰지 않습니다.', file: '파일 받는 중…', close: '닫기', engine: '편집기를 불러오는 중…', save: '저장 ▾', up: '방에 올리기', dlx: 'HWPX로 내려받기', dl: 'HWP로 내려받기', changed: '변경됨', confirm: '저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?', upping: '방에 올리는 중…', upok: '방에 올렸습니다: ', upfail: '방에 올리지 못했습니다.', home: '미리보기', size: '크기' },
+  en: { recv: 'Download', tooBig: 'The file is large, so the preview was skipped', cantMake: 'Could not create a preview', all: 'View all pages', edit: 'Edit', loading: 'Loading…', fail: 'Could not load the file.', none: 'This file has no embedded preview.', stale: 'This file was edited, so its stored preview is not used.', file: 'Fetching the file…', close: 'Close', engine: 'Loading the editor…', save: 'Save ▾', up: 'Upload to room', dlx: 'Download as HWPX', dl: 'Download as HWP', changed: 'Modified', confirm: 'You have unsaved changes. They will be lost if you close. Close anyway?', upping: 'Uploading…', upok: 'Uploaded to the room: ', upfail: 'Could not upload to the room.', home: 'Preview', size: 'Size' },
 }
 const { locale } = useI18n()
 const s = computed(() => (String(locale.value).startsWith('ko') ? STR.ko : STR.en))
@@ -333,7 +333,6 @@ onBeforeUnmount(() => {
       </div>
 
       <div v-if="kind" class="hp-body hp-office" data-testid="office-body">
-        <p class="hp-notice">{{ s.notice }}</p>
         <div v-if="officeState === 'skip' || officeState === 'fail'" class="hp-failbox" data-testid="office-fail">
           <svg class="hp-fileicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
           <p>{{ officeState === 'skip' ? s.tooBig : s.cantMake }}</p>
@@ -401,7 +400,6 @@ onBeforeUnmount(() => {
 
 .hp-pad { padding: 12px 16px; }
 .hp-office { position: relative; display: flex; flex-direction: column; padding: 0; background: var(--color-tint); }
-.hp-notice { flex: none; margin: 0; padding: 6px 16px; font-size: 12px; color: var(--color-text-secondary); background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
 .hp-office-host { flex: 1; min-height: 0; overflow: auto; position: relative; }
 .hp-office-xlsx { background: #fff; }
 .hp-office-docx { background: #e5e7eb; overflow-x: hidden; }
