@@ -7,7 +7,7 @@ import FileQRCodeModal from './FileQRCodeModal.vue'
 import SenderLabel from './SenderLabel.vue'
 import FileTypeIcon from './icons/FileTypeIcon.vue'
 import { trackEvent } from '../utils/analytics'
-import { isHwpName, isPreviewName } from '../utils/hwpName'
+import { isPreviewName, isHwpName, officeKindOf } from '../utils/hwpName'
 import { trackStoreFallback } from '../utils/storeFallback'
 import { useScopeAccent } from '../composables/useScopeAccent'
 
@@ -68,8 +68,8 @@ watch(() => `${props.file.roomId}::${props.file.name}`, () => {
 // (큰 원본을 미리보기로 내려받거나 presigned를 남발하지 않기 위함).
 const MAX_ORIGINAL_PREVIEW_BYTES = 5 * 1024 * 1024
 
-// 한글 문서(.hwp/.hwpx): 업로드 때 만든 첫 쪽 썸네일. 없으면(이전에 올린 파일 등) 원본 URL로 돌아가지 않고 파일 아이콘을 보인다
-const isHwp = computed(() => isHwpName(props.file.name))
+// 한글 문서(.hwp/.hwpx)·.pptx: 업로드 때 만든 첫 쪽 썸네일. 없으면(이전에 올린 파일 등) 원본 URL로 돌아가지 않고 파일 아이콘을 보인다
+const isHwp = computed(() => isHwpName(props.file.name) || officeKindOf(props.file.name) === 'pptx') // 한글 문서·pptx: 첫 쪽 썸네일 (docx·xlsx는 없음)
 
 const showImagePreview = computed(() => {
   if (isHwp.value) return !thumbFailed.value && !!(props.file.thumbUrl || props.file.roomId)

@@ -75,6 +75,19 @@ describe('FileCard 한글 문서 썸네일', () => {
     expect(wrapper.emitted('preview-file')).toHaveLength(1)
     expect(wrapper.find('img').exists()).toBe(false)
   })
+  it('pptx는 썸네일 URL로 보여 주고, 못 받으면 파일 아이콘 (원본 URL로 돌아가지 않는다)', async () => {
+    wrapper = mk('a.pptx')
+    expect(wrapper.find('img').attributes('src')).toContain('thumbs/room-x/a.pptx.jpg')
+    await wrapper.find('img').trigger('error')
+    expect(wrapper.find('img').exists()).toBe(false)
+  })
+  it('docx·xlsx는 썸네일 칸을 쓰지 않는다', () => {
+    for (const n of ['a.docx', 'a.xlsx']) {
+      wrapper = mk(n)
+      expect(wrapper.find('img').exists()).toBe(false)
+      wrapper.unmount()
+    }
+  })
   it('다른 문서(pdf)는 이미지 칸을 쓰지 않는다', () => {
     wrapper = mk('a.pdf')
     expect(wrapper.find('img').exists()).toBe(false)

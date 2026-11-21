@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useFileManager } from './useFileManager'
 import { r2Service } from '../services/r2Service'
 import { createImageThumbnail } from '../utils/thumbnail'
-import { createHwpThumbnail } from '../services/hwpThumb'
+import { createHwpThumbnail, createPptxThumbnail } from '../services/hwpThumb'
 import { trackEvent } from '../utils/analytics'
 
 vi.mock('../services/r2Service', () => ({
@@ -21,7 +21,7 @@ vi.mock('../services/r2Service', () => ({
 
 vi.mock('../utils/analytics', () => ({ trackEvent: vi.fn() }))
 
-vi.mock('../services/hwpThumb', () => ({ createHwpThumbnail: vi.fn() }))
+vi.mock('../services/hwpThumb', () => ({ createHwpThumbnail: vi.fn(), createPptxThumbnail: vi.fn() }))
 vi.mock('../utils/thumbnail', () => ({
   THUMBNAIL_CONTENT_TYPE: 'image/jpeg',
   createImageThumbnail: vi.fn()
@@ -189,6 +189,28 @@ describe('useFileManager - uploadFiles (배치 presign + 제한 병렬 + 썸네�
     createHwpThumbnail.mockRejectedValue(new Error('boom'))
     const summary = await fm.uploadFiles('room-x', [makeFile('b.hwp', 'application/octet-stream')])
     expect(summary.successCount).toBe(1)
+  })
+
+  it('pptx는 pptx 썸네일 경로, docx·xlsx는 어떤 썸네일 함수도 쓰지 않는다', async () => {
+    r2Service.getUploadUrls.mockImplementation(async (roomId, files) => files.map(({ fileName }) => ({
+      uploadUrl: `https://r2/put/${roomId}/${fileName}`, fileUrl: `https://store/${roomId}/${fileName}`, fileName,
+      thumbUploadUrl: `https://r2/put/thumbs/${roomId}/${fileName}.jpg`, thumbUrl: `https://store/thumbs/${roomId}/${fileName}.jpg`
+    })))
+    const thumbBlob = new Blob(['t'], { type: 'image/jpeg' })
+    createPptxThumbnail.mockResolvedValue(thumbBlob)
+    await fm.uploadFiles('room-x', [makeFile('a.pptx', 'application/octet-stream')])
+    expect(createPptxThumbnail).toHaveBeenCalledTimes(1)
+    expect(createHwpThumbnail).not.toHaveBeenCalled()
+    expect(r2Service.putToPresignedUrl).toHaveBeenCalledWith('https://r2/put/thumbs/room-x/a.pptx.jpg', thumbBlob, 'image/jpeg')
+    // 빈 썸네일(null)이면 썸네일 PUT 없이 원본만
+    r2Service.putToPresignedUrl.mockClear(); createPptxThumbnail.mockResolvedValue(null)
+    await fm.uploadFiles('room-x', [makeFile('b.pptx', 'application/octet-stream')])
+    expect(r2Service.putToPresignedUrl.mock.calls.filter(([u]) => u.includes('/thumbs/'))).toHaveLength(0)
+    // docx / xlsx: 서버가 썸네일 URL을 주지 않으므로(여기서는 줘도) 문서용 함수는 부르지 않는다
+    createPptxThumbnail.mockClear(); createImageThumbnail.mockResolvedValue(null)
+    await fm.uploadFiles('room-x', [makeFile('c.docx', 'application/octet-stream'), makeFile('d.xlsx', 'application/octet-stream')])
+    expect(createPptxThumbnail).not.toHaveBeenCalled()
+    expect(createHwpThumbnail).not.toHaveBeenCalled()
   })
 
   it('썸네일 업로드가 실패해도 원본 업로드는 성공으로 처리한다', async () => {

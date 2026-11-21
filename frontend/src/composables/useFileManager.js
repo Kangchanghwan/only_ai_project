@@ -5,7 +5,7 @@ import { trackEvent } from '../utils/analytics.js'
 import { t } from '../i18n/translate.js'
 import { isMultipartFile, multipartUpload, pruneStaleUploads } from '../services/multipartUploader.js'
 import { createImageThumbnail, THUMBNAIL_CONTENT_TYPE } from '../utils/thumbnail.js'
-import { isHwpName } from '../utils/hwpName.js'
+import { isHwpName, officeKindOf } from '../utils/hwpName.js'
 import { formatSizeMB } from '../utils/fileUtils.js'
 import { lockedUpload } from '../services/lockedUploader.js'
 import { deleteLockedWithProof } from '../services/lockedDownloader.js'
@@ -490,7 +490,9 @@ export function useFileManager() {
 
       // 썸네일은 원본 PUT과 병렬로 진행하되 어떤 실패도 원본 업로드를 막지 않는다
       const thumbUpload = target.thumbUploadUrl
-        ? (isHwpName(file.name) ? import('../services/hwpThumb.js').then(m => m.createHwpThumbnail(file)) : createImageThumbnail(file))
+        ? (isHwpName(file.name) ? import('../services/hwpThumb.js').then(m => m.createHwpThumbnail(file))
+          : officeKindOf(file.name) === 'pptx' ? import('../services/hwpThumb.js').then(m => m.createPptxThumbnail(file))
+          : createImageThumbnail(file))
             .then(blob => (blob ? r2Service.putToPresignedUrl(target.thumbUploadUrl, blob, THUMBNAIL_CONTENT_TYPE) : null))
             .catch(err => { console.warn('[useFileManager] 썸네일 업로드 실패(무시):', err); return null })
         : Promise.resolve(null)
