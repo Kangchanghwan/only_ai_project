@@ -67,7 +67,9 @@ body.ed { overflow: hidden; }
 body.ed > header.site, body.ed > main, body.ed > footer { display: none; }
 body.ed #editor-root { display: flex; flex-direction: column; position: fixed; inset: 0; height: 100dvh; background: var(--color-surface); z-index: 10; }
 #editor-wrap { flex: 1; min-height: 0; background: #fff; }
-/* 상단 바: studio 자신의 메뉴 줄 색을 런타임에 읽어(--bar-*) 같은 색으로 보이게 한다. 못 읽으면 토큰 색 */
+/* 편집기에 테마를 알리는 동안(처음 한 번) 기본 테마가 보이지 않게 가린다 */
+#editor-wrap.theming iframe { visibility: hidden; }
+/* 상단 바: 편집기 메뉴 줄과 같은 색(--bar-*). 편집기는 다른 출처라 읽지 않고 host.js 가 테마별 고정 색표로 넣는다. 없으면 토큰 색 */
 #editor-root { --bar-bg: var(--color-surface); --bar-fg: var(--color-text-primary); --bar-bd: var(--color-border); --bar-bd-w: 1px; }
 .bar { position: relative; display: flex; align-items: center; gap: 8px; height: 32px; flex: none; padding: 0 6px 0 10px; background: var(--bar-bg); color: var(--bar-fg); border-bottom: var(--bar-bd-w) solid var(--bar-bd); white-space: nowrap; font-size: 13px; }
 .bar-home { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; font-size: 16px; line-height: 1; text-decoration: none; }
