@@ -2,9 +2,10 @@
  * 실제 편집기로 에이전트 API 를 시험하는 콘솔용 스니펫 (번들에 들어가지 않는다).
  *
  * 사용 (/tools/hwp/ 페이지 콘솔, window.cbHwp 가 있어야 한다):
- *   1) 배포 전이면 scripts/hwp-agent.iife.js 내용을 먼저 붙여 넣는다 (window.__hwpAgentFactory 가 생긴다).
- *   2) const bytes = new Uint8Array(...)   // 시험할 .hwpx 바이트
- *   3) 이 파일 전체를 붙여 넣는다. 마지막 식이 Promise 를 돌려주니 await 하거나 .then(console.log) 한다.
+ *   에이전트 함수는 편집기 쪽(hwp.clipboardapp.org, 저장소 hwp-editor agent/)에 있고 cbHwp 는 postMessage 로 대신 전한다.
+ *   예전의 IIFE 붙여 넣기(hwp-agent.iife.js)는 편집기 쪽으로 옮겨져 없어졌다.
+ *   1) const bytes = new Uint8Array(...)   // 시험할 .hwpx 바이트
+ *   2) 이 파일 전체를 붙여 넣는다. 마지막 식이 Promise 를 돌려주니 await 하거나 .then(console.log) 한다.
  *      const report = await (이 스니펫)   → JSON 으로 직렬화되는 보고서
  *
  * 각 단계는 { step, ok, ms, ...결과 또는 error:{code,message} } 로 기록되고, 한 단계가 실패해도 다음으로 간다.
@@ -14,11 +15,8 @@
   if (typeof bytes === 'undefined') throw new Error('먼저 const bytes = new Uint8Array(...) 로 .hwpx 바이트를 정하세요')
   const H = window.cbHwp
   if (!H) throw new Error('window.cbHwp 가 없습니다 (/tools/hwp/ 페이지에서 실행)')
-  let A = H
-  if (typeof H.outline !== 'function') {
-    if (typeof window.__hwpAgentFactory !== 'function') throw new Error('cbHwp 에 에이전트 함수가 없습니다. scripts/hwp-agent.iife.js 를 먼저 붙여 넣으세요')
-    A = window.__hwpAgentFactory(() => document.querySelector('iframe').contentWindow)
-  }
+  const A = H
+  if (typeof H.outline !== 'function') throw new Error('cbHwp 에 에이전트 함수가 없습니다')
 
   // 중간에 멈춰도 부분 결과가 남도록 보고서를 window.__hwpE2EReport 에 계속 갱신한다 (_bytes 는 제외)
   const report = { steps: [], summary: {} }
@@ -33,8 +31,6 @@
     report.summary.lastStep = step
     return rec
   }
-  // 배포 전(옛 cbHwp.open 은 discard 를 모른다)에도 저장 확인 창이 뜨지 않게, studio 의 dirty 표시를 먼저 푼다 (main.ts completeHostSave)
-  const clearDirty = () => { try { document.querySelector('iframe').contentWindow.rhwpStudio.notifySaved('e2e.hwpx') } catch { /* 없으면 open 의 discard 에 맡긴다 */ } }
   const text = async () => norm(await H.call('GetTextFile', ['UNICODE', '']))
 
   // 1) 열기
@@ -118,7 +114,6 @@
   const exp = await run('exportHwpx', async () => { const b = await H.exportHwpx(); report.summary.exportBytes = b.length; report._bytes = b; return { bytes: b.length } })
   if (exp.ok) {
     await run('reopen+compare', async () => {
-      clearDirty()
       await H.open(report._bytes, 'e2e-reopen.hwpx', { discard: true }) // 편집 직후라 dirty 이지만 묻지 않는다
       const t2 = await text()
       const pages2 = await H.pageCount()

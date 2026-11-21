@@ -1,6 +1,6 @@
 /**
- * hwpAgent 의 공개 함수 이름. hwpAgent.js(수 KB)를 미리 불러오지 않고도 호스트가 window.cbHwp 에
- * 같은 이름의 지연 로딩 함수를 걸 수 있게 따로 둔다. hwpAgent.test.js 가 실제 객체와 같은지 확인한다.
+ * 에이전트 공개 함수 이름. 실제 함수는 편집기 쪽(hwp-editor agent/hwpAgent.js)에 있고, 편집기 창구는 같은 목록
+ * (hwp-editor agent/hwpAgentMethods.js)의 함수만 받는다. 두 목록은 같아야 한다 (hwpAgentClient.test.js 가 이름 목록을 고정해 둔다).
  */
 export const AGENT_METHODS = [
   'outline', 'find', 'getTable', 'listObjects', 'check',
