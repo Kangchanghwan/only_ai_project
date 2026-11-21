@@ -1,6 +1,7 @@
 <script setup>
 /**
- * 방에서 한글(.hwp/.hwpx) 파일을 누르면 열리는 미리보기 시트. 화면 이동 없이 방 위에 뜬다.
+ * 방에서 한글(.hwp/.hwpx)·Office(.docx/.xlsx/.pptx) 파일을 누르면 열리는 미리보기 시트. 화면 이동 없이 방 위에 뜬다.
+ * Office는 간단 미리보기만 한다(렌더러는 종류별 지연 로드, 출력은 sanitize 후 표시, 수정 없음, 하단 "받기").
  *  1단계: 파일 안의 미리보기(그림·글)만 즉시 보여 준다 (엔진 없음)
  *  2단계: "모든 쪽 보기" — studio를 시트 안에서 숨겨 불러오고 쪽을 SVG 목록으로 보여 준다 (읽기 전용)
  *  3단계: "수정" (폰 제외) — 같은 studio가 화면 가득 보이고, 방에 올리기/내려받기
@@ -10,6 +11,8 @@ import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatFileSize } from '../utils/fileUtils'
 import { isPhone } from '../utils/isPhone'
+import { officeKindOf } from '../utils/hwpName'
+import { renderOffice, sizeCapFor } from '../services/officePreview'
 import { extractPreview } from '../services/hwpPreview'
 import { preloadEngine, progressText } from '../services/hwpEngine'
 import { renderPages } from '../services/hwpViewer'
@@ -20,18 +23,25 @@ const props = defineProps({
   scope: { type: String, default: null },
   // { maxBytes, getBytes(file)=>{name,bytes}, existingNames(roomId)=>string[], upload(File, scope)=>Promise<boolean> }
   hooks: { type: Object, required: true },
+  // 잠긴 파일은 복호화 전에는 이름을 모르므로, 방에서 알고 있는 원래 이름을 힌트로 받는다
+  nameHint: { type: String, default: '' },
 })
 const emit = defineEmits(['close'])
 
 const STR = {
-  ko: { all: '모든 쪽 보기', edit: '수정', loading: '불러오는 중…', fail: '파일을 불러오지 못했습니다.', none: '이 파일에는 미리보기가 들어 있지 않습니다.', stale: '수정한 파일이라 저장된 미리보기를 쓰지 않습니다.', file: '파일 받는 중…', close: '닫기', engine: '편집기를 불러오는 중…', save: '저장 ▾', up: '방에 올리기', dlx: 'HWPX로 내려받기', dl: 'HWP로 내려받기', changed: '변경됨', confirm: '저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?', upping: '방에 올리는 중…', upok: '방에 올렸습니다: ', upfail: '방에 올리지 못했습니다.', home: '미리보기', size: '크기' },
-  en: { all: 'View all pages', edit: 'Edit', loading: 'Loading…', fail: 'Could not load the file.', none: 'This file has no embedded preview.', stale: 'This file was edited, so its stored preview is not used.', file: 'Fetching the file…', close: 'Close', engine: 'Loading the editor…', save: 'Save ▾', up: 'Upload to room', dlx: 'Download as HWPX', dl: 'Download as HWP', changed: 'Modified', confirm: 'You have unsaved changes. They will be lost if you close. Close anyway?', upping: 'Uploading…', upok: 'Uploaded to the room: ', upfail: 'Could not upload to the room.', home: 'Preview', size: 'Size' },
+  ko: { notice: '간단히 보기예요. 글상자·도형 등 정확한 모양은 원본 앱에서 확인하세요.', recv: '받기', tooBig: '파일이 커서 미리보기를 건너뛰었어요', cantMake: '미리보기를 만들 수 없어요', all: '모든 쪽 보기', edit: '수정', loading: '불러오는 중…', fail: '파일을 불러오지 못했습니다.', none: '이 파일에는 미리보기가 들어 있지 않습니다.', stale: '수정한 파일이라 저장된 미리보기를 쓰지 않습니다.', file: '파일 받는 중…', close: '닫기', engine: '편집기를 불러오는 중…', save: '저장 ▾', up: '방에 올리기', dlx: 'HWPX로 내려받기', dl: 'HWP로 내려받기', changed: '변경됨', confirm: '저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?', upping: '방에 올리는 중…', upok: '방에 올렸습니다: ', upfail: '방에 올리지 못했습니다.', home: '미리보기', size: '크기' },
+  en: { notice: 'This is a simple view. Check text boxes, shapes and exact layout in the original app.', recv: 'Download', tooBig: 'The file is large, so the preview was skipped', cantMake: 'Could not create a preview', all: 'View all pages', edit: 'Edit', loading: 'Loading…', fail: 'Could not load the file.', none: 'This file has no embedded preview.', stale: 'This file was edited, so its stored preview is not used.', file: 'Fetching the file…', close: 'Close', engine: 'Loading the editor…', save: 'Save ▾', up: 'Upload to room', dlx: 'Download as HWPX', dl: 'Download as HWP', changed: 'Modified', confirm: 'You have unsaved changes. They will be lost if you close. Close anyway?', upping: 'Uploading…', upok: 'Uploaded to the room: ', upfail: 'Could not upload to the room.', home: 'Preview', size: 'Size' },
 }
 const { locale } = useI18n()
 const s = computed(() => (String(locale.value).startsWith('ko') ? STR.ko : STR.en))
 
 const phone = isPhone()
-const stage = ref(phone ? 'p2' : 'p1') // p1(데스크톱만) | p2 | edit
+const kind = officeKindOf(props.nameHint || props.file.name) // docx | xlsx | pptx | null(한글)
+const stage = ref(kind ? 'office' : phone ? 'p2' : 'p1') // office | p1(데스크톱만) | p2 | edit
+const officeState = ref('loading') // loading | ok | skip | fail
+const officeBusy = ref(true) // 받는 중 + 그리는 중 (스피너)
+const officeEl = ref(null)
+let officeHandle = null
 const boot = ref(null) // 엔진 받는 진행률 / 그리는 중
 const name = ref(props.file.name)
 const loading = ref(true)
@@ -79,6 +89,24 @@ async function loadStage1() {
     error.value = s.value.fail
   } finally {
     loading.value = false
+  }
+}
+
+async function startOffice() {
+  const cap = sizeCapFor(phone)
+  try {
+    if ((props.file.size || 0) > cap) { officeState.value = 'skip'; sizeText.value = formatFileSize(props.file.size); return }
+    await loadBytes()
+    if (bytes.length > cap) { bytes = null; officeState.value = 'skip'; return }
+    const buf = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)
+    bytes = null // 렌더러에 넘긴 뒤에는 쥐고 있지 않는다
+    officeState.value = 'ok' // 컨테이너가 자리를 잡은 뒤 그린다 (폭 측정이 필요). 스피너가 위에 덮여 있다
+    await nextTick()
+    officeHandle = await renderOffice(kind, buf, officeEl.value)
+  } catch {
+    officeState.value = 'fail'
+  } finally {
+    officeBusy.value = false
   }
 }
 
@@ -265,7 +293,8 @@ onMounted(() => {
   pushed = true
   window.addEventListener('popstate', onPop)
   document.addEventListener('keydown', onKey)
-  if (phone) startPhone()
+  if (kind) startOffice()
+  else if (phone) startPhone()
   else loadStage1()
 })
 onBeforeUnmount(() => {
@@ -273,6 +302,8 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', onKey)
   clearTimeout(msgTimer)
   viewer?.destroy()
+  officeHandle?.destroy()
+  bytes = null
   try { studio?.destroy() } catch { /* 이미 정리됨 */ }
   if (imgUrl.value) URL.revokeObjectURL(imgUrl.value)
 })
@@ -301,6 +332,21 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
+      <div v-if="kind" class="hp-body hp-office" data-testid="office-body">
+        <p class="hp-notice">{{ s.notice }}</p>
+        <div v-if="officeState === 'skip' || officeState === 'fail'" class="hp-failbox" data-testid="office-fail">
+          <svg class="hp-fileicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+          <p>{{ officeState === 'skip' ? s.tooBig : s.cantMake }}</p>
+        </div>
+        <div v-if="officeBusy" class="hp-spin-wrap" role="status" data-testid="office-spin"><span class="hp-spin" aria-hidden="true"></span><span>{{ s.loading }}</span></div>
+        <div v-show="officeState === 'ok'" ref="officeEl" class="hp-office-host" :class="'hp-office-' + kind" data-testid="office-host"></div>
+      </div>
+
+      <div v-if="kind" class="hp-foot">
+        <span class="hp-spacer"></span>
+        <button type="button" class="hp-btn hp-btn-primary" data-testid="office-download" @click="props.hooks.download && props.hooks.download(props.file)">{{ s.recv }}</button>
+      </div>
+
       <div v-show="stage === 'p1'" class="hp-body hp-p1" :class="{ 'hp-p1-img': !!imgUrl }">
         <p v-if="loading" class="hp-note">{{ s.loading }}</p>
         <p v-else-if="error" class="hp-note">{{ error }}</p>
@@ -322,7 +368,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- 데스크톱 하단: 왼쪽 "모든 쪽 보기"(1단계), 오른쪽 "수정" (폰은 수정 없음) -->
-      <div v-if="stage !== 'edit' && !phone" class="hp-foot">
+      <div v-if="!kind && stage !== 'edit' && !phone" class="hp-foot">
         <button v-if="stage === 'p1'" type="button" class="hp-btn hp-btn-primary" :disabled="engineBusy || loading || !!error" data-testid="hwp-all" @click="showAll">{{ engineBusy ? s.engine : s.all }}</button>
         <span class="hp-spacer"></span>
         <button type="button" class="hp-btn" :class="{ 'hp-btn-primary': stage === 'p2' }" :disabled="engineBusy || loading" data-testid="hwp-edit" @click="startEdit">{{ s.edit }}</button>
@@ -354,6 +400,16 @@ onBeforeUnmount(() => {
 .hp-note { margin: 12px 0; color: var(--color-text-secondary); font-size: 14px; }
 
 .hp-pad { padding: 12px 16px; }
+.hp-office { position: relative; display: flex; flex-direction: column; padding: 0; background: var(--color-tint); }
+.hp-notice { flex: none; margin: 0; padding: 6px 16px; font-size: 12px; color: var(--color-text-secondary); background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+.hp-office-host { flex: 1; min-height: 0; overflow: auto; position: relative; }
+.hp-office-xlsx { background: #fff; }
+.hp-office-docx { background: #e5e7eb; overflow-x: hidden; }
+.hp-spin-wrap { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--color-surface); font-size: 14px; color: var(--color-text-secondary); }
+.hp-spin { width: 20px; height: 20px; border: 3px solid var(--color-border); border-top-color: var(--color-ink); border-radius: 50%; animation: hp-rot 0.8s linear infinite; }
+@keyframes hp-rot { to { transform: rotate(360deg); } }
+.hp-failbox { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 16px; color: var(--color-text-secondary); font-size: 14px; }
+.hp-fileicon { width: 48px; height: 48px; }
 .hp-foot { display: flex; align-items: center; gap: 8px; flex: none; padding: 8px 12px; background: var(--color-surface); border-top: 1px solid var(--color-border); }
 .hp-spacer { flex: 1; }
 .hp-boot { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 3; width: min(420px, calc(100% - 32px)); padding: 16px; background: var(--color-surface); border: 2px solid var(--color-ink); }

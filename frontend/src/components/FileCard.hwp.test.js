@@ -22,18 +22,23 @@ async function openSheet(name) {
 describe('FileCard 한글 편집 메뉴', () => {
   it.each(['a.hwp', 'a.hwpx', 'A.HWPX', '보고서.Hwp'])('%s: 더보기 시트에 항목이 있다', async (name) => {
     const { sheet } = await openSheet(name)
-    expect(sheet.find('[data-testid="sheet-preview-hwp"]').exists()).toBe(true)
+    expect(sheet.find('[data-testid="sheet-preview-file"]').exists()).toBe(true)
   })
 
-  it.each(['a.pdf', 'a.hwp.zip', 'hwp', 'a.hwpx.txt', 'photo.png'])('%s: 항목이 없다', async (name) => {
+  it.each(['a.docx', 'a.XLSX', '보고서.pptx'])('%s: Office도 더보기 시트에 미리보기 항목이 있다', async (name) => {
     const { sheet } = await openSheet(name)
-    expect(sheet.find('[data-testid="sheet-preview-hwp"]').exists()).toBe(false)
+    expect(sheet.find('[data-testid="sheet-preview-file"]').exists()).toBe(true)
   })
 
-  it('누르면 preview-hwp를 내보내고 시트를 닫는다', async () => {
+  it.each(['a.pdf', 'a.hwp.zip', 'hwp', 'a.hwpx.txt', 'photo.png', 'a.doc', 'a.xls', 'a.ppt', 'a.docx.zip', 'a.docm'])('%s: 항목이 없다', async (name) => {
+    const { sheet } = await openSheet(name)
+    expect(sheet.find('[data-testid="sheet-preview-file"]').exists()).toBe(false)
+  })
+
+  it('누르면 preview-file를 내보내고 시트를 닫는다', async () => {
     const { file, sheet } = await openSheet('a.hwpx')
-    await sheet.find('[data-testid="sheet-preview-hwp"]').trigger('click')
-    expect(wrapper.emitted('preview-hwp')[0]).toEqual([file])
+    await sheet.find('[data-testid="sheet-preview-file"]').trigger('click')
+    expect(wrapper.emitted('preview-file')[0]).toEqual([file])
     expect(document.body.querySelector('.file-actions-sheet')).toBeNull()
   })
 
@@ -41,12 +46,12 @@ describe('FileCard 한글 편집 메뉴', () => {
     const mk = (name) => mount(FileCard, { props: { file: { name, roomId: 'r', url: 'u', size: 1, created: '2026-01-01T00:00:00.000Z' } }, global: { stubs } })
     wrapper = mk('a.hwpx')
     await wrapper.find('[data-testid="file-name"]').trigger('click')
-    expect(wrapper.emitted('preview-hwp')).toHaveLength(1)
+    expect(wrapper.emitted('preview-file')).toHaveLength(1)
     expect(wrapper.emitted('toggle-selection')).toBeFalsy()
     wrapper.unmount()
     wrapper = mk('a.pdf')
     await wrapper.find('[data-testid="file-name"]').trigger('click')
-    expect(wrapper.emitted('preview-hwp')).toBeFalsy()
+    expect(wrapper.emitted('preview-file')).toBeFalsy()
   })
 })
 
@@ -62,6 +67,12 @@ describe('FileCard 한글 문서 썸네일', () => {
   it('썸네일을 못 받으면 원본으로 돌아가지 않고 파일 아이콘', async () => {
     wrapper = mk('a.hwp')
     await wrapper.find('img').trigger('error')
+    expect(wrapper.find('img').exists()).toBe(false)
+  })
+  it('Office 파일 이름을 눌러도 미리보기 이벤트 (썸네일은 만들지 않는다)', async () => {
+    wrapper = mk('a.docx')
+    await wrapper.find('[data-testid="file-name"]').trigger('click')
+    expect(wrapper.emitted('preview-file')).toHaveLength(1)
     expect(wrapper.find('img').exists()).toBe(false)
   })
   it('다른 문서(pdf)는 이미지 칸을 쓰지 않는다', () => {
