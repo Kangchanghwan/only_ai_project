@@ -403,7 +403,7 @@ const PLANS = {
     const CELL_ALIGNS = ['left', 'center', 'right', 'justify']
     const chkAlign = (v, name) => { if (v !== undefined && !CELL_ALIGNS.includes(v)) fail('INVALID_ARG', `${name}: ${CELL_ALIGNS.join('|')}`) }
     chkAlign(t.cellAlign, 'cellAlign')
-    chkAlign(header && header.align, 'header.align')
+    chkAlign(header ? header.align : undefined, 'header.align')
     if (t.colAlign !== undefined) {
       if (!Array.isArray(t.colAlign) || t.colAlign.length !== cols) fail('INVALID_ARG', `colAlign 은 ${cols}개 배열이어야 합니다 (칸을 건드리지 않을 열은 null)`)
       t.colAlign.forEach((a, k) => { if (a !== null) chkAlign(a, `colAlign[${k}]`) })
