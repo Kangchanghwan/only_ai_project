@@ -22,8 +22,8 @@ import { LockObjectMetadata, readLockMeta, ptSizeOf } from '../utils/lockFormat'
 const THUMB_PREFIX = 'thumbs';
 /** 썸네일 MIME 타입 (JPEG: 모든 브라우저 canvas가 인코딩 가능) */
 const THUMB_CONTENT_TYPE = 'image/jpeg';
-/** 정리된 파일명이 한글 문서(.hwp/.hwpx)인지 (대소문자 무시) */
-const HWP_NAME_RE = /\.hwpx?$/i;
+/** 정리된 파일명이 썸네일을 받는 문서(.hwp/.hwpx/.pptx)인지 (대소문자 무시). docx·xlsx는 제외 */
+const DOC_THUMB_NAME_RE = /\.(hwpx?|pptx)$/i;
 /** S3 DeleteObjects 한 번에 삭제 가능한 최대 키 수 */
 const DELETE_BATCH_SIZE = 1000;
 
@@ -164,9 +164,9 @@ class R2Service {
         const safeName = this.sanitizeFileName(fileName);
         const target: UploadTarget = await this.getUploadPresignedUrl(roomId, safeName, contentType, expiresIn, size);
 
-        // 이미지, 그리고 한글 문서(.hwp/.hwpx: 브라우저가 파일 안의 첫 쪽 미리보기로 만든 썸네일)에만 썸네일 업로드 URL을 준다.
+        // 이미지, 그리고 한글 문서(.hwp/.hwpx)·.pptx(브라우저가 파일 안에 든 첫 쪽 미리보기로 만든 썸네일)에만 썸네일 업로드 URL을 준다.
         // 이 배치 경로는 공개(일반) 방 전용이다: 1:1·그룹 방(rejectPrivateRoom)과 잠금 업로드(별도 라우트·버킷)는 지나지 않아 평문 썸네일이 생기지 않는다.
-        if (contentType.startsWith('image/') || HWP_NAME_RE.test(safeName)) {
+        if (contentType.startsWith('image/') || DOC_THUMB_NAME_RE.test(safeName)) {
           const thumbCommand = new PutObjectCommand({
             Bucket: this.bucketName,
             Key: this.getThumbKey(roomId, safeName),

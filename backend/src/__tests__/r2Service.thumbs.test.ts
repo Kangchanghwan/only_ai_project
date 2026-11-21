@@ -86,6 +86,11 @@ describe('R2Service - thumbnails and deletion', () => {
       { fileName: 'B.HWPX', contentType: 'application/octet-stream' },
       { fileName: '보 고서.hwpx', contentType: 'application/x-hwpx' },
       { fileName: 'a.hwp.zip', contentType: 'application/zip' },
+      { fileName: 'slides.pptx', contentType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' },
+      { fileName: 'D.PPTX', contentType: 'application/octet-stream' },
+      { fileName: 'doc.docx', contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+      { fileName: 'sheet.xlsx', contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+      { fileName: 'a.pptx.zip', contentType: 'application/zip' },
       { fileName: 'hwp', contentType: 'text/plain' },
       { fileName: 'notes.hwpx.txt', contentType: 'text/plain' },
     ]);
@@ -95,8 +100,11 @@ describe('R2Service - thumbnails and deletion', () => {
     expect(result[1].thumbUploadUrl).toContain('/thumbs/room-x/B.HWPX.jpg');
     expect(result[2].thumbUrl).toBe('https://store.test/thumbs/room-x/보_고서.hwpx.jpg');
     expect(result[3].thumbUploadUrl).toBeUndefined();
-    expect(result[4].thumbUploadUrl).toBeUndefined();
-    expect(result[5].thumbUploadUrl).toBeUndefined();
+    // .pptx는 같은 키 규칙으로 썸네일 URL, docx·xlsx·a.pptx.zip·확장자 없음은 없음
+    expect(result[4].thumbUploadUrl).toContain('/thumbs/room-x/slides.pptx.jpg');
+    expect(result[4].thumbUrl).toBe('https://store.test/thumbs/room-x/slides.pptx.jpg');
+    expect(result[5].thumbUploadUrl).toContain('/thumbs/room-x/D.PPTX.jpg');
+    for (const i of [6, 7, 8, 9, 10]) expect(result[i].thumbUploadUrl).toBeUndefined();
   });
 
   test('getDownloadPresignedUrl은 attachment content-disposition을 서명한다', async () => {
