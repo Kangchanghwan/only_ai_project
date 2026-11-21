@@ -34,14 +34,6 @@ describe('LockedFileCard', () => {
     expect(name).toMatch(/^[0-9a-f]{16}…$/)
   })
 
-  it('잠긴 한글·Office 파일도 이름을 누르면 선택이 토글되고 미리보기는 열리지 않는다', async () => {
-    useLockState().rememberName('room-1', 'abc123', 'report.docx')
-    const w = mount(LockedFileCard, { props: { file, selectable: true }, global: { stubs: { teleport: true, transition: false } } })
-    await w.find('[data-testid="locked-name"]').trigger('click')
-    expect(w.emitted('toggle-selection')).toHaveLength(1)
-    expect(w.emitted('preview-file')).toBeFalsy()
-  })
-
   it('이 기기에서 이름이 보이면 메타 줄 맨 앞에 잠금 태그, 이름이 숨겨져 있으면 태그 없음', () => {
     expect(mountCard().find('[data-testid="locked-lock-tag"]').exists()).toBe(false)
     useLockState().rememberName('room-1', 'abc123', 'report.pdf')

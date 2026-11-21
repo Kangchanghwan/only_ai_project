@@ -270,6 +270,11 @@ async function handleSheetQR() {
 
 // 한글 편집: 원래 이름을 이미 알고(푼 상태) .hwp/.hwpx일 때만. 풀기는 App의 기존 복호화 경로(방 열쇠/이번 접속에서 확인한 비밀번호)를 쓴다
 const canPreviewHwp = computed(() => isPreviewName(knownName.value) && canReceiveDirectly.value)
+function onNameClick(event) {
+  if (!canPreviewHwp.value) return
+  event.stopPropagation()
+  emit('preview-file', props.file)
+}
 function handleSheetPreviewHwp() {
   closeActionsSheet()
   emit('preview-file', props.file)
@@ -319,7 +324,8 @@ onUnmounted(() => clearInterval(revealTimer))
     <div class="file-info flex-1 min-w-0">
       <p
         class="file-name text-sm font-medium truncate m-0"
-        :class="isPlain ? 'text-text-primary' : 'text-text-secondary'"
+        :class="[isPlain ? 'text-text-primary' : 'text-text-secondary', canPreviewHwp ? 'cursor-pointer' : '']"
+        @click="onNameClick"
         :title="isPlain ? displayName : t('lock.hiddenName')"
         data-testid="locked-name"
       >{{ displayName }}</p>
