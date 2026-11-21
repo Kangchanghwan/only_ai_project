@@ -7,7 +7,7 @@
  *  3단계: "수정" (폰 제외) — 같은 studio가 화면 가득 보이고, 방에 올리기/내려받기
  * 이 컴포넌트와 엔진(SDK)은 모두 지연 로드된다. 뒤로 가기는 시트만 닫는다(주소·소켓은 그대로).
  */
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatFileSize } from '../utils/fileUtils'
 import { isPhone } from '../utils/isPhone'
@@ -16,6 +16,7 @@ import { renderOffice, sizeCapFor } from '../services/officePreview'
 import { extractPreview } from '../services/hwpPreview'
 import { preloadEngine, progressText } from '../services/hwpEngine'
 import { renderPages } from '../services/hwpViewer'
+import { AGENT_METHODS } from '../services/hwpAgentMethods'
 import { editedName, isEditedHwp, validateUpload, svgToPng, refreshHwpxPreview } from '../services/hwpFiles'
 
 const props = defineProps({
@@ -174,6 +175,39 @@ async function ensureStudio() {
   return st
 }
 
+/**
+ * 수정 단계(3단계) 동안만 window.cbHwp 로 에이전트 API 를 연다 (대화상자 없는 편집 함수, 단위 pt).
+ * hwpAgent.js 는 수정을 눌렀을 때에만 불러온다. 단계를 벗어나거나 시트가 닫히면 바로 거둔다.
+ */
+let agentApi = null
+async function installAgent(st) {
+  const { createHwpAgent } = await import('../services/hwpAgent')
+  if (stage.value !== 'edit' || !studio) return // 그 사이 닫혔다
+  const agent = createHwpAgent(() => st.element.contentWindow)
+  const api = {}
+  for (const n of AGENT_METHODS) api[n] = (...a) => agent[n](...a)
+  Object.assign(api, {
+    layout: () => 'editor',
+    ready: async () => true,
+    pageCount: async () => st.pageCount(),
+    exportHwpx: async () => st.exportHwpx(),
+    exportHwp: async () => st.exportHwp(),
+    open: async (u8, fileName) => {
+      agent.dismissRecovery({ timeout: 3000 }).catch(() => {})
+      const res = await st.loadFile(u8, fileName || name.value)
+      agent.dismissRecovery({ timeout: 0 }).catch(() => {})
+      return res
+    },
+  })
+  agentApi = api
+  window.cbHwp = api
+}
+function removeAgent() {
+  if (agentApi && window.cbHwp === agentApi) delete window.cbHwp
+  agentApi = null
+}
+watch(stage, (v) => { if (v !== 'edit') removeAgent() })
+
 async function showAll() {
   if (engineBusy.value) return
   engineBusy.value = true
@@ -200,6 +234,7 @@ async function startEdit() {
     const st = await ensureStudio() // 이미 있으면 새로 만들지 않는다
     await st.chrome.set({ menu: true, toolbar: true, statusbar: true })
     stage.value = 'edit'
+    installAgent(st).catch(() => { /* 에이전트 없이도 편집은 된다 */ })
     await nextTick()
     requestAnimationFrame(syncBarColors)
     try {
@@ -304,6 +339,7 @@ onBeforeUnmount(() => {
   viewer?.destroy()
   officeHandle?.destroy()
   bytes = null
+  removeAgent()
   try { studio?.destroy() } catch { /* 이미 정리됨 */ }
   if (imgUrl.value) URL.revokeObjectURL(imgUrl.value)
 })

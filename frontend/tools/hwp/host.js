@@ -15,12 +15,21 @@
  *   exportHwpx() / exportHwp()  Uint8Array
  *   pageCount()               페이지 수
  *   layout()                  'landing' | 'editor' (문서를 열면 편집 화면이 페이지 전체를 쓴다)
+ *
+ * 대화상자 없이 문서를 고치는 함수 (src/services/hwpAgent.js, 처음 부를 때 불러온다. 단위는 pt):
+ *   outline({from,to}) find(text) getTable(i,ctrlIdx) listObjects() check({maxPages})
+ *   replaceParagraph(i,text,{expect}) insertParagraphAfter(i,text,{like}) deleteParagraphs(from,to)
+ *   setParaShape(i|[from,to],{left,right,indent,align,lineSpacing,before,after}) setCharShape(i,{from,to,size,bold,italic,underline,color,font})
+ *   insertTable(afterPara,{rows,cols,colWidths,cells,header,align,cellPadding}) deleteObject({para,ctrlIdx})
+ *   edit(label, a => {...})   여러 편집을 undo 한 단계로 (a 의 함수는 동기)
+ *   undo() redo() status() dismissRecovery()
  */
 import './../tools.css'
 import { trackEvent } from '../ga.js'
 import { isPhone } from '../../src/utils/isPhone.js'
 import { renderPages } from '../../src/services/hwpViewer.js'
 import { preloadEngine, progressText } from '../../src/services/hwpEngine.js'
+import { AGENT_METHODS } from '../../src/services/hwpAgentMethods.js'
 
 const STUDIO_URL = '/tools/hwp/studio/'
 const $ = (id) => document.getElementById(id)
@@ -162,7 +171,10 @@ async function open(bytes, name) {
   const s = await ensure()
   currentName = baseName(name)
   setName(name || currentName + '.hwpx')
+  // 부팅 때 저장되지 않은 복구본이 있으면 studio 가 "문서 복구" 모달을 띄운다. 자동 흐름이 막히지 않게 "나중에"로 닫는다.
+  dismissRecovery(3000)
   const res = await s.loadFile(bytes, name || currentName + '.hwpx')
+  dismissRecovery(0)
   syncBarColors()
   if (phone) {
     viewer?.destroy()
@@ -174,6 +186,10 @@ async function open(bytes, name) {
   trackEvent('tool_hwp_open', { file_type: /\.hwp$/i.test(name || '') ? 'hwp' : 'hwpx' })
   setStatus('')
   return res
+}
+
+function dismissRecovery(timeout) {
+  return getAgent().then((a) => a.dismissRecovery({ timeout })).catch(() => false)
 }
 
 async function newDocument() {
@@ -207,7 +223,22 @@ async function save(kind) {
   trackEvent('tool_hwp_save', { file_type: kind })
 }
 
+// 에이전트 함수: 편집기를 만든 뒤 처음 부를 때 hwpAgent.js 를 불러온다 (첫 화면 번들에 넣지 않는다)
+let agentPromise = null
+const getAgent = () => {
+  if (!agentPromise) {
+    agentPromise = ensure()
+      .then(() => import('../../src/services/hwpAgent.js'))
+      .then(({ createHwpAgent }) => createHwpAgent(() => wrap.querySelector('iframe').contentWindow))
+      .catch((e) => { agentPromise = null; throw e })
+  }
+  return agentPromise
+}
+const agentApi = {}
+for (const name of AGENT_METHODS) agentApi[name] = async (...args) => (await getAgent())[name](...args)
+
 window.cbHwp = {
+  ...agentApi,
   layout: () => layoutState,
   ready: async () => { await ensure(); return true },
   open,
