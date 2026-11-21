@@ -92,3 +92,4 @@ export async function precheck({ original, baseline, ext, ctx }) {
 }
 
 export { signature }
+export { TESTED_EDITOR_BUILDS, editorBuildStatus, checkEditorBuild } from './editorBuild.js'

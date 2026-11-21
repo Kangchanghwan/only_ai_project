@@ -6,8 +6,11 @@
  *   -> document:opened 직후 document:save 로 기준본 B (사용자에게 보이지 않음) -> precheck 안내(막지 않음)
  *   -> 사용자 편집 -> "내 기기로 저장": 바뀐 게 없으면 알리고 끝, 있으면 document:save -> restoreAfterSave -> 내려받기
  *
- * 편집기 출처: 빌드 때 VITE_OFFICE_EDITOR_ORIGIN. 이 페이지가 localhost 에서 돌 때만 ?ed= 로 바꿀 수 있다.
- * 출처가 없으면 "편집기 준비 중" 만 보이고 아무것도 받지 않는다.
+ * 편집기 출처: 빌드 때 VITE_OFFICE_EDITOR_ORIGIN (프로덕션은 frontend/.env.production 의 https://office.clipboardapp.org).
+ * 이 페이지가 localhost 에서 돌 때만 ?ed= 로 바꿀 수 있다. 출처가 없으면 "편집기 준비 중" 만 보이고 아무것도 받지 않는다.
+ *
+ * 편집기 빌드 확인: 편집기가 준비되면 <origin>/build-identity.json 을 받아 시험한 빌드 목록(editorBuild.js)과 맞춰 본다.
+ * 목록에 없으면 짧은 안내만 띄우고 편집은 그대로 허용한다. 저장 뒤 남은 차이 보고는 항상 한다.
  */
 import '../tools.css'
 import './office.css'
@@ -29,12 +32,19 @@ let file = null // { name, base, ext, original: Uint8Array, prepared, ctx, basel
 let baselineDone = false
 let everDirty = false
 let busy = false
+let buildCheck = null // Promise<{ status, identity, notice }>, 편집기 하나에 한 번
+let buildStatus = 'pending'
+let buildNotice = ''
+let precheckNotice = ''
 
 const setStatus = (msg) => { $('status').textContent = msg; $('bar-msg').textContent = msg; $('bar-msg').title = msg }
 
 function show(el, html) {
   el.hidden = !html
   el.innerHTML = html || ''
+}
+function renderNotice() {
+  show($('notice'), [buildNotice && esc(buildNotice), precheckNotice].filter(Boolean).join('<br>'))
 }
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 
@@ -119,7 +129,8 @@ async function openFile(f) {
   if (!EXTS.includes(ext)) { setStatus('docx, xlsx, pptx 파일만 열 수 있어요'); return }
   busy = true
   $('btn-save').disabled = true
-  show($('notice'), '')
+  precheckNotice = ''
+  renderNotice()
   show($('report'), '')
   try {
     setStatus('파일을 준비하는 중입니다')
@@ -133,6 +144,7 @@ async function openFile(f) {
     $('frame-cover').hidden = false // no typing until the baseline is saved: it must not contain user edits
     setStatus('편집기를 불러오는 중입니다')
     await ensureFrame()
+    checkBuildOnce()
     setStatus('문서를 여는 중입니다')
     const buffer = prepared.slice().buffer
     await request('document:open-buffer', { fileName: f.name, buffer, readonly: false }, 'document:opened', READY_TIMEOUT)
@@ -145,7 +157,8 @@ async function openFile(f) {
     const { items } = await integrity.precheck({ original, baseline: file.baseline, ext, ctx })
     if (items.length) {
       const labels = [...new Set(items.map((i) => i.label + (i.where ? ' (' + i.where + ')' : '')))]
-      show($('notice'), '이 편집기는 이 문서의 일부를 원래대로 저장하지 못해요: ' + esc(labels.join(', ')) + '. 편집은 그대로 할 수 있어요.')
+      precheckNotice = '이 편집기는 이 문서의 일부를 원래대로 저장하지 못해요: ' + esc(labels.join(', ')) + '. 편집은 그대로 할 수 있어요.'
+      renderNotice()
     }
   } catch (e) {
     setStatus(e?.message || '문서를 열지 못했어요')
@@ -153,6 +166,17 @@ async function openFile(f) {
   } finally {
     busy = false
   }
+}
+
+/** 편집기가 준비된 뒤 한 번만. 실패해도 편집에는 영향이 없다. */
+function checkBuildOnce() {
+  if (buildCheck) return
+  buildCheck = integrity.checkEditorBuild(editorOrigin).then((r) => {
+    buildStatus = r.status
+    buildNotice = r.notice
+    renderNotice()
+    return r
+  })
 }
 
 function download(bytes, name) {
@@ -214,4 +238,4 @@ if (editorOrigin) $('picker').hidden = false
 else $('not-ready').hidden = false
 
 // 에이전트·시험용 읽기 전용 상태
-window.cbOffice = { state: () => ({ origin: editorOrigin, opened: !!file?.baseline, dirty: everDirty, busy }) }
+window.cbOffice = { state: () => ({ origin: editorOrigin, opened: !!file?.baseline, dirty: everDirty, busy, editorBuild: buildStatus }) }
