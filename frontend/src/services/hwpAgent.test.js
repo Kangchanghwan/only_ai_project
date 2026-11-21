@@ -78,7 +78,7 @@ function makeDoc(paras) {
       state.paras.splice(i + 1, 0, { text: '', ps: { ...p.ps }, cs: { ...p.cs }, ctrls: [] })
       return JSON.stringify({ ok: true, paraIdx: i, controlIdx: p.ctrls.length - 1 })
     }),
-    setCellProperties: mut('setCellProperties', () => OK),
+    setCellProperties: mut('setCellProperties', (s, i, k, c, json) => { const v = JSON.parse(json); if (v.fillColor) need(i).ctrls[k].cells[c].fill = v.fillColor; return OK }),
     setTableProperties: mut('setTableProperties', () => OK),
     applyParaFormatInCell: mut('applyParaFormatInCell', (s, i, k, c, cp, json) => {
       const cell = need(i).ctrls[k].cells[c]; const v = JSON.parse(json)
@@ -88,7 +88,7 @@ function makeDoc(paras) {
       return OK
     }),
     insertTextInCell: mut('insertTextInCell', (s, i, k, c, cp, off, t) => { need(i).ctrls[k].cells[c].text += t; return OK }),
-    applyCharFormatInCell: mut('applyCharFormatInCell', (s, i, k, c) => { need(i).ctrls[k].cells[c].bold = true; return OK }),
+    applyCharFormatInCell: mut('applyCharFormatInCell', (s, i, k, c, cp, a, b, json) => { const v = JSON.parse(json); const cell = need(i).ctrls[k].cells[c]; if (v.bold) cell.bold = true; if (v.fontSize) cell.size = v.fontSize; return OK }),
     deleteTableControl: mut('deleteTableControl', (s, i, k) => { need(i).ctrls.splice(k, 1); return OK }),
     deleteShapeControl: mut('deleteShapeControl', (s, i, k) => { need(i).ctrls.splice(k, 1); return OK }),
     deletePictureControl: mut('deletePictureControl', (s, i, k) => { need(i).ctrls.splice(k, 1); return OK }),
@@ -262,6 +262,37 @@ describe('insertTable', () => {
     for (const c of table.cells) expect(c.ps).toMatchObject({ ml: 0, indent: 0, align: 'left' })
     expect(table.cells[0].bold).toBe(true)
     expect(table.cells[2].bold).toBeUndefined()
+  })
+
+  it('칸 글 정렬: header.align > colAlign > cellAlign > left, align 은 표 위치만 바꾼다', async () => {
+    const r = await agent.insertTable(1, {
+      rows: 2, cols: 3, cells: [['가', '나', '다'], ['1', '2', '3']], align: 'center',
+      cellAlign: 'right', colAlign: [null, 'center', 'left'], header: { bold: true, align: 'center' },
+    })
+    const cells = doc.state.paras[r.para].ctrls[r.ctrlIdx].cells
+    expect(cells.map((c) => c.ps.align)).toEqual(['center', 'center', 'center', 'right', 'center', 'left'])
+    expect(doc.state.calls).toContain('setTableProperties') // align:'center' 는 표 위치
+  })
+
+  it('정렬을 안 주면 칸 글은 왼쪽, align 만 줘도 칸 글은 안 바뀐다', async () => {
+    const r = await agent.insertTable(1, { rows: 1, cols: 2, cells: [['a', 'b']], align: 'center' })
+    expect(doc.state.paras[r.para].ctrls[r.ctrlIdx].cells.map((c) => c.ps.align)).toEqual(['left', 'left'])
+  })
+
+  it('cellSize(pt) 는 글이 든 칸에만 pt×100 으로, header.shade 는 머리 행 칸마다 채운다', async () => {
+    const r = await agent.insertTable(1, { rows: 2, cols: 2, cells: [['가', '나'], ['1', '']], cellSize: 9.5, header: { shade: '#D9D9D9' } })
+    const cells = doc.state.paras[r.para].ctrls[r.ctrlIdx].cells
+    expect(cells.map((c) => c.size)).toEqual([950, 950, 950, undefined])
+    expect(cells.map((c) => c.fill)).toEqual(['#D9D9D9', '#D9D9D9', undefined, undefined])
+    expect(cells[0].bold).toBe(true)
+  })
+
+  it('잘못된 정렬·색·크기는 문서를 건드리기 전에 거절한다', async () => {
+    const before = doc.state.mutations
+    for (const spec of [{ cellAlign: 'middle' }, { colAlign: ['left'] }, { colAlign: ['left', 'x'] }, { cellSize: 0 }, { header: { shade: 'gray' } }, { header: { align: 'distribute' } }]) {
+      await expect(agent.insertTable(1, { rows: 1, cols: 2, ...spec })).rejects.toMatchObject({ code: 'INVALID_ARG' })
+    }
+    expect(doc.state.mutations).toBe(before)
   })
 
   it('열 너비는 mm 로 받아 칸마다 보낸다', async () => {

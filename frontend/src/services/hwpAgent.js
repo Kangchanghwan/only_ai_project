@@ -8,6 +8,8 @@
  *   - 읽기: getParaPropertiesAt 의 여백·들여쓰기·문단 간격은 px(96dpi)로 나온다. pt = px × 0.75, 소수 한 자리로 반올림.
  *   - 쓰기: 여백·들여쓰기는 pt × 200, 문단 간격은 pt × 100, 글자 크기는 pt × 100 (rhwp-studio para-shape-dialog.ts 의
  *     ptToRaw2x/ptToRaw, ai/tools/write-tools.ts prepareFormatParagraph 와 같은 값).
+ *   - insertTable 의 `align` 은 표 자체의 위치(left|center|right)다. 칸 안 글 정렬은 cellAlign(전체) / colAlign[열](열별, cellAlign 보다 우선) /
+ *     header.align(머리 행, 가장 우선) 로 따로 준다. 아무것도 없으면 칸 글은 왼쪽이다.
  *   - 줄 간격은 퍼센트 그대로, 표 열 너비·셀 여백은 mm 로 받아 HWPUNIT(1/7200 인치)으로 바꾼다.
  *
  * 편집 규칙:
@@ -394,9 +396,25 @@ const PLANS = {
       if (!Array.isArray(t.colWidths) || t.colWidths.length !== cols) fail('INVALID_ARG', `colWidths 는 mm 값 ${cols}개여야 합니다`)
       widths = t.colWidths.map((w, k) => { if (!(finite(w, `colWidths[${k}]`) > 0)) fail('INVALID_ARG', `colWidths[${k}] 는 0 보다 커야 합니다`); return mmToHwp(w) })
     }
-    if (t.align !== undefined && !['left', 'center', 'right'].includes(t.align)) fail('INVALID_ARG', 'align: left|center|right')
+    if (t.align !== undefined && !['left', 'center', 'right'].includes(t.align)) fail('INVALID_ARG', 'align: left|center|right (표의 위치)')
     const header = t.header ? (t.header === true ? { bold: true } : t.header) : null
-    if (header && header.align !== undefined && !ALIGNS.includes(header.align)) fail('INVALID_ARG', `header.align: ${ALIGNS.join('|')}`)
+    const CELL_ALIGNS = ['left', 'center', 'right', 'justify']
+    const chkAlign = (v, name) => { if (v !== undefined && !CELL_ALIGNS.includes(v)) fail('INVALID_ARG', `${name}: ${CELL_ALIGNS.join('|')}`) }
+    chkAlign(t.cellAlign, 'cellAlign')
+    chkAlign(header && header.align, 'header.align')
+    if (t.colAlign !== undefined) {
+      if (!Array.isArray(t.colAlign) || t.colAlign.length !== cols) fail('INVALID_ARG', `colAlign 은 ${cols}개 배열이어야 합니다 (칸을 건드리지 않을 열은 null)`)
+      t.colAlign.forEach((a, k) => { if (a !== null) chkAlign(a, `colAlign[${k}]`) })
+    }
+    let cellSize = null
+    if (t.cellSize !== undefined) {
+      cellSize = finite(t.cellSize, 'cellSize')
+      if (cellSize < 1 || cellSize > 409) fail('INVALID_ARG', 'cellSize: 1~409 pt')
+      cellSize = Math.round(cellSize * 100)
+    }
+    if (header && header.shade !== undefined && !COLOR.test(header.shade)) fail('INVALID_ARG', 'header.shade: #RRGGBB 형식이어야 합니다')
+    // 칸 글 정렬: 머리 행은 header.align, 그 밖은 colAlign[열] > cellAlign > left
+    const alignOf = (r, c) => (r === 0 && header && header.align) || (t.colAlign && t.colAlign[c]) || t.cellAlign || 'left'
     const pad = t.cellPadding === undefined ? null : mmToHwp(finite(t.cellPadding, 'cellPadding'))
     if (pad !== null && pad < 0) fail('INVALID_ARG', 'cellPadding 은 0 이상이어야 합니다')
     const lineSpacing = t.lineSpacing === undefined ? 130 : finite(t.lineSpacing, 'lineSpacing')
@@ -420,21 +438,26 @@ const PLANS = {
       if (pad !== null) Object.assign(tprops, { paddingLeft: pad, paddingRight: pad, paddingTop: pad, paddingBottom: pad })
       if (Object.keys(tprops).length) ok(dd.setTableProperties(sec, para, ctrl, JSON.stringify(tprops)), 'setTableProperties')
       // 4) 칸 문단 모양: 표를 만든 문단의 모양(여백·내어쓰기·정렬·줄 간격)이 칸으로 새므로 초기화한다 (실측 결함)
-      const reset = JSON.stringify({ marginLeft: 0, marginRight: 0, indent: 0, spacingBefore: 0, spacingAfter: 0, alignment: 'left', lineSpacing: Math.round(lineSpacing), lineSpacingType: 'Percent' })
-      for (let k = 0; k < rows * cols; k++) ok(dd.applyParaFormatInCell(sec, para, ctrl, k, 0, reset), 'applyParaFormatInCell')
+      for (let k = 0; k < rows * cols; k++) {
+        const reset = JSON.stringify({ marginLeft: 0, marginRight: 0, indent: 0, spacingBefore: 0, spacingAfter: 0, alignment: alignOf(Math.floor(k / cols), k % cols), lineSpacing: Math.round(lineSpacing), lineSpacingType: 'Percent' })
+        ok(dd.applyParaFormatInCell(sec, para, ctrl, k, 0, reset), 'applyParaFormatInCell')
+      }
       // 5) 글
       cells.forEach((row, r) => row.forEach((v, c) => {
         const s = String(v ?? '')
         if (s) ok(dd.insertTextInCell(sec, para, ctrl, r * cols + c, 0, 0, s), 'insertTextInCell')
       }))
-      // 6) 머리 행
-      if (header) {
-        for (let c = 0; c < cols; c++) {
-          const k = c
-          const s = String(((cells[0] || [])[c]) ?? '')
-          if (header.bold !== false && s) ok(dd.applyCharFormatInCell(sec, para, ctrl, k, 0, 0, s.length, JSON.stringify({ bold: true })), 'applyCharFormatInCell')
-          if (header.align) ok(dd.applyParaFormatInCell(sec, para, ctrl, k, 0, JSON.stringify({ alignment: header.align, lineSpacing: Math.round(lineSpacing), lineSpacingType: 'Percent' })), 'applyParaFormatInCell')
-        }
+      // 6) 칸 글자 크기, 머리 행 굵게·배경
+      cells.forEach((row, r) => row.forEach((v, c) => {
+        const len = String(v ?? '').length
+        if (!len) return
+        const cp = {}
+        if (cellSize !== null) cp.fontSize = cellSize
+        if (r === 0 && header && header.bold !== false) cp.bold = true
+        if (Object.keys(cp).length) ok(dd.applyCharFormatInCell(sec, para, ctrl, r * cols + c, 0, 0, len, JSON.stringify(cp)), 'applyCharFormatInCell')
+      }))
+      if (header && header.shade) {
+        for (let c = 0; c < cols; c++) ok(dd.setCellProperties(sec, para, ctrl, c, JSON.stringify({ fillType: 'solid', fillColor: header.shade })), 'setCellProperties')
       }
       const tp = parse(dd.getTableProperties(sec, para, ctrl))
       return { para, ctrlIdx: ctrl, rows, cols, widthMm: hwpToMm(tp.tableWidth || 0) }
