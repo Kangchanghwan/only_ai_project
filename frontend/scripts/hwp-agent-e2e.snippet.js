@@ -20,7 +20,9 @@
     A = window.__hwpAgentFactory(() => document.querySelector('iframe').contentWindow)
   }
 
+  // 중간에 멈춰도 부분 결과가 남도록 보고서를 window.__hwpE2EReport 에 계속 갱신한다 (_bytes 는 제외)
   const report = { steps: [], summary: {} }
+  window.__hwpE2EReport = report
   const norm = (t) => String(t).replace(/\r\n/g, '\n').replace(/\s+$/g, '')
   const run = async (step, fn) => {
     const t0 = performance.now()
@@ -28,12 +30,16 @@
     try { Object.assign(rec, { ok: true }, { result: await fn() }) } catch (e) { Object.assign(rec, { ok: false, error: { code: e && e.code, message: String((e && e.message) || e) } }) }
     rec.ms = Math.round(performance.now() - t0)
     report.steps.push(rec)
+    report.summary.lastStep = step
     return rec
   }
+  // 배포 전(옛 cbHwp.open 은 discard 를 모른다)에도 저장 확인 창이 뜨지 않게, studio 의 dirty 표시를 먼저 푼다 (main.ts completeHostSave)
+  const clearDirty = () => { try { document.querySelector('iframe').contentWindow.rhwpStudio.notifySaved('e2e.hwpx') } catch { /* 없으면 open 의 discard 에 맡긴다 */ } }
   const text = async () => norm(await H.call('GetTextFile', ['UNICODE', '']))
 
   // 1) 열기
-  const opened = await run('open', async () => await H.open(bytes.slice(0), 'e2e.hwpx'))
+  // open 은 기본으로 저장 확인 대화상자 없이 문서를 바꾼다 (discard). 대화상자가 뜨면 DIALOG_BLOCKED 로 끝난다.
+  const opened = await run('open', async () => await H.open(bytes.slice(0), 'e2e.hwpx', { discard: true }))
   if (!opened.ok) return report
   report.summary.pagesBefore = await H.pageCount()
 
@@ -104,6 +110,7 @@
   // 9) 점검
   await run('check', () => A.check({ maxPages: 2 }))
   await run('status', () => A.status())
+  await run('dialogs', () => A.dialogs ? A.dialogs() : [])
 
   // 10) 내보내기 → 다시 열기 → 비교
   const t1 = await text()
@@ -111,13 +118,15 @@
   const exp = await run('exportHwpx', async () => { const b = await H.exportHwpx(); report.summary.exportBytes = b.length; report._bytes = b; return { bytes: b.length } })
   if (exp.ok) {
     await run('reopen+compare', async () => {
-      await H.open(report._bytes, 'e2e-reopen.hwpx')
+      clearDirty()
+      await H.open(report._bytes, 'e2e-reopen.hwpx', { discard: true }) // 편집 직후라 dirty 이지만 묻지 않는다
       const t2 = await text()
       const pages2 = await H.pageCount()
       return { pages1, pages2, samePages: pages1 === pages2, sameText: t1 === t2, lenBefore: t1.length, lenAfter: t2.length }
     })
   }
   delete report._bytes
+  report.summary.done = true
   report.summary.failedSteps = report.steps.filter((s) => !s.ok).map((s) => s.step)
   report.summary.titleParagraph = title.i
   report.summary.pagesAfter = pages1

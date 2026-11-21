@@ -5,5 +5,5 @@
 export const AGENT_METHODS = [
   'outline', 'find', 'getTable', 'listObjects', 'check',
   'replaceParagraph', 'insertParagraphAfter', 'deleteParagraphs', 'setParaShape', 'setCharShape',
-  'insertTable', 'deleteObject', 'edit', 'undo', 'redo', 'status', 'dismissRecovery',
+  'insertTable', 'deleteObject', 'edit', 'undo', 'redo', 'status', 'dismissRecovery', 'dismissDialogs', 'dialogs', 'guard',
 ]

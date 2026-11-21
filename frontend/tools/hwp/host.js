@@ -5,7 +5,7 @@
  *
  * window.cbHwp (에이전트용, 안정 표면):
  *   ready()                   편집기를 만들고 준비되면 resolve
- *   open(bytes, name)         문서 열기 -> { pageCount }
+ *   open(bytes, name, {discard}) 문서 열기 -> { pageCount } (discard 기본 true: 저장 확인 대화상자 없이 바꾼다)
  *   newDocument()             새 빈 문서
  *   commands()                studio 커맨드 목록
  *   exec(id, params, opts)    커맨드 실행 (대화상자 커맨드는 opts.allowDialog:true)
@@ -22,7 +22,7 @@
  *   setParaShape(i|[from,to],{left,right,indent,align,lineSpacing,before,after}) setCharShape(i,{from,to,size,bold,italic,underline,color,font})
  *   insertTable(afterPara,{rows,cols,colWidths,cells,header,align,cellPadding}) deleteObject({para,ctrlIdx})
  *   edit(label, a => {...})   여러 편집을 undo 한 단계로 (a 의 함수는 동기)
- *   undo() redo() status() dismissRecovery()
+ *   undo() redo() status() dialogs() dismissDialogs() guard(fn,{timeout})
  */
 import './../tools.css'
 import { trackEvent } from '../ga.js'
@@ -151,6 +151,7 @@ function ensure() {
         wrap.querySelector('iframe').addEventListener('load', () => { syncBarColors(); watchStudioTheme() })
         syncBarColors(); watchStudioTheme()
         setStatus('')
+        getAgent().then((a) => a.dismissDialogs()).catch(() => {}) // "문서 복구" 모달 감시를 켠다 (늦게 떠도 닫힌다)
         return s
       })
       .catch((e) => {
@@ -166,15 +167,19 @@ function ensure() {
 
 const baseName = (n) => (n || '문서').replace(/\.(hwpx?|HWPX?)$/, '') || '문서'
 
-async function open(bytes, name) {
+/**
+ * opts.discard: 저장하지 않은 변경이 있어도 "저장 확인" 대화상자 없이 문서를 바꾼다 (rhwp-studio main.ts:2331 loadFile 의
+ * skipUnsavedGuard). 에이전트 호출(window.cbHwp.open)만 켠다. 사람이 쓰는 화면 흐름은 그대로 묻는다(confirmLeave).
+ */
+async function open(bytes, name, opts = {}) {
   setLayout('editor')
   const s = await ensure()
   currentName = baseName(name)
   setName(name || currentName + '.hwpx')
-  // 부팅 때 저장되지 않은 복구본이 있으면 studio 가 "문서 복구" 모달을 띄운다. 자동 흐름이 막히지 않게 "나중에"로 닫는다.
-  dismissRecovery(3000)
-  const res = await s.loadFile(bytes, name || currentName + '.hwpx')
-  dismissRecovery(0)
+  const file = name || currentName + '.hwpx'
+  const res = opts.discard
+    ? await (await getAgent()).guard(() => s.loadFile(bytes, file, { skipUnsavedGuard: true }), { timeout: 60000 })
+    : await s.loadFile(bytes, file)
   syncBarColors()
   if (phone) {
     viewer?.destroy()
@@ -186,10 +191,6 @@ async function open(bytes, name) {
   trackEvent('tool_hwp_open', { file_type: /\.hwp$/i.test(name || '') ? 'hwp' : 'hwpx' })
   setStatus('')
   return res
-}
-
-function dismissRecovery(timeout) {
-  return getAgent().then((a) => a.dismissRecovery({ timeout })).catch(() => false)
 }
 
 async function newDocument() {
@@ -241,7 +242,7 @@ window.cbHwp = {
   ...agentApi,
   layout: () => layoutState,
   ready: async () => { await ensure(); return true },
-  open,
+  open: (bytes, name, opts) => open(bytes, name, { discard: true, ...opts }), // 에이전트: 기본으로 저장 확인 없이 연다
   newDocument,
   commands: async () => (await ensure()).commands.list(),
   exec: async (id, params, opts) => (await ensure()).commands.execute(id, params, opts),

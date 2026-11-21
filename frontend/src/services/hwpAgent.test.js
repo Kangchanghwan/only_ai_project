@@ -410,6 +410,53 @@ describe('문서 복구 대화상자', () => {
   })
 })
 
+describe('대화상자 감시', () => {
+  const modalWin = (base, titles) => {
+    base.document = { querySelectorAll: () => titles.map((t) => ({ textContent: t, closest: () => null })) }
+    return base
+  }
+
+  it('dialogs() 는 열린 모달 제목을 돌려준다', async () => {
+    modalWin(win, ['저장 확인'])
+    expect(await agent.dialogs()).toEqual(['저장 확인'])
+  })
+
+  it('대기 중에 모달이 뜨면 DIALOG_BLOCKED 로 제목과 함께 끝난다', async () => {
+    modalWin(win, ['저장 확인'])
+    const err = await agent.guard(() => new Promise(() => {}), { timeout: 5000 }).catch((e) => e)
+    expect(err).toMatchObject({ code: 'DIALOG_BLOCKED', dialogs: ['저장 확인'] })
+    expect(err.message).toContain('저장 확인')
+  })
+
+  it('모달 없이 시간이 지나면 TIMEOUT', async () => {
+    const err = await agent.guard(() => new Promise(() => {}), { timeout: 150 }).catch((e) => e)
+    expect(err).toMatchObject({ code: 'TIMEOUT' })
+  })
+
+  it('정상 작업은 그대로 결과를 돌려준다', async () => {
+    expect(await agent.guard(async () => 42)).toBe(42)
+  })
+
+  it('MutationObserver 가 문서 복구 대화상자를 뜨는 즉시 닫는다', async () => {
+    const clicked = []
+    let cb = null
+    const later = { textContent: '나중에', click: () => clicked.push('later') }
+    const wrap = { querySelectorAll: () => [later], querySelector: () => null }
+    let open = false
+    win.document = {
+      body: {},
+      documentElement: {},
+      querySelectorAll: () => (open ? [{ textContent: '문서 복구', closest: () => wrap }] : []),
+    }
+    win.MutationObserver = class { constructor(f) { cb = f } observe() {} }
+    await agent.dismissDialogs() // 감시 설치
+    expect(clicked).toEqual([])
+    open = true
+    cb() // 대화상자가 뜸
+    expect(clicked).toEqual(['later'])
+  })
+})
+
 describe('배포 부속물', () => {
   it('hwpAgentMethods.js 의 이름이 실제 에이전트 함수와 같다', async () => {
     const { AGENT_METHODS } = await import('./hwpAgentMethods.js')

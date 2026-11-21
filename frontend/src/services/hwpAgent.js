@@ -484,6 +484,55 @@ function checkDoc(d, o = {}) {
 
 // ───────────────────────── 편집기 연결 ─────────────────────────
 
+/** iframe 안에 열려 있는 모달 대화상자 제목들 (rhwp-studio ui/dialog.ts 의 .modal-overlay / .dialog-title) */
+function modalTitles(win) {
+  try {
+    return Array.from(win.document.querySelectorAll('.modal-overlay .dialog-title')).map((t) => (t.textContent || '').trim())
+  } catch { return [] }
+}
+
+const watched = new WeakSet()
+/**
+ * "문서 복구" 대화상자는 부팅 때 저장되지 않은 복구본이 있으면 studio 가 띄운다 (rhwp-studio main.ts:930
+ * offerAutosaveRecoveryIfIdle, embed 프로파일이 아닐 때). 늦게 뜨거나 다시 떠도 놓치지 않도록 폴링 대신
+ * MutationObserver 로 지켜보다가 뜨는 즉시 "나중에"를 누른다. 창마다 한 번만 건다.
+ */
+function watchDialogs(win) {
+  if (!win || watched.has(win)) return
+  try {
+    const Obs = win.MutationObserver
+    const root = win.document && (win.document.body || win.document.documentElement)
+    if (!Obs || !root) return
+    watched.add(win)
+    new Obs(() => { dismissRecoveryDialog(win, 0) }).observe(root, { childList: true, subtree: true })
+    dismissRecoveryDialog(win, 0)
+  } catch { /* 같은 출처가 아니면 감시 없이 */ }
+}
+
+/**
+ * 작업이 끝나기를 기다리되, 그동안 모달 대화상자가 뜨면 DIALOG_BLOCKED(제목 포함), timeout(기본 10초)을 넘기면
+ * 대화상자가 있으면 DIALOG_BLOCKED, 없으면 TIMEOUT 으로 끝낸다. 작업 자체는 취소되지 않는다.
+ */
+function watchdog(getStudioWindow, factory, { timeout = 10000 } = {}) {
+  return new Promise((resolve, reject) => {
+    let done = false
+    let timer = null
+    const t0 = Date.now()
+    const finish = (fn, v) => { if (done) return; done = true; clearTimeout(timer); fn(v) }
+    const tick = async () => {
+      if (done) return
+      let titles = []
+      try { const win = await getStudioWindow(); titles = win ? modalTitles(win) : [] } catch { /* 창 없음 */ }
+      if (done) return
+      if (titles.length) return finish(reject, new HwpAgentError('DIALOG_BLOCKED', `대화상자가 떠서 멈췄습니다: ${titles.join(', ')}`, { dialogs: titles }))
+      if (Date.now() - t0 > timeout) return finish(reject, new HwpAgentError('TIMEOUT', `${timeout}ms 안에 끝나지 않았습니다`))
+      timer = setTimeout(tick, 100)
+    }
+    timer = setTimeout(tick, 100)
+    Promise.resolve().then(factory).then((v) => finish(resolve, v), (e) => finish(reject, e))
+  })
+}
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const isStudioError = (e) => e && (e.name === 'StudioCommandError' || (e.report && typeof e.report.then === 'function'))
 
@@ -494,6 +543,7 @@ export function createHwpAgent(getStudioWindow) {
   async function ctx() {
     const win = await getStudioWindow()
     if (!win) fail('NO_EDITOR', '편집기가 아직 없습니다')
+    watchDialogs(win)
     const entry = win.rhwpStudio && win.rhwpStudio.plugins && win.rhwpStudio.plugins.loaded && win.rhwpStudio.plugins.loaded.get('hwpctrl')
     if (!entry || !entry.facade) fail('NO_PLUGIN', "편집기에 hwpctrl 플러그인이 없습니다 (createStudio 의 plugins: ['hwpctrl'])")
     return { win, facade: entry.facade, surface: entry.surface }
@@ -605,11 +655,26 @@ export function createHwpAgent(getStudioWindow) {
     /** 편집 명령 오류 경계의 상태: { status: 'ready' | 'recovering' | 'blocked' } (알 수 없으면 null) */
     async status() { const c = await ctx(); return errState(c) },
 
-    /** 자동저장 복구 대화상자("문서 복구")가 떠 있으면 "나중에"를 눌러 닫는다. 닫았으면 true. */
-    async dismissRecovery(o = {}) {
+    /** 자동저장 복구 대화상자("문서 복구")를 "나중에"로 닫는 감시를 켜고, 지금 떠 있으면 바로 닫는다. 닫았으면 true. */
+    async dismissDialogs(o = {}) {
       const win = await getStudioWindow()
-      return dismissRecoveryDialog(win, o.timeout === undefined ? 1500 : o.timeout)
+      if (win) watchDialogs(win)
+      return dismissRecoveryDialog(win, o.timeout === undefined ? 0 : o.timeout)
     },
+    /** 지금 iframe 안에 열려 있는 모달 대화상자의 제목들 */
+    async dialogs() {
+      const win = await getStudioWindow()
+      return win ? modalTitles(win) : []
+    },
+    /** 외부 작업(예: 문서 열기)에 같은 감시를 씌운다: 대화상자가 뜨면 DIALOG_BLOCKED, 시간이 지나면 TIMEOUT */
+    guard: (factory, o) => watchdog(getStudioWindow, factory, o),
+  }
+  agent.dismissRecovery = agent.dismissDialogs
+  // 모든 공개 함수에 감시를 씌운다: 대화상자가 떠서 멈추면 영원히 기다리지 않고 DIALOG_BLOCKED 로 끝낸다.
+  for (const name of Object.keys(agent)) {
+    if (['dismissDialogs', 'dismissRecovery', 'dialogs', 'guard'].includes(name)) continue
+    const fn = agent[name]
+    agent[name] = (...args) => watchdog(getStudioWindow, () => fn(...args))
   }
   return agent
 }

@@ -184,6 +184,7 @@ async function installAgent(st) {
   const { createHwpAgent } = await import('../services/hwpAgent')
   if (stage.value !== 'edit' || !studio) return // 그 사이 닫혔다
   const agent = createHwpAgent(() => st.element.contentWindow)
+  agent.dismissDialogs().catch(() => {}) // "문서 복구" 모달 감시
   const api = {}
   for (const n of AGENT_METHODS) api[n] = (...a) => agent[n](...a)
   Object.assign(api, {
@@ -192,12 +193,8 @@ async function installAgent(st) {
     pageCount: async () => st.pageCount(),
     exportHwpx: async () => st.exportHwpx(),
     exportHwp: async () => st.exportHwp(),
-    open: async (u8, fileName) => {
-      agent.dismissRecovery({ timeout: 3000 }).catch(() => {})
-      const res = await st.loadFile(u8, fileName || name.value)
-      agent.dismissRecovery({ timeout: 0 }).catch(() => {})
-      return res
-    },
+    // 에이전트 호출: 저장 확인 대화상자 없이 바꾼다 (skipUnsavedGuard). 사람이 쓰는 닫기·전환은 confirmLeave 가 그대로 묻는다.
+    open: (u8, fileName) => agent.guard(() => st.loadFile(u8, fileName || name.value, { skipUnsavedGuard: true }), { timeout: 60000 }),
   })
   agentApi = api
   window.cbHwp = api
