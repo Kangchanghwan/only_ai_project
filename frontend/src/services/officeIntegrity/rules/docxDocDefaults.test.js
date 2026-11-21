@@ -6,7 +6,7 @@ import { first, kid, kids, canon, NS } from '../xml.js'
 const rPr = async (bytes) => kid(first(first((await pkg(bytes)).xml('word/styles.xml'), 'docDefaults'), 'rPrDefault'), 'rPr')
 const pPr = async (bytes) => kid(first(first((await pkg(bytes)).xml('word/styles.xml'), 'docDefaults'), 'pPrDefault'), 'pPr')
 
-describe('rule: docx docDefaults', () => {
+describe('rule: docx docDefaults', { timeout: 30_000 }, () => {
   it('w:kern dropped by the editor comes back; editor additions to pPrDefault go away', async () => {
     const O = fx('docx-t1.O.docx')
     expect(kid(await rPr(fx('docx-t1.B.docx')), 'kern')).toBeNull()

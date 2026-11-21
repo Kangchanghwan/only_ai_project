@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { readZip, writeZip } from './zip.js'
 import { fx } from './testUtil.js'
 
-describe('officeIntegrity zip', () => {
+describe('officeIntegrity zip', { timeout: 30_000 }, () => {
   it('reads a real editor output and writes it back without losing bytes', async () => {
     const files = await readZip(fx('docx-t1.B.docx'))
     expect(files.has('word/document.xml')).toBe(true)

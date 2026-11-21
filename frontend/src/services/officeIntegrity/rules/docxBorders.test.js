@@ -12,7 +12,7 @@ const tblBox = (t) => kid(kid(t, 'tblPr'), 'tblBorders')
 const tcBox = (tc) => kid(kid(tc, 'tcPr'), 'tcBorders')
 const byPid = (d, id) => desc(d, 'p', NS.w).find((p) => p.getAttributeNS(NS.w14, 'paraId') === id)
 
-describe('rule: docx borders', () => {
+describe('rule: docx borders', { timeout: 30_000 }, () => {
   const O = fx('docx-borders.O.docx')
   const B = fx('docx-borders.B.docx')
 

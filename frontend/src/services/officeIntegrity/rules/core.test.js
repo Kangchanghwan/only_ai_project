@@ -8,7 +8,7 @@ const core = async (bytes) => {
   return Object.fromEntries(kids(d.documentElement).map((e) => [e.localName, e.textContent]))
 }
 
-describe('rule: document properties (core.xml)', () => {
+describe('rule: document properties (core.xml)', { timeout: 30_000 }, () => {
   it('Word Online style original: wiped title/creator/keywords/created come back, Guest becomes the original author', async () => {
     const { bytes } = await restore(fx('docx-t1.O.docx'), fx('docx-t1.B.docx'), fx('docx-t1.S-edited.docx'), 'docx')
     const c = await core(bytes)

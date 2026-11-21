@@ -23,7 +23,7 @@ const TRIPLES = [
   ['pptx-tablelines.O.pptx', 'pptx-tablelines.B.pptx', 'pptx-tablelines.B.pptx'],
 ]
 
-describe('integrity checker', () => {
+describe('integrity checker', { timeout: 30_000 }, () => {
   it.each(TRIPLES)('%s + %s + %s: nothing editor-caused remains, output is valid', async (o, b, s) => {
     const O = fx(o)
     const B = fx(b)

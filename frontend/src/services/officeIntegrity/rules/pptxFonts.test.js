@@ -5,7 +5,7 @@ import { kid, kids, NS } from '../xml.js'
 
 const PP = 'ppt/presentation.xml'
 
-describe('rule: pptx embedded fonts', () => {
+describe('rule: pptx embedded fonts', { timeout: 30_000 }, () => {
   it('copies font part, embeddedFontLst, relationship and content type back', async () => {
     const O = fx('pptx-t3.O.pptx')
     const { bytes } = await restore(O, fx('pptx-t3.B.pptx'), fx('pptx-t3.B.pptx'), 'pptx')

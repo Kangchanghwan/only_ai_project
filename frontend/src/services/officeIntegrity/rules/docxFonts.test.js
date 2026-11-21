@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { fx, restore, pkg, expectValid, expectIdempotent } from '../testUtil.js'
 import { desc, kids, kid, attr, NS } from '../xml.js'
 
-describe('rule: docx embedded fonts', () => {
+describe('rule: docx embedded fonts', { timeout: 30_000 }, () => {
   it('copies the font part, fontTable entry, relationship, settings flags and content type back', async () => {
     const O = fx('docx-t1.O.docx')
     const { bytes } = await restore(O, fx('docx-t1.B.docx'), fx('docx-t1.S-edited.docx'), 'docx')

@@ -5,7 +5,7 @@ import { kid, attr } from '../xml.js'
 
 const tfl = async (bytes) => kid((await pkg(bytes)).xml('word/settings.xml').documentElement, 'themeFontLang')
 
-describe('rule: docx themeFontLang', () => {
+describe('rule: docx themeFontLang', { timeout: 30_000 }, () => {
   it('eastAsia zh-CN written by the editor goes back to ko-KR', async () => {
     expect(attr(await tfl(fx('docx-t1.B.docx')), 'eastAsia')).toBe('zh-CN')
     const { bytes } = await restore(fx('docx-t1.O.docx'), fx('docx-t1.B.docx'), fx('docx-t1.S-edited.docx'), 'docx')

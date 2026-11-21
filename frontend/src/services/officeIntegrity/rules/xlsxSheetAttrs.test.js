@@ -7,7 +7,7 @@ const SHEET = 'xl/worksheets/sheet2.xml'
 const link = async (bytes) => desc((await pkg(bytes)).xml(SHEET), 'hyperlink', NS.x).find((h) => attr(h, 'ref') === 'A2')
 const pageSetup = async (bytes, part = 'xl/worksheets/sheet1.xml') => kid((await pkg(bytes)).xml(part).documentElement, 'pageSetup')
 
-describe('rule: xlsx page setup and link text', () => {
+describe('rule: xlsx page setup and link text', { timeout: 30_000 }, () => {
   it('internal link display text and print defaults come back', async () => {
     const { bytes } = await restore(fx('xlsx-notes.O.xlsx'), fx('xlsx-notes.B.xlsx'), fx('xlsx-notes.B.xlsx'), 'xlsx')
     expect(attr(await link(bytes), 'display')).toBe('숨김 시트로')

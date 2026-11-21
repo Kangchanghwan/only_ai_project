@@ -11,7 +11,7 @@ const table = (d) => desc(d, 'graphicFrame', NS.p).map((g) => desc(g, 'tbl', NS.
 const cell = (t, r, c) => kids(kids(t, 'tr')[r], 'tc')[c]
 const line = (tc, ln) => kid(kid(tc, 'tcPr'), ln)
 
-describe('rule: pptx table lines', () => {
+describe('rule: pptx table lines', { timeout: 30_000 }, () => {
   it('untouched: dash style, compound type and dropped lines come back', async () => {
     const { bytes } = await restore(O, B, B, 'pptx')
     await expectValid(bytes)

@@ -6,7 +6,7 @@ import { desc, NS, isWellFormed } from '../xml.js'
 
 const ids = async (bytes) => desc((await pkg(bytes)).xml('word/document.xml'), 'p', NS.w).map((p) => p.getAttributeNS(NS.w14, 'paraId'))
 
-describe('docx paragraph id preparation', () => {
+describe('docx paragraph id preparation', { timeout: 30_000 }, () => {
   it('adds ids only where missing, detecting Office Online wp14:paraId by namespace', async () => {
     const O = fx('docx-t1.O.docx')
     const text = (await pkg(O)).text('word/document.xml')

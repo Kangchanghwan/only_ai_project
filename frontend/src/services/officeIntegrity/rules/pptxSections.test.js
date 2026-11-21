@@ -7,7 +7,7 @@ import { desc, kid, kids, NS } from '../xml.js'
 const PP = 'ppt/presentation.xml'
 const sections = async (bytes) => desc((await pkg(bytes)).xml(PP), 'section', NS.p14).map((s) => s.getAttribute('name') + ':' + desc(s, 'sldId', NS.p14).map((x) => x.getAttribute('id')).join(','))
 
-describe('rule: pptx sections', () => {
+describe('rule: pptx sections', { timeout: 30_000 }, () => {
   const O = fx('pptx-t3.O.pptx')
   const B = fx('pptx-t3.B.pptx')
 

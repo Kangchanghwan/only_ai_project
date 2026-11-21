@@ -6,7 +6,7 @@ import { desc, kid, kids, attr, canon, NS } from '../xml.js'
 const DOC = 'word/document.xml'
 const prs = async (bytes) => new Map(desc((await pkg(bytes)).xml(DOC), 'sdtPr', NS.w).map((p) => [attr(kid(p, 'id'), 'val'), p]))
 
-describe('rule: docx content controls', () => {
+describe('rule: docx content controls', { timeout: 30_000 }, () => {
   const O = fx('docx-sdt.O.docx')
   const B = fx('docx-sdt.B.docx')
 

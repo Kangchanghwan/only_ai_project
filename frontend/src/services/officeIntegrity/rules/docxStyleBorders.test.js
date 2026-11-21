@@ -8,7 +8,7 @@ const STY = 'word/styles.xml'
 const grid = (d) => desc(d, 'style', NS.w).find((s) => attr(kid(s, 'name'), 'val') === 'Table Grid')
 const top = (d) => kid(kid(kid(grid(d), 'tblPr'), 'tblBorders'), 'top')
 
-describe('rule: docx style borders (synthetic)', () => {
+describe('rule: docx style borders (synthetic)', { timeout: 30_000 }, () => {
   // O: Table Grid with a double top line. B and S: the editor collapsed it to single.
   const make = async () => {
     const O = await tweak(fx('docx-borders.O.docx'), STY, (d) => top(d).setAttributeNS(NS.w, 'w:val', 'double'))

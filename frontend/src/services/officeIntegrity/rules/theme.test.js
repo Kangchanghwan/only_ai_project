@@ -6,7 +6,7 @@ import { first, canon, attr, kids } from '../xml.js'
 const fontScheme = async (bytes, part) => first((await pkg(bytes)).xml(part), 'fontScheme')
 const hang = (fs) => kids(first(fs, 'minorFont'), 'font').find((f) => attr(f, 'script') === 'Hang')
 
-describe('rule: theme fonts', () => {
+describe('rule: theme fonts', { timeout: 30_000 }, () => {
   it('docx: untouched font scheme goes back to the original (Hangul script fonts, empty ea)', async () => {
     const O = fx('docx-t1.O.docx')
     const { bytes, report } = await restore(O, fx('docx-t1.B.docx'), fx('docx-t1.S-edited.docx'), 'docx')

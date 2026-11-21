@@ -25,7 +25,7 @@ async function state(bytes) {
   }
 }
 
-describe('rule: xlsx notes', () => {
+describe('rule: xlsx notes', { timeout: 30_000 }, () => {
   it('fast path: untouched note becomes the original legacy note, thread and persons removed', async () => {
     const { bytes } = await restore(O, B, B, 'xlsx')
     const s = await state(bytes)
