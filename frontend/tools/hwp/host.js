@@ -20,7 +20,8 @@
  *   outline({from,to}) find(text) getTable(i,ctrlIdx) listObjects() check({maxPages})
  *   replaceParagraph(i,text,{expect}) insertParagraphAfter(i,text,{like}) deleteParagraphs(from,to)
  *   setParaShape(i|[from,to],{left,right,indent,align,lineSpacing,before,after}) setCharShape(i,{from,to,size,bold,italic,underline,color,font})
- *   insertTable(afterPara,{rows,cols,colWidths(mm),cells,header:{bold,align,shade},align,cellAlign,colAlign:[..],cellSize(pt),cellPadding(mm)})
+ *   insertTable(afterPara,{rows,cols,colWidths(mm),cells,header:{bold,align,shade},fit,anchorLeft(pt),align,cellAlign,colAlign:[..],cellSize(pt),cellPadding(mm)})
+ *     너비: 기본 = 쪽 글 영역 − 앞 문단 좌·우 여백, colWidths 합이 넘으면 TOO_WIDE (fit:true 면 비율 축소)
  *     align = 표 위치(left|center|right), 칸 글 정렬은 cellAlign/colAlign/header.align, header.shade = 머리 행 배경 #RRGGBB
  *   deleteObject({para,ctrlIdx})
  *   edit(label, a => {...})   여러 편집을 undo 한 단계로 (a 의 함수는 동기)

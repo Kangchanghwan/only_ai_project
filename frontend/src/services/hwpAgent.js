@@ -10,6 +10,8 @@
  *     ptToRaw2x/ptToRaw, ai/tools/write-tools.ts prepareFormatParagraph 와 같은 값).
  *   - insertTable 의 `align` 은 표 자체의 위치(left|center|right)다. 칸 안 글 정렬은 cellAlign(전체) / colAlign[열](열별, cellAlign 보다 우선) /
  *     header.align(머리 행, 가장 우선) 로 따로 준다. 아무것도 없으면 칸 글은 왼쪽이다.
+ *   - insertTable 너비: 기본은 (쪽 글 영역 너비 − 표 자리 문단의 좌·우 여백)을 열 수로 나눈 값이다. colWidths(mm) 합이 그보다 크면
+ *     TOO_WIDE 로 거절하고, fit:true 면 비율대로 줄인다. anchorLeft(pt, 기본 = 앞 문단의 왼쪽 여백)는 표 자리 문단의 왼쪽 여백이다.
  *   - 줄 간격은 퍼센트 그대로, 표 열 너비·셀 여백은 mm 로 받아 HWPUNIT(1/7200 인치)으로 바꾼다.
  *
  * 편집 규칙:
@@ -391,10 +393,25 @@ const PLANS = {
       if (!Array.isArray(row) || row.length > cols) fail('INVALID_ARG', `cells[${r}] 는 ${cols}칸 이하의 배열이어야 합니다`)
       row.forEach((v) => noBreak(String(v ?? ''), `cells[${r}]`))
     })
-    let widths = null
+    // 쓸 수 있는 너비 = 쪽 글 영역 너비 − (표 자리 문단의 왼쪽·오른쪽 여백). 표는 그 문단의 왼쪽 여백에서 시작한다.
+    const anchorProps = parse(d.getParaPropertiesAt(sec, afterPara))
+    const anchorLeft = t.anchorLeft === undefined ? pxToPt(anchorProps.marginLeft) : finite(t.anchorLeft, 'anchorLeft')
+    if (anchorLeft < 0) fail('INVALID_ARG', 'anchorLeft 는 0 이상이어야 합니다 (pt)')
+    const anchorRight = pxToPt(anchorProps.marginRight)
+    const pd = parse(d.getPageDef(sec))
+    const avail = Math.round(pd.width - pd.marginLeft - pd.marginRight - (pd.marginGutter || 0) - (anchorLeft + anchorRight) * 100)
+    if (avail < mmToHwp(10)) fail('TOO_WIDE', `표를 놓을 너비가 없습니다 (사용 가능 ${hwpToMm(avail)}mm): anchorLeft 를 줄이세요`, { availableMm: hwpToMm(avail) })
+    let widths
     if (t.colWidths !== undefined) {
       if (!Array.isArray(t.colWidths) || t.colWidths.length !== cols) fail('INVALID_ARG', `colWidths 는 mm 값 ${cols}개여야 합니다`)
       widths = t.colWidths.map((w, k) => { if (!(finite(w, `colWidths[${k}]`) > 0)) fail('INVALID_ARG', `colWidths[${k}] 는 0 보다 커야 합니다`); return mmToHwp(w) })
+      const sum = widths.reduce((a, b) => a + b, 0)
+      if (sum > avail + 100) { // 0.35mm 오차는 허용
+        if (t.fit !== true) fail('TOO_WIDE', `열 너비 합 ${hwpToMm(sum)}mm 가 사용 가능 너비 ${hwpToMm(avail)}mm 보다 넓습니다 (fit:true 로 맞추거나 colWidths 를 줄이세요)`, { widthMm: hwpToMm(sum), availableMm: hwpToMm(avail) })
+        widths = widths.map((w) => Math.floor((w * avail) / sum))
+      }
+    } else {
+      widths = Array.from({ length: cols }, () => Math.floor(avail / cols)) // 기본: 사용 가능 너비를 열 수로 나눈다
     }
     if (t.align !== undefined && !['left', 'center', 'right'].includes(t.align)) fail('INVALID_ARG', 'align: left|center|right (표의 위치)')
     const header = t.header ? (t.header === true ? { bold: true } : t.header) : null
@@ -427,11 +444,13 @@ const PLANS = {
       const sp = parse(dd.getParaPropertiesAt(sec, spot))
       // 개요·번호 모양을 물려받았으면 표 칸과 뒤 문단에 번호가 붙는다. 그때만 바탕글로 되돌린다.
       if (sp.headType && sp.headType !== 'None') ok(dd.applyStyle(sec, spot, 0), 'applyStyle')
+      // 표 자리 문단: 왼쪽 여백만 anchorLeft 로 두고 첫 줄 들여쓰기는 없앤다 (표가 이 여백에서 시작한다)
+      ok(dd.applyParaFormat(sec, spot, JSON.stringify({ marginLeft: Math.round(anchorLeft * 200), indent: 0 })), 'applyParaFormat')
       const created = ok(dd.createTable(sec, spot, 0, rows, cols), 'createTable')
       const para = created.paraIdx !== undefined ? created.paraIdx : spot
       const ctrl = created.controlIdx !== undefined ? created.controlIdx : 0
       // 2) 열 너비 (행 우선 번호의 모든 칸)
-      if (widths) for (let k = 0; k < rows * cols; k++) ok(dd.setCellProperties(sec, para, ctrl, k, JSON.stringify({ width: widths[k % cols] })), 'setCellProperties')
+      for (let k = 0; k < rows * cols; k++) ok(dd.setCellProperties(sec, para, ctrl, k, JSON.stringify({ width: widths[k % cols] })), 'setCellProperties')
       // 3) 표 속성: 정렬·여백
       const tprops = {}
       if (t.align) tprops.horzAlign = t.align[0].toUpperCase() + t.align.slice(1)
@@ -460,7 +479,7 @@ const PLANS = {
         for (let c = 0; c < cols; c++) ok(dd.setCellProperties(sec, para, ctrl, c, JSON.stringify({ fillType: 'solid', fillColor: header.shade })), 'setCellProperties')
       }
       const tp = parse(dd.getTableProperties(sec, para, ctrl))
-      return { para, ctrlIdx: ctrl, rows, cols, widthMm: hwpToMm(tp.tableWidth || 0) }
+      return { para, ctrlIdx: ctrl, rows, cols, widthMm: hwpToMm(tp.tableWidth || 0), availableMm: hwpToMm(avail), anchorLeft }
     }
   },
 

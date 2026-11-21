@@ -41,6 +41,7 @@ function makeDoc(paras) {
     getPictureProperties: (s, i, k) => { if (need(i).ctrls[k].pic) return '{}'; throw new Error('그림이 아닙니다') },
     getTextBoxControlIndex: (s, i) => need(i).ctrls.findIndex((c) => c.textbox),
     searchAllText: (q) => JSON.stringify(state.paras.flatMap((p, i) => (p.text.includes(q) ? [{ sec: 0, para: i, charOffset: p.text.indexOf(q), length: q.length }] : []))),
+    getPageDef: () => JSON.stringify({ width: 59528, marginLeft: 5102, marginRight: 5102, marginGutter: 0 }),
     getTextFileUnicode: () => JSON.stringify(state.paras.map((p) => p.text).join('\r\n')),
     pageCount: () => 1,
     // 표
@@ -78,7 +79,7 @@ function makeDoc(paras) {
       state.paras.splice(i + 1, 0, { text: '', ps: { ...p.ps }, cs: { ...p.cs }, ctrls: [] })
       return JSON.stringify({ ok: true, paraIdx: i, controlIdx: p.ctrls.length - 1 })
     }),
-    setCellProperties: mut('setCellProperties', (s, i, k, c, json) => { const v = JSON.parse(json); if (v.fillColor) need(i).ctrls[k].cells[c].fill = v.fillColor; return OK }),
+    setCellProperties: mut('setCellProperties', (s, i, k, c, json) => { const v = JSON.parse(json); if (v.width) need(i).ctrls[k].cells[c].width = v.width; if (v.fillColor) need(i).ctrls[k].cells[c].fill = v.fillColor; return OK }),
     setTableProperties: mut('setTableProperties', () => OK),
     applyParaFormatInCell: mut('applyParaFormatInCell', (s, i, k, c, cp, json) => {
       const cell = need(i).ctrls[k].cells[c]; const v = JSON.parse(json)
@@ -293,6 +294,36 @@ describe('insertTable', () => {
       await expect(agent.insertTable(1, { rows: 1, cols: 2, ...spec })).rejects.toMatchObject({ code: 'INVALID_ARG' })
     }
     expect(doc.state.mutations).toBe(before)
+  })
+
+  it('기본 너비는 글 영역 − 앞 문단 좌·우 여백이고 표 자리 문단 왼쪽 여백이 anchorLeft 다', async () => {
+    doc.state.paras[2].ps.ml = 4000 // 20pt
+    const r = await agent.insertTable(2, { rows: 1, cols: 2 })
+    const widths = doc.state.paras[r.para].ctrls[r.ctrlIdx].cells.map((c) => c.width)
+    expect(r.availableMm).toBeCloseTo((59528 - 5102 * 2 - 2000) / (7200 / 25.4), 0) // 글 영역 49324 − 20pt(2000)
+    expect(widths[0] + widths[1]).toBeLessThanOrEqual(59528 - 5102 * 2 - 2000)
+    expect(widths[0] + widths[1]).toBeGreaterThan(59528 - 5102 * 2 - 2000 - 4)
+    expect(r.anchorLeft).toBe(20)
+    expect(doc.state.paras[r.para].ps.ml).toBe(4000)
+    const r2 = await agent.insertTable(2, { rows: 1, cols: 2, anchorLeft: 0 })
+    expect(doc.state.paras[r2.para].ps.ml).toBe(0)
+    expect(r2.availableMm).toBeGreaterThan(r.availableMm)
+  })
+
+  it('colWidths 합이 사용 가능 너비를 넘으면 TOO_WIDE 로 거절하고 문서를 건드리지 않는다', async () => {
+    doc.state.paras[2].ps.ml = 4000
+    const before = doc.state.mutations
+    const err = await agent.insertTable(2, { rows: 1, cols: 2, colWidths: [90, 90] }).catch((e) => e)
+    expect(err).toMatchObject({ code: 'TOO_WIDE' })
+    expect(err.widthMm).toBe(180)
+    expect(doc.state.mutations).toBe(before)
+  })
+
+  it('fit:true 면 비율대로 줄여 넣는다', async () => {
+    const r = await agent.insertTable(2, { rows: 1, cols: 2, colWidths: [100, 200], fit: true })
+    const [a, b] = doc.state.paras[r.para].ctrls[r.ctrlIdx].cells.map((c) => c.width)
+    expect(a + b).toBeLessThanOrEqual(59528 - 5102 * 2)
+    expect(Math.abs(b / a - 2)).toBeLessThan(0.01)
   })
 
   it('열 너비는 mm 로 받아 칸마다 보낸다', async () => {
