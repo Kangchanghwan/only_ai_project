@@ -3,6 +3,7 @@
  * 출력 DOM은 sanitize(officeSanitize.js)를 거친다.
  */
 import { watchSanitize } from './officeSanitize.js'
+import { ensureOfficeFonts, BASE_FONT, patchStyleText, patchInlineFonts } from './officeFonts.js'
 
 export const OFFICE_LIMITS = { desktop: 50 * 1024 * 1024, phone: 20 * 1024 * 1024, timeoutMs: 25000 }
 
@@ -39,7 +40,20 @@ function fitWidth(scroller, sizer, inner, { maxScale = 1.25 } = {}) {
  * @param {HTMLElement} host 렌더 결과가 들어갈 빈 요소
  * @returns {Promise<{destroy:()=>void}>}
  */
+/** 정리(sanitize)와 글꼴 보정을 함께 건다. 나중에 생기는 노드(시트 탭 전환 등)도 같은 처리 */
+function watchAll(root) {
+  patchInlineFonts(root)
+  const stopSan = watchSanitize(root)
+  const mo = new MutationObserver((records) => {
+    for (const r of records) r.addedNodes.forEach((n) => { if (n.nodeType === 1) patchInlineFonts(n) })
+  })
+  mo.observe(root, { childList: true, subtree: true })
+  return () => { stopSan(); mo.disconnect() }
+}
+
 export async function renderOffice(kind, buffer, host, { timeoutMs = OFFICE_LIMITS.timeoutMs } = {}) {
+  ensureOfficeFonts() // 처음 한 번만 (local() 별칭, 네트워크 없음)
+  host.style.fontFamily = BASE_FONT
   const cleanups = []
   const destroy = () => {
     for (const c of cleanups.splice(0).reverse()) { try { c() } catch { /* 정리 중 오류는 무시 */ } }
@@ -58,7 +72,8 @@ export async function renderOffice(kind, buffer, host, { timeoutMs = OFFICE_LIMI
         host.append(styles, sizer)
         await renderAsync(buffer, body, styles, { breakPages: true, inWrapper: true, ignoreLastRenderedPageBreak: true, useBase64URL: false })
         const wrapper = body.querySelector('.docx-wrapper') || body
-        cleanups.push(watchSanitize(host))
+        styles.querySelectorAll('style').forEach((st) => { st.textContent = patchStyleText(st.textContent) })
+        cleanups.push(watchAll(host))
         cleanups.push(fitWidth(host, sizer, wrapper))
       } else if (kind === 'pptx') {
         const { init } = await import('pptx-preview')
@@ -68,7 +83,10 @@ export async function renderOffice(kind, buffer, host, { timeoutMs = OFFICE_LIMI
         const previewer = init(box, { width, height: Math.round(width * 0.5625), mode: 'list' })
         cleanups.push(() => { try { previewer.destroy?.() } catch { /* */ } })
         await previewer.preview(buffer)
-        cleanups.push(watchSanitize(host))
+        // list 모드는 모든 쪽을 그리지만 안쪽 래퍼를 한 쪽 높이(overflow:auto)로 고정한다 -> 풀어서 시트가 스크롤하게
+        const w = box.querySelector('.pptx-preview-wrapper')
+        if (w) { w.style.height = 'auto'; w.style.overflow = 'visible' }
+        cleanups.push(watchAll(host))
       } else if (kind === 'xlsx') {
         const [{ default: jsPreviewExcel }, cssMod] = await Promise.all([import('@js-preview/excel'), import('@js-preview/excel/lib/index.css?inline')])
         // 라이브러리 CSS는 이 시트 안(shadow root)에만 적용한다
@@ -76,12 +94,12 @@ export async function renderOffice(kind, buffer, host, { timeoutMs = OFFICE_LIMI
         const style = document.createElement('style')
         style.textContent = cssMod.default
         const box = document.createElement('div')
-        box.style.cssText = 'height:100%;min-height:360px'
+        box.style.cssText = `height:100%;min-height:360px;font-family:${BASE_FONT}`
         root.append(style, box)
         const viewer = jsPreviewExcel.init(box, { showContextmenu: false })
         cleanups.push(() => { try { viewer.destroy() } catch { /* */ } })
         await viewer.preview(buffer)
-        cleanups.push(watchSanitize(root))
+        cleanups.push(watchAll(root))
       } else {
         throw new Error('unsupported')
       }
