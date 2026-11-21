@@ -23,7 +23,7 @@ import { openLockedFile, createLockedShareLink } from '../services/lockedDownloa
 import FileQRCodeModal from './FileQRCodeModal.vue'
 import { r2Service } from '../services/r2Service.js'
 import { trackEvent } from '../utils/analytics'
-import { isHwpName } from '../utils/hwpName'
+import { isPreviewName } from '../utils/hwpName'
 import { useNotification } from '../composables/useNotification'
 
 const { t } = useI18n()
@@ -34,7 +34,7 @@ const props = defineProps({
   selectable: { type: Boolean, default: false },
   isSelected: { type: Boolean, default: false }
 })
-const emit = defineEmits(['delete-file', 'toggle-selection', 'preview-hwp'])
+const emit = defineEmits(['delete-file', 'toggle-selection', 'preview-file'])
 const {
   bg: accentBg,
   text: accentText,
@@ -269,15 +269,15 @@ async function handleSheetQR() {
 }
 
 // 한글 편집: 원래 이름을 이미 알고(푼 상태) .hwp/.hwpx일 때만. 풀기는 App의 기존 복호화 경로(방 열쇠/이번 접속에서 확인한 비밀번호)를 쓴다
-const canPreviewHwp = computed(() => isHwpName(knownName.value) && canReceiveDirectly.value)
+const canPreviewHwp = computed(() => isPreviewName(knownName.value) && canReceiveDirectly.value)
 function onNameClick(event) {
   if (!canPreviewHwp.value) return
   event.stopPropagation()
-  emit('preview-hwp', props.file)
+  emit('preview-file', props.file)
 }
 function handleSheetPreviewHwp() {
   closeActionsSheet()
-  emit('preview-hwp', props.file)
+  emit('preview-file', props.file)
 }
 
 function handleSheetDelete() {
@@ -501,8 +501,8 @@ onUnmounted(() => clearInterval(revealTimer))
             </button>
             <button
               v-if="canPreviewHwp"
-              class="sheet-preview-hwp w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
-              data-testid="locked-preview-hwp"
+              class="sheet-preview-file w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
+              data-testid="locked-preview-file"
               @click="handleSheetPreviewHwp"
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>

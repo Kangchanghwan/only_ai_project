@@ -789,7 +789,7 @@ async function handleCopyImage(imageUrl) {
 // ========================================
 // 한글(HWP) 미리보기 시트: 방 파일을 이 페이지 안에서 미리 보고(엔진은 지연 로드), 폰 제외 수정 후 같은 방에 다시 올린다
 // ========================================
-const HwpPreviewSheet = defineAsyncComponent(() => import('./components/HwpPreviewSheet.vue'))
+const FilePreviewSheet = defineAsyncComponent(() => import('./components/FilePreviewSheet.vue'))
 const hwpSheet = ref(null)
 
 async function handlePreviewHwp(file) {
@@ -797,7 +797,13 @@ async function handlePreviewHwp(file) {
   hwpSheet.value = {
     file,
     scope: roomManager.scopeForRoom(file.roomId),
-    hooks: createHwpRoomHooks({ lockState, files: () => fileManager.files.value, upload: (f, scope) => uploadFiles([f], scope) }),
+    nameHint: file.locked ? (lockState.nameFor(file.roomId, file.name) || '') : file.name,
+    hooks: createHwpRoomHooks({
+      lockState,
+      files: () => fileManager.files.value,
+      upload: (f, scope) => uploadFiles([f], scope),
+      download: (f) => (f.locked ? openLockedFile({ roomId: f.roomId, id: f.name, lockState }) : handleDownloadFile(f)),
+    }),
   }
 }
 
@@ -1479,7 +1485,7 @@ onUnmounted(() => {
         @upload-files="handleUploadFiles"
         @select-scope="shareScope.setScope"
         @download-file="handleDownloadFile"
-        @preview-hwp="handlePreviewHwp"
+        @preview-file="handlePreviewHwp"
         @download-parallel="handleDownloadParallel"
         @copy-selected-to-clipboard="handleCopySelectedToClipboard"
         @delete-file="handleDeleteFile"
@@ -1560,7 +1566,7 @@ onUnmounted(() => {
       <LegacyInviteSheet :sheet="groupRooms.legacySheet.value" @close="groupRooms.closeLegacy" @create="groupRooms.createFromLegacy" />
       <GroupJoinSheet :sheet="groupRooms.joinSheet.value" @confirm="groupRooms.confirmJoin" @cancel="groupRooms.cancelJoin" />
 
-      <HwpPreviewSheet v-if="hwpSheet" :file="hwpSheet.file" :scope="hwpSheet.scope" :hooks="hwpSheet.hooks" @close="hwpSheet = null" />
+      <FilePreviewSheet v-if="hwpSheet" :file="hwpSheet.file" :scope="hwpSheet.scope" :hooks="hwpSheet.hooks" :name-hint="hwpSheet.nameHint" @close="hwpSheet = null" />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->
       <ShareConfirmSheet

@@ -5,8 +5,9 @@
 import { prepareLockedEntry, decryptInMemory } from './lockedDownloader.js'
 import { r2Service } from './r2Service.js'
 
-export function createHwpRoomHooks({ lockState, files, upload }) {
+export function createHwpRoomHooks({ lockState, files, upload, download }) {
   return {
+    download, // 시트 하단 "받기": 앱의 기존 다운로드 경로(일반 파일 / 잠긴 파일 복호화 저장)
     maxBytes: (import.meta.env.VITE_MAX_FILE_SIZE_MB || 5120) * 1024 * 1024,
     upload,
     existingNames: (roomId) => files()
