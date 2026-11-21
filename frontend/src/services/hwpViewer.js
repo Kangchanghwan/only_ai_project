@@ -1,10 +1,13 @@
 /**
  * 읽기 전용 보기: rhwp-studio는 읽기 전용 모드를 따로 제공하지 않아(편집기 안의 'form' 모드는 양식 입력용),
  * studio iframe은 화면 밖에 숨기고 editor.getPageSvg(page)로 쪽마다 SVG를 받아 목록에 그린다.
- * SVG 안의 글꼴 이름은 이 문서에서 해석되므로, studio가 자기 폴더로 내려주는 오픈 글꼴을 별칭으로 선언해 둔다.
+ * SVG 안의 글꼴 이름은 이 문서에서 해석되므로, 편집기 출처(hwp.clipboardapp.org/fonts/, CORS 허용)의 오픈 글꼴을 별칭으로 선언해 둔다.
  * (글꼴 파일은 실제로 그 글자를 그릴 때에만 받아진다)
  */
-const FONT_BASE = '/tools/hwp/studio/fonts/'
+import { editorConfig } from './hwpStudio.js'
+
+/** 편집기 출처의 글꼴 폴더 (예: https://hwp.clipboardapp.org/fonts/) */
+export const fontBase = () => editorConfig().base + 'fonts/'
 // [HWP 쪽 글꼴 이름들, 파일(보통), 파일(굵게)]
 const FACES = [
   [['함초롬바탕', '바탕', '바탕체', '한컴바탕', '휴먼명조', 'HCR Batang', 'HY견명조', '신명조', '명조'], 'NotoSerifKR-Regular.woff2', 'NotoSerifKR-Bold.woff2'],
@@ -13,7 +16,7 @@ const FACES = [
   [['나눔고딕'], 'NanumGothic-Regular.woff2', 'NanumGothic-Bold.woff2'],
 ]
 
-export function viewerFontCss(base = FONT_BASE) {
+export function viewerFontCss(base = fontBase()) {
   const out = []
   for (const [names, reg, bold] of FACES) {
     for (const n of names) {
@@ -22,6 +25,25 @@ export function viewerFontCss(base = FONT_BASE) {
     }
   }
   return out.join('\n')
+}
+
+/**
+ * 다른 출처 편집기가 만든 SVG 를 이 문서에 넣기 전에 스크립트가 될 수 있는 부분을 뺀다
+ * (script, foreignObject, on* 속성, javascript: 주소). 쪽 그림에는 쓰이지 않는 것들이다.
+ */
+export function sanitizeSvg(svg, doc = globalThis.document) {
+  const parsed = new doc.defaultView.DOMParser().parseFromString(String(svg), 'image/svg+xml')
+  const root = parsed.documentElement
+  if (!root || root.nodeName.toLowerCase() !== 'svg') return ''
+  for (const el of Array.from(root.querySelectorAll('script, foreignObject'))) el.remove()
+  for (const el of [root, ...root.querySelectorAll('*')]) {
+    for (const a of Array.from(el.attributes)) {
+      const n = a.name.toLowerCase()
+      if (n.startsWith('on')) el.removeAttribute(a.name)
+      else if ((n === 'href' || n === 'xlink:href' || n === 'src') && /^\s*javascript:/i.test(a.value)) el.removeAttribute(a.name)
+    }
+  }
+  return new doc.defaultView.XMLSerializer().serializeToString(root)
 }
 
 export function ensureViewerFonts(doc = document) {
@@ -56,7 +78,7 @@ export function renderPages(container, studio, pageCount, { first = 4, batch = 4
         holder.className = 'cb-page'
         holder.setAttribute('role', 'img')
         holder.setAttribute('aria-label', `${next + 1} / ${pageCount}`)
-        holder.innerHTML = svg // 스튜디오(같은 출처, 우리가 빌드한 엔진)가 만든 SVG
+        holder.innerHTML = sanitizeSvg(svg, container.ownerDocument) // 다른 출처 편집기(hwp-editor)가 만든 SVG
         container.insertBefore(holder, sentinel)
       }
     } finally {

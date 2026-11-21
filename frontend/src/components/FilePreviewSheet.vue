@@ -6,8 +6,10 @@
  *  2단계: "모든 쪽 보기" — studio를 시트 안에서 숨겨 불러오고 쪽을 SVG 목록으로 보여 준다 (읽기 전용)
  *  3단계: "수정" (폰 제외) — 같은 studio가 화면 가득 보이고, 방에 올리기/내려받기
  * 이 컴포넌트와 엔진(SDK)은 모두 지연 로드된다. 뒤로 가기는 시트만 닫는다(주소·소켓은 그대로).
+ * studio 는 별도 출처(https://hwp.clipboardapp.org)에 따로 배포된 편집기다. SDK 와 postMessage 로만 대화하고,
+ * 테마·상단 바 색·변경 표시는 src/services/hwpStudio.js 의 공용 함수로 /tools/hwp/ 와 같게 처리한다.
  */
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatFileSize } from '../utils/fileUtils'
 import { isPhone } from '../utils/isPhone'
@@ -16,6 +18,8 @@ import { renderOffice, sizeCapFor } from '../services/officePreview'
 import { extractPreview } from '../services/hwpPreview'
 import { preloadEngine, progressText } from '../services/hwpEngine'
 import { renderPages } from '../services/hwpViewer'
+import { AGENT_METHODS } from '../services/hwpAgentMethods'
+import { editorConfig, hostTheme, applyBarColors, applyStudioTheme, watchHostTheme, watchDirty } from '../services/hwpStudio'
 import { editedName, isEditedHwp, validateUpload, svgToPng, refreshHwpxPreview } from '../services/hwpFiles'
 
 const props = defineProps({
@@ -127,52 +131,71 @@ async function startPhone() {
 const bootText = computed(() => (boot.value?.phase === 'file' ? s.value.file : progressText(boot.value, String(locale.value).startsWith('ko') ? 'ko' : 'en')))
 const bootPct = computed(() => (boot.value?.phase === 'download' ? Math.min(100, (boot.value.loaded / boot.value.total) * 100) : 100))
 
-/** 같은 출처의 studio는 부팅 전에 localStorage 'rhwp-settings'를 읽는다: 지금 앱 테마(라이트/다크)와 flat 스킨 */
-function syncStudioTheme() {
-  try {
-    const eff = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
-    const st = JSON.parse(localStorage.getItem('rhwp-settings') || '{}') || {}
-    st.theme = { ...(st.theme || {}), mode: eff, skin: 'flat' }
-    localStorage.setItem('rhwp-settings', JSON.stringify(st))
-  } catch { /* 기본 테마 */ }
-}
-
+/** 3단계 상단 바 색: 편집기 메뉴 줄과 같은 색 (다른 출처라 읽지 않고 테마별 고정 색표) */
 function syncBarColors() {
-  const el = barEl.value
-  if (!el) return
-  try {
-    const doc = studio.element.contentDocument
-    const m = doc.getElementById('menu-bar')
-    if (!m) throw new Error('no menu')
-    const cs = doc.defaultView.getComputedStyle(m)
-    el.style.setProperty('--bar-bg', cs.backgroundColor)
-    el.style.setProperty('--bar-fg', cs.color)
-    const w = parseFloat(cs.borderBottomWidth) || 0
-    el.style.setProperty('--bar-bd-w', w > 0 && cs.borderBottomStyle !== 'none' ? w + 'px' : '0px')
-    el.style.setProperty('--bar-bd', cs.borderBottomColor)
-  } catch {
-    for (const k of ['--bar-bg', '--bar-fg', '--bar-bd', '--bar-bd-w']) el.style.removeProperty(k)
-  }
+  applyBarColors(barEl.value, hostTheme())
 }
+let dirtyWatch = null
+let stopThemeWatch = null
 
 async function ensureStudio() {
   if (studio) return studio
-  syncStudioTheme()
   await preloadEngine((p) => { boot.value = p }) // 받는 동안 진행률, 캐시에 있으면 건너뜀
   boot.value = { phase: 'render' }
   const { createStudio } = await import('@rhwp/editor')
   const st = await createStudio(hostEl.value, {
-    studioUrl: '/tools/hwp/studio/',
+    studioUrl: editorConfig().studioUrl,
     plugins: ['hwpctrl'],
     chrome: { menu: false, toolbar: false, statusbar: false },
   })
   studio = st
+  // 테마는 이 앱이 정해 커맨드로 알린다 (1·2단계에서는 studio 가 화면 밖이라 가릴 필요가 없다)
+  await applyStudioTheme(st, hostTheme())
+  stopThemeWatch = watchHostTheme((mode) => { applyStudioTheme(st, mode); syncBarColors() })
   const res = await st.loadFile(bytes.slice(0), name.value)
   pageCount = res.pageCount
   dirty.value = false
+  // 변경 표시: 에이전트 적용/되돌리기는 이벤트로, 타이핑은 수정 단계에서 getDocumentState 확인으로
   if (typeof st.onDocumentChanged === 'function') st.onDocumentChanged(() => { dirty.value = true })
+  dirtyWatch = watchDirty(st, (v) => { if (v) dirty.value = true }, { active: () => stage.value === 'edit' })
+  await dirtyWatch.reset()
   return st
 }
+
+/**
+ * 수정 단계(3단계) 동안만 window.cbHwp 로 에이전트 API 를 연다 (대화상자 없는 편집 함수, 단위 pt).
+ * 실제 함수는 편집기 쪽에 있고 여기서는 postMessage 창구(hwpAgentClient.js)로 같은 이름·인자를 대신 전한다.
+ * 창구는 수정을 눌렀을 때에만 불러온다. 단계를 벗어나거나 시트가 닫히면 바로 거둔다.
+ */
+let agentApi = null
+let agentClient = null
+async function installAgent(st) {
+  const { createAgentClient } = await import('../services/hwpAgentClient')
+  if (stage.value !== 'edit' || !studio) return // 그 사이 닫혔다
+  // "문서 복구" 대화상자 감시는 편집기 쪽 창구가 임베드될 때 스스로 켠다
+  const agent = createAgentClient({ getFrameWindow: () => st.element.contentWindow, origin: editorConfig().origin, methods: AGENT_METHODS })
+  agentClient = agent
+  const api = {}
+  for (const n of AGENT_METHODS) api[n] = (...a) => agent[n](...a)
+  Object.assign(api, {
+    layout: () => 'editor',
+    ready: async () => true,
+    pageCount: async () => st.pageCount(),
+    exportHwpx: async () => st.exportHwpx(),
+    exportHwp: async () => st.exportHwp(),
+    // 에이전트 호출: 저장 확인 대화상자 없이 바꾼다 (skipUnsavedGuard). 사람이 쓰는 닫기·전환은 confirmLeave 가 그대로 묻는다.
+    open: (u8, fileName) => agent.guard(() => st.loadFile(u8, fileName || name.value, { skipUnsavedGuard: true }), { timeout: 60000 }),
+  })
+  agentApi = api
+  window.cbHwp = api
+}
+function removeAgent() {
+  if (agentApi && window.cbHwp === agentApi) delete window.cbHwp
+  agentApi = null
+  agentClient?.dispose()
+  agentClient = null
+}
+watch(stage, (v) => { if (v !== 'edit') removeAgent() })
 
 async function showAll() {
   if (engineBusy.value) return
@@ -200,11 +223,9 @@ async function startEdit() {
     const st = await ensureStudio() // 이미 있으면 새로 만들지 않는다
     await st.chrome.set({ menu: true, toolbar: true, statusbar: true })
     stage.value = 'edit'
+    installAgent(st).catch(() => { /* 에이전트 없이도 편집은 된다 */ })
     await nextTick()
     requestAnimationFrame(syncBarColors)
-    try {
-      new MutationObserver(() => requestAnimationFrame(syncBarColors)).observe(st.element.contentDocument.documentElement, { attributes: true })
-    } catch { /* 토큰 색 */ }
   } catch {
     error.value = s.value.fail
   } finally {
@@ -230,7 +251,7 @@ async function downloadAs(kind) {
   try {
     const u8 = kind === 'hwpx' ? await studio.exportHwpx() : await studio.exportHwp()
     download(u8, `${baseName()}.${kind}`)
-    try { await studio.notifySaved(`${baseName()}.${kind}`); dirty.value = false } catch { /* 표시만 */ }
+    try { await studio.notifySaved(`${baseName()}.${kind}`); await dirtyWatch?.reset(); dirty.value = false } catch { /* 표시만 */ }
   } catch { setMsg(s.value.upfail) }
 }
 
@@ -255,7 +276,7 @@ async function uploadToRoom() {
     const ok = await props.hooks.upload(file, props.scope)
     if (ok) {
       setMsg(s.value.upok + up)
-      try { await studio.notifySaved(up); dirty.value = false } catch { /* 표시만 */ }
+      try { await studio.notifySaved(up); await dirtyWatch?.reset(); dirty.value = false } catch { /* 표시만 */ }
     } else {
       setMsg(s.value.upfail)
     }
@@ -304,6 +325,9 @@ onBeforeUnmount(() => {
   viewer?.destroy()
   officeHandle?.destroy()
   bytes = null
+  removeAgent()
+  dirtyWatch?.stop()
+  stopThemeWatch?.()
   try { studio?.destroy() } catch { /* 이미 정리됨 */ }
   if (imgUrl.value) URL.revokeObjectURL(imgUrl.value)
 })
@@ -425,7 +449,7 @@ onBeforeUnmount(() => {
 .hp-studio { position: fixed; left: -10000px; top: 0; width: 1024px; height: 768px; }
 .hp-studio.hp-studio-on { position: static; flex: 1; min-height: 0; width: auto; height: auto; }
 
-/* 3단계 상단 바: 32px, studio 메뉴 줄 색을 읽어 같은 색으로 (--bar-*) */
+/* 3단계 상단 바: 32px, 편집기 메뉴 줄과 같은 색 (--bar-*, 테마별 고정 색표) */
 .hp-bar { --bar-bg: var(--color-surface); --bar-fg: var(--color-text-primary); --bar-bd: var(--color-border); --bar-bd-w: 1px; position: relative; display: flex; align-items: center; gap: 8px; height: 32px; flex: none; padding: 0 6px 0 10px; background: var(--bar-bg); color: var(--bar-fg); border-bottom: var(--bar-bd-w) solid var(--bar-bd); font-size: 13px; white-space: nowrap; }
 .hp-bar-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .hp-dot { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; opacity: 0.75; }

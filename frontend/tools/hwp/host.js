@@ -1,11 +1,13 @@
 /**
  * /tools/hwp/ 호스트 페이지.
  * 편집기(rhwp-studio)는 사용자가 파일을 열거나 "새 문서"를 누를 때에만 iframe 으로 만든다.
- * 단순 방문에서는 /tools/hwp/studio/ 아래 파일을 한 건도 요청하지 않는다.
+ * 단순 방문에서는 편집기 출처에 요청을 한 건도 보내지 않는다.
+ * 편집기는 별도 출처(https://hwp.clipboardapp.org, 저장소 hwp-editor)에 따로 배포되어 있고, SDK 와 postMessage 로만 대화한다.
+ * 같은 출처 가정(iframe 문서 읽기, localStorage 공유)은 쓰지 않는다 (src/services/hwpStudio.js).
  *
  * window.cbHwp (에이전트용, 안정 표면):
  *   ready()                   편집기를 만들고 준비되면 resolve
- *   open(bytes, name)         문서 열기 -> { pageCount }
+ *   open(bytes, name, {discard}) 문서 열기 -> { pageCount } (discard 기본 true: 저장 확인 대화상자 없이 바꾼다)
  *   newDocument()             새 빈 문서
  *   commands()                studio 커맨드 목록
  *   exec(id, params, opts)    커맨드 실행 (대화상자 커맨드는 opts.allowDialog:true)
@@ -15,14 +17,29 @@
  *   exportHwpx() / exportHwp()  Uint8Array
  *   pageCount()               페이지 수
  *   layout()                  'landing' | 'editor' (문서를 열면 편집 화면이 페이지 전체를 쓴다)
+ *
+ * 대화상자 없이 문서를 고치는 함수 (실제 함수는 편집기 쪽 hwp-editor agent/ 에 있고, 여기서는 같은 이름·인자로
+ * postMessage 창구(src/services/hwpAgentClient.js)를 거쳐 부른다. 단위는 pt):
+ *   outline({from,to}) find(text) getTable(i,ctrlIdx) listObjects() check({maxPages})
+ *   replaceParagraph(i,text,{expect}) insertParagraphAfter(i,text,{like}) deleteParagraphs(from,to)
+ *   setParaShape(i|[from,to],{left,right,indent,align,lineSpacing,before,after}) setCharShape(i,{from,to,size,bold,italic,underline,color,font})
+ *   insertTable(afterPara,{rows,cols,colWidths(mm),cells,header:{bold,align,shade},fit,anchorLeft(pt),align,cellAlign,colAlign:[..],cellSize(pt),cellPadding(mm)})
+ *     너비: 기본 = 쪽 글 영역 − 앞 문단 좌·우 여백, colWidths 합이 넘으면 TOO_WIDE (fit:true 면 비율 축소)
+ *     align = 표 위치(left|center|right), 칸 글 정렬은 cellAlign/colAlign/header.align, header.shade = 머리 행 배경 #RRGGBB
+ *   deleteObject({para,ctrlIdx})
+ *   edit(label, a => {...})   여러 편집을 undo 한 단계로 (a 의 함수는 동기)
+ *   undo() redo() status() dialogs() dismissDialogs() guard(fn,{timeout})
+ *   edit 의 a => {...} 는 이 페이지에서 호출을 기록해 보낸다: 앞 호출 결과는 그대로 다음 인자로 넘길 수 있고, 결과로 계산·분기는 못 한다(EDIT_REF)
  */
 import './../tools.css'
 import { trackEvent } from '../ga.js'
 import { isPhone } from '../../src/utils/isPhone.js'
 import { renderPages } from '../../src/services/hwpViewer.js'
 import { preloadEngine, progressText } from '../../src/services/hwpEngine.js'
+import { AGENT_METHODS } from '../../src/services/hwpAgentMethods.js'
+import { editorConfig, hostTheme, applyBarColors, applyStudioTheme, watchHostTheme, watchDirty } from '../../src/services/hwpStudio.js'
 
-const STUDIO_URL = '/tools/hwp/studio/'
+const EDITOR = editorConfig() // 편집기 주소 (기본 https://hwp.clipboardapp.org/, localhost 에서만 ?hed= 로 바꿈)
 const $ = (id) => document.getElementById(id)
 const wrap = $('editor-wrap')
 const statusEl = $('status')
@@ -62,30 +79,9 @@ const setStatus = (msg) => {
   if (msg && !/중입니다/.test(msg)) msgTimer = setTimeout(() => { barMsg.textContent = ''; barMsg.title = '' }, 6000)
 }
 
-/** studio 메뉴 줄의 배경·글자·아래 테두리 색을 읽어 우리 바에 같은 색을 준다 (같은 출처 iframe) */
+/** 상단 바 색: 편집기 메뉴 줄과 같은 색 (다른 출처라 읽지 않고, 테마별 고정 색표를 쓴다) */
 function syncBarColors() {
-  const root = $('editor-root')
-  try {
-    const doc = wrap.querySelector('iframe').contentDocument
-    const el = doc.getElementById('menu-bar')
-    if (!el) throw new Error('no menu')
-    const cs = doc.defaultView.getComputedStyle(el)
-    root.style.setProperty('--bar-bg', cs.backgroundColor)
-    root.style.setProperty('--bar-fg', cs.color)
-    const w = parseFloat(cs.borderBottomWidth) || 0
-    root.style.setProperty('--bar-bd-w', w > 0 && cs.borderBottomStyle !== 'none' ? w + 'px' : '0px')
-    root.style.setProperty('--bar-bd', cs.borderBottomColor)
-    return true
-  } catch {
-    for (const k of ['--bar-bg', '--bar-fg', '--bar-bd', '--bar-bd-w']) root.style.removeProperty(k) // 토큰 색으로
-    return false
-  }
-}
-function watchStudioTheme() {
-  try {
-    const de = wrap.querySelector('iframe').contentDocument.documentElement
-    new MutationObserver(() => requestAnimationFrame(syncBarColors)).observe(de, { attributes: true })
-  } catch { /* 읽을 수 없으면 토큰 색 */ }
+  return applyBarColors($('editor-root'), hostTheme())
 }
 
 function setName(n) {
@@ -106,41 +102,35 @@ function setLayout(mode) {
 /** 저장하지 않은 변경이 있는지. 읽을 수 없으면 있다고 보고 항상 묻는다 */
 async function isDirty() {
   if (!studio) return false
-  try { return !!(await studio.getDocumentState()).dirty } catch { return true }
+  try { return !!(await studio.getDocumentState()).dirty || dirty } catch { return true }
 }
 
 async function confirmLeave() {
   return !(await isDirty()) || window.confirm('저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?')
 }
 
-/**
- * 같은 출처의 studio는 부팅 전에 localStorage 'rhwp-settings'(theme.mode/skin)를 읽는다.
- * 이 페이지의 실제 테마(라이트/다크)와 스킨을 미리 넣어 편집기도 같은 테마로 열게 한다. 다른 설정은 그대로 둔다.
- */
-const STUDIO_SKIN = 'flat'
-function syncStudioTheme() {
-  try {
-    const effective = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
-    const settings = JSON.parse(localStorage.getItem('rhwp-settings') || '{}') || {}
-    settings.theme = { ...(settings.theme || {}), mode: effective, skin: STUDIO_SKIN }
-    localStorage.setItem('rhwp-settings', JSON.stringify(settings))
-  } catch { /* 저장소를 못 쓰면 studio 기본 테마로 열린다 */ }
-}
+let dirtyWatch = null
+let stopThemeWatch = null
 
 function ensure() {
   if (!studioPromise) {
-    syncStudioTheme()
     setLayout('editor')
     setStatus('편집기를 불러오는 중입니다. 처음에는 30MB 정도를 받아 시간이 걸릴 수 있습니다.')
     studioPromise = preloadEngine(bootShow)
       .then(() => { bootShow({ phase: 'render' }) })
       .then(() => import('@rhwp/editor'))
-      .then(({ createStudio }) => createStudio(wrap, { studioUrl: STUDIO_URL, plugins: ['hwpctrl'], ...(phone ? { chrome: { menu: false, toolbar: false, statusbar: false } } : {}) }))
-      .then((s) => {
+      .then(({ createStudio }) => createStudio(wrap, { studioUrl: EDITOR.studioUrl, plugins: ['hwpctrl'], ...(phone ? { chrome: { menu: false, toolbar: false, statusbar: false } } : {}) }))
+      .then(async (s) => {
         studio = s
+        // 테마는 이 페이지가 정한다. 적용될 때까지 편집기를 가려 기본 테마가 번쩍이지 않게 한다 (편집기는 자기 저장소에 기억함)
+        wrap.classList.add('theming')
+        try { await applyStudioTheme(s, hostTheme()) } finally { wrap.classList.remove('theming') }
+        syncBarColors()
+        stopThemeWatch?.()
+        stopThemeWatch = watchHostTheme((mode) => { applyStudioTheme(s, mode); syncBarColors() })
+        // 변경 표시: 에이전트 적용/되돌리기는 이벤트로, 타이핑은 편집 화면이 보일 때 getDocumentState 확인으로
         if (typeof s.onDocumentChanged === 'function') s.onDocumentChanged(() => setDirty(true))
-        wrap.querySelector('iframe').addEventListener('load', () => { syncBarColors(); watchStudioTheme() })
-        syncBarColors(); watchStudioTheme()
+        dirtyWatch = watchDirty(s, (v) => { if (v) setDirty(true) }, { active: () => layoutState === 'editor' && !phone })
         setStatus('')
         return s
       })
@@ -157,12 +147,20 @@ function ensure() {
 
 const baseName = (n) => (n || '문서').replace(/\.(hwpx?|HWPX?)$/, '') || '문서'
 
-async function open(bytes, name) {
+/**
+ * opts.discard: 저장하지 않은 변경이 있어도 "저장 확인" 대화상자 없이 문서를 바꾼다 (rhwp-studio main.ts:2331 loadFile 의
+ * skipUnsavedGuard). 에이전트 호출(window.cbHwp.open)만 켠다. 사람이 쓰는 화면 흐름은 그대로 묻는다(confirmLeave).
+ */
+async function open(bytes, name, opts = {}) {
   setLayout('editor')
   const s = await ensure()
   currentName = baseName(name)
   setName(name || currentName + '.hwpx')
-  const res = await s.loadFile(bytes, name || currentName + '.hwpx')
+  const file = name || currentName + '.hwpx'
+  const res = opts.discard
+    ? await (await getAgent()).guard(() => s.loadFile(bytes, file, { skipUnsavedGuard: true }), { timeout: 60000 })
+    : await s.loadFile(bytes, file)
+  await dirtyWatch?.reset()
   syncBarColors()
   if (phone) {
     viewer?.destroy()
@@ -182,6 +180,7 @@ async function newDocument() {
   currentName = '새 문서'
   setName('새 문서')
   const r = await s.commands.execute('file:new-doc', {}, { allowDialog: true })
+  await dirtyWatch?.reset()
   bootHide()
   setDirty(false)
   trackEvent('tool_hwp_open', { file_type: 'new' })
@@ -203,14 +202,30 @@ async function save(kind) {
   const s = await ensure()
   const bytes = kind === 'hwpx' ? await s.exportHwpx() : await s.exportHwp()
   download(bytes, `${currentName}.${kind}`, 'application/octet-stream')
-  try { await s.notifySaved(`${currentName}.${kind}`); setDirty(false) } catch { /* 저장 표시는 없어도 된다 */ }
+  try { await s.notifySaved(`${currentName}.${kind}`); await dirtyWatch?.reset(); setDirty(false) } catch { /* 저장 표시는 없어도 된다 */ }
   trackEvent('tool_hwp_save', { file_type: kind })
 }
 
+// 에이전트 함수: 실제 함수는 편집기 쪽에 있고, 여기서는 postMessage 창구로 같은 이름·인자를 대신 전한다.
+// 창구 코드는 처음 부를 때 불러온다 (첫 화면 번들에 넣지 않는다)
+let agentPromise = null
+const getAgent = () => {
+  if (!agentPromise) {
+    agentPromise = ensure()
+      .then(() => import('../../src/services/hwpAgentClient.js'))
+      .then(({ createAgentClient }) => createAgentClient({ getFrameWindow: () => wrap.querySelector('iframe')?.contentWindow, origin: EDITOR.origin, methods: AGENT_METHODS }))
+      .catch((e) => { agentPromise = null; throw e })
+  }
+  return agentPromise
+}
+const agentApi = {}
+for (const name of AGENT_METHODS) agentApi[name] = async (...args) => (await getAgent())[name](...args)
+
 window.cbHwp = {
+  ...agentApi,
   layout: () => layoutState,
   ready: async () => { await ensure(); return true },
-  open,
+  open: (bytes, name, opts) => open(bytes, name, { discard: true, ...opts }), // 에이전트: 기본으로 저장 확인 없이 연다
   newDocument,
   commands: async () => (await ensure()).commands.list(),
   exec: async (id, params, opts) => (await ensure()).commands.execute(id, params, opts),
