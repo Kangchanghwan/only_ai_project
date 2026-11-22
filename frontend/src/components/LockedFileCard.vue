@@ -23,7 +23,6 @@ import { openLockedFile, createLockedShareLink } from '../services/lockedDownloa
 import FileQRCodeModal from './FileQRCodeModal.vue'
 import { r2Service } from '../services/r2Service.js'
 import { trackEvent } from '../utils/analytics'
-import { isPreviewName } from '../utils/hwpName'
 import { useNotification } from '../composables/useNotification'
 
 const { t } = useI18n()
@@ -34,7 +33,7 @@ const props = defineProps({
   selectable: { type: Boolean, default: false },
   isSelected: { type: Boolean, default: false }
 })
-const emit = defineEmits(['delete-file', 'toggle-selection', 'preview-file'])
+const emit = defineEmits(['delete-file', 'toggle-selection'])
 const {
   bg: accentBg,
   text: accentText,
@@ -268,18 +267,6 @@ async function handleSheetQR() {
   }
 }
 
-// 한글 편집: 원래 이름을 이미 알고(푼 상태) .hwp/.hwpx일 때만. 풀기는 App의 기존 복호화 경로(방 열쇠/이번 접속에서 확인한 비밀번호)를 쓴다
-const canPreviewHwp = computed(() => isPreviewName(knownName.value) && canReceiveDirectly.value)
-function onNameClick(event) {
-  if (!canPreviewHwp.value) return
-  event.stopPropagation()
-  emit('preview-file', props.file)
-}
-function handleSheetPreviewHwp() {
-  closeActionsSheet()
-  emit('preview-file', props.file)
-}
-
 function handleSheetDelete() {
   closeActionsSheet()
   emit('delete-file', props.file)
@@ -324,8 +311,7 @@ onUnmounted(() => clearInterval(revealTimer))
     <div class="file-info flex-1 min-w-0">
       <p
         class="file-name text-sm font-medium truncate m-0"
-        :class="[isPlain ? 'text-text-primary' : 'text-text-secondary', canPreviewHwp ? 'cursor-pointer' : '']"
-        @click="onNameClick"
+        :class="isPlain ? 'text-text-primary' : 'text-text-secondary'"
         :title="isPlain ? displayName : t('lock.hiddenName')"
         data-testid="locked-name"
       >{{ displayName }}</p>
@@ -498,15 +484,6 @@ onUnmounted(() => clearInterval(revealTimer))
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="5" height="5" x="3" y="3"/><rect width="5" height="5" x="16" y="3"/><rect width="5" height="5" x="3" y="16"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/></svg>
               <span class="text-sm font-medium">{{ qrPreparing ? t('lock.qrPreparing') : t('room.qrShareTitle') }}</span>
-            </button>
-            <button
-              v-if="canPreviewHwp"
-              class="sheet-preview-file w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
-              data-testid="locked-preview-file"
-              @click="handleSheetPreviewHwp"
-            >
-              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-              <span class="text-sm font-medium">{{ t('file.previewHwp') }}</span>
             </button>
             <button
               v-if="canDelete"

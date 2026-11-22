@@ -24,8 +24,6 @@ const SPA = new Set([`${ORIGIN}/`, `${ORIGIN}/en/`, `${ORIGIN}/ja/`, `${ORIGIN}/
 const fileFor = (url) => {
   let p = url.replace(ORIGIN, '')
   if (p.endsWith('/')) p += 'index.html'
-  // /tools/ 처럼 Vite 엔트리(frontend/tools/...)로 빌드되는 정적 페이지는 public 대신 frontend 아래에 있다
-  if (!existsSync(join(PUB, p)) && existsSync(join('frontend', p))) return join('frontend', p)
   return join(PUB, p)
 }
 

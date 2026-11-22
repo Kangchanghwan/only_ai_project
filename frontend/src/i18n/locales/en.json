@@ -154,7 +154,6 @@
     "deleteSelected": "Delete Selected",
     "clearStorage": "Clear All Files",
     "moreActions": "More",
-    "previewHwp": "Preview",
     "chooseFiles": "Choose files",
     "limitResume": "Up to {size} per file · interrupted uploads resume",
     "limitShort": "{size} per file",

@@ -153,7 +153,6 @@
     "deleteSelected": "删除所选",
     "clearStorage": "清除所有文件",
     "moreActions": "更多",
-    "previewHwp": "预览",
     "chooseFiles": "选择文件",
     "limitResume": "每个文件最大 {size} · 中断后可续传",
     "limitShort": "单个文件最大 {size}",
