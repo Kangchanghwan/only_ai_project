@@ -5,7 +5,7 @@
  * 전체 공유 룸(room-shared)과 IP 격리 룸에 동시 입장합니다.
  * 업로드 시 공유 대상을 선택할 수 있습니다.
  */
-import { onMounted, onUnmounted, ref, computed, watch, nextTick, defineAsyncComponent } from 'vue'
+import { onMounted, onUnmounted, ref, computed, watch, nextTick } from 'vue'
 import { useRoomManager } from './composables/useRoomManager'
 import { useFileManager } from './composables/useFileManager'
 import { useClipboard } from './composables/useClipboard'
@@ -651,7 +651,7 @@ async function handleUploadFiles(files) {
 }
 
 async function uploadFiles(files, scopeOverride) {
-  if (roomManager.roomIds.value.length === 0) return false
+  if (roomManager.roomIds.value.length === 0) return
 
   // scope를 지금 시점으로 고정한다. 확인창을 기다리는 동안 탭이 바뀌어도 이 전송은 고정된 scope의 룸으로만 간다.
   const targetScope = scopeOverride || shareScope.getScope()
@@ -753,7 +753,6 @@ async function uploadFiles(files, scopeOverride) {
     notification.showSuccess(t('notification.uploadComplete', { count: summary.successCount }))
     nextTime.markSuccess('upload')
   }
-  return summary.successCount > 0
 }
 
 /** 룸 ID에 해당하는 발행 대상 ('global' | 'ip' | 비공개 roomId) */
@@ -785,27 +784,6 @@ async function handleCopyImage(imageUrl) {
 // ========================================
 // 파일 다운로드 핸들러
 // ========================================
-
-// ========================================
-// 한글(HWP) 미리보기 시트: 방 파일을 이 페이지 안에서 미리 보고(엔진은 지연 로드), 폰 제외 수정 후 같은 방에 다시 올린다
-// ========================================
-const FilePreviewSheet = defineAsyncComponent(() => import('./components/FilePreviewSheet.vue'))
-const hwpSheet = ref(null)
-
-async function handlePreviewHwp(file) {
-  const { createHwpRoomHooks } = await import('./services/hwpRoom.js')
-  hwpSheet.value = {
-    file,
-    scope: roomManager.scopeForRoom(file.roomId),
-    nameHint: file.locked ? (lockState.nameFor(file.roomId, file.name) || '') : file.name,
-    hooks: createHwpRoomHooks({
-      lockState,
-      files: () => fileManager.files.value,
-      upload: (f, scope) => uploadFiles([f], scope),
-      download: (f) => (f.locked ? openLockedFile({ roomId: f.roomId, id: f.name, lockState }) : handleDownloadFile(f)),
-    }),
-  }
-}
 
 async function handleDownloadFile(file) {
   const downloadId = crypto.randomUUID()
@@ -1485,7 +1463,6 @@ onUnmounted(() => {
         @upload-files="handleUploadFiles"
         @select-scope="shareScope.setScope"
         @download-file="handleDownloadFile"
-        @preview-file="handlePreviewHwp"
         @download-parallel="handleDownloadParallel"
         @copy-selected-to-clipboard="handleCopySelectedToClipboard"
         @delete-file="handleDeleteFile"
@@ -1565,8 +1542,6 @@ onUnmounted(() => {
       <MultiDownloadSheet :sheet="multiDownload.sheet.value" @close="multiDownload.close" @run="multiDownload.run" />
       <LegacyInviteSheet :sheet="groupRooms.legacySheet.value" @close="groupRooms.closeLegacy" @create="groupRooms.createFromLegacy" />
       <GroupJoinSheet :sheet="groupRooms.joinSheet.value" @confirm="groupRooms.confirmJoin" @cancel="groupRooms.cancelJoin" />
-
-      <FilePreviewSheet v-if="hwpSheet" :file="hwpSheet.file" :scope="hwpSheet.scope" :hooks="hwpSheet.hooks" :name-hint="hwpSheet.nameHint" @close="hwpSheet = null" />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->
       <ShareConfirmSheet

@@ -154,7 +154,6 @@
     "deleteSelected": "選択削除",
     "clearStorage": "すべてのファイルを削除",
     "moreActions": "その他",
-    "previewHwp": "プレビュー",
     "chooseFiles": "ファイルを選択",
     "limitResume": "1ファイルあたり最大 {size} · 中断しても続きから再開",
     "limitShort": "1ファイル {size} まで",

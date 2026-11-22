@@ -153,7 +153,6 @@
     "deleteSelected": "Supprimer la sélection",
     "clearStorage": "Effacer tous les fichiers",
     "moreActions": "Plus",
-    "previewHwp": "Aperçu",
     "chooseFiles": "Choisir des fichiers",
     "limitResume": "Jusqu'à {size} par fichier · reprise après interruption",
     "limitShort": "{size} par fichier",

@@ -1,8 +1,0 @@
-{
-  "repo": "https://github.com/edwardkim/rhwp.git",
-  "tag": "v0.9.1",
-  "coreVersion": "0.9.1",
-  "coreTarball": "https://registry.npmjs.org/@rhwp/core/-/core-0.9.1.tgz",
-  "coreIntegrity": "sha512-jMLOubFHp5MocnbyYNoPwcUDAIqzF47hBv420i0prnN4+hk0iX/f4RPv0NotDOtQcANaFjJe8/mo64aQsZ73XA==",
-  "base": "/tools/hwp/studio/"
-}

@@ -7,7 +7,6 @@ import FileQRCodeModal from './FileQRCodeModal.vue'
 import SenderLabel from './SenderLabel.vue'
 import FileTypeIcon from './icons/FileTypeIcon.vue'
 import { trackEvent } from '../utils/analytics'
-import { isHwpName, isPreviewName } from '../utils/hwpName'
 import { trackStoreFallback } from '../utils/storeFallback'
 import { useScopeAccent } from '../composables/useScopeAccent'
 
@@ -28,7 +27,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file', 'delete-file', 'preview-file'])
+const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file', 'delete-file'])
 
 const {
   bg: accentBg,
@@ -68,18 +67,13 @@ watch(() => `${props.file.roomId}::${props.file.name}`, () => {
 // (큰 원본을 미리보기로 내려받거나 presigned를 남발하지 않기 위함).
 const MAX_ORIGINAL_PREVIEW_BYTES = 5 * 1024 * 1024
 
-// 한글 문서(.hwp/.hwpx): 업로드 때 만든 첫 쪽 썸네일. 없으면(이전에 올린 파일 등) 원본 URL로 돌아가지 않고 파일 아이콘을 보인다
-const isHwp = computed(() => isHwpName(props.file.name))
-
 const showImagePreview = computed(() => {
-  if (isHwp.value) return !thumbFailed.value && !!(props.file.thumbUrl || props.file.roomId)
   if (!fileMetadata.value.isImage) return false
   if (!thumbFailed.value) return true
   return (props.file.size || 0) <= MAX_ORIGINAL_PREVIEW_BYTES
 })
 
 const previewSrc = computed(() => {
-  if (isHwp.value) return props.file.thumbUrl || (props.file.roomId ? r2Service.getThumbUrl(props.file.roomId, props.file.name) : '')
   if (thumbFailed.value) return props.file.url
   if (props.file.thumbUrl) return props.file.thumbUrl
   if (props.file.roomId) return r2Service.getThumbUrl(props.file.roomId, props.file.name)
@@ -87,7 +81,6 @@ const previewSrc = computed(() => {
 })
 
 function handleThumbError() {
-  if (isHwp.value) { thumbFailed.value = true; return }
   if (!thumbFailed.value && previewSrc.value !== props.file.url) {
     thumbFailed.value = true
     if (showImagePreview.value) trackStoreFallback('preview', props.file.size, 'thumb_failed')
@@ -157,18 +150,6 @@ function handleSheetDownload(event) {
   closeActionsSheet()
 }
 
-// 한글 파일은 이름을 누르면 미리보기가 열린다 (행의 나머지 부분은 기존처럼 선택 토글)
-function onNameClick(event) {
-  if (!isPreviewName(props.file.name)) return
-  event.stopPropagation()
-  emit('preview-file', props.file)
-}
-
-function handleSheetPreviewHwp() {
-  emit('preview-file', props.file)
-  closeActionsSheet()
-}
-
 function handleSheetDelete(event) {
   handleDelete(event)
   closeActionsSheet()
@@ -218,8 +199,7 @@ async function handleShare(event) {
           decoding="async"
           width="40"
           height="40"
-          class="w-8 h-8 sm:w-10 sm:h-10 rounded-none"
-          :class="isHwp ? 'object-contain bg-white border border-border' : 'object-cover'"
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-none object-cover"
           @error="handleThumbError"
         />
         <div
@@ -233,7 +213,7 @@ async function handleShare(event) {
 
     <!-- 파일명(ellipsis, 전체는 title) + 2행 "보낸 사람 · 용량 · 시간" (시간은 한 번만) -->
     <div class="file-info flex-1 min-w-0">
-      <p class="file-name text-sm font-medium text-text-primary truncate m-0" :class="isPreviewName(file.name) ? 'cursor-pointer' : ''" :title="file.name" data-testid="file-name" @click="onNameClick">{{ file.name }}</p>
+      <p class="file-name text-sm font-medium text-text-primary truncate m-0" :title="file.name" data-testid="file-name">{{ file.name }}</p>
       <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="file-meta">
         <SenderLabel v-if="file.uploader" :sender="file.uploader" class="shrink min-w-0" />
         <span v-if="file.uploader" aria-hidden="true">·</span>
@@ -317,15 +297,6 @@ async function handleShare(event) {
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
               <span class="text-sm font-medium">{{ t('room.qrShareTitle') }}</span>
-            </button>
-            <button
-              v-if="isPreviewName(file.name)"
-              class="sheet-preview-file w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
-              data-testid="sheet-preview-file"
-              @click="handleSheetPreviewHwp"
-            >
-              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-              <span class="text-sm font-medium">{{ t('file.previewHwp') }}</span>
             </button>
             <button
               class="sheet-download w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
