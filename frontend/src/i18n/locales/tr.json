@@ -315,7 +315,7 @@
     "faq3q": "Cihazlar farklı ağlardayken çalışır mı?",
     "faq3a": "Ağdan bağımsız olarak servisi açık olan herkesle paylaşmak için \"Herkes\" sekmesine geçin. Hassas dosyaları \"Aynı ağ\"da tutun.",
     "faq4q": "Dosya boyutu sınırı var mı?",
-    "faq4a": "Her dosya, yükleme kartında gösterilen sınır kadar büyük olabilir ve aynı anda birden fazla dosya yükleyebilirsiniz.",
+    "faq4a": "Her dosya en fazla 5GB olabilir ve aynı anda birden fazla dosya yükleyebilirsiniz.",
     "faq5q": "Dosyalar ne kadar süre saklanır?",
     "faq5a": "Varsayılan olarak tüm cihazlar çıktıktan kısa süre sonra her şey silinir; cihazlar bağlıyken bile dosyalar 1 gün içinde temizlenir (düzenli temizlik, tam saat garanti edilmez). İhtiyacınız olan dosyaları hemen indirin. “Aynı ağ”, okul veya ofis gibi o ağdaki diğer kişilere de görünebilir.",
     "moreTitle": "Daha fazla bilgi",

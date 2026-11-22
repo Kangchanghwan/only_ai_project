@@ -315,7 +315,7 @@
     "faq3q": "Fungerar det när enheterna är på olika nätverk?",
     "faq3a": "Byt till fliken \"Alla\" för att dela med alla som har tjänsten öppen, oavsett nätverk. Håll känsliga filer på \"Samma nätverk\".",
     "faq4q": "Finns det en gräns för filstorlek?",
-    "faq4a": "Varje fil kan vara så stor som gränsen som visas på uppladdningskortet, och du kan ladda upp flera filer samtidigt.",
+    "faq4a": "Varje fil kan vara upp till 5GB, och du kan ladda upp flera filer samtidigt.",
     "faq5q": "Hur länge sparas filerna?",
     "faq5a": "Som standard raderas allt strax efter att alla enheter lämnat, och även med anslutna enheter rensas filer inom 1 dag (periodisk rensning, exakt tid garanteras inte). Ladda ner det du behöver direkt. ”Samma nätverk” kan också synas för andra på nätverket, till exempel i skola eller kontor.",
     "moreTitle": "Läs mer",

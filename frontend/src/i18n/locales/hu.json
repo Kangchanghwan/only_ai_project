@@ -315,7 +315,7 @@
     "faq3q": "Akkor is működik, ha az eszközök más-más hálózaton vannak?",
     "faq3a": "Válts a \"Mindenki\" fülre, hogy bárkivel megoszthasd, aki megnyitotta a szolgáltatást, hálózattól függetlenül. Az érzékeny fájlokat tartsd az \"Azonos hálózat\" beállításon.",
     "faq4q": "Van fájlméret-korlát?",
-    "faq4a": "Minden fájl akkora lehet, amekkorát a feltöltőkártyán jelzett limit megenged, és egyszerre több fájlt is feltölthetsz.",
+    "faq4a": "Egy fájl legfeljebb 5GB lehet, és egyszerre több fájlt is feltölthetsz.",
     "faq5q": "Meddig őrzi meg a fájlokat?",
     "faq5a": "Alapértelmezés szerint minden hamarosan törlődik, miután minden eszköz kilépett, és csatlakozott eszközök mellett is 1 napon belül takarítódnak a fájlok (időszakos takarítás, a pontos idő nem garantált). A szükséges fájlokat azonnal töltsd le. Az „Ugyanaz a hálózat” is látható lehet az adott hálózat más tagjainak, például iskolában vagy irodában.",
     "moreTitle": "További információ",

@@ -315,7 +315,7 @@
     "faq3q": "¿Funciona si los dispositivos están en redes distintas?",
     "faq3a": "Cambia a la pestaña \"Todos\" para compartir con cualquiera que tenga el servicio abierto, sin importar la red. Mantén los archivos sensibles en \"Misma red\".",
     "faq4q": "¿Hay un límite de tamaño de archivo?",
-    "faq4a": "Cada archivo puede llegar hasta el límite que se muestra en la tarjeta de subida, y puedes subir varios archivos a la vez.",
+    "faq4a": "Cada archivo puede pesar hasta 5GB, y puedes subir varios archivos a la vez.",
     "faq5q": "¿Cuánto tiempo se guardan los archivos?",
     "faq5a": "Por defecto, todo se elimina poco después de que salgan todos los dispositivos, y aunque haya dispositivos conectados los archivos se limpian en un máximo de 1 día (la limpieza es periódica, no se garantiza la hora exacta). Descarga lo que necesites enseguida. «Misma red» también puede ser visible para otras personas de esa red, como en una escuela u oficina.",
     "moreTitle": "Más información",

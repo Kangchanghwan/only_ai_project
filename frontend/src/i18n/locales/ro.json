@@ -315,7 +315,7 @@
     "faq3q": "Funcționează când dispozitivele sunt în rețele diferite?",
     "faq3a": "Comută pe fila \"Toată lumea\" pentru a distribui oricui are serviciul deschis, indiferent de rețea. Păstrează fișierele sensibile pe \"Aceeași rețea\".",
     "faq4q": "Există o limită de dimensiune a fișierelor?",
-    "faq4a": "Fiecare fișier poate avea dimensiunea maximă afișată pe cardul de încărcare și poți încărca mai multe fișiere deodată.",
+    "faq4a": "Fiecare fișier poate avea până la 5GB și poți încărca mai multe fișiere deodată.",
     "faq5q": "Cât timp sunt păstrate fișierele?",
     "faq5a": "Implicit, totul se șterge la scurt timp după plecarea tuturor dispozitivelor, iar cu dispozitive conectate fișierele se curăță în cel mult 1 zi (curățare periodică, ora exactă nu e garantată). Descarcă imediat ce ai nevoie. „Aceeași rețea” poate fi văzută și de alte persoane din acea rețea, de exemplu într-o școală sau la birou.",
     "moreTitle": "Află mai multe",

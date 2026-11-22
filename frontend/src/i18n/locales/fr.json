@@ -315,7 +315,7 @@
     "faq3q": "Est-ce que ça marche si les appareils sont sur des réseaux différents?",
     "faq3a": "Basculez vers l'onglet « Tout le monde » pour partager avec toute personne ayant le service ouvert, quel que soit le réseau. Gardez les fichiers sensibles sur « Même réseau ».",
     "faq4q": "Y a-t-il une limite de taille de fichier?",
-    "faq4a": "Chaque fichier peut atteindre la limite indiquée sur la carte d'envoi, et vous pouvez envoyer plusieurs fichiers à la fois.",
+    "faq4a": "Chaque fichier peut peser jusqu’à 5GB, et vous pouvez envoyer plusieurs fichiers à la fois.",
     "faq5q": "Combien de temps les fichiers sont-ils conservés?",
     "faq5a": "Par défaut, tout est supprimé peu après le départ de tous les appareils, et même avec des appareils connectés, les fichiers sont nettoyés sous 1 jour (nettoyage périodique, heure exacte non garantie). Téléchargez vite ce dont vous avez besoin. « Même réseau » peut aussi être visible par d'autres personnes de ce réseau, par exemple dans une école ou un bureau.",
     "moreTitle": "En savoir plus",

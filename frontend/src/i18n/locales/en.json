@@ -329,7 +329,7 @@
     "faq3q": "Does it work when devices are on different networks?",
     "faq3a": "Switch to the \"Everyone\" tab to share with anyone who has the service open, regardless of network. For sensitive files, turn on \"Lock with a password\" so only people with the password can open them.",
     "faq4q": "Is there a file size limit?",
-    "faq4a": "Each file can be as large as the limit shown on the upload card, and you can upload several files at once.",
+    "faq4a": "Each file can be up to 5GB, and you can upload several files at once.",
     "faq5q": "How long are files kept?",
     "faq5a": "By default, everything is deleted shortly after every device leaves, and even while devices are connected, files are cleaned up within 1 day (cleanup runs periodically, so the exact time is not guaranteed). Download what you need right away. 'Same network' can also be seen by other people on that network, such as at a school or office.",
     "moreTitle": "Learn more",
