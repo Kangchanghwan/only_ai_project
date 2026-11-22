@@ -51,3 +51,5 @@ grep "텍스트 탭|Text tab" 0(판독 끝난 페이지 기준). 페이지별 7�
   - "공유 범위" 제목 → "같은 네트워크·전체 공유 탭", 안내 카드 "개인 파일은 같은 네트워크에서만" → "전체 공유로 보내지 말고 다른 네트워크면 #room 방". meta description "공유 범위 선택" → "방 만들기". sitemap lastmod 2026-11-22, llms-full.txt 재생성, check-seo 통과.
   - 측정: how-to-use 7일 노출 유지 여부 11-29 (E1 판독값은 e2ee-campaign 기록 참고, 효과 분리: 11-22부터는 0046 4차가 섞임).
   - 남은 대상: copy-text-phone-to-pc(0034 28일 12-06 뒤), "파일 업로드" 페이지는 0045 표 날짜대로, "공유 범위" ask-ai(0022 11-27 뒤). **새로 발견: 앱 화면 i18n `landing.faq4a`(ko) "파일 하나당 업로드 카드에 표시된 최대 용량"** — 업로드 카드가 없어졌으니 "파일 하나에 5GB까지"로 고칠 대상(frontend/src/i18n/locales/*.json 자동 머지 경로, en 같은 키도 확인). 다음 빈 개선 슬롯 후보.
+- 2026-11-23 5차 배포 (master a21c610, auto/20261123-faq4a-5gb, Actions auto-merge 성공). 앱 화면 FAQ `landing.faq4a` 21개 언어: "업로드 카드에 표시된 최대 용량까지" → "파일 하나에 5GB까지"(각 언어 help.send4 표현을 따름, 뒷부분 "여러 파일을 한 번에 올릴 수 있다"는 유지). 근거: 11-17 #89로 업로드 카드 없어짐, useFileManager.js 기본 VITE_MAX_FILE_SIZE_MB 5120, help.send4. 홈 FAQ JSON-LD(#ld-faq)는 useSeoMeta가 이 키로 다시 쓰고 prerender(/, /en/, /ja/, /ru/)에 들어간다. 라이브 curl: /, /en/, /ja/ 옛 문구 0, 새 문구 확인.
+  - 측정: 앱 화면 문구라 검색 지표로 따로 판독하지 않는다(사실 정정). 남은 대상은 4차 기록과 같음.
