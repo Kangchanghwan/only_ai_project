@@ -44,3 +44,10 @@ grep "텍스트 탭|Text tab" 0(판독 끝난 페이지 기준). 페이지별 7�
   - 근거: 11-21 master PasteSection.vue(`hidden sm:inline` 글자, 좁은 화면 아이콘만, 클릭 시 App.handlePasteContent가 클립보드를 읽어 바로 공유), ko text.showMore '더보기', help.receive1. dateModified·sitemap lastmod 2026-11-21, llms-full.txt 재생성, check-seo 통과. 라이브 grep: 옛 문구 0건.
   - 기준값: send-link GSC 28일(10-22–11-18) 노출 22 / 클릭 1 / 12.9위. copy-verification-code는 0042 Result 참고. 측정: 두 페이지 7일 노출 유지 여부 11-28.
   - 남은 대상: how-to-use(E1 7일 11-22 뒤, "텍스트 탭" 1·"공유 범위"), copy-text-phone-to-pc(0034 28일 12-06 뒤), "파일 업로드" 페이지는 0045 표 날짜대로.
+- 2026-11-22 4차 배포 (master bc7da5a, Actions auto-merge 성공, 라이브 grep 옛 문구 0건). how-to-use (e2ee E1 7일 판독 창 11-15~11-21 끝난 뒤):
+  - "파일 업로드 카드" 2곳 → 입력 상자 아래 도구 줄의 '파일 선택'. "업로드 카드에 표시된 최대 용량" → 파일당 5GB, 끊겨도 이어 올림(help.send4).
+  - "'붙여넣기' 카드" → 도구 줄 '붙여넣기' 버튼(폰 화면은 클립보드 아이콘, PasteSection.vue `hidden sm:inline`), 직접 쓴 글은 입력 상자 + '공유'.
+  - "받는 쪽은 텍스트 탭, 항목을 누르면 복사" → 목록에 바로, 글 오른쪽 '복사'(글 줄은 펼치기). "다운로드 버튼" → '받기', 이미지는 ⋯ '이미지 복사'. "여러 개를 선택해 한 번에" → 체크 후 '다운로드' = ZIP 하나(200MB 넘는 파일은 따로, help.receive2). "QR 코드를 띄워" → 파일 ⋯ 'QR 코드로 공유'(help.receive3).
+  - "공유 범위" 제목 → "같은 네트워크·전체 공유 탭", 안내 카드 "개인 파일은 같은 네트워크에서만" → "전체 공유로 보내지 말고 다른 네트워크면 #room 방". meta description "공유 범위 선택" → "방 만들기". sitemap lastmod 2026-11-22, llms-full.txt 재생성, check-seo 통과.
+  - 측정: how-to-use 7일 노출 유지 여부 11-29 (E1 판독값은 e2ee-campaign 기록 참고, 효과 분리: 11-22부터는 0046 4차가 섞임).
+  - 남은 대상: copy-text-phone-to-pc(0034 28일 12-06 뒤), "파일 업로드" 페이지는 0045 표 날짜대로, "공유 범위" ask-ai(0022 11-27 뒤). **새로 발견: 앱 화면 i18n `landing.faq4a`(ko) "파일 하나당 업로드 카드에 표시된 최대 용량"** — 업로드 카드가 없어졌으니 "파일 하나에 5GB까지"로 고칠 대상(frontend/src/i18n/locales/*.json 자동 머지 경로, en 같은 키도 확인). 다음 빈 개선 슬롯 후보.
