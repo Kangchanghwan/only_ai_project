@@ -313,7 +313,7 @@
     "faq2q": "Preciso instalar um app?",
     "faq2a": "Não. Qualquer navegador moderno funciona: Chrome, Safari, Edge, Firefox. Se quiser, você pode adicioná-lo à tela inicial.",
     "faq3q": "Funciona com os dispositivos em redes diferentes?",
-    "faq3a": "Mude para a aba \"Todos\" para compartilhar com qualquer pessoa que tenha o serviço aberto, não importa a rede. Mantenha arquivos sensíveis em \"Mesma rede\".",
+    "faq3a": "Sim. Toque em \"＋ Sala\" → \"Criar uma nova sala\" e depois leia o QR code de convite no outro dispositivo ou entre com as 4 imagens. Funciona mesmo com Wi-Fi ou dados móveis diferentes. Arquivos e textos compartilhados dentro de uma sala são criptografados no seu dispositivo. A aba \"Todos\" também funciona entre redes, mas qualquer pessoa com o serviço aberto vê o que você compartilha ali, então envie arquivos sensíveis em uma sala.",
     "faq4q": "Existe limite de tamanho de arquivo?",
     "faq4a": "Cada arquivo pode ter até 5GB, e você pode enviar vários arquivos de uma vez.",
     "faq5q": "Por quanto tempo os arquivos ficam guardados?",

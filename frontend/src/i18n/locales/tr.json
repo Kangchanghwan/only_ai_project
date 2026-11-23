@@ -313,7 +313,7 @@
     "faq2q": "Uygulama yüklemem gerekiyor mu?",
     "faq2a": "Hayır. Herhangi bir modern tarayıcı çalışır: Chrome, Safari, Edge, Firefox. İsterseniz ana ekranınıza ekleyebilirsiniz.",
     "faq3q": "Cihazlar farklı ağlardayken çalışır mı?",
-    "faq3a": "Ağdan bağımsız olarak servisi açık olan herkesle paylaşmak için \"Herkes\" sekmesine geçin. Hassas dosyaları \"Aynı ağ\"da tutun.",
+    "faq3a": "Evet. \"＋ Oda\" → \"Yeni oda oluştur\" ile bir oda açın, ardından diğer cihazda davet QR kodunu okutun ya da 4 resimle katılın. Farklı Wi-Fi ağlarında veya mobil veride de çalışır. Bir odada paylaştığınız dosyalar ve metinler cihazınızda şifrelenir. \"Herkes\" sekmesi de ağdan bağımsız çalışır ancak orada paylaştıklarınızı servisi açık olan herkes görür; hassas dosyaları bu yüzden odada gönderin.",
     "faq4q": "Dosya boyutu sınırı var mı?",
     "faq4a": "Her dosya en fazla 5GB olabilir ve aynı anda birden fazla dosya yükleyebilirsiniz.",
     "faq5q": "Dosyalar ne kadar süre saklanır?",

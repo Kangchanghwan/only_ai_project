@@ -313,7 +313,7 @@
     "faq2q": "Kell hozzá alkalmazást telepíteni?",
     "faq2a": "Nem. Bármelyik modern böngésző megfelel: Chrome, Safari, Edge, Firefox. Ha szeretnéd, a kezdőképernyődre is hozzáadhatod.",
     "faq3q": "Akkor is működik, ha az eszközök más-más hálózaton vannak?",
-    "faq3a": "Válts a \"Mindenki\" fülre, hogy bárkivel megoszthasd, aki megnyitotta a szolgáltatást, hálózattól függetlenül. Az érzékeny fájlokat tartsd az \"Azonos hálózat\" beállításon.",
+    "faq3a": "Igen. Koppints a \"＋ Szoba\" → \"Új szoba létrehozása\" gombra, majd a másik eszközön olvasd be a meghívó QR-kódját, vagy lépj be a 4 képpel. Ez eltérő wifin vagy mobilneten is működik. A szobában megosztott fájlok és szövegek a saját eszközödön titkosítódnak. A \"Mindenki\" fül is működik hálózattól függetlenül, de amit ott megosztasz, azt mindenki látja, akinél nyitva van a szolgáltatás, ezért az érzékeny fájlokat szobában küldd.",
     "faq4q": "Van fájlméret-korlát?",
     "faq4a": "Egy fájl legfeljebb 5GB lehet, és egyszerre több fájlt is feltölthetsz.",
     "faq5q": "Meddig őrzi meg a fájlokat?",

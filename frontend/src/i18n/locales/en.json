@@ -327,7 +327,7 @@
     "faq2q": "Do I need to install an app?",
     "faq2a": "No. Any modern browser works: Chrome, Safari, Edge, Firefox. You can add it to your home screen if you like.",
     "faq3q": "Does it work when devices are on different networks?",
-    "faq3a": "Switch to the \"Everyone\" tab to share with anyone who has the service open, regardless of network. For sensitive files, turn on \"Lock with a password\" so only people with the password can open them.",
+    "faq3a": "Yes. Tap \"＋ Room\" → \"Create a new room\", then scan the invite QR code on the other device or join with the 4 pictures. It works even on different Wi-Fi or mobile data. Files and text you share inside a room are encrypted on your device. The \"Everyone\" tab also works across networks, but anyone who has the service open can see what you share there, so send sensitive files in a room.",
     "faq4q": "Is there a file size limit?",
     "faq4a": "Each file can be up to 5GB, and you can upload several files at once.",
     "faq5q": "How long are files kept?",
