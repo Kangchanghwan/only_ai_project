@@ -26,13 +26,13 @@ function fakeClientFactory(opts = {}) {
 }
 
 let wrapper, client
-async function mountSheet({ file = { name: 'a.docx', roomId: 'r1', size: 100 }, existing = [], upload, client: cl, getBytes } = {}) {
+async function mountSheet({ file = { name: 'a.docx', roomId: 'r1', size: 100 }, upload, replace, canSave, client: cl, getBytes } = {}) {
   client = cl || fakeClientFactory()
   const hooks = {
     maxBytes: 5 * 1024 ** 3,
     getBytes: getBytes || vi.fn(async () => ({ name: file.name, bytes: new ArrayBuffer(10) })),
-    existingNames: () => existing,
-    upload: upload || vi.fn(async () => true),
+    canSave: canSave || (() => true),
+    replace: replace || vi.fn(async (cur, f, scope) => ({ ok: await (upload || (async () => true))(f, scope), next: cur, removed: true })),
   }
   wrapper = mount(FileEditSheet, { props: { file, scope: 'ip', hooks, clientFactory: () => client }, attachTo: document.body })
   await flushPromises()
@@ -70,43 +70,70 @@ describe('FileEditSheet', () => {
     await flushPromises()
     expect(wrapper.find('[data-testid=edit-dirty]').exists()).toBe(true)
   })
-  it('방에 올리기: export → "_수정" 이름으로 upload → markSaved', async () => {
-    const upload = vi.fn(async () => true)
-    await mountSheet({ upload, existing: ['a.docx', 'a_수정.docx'] })
+  it('저장: export → 원래 이름으로 원본 덮어쓰기(replace) → markSaved', async () => {
+    const replace = vi.fn(async (cur) => ({ ok: true, next: cur, removed: true }))
+    const file = { name: 'a.docx', roomId: 'r1', size: 100 }
+    await mountSheet({ file, replace })
     client.emit('dirty', { dirty: true })
     await wrapper.get('[data-testid=edit-save]').trigger('click')
     await wrapper.get('[data-testid=edit-upload]').trigger('click')
     await flushPromises()
     expect(client.export).toHaveBeenCalledWith(undefined)
-    const [f, scope] = upload.mock.calls[0]
-    expect(f.name).toBe('a_수정2.docx')
+    const [cur, f, scope] = replace.mock.calls[0]
+    expect(cur).toEqual(file)
+    expect(f.name).toBe('a.docx')
     expect(scope).toBe('ip')
     expect(client.markSaved).toHaveBeenCalledOnce()
     expect(wrapper.find('[data-testid=edit-dirty]').exists()).toBe(false)
-    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('방에 올렸습니다: a_수정2.docx')
+    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('저장했습니다: a.docx')
   })
-  it('doc → docx 변환 알림과 이름', async () => {
-    const upload = vi.fn(async () => true)
-    await mountSheet({ file: { name: 'old.doc', roomId: 'r1', size: 1 }, upload, client: fakeClientFactory({ ext: 'docx' }) })
+  it('두 번째 저장은 첫 저장이 돌려준 새 항목을 원본으로 쓴다', async () => {
+    const next = { name: 'LOCKID2', roomId: 'r1', locked: true }
+    const replace = vi.fn(async () => ({ ok: true, next, removed: true }))
+    await mountSheet({ file: { name: 'LOCKID1', roomId: 'r1', locked: true, size: 1 }, replace, getBytes: vi.fn(async () => ({ name: '비밀.hwpx', bytes: new ArrayBuffer(3) })) })
+    for (let i = 0; i < 2; i++) { await wrapper.get('[data-testid=edit-save]').trigger('click'); await wrapper.get('[data-testid=edit-upload]').trigger('click'); await flushPromises() }
+    expect(replace.mock.calls[0][1].name).toBe('비밀.docx') // 가짜 편집기 ext=docx
+    expect(replace.mock.calls[1][0]).toEqual(next)
+  })
+  it('잠긴 파일인데 잠금이 꺼져 있으면 저장하지 않는다', async () => {
+    const replace = vi.fn()
+    await mountSheet({ file: { name: 'ID', roomId: 'r1', locked: true, size: 1 }, replace, canSave: () => false })
     await wrapper.get('[data-testid=edit-save]').trigger('click')
     await wrapper.get('[data-testid=edit-upload]').trigger('click')
     await flushPromises()
-    expect(upload.mock.calls[0][0].name).toBe('old_수정.docx')
+    expect(replace).not.toHaveBeenCalled()
+    expect(client.markSaved).not.toHaveBeenCalled()
+    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('잠금이 켜져 있어야')
+  })
+  it('원본을 못 지우면 둘 다 남았다고 알린다', async () => {
+    await mountSheet({ file: { name: 'old.doc', roomId: 'r1', size: 1 }, replace: vi.fn(async (c) => ({ ok: true, next: c, removed: false })) })
+    await wrapper.get('[data-testid=edit-save]').trigger('click')
+    await wrapper.get('[data-testid=edit-upload]').trigger('click')
+    await flushPromises()
+    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('둘 다 남았어요')
+  })
+  it('doc → docx 변환 알림과 이름', async () => {
+    const replace = vi.fn(async (c) => ({ ok: true, next: c, removed: true }))
+    await mountSheet({ file: { name: 'old.doc', roomId: 'r1', size: 1 }, replace, client: fakeClientFactory({ ext: 'docx' }) })
+    await wrapper.get('[data-testid=edit-save]').trigger('click')
+    await wrapper.get('[data-testid=edit-upload]').trigger('click')
+    await flushPromises()
+    expect(replace.mock.calls[0][1].name).toBe('old.docx')
     expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('docx로 저장됩니다')
   })
-  it('올리기 실패하면 markSaved 를 부르지 않는다', async () => {
+  it('저장 실패하면 markSaved 를 부르지 않는다', async () => {
     await mountSheet({ upload: vi.fn(async () => false) })
     await wrapper.get('[data-testid=edit-save]').trigger('click')
     await wrapper.get('[data-testid=edit-upload]').trigger('click')
     await flushPromises()
     expect(client.markSaved).not.toHaveBeenCalled()
-    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('올리지 못했습니다')
+    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('저장하지 못했습니다')
   })
   it('한글 저장 메뉴: 원래 형식이 위, 내려받기는 format 지정', async () => {
     await mountSheet({ file: { name: 'a.hwpx', roomId: 'r1', size: 1 } })
     await wrapper.get('[data-testid=edit-save]').trigger('click')
     const items = wrapper.findAll('[role=menuitem]').map((w) => w.text())
-    expect(items).toEqual(['방에 올리기', 'HWPX로 내려받기', 'HWP로 내려받기'])
+    expect(items).toEqual(['저장 (원본 덮어쓰기)', 'HWPX로 내려받기', 'HWP로 내려받기'])
     URL.createObjectURL = vi.fn(() => 'blob:x'); URL.revokeObjectURL = vi.fn()
     await wrapper.get('[data-testid=edit-dl-hwp]').trigger('click')
     await flushPromises()
@@ -115,14 +142,15 @@ describe('FileEditSheet', () => {
   it('오피스 저장 메뉴는 내려받기 하나', async () => {
     await mountSheet()
     await wrapper.get('[data-testid=edit-save]').trigger('click')
-    expect(wrapper.findAll('[role=menuitem]').map((w) => w.text())).toEqual(['방에 올리기', '내려받기'])
+    expect(wrapper.findAll('[role=menuitem]').map((w) => w.text())).toEqual(['저장 (원본 덮어쓰기)', '내려받기'])
   })
-  it('편집기의 saveRequest 가 오면 저장 메뉴가 열린다', async () => {
-    await mountSheet()
-    expect(wrapper.find('[data-testid=edit-menu]').exists()).toBe(false)
+  it('편집기의 saveRequest(Ctrl+S) 가 오면 바로 덮어쓰기 저장한다', async () => {
+    const replace = vi.fn(async (c) => ({ ok: true, next: c, removed: true }))
+    await mountSheet({ replace })
     client.emit('saveRequest')
     await flushPromises()
-    expect(wrapper.find('[data-testid=edit-menu]').exists()).toBe(true)
+    expect(replace).toHaveBeenCalledOnce()
+    expect(wrapper.find('[data-testid=edit-menu]').exists()).toBe(false)
   })
   it('닫기: 변경이 없으면 확인 없이, 있으면 confirm (취소하면 머문다)', async () => {
     await mountSheet()
