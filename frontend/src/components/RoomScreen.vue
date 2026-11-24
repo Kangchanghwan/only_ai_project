@@ -105,6 +105,7 @@ const emit = defineEmits([
   'hint-copied',
   'upload-files',
   'download-file',
+  'edit-file',
   'download-parallel',
   'copy-selected-to-clipboard',
   'delete-file',
@@ -342,6 +343,7 @@ watch(
                 @copy-text="$emit('copy-text', $event)"
                 @copy-image="$emit('copy-image', $event)"
                 @download-file="$emit('download-file', $event)"
+                @edit-file="$emit('edit-file', $event)"
                 @download-parallel="$emit('download-parallel', $event)"
                 @copy-selected-to-clipboard="$emit('copy-selected-to-clipboard', $event)"
                 @delete-file="$emit('delete-file', $event)"

@@ -23,9 +23,11 @@ import { openLockedFile, createLockedShareLink } from '../services/lockedDownloa
 import FileQRCodeModal from './FileQRCodeModal.vue'
 import { r2Service } from '../services/r2Service.js'
 import { trackEvent } from '../utils/analytics'
+import { isEditableName } from '../utils/editTarget'
+import { isPhone } from '../utils/isPhone'
 import { useNotification } from '../composables/useNotification'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const props = defineProps({
   file: { type: Object, required: true },
   scope: { type: String, default: 'ip' },
@@ -33,7 +35,7 @@ const props = defineProps({
   selectable: { type: Boolean, default: false },
   isSelected: { type: Boolean, default: false }
 })
-const emit = defineEmits(['delete-file', 'toggle-selection'])
+const emit = defineEmits(['delete-file', 'toggle-selection', 'edit-file'])
 const {
   bg: accentBg,
   text: accentText,
@@ -267,6 +269,20 @@ async function handleSheetQR() {
   }
 }
 
+// 수정: 원래 이름을 이미 알고(푼 상태) 바로 받을 수 있을 때만, 폰 제외. 풀기는 App의 기존 복호화 경로를 쓴다
+const phone = isPhone()
+const canEdit = computed(() => !phone && isEditableName(knownName.value) && canReceiveDirectly.value)
+const editLabel = computed(() => (String(locale?.value ?? '').startsWith('ko') ? '수정' : 'Edit'))
+function onNameClick(event) {
+  if (!canEdit.value) return
+  event.stopPropagation()
+  emit('edit-file', props.file)
+}
+function handleSheetEdit() {
+  closeActionsSheet()
+  emit('edit-file', props.file)
+}
+
 function handleSheetDelete() {
   closeActionsSheet()
   emit('delete-file', props.file)
@@ -311,7 +327,8 @@ onUnmounted(() => clearInterval(revealTimer))
     <div class="file-info flex-1 min-w-0">
       <p
         class="file-name text-sm font-medium truncate m-0"
-        :class="isPlain ? 'text-text-primary' : 'text-text-secondary'"
+        :class="[isPlain ? 'text-text-primary' : 'text-text-secondary', canEdit ? 'cursor-pointer' : '']"
+        @click="onNameClick"
         :title="isPlain ? displayName : t('lock.hiddenName')"
         data-testid="locked-name"
       >{{ displayName }}</p>
@@ -475,6 +492,15 @@ onUnmounted(() => clearInterval(revealTimer))
         >
           <div class="w-full sm:w-80 bg-surface rounded-none p-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]" @click.stop>
             <p class="px-4 py-2 text-xs text-text-secondary truncate m-0">{{ isPlain ? displayName : t('lock.lockedFile') }}</p>
+            <button
+              v-if="canEdit"
+              class="sheet-edit w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
+              data-testid="locked-edit-file"
+              @click="handleSheetEdit"
+            >
+              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              <span class="text-sm font-medium">{{ editLabel }}</span>
+            </button>
             <button
               v-if="canShareQR"
               class="sheet-qr w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary disabled:opacity-60"
