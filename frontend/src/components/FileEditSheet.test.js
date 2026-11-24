@@ -70,20 +70,20 @@ describe('FileEditSheet', () => {
     await flushPromises()
     expect(wrapper.find('[data-testid=edit-dirty]').exists()).toBe(true)
   })
-  it('방에 올리기: export → "(수정)" 이름으로 upload → markSaved', async () => {
+  it('방에 올리기: export → "_수정" 이름으로 upload → markSaved', async () => {
     const upload = vi.fn(async () => true)
-    await mountSheet({ upload, existing: ['a.docx', 'a (수정).docx'] })
+    await mountSheet({ upload, existing: ['a.docx', 'a_수정.docx'] })
     client.emit('dirty', { dirty: true })
     await wrapper.get('[data-testid=edit-save]').trigger('click')
     await wrapper.get('[data-testid=edit-upload]').trigger('click')
     await flushPromises()
     expect(client.export).toHaveBeenCalledWith(undefined)
     const [f, scope] = upload.mock.calls[0]
-    expect(f.name).toBe('a (수정 2).docx')
+    expect(f.name).toBe('a_수정2.docx')
     expect(scope).toBe('ip')
     expect(client.markSaved).toHaveBeenCalledOnce()
     expect(wrapper.find('[data-testid=edit-dirty]').exists()).toBe(false)
-    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('방에 올렸습니다: a (수정 2).docx')
+    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('방에 올렸습니다: a_수정2.docx')
   })
   it('doc → docx 변환 알림과 이름', async () => {
     const upload = vi.fn(async () => true)
@@ -91,7 +91,7 @@ describe('FileEditSheet', () => {
     await wrapper.get('[data-testid=edit-save]').trigger('click')
     await wrapper.get('[data-testid=edit-upload]').trigger('click')
     await flushPromises()
-    expect(upload.mock.calls[0][0].name).toBe('old (수정).docx')
+    expect(upload.mock.calls[0][0].name).toBe('old_수정.docx')
     expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('docx로 저장됩니다')
   })
   it('올리기 실패하면 markSaved 를 부르지 않는다', async () => {
