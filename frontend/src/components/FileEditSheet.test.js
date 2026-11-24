@@ -83,7 +83,7 @@ describe('FileEditSheet', () => {
     expect(scope).toBe('ip')
     expect(client.markSaved).toHaveBeenCalledOnce()
     expect(wrapper.find('[data-testid=edit-dirty]').exists()).toBe(false)
-    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('방에 올렸습니다: a (수정 2).docx')
+    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('방에 올렸습니다: a_수정2.docx')
   })
   it('doc → docx 변환 알림과 이름', async () => {
     const upload = vi.fn(async () => true)
