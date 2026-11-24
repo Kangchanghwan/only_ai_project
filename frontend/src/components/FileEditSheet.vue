@@ -141,7 +141,7 @@ async function exportDoc(format) {
   const ext = String(r.ext || '').replace(/^\./, '').toLowerCase()
   return { bytes: r.bytes, ext: ext || origExt, mime: r.mime }
 }
-const converted = (ext) => (kind === 'office' && ext && ext !== origExt ? s.value.saveAs(ext) + ' ' : '')
+const converted = (ext) => (kind === 'office' && ext && ext !== origExt ? s.value.saveAs(ext) + ' · ' : '')
 
 async function uploadToRoom() {
   if (busy.value) return
@@ -178,7 +178,7 @@ async function downloadAs(format) {
     const out = await exportDoc(format || undefined)
     triggerDownload(out.bytes, `${baseNameOf(name.value) || 'document'}.${out.ext}`, out.mime)
     const note = converted(out.ext)
-    if (note) setMsg(note.trim())
+    if (note) setMsg(note.replace(/ · $/, ''))
     try { await client.markSaved(); dirty.value = false } catch { /* 표시만 */ }
   } catch {
     setMsg(s.value.exfail)
