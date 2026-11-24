@@ -197,3 +197,56 @@ describe('FileCard 행 눌러 선택 (체크박스 없음)', () => {
     expect(wrapper.find('img').exists()).toBe(true)
   })
 })
+
+describe('수정(편집기) 진입', () => {
+  const doc = { ...file, name: 'Report.DOCX' }
+  const setPhone = (v) => {
+    window.matchMedia = (q) => ({ matches: v && q.includes('coarse'), addEventListener() {}, removeEventListener() {} })
+    Object.defineProperty(window, 'screen', { value: { width: v ? 390 : 1440, height: v ? 844 : 900 }, configurable: true })
+  }
+  afterEach(() => { setPhone(false) })
+
+  it('대상 확장자 이름을 누르면 edit-file 이 나가고 행 선택 토글은 안 일어난다', async () => {
+    setPhone(false)
+    mountCard({ file: doc })
+    await wrapper.get('[data-testid="file-name"]').trigger('click')
+    expect(wrapper.emitted('edit-file')).toHaveLength(1)
+    expect(wrapper.emitted('toggle-selection')).toBeUndefined()
+  })
+  it('대상이 아니면 지금 동작 그대로 (선택 토글)', async () => {
+    setPhone(false)
+    mountCard()
+    await wrapper.get('[data-testid="file-name"]').trigger('click')
+    expect(wrapper.emitted('edit-file')).toBeUndefined()
+  })
+  it('폰에서는 이름을 눌러도 edit-file 이 없다', async () => {
+    setPhone(true)
+    mountCard({ file: doc })
+    await wrapper.get('[data-testid="file-name"]').trigger('click')
+    expect(wrapper.emitted('edit-file')).toBeUndefined()
+  })
+  it('⋯ 메뉴: 대상이면 "수정"이 다운로드 위에 있고, edit-file 을 낸다', async () => {
+    setPhone(false)
+    mountCard({ file: doc })
+    await wrapper.find('[aria-label="file.moreActions"]').trigger('click')
+    const sheet = findSheet()
+    const buttons = [...sheet.element.querySelectorAll('button')].map((b) => b.className)
+    const iEdit = buttons.findIndex((c) => c.includes('sheet-edit'))
+    const iDl = buttons.findIndex((c) => c.includes('sheet-download'))
+    expect(iEdit).toBeGreaterThanOrEqual(0)
+    expect(iEdit).toBeLessThan(iDl)
+    await sheet.find('.sheet-edit').trigger('click')
+    expect(wrapper.emitted('edit-file')).toHaveLength(1)
+  })
+  it('⋯ 메뉴: 폰이거나 대상이 아니면 "수정"이 없다', async () => {
+    setPhone(true)
+    mountCard({ file: doc })
+    await wrapper.find('[aria-label="file.moreActions"]').trigger('click')
+    expect(findSheet().find('.sheet-edit').exists()).toBe(false)
+    wrapper.unmount()
+    setPhone(false)
+    mountCard()
+    await wrapper.find('[aria-label="file.moreActions"]').trigger('click')
+    expect(findSheet().find('.sheet-edit').exists()).toBe(false)
+  })
+})

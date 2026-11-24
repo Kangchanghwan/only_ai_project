@@ -5,7 +5,7 @@
  * 전체 공유 룸(room-shared)과 IP 격리 룸에 동시 입장합니다.
  * 업로드 시 공유 대상을 선택할 수 있습니다.
  */
-import { onMounted, onUnmounted, ref, computed, watch, nextTick } from 'vue'
+import { onMounted, onUnmounted, ref, computed, watch, nextTick, defineAsyncComponent } from 'vue'
 import { useRoomManager } from './composables/useRoomManager'
 import { useFileManager } from './composables/useFileManager'
 import { useClipboard } from './composables/useClipboard'
@@ -651,7 +651,7 @@ async function handleUploadFiles(files) {
 }
 
 async function uploadFiles(files, scopeOverride) {
-  if (roomManager.roomIds.value.length === 0) return
+  if (roomManager.roomIds.value.length === 0) return false
 
   // scope를 지금 시점으로 고정한다. 확인창을 기다리는 동안 탭이 바뀌어도 이 전송은 고정된 scope의 룸으로만 간다.
   const targetScope = scopeOverride || shareScope.getScope()
@@ -659,13 +659,13 @@ async function uploadFiles(files, scopeOverride) {
     // 공유 시트에서 사용자가 범위를 직접 고른 경우가 곧 공개 범위 확인이다
     if (scopeOverride === 'global') publicGuard.markConfirmed()
   } else if (!(await publicGuard.ensure(targetScope))) {
-    return
+    return false
   }
   const targetRoomId = roomManager.roomIdForScope(targetScope)
 
   if (!targetRoomId) {
     notification.showError(t('notification.shareRoomNotFound'))
-    return
+    return false
   }
 
   const maxRoomSizeMB = import.meta.env.VITE_MAX_ROOM_SIZE_MB || 10240
@@ -679,7 +679,7 @@ async function uploadFiles(files, scopeOverride) {
     notification.showError(
       t('notification.sizeLimitExceeded', { limit: formatSizeMB(maxRoomSizeMB), current: formatSizeMB(currentSizeMB), upload: formatSizeMB(uploadSizeMB) })
     )
-    return
+    return false
   }
 
   // 배치 presign 1회 + 제한 병렬 업로드. 성공한 파일은 useFileManager가 목록에 바로 반영한다.
@@ -692,7 +692,7 @@ async function uploadFiles(files, scopeOverride) {
   const lock = isPrv ? privateRooms.lockFor(targetRoomId) : lockState.getLock(targetScope)
   if (isPrv && !lock) {
     notification.showError(t(isGroupRoomId(targetRoomId) ? 'group.noRoom' : 'pair.errors.noRoom'))
-    return
+    return false
   }
   const target = publishTargetForScope(targetScope)
 
@@ -753,6 +753,7 @@ async function uploadFiles(files, scopeOverride) {
     notification.showSuccess(t('notification.uploadComplete', { count: summary.successCount }))
     nextTime.markSuccess('upload')
   }
+  return summary.successCount > 0
 }
 
 /** 룸 ID에 해당하는 발행 대상 ('global' | 'ip' | 비공개 roomId) */
@@ -784,6 +785,26 @@ async function handleCopyImage(imageUrl) {
 // ========================================
 // 파일 다운로드 핸들러
 // ========================================
+
+// ========================================
+// 한글·오피스 파일 수정 시트: 방 파일을 이 페이지 안에서 편집기 iframe 으로 수정하고 방에 다시 올린다 (수정을 누를 때까지 아무것도 불러오지 않는다)
+// ========================================
+const FileEditSheet = defineAsyncComponent(() => import('./components/FileEditSheet.vue'))
+const editSheet = ref(null)
+
+async function handleEditFile(file) {
+  const { createEditRoomHooks } = await import('./services/editRoom.js')
+  editSheet.value = {
+    file,
+    scope: scopeForRoom(file.roomId),
+    nameHint: file.locked ? (lockState.nameFor(file.roomId, file.name) || '') : file.name,
+    hooks: createEditRoomHooks({
+      lockState,
+      files: () => fileManager.files.value,
+      upload: (f, scope) => uploadFiles([f], scope),
+    }),
+  }
+}
 
 async function handleDownloadFile(file) {
   const downloadId = crypto.randomUUID()
@@ -1463,6 +1484,7 @@ onUnmounted(() => {
         @upload-files="handleUploadFiles"
         @select-scope="shareScope.setScope"
         @download-file="handleDownloadFile"
+        @edit-file="handleEditFile"
         @download-parallel="handleDownloadParallel"
         @copy-selected-to-clipboard="handleCopySelectedToClipboard"
         @delete-file="handleDeleteFile"
@@ -1542,6 +1564,8 @@ onUnmounted(() => {
       <MultiDownloadSheet :sheet="multiDownload.sheet.value" @close="multiDownload.close" @run="multiDownload.run" />
       <LegacyInviteSheet :sheet="groupRooms.legacySheet.value" @close="groupRooms.closeLegacy" @create="groupRooms.createFromLegacy" />
       <GroupJoinSheet :sheet="groupRooms.joinSheet.value" @confirm="groupRooms.confirmJoin" @cancel="groupRooms.cancelJoin" />
+
+      <FileEditSheet v-if="editSheet" :file="editSheet.file" :scope="editSheet.scope" :hooks="editSheet.hooks" :name-hint="editSheet.nameHint" @close="editSheet = null" />
 
       <!-- 모바일 Share Sheet 공유 확인 시트 -->
       <ShareConfirmSheet

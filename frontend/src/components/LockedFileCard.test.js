@@ -212,3 +212,42 @@ describe('LockChip', () => {
     expect(w.classes()).toContain('border-ink')
   })
 })
+
+describe('LockedFileCard 수정(편집기) 진입', () => {
+  beforeEach(() => { useLockState().resetLockState() })
+  const setPhone = (v) => {
+    window.matchMedia = (q) => ({ matches: v && q.includes('coarse'), addEventListener() {}, removeEventListener() {} })
+    Object.defineProperty(window, 'screen', { value: { width: v ? 390 : 1440, height: v ? 844 : 900 }, configurable: true })
+  }
+
+  it('원래 이름을 알고 대상 확장자면 이름 누르기·메뉴로 edit-file', async () => {
+    setPhone(false)
+    useLockState().rememberName('room-1', 'abc123', '계획서.HWPX')
+    const w = mountCard()
+    await w.find('[data-testid="locked-name"]').trigger('click')
+    expect(w.emitted('edit-file')).toHaveLength(1)
+    await w.find('[data-testid="locked-more"]').trigger('click')
+    await w.find('[data-testid="locked-edit-file"]').trigger('click')
+    expect(w.emitted('edit-file')).toHaveLength(2)
+  })
+  it('이름을 모르면(잠긴 그대로) 수정 없음', async () => {
+    setPhone(false)
+    const w = mountCard()
+    await w.find('[data-testid="locked-name"]').trigger('click')
+    expect(w.emitted('edit-file')).toBeUndefined()
+    await w.find('[data-testid="locked-more"]').trigger('click')
+    expect(w.find('[data-testid="locked-edit-file"]').exists()).toBe(false)
+  })
+  it('폰에서는 없음, 대상 아닌 확장자도 없음', async () => {
+    useLockState().rememberName('room-1', 'abc123', '계획서.docx')
+    setPhone(true)
+    const w = mountCard()
+    await w.find('[data-testid="locked-name"]').trigger('click')
+    expect(w.emitted('edit-file')).toBeUndefined()
+    setPhone(false)
+    useLockState().rememberName('room-1', 'abc123', 'photo.png')
+    const w2 = mountCard()
+    await w2.find('[data-testid="locked-name"]').trigger('click')
+    expect(w2.emitted('edit-file')).toBeUndefined()
+  })
+})

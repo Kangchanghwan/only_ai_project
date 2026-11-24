@@ -7,10 +7,12 @@ import FileQRCodeModal from './FileQRCodeModal.vue'
 import SenderLabel from './SenderLabel.vue'
 import FileTypeIcon from './icons/FileTypeIcon.vue'
 import { trackEvent } from '../utils/analytics'
+import { isEditableName } from '../utils/editTarget'
+import { isPhone } from '../utils/isPhone'
 import { trackStoreFallback } from '../utils/storeFallback'
 import { useScopeAccent } from '../composables/useScopeAccent'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const props = defineProps({
   file: {
@@ -27,7 +29,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file', 'delete-file'])
+const emit = defineEmits(['copy-image', 'toggle-selection', 'download-file', 'delete-file', 'edit-file'])
 
 const {
   bg: accentBg,
@@ -150,6 +152,20 @@ function handleSheetDownload(event) {
   closeActionsSheet()
 }
 
+// 한글·오피스 파일(폰 제외)은 이름을 누르면 수정이 열린다 (행의 나머지 부분은 기존처럼 선택 토글)
+const phone = isPhone()
+const canEdit = computed(() => !phone && isEditableName(props.file.name))
+const editLabel = computed(() => (String(locale?.value ?? '').startsWith('ko') ? '수정' : 'Edit'))
+function onNameClick(event) {
+  if (!canEdit.value) return
+  event.stopPropagation()
+  emit('edit-file', props.file)
+}
+function handleSheetEdit() {
+  emit('edit-file', props.file)
+  closeActionsSheet()
+}
+
 function handleSheetDelete(event) {
   handleDelete(event)
   closeActionsSheet()
@@ -213,7 +229,7 @@ async function handleShare(event) {
 
     <!-- 파일명(ellipsis, 전체는 title) + 2행 "보낸 사람 · 용량 · 시간" (시간은 한 번만) -->
     <div class="file-info flex-1 min-w-0">
-      <p class="file-name text-sm font-medium text-text-primary truncate m-0" :title="file.name" data-testid="file-name">{{ file.name }}</p>
+      <p class="file-name text-sm font-medium text-text-primary truncate m-0" :class="canEdit ? 'cursor-pointer' : ''" :title="file.name" data-testid="file-name" @click="onNameClick">{{ file.name }}</p>
       <p class="file-meta flex flex-nowrap items-center gap-x-1 truncate text-xs text-text-secondary mt-0.5 m-0 min-w-0 overflow-hidden" data-testid="file-meta">
         <SenderLabel v-if="file.uploader" :sender="file.uploader" class="shrink min-w-0" />
         <span v-if="file.uploader" aria-hidden="true">·</span>
@@ -297,6 +313,15 @@ async function handleShare(event) {
             >
               <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
               <span class="text-sm font-medium">{{ t('room.qrShareTitle') }}</span>
+            </button>
+            <button
+              v-if="canEdit"
+              class="sheet-edit w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
+              data-testid="sheet-edit-file"
+              @click="handleSheetEdit"
+            >
+              <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              <span class="text-sm font-medium">{{ editLabel }}</span>
             </button>
             <button
               class="sheet-download w-full flex items-center gap-3 px-4 min-h-[48px] rounded-none hover:bg-black/5 text-text-primary"
