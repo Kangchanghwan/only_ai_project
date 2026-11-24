@@ -650,7 +650,7 @@ async function handleUploadFiles(files) {
   await uploadFiles(files)
 }
 
-async function uploadFiles(files, scopeOverride) {
+async function uploadFiles(files, scopeOverride, lockOverride) {
   if (roomManager.roomIds.value.length === 0) return false
 
   // scope를 지금 시점으로 고정한다. 확인창을 기다리는 동안 탭이 바뀌어도 이 전송은 고정된 scope의 룸으로만 간다.
@@ -689,7 +689,9 @@ async function uploadFiles(files, scopeOverride) {
   // 이 범위에 비밀번호 잠금이 켜져 있으면 이 기기에서 잠근 뒤 올린다 (확인창에서 방금 켠 경우 포함)
   // 1:1 방은 항상 방 키로 잠금 업로드한다. 일반(공개) 업로드 경로는 절대 쓰지 않는다
   const isPrv = isPrivateScope(targetScope)
-  const lock = isPrv ? privateRooms.lockFor(targetRoomId) : lockState.getLock(targetScope)
+  // lockOverride: 수정 시트의 덮어쓰기 저장이 원본의 잠금 상태를 그대로 지키려고 넘긴다
+  //   (잠긴 원본 → 원래 비밀번호 묶음으로 다시 잠금, 잠기지 않은 원본 → false 로 잠그지 않음). 1:1/그룹 방은 언제나 방 키.
+  const lock = isPrv ? privateRooms.lockFor(targetRoomId) : (lockOverride !== undefined ? (lockOverride || null) : lockState.getLock(targetScope))
   if (isPrv && !lock) {
     notification.showError(t(isGroupRoomId(targetRoomId) ? 'group.noRoom' : 'pair.errors.noRoom'))
     return false
@@ -801,9 +803,9 @@ async function handleEditFile(file) {
     hooks: createEditRoomHooks({
       lockState,
       files: () => fileManager.files.value,
-      upload: (f, scope) => uploadFiles([f], scope),
+      upload: (f, scope, lock) => uploadFiles([f], scope, lock),
       remove: async (f) => { await fileManager.deleteFile(f.roomId, f.name); publishFileDeleted(f) },
-      lockFor: (scope, roomId) => (isPrivateScope(scope) ? privateRooms.lockFor(roomId) : lockState.getLock(scope)),
+      isPrivate: (scope) => isPrivateScope(scope),
     }),
   }
 }

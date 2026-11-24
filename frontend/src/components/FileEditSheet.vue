@@ -15,7 +15,7 @@ import { createEditorClient } from '../services/editorClient'
 const props = defineProps({
   file: { type: Object, required: true },
   scope: { type: String, default: null },
-  // { maxBytes, getBytes(file)=>{name,bytes}, canSave(file, scope)=>boolean,
+  // { maxBytes, getBytes(file)=>{name,bytes},
   //   replace(current, File, scope)=>Promise<{ ok, next, removed }> }  원본 자리에 덮어쓴다 (src/services/editRoom.js)
   hooks: { type: Object, required: true },
   // 잠긴 파일은 복호화 전에는 이름을 모르므로, 방에서 알고 있는 원래 이름을 힌트로 받는다
@@ -27,8 +27,8 @@ const emit = defineEmits(['close'])
 
 const MAX_EDIT_BYTES = 200 * 1024 * 1024 // 브라우저 메모리 보호
 const STR = {
-  ko: { loading: '편집기를 불러오는 중…', slow: '처음 한 번은 시간이 걸려요', fileBusy: '파일을 받는 중…', fail: '편집기를 열지 못했습니다.', failFile: '파일을 불러오지 못했습니다.', tooBig: '파일이 커서 이 화면에서 수정할 수 없어요', close: '닫기', save: '저장 ▾', up: '저장 (원본 덮어쓰기)', dl: '내려받기', dlHwp: 'HWP로 내려받기', dlHwpx: 'HWPX로 내려받기', changed: '변경됨', confirm: '저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?', upping: '저장하는 중…', upok: '저장했습니다: ', upfail: '저장하지 못했습니다.', keep: '원본을 지우지 못해 둘 다 남았어요: ', lockOff: '잠긴 파일이라 이 범위의 잠금이 켜져 있어야 저장할 수 있어요. 내려받기를 써 주세요.', exfail: '저장할 내용을 만들지 못했습니다.', saveAs: (e) => `${e}로 저장됩니다`, engineDown: '편집기가 멈췄습니다. 닫고 다시 열어 주세요.' },
-  en: { loading: 'Loading the editor…', slow: 'The first time takes a while', fileBusy: 'Fetching the file…', fail: 'Could not open the editor.', failFile: 'Could not load the file.', tooBig: 'This file is too large to edit on this screen', close: 'Close', save: 'Save ▾', up: 'Save (overwrite original)', dl: 'Download', dlHwp: 'Download as HWP', dlHwpx: 'Download as HWPX', changed: 'Modified', confirm: 'You have unsaved changes. They will be lost if you close. Close anyway?', upping: 'Saving…', upok: 'Saved: ', upfail: 'Could not save.', keep: 'Could not remove the original, so both remain: ', lockOff: 'This file is locked, so saving needs the lock for this space to be on. Use Download instead.', exfail: 'Could not prepare the file to save.', saveAs: (e) => `Will be saved as ${e}`, engineDown: 'The editor stopped. Close and open it again.' },
+  ko: { loading: '편집기를 불러오는 중…', slow: '처음 한 번은 시간이 걸려요', fileBusy: '파일을 받는 중…', fail: '편집기를 열지 못했습니다.', failFile: '파일을 불러오지 못했습니다.', tooBig: '파일이 커서 이 화면에서 수정할 수 없어요', close: '닫기', save: '저장 ▾', up: '저장 (원본 덮어쓰기)', dl: '내려받기', dlHwp: 'HWP로 내려받기', dlHwpx: 'HWPX로 내려받기', changed: '변경됨', confirm: '저장하지 않은 변경이 있습니다. 닫으면 사라집니다. 닫을까요?', upping: '저장하는 중…', upok: '저장했습니다: ', upfail: '저장하지 못했습니다.', keep: '원본을 지우지 못해 둘 다 남았어요: ', lockOff: '이 파일의 비밀번호 확인이 끝나지 않아 저장할 수 없어요. 닫고 다시 열어 주세요.', exfail: '저장할 내용을 만들지 못했습니다.', saveAs: (e) => `${e}로 저장됩니다`, engineDown: '편집기가 멈췄습니다. 닫고 다시 열어 주세요.' },
+  en: { loading: 'Loading the editor…', slow: 'The first time takes a while', fileBusy: 'Fetching the file…', fail: 'Could not open the editor.', failFile: 'Could not load the file.', tooBig: 'This file is too large to edit on this screen', close: 'Close', save: 'Save ▾', up: 'Save (overwrite original)', dl: 'Download', dlHwp: 'Download as HWP', dlHwpx: 'Download as HWPX', changed: 'Modified', confirm: 'You have unsaved changes. They will be lost if you close. Close anyway?', upping: 'Saving…', upok: 'Saved: ', upfail: 'Could not save.', keep: 'Could not remove the original, so both remain: ', lockOff: 'The password for this file is not confirmed, so it cannot be saved. Close and open it again.', exfail: 'Could not prepare the file to save.', saveAs: (e) => `Will be saved as ${e}`, engineDown: 'The editor stopped. Close and open it again.' },
 }
 const i18n = useI18n()
 const s = computed(() => (String(i18n.locale?.value ?? '').startsWith('ko') ? STR.ko : STR.en))
@@ -156,7 +156,6 @@ async function uploadToRoom() {
     try { out = await exportDoc(undefined) } catch { setMsg(s.value.exfail); return }
     const note = converted(out.ext)
     if (note) setMsg(note + s.value.upping)
-    if (props.hooks.canSave && !props.hooks.canSave(current, props.scope)) { setMsg(s.value.lockOff); return }
     const up = savedName(name.value, out.ext)
     const f = new File([out.bytes], up, { type: out.mime || 'application/octet-stream' })
     if (f.size > props.hooks.maxBytes) { setMsg(s.value.upfail); return }
@@ -166,7 +165,7 @@ async function uploadToRoom() {
       setMsg(note + (r.removed === false ? s.value.keep : s.value.upok) + up)
       try { await client.markSaved(); dirty.value = false } catch { /* 표시만 */ }
     } else {
-      setMsg(s.value.upfail)
+      setMsg(r && r.code === 'LOCK' ? s.value.lockOff : s.value.upfail)
     }
   } catch {
     setMsg(s.value.upfail)

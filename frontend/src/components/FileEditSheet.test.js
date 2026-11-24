@@ -26,12 +26,11 @@ function fakeClientFactory(opts = {}) {
 }
 
 let wrapper, client
-async function mountSheet({ file = { name: 'a.docx', roomId: 'r1', size: 100 }, upload, replace, canSave, client: cl, getBytes } = {}) {
+async function mountSheet({ file = { name: 'a.docx', roomId: 'r1', size: 100 }, upload, replace, client: cl, getBytes } = {}) {
   client = cl || fakeClientFactory()
   const hooks = {
     maxBytes: 5 * 1024 ** 3,
     getBytes: getBytes || vi.fn(async () => ({ name: file.name, bytes: new ArrayBuffer(10) })),
-    canSave: canSave || (() => true),
     replace: replace || vi.fn(async (cur, f, scope) => ({ ok: await (upload || (async () => true))(f, scope), next: cur, removed: true })),
   }
   wrapper = mount(FileEditSheet, { props: { file, scope: 'ip', hooks, clientFactory: () => client }, attachTo: document.body })
@@ -95,15 +94,14 @@ describe('FileEditSheet', () => {
     expect(replace.mock.calls[0][1].name).toBe('비밀.docx') // 가짜 편집기 ext=docx
     expect(replace.mock.calls[1][0]).toEqual(next)
   })
-  it('잠긴 파일인데 잠금이 꺼져 있으면 저장하지 않는다', async () => {
-    const replace = vi.fn()
-    await mountSheet({ file: { name: 'ID', roomId: 'r1', locked: true, size: 1 }, replace, canSave: () => false })
+  it('원본 비밀번호 키를 모르면(LOCK) 저장하지 않고 안내한다', async () => {
+    const replace = vi.fn(async () => ({ ok: false, code: 'LOCK' }))
+    await mountSheet({ file: { name: 'ID', roomId: 'r1', locked: true, size: 1 }, replace })
     await wrapper.get('[data-testid=edit-save]').trigger('click')
     await wrapper.get('[data-testid=edit-upload]').trigger('click')
     await flushPromises()
-    expect(replace).not.toHaveBeenCalled()
     expect(client.markSaved).not.toHaveBeenCalled()
-    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('잠금이 켜져 있어야')
+    expect(wrapper.get('[data-testid=edit-msg]').text()).toContain('비밀번호 확인이 끝나지 않아')
   })
   it('원본을 못 지우면 둘 다 남았다고 알린다', async () => {
     await mountSheet({ file: { name: 'old.doc', roomId: 'r1', size: 1 }, replace: vi.fn(async (c) => ({ ok: true, next: c, removed: false })) })
