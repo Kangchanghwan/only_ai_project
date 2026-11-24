@@ -39,18 +39,10 @@ export function storedNameOf(name) {
 }
 
 /**
- * 올릴 이름: `원래이름_수정.확장자`, 이미 있으면 `_수정2`, `_수정3` …
- * 서버가 저장할 때 공백·괄호를 바꾸거나 지우므로, 처음부터 정규화된 모양으로 지어 목록에 보이는 이름과 안내 문구가 같게 하고
- * 이미 있는 이름(정규화해서 비교)을 덮어쓰지 않게 한다.
- * 확장자는 편집기가 돌려준 ext 를 쓴다(doc→docx 처럼 바뀔 수 있음). 이미 "_수정N" 이 붙은 이름이면 그 꼬리를 떼고 센다.
- * 이름 비교는 대소문자를 구분하지 않는다.
+ * 덮어쓸 이름: 원래 이름에 편집기가 돌려준 확장자(doc→docx 처럼 바뀔 수 있음)를 붙이고 서버 저장 규칙으로 정규화한다.
+ * 확장자가 같으면 원래 파일과 같은 저장 이름이 되어 그 자리에 덮어쓴다.
  */
-export function editedName(name, existingNames, ext) {
+export function savedName(name, ext) {
   const useExt = String(ext || extOf(name) || '').replace(/^\./, '').toLowerCase()
-  const base = storedNameOf(baseNameOf(name)).replace(/_수정\d*$/, '')
-  const taken = new Set((existingNames || []).map((n) => storedNameOf(n).toLowerCase()))
-  const make = (n) => `${base}_수정${n > 1 ? n : ''}${useExt ? '.' + useExt : ''}`
-  let n = 1
-  while (taken.has(make(n).toLowerCase())) n += 1
-  return make(n)
+  return storedNameOf(`${baseNameOf(name)}${useExt ? '.' + useExt : ''}`)
 }

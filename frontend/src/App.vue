@@ -802,6 +802,8 @@ async function handleEditFile(file) {
       lockState,
       files: () => fileManager.files.value,
       upload: (f, scope) => uploadFiles([f], scope),
+      remove: async (f) => { await fileManager.deleteFile(f.roomId, f.name); publishFileDeleted(f) },
+      lockFor: (scope, roomId) => (isPrivateScope(scope) ? privateRooms.lockFor(roomId) : lockState.getLock(scope)),
     }),
   }
 }
