@@ -71,3 +71,10 @@ describe('initInappMetric', () => {
     expect(track).toHaveBeenCalledWith('inapp_open', { app: 'instagram' })
   })
 })
+
+describe('inappOf 네이버 오탐 방지', () => {
+  it('네이버 앱 UA는 naver, 다른 앱의 " app)" 문구는 none', () => {
+    expect(inappOf('Mozilla/5.0 (iPhone) NAVER(inapp; search; 1000; 11.6.5)')).toBe('naver')
+    expect(inappOf('Mozilla/5.0 (Linux; Android 14; SomeVendor app) Chrome/120')).toBe('none')
+  })
+})

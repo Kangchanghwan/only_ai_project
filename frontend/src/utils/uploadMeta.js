@@ -57,7 +57,7 @@ export function inappOf(userAgent) {
   const ua = String(userAgent ?? '')
   if (/KAKAOTALK/i.test(ua)) return 'kakao'
   if (/instagram/i.test(ua)) return 'instagram'
-  if (/NAVER\((inapp|app)|NAVER\( inapp| app\)/i.test(ua)) return 'naver'
+  if (/NAVER\(\s*inapp/i.test(ua)) return 'naver'
   if (/\bLine\//i.test(ua)) return 'line'
   if (/FBAN|FBAV/i.test(ua)) return 'facebook'
   if (/everytimeApp/i.test(ua)) return 'everytime'
