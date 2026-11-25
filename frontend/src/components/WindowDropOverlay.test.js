@@ -116,4 +116,26 @@ describe('WindowDropOverlay', () => {
     dragEvent('dragenter'); await nextTick()
     expect(w.find('[data-testid="window-drop-overlay"]').exists()).toBe(false)
   })
+
+  it('숨겨 둔(v-show) 대화창은 막지 않는다 (도움말 창 회귀)', async () => {
+    mountIt()
+    const wrap = document.createElement('div'); wrap.style.display = 'none'
+    const m = document.createElement('div'); m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true')
+    wrap.appendChild(m); document.body.appendChild(wrap)
+    const h = document.createElement('div'); h.setAttribute('role', 'dialog'); h.setAttribute('aria-hidden', 'true'); document.body.appendChild(h)
+    dragEvent('dragenter'); await nextTick()
+    expect(w.find('[data-testid="window-drop-overlay"]').exists()).toBe(true)
+    const e = dragEvent('drop', { files: [file()] }); await nextTick()
+    expect(e.defaultPrevented).toBe(true)
+    expect(w.emitted('drop-files')).toHaveLength(1)
+  })
+
+  it('숨긴 대화창이 다시 보이면 막는다', async () => {
+    mountIt()
+    const wrap = document.createElement('div'); wrap.style.display = 'none'
+    const m = document.createElement('div'); m.setAttribute('role', 'dialog'); wrap.appendChild(m); document.body.appendChild(wrap)
+    wrap.style.display = ''
+    dragEvent('dragenter'); await nextTick()
+    expect(w.find('[data-testid="window-drop-overlay"]').exists()).toBe(false)
+  })
 })
