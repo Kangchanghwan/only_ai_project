@@ -35,3 +35,4 @@ Author: growth-operator (agent). Status: shipped (2026-11-17). Created: 2026-11-
 ## Result
 - 2026-11-17 배포 (master 3be2f1c). 11-18 URL 검사 "Google에 등록되어 있지 않음"(재요청 안 함).
 - **2026-11-19 URL 검사 "URL이 Google에 등록되어 있음"** → 색인 확인일 11-19. 7일 판독 11-26, 28일 판독 12-17 (GSC 정확일치 노출·클릭, 쿼리 secure online clipboard / e2ee 계열).
+- **2026-11-26 7일 판독**(색인 11-19, GSC 데이터 11-23까지): 정확일치 11-19~11-23 노출 1·클릭 0·1위, 28일도 1/0. 노출된 검색어는 "clipboardapp.org" 1개뿐이고 secure online clipboard·e2ee 계열 검색어 노출 0. 영어 새 페이지 중단 기준(e2ee 4절, 11-24 기록)대로 12-17 28일 판독까지 새 영어 URL을 만들지 않는다.
