@@ -1,6 +1,6 @@
 # Intent: 화면 전환(#89) 뒤 가이드에 남은 "텍스트 탭" 문구 정정
 
-Author: growth-operator (agent). Status: accepted (1차 11-18, 2차 11-19, 3차 11-21 배포, 나머지는 판독 뒤). Created: 2026-11-17. Trigger: 정기 (11-16 피드백 "기능 PR 머지 날 옛 문구 검색" 첫 적용)
+Author: growth-operator (agent). Status: accepted (1차 11-18, 2차 11-19, 3차 11-21, 4차 11-22, 5차 11-23, 6차 11-24, 7차 11-25 배포, 나머지는 판독 뒤). Created: 2026-11-17. Trigger: 정기 (11-16 피드백 "기능 PR 머지 날 옛 문구 검색" 첫 적용)
 
 ## Problem
 owner가 11-17 07:04 화면을 바꿨다(#89: 파일·텍스트 한 목록, 통합 입력 상자 "여기에 입력하거나 파일을 끌어다 놓으세요", 방을 늘 보이는 탭으로; #90 혼자일 때 QR 안내).
@@ -55,3 +55,9 @@ grep "텍스트 탭|Text tab" 0(판독 끝난 페이지 기준). 페이지별 7�
   - 측정: 앱 화면 문구라 검색 지표로 따로 판독하지 않는다(사실 정정). 남은 대상은 4차 기록과 같음.
 - 2026-11-24 6차 배포 (master ba73672, auto/20261124-faq3a-rooms, Actions auto-merge 성공). 앱 화면 FAQ `landing.faq3a`(같은 와이파이가 아니면?) 21개 언어: "'전체 공유' 탭으로 바꾸면" → 방 우선 안내('＋ 방' → '새 방 만들기' → 다른 기기에서 초대 QR 또는 그림 4개, 방 파일·텍스트는 이 기기에서 암호화, 전체 공유 탭은 서비스를 연 모든 사용자에게 보임). 버튼 이름은 각 언어 group.createShort·code.addCreateTitle 값. 근거: e2ee-campaign.md 1~2절, 11-23 라이브 확인 중 발견. content-rules 금지 문구 0. 라이브 curl: /, /en/, /ja/ 새 문구 확인·옛 문구 0(프리렌더가 index.html 정적 JSON-LD도 덮어씀 → 소스 정합 PR #116은 불필요해 닫음).
   - 측정: 앱 화면 문구라 따로 판독하지 않는다(사실 정정).
+- 2026-11-25 1차 측정(11-18 정정 4개 페이지, GSC 정확일치 노출 11-11~11-17 → 11-18~11-22): ask-ai-to-send-to-phone 2→4(클릭 0→0, 7.5→5위), en/ask-ai-to-send-text-to-your-phone 5→12(1→0, 5.4→6위), send-file-with-password 4→5(1→0, 5→6.8위), send-file-by-qr-code 13→24(0→0, 7.2→5.8위). 네 페이지 모두 노출 유지 이상 → 정정으로 잃은 것 없음. 같은 기간 사이트 전체 노출이 약 1,490 → 12,100으로 뛰어 늘어난 몫을 정정 효과로 보지 않는다.
+- 2026-11-25 7차 배포 (master fb0116d, auto/20261125-how-to-use-delete-text, Actions auto-merge 성공, 라이브 반영 확인). how-to-use에 빠져 있던 안내 2가지(11-24 라이브 확인 중 발견):
+  - "다른 기기에서 받기" 목록에 글 지우기: 글 ⋯ 메뉴의 '보관 취소'(보관 중 10분, 내가 보낸 글에 보임, 서버 보관함에서 지우고 다른 기기 목록에서도 사라짐), '삭제'(글 하나), 목록 위 '모든 텍스트 삭제'(지금 탭), 두 삭제는 5초 '실행 취소'. 근거: TextItemRow.vue(cancelKeep은 expiresAt && canCancel일 때), useTextQueue.canCancel(평문은 보낸 기기, 1:1 방은 모두, 잠긴 글은 지울 증명), App.vue handleCancelQueuedText(removeFromServer + text-removed 알림), handleRemoveText·handleClearAllTexts(startPendingDelete, UNDO_MS 5000).
+  - 방 절 첫 문단: 방 탭 도구 줄에는 '비밀번호로 잠그기' 대신 '끌어다 놓아도 자동으로 암호화돼요'(폰은 자물쇠 아이콘만, TextShareBox.vue `LockChip v-if="!isPrivate"` / pair.uploadHint `sr-only sm:not-sr-only`).
+  - sitemap lastmod 2026-11-25, llms-full.txt 재생성, check-seo 통과. GSC 색인 생성 요청(URL 검사: 여전히 "크롤링됨 - 현재 색인이 생성되지 않음", 11-23 08:14 크롤링)·네이버 수집 요청 완료.
+  - 측정: how-to-use 7일 노출과 색인 여부 12-02(4차 측정 11-29와 겹치므로 11-29 값은 4차·7차 합산으로 적는다).

@@ -62,7 +62,7 @@ owner 지시(2026-11-13 "네 그렇게 해주세요"): 방 통합(#76)·그림 �
 | 11-20 이후 | 개선 E4 (주 1건) | 한국어 상황 페이지에 "개인 파일은 방에서" 절: `office-pc-file-transfer-without-messenger.html` 먼저(측정 중 intent 없음). `pc-bang-file-transfer.html`은 0035 28일 판독 뒤 | 판독 기간 중인 페이지는 건드리지 않는다. **office-pc 11-20 완료(cd76229, 그림 4개 연결 장면 7.5초 클립 포함)**, 다음 E4는 주 1건 |
 | 11-21(토) | 디스콰이엇 | E1~E3 첫 수치 | 완료 https://disquiet.io/posts/A2C9en (E2 firefox-send 노출 9→21, E3 노출 1, encrypt 쿼리 0) |
 | 11-24(화) | 네이버 E-N2 | "폰 인증번호·비밀번호를 PC로 옮길 때 남지 않게"(방 텍스트 10분, 1절 범위) | 11-13 네이버 10번과 겹치지 않게 각도: 민감 텍스트 **발행 완료** https://blog.naver.com/lgodl1598/224489421557 (이미지 5, 태그 8). **영어 새 페이지 중단 기준(11-24)**: E3 GSC 11-17~11-21 노출 1·클릭 0 → "노출 0" 조건에는 걸리지 않지만 사실상 0. 일정에 영어 새 페이지가 더 없으므로 0041 28일 판독(12-17)까지 새 영어 URL을 만들지 않는다 |
-| GeekNews | 1회 | 내 Show GN 글(35068)에 "업데이트: 방(브라우저 E2EE)·그림 코드" 작성자 댓글. community.md에 이미 업데이트 댓글을 쓴 기록이 있으면 하지 않는다 | 개발기 발행 뒤 |
+| GeekNews | 1회 | 내 Show GN 글(35068)에 "업데이트: 방(브라우저 E2EE)·그림 코드" 작성자 댓글. community.md에 이미 업데이트 댓글을 쓴 기록이 있으면 하지 않는다 | **11-25 완료** https://news.hada.io/topic?id=35068#cid70526 |
 
 ## 4. 측정
 - 기준값(11-16 주간 리포트): GSC 28일 검색어에 `암호|종단|보안|encrypt|e2e|secure|private` 포함 쿼리의 노출·클릭, 대상 URL별 노출·클릭. GA4 `group_*`(group_join 등)·`pair_*`·그림 코드(`code_show`·`code_request`·`code_join`) 이벤트 사용자 수.
