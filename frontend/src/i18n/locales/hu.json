@@ -600,5 +600,12 @@
     "expired": "A QR-kód lejárt. Olvasd be újra a PC képernyőjén lévő QR-kódot.",
     "busy": "A PC túl sok kérést kapott. Olvasd be újra egy kicsit később.",
     "notFound": "A PC nem található. Olvasd be újra a PC képernyőjén lévő QR-kódot."
+  },
+  "roomQr": {
+    "toggle": "Szoba megnyitása a telefonon",
+    "line1": "Olvasd be a telefon kamerájával a szoba megnyitásához",
+    "line2": "Új telefon esetén csatlakozási kérés érkezik",
+    "arrived": "{name} belépett a szobába",
+    "opened": "Megnyitottuk a QR-kód szobáját"
   }
 }

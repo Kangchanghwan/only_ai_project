@@ -1,12 +1,13 @@
 /**
  * QR을 찍고 들어온 쪽(휴대폰): 같은 네트워크인지 판정하고, 다른 네트워크면 QR 증명을 붙인 기존 연결 요청을 저절로 보낸다.
  * - 판정: 내 소켓이 들어 있는 첫 같은 네트워크 목록에 QR의 PC(소켓 ID 또는 이름표 키)가 있으면 같은 네트워크. 아무것도 하지 않는다.
+ * - 방 탭 QR(꼬리표 r): 내가 가진 방 중 꼬리표가 맞는 방이 있으면 네트워크와 상관없이 그 방을 연다 (가장 먼저 본다).
  * - 다른 네트워크: 이미 같은 방이면 그 방으로 이동, 아니면 PC를 '다른 네트워크 기기' 맨 위에 두고 연결 요청.
  * - 결과는 qr_code_fallback {result}로 QR 도착 세션당 1회만 기록한다. 비밀·소켓 ID·키는 기록하지 않는다.
  */
 import { ref } from 'vue'
 import { presenceKey } from '../utils/roomPresence.js'
-import { identityFromKey } from '../utils/qrLink.js'
+import { identityFromKey, roomTag, sameString } from '../utils/qrLink.js'
 import { inviteErrorText } from './usePairFlow.js'
 
 export const QR_FALLBACK_FLAG = 'cs_qr_fallback_sent'
@@ -26,6 +27,7 @@ export function resultOfReason(reason) {
  *   getIpDevices: () => object[], getGlobalDevices: () => object[],
  *   getMySocketId: () => string|null, getMyKey?: () => string|null,
  *   getPairStates?: () => object, getSessions?: () => object[],
+ *   getRoomIds?: () => Promise<string[]>|string[],
  *   invite: (device: object, opts: object) => Promise<{ok: boolean, sessionId?: string, code?: string}>,
  *   openRoom?: (roomId: string) => void,
  *   notify?: { showError: Function }, t?: Function, track?: Function,
@@ -34,7 +36,7 @@ export function resultOfReason(reason) {
  */
 export function useQrArrival({
   getIpDevices, getGlobalDevices, getMySocketId, getMyKey = () => null,
-  getPairStates = () => ({}), getSessions = () => [], invite, openRoom = () => {},
+  getPairStates = () => ({}), getSessions = () => [], getRoomIds = () => [], invite, openRoom = () => {},
   notify = { showError: () => {} }, t = (k) => k, track = () => {},
   session = () => { try { return window.sessionStorage } catch { return null } },
   setTimer = setTimeout, clearTimer = clearTimeout,
@@ -70,7 +72,17 @@ export function useQrArrival({
     if (phase === 'idle') { phase = 'done'; record('no_hash') }
   }
 
-  /** @param {{s: string, k: string|null, g: string, x: Uint8Array, f: string}} parsed */
+  /** 꼬리표가 맞는 내 방 ID (없으면 null) */
+  async function findTaggedRoom(x, r) {
+    let ids = []
+    try { ids = (await getRoomIds()) || [] } catch { return null }
+    for (const id of ids) {
+      try { if (sameString(await roomTag(x, id), r)) return id } catch { /* 다음 방 */ }
+    }
+    return null
+  }
+
+  /** @param {{s: string, k: string|null, g: string, x: Uint8Array, f: string, r?: string|null}} parsed */
   function start(parsed) {
     if (!parsed || (phase !== 'idle' && phase !== 'done')) return
     link = parsed
@@ -87,6 +99,15 @@ export function useQrArrival({
     const myKey = getMyKey()
     // 내 QR을 내가 찍었다 (같은 기기, 같은 브라우저의 다른 탭)
     if (link.s === me || (link.k && link.k === myKey)) { finish(null); return }
+    if (link.r) {
+      const roomId = await findTaggedRoom(link.x, link.r)
+      if (roomId) {
+        openRoom(roomId)
+        try { notify.showSuccess?.(t('roomQr.opened')) } catch { /* 알림 실패 무시 */ }
+        finish('room_tag')
+        return
+      }
+    }
     if ((getIpDevices() || []).some(matches)) { finish('same_network'); return }
 
     const global = getGlobalDevices() || []

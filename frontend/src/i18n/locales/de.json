@@ -600,5 +600,12 @@
     "expired": "Dieser QR-Code ist abgelaufen. Scanne den QR-Code auf dem PC erneut.",
     "busy": "Der PC hat zu viele Anfragen. Scanne gleich noch einmal.",
     "notFound": "PC nicht gefunden. Scanne den QR-Code auf dem PC erneut."
+  },
+  "roomQr": {
+    "toggle": "Diesen Raum auf dem Handy öffnen",
+    "line1": "Mit der Handykamera scannen, um diesen Raum zu öffnen",
+    "line2": "Ein neues Handy sendet eine Verbindungsanfrage",
+    "arrived": "{name} ist dem Raum beigetreten",
+    "opened": "Raum aus dem QR-Code geöffnet"
   }
 }

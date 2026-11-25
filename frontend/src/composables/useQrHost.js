@@ -1,12 +1,13 @@
 /**
  * QR을 띄우는 쪽(PC): 빈 화면 QR에 담을 회차(비밀·키·지문)를 만들고, QR로 온 연결 요청의 증명을 확인한다.
  * 모두 이 기기 안에서만 만들고 서버에는 아무것도 등록하지 않는다.
+ * 방 탭에서 띄우는 QR(roomQrUrl)은 같은 회차에 방 꼬리표 r을 더 담는다 (setRoom으로 방을 고른다).
  * 규칙: 5분마다 새 회차, 지금·직전 회차만 기억, 회차는 만든 지 10분까지 받는다. 탭이 숨겨진 동안은 새로 만들지 않는다.
  */
-import { ref, computed, getCurrentInstance, onUnmounted } from 'vue'
+import { ref, computed, watch, getCurrentInstance, onUnmounted } from 'vue'
 import { generateEphemeral } from '../utils/pairCrypto.js'
 import { randomBytes } from '../utils/lockCrypto.js'
-import { buildQrLink, keyFingerprint, qrProof, sameString, newGenId, QR_ROTATE_MS, QR_MAX_AGE_MS } from '../utils/qrLink.js'
+import { buildQrLink, roomTag, keyFingerprint, qrProof, sameString, newGenId, QR_ROTATE_MS, QR_MAX_AGE_MS } from '../utils/qrLink.js'
 import { EMPTY_STATE_QR_URL } from '../utils/emptyState.js'
 
 /**
@@ -78,6 +79,24 @@ export function useQrHost({
     return buildQrLink(EMPTY_STATE_QR_URL, { s, k: getIdentityKey(), g: c.g, x: c.x, f: c.f })
   })
 
+  // 방 탭 QR: 지금 회차 + 방 꼬리표. 방이 없거나 만들 수 없으면 null
+  const roomId = ref(null)
+  const roomQrUrl = ref(null)
+  let roomSeq = 0
+  async function refreshRoomUrl([c, s, id]) {
+    const seq = ++roomSeq
+    if (!c || !s || !id) { roomQrUrl.value = null; return }
+    try {
+      const r = await roomTag(c.x, id)
+      if (seq === roomSeq) roomQrUrl.value = buildQrLink(EMPTY_STATE_QR_URL, { s, k: getIdentityKey(), g: c.g, x: c.x, f: c.f, r })
+    } catch {
+      if (seq === roomSeq) roomQrUrl.value = null
+    }
+  }
+  const stopRoomWatch = watch(() => [current.value, getSocketId(), roomId.value], refreshRoomUrl)
+  /** 방 탭 QR에 담을 방 (null이면 끈다) */
+  function setRoom(id) { roomId.value = typeof id === 'string' && id ? id : null }
+
   /**
    * QR 연결 요청의 증명 확인 (pairing의 qrVerify)
    * @returns {Promise<{privateKey: CryptoKey, publicRaw: string} | {error: 'expired'|'invalid'}>}
@@ -99,9 +118,11 @@ export function useQrHost({
     timer = null
     gens.length = 0
     current.value = null
+    roomQrUrl.value = null
+    stopRoomWatch()
     if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', onVisibility)
   }
   if (getCurrentInstance()) onUnmounted(destroy)
 
-  return { qrUrl, current, start, rotate, verify, destroy }
+  return { qrUrl, roomQrUrl, setRoom, current, start, rotate, verify, destroy }
 }

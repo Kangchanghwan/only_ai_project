@@ -600,5 +600,12 @@
     "expired": "Kode QR sudah kedaluwarsa. Pindai lagi kode QR di layar PC.",
     "busy": "PC menerima terlalu banyak permintaan. Pindai lagi sebentar lagi.",
     "notFound": "PC tidak ditemukan. Pindai lagi kode QR di layar PC."
+  },
+  "roomQr": {
+    "toggle": "Buka ruang ini di ponsel",
+    "line1": "Pindai dengan kamera ponsel untuk membuka ruang ini",
+    "line2": "Ponsel baru akan mengirim permintaan koneksi",
+    "arrived": "{name} masuk ke ruang ini",
+    "opened": "Ruang dari kode QR dibuka"
   }
 }

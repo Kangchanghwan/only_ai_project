@@ -600,5 +600,12 @@
     "expired": "QR kodunun süresi doldu. Bilgisayar ekranındaki QR kodunu yeniden tarayın.",
     "busy": "Bilgisayarda çok fazla istek var. Biraz sonra yeniden tarayın.",
     "notFound": "Bilgisayar bulunamadı. Bilgisayar ekranındaki QR kodunu yeniden tarayın."
+  },
+  "roomQr": {
+    "toggle": "Bu odayı telefonda aç",
+    "line1": "Odayı açmak için telefon kamerasıyla tarayın",
+    "line2": "Yeni bir telefon bağlantı isteği gönderir",
+    "arrived": "{name} odaya katıldı",
+    "opened": "QR koddaki oda açıldı"
   }
 }

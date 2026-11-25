@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, beforeAll } from 'vitest'
 import { webcrypto } from 'node:crypto'
-import { buildQrLink, parseQrLink, qrProof, keyFingerprint, packQrPk, unpackQrPk, identityFromKey, sameString, newGenId, QR_HASH_PREFIX } from './qrLink.js'
+import { buildQrLink, parseQrLink, qrProof, keyFingerprint, packQrPk, unpackQrPk, identityFromKey, sameString, newGenId, roomTag, QR_HASH_PREFIX } from './qrLink.js'
 import { EMPTY_STATE_QR_URL } from './emptyState.js'
 import { generateEphemeral } from './pairCrypto.js'
 
@@ -17,8 +17,21 @@ describe('qrLink', () => {
     expect(new URL(url).searchParams.get('utm_source')).toBe('qr')
     expect(new URL(url).searchParams.get('utm_medium')).toBe('empty_state')
     const p = parseQrLink(new URL(url).hash)
-    expect(p).toEqual({ s: 'abc_DEF-123', k: '3-17-0', g: 'AbCd12', x, f })
+    expect(p).toEqual({ s: 'abc_DEF-123', k: '3-17-0', g: 'AbCd12', x, f, r: null })
     expect(url.length).toBeLessThan(220)
+  })
+
+  it('방 꼬리표 r: 비밀·방이 같으면 같고 하나라도 다르면 다르며, 주소에 실려 오간다', async () => {
+    const t = await roomTag(x, 'prv-0123456789abcdef01234567')
+    expect(t).toMatch(/^[A-Za-z0-9_-]{11}$/)
+    expect(await roomTag(x, 'prv-0123456789abcdef01234567')).toBe(t)
+    expect(await roomTag(x, 'prv-g-0123456789abcdef01234567')).not.toBe(t)
+    expect(await roomTag(new Uint8Array(16), 'prv-0123456789abcdef01234567')).not.toBe(t)
+    const url = buildQrLink(EMPTY_STATE_QR_URL, { s: 's1', g: 'AbCd12', x, f, r: t })
+    expect(url).not.toContain('0123456789abcdef')
+    expect(parseQrLink(new URL(url).hash).r).toBe(t)
+    expect(parseQrLink(new URL(url).hash.replace(/r=[^&]+/, 'r=short')).r).toBeNull()
+    expect(url.length).toBeLessThan(240)
   })
 
   it('형식이 틀리면 null (다른 # 링크, 비밀 길이, 소켓 ID)', () => {

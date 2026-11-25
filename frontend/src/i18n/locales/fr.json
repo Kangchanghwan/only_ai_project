@@ -600,5 +600,12 @@
     "expired": "Ce QR code a expiré. Scannez à nouveau le QR code affiché sur le PC.",
     "busy": "Le PC a trop de demandes. Réessayez dans un instant.",
     "notFound": "PC introuvable. Scannez à nouveau le QR code affiché sur le PC."
+  },
+  "roomQr": {
+    "toggle": "Ouvrir ce salon sur votre téléphone",
+    "line1": "Scannez avec l’appareil photo du téléphone pour ouvrir ce salon",
+    "line2": "Un nouveau téléphone enverra une demande de connexion",
+    "arrived": "{name} a rejoint ce salon",
+    "opened": "Salon du code QR ouvert"
   }
 }

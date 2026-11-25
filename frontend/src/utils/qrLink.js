@@ -7,6 +7,8 @@
  * - x는 # 뒤라 서버로 가지 않는다. index.html이 GA보다 먼저 주소에서 지운다.
  * - 휴대폰은 연결 요청의 pk 뒤에 회차와 증명(HMAC(x, 휴대폰 pk))을 붙인다: `<pk>~<g>~<증명>`
  * - PC는 증명을, 휴대폰은 받은 PC 키의 지문을 확인한다. 그래서 그림 비교 없이도 키 바꿔치기를 막는다.
+ * - 방 탭에서 띄운 QR은 방 꼬리표 r(HMAC(x, 방 ID) 앞 8바이트)을 더 담는다. 방 ID 원문은 QR에 넣지 않는다.
+ *   휴대폰은 자기가 가진 방마다 같은 값을 계산해 맞는 방이 있으면 그 방을 연다.
  */
 import { b64u, fromB64u } from './lockCrypto.js'
 
@@ -24,6 +26,7 @@ const B64U_RE = /^[A-Za-z0-9_-]+$/
 const SOCKET_RE = /^[A-Za-z0-9_-]{1,64}$/
 const KEY_RE = /^\d{1,4}-\d{1,4}-\d{1,6}$/
 const GEN_RE = /^[A-Za-z0-9_-]{6}$/
+const TAG_RE = /^[A-Za-z0-9_-]{11}$/
 
 const b16 = (s) => {
   if (typeof s !== 'string' || !B64U_RE.test(s)) return null
@@ -35,19 +38,20 @@ const b16 = (s) => {
 
 /**
  * @param {string} base QR이 가리키는 주소 (utm 포함)
- * @param {{ s: string, k?: string|null, g: string, x: Uint8Array, f: string }} p
+ * @param {{ s: string, k?: string|null, g: string, x: Uint8Array, f: string, r?: string|null }} p
  */
-export function buildQrLink(base, { s, k, g, x, f }) {
+export function buildQrLink(base, { s, k, g, x, f, r }) {
   const q = new URLSearchParams()
   q.set('s', s)
   if (k) q.set('k', k)
   q.set('g', g)
   q.set('x', b64u(x))
   q.set('f', f)
+  if (r) q.set('r', r)
   return `${String(base).split('#')[0]}${QR_HASH_PREFIX}${q.toString()}`
 }
 
-/** @returns {{ s: string, k: string|null, g: string, x: Uint8Array, f: string } | null} */
+/** @returns {{ s: string, k: string|null, g: string, x: Uint8Array, f: string, r: string|null } | null} */
 export function parseQrLink(hash) {
   try {
     if (typeof hash !== 'string' || !hash.startsWith(QR_HASH_PREFIX)) return null
@@ -57,8 +61,9 @@ export function parseQrLink(hash) {
     const g = q.get('g')
     const x = b16(q.get('x'))
     const f = q.get('f')
+    const r = q.get('r')
     if (!s || !SOCKET_RE.test(s) || !g || !GEN_RE.test(g) || !x || !b16(f)) return null
-    return { s, k: k && KEY_RE.test(k) ? k : null, g, x, f }
+    return { s, k: k && KEY_RE.test(k) ? k : null, g, x, f, r: r && TAG_RE.test(r) ? r : null }
   } catch { return null }
 }
 
@@ -82,6 +87,13 @@ export async function qrProof(secret, g, pk) {
   const key = await subtle().importKey('raw', secret, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
   const mac = new Uint8Array(await subtle().sign('HMAC', key, enc.encode(`cs-qr-v1|${g}|${pk}`)))
   return b64u(mac.slice(0, 16))
+}
+
+/** 방 꼬리표 = HMAC-SHA256(회차 비밀, "cs-qr-room-v1|방 ID") 앞 8바이트 (base64url 11자) */
+export async function roomTag(secret, roomId) {
+  const key = await subtle().importKey('raw', secret, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+  const mac = new Uint8Array(await subtle().sign('HMAC', key, enc.encode(`cs-qr-room-v1|${roomId}`)))
+  return b64u(mac.slice(0, 8))
 }
 
 /** 길이가 같은 두 문자열을 시간 차 없이 비교한다 */
