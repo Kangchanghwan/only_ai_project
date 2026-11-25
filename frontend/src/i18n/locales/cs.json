@@ -592,5 +592,13 @@
     "notFound": "Mezi připojenými zařízeními teď toto jméno není",
     "rateLimited": "Zkuste to prosím za chvíli znovu",
     "findError": "Nenalezeno. Zkuste to prosím znovu"
+  },
+  "qrLink": {
+    "requestTitle": "Žádost o propojení přes QR",
+    "requestBody": "Toto zařízení naskenovalo váš QR kód. Přijměte a otevře se místnost jen pro vás dva.",
+    "waiting": "Žádost o propojení přes QR odeslána. Až ji PC přijme, otevře se místnost jen pro vás dva.",
+    "expired": "Platnost QR kódu vypršela. Naskenujte znovu QR kód na obrazovce PC.",
+    "busy": "PC má příliš mnoho žádostí. Naskenujte znovu za chvíli.",
+    "notFound": "PC se nepodařilo najít. Naskenujte znovu QR kód na obrazovce PC."
   }
 }

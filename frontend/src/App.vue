@@ -63,6 +63,9 @@ import MultiDownloadSheet from './components/MultiDownloadSheet.vue'
 import GroupJoinSheet from './components/GroupJoinSheet.vue'
 import RoomAddSheet from './components/RoomAddSheet.vue'
 import PictureCodeEnterSheet from './components/PictureCodeEnterSheet.vue'
+import { useQrHost } from './composables/useQrHost'
+import { useQrArrival } from './composables/useQrArrival'
+import { parseQrLink } from './utils/qrLink'
 
 // ========================================
 // Composables 초기화
@@ -167,8 +170,12 @@ function publishTargetForRoom(roomId) {
 }
 
 // 1:1 연결 흐름 (요청/확인 시트, 완료 처리). 소켓 어댑터가 없는 환경(테스트)에서는 비활성
+// 빈 화면 QR 연결: PC는 QR에 담을 회차를 만들고 QR로 온 요청을 확인한다 (서버에는 아무것도 등록하지 않는다)
+const myPresenceKey = () => (isValidIdentity(socket.myIdentity?.value) ? presenceKey({ identity: socket.myIdentity.value }) : null)
+const qrHost = useQrHost({ getSocketId: () => socket.mySocketId?.value ?? null, getIdentityKey: myPresenceKey })
 const pairFlow = usePairFlow({
   adapter: socketService.getPairAdapter?.() ?? null,
+  qrVerify: (p) => qrHost.verify(p),
   privateRooms,
   notify: notification,
   track: trackEvent,
@@ -1372,6 +1379,31 @@ async function handleShareTargetData() {
   }
 }
 
+// QR을 찍고 들어온 쪽: 같은 네트워크면 그대로, 다른 네트워크면 QR 증명을 붙여 연결 요청을 저절로 보낸다
+const qrArrival = useQrArrival({
+  getIpDevices: () => socket.ipRoomDevices.value,
+  getGlobalDevices: () => socket.globalRoomDevices.value,
+  getMySocketId: () => socket.mySocketId?.value ?? null,
+  getMyKey: myPresenceKey,
+  getPairStates: () => pairFlow.pairStates.value,
+  getSessions: () => pairFlow.sessions.value,
+  invite: (device, opts) => pairFlow.invite(device, opts),
+  openRoom: (roomId) => shareScope.setScope(scopeForPrivateRoom(roomId)),
+  notify: notification,
+  t,
+  track: trackEvent,
+})
+watch([() => socket.ipRoomDevices.value, () => socket.globalRoomDevices.value, () => socket.mySocketId?.value], () => qrArrival.update())
+// 끝난 세션은 곧바로 목록에서 치워지므로 바뀌는 즉시 본다
+watch(() => pairFlow.sessions.value, () => qrArrival.update(), { flush: 'sync' })
+function takeQrCode() {
+  const h = window.__csQrCode
+  window.__csQrCode = undefined
+  const link = parseQrLink(h)
+  if (link) qrArrival.start(link)
+}
+const onQrCodeEvent = () => takeQrCode()
+
 /** 이미 열린 탭에서 주소의 # 뒤만 #/pv?... 로 바뀐 경우 (index.html이 옮겨 두고 이벤트로 알린다) */
 function onGroupInviteEvent() {
   const h = window.__csGroupInvite
@@ -1410,6 +1442,11 @@ onMounted(async () => {
 
   window.addEventListener('cs-send-link', onSendLinkEvent)
   window.addEventListener('cs-group-invite', onGroupInviteEvent)
+  window.addEventListener('cs-qr-code', onQrCodeEvent)
+  if (window.__csQrCode) takeQrCode()
+  else if (window.__csQrNoHash) qrArrival.markNoHash()
+  window.__csQrNoHash = undefined
+  qrHost.start()
   // 확인 시트를 먼저 띄운다 (소켓 등록은 "들어가기"를 누른 뒤 기다린다)
   if (inviteHash) groupRooms.acceptInvite(parseInvite(inviteHash))
 
@@ -1452,6 +1489,8 @@ onUnmounted(() => {
   document.removeEventListener('paste', handlePaste)
   window.removeEventListener('cs-send-link', onSendLinkEvent)
   window.removeEventListener('cs-group-invite', onGroupInviteEvent)
+  window.removeEventListener('cs-qr-code', onQrCodeEvent)
+  qrArrival.destroy()
   pairFlow.destroy()
   socket.destroy()
 })
@@ -1487,6 +1526,8 @@ onUnmounted(() => {
         :scope="shareScope.scope.value"
         :ip-room-devices="socket.ipRoomDevices.value"
         :global-room-devices="socket.globalRoomDevices.value"
+        :qr-url="qrHost.qrUrl.value"
+        :qr-pinned-device="qrArrival.pinned.value"
         :my-identity="socket.myIdentity.value"
         :my-socket-id="socket.mySocketId.value"
         :reroll-available-at="socket.rerollAvailableAt.value"

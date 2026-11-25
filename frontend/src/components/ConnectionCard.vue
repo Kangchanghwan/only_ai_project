@@ -42,7 +42,11 @@ const props = defineProps({
   /** 전체 공유 방의 기기 목록이 아직 오지 않았다 ("다른 네트워크 기기" 묶음이 있을지 아직 모른다) */
   otherNetworkPending: { type: Boolean, default: false },
   /** 전체 공유 방이 기준 인원을 넘어 목록에 안 보이는 다른 네트워크 기기 수 (0이면 화면 변화 없음) */
-  otherNetworkMore: { type: Number, default: 0 }
+  otherNetworkMore: { type: Number, default: 0 },
+  /** 빈 화면 QR에 담을 주소 (QR 연결 회차가 있으면 #/qc?..., 없으면 고정 주소) */
+  qrUrl: { type: String, default: EMPTY_STATE_QR_URL },
+  /** QR을 찍고 찾아 낸 다른 네트워크의 PC: 묶음 맨 위에 둔다 (전체 공유 목록에 없어도 보인다) */
+  pinnedDevice: { type: Object, default: null }
 })
 const emit = defineEmits(['reroll', 'hint-copied', 'group-create', 'code-enter', 'go-find'])
 
@@ -71,12 +75,18 @@ let viewSent = flagGet(VIEW_FLAG)
 let sawEmpty = false
 function clearViewTimer() { if (viewTimer) { clearTimeout(viewTimer); viewTimer = null } }
 
+const qrValue = ref('')
 async function makeQr() {
-  if (qrDataUrl.value) return
+  const value = props.qrUrl || EMPTY_STATE_QR_URL
+  if (qrDataUrl.value && qrValue.value === value) return
   try {
-    qrDataUrl.value = await QRCode.toDataURL(EMPTY_STATE_QR_URL, { width: 140, margin: 2, color: { dark: '#000000', light: '#ffffff' } })
+    const url = await QRCode.toDataURL(value, { width: 140, margin: 2, color: { dark: '#000000', light: '#ffffff' } })
+    if ((props.qrUrl || EMPTY_STATE_QR_URL) !== value) return // 그사이 회차가 바뀌었다
+    qrDataUrl.value = url
+    qrValue.value = value
   } catch { /* QR 실패 시 텍스트 안내만 보인다 */ }
 }
+watch(() => props.qrUrl, () => { if (showEmpty.value) makeQr() })
 
 watch(showEmpty, (now, before) => {
   if (now) {
@@ -134,9 +144,14 @@ const pendingDevices = computed(() => (narrowPair.value ? others.value.filter((d
 
 // 다른 네트워크 기기: 카드 아래 접힌 묶음 (같은 네트워크 방에서만, 1:1 연결이 가능할 때만)
 const otherOpenManual = ref(false)
-const otherList = computed(() => (!props.wide && props.scope === 'ip' && pair
-  ? sortDevices(props.otherNetworkDevices, props.mySocketId, props.myIdentity).filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity))
-  : []))
+const otherList = computed(() => {
+  if (props.wide || props.scope !== 'ip' || !pair) return []
+  const list = sortDevices(props.otherNetworkDevices, props.mySocketId, props.myIdentity).filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity))
+  const pin = props.pinnedDevice
+  if (!pin?.socketId) return list
+  const found = list.find((d) => d.socketId === pin.socketId)
+  return [found || pin, ...list.filter((d) => d.socketId !== pin.socketId)]
+})
 // 기준 인원 초과 시 '기기 찾기' 링크 (묶음과 같은 조건에서만)
 const showOtherMore = computed(() => !props.wide && props.scope === 'ip' && !!pair && props.otherNetworkMore > 0)
 // 내가 보낸 1:1 요청이 진행 중인 기기가 묶음 안에 있으면 접어 둘 수 없다 (그림 확인 패널이 가려지지 않게)
@@ -199,7 +214,7 @@ watch(
     ></div>
     <div v-if="showEmpty" ref="emptyStateEl" class="mt-3 pt-3.5 border-t border-border flex flex-col items-center gap-1.5 text-center" data-testid="empty-state">
       <!-- QR은 PC와 폰 모두에서 보인다 (폰끼리 연결할 때 상대 폰이 이 화면을 찍는다) -->
-      <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="EMPTY_STATE_QR_URL" width="140" height="140" alt="QR" class="block mb-1 rounded-none bg-white border border-border" data-testid="empty-state-qr" />
+      <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="qrValue" width="140" height="140" alt="QR" class="block mb-1 rounded-none bg-white border border-border" data-testid="empty-state-qr" />
       <!-- QR을 만드는 동안에도 같은 크기의 자리를 잡아 둔다 (QR이 뒤늦게 끼어들어 아래가 밀리지 않게) -->
       <div v-else class="mb-1 w-[140px] h-[140px] rounded-none bg-tint border border-border" aria-hidden="true" data-testid="empty-state-qr-placeholder"></div>
       <p class="m-0 text-sm font-bold text-ink" data-testid="empty-state-line1">{{ t('room.emptyState.qrLine') }}</p>

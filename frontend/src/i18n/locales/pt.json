@@ -592,5 +592,13 @@
     "notFound": "Nenhum dispositivo conectado tem este nome agora",
     "rateLimited": "Tente novamente em instantes",
     "findError": "Não encontrado. Tente novamente"
+  },
+  "qrLink": {
+    "requestTitle": "Pedido de conexão por QR",
+    "requestBody": "Este dispositivo escaneou seu QR code. Aceite para abrir uma sala só para vocês dois.",
+    "waiting": "Pedido de conexão enviado por QR. Quando o PC aceitar, uma sala só para vocês dois será aberta.",
+    "expired": "Este QR code expirou. Escaneie novamente o QR code na tela do PC.",
+    "busy": "O PC tem pedidos demais. Escaneie de novo em instantes.",
+    "notFound": "PC não encontrado. Escaneie novamente o QR code na tela do PC."
   }
 }

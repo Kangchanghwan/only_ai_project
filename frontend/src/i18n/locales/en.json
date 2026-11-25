@@ -718,5 +718,13 @@
   },
   "guide": {
     "roomVisibility": "Only devices in this room can see them."
+  },
+  "qrLink": {
+    "requestTitle": "Connection request via QR",
+    "requestBody": "This device scanned your QR code. Accept to open a room just for the two of you.",
+    "waiting": "Sent a connection request via QR. A room for the two of you opens when the PC accepts.",
+    "expired": "This QR code has expired. Scan the QR code on the PC screen again.",
+    "busy": "The PC has too many requests. Scan again in a moment.",
+    "notFound": "Couldn't find the PC. Scan the QR code on the PC screen again."
   }
 }

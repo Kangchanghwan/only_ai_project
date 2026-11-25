@@ -592,5 +592,13 @@
     "notFound": "Jelenleg nincs ilyen nevű csatlakozott eszköz",
     "rateLimited": "Kérjük, próbáld újra egy kicsit később",
     "findError": "Nem található. Próbáld újra"
+  },
+  "qrLink": {
+    "requestTitle": "Csatlakozási kérés QR-kóddal",
+    "requestBody": "Ez az eszköz beolvasta a QR-kódodat. Fogadd el, és megnyílik egy szoba csak kettőtöknek.",
+    "waiting": "Csatlakozási kérés elküldve QR-kóddal. Ha a PC elfogadja, megnyílik egy szoba csak kettőtöknek.",
+    "expired": "A QR-kód lejárt. Olvasd be újra a PC képernyőjén lévő QR-kódot.",
+    "busy": "A PC túl sok kérést kapott. Olvasd be újra egy kicsit később.",
+    "notFound": "A PC nem található. Olvasd be újra a PC képernyőjén lévő QR-kódot."
   }
 }

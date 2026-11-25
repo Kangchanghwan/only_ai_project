@@ -592,5 +592,13 @@
     "notFound": "Żadne połączone urządzenie nie ma teraz tej nazwy",
     "rateLimited": "Spróbuj ponownie za chwilę",
     "findError": "Nie znaleziono. Spróbuj ponownie"
+  },
+  "qrLink": {
+    "requestTitle": "Prośba o połączenie przez QR",
+    "requestBody": "To urządzenie zeskanowało Twój kod QR. Zaakceptuj, aby otworzyć pokój tylko dla was dwóch.",
+    "waiting": "Wysłano prośbę o połączenie przez QR. Gdy PC zaakceptuje, otworzy się pokój tylko dla was dwóch.",
+    "expired": "Kod QR wygasł. Zeskanuj ponownie kod QR z ekranu PC.",
+    "busy": "PC ma zbyt wiele próśb. Zeskanuj ponownie za chwilę.",
+    "notFound": "Nie znaleziono PC. Zeskanuj ponownie kod QR z ekranu PC."
   }
 }

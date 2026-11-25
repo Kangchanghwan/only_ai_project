@@ -592,5 +592,13 @@
     "notFound": "Şu anda bağlı cihazlar arasında bu ad yok",
     "rateLimited": "Lütfen biraz sonra tekrar deneyin",
     "findError": "Bulunamadı. Lütfen tekrar deneyin"
+  },
+  "qrLink": {
+    "requestTitle": "QR ile bağlantı isteği",
+    "requestBody": "Bu cihaz QR kodunuzu taradı. Yalnızca ikiniz için bir oda açmak üzere kabul edin.",
+    "waiting": "QR ile bağlantı isteği gönderildi. Bilgisayar kabul edince yalnızca ikiniz için bir oda açılır.",
+    "expired": "QR kodunun süresi doldu. Bilgisayar ekranındaki QR kodunu yeniden tarayın.",
+    "busy": "Bilgisayarda çok fazla istek var. Biraz sonra yeniden tarayın.",
+    "notFound": "Bilgisayar bulunamadı. Bilgisayar ekranındaki QR kodunu yeniden tarayın."
   }
 }

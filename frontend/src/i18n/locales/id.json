@@ -592,5 +592,13 @@
     "notFound": "Tidak ada perangkat terhubung dengan nama ini saat ini",
     "rateLimited": "Coba lagi sebentar lagi",
     "findError": "Tidak ditemukan. Silakan coba lagi"
+  },
+  "qrLink": {
+    "requestTitle": "Permintaan sambung lewat QR",
+    "requestBody": "Perangkat ini memindai kode QR Anda. Terima untuk membuka ruang khusus kalian berdua.",
+    "waiting": "Permintaan sambung lewat QR terkirim. Ruang khusus kalian berdua terbuka setelah PC menerima.",
+    "expired": "Kode QR sudah kedaluwarsa. Pindai lagi kode QR di layar PC.",
+    "busy": "PC menerima terlalu banyak permintaan. Pindai lagi sebentar lagi.",
+    "notFound": "PC tidak ditemukan. Pindai lagi kode QR di layar PC."
   }
 }

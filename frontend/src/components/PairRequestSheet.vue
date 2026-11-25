@@ -28,9 +28,11 @@ const declineBtn = ref(null)
 const images = computed(() => sasImages(props.session?.sas))
 const waiting = computed(() => props.session?.state === 'waiting-peer-confirm')
 const legacy = computed(() => !!props.session?.legacy)
+/** QR을 찍은 기기의 요청: QR 증명이 확인돼 그림 비교가 없다. 키가 준비되면 수락할 수 있다 */
+const viaQr = computed(() => !!props.session?.viaQr)
 const tilesReady = ref(false)
 const sasReady = computed(() => images.value.length === 4 && tilesReady.value)
-const acceptEnabled = computed(() => legacy.value || sasReady.value)
+const acceptEnabled = computed(() => legacy.value || (viaQr.value ? !!props.session?.sas : sasReady.value))
 const accept = () => {
   if (!acceptEnabled.value) return
   emit('respond', legacy.value ? { accept: true } : { accept: true, same: true })
@@ -73,7 +75,7 @@ function onKeydown(event) {
         class="w-full sm:max-w-sm bg-surface text-text-primary rounded-none border-2 border-ink border-t-4 border-t-scope-private p-5"
         @keydown="onKeydown"
       >
-        <h2 id="pair-request-title" class="text-base font-semibold m-0">{{ t('pair.request.title') }}</h2>
+        <h2 id="pair-request-title" class="text-base font-semibold m-0">{{ viaQr ? t('qrLink.requestTitle') : t('pair.request.title') }}</h2>
         <div class="mt-4 flex items-center gap-3 min-w-0">
           <PairPeerAvatar :device="peer" />
           <div class="min-w-0 flex-1">
@@ -85,7 +87,8 @@ function onKeydown(event) {
             data-testid="pair-network-badge"
           >{{ session.sameNetwork ? t('pair.request.sameNetwork') : t('pair.request.otherNetwork') }}</span>
         </div>
-        <template v-if="!legacy">
+        <p v-if="viaQr" class="mt-3 text-sm leading-relaxed m-0" data-testid="pair-qr-body">{{ t('qrLink.requestBody') }}</p>
+        <template v-else-if="!legacy">
           <p class="mt-4 text-sm font-semibold m-0 text-center">{{ t('pair.request.compare') }}</p>
           <PairSasTiles class="mt-3" :images="images" size="lg" @ready-change="tilesReady = $event" />
         </template>
