@@ -28,6 +28,8 @@
     "installText": "Cài đặt thành ứng dụng để lần sau mở nhanh hơn",
     "installAction": "Cài đặt",
     "bookmarkText": "Nhấn {key} để thêm vào dấu trang và mở ngay lần sau",
+    "pairText": "Kết nối với {name} trong một phòng để lần sau gửi ngay, kể cả khi khác Wi-Fi?",
+    "pairAction": "Kết nối trong phòng",
     "close": "Đóng"
   },
   "identity": {

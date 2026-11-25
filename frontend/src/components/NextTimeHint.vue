@@ -6,19 +6,23 @@ import { bookmarkKey } from '../composables/useNextTimeHint'
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
-  /** 'ios_shortcut' | 'install' | 'bookmark' | null */
-  variant: { type: String, default: null }
+  /** 'pair' | 'ios_shortcut' | 'install' | 'bookmark' | null */
+  variant: { type: String, default: null },
+  /** variant 'pair'의 상대 기기 이름 */
+  peerName: { type: String, default: '' }
 })
 const emit = defineEmits(['action', 'dismiss'])
 const { t, locale } = useI18n()
 
 const text = computed(() => {
+  if (props.variant === 'pair') return t('nextTime.pairText', { name: props.peerName })
   if (props.variant === 'ios_shortcut') return t('nextTime.iosText')
   if (props.variant === 'install') return t('nextTime.installText')
   if (props.variant === 'bookmark') return t('nextTime.bookmarkText', { key: bookmarkKey() })
   return ''
 })
 const actionLabel = computed(() => {
+  if (props.variant === 'pair') return t('nextTime.pairAction')
   if (props.variant === 'ios_shortcut') return t('nextTime.iosAction')
   if (props.variant === 'install') return t('nextTime.installAction')
   return ''
@@ -40,7 +44,7 @@ const isKo = computed(() => locale.value === 'ko')
       @click="emit('action')"
     >{{ actionLabel }}</a>
     <button
-      v-else-if="variant === 'install'"
+      v-else-if="variant === 'install' || variant === 'pair'"
       type="button"
       class="next-time-hint__btn next-time-hint__btn--primary"
       data-testid="next-time-hint-action"

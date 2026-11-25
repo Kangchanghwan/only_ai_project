@@ -37,6 +37,25 @@ describe('NextTimeHint', () => {
     expect(a.text()).toBe('Add shortcut')
   })
 
+  it('pair: 상대 이름이 든 문구와 방으로 연결 버튼, 클릭하면 action', async () => {
+    const w = mountHint({ variant: 'pair', peerName: '다정한 고양이' })
+    expect(w.find(sel('next-time-hint')).text()).toContain('다정한 고양이 기기와 방으로 연결해 둘까요?')
+    const b = w.find(sel('next-time-hint-action'))
+    expect(b.text()).toBe('방으로 연결')
+    await b.trigger('click')
+    expect(w.emitted('action')).toHaveLength(1)
+  })
+
+  it('pair 문구가 21개 언어에 모두 있다', () => {
+    const langs = i18n.global.availableLocales
+    expect(langs.length).toBeGreaterThanOrEqual(21)
+    for (const l of langs) {
+      const m = i18n.global.getLocaleMessage(l)
+      expect(m.nextTime?.pairText, l).toContain('{name}')
+      expect(m.nextTime?.pairAction, l).toBeTruthy()
+    }
+  })
+
   it('install: 문구와 설치 버튼, 클릭하면 action', async () => {
     const w = mountHint({ variant: 'install' })
     expect(w.find(sel('next-time-hint')).text()).toContain('앱으로 설치하면 다음엔 더 빨리 열 수 있어요')

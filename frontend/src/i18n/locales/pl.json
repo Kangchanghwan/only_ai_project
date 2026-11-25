@@ -28,6 +28,8 @@
     "installText": "Zainstaluj jako aplikację, by następnym razem otworzyć ją szybciej",
     "installAction": "Zainstaluj",
     "bookmarkText": "Dodaj do zakładek skrótem {key}, a następnym razem otworzysz stronę od razu",
+    "pairText": "Połączyć się z {name} w pokoju, aby następnym razem wysyłać od razu, nawet w innej sieci Wi-Fi?",
+    "pairAction": "Połącz w pokoju",
     "close": "Zamknij"
   },
   "identity": {

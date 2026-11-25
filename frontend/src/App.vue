@@ -36,7 +36,7 @@ import { reportError } from './utils/userErrors.js'
 import { useArrivalBadge } from './composables/useArrivalBadge'
 import { usePush } from './composables/usePush'
 import NextTimeHint from './components/NextTimeHint.vue'
-import { useNextTimeHint } from './composables/useNextTimeHint'
+import { useNextTimeHint, pickPairTarget } from './composables/useNextTimeHint'
 import { shouldSkipPresenceToast, trackPresenceSkipped } from './utils/crowdedPresence'
 import WindowDropOverlay from './components/WindowDropOverlay.vue'
 import { parseSendLink, consumePendingSendLink } from './utils/sendLink'
@@ -515,7 +515,23 @@ async function connectToRoom() {
 // 탭이 뒤에 있을 때 도착 표시 (제목 숫자·파비콘 점·선택 알림)
 const arrival = useArrivalBadge({ getMySocketId: () => socket.mySocketId?.value, isMobile })
 // 여러 파일 받기 시트가 열려 있으면 안내를 띄우지 않는다 (시트 버튼을 가린다)
-const nextTime = useNextTimeHint({ isBlocked: () => arrival.promptVisible.value || !!multiDownload.sheet.value })
+const nextTime = useNextTimeHint({
+  isBlocked: () => arrival.promptVisible.value || !!multiDownload.sheet.value,
+  // 같은 네트워크에서 상대가 정확히 1대이고 아직 방이 없을 때만 '방으로 연결' 힌트
+  getPairTarget: (scope) => (pairFlow.enabled ? pickPairTarget({
+    scope,
+    devices: socket.ipRoomDevices.value,
+    mySocketId: socket.mySocketId?.value ?? null,
+    pairStates: pairFlow.pairStates.value,
+    rooms: privateRooms.rooms,
+    busy: !!(pairFlow.incoming.value || pairFlow.respondedWaiting.value || pairFlow.confirming.value),
+  }) : null),
+  onPair: (device) => pairFlow.invite(device), // 기기 카드 '연결'과 같은 초대 흐름
+})
+const nextTimePeerName = computed(() => {
+  const id = nextTime.peer.value?.identity
+  return isValidIdentity(id) ? identityName(id, t) : t('pair.unknownDevice')
+})
 
 // 도착 알림(Web Push): 비공개 방이 바뀌면 서버에 묶음을 다시 맞춘다
 const push = usePush()
@@ -760,7 +776,7 @@ async function uploadFiles(files, scopeOverride, lockOverride) {
     else trackEvent('file_upload', { file_count: summary.successCount, scope: targetScope })
     trackUploadFileInfo(uploadedForMeta, isPrv ? 'prv' : targetScope)
     notification.showSuccess(t('notification.uploadComplete', { count: summary.successCount }))
-    nextTime.markSuccess('upload')
+    nextTime.markSuccess('upload', isPrv ? 'prv' : targetScope)
   }
   return summary.successCount > 0
 }
@@ -830,7 +846,7 @@ async function handleDownloadFile(file) {
     }, 1500)
     trackEvent('file_download', { file_count: 1 })
     notification.showSuccess(t('file.downloadComplete'))
-    nextTime.markSuccess('download')
+    nextTime.markSuccess('download', scopeForRoom(file.roomId))
   } else {
     reportError('download', result.error)
     notification.failUpload(downloadId, t('errors.downloadUser'))
@@ -863,7 +879,7 @@ const multiDownload = useMultiDownload({
   onSuccess: (count, method) => {
     // GA4 주요 이벤트: ZIP은 다 받은 파일 수, 하나씩 받기는 브라우저에 넘긴 파일 수
     trackEvent('file_download', { file_count: count, method })
-    nextTime.markSuccess('download')
+    nextTime.markSuccess('download', shareScope.scope.value)
   },
 })
 
@@ -972,7 +988,7 @@ async function handleAddText(content, scopeOverride) {
 
   if (isPrv) trackEvent('private_text', textMetaParams(content.trim(), false))
   else trackEvent('text_share', { scope: targetScope, locked: !!sealed, ...textMetaParams(content.trim(), !!sealed) })
-  nextTime.markSuccess('text')
+  nextTime.markSuccess('text', isPrv ? 'prv' : targetScope)
 
   // 보관 결과: 크기 초과·서버 보관함 가득이면 지금 열린 기기에만 갔다고 알린다 (구버전 백엔드는 이유가 없어 크기로 판단)
   const tooLarge = res?.notStored === 'TOO_LARGE' ||
@@ -1145,7 +1161,7 @@ async function handleCopyText(textId) {
   const result = await textShare.copyTextToClipboard(textId)
   if (result.success) {
     notification.showSuccess(t('file.copied'))
-    nextTime.markSuccess('copy')
+    nextTime.markSuccess('copy', shareScope.scope.value)
   } else {
     notification.showError(t('file.copyFailed'))
   }
@@ -1516,7 +1532,7 @@ onUnmounted(() => {
         @load-more="handleLoadMore"
       />
 
-      <NextTimeHint :visible="nextTime.visible.value" :variant="nextTime.variant.value" @action="nextTime.act" @dismiss="nextTime.dismiss" />
+      <NextTimeHint :visible="nextTime.visible.value" :variant="nextTime.variant.value" :peer-name="nextTimePeerName" @action="nextTime.act" @dismiss="nextTime.dismiss" />
 
       <!-- 창 전체 드롭 -->
       <WindowDropOverlay

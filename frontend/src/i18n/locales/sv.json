@@ -28,6 +28,8 @@
     "installText": "Installera som app så öppnas den snabbare nästa gång",
     "installAction": "Installera",
     "bookmarkText": "Lägg till som bokmärke med {key} så öppnas sidan direkt nästa gång",
+    "pairText": "Ansluta till {name} i ett rum så att du kan skicka direkt nästa gång, även på ett annat wifi?",
+    "pairAction": "Anslut i ett rum",
     "close": "Stäng"
   },
   "identity": {

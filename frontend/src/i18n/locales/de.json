@@ -28,6 +28,8 @@
     "installText": "Als App installiert öffnet sich Clipboard Share beim nächsten Mal schneller",
     "installAction": "Installieren",
     "bookmarkText": "Mit {key} als Lesezeichen speichern und beim nächsten Mal direkt öffnen",
+    "pairText": "Mit {name} in einem Raum verbinden, damit du nächstes Mal auch in einem anderen WLAN sofort senden kannst?",
+    "pairAction": "Im Raum verbinden",
     "close": "Schließen"
   },
   "identity": {
