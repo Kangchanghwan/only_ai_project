@@ -21,10 +21,13 @@ const llmsUrls = [...new Set([...llms.matchAll(/\((https:\/\/www\.clipboardapp\.
 // SPA가 렌더링하는 경로 (정적 파일 아님)
 const SPA = new Set([`${ORIGIN}/`, `${ORIGIN}/en/`, `${ORIGIN}/ja/`, `${ORIGIN}/ru/`])
 
+// /tools/ 페이지는 Vite 엔트리라 소스가 frontend/tools/ 에 있다 (public 이 아님)
+const SRC_DIRS = [{ prefix: '/tools/', dir: 'frontend' }]
 const fileFor = (url) => {
   let p = url.replace(ORIGIN, '')
   if (p.endsWith('/')) p += 'index.html'
-  return join(PUB, p)
+  const src = SRC_DIRS.find((s) => p.startsWith(s.prefix))
+  return join(src ? src.dir : PUB, p)
 }
 
 const dupes = sitemapUrls.filter((u, i) => sitemapUrls.indexOf(u) !== i)
@@ -66,6 +69,18 @@ for (const [url, file] of staticFiles) {
   else if (canon[1] !== url) err(`canonical 불일치: ${url} → ${canon[1]}`)
   for (const phrase of rules.forbidden) {
     if (html.toLowerCase().includes(phrase.toLowerCase())) err(`금지 문구 "${phrase}": ${url}`)
+  }
+  if (url.includes('/tools/')) {
+    if (!/<meta name="robots" content="index,follow"/.test(html)) err(`robots index,follow 없음: ${url}`)
+    if (url.endsWith('/tools/hwp/')) {
+      if (!/<h1[ >]/.test(html)) err(`h1 없음: ${url}`)
+      for (const t of ['WebApplication', 'FAQPage']) if (!html.includes(`"@type": "${t}"`)) err(`JSON-LD ${t} 없음: ${url}`)
+      for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+        try { JSON.parse(m[1]) } catch { err(`JSON-LD 파싱 실패: ${url}`) }
+      }
+      const body = html.split('<body>')[1]?.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, '') || ''
+      if (body.length < 600) err(`본문 600자 미만(${body.length}): ${url}`)
+    }
   }
 }
 for (const f of readdirSync('frontend/src/i18n/locales').filter(f => f.endsWith('.json'))) {

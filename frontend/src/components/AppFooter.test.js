@@ -139,3 +139,12 @@ describe('AppFooter.vue', () => {
     })
   })
 })
+
+describe('AppFooter.vue 한글 편집 링크', () => {
+  it('도구 페이지 /tools/hwp/ 로 가는 링크 하나가 있다', () => {
+    const w = mount(AppFooter)
+    const links = w.findAll('a[href="/tools/hwp/"]')
+    expect(links).toHaveLength(1)
+    expect(links[0].text()).toBe('footer.hwpTool')
+  })
+})

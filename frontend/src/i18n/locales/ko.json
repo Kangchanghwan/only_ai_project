@@ -296,7 +296,8 @@
     "feedback": "건의하기",
     "createdBy": "제작:",
     "installPrompt": "앱으로 설치하면 공유하기 기능으로 파일을 바로 보낼 수 있어요",
-    "installButton": "앱 설치"
+    "installButton": "앱 설치",
+    "hwpTool": "한글(HWP) 파일 편집"
   },
   "qr": {
     "backgroundHint": "스캔해서 같은 공간 열기"
@@ -716,5 +717,9 @@
   },
   "guide": {
     "roomVisibility": "이 방에 들어온 기기에게만 보여요."
+  },
+  "handoff": {
+    "expired": "보낸 파일이 만료되었거나 찾을 수 없어요. 도구 페이지에서 다시 보내 주세요.",
+    "failed": "파일을 방으로 보내지 못했어요. 도구 페이지에서 다시 시도해 주세요."
   }
 }

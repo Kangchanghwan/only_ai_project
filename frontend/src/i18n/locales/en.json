@@ -296,7 +296,8 @@
     "feedback": "Send feedback",
     "createdBy": "Created by",
     "installPrompt": "Install the app to send files instantly using your device's share feature",
-    "installButton": "Install App"
+    "installButton": "Install App",
+    "hwpTool": "Edit HWP files"
   },
   "qr": {
     "backgroundHint": "Scan to join this space"
@@ -716,5 +717,9 @@
   },
   "guide": {
     "roomVisibility": "Only devices in this room can see them."
+  },
+  "handoff": {
+    "expired": "The file you sent has expired or could not be found. Please send it again from the tool page.",
+    "failed": "Could not send the file to a room. Please try again from the tool page."
   }
 }

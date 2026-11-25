@@ -1381,6 +1381,7 @@ onMounted(async () => {
 
   // share-target 파라미터 감지
   const isShareTarget = new URLSearchParams(window.location.search).has('share-target')
+  const handoffId = new URLSearchParams(window.location.search).get('handoff')
 
   // 프리렌더 중에는 소켓에 연결하지 않아 정적 HTML에 접속 상태·토스트·룸 파일 목록이 구워지지 않게 한다
   if (window.__PRERENDER__) return
@@ -1419,6 +1420,27 @@ onMounted(async () => {
   window.history.replaceState(null, '', window.location.pathname)
 
   document.addEventListener('paste', handlePaste)
+
+  // 도구 페이지(/tools/hwp/)의 "폰으로 보내기": 주소에 handoff 가 있을 때만 받는 모듈을 불러온다
+  if (handoffId) {
+    import('./services/handoffIntake.js').then(async (m) => {
+      const { handoffStore } = await import('./services/handoffStore.js')
+      await m.runHandoff({
+        id: handoffId,
+        store: handoffStore(),
+        getCurrentRoomId: () => {
+          const prv = privateRoomIdOfScope(shareScope.scope.value)
+          return prv && isGroupRoomId(prv) ? prv : null
+        },
+        createRoom: () => groupRooms.createRoom(),
+        upload: (files) => uploadFiles(files),
+        openInvite: (roomId) => groupRooms.openInvite(roomId),
+        notifyError: (msg) => notification.showError(msg),
+        t,
+        clearUrl: () => m.stripHandoffParams()
+      })
+    }).catch(() => notification.showError(t('handoff.failed')))
+  }
 })
 
 onUnmounted(() => {

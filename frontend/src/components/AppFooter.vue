@@ -87,6 +87,12 @@ const currentYear = new Date().getFullYear()
     </div>
     <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-text-secondary">
       <a
+        href="/tools/hwp/"
+        data-testid="hwp-tool-link"
+        class="text-ink hover:underline"
+      >{{ t('footer.hwpTool') }}</a>
+      <span class="text-text-secondary/50">·</span>
+      <a
         href="https://github.com/Kangchanghwan/only_ai_project/blob/master/PRIVACY.md"
         target="_blank"
         rel="noopener noreferrer"

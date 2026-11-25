@@ -83,6 +83,8 @@ Full text of every guide below, as Markdown: https://www.clipboardapp.org/llms-f
 - [Передать файл с телефона на компьютер по Wi-Fi без провода](https://www.clipboardapp.org/ru/guide/peredat-fajl-s-telefona-na-kompyuter-po-wi-fi.html): Как передать файл с телефона на компьютер по Wi-Fi онлайн, без провода и приложений. iPhone, Android, Windows и Mac: просто откройте сайт, регистрация не нужна. (Russian).
 - [Как скинуть фото с айфона на компьютер без провода](https://www.clipboardapp.org/ru/guide/foto-s-iphone-na-kompyuter-bez-provoda.html): Как скинуть фото с айфона на компьютер с Windows без шнура, iTunes и приложений: откройте сайт в браузере по одному Wi-Fi, и фото придут в исходном качестве. (Russian).
 - [Аналог Snapdrop и PairDrop с общим буфером обмена](https://www.clipboardapp.org/ru/guide/analog-snapdrop.html): Ищете аналог Snapdrop? Clipboard Share работает в браузере без аккаунта: передаёт файлы до 5GB и скопированный текст между устройствами в одной сети Wi-Fi. (Russian).
+- [Tools](https://www.clipboardapp.org/tools/): Index of browser tools (Korean).
+- [HWP/HWPX editor](https://www.clipboardapp.org/tools/hwp/): Open, edit and save Korean Hancom HWP and HWPX documents in the browser without installing Hancom Office; files are processed in the browser and not uploaded to the server. Saved files can be sent to a Clipboard Share room with "send to phone" (Korean).
 
 ## Source
 

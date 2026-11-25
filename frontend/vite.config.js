@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { resolve } from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -31,7 +32,15 @@ export default defineConfig(({ command, mode }) => {
       } : {},
       sourcemap: false,
       cssCodeSplit: true, // CSS 코드 스플리팅 활성화
+      // 최신 브라우저는 modulepreload 를 기본 지원한다. 폴리필은 메인과 /tools/ 엔트리가 따로 받게 되므로 끈다
+      modulePreload: { polyfill: false },
       rollupOptions: {
+        // 메인 앱 + 도구 페이지(/tools/, /tools/hwp/). 도구 페이지는 Vue 를 쓰지 않아 메인 번들에 영향이 없다
+        input: {
+          main: resolve(import.meta.dirname, 'index.html'),
+          tools: resolve(import.meta.dirname, 'tools/index.html'),
+          toolsHwp: resolve(import.meta.dirname, 'tools/hwp/index.html'),
+        },
         output: {
           // 청크 분리 최적화
           manualChunks: {
