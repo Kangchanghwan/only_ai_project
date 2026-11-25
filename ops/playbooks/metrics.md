@@ -11,6 +11,8 @@
 | file_upload7, text_share7, file_download7 | GA4 이벤트 수, 지난 7일. conversions7 = 셋의 합 |
 | gsc_clicks7, gsc_impr7 | Search Console `sc-domain:clipboardapp.org` 지난 7일 (2~3일 지연된 값 그대로) |
 | naver_clicks7, naver_impr7 | 네이버 서치어드바이저 www.clipboardapp.org 최근 7일 |
+| tools_sessions7 | GA4 최근 7일 세션 중 페이지 경로가 `/tools/`로 시작하는 것 (콘텐츠 그룹 `tools`). 도구 페이지 배포(PR #121) 전 행은 빈칸 |
+| tools_to_room7 | GA4 최근 7일 `tool_send_to_phone` 이벤트 수. 도구에서 '폰으로 보내기'로 방까지 간 횟수 |
 | note | 그날 배포·발행 1줄 (효과 추적용) |
 
 GA4 속성: `a215937843p519550737` (Clipboard Share - Production).
@@ -43,3 +45,8 @@ GA4 속성: `a215937843p519550737` (Clipboard Share - Production).
 - **관찰 국가**(제외하지 않고 note만): 한국 외, 사용자 10명 이상, 사용자당 이벤트 수가 한국 외 평균 3배 이상이지만 모바일이 섞인 국가.
 - 기록: `ops/metrics/adjusted.csv` 1행 (date,range,au28_raw,au28_adj,excluded,watch,note). 보고 "지표" 줄: "28일 사용자 N (보정 M)".
 - 규칙을 바꾸려면 owner 승인. 바꾸면 이전 행도 새 규칙으로 다시 계산해 note에 표시.
+
+
+## 문서 도구 숫자 분리 (2026-11-25 owner 승인안)
+- 한글 도구(/tools/hwp/) 유입은 클립보드 성과와 따로 본다. au28·sessions7은 GA4 합계 그대로 적되, 리포트에 tools_sessions7과 그 비중을 같이 적는다.
+- 클립보드 성과로 세는 도구 유입은 tools_to_room7(폰으로 보내기)뿐이다. 일일 밴드 판정이 도구 유입으로 오르내리면 리포트에 그 사실을 먼저 적는다.
