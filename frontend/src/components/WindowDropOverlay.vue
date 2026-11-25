@@ -37,7 +37,15 @@ const hasFiles = (e) => {
   if (!types) return false
   return Array.from(types).includes('Files')
 }
-const modalOpen = () => !!document.querySelector('[aria-modal="true"], [role="dialog"]')
+// 숨겨 둔(v-show) 대화창은 DOM에 남아 있으므로, 실제로 보이는 대화창만 센다.
+const isShown = (el) => {
+  if (el.closest('[aria-hidden="true"]')) return false
+  for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+    if (getComputedStyle(n).display === 'none') return false
+  }
+  return true
+}
+const modalOpen = () => Array.from(document.querySelectorAll('[aria-modal="true"], [role="dialog"]')).some(isShown)
 const canShow = () => props.enabled && !props.blocked && !modalOpen()
 const close = () => { visible.value = false; depth = 0 }
 
