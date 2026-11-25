@@ -70,7 +70,17 @@ export function createPairing({ socket, onPaired }) {
     return s
   }
 
-  const signal = (s, data) => socket.emit('pair:signal', { sessionId: s.sessionId, data })
+  /**
+   * 상대에게 신호를 보낸다. 서버는 pair:signal에 응답(ack)을 주지 않으므로 기다리지 않는다
+   * (기다리면 소켓의 ack 시간 초과 5초만큼 그림·수락·확인이 늦어진다). 같은 소켓이라 보낸 순서는 지켜진다.
+   */
+  const signal = (s, data) => {
+    try {
+      const r = socket.emit('pair:signal', { sessionId: s.sessionId, data })
+      if (r && typeof r.catch === 'function') r.catch(() => {})
+    } catch { /* 보내기 실패는 상대 쪽 시간 초과로 끝난다 */ }
+    return Promise.resolve()
+  }
 
   /** invite 응답(ack)보다 먼저 도착한 신호를 잠깐 보관했다가 세션이 생기면 처리한다 */
   const earlySignals = new Map()

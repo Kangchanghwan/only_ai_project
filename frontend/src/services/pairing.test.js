@@ -223,3 +223,28 @@ describe('pairing 컨트롤러', () => {
     expect(await A.invite('x')).toEqual({ ok: false, code: 'COOLDOWN' })
   })
 })
+
+describe('pair:signal에는 서버 응답(ack)이 없다', () => {
+  /** 운영 서버처럼 pair:signal의 ack를 끝내 주지 않는 소켓 */
+  const noSignalAck = (sock) => ({
+    ...sock,
+    emit: (ev, p) => (ev === 'pair:signal' ? (sock.emit(ev, p), new Promise(() => {})) : sock.emit(ev, p)),
+  })
+
+  it('응답을 기다리지 않아 그림이 바로 준비되고 연결이 끝난다', async () => {
+    const relay = makeRelay()
+    const paired = { A: null, B: null }
+    const A = createPairing({ socket: noSignalAck(relay.connect('A')), onPaired: (i) => { paired.A = i } })
+    const B = createPairing({ socket: noSignalAck(relay.connect('B')), onPaired: (i) => { paired.B = i } })
+    await A.invite('B')
+    await settle()
+    const sa = A.getSessions()[0]; const sb = B.getSessions()[0]
+    expect(sa.sas).toHaveLength(4)
+    expect(sb.sas).toEqual(sa.sas)
+    expect((await A.confirm(sa.sessionId, true)).ok).toBe(true)
+    await B.respond(sb.sessionId, true, { same: true })
+    await settle()
+    expect(paired.A?.roomId).toBeTruthy()
+    expect(paired.A.roomSecret).toEqual(paired.B.roomSecret)
+  })
+})
