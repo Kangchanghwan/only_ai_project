@@ -471,7 +471,7 @@ Source: https://www.clipboardapp.org/guide/ipad-to-windows-photo-transfer.html
 ## 알아두면 좋은 것
 - 아이패드 사진이 HEIC 형식이라 윈도우에서 열리지 않는다면, 설정의 카메라에서 형식을 호환성 우선으로 바꾸거나 사진 앱에서 공유할 때 JPEG로 내보내세요. 전송 자체는 형식에 상관없이 그대로 됩니다.
 - 스플릿 뷰로 사파리와 사진 앱을 나란히 열어 두면 사진을 페이지 위로 끌어다 놓는 것도 됩니다.
-- 두 기기가 다른 네트워크에 있다면 **전체 공유** 탭을 쓸 수 있지만, 이 탭의 항목은 서비스를 열어 둔 모든 사람에게 보입니다. 남에게 보이면 곤란한 파일은 같은 네트워크에서 주고받거나, '비밀번호로 잠그기'를 켜고 보내세요. 잠근 파일은 비밀번호를 아는 사람만 열 수 있습니다.
+- 두 기기가 다른 네트워크에 있다면(폰이 데이터를 쓰는 경우 등) **＋ 방** → '새 방 만들기'로 방을 만들고, 다른 기기에서 '초대'의 QR을 찍거나 그림 4개로 들어오세요. 방에서 주고받은 파일은 파일 이름까지 이 기기에서 암호화되고, 방 열쇠는 서버로 가지 않습니다. **전체 공유** 탭도 네트워크와 상관없이 쓸 수 있지만 서비스를 열어 둔 모든 사람에게 보이니, 남에게 보이면 곤란한 사진은 보내지 마세요.
 - 모든 기기가 페이지를 닫으면 올려 둔 파일과 텍스트는 곧 삭제됩니다. 받을 파일은 미루지 말고 바로 저장하는 편이 좋습니다.
 
 ## 자주 묻는 질문
@@ -512,7 +512,7 @@ Source: https://www.clipboardapp.org/guide/mac-to-windows-file-transfer.html
 - USB 메모리를 양쪽에서 같이 쓰려면 exFAT로 포맷해야 하지만, 브라우저로 옮기면 포맷을 신경 쓸 일이 없습니다.
 - 맥의 페이지(Pages), 키노트 파일은 윈도우에서 열리지 않으니 내보내기에서 Word나 PowerPoint 형식으로 저장한 뒤 보내세요. 전송 자체는 어떤 형식이든 됩니다.
 - 한 파일의 최대 용량은 5GB입니다. 그보다 큰 파일은 나눠서 보내거나 압축해 주세요. 100MB가 넘는 파일은 조각으로 나눠 올려서 중간에 끊겨도 다시 선택하면 이어서 올라갑니다.
-- 두 기기가 다른 네트워크에 있다면 **전체 공유** 탭을 쓸 수 있지만, 이 탭의 항목은 서비스를 열어 둔 모든 사람에게 보입니다. 남에게 보이면 곤란한 파일은 같은 네트워크에서 주고받거나, '비밀번호로 잠그기'를 켜고 보내세요. 잠근 파일은 비밀번호를 아는 사람만 열 수 있습니다.
+- 두 기기가 다른 네트워크에 있다면(폰이 데이터를 쓰는 경우 등) **＋ 방** → '새 방 만들기'로 방을 만들고, 다른 기기에서 '초대'의 QR을 찍거나 그림 4개로 들어오세요. 방에서 주고받은 파일은 파일 이름까지 이 기기에서 암호화되고, 방 열쇠는 서버로 가지 않습니다. **전체 공유** 탭도 네트워크와 상관없이 쓸 수 있지만 서비스를 열어 둔 모든 사람에게 보이니, 남에게 보이면 곤란한 파일은 보내지 마세요.
 - 윈도우 PC에서 자주 쓴다면 Microsoft Store에서 [Clipboard Share - 온라인 클립보드](https://apps.microsoft.com/detail/9N2BTKVCPCC5)를 설치해 둘 수 있습니다. 이 사이트를 앱 창으로 여는 것이라 기능은 같고, 시작 메뉴에서 바로 열립니다.
 
 ## 자주 묻는 질문
@@ -713,7 +713,7 @@ PC와 아이폰을 같은 와이파이에 두고 브라우저를 열면, PC에�
 - 사파리에서 내려받은 파일은 기본적으로 파일 앱의 다운로드 폴더에 들어갑니다. 위치는 설정의 사파리에서 바꿀 수 있습니다.
 - 아이폰에 앱을 설치할 수 없는 회사 폰이나 관리 대상 기기라도 사파리만 있으면 됩니다.
 - 한 파일의 최대 용량은 5GB입니다. 그보다 큰 파일은 나눠서 보내거나 압축해 주세요.
-- 두 기기가 다른 네트워크에 있다면 **전체 공유** 탭을 쓸 수 있지만, 이 탭의 항목은 서비스를 열어 둔 모든 사람에게 보입니다. 남에게 보이면 곤란한 파일은 같은 네트워크에서 주고받거나, '비밀번호로 잠그기'를 켜고 보내세요. 잠근 파일은 비밀번호를 아는 사람만 열 수 있습니다.
+- 두 기기가 다른 네트워크에 있다면(폰이 데이터를 쓰는 경우 등) **＋ 방** → '새 방 만들기'로 방을 만들고, 다른 기기에서 '초대'의 QR을 찍거나 그림 4개로 들어오세요. 방에서 주고받은 파일은 파일 이름까지 이 기기에서 암호화되고, 방 열쇠는 서버로 가지 않습니다. **전체 공유** 탭도 네트워크와 상관없이 쓸 수 있지만 서비스를 열어 둔 모든 사람에게 보이니, 남에게 보이면 곤란한 파일은 보내지 마세요.
 - 윈도우 PC에서 자주 쓴다면 Microsoft Store에서 [Clipboard Share - 온라인 클립보드](https://apps.microsoft.com/detail/9N2BTKVCPCC5)를 설치해 둘 수 있습니다. 이 사이트를 앱 창으로 여는 것이라 기능은 같고, 시작 메뉴에서 바로 열립니다.
 
 ## 자주 묻는 질문
@@ -806,7 +806,7 @@ Source: https://www.clipboardapp.org/guide/phone-video-to-pc-transfer.html
 - 아이폰 영상은 기본이 HEVC(H.265) 형식이라 윈도우 기본 플레이어에서 안 열릴 수 있습니다. 설정의 카메라에서 형식을 호환성 우선으로 바꾸면 이후 촬영분은 H.264로 저장되고, 이미 찍은 영상은 VLC 같은 플레이어로 재생됩니다.
 - 와이파이 속도에 따라 수백 MB짜리 영상은 1~2분 넘게 걸릴 수 있습니다. 업로드 중에는 폰 화면이 꺼지지 않게 두세요. 끊기면 같은 영상을 다시 고르면 이어서 올립니다.
 - 모든 기기가 페이지를 닫으면 올려 둔 파일과 텍스트는 곧 삭제됩니다. 받을 파일은 미루지 말고 바로 저장하는 편이 좋습니다.
-- 두 기기가 다른 네트워크에 있다면 **전체 공유** 탭을 쓸 수 있지만, 이 탭의 항목은 서비스를 열어 둔 모든 사람에게 보입니다. 남에게 보이면 곤란한 파일은 같은 네트워크에서 주고받거나, '비밀번호로 잠그기'를 켜고 보내세요. 잠근 파일은 비밀번호를 아는 사람만 열 수 있습니다.
+- 두 기기가 다른 네트워크에 있다면(폰이 데이터를 쓰는 경우 등) **＋ 방** → '새 방 만들기'로 방을 만들고, 다른 기기에서 '초대'의 QR을 찍거나 그림 4개로 들어오세요. 방에서 주고받은 파일은 파일 이름까지 이 기기에서 암호화되고, 방 열쇠는 서버로 가지 않습니다. **전체 공유** 탭도 네트워크와 상관없이 쓸 수 있지만 서비스를 열어 둔 모든 사람에게 보이니, 남에게 보이면 곤란한 파일은 보내지 마세요.
 
 ## 자주 묻는 질문
 
@@ -845,7 +845,7 @@ Source: https://www.clipboardapp.org/guide/iphone-video-to-pc-transfer.html
 - 업로드 중에 아이폰 화면이 꺼지거나 사파리를 벗어나면 전송이 멈출 수 있습니다. 큰 영상은 끝날 때까지 화면을 켜 두세요. 끊겼다면 같은 영상을 다시 고르면 이어서 올립니다.
 - 와이파이 속도에 따라 수백 MB짜리 영상은 1~2분 넘게 걸릴 수 있습니다.
 - 모든 기기가 페이지를 닫으면 올려 둔 파일은 곧 삭제됩니다. 받을 영상은 미루지 말고 바로 저장하세요.
-- 두 기기가 다른 네트워크에 있다면 **전체 공유** 탭을 쓸 수 있지만, 이 탭의 항목은 서비스를 열어 둔 모든 사람에게 보입니다. 가족 영상처럼 남에게 보이면 곤란한 파일은 같은 네트워크에서 주고받거나, '비밀번호로 잠그기'를 켜고 보내세요. 잠근 파일은 비밀번호를 아는 사람만 열 수 있습니다.
+- 두 기기가 다른 네트워크에 있다면(폰이 데이터를 쓰는 경우 등) **＋ 방** → '새 방 만들기'로 방을 만들고, 다른 기기에서 '초대'의 QR을 찍거나 그림 4개로 들어오세요. 방에서 주고받은 파일은 파일 이름까지 이 기기에서 암호화되고, 방 열쇠는 서버로 가지 않습니다. **전체 공유** 탭도 네트워크와 상관없이 쓸 수 있지만 서비스를 열어 둔 모든 사람에게 보이니, 가족 영상처럼 남에게 보이면 곤란한 파일은 보내지 마세요.
 
 ## 자주 묻는 질문
 
@@ -1468,7 +1468,7 @@ If the phone and the PC are on the same Wi-Fi, one tap does it. Copy on the phon
 - Add the page to your phone's home screen so it opens like an app. On Android it also shows up in the share sheet, so you can share selected text straight from any app.
 - Nothing is synced in the background. The browser only reads the clipboard when you tap Paste, so it does not follow everything you copy.
 - Verification codes expire quickly; keep the page open on the PC before you request the code.
-- If the two devices are on different networks, switch to the **Everyone** tab. Items there are visible to anyone with the service open, so keep personal files and one-time codes on the same network instead.
+- If the two devices are on different networks (for example a phone on mobile data), press **＋ Room** → **Create a new room**, then scan the invite QR code on the other device or join with the 4 pictures. Text and files you share inside a room are encrypted on your device, and the room key never goes to the server. The **Everyone** tab also works across networks, but items there are visible to anyone with the service open, so keep personal files and one-time codes out of it.
 
 ## Questions
 
