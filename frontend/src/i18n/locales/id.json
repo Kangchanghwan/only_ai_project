@@ -28,6 +28,8 @@
     "installText": "Pasang sebagai aplikasi agar lebih cepat dibuka lain kali",
     "installAction": "Pasang",
     "bookmarkText": "Tekan {key} untuk menambahkan ke bookmark dan buka langsung lain kali",
+    "pairText": "Hubungkan dengan {name} dalam ruang agar lain kali bisa langsung kirim, meski Wi-Fi berbeda?",
+    "pairAction": "Hubungkan di ruang",
     "close": "Tutup"
   },
   "identity": {

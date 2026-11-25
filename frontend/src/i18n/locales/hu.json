@@ -28,6 +28,8 @@
     "installText": "Telepítse alkalmazásként, így legközelebb gyorsabban megnyílik",
     "installAction": "Telepítés",
     "bookmarkText": "A(z) {key} billentyűkombinációval könyvjelzőzze, és legközelebb azonnal megnyithatja",
+    "pairText": "Összekapcsolod magad {name} eszközzel egy szobában, hogy legközelebb más Wi-Fin is azonnal küldhess?",
+    "pairAction": "Összekapcsolás szobában",
     "close": "Bezárás"
   },
   "identity": {

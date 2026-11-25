@@ -28,6 +28,8 @@
     "installText": "Install it as an app to open it faster next time",
     "installAction": "Install",
     "bookmarkText": "Press {key} to bookmark this page and open it right away next time",
+    "pairText": "Connect with {name} in a room so you can send right away next time, even on a different Wi-Fi?",
+    "pairAction": "Connect in a room",
     "close": "Close"
   },
   "identity": {

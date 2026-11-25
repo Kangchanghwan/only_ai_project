@@ -28,6 +28,8 @@
     "installText": "アプリとしてインストールすると、次回からすばやく開けます",
     "installAction": "インストール",
     "bookmarkText": "{key}でブックマークに追加すると、次回すぐ開けます",
+    "pairText": "次回Wi-Fiが違ってもすぐ送れるように、{name}とルームでつないでおきますか？",
+    "pairAction": "ルームでつなぐ",
     "close": "閉じる"
   },
   "identity": {

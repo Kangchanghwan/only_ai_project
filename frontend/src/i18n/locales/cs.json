@@ -28,6 +28,8 @@
     "installText": "Nainstalujte si ji jako aplikaci a příště se otevře rychleji",
     "installAction": "Instalovat",
     "bookmarkText": "Přidejte stránku do záložek pomocí {key} a příště ji otevřete hned",
+    "pairText": "Propojit se s {name} v místnosti, abyste příště mohli posílat hned, i na jiné Wi-Fi?",
+    "pairAction": "Propojit v místnosti",
     "close": "Zavřít"
   },
   "identity": {

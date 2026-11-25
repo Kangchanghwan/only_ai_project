@@ -28,6 +28,8 @@
     "installText": "Uygulama olarak yüklerseniz bir dahaki sefere daha hızlı açılır",
     "installAction": "Yükle",
     "bookmarkText": "{key} ile yer imlerine ekleyin, bir dahaki sefere hemen açın",
+    "pairText": "Bir dahaki sefere farklı Wi-Fi'da da hemen gönderebilmek için {name} ile bir odada bağlanılsın mı?",
+    "pairAction": "Odada bağlan",
     "close": "Kapat"
   },
   "identity": {

@@ -28,6 +28,8 @@
     "installText": "Installez l'appli pour l'ouvrir plus vite la prochaine fois",
     "installAction": "Installer",
     "bookmarkText": "Ajoutez cette page aux favoris avec {key} pour l'ouvrir directement la prochaine fois",
+    "pairText": "Se connecter avec {name} dans un salon pour envoyer directement la prochaine fois, même sur un autre Wi-Fi ?",
+    "pairAction": "Connecter en salon",
     "close": "Fermer"
   },
   "identity": {

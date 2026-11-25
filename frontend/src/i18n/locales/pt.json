@@ -28,6 +28,8 @@
     "installText": "Instale como app para abrir mais rápido da próxima vez",
     "installAction": "Instalar",
     "bookmarkText": "Adicione aos favoritos com {key} para abrir direto da próxima vez",
+    "pairText": "Conectar com {name} em uma sala para enviar na hora da próxima vez, mesmo em outro Wi-Fi?",
+    "pairAction": "Conectar em uma sala",
     "close": "Fechar"
   },
   "identity": {

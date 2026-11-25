@@ -28,6 +28,8 @@
     "installText": "앱으로 설치하면 다음엔 더 빨리 열 수 있어요",
     "installAction": "설치",
     "bookmarkText": "{key}로 즐겨찾기에 추가하면 다음에 바로 열 수 있어요",
+    "pairText": "다음엔 와이파이가 달라도 바로 보낼 수 있게, {name} 기기와 방으로 연결해 둘까요?",
+    "pairAction": "방으로 연결",
     "close": "닫기"
   },
   "identity": {

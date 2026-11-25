@@ -28,6 +28,8 @@
     "installText": "安装为应用后，下次可以更快打开",
     "installAction": "安装",
     "bookmarkText": "按 {key} 添加书签，下次可以直接打开",
+    "pairText": "要和{name}建立房间连接吗？下次即使Wi-Fi不同也能直接发送。",
+    "pairAction": "用房间连接",
     "close": "关闭"
   },
   "identity": {

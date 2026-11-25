@@ -19,7 +19,7 @@ vi.mock('./usePWAInstall', () => ({
   usePWAInstall: () => ({ canInstall: pwa.canInstall, isInstalled: pwa.isInstalled, promptInstall: pwa.promptInstall })
 }))
 
-import { useNextTimeHint, NEXT_TIME_KEY, SHOW_DELAY_MS, AUTO_HIDE_MS } from './useNextTimeHint'
+import { useNextTimeHint, pickPairTarget, NEXT_TIME_KEY, SHOW_DELAY_MS, AUTO_HIDE_MS } from './useNextTimeHint'
 
 const stored = () => JSON.parse(localStorage.getItem(NEXT_TIME_KEY))
 const wait = (ms = SHOW_DELAY_MS) => vi.advanceTimersByTime(ms)
@@ -37,197 +37,112 @@ beforeEach(() => {
 })
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks() })
 
-describe('useNextTimeHint 종류 결정', () => {
-  it('데스크톱에서 설치 불가면 bookmark', () => {
-    const h = useNextTimeHint()
-    h.markSuccess('upload')
-    expect(h.visible.value).toBe(false) // 성공 토스트가 먼저 보이도록 1.2초 뒤
-    wait()
-    expect(h.visible.value).toBe(true)
-    expect(h.variant.value).toBe('bookmark')
-    expect(h.kind.value).toBe('upload')
-    expect(track).toHaveBeenCalledWith('next_time_hint_view', { variant: 'bookmark', kind: 'upload' })
-  })
 
-  it('iOS는 ios_shortcut (canInstall보다 우선)', () => {
-    pwa.ios = true
-    mobile.value = true
-    pwa.canInstall.value = true
-    const h = useNextTimeHint()
-    h.markSuccess('text'); wait()
-    expect(h.variant.value).toBe('ios_shortcut')
-  })
+const ME = 'me'
+const PEER = { socketId: 'p1', identity: { adj: 1, animal: 2, suffix: 0 } }
+const base = () => ({ scope: 'ip', devices: [{ socketId: ME }, PEER], mySocketId: ME, pairStates: {}, rooms: [], busy: false })
+/** 상대가 늘 있는 상태의 힌트 */
+const mk = (extra = {}) => {
+  const onPair = vi.fn()
+  const h = useNextTimeHint({ getPairTarget: (scope) => pickPairTarget({ ...base(), scope }), onPair, ...extra })
+  return { h, onPair }
+}
 
-  it('canInstall이면 install (모바일이어도)', () => {
-    mobile.value = true
-    pwa.canInstall.value = true
-    const h = useNextTimeHint()
-    h.markSuccess('download'); wait()
-    expect(h.variant.value).toBe('install')
+describe('pickPairTarget: 4가지 조건', () => {
+  it('모두 만족하면 그 기기', () => {
+    expect(pickPairTarget(base())).toBe(PEER)
   })
-
-  it('표시 시점에 계산한다: 성공 호출 뒤에 canInstall이 생기면 install', () => {
-    const h = useNextTimeHint()
-    h.markSuccess('copy')
-    pwa.canInstall.value = true
-    wait()
-    expect(h.variant.value).toBe('install')
+  it('1) 같은 네트워크 탭이 아니면 null', () => {
+    expect(pickPairTarget({ ...base(), scope: 'global' })).toBeNull()
+    expect(pickPairTarget({ ...base(), scope: 'prv' })).toBeNull()
   })
-
-  it('standalone이거나 설치됨이면 보이지 않는다', () => {
-    pwa.standalone = true
-    const a = useNextTimeHint()
-    a.markSuccess('upload'); wait()
-    expect(a.visible.value).toBe(false)
-    pwa.standalone = false
-    pwa.isInstalled.value = true
-    const b = useNextTimeHint()
-    b.markSuccess('upload'); wait()
-    expect(b.visible.value).toBe(false)
-    expect(localStorage.getItem(NEXT_TIME_KEY)).toBeNull()
+  it('2) 다른 기기가 정확히 1대가 아니면 null', () => {
+    expect(pickPairTarget({ ...base(), devices: [{ socketId: ME }] })).toBeNull()
+    expect(pickPairTarget({ ...base(), devices: [{ socketId: ME }, PEER, { socketId: 'p2' }] })).toBeNull()
   })
-
-  it('설치 못 하는 모바일(안드로이드 인앱 등)은 보이지 않는다', () => {
-    mobile.value = true
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); wait()
-    expect(h.visible.value).toBe(false)
-    expect(h.variant.value).toBeNull()
+  it('3) 그 기기와 이미 1:1 방이 있으면 null (소켓이 바뀌어도 이름표로 안다)', () => {
+    expect(pickPairTarget({ ...base(), pairStates: { p1: { state: 'paired', roomId: 'r' } } })).toBeNull()
+    expect(pickPairTarget({ ...base(), rooms: [{ roomId: 'r', peer: { socketId: 'old', identity: { ...PEER.identity } } }] })).toBeNull()
+  })
+  it('4) 다른 초대가 진행 중이면 null', () => {
+    expect(pickPairTarget({ ...base(), busy: true })).toBeNull()
+    expect(pickPairTarget({ ...base(), pairStates: { x: { state: 'pending' } } })).toBeNull()
   })
 })
 
-describe('useNextTimeHint 노출 규칙', () => {
-  it('표시하면 shows가 1 늘고, 3회가 되면 더 보이지 않는다', () => {
-    for (let i = 1; i <= 3; i++) {
-      const h = useNextTimeHint() // 새 인스턴스 = 새 페이지 로드
-      h.markSuccess('upload'); wait()
-      expect(h.visible.value, `${i}번째`).toBe(true)
-      expect(stored().shows).toBe(i)
-      expect(stored().done).toBe(false)
+describe('useNextTimeHint pair 변형', () => {
+  it('같은 네트워크에서 성공 1.2초 뒤 pair로 보이고 view를 기록한다', () => {
+    const { h } = mk()
+    h.markSuccess('text', 'ip')
+    expect(h.visible.value).toBe(false)
+    wait()
+    expect(h.visible.value).toBe(true)
+    expect(h.variant.value).toBe('pair')
+    expect(h.peer.value).toEqual(PEER)
+    expect(track).toHaveBeenCalledWith('next_time_hint_view', { variant: 'pair', kind: 'text' })
+  })
+
+  it('조건이 안 맞으면 아무것도 보여 주지 않는다 (예전 변형도 안 보임)', () => {
+    pwa.canInstall.value = true
+    const { h } = mk()
+    h.markSuccess('upload', 'global'); wait()
+    expect(h.visible.value).toBe(false)
+    expect(track).not.toHaveBeenCalled()
+    const h2 = useNextTimeHint()
+    h2.markSuccess('upload', 'ip'); wait()
+    expect(h2.visible.value).toBe(false)
+  })
+
+  it('버튼: 초대 함수를 그 기기 대상으로 1번 호출, click 기록, done', () => {
+    const { h, onPair } = mk()
+    h.markSuccess('text', 'ip'); wait()
+    h.act()
+    expect(onPair).toHaveBeenCalledTimes(1)
+    expect(onPair).toHaveBeenCalledWith(expect.objectContaining({ socketId: "p1" }))
+    expect(track).toHaveBeenCalledWith('next_time_hint_click', { variant: 'pair' })
+    expect(h.visible.value).toBe(false)
+    expect(stored().done).toBe(true)
+  })
+
+  it('닫기: dismiss 기록, 초대하지 않는다', () => {
+    const { h, onPair } = mk()
+    h.markSuccess('text', 'ip'); wait()
+    h.dismiss()
+    expect(onPair).not.toHaveBeenCalled()
+    expect(track).toHaveBeenCalledWith('next_time_hint_dismiss', { variant: 'pair' })
+    expect(stored().done).toBe(true)
+  })
+
+  it('3회 상한', () => {
+    for (let i = 0; i < 4; i++) {
+      const { h } = mk()
+      h.markSuccess('text', 'ip'); wait()
+      expect(h.visible.value).toBe(i < 3)
     }
-    const h4 = useNextTimeHint()
-    h4.markSuccess('upload'); wait()
-    expect(h4.visible.value).toBe(false)
     expect(stored().shows).toBe(3)
   })
 
-  it('done이면 보이지 않는다', () => {
-    localStorage.setItem(NEXT_TIME_KEY, JSON.stringify({ shows: 1, done: true }))
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); wait()
+  it('페이지 로드당 1회, 20초 뒤 사라짐(done 아님)', () => {
+    const { h } = mk()
+    h.markSuccess('text', 'ip'); wait()
+    wait(AUTO_HIDE_MS)
     expect(h.visible.value).toBe(false)
-  })
-
-  it('페이지 로드당 1회: 두 번째 성공은 무시한다', () => {
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); wait()
-    h.dismiss()
-    localStorage.setItem(NEXT_TIME_KEY, JSON.stringify({ shows: 1, done: false }))
-    h.markSuccess('text'); wait()
-    expect(h.visible.value).toBe(false)
-    expect(track.mock.calls.filter((c) => c[0] === 'next_time_hint_view')).toHaveLength(1)
-  })
-
-  it('지연 중 연속 성공은 한 번만 예약한다', () => {
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); h.markSuccess('text'); h.markSuccess('copy'); wait()
-    expect(stored().shows).toBe(1)
-    expect(h.kind.value).toBe('upload')
-  })
-
-  it('도착 알림 안내가 떠 있으면 건너뛰고, 사라진 뒤 다음 성공에서 보인다', () => {
-    const blocked = ref(true)
-    const h = useNextTimeHint({ isBlocked: () => blocked.value })
-    h.markSuccess('upload'); wait()
-    expect(h.visible.value).toBe(false)
-    expect(localStorage.getItem(NEXT_TIME_KEY)).toBeNull()
-    blocked.value = false
-    h.markSuccess('upload'); wait()
-    expect(h.visible.value).toBe(true)
-  })
-
-  it('20초 뒤 자동으로 숨기되 done은 아니다', () => {
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); wait()
-    expect(h.visible.value).toBe(true)
-    wait(AUTO_HIDE_MS - 1)
-    expect(h.visible.value).toBe(true)
-    wait(1)
+    h.markSuccess('text', 'ip'); wait()
     expect(h.visible.value).toBe(false)
     expect(stored()).toEqual({ shows: 1, done: false })
-    expect(track.mock.calls.map((c) => c[0])).toEqual(['next_time_hint_view'])
   })
 
-  it('닫기: done=true, dismiss 이벤트(variant만)', () => {
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); wait()
-    h.dismiss()
+  it('다른 창이 떠 있으면 건너뛴다', () => {
+    const { h } = mk({ isBlocked: () => true })
+    h.markSuccess('text', 'ip'); wait()
     expect(h.visible.value).toBe(false)
-    expect(stored().done).toBe(true)
-    expect(track).toHaveBeenCalledWith('next_time_hint_dismiss', { variant: 'bookmark' })
-    wait(AUTO_HIDE_MS) // 숨김 타이머가 남아 있지 않다
-    expect(track.mock.calls.filter((c) => c[0] === 'next_time_hint_dismiss')).toHaveLength(1)
   })
 
-  it('버튼 클릭: done=true, click 이벤트, install이면 promptInstall', () => {
-    pwa.canInstall.value = true
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); wait()
-    h.act()
-    expect(pwa.promptInstall).toHaveBeenCalledTimes(1)
-    expect(h.visible.value).toBe(false)
-    expect(stored().done).toBe(true)
-    expect(track).toHaveBeenCalledWith('next_time_hint_click', { variant: 'install' })
-  })
-
-  it('ios_shortcut 클릭은 promptInstall을 부르지 않는다', () => {
-    pwa.ios = true
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); wait()
-    h.act()
-    expect(pwa.promptInstall).not.toHaveBeenCalled()
-    expect(track).toHaveBeenCalledWith('next_time_hint_click', { variant: 'ios_shortcut' })
-  })
-
-  it('이벤트 파라미터에는 variant와 kind만 들어간다', () => {
-    const h = useNextTimeHint()
-    h.markSuccess('copy'); wait(); h.dismiss()
-    for (const c of track.mock.calls) {
-      expect(Object.keys(c[1] || {}).every((k) => k === 'variant' || k === 'kind')).toBe(true)
-    }
-  })
-})
-
-describe('useNextTimeHint 저장소 예외', () => {
-  it('getItem/setItem이 던져도 앱 흐름은 계속되고 안내는 보인다', () => {
-    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked') })
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked') })
-    const h = useNextTimeHint()
-    expect(() => { h.markSuccess('upload'); wait() }).not.toThrow()
+  it('저장소가 던져도 보인다', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('x') })
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('x') })
+    const { h } = mk()
+    h.markSuccess('text', 'ip'); wait()
     expect(h.visible.value).toBe(true)
-    expect(() => h.dismiss()).not.toThrow()
-    expect(h.visible.value).toBe(false)
-  })
-
-  it('깨진 JSON이면 처음 상태로 본다', () => {
-    localStorage.setItem(NEXT_TIME_KEY, '{oops')
-    const h = useNextTimeHint()
-    h.markSuccess('upload'); wait()
-    expect(h.visible.value).toBe(true)
-    expect(stored().shows).toBe(1)
-  })
-})
-
-describe('useNextTimeHint hide (다른 창이 열릴 때)', () => {
-  it('이번 페이지에서만 숨기고 기기 기록(shows)은 그대로 둔다', () => {
-    const h = useNextTimeHint()
-    h.markSuccess('upload')
-    wait()
-    expect(h.visible.value).toBe(true)
-    const before = stored()
-    h.hide()
-    expect(h.visible.value).toBe(false)
-    expect(stored()).toEqual(before)
-    expect(stored().done).not.toBe(true)
   })
 })
