@@ -73,13 +73,16 @@ export function createRoomPresence({ onJoin, onLeave, graceMs = 20000, setTimer 
         if (mySocketId && list.some((d) => d?.socketId === mySocketId)) state.ready = true
         return
       }
+      // 알림을 받는 쪽이 '지금 기기 수'를 바로 셀 수 있도록 목록을 먼저 바꾼다
+      const prev = state.present
+      state.present = next
       for (const [key, d] of next) {
-        if (state.present.has(key)) continue
+        if (prev.has(key)) continue
         // 잠깐 끊겼다 돌아온 기기: 나감도 들어옴도 알리지 않는다
         if (cancelPending(roomKey, key)) continue
         onJoin(roomKey, d)
       }
-      for (const [key, d] of state.present) {
+      for (const [key, d] of prev) {
         if (next.has(key)) continue
         const id = `${roomKey}|${key}`
         if (pendingLeaves.has(id)) continue
@@ -89,7 +92,11 @@ export function createRoomPresence({ onJoin, onLeave, graceMs = 20000, setTimer 
         }, graceMs)
         pendingLeaves.set(id, { timer, device: d })
       }
-      state.present = next
+    },
+
+    /** 그 방에 지금 보이는 다른 기기 수 (나 제외) */
+    count(roomKey) {
+      return rooms.get(roomKey)?.present.size ?? 0
     },
 
     /** 내가 재접속해 목록을 새로 받는 상태로. 기다리던 나감 알림은 버린다 */

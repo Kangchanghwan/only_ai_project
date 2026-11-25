@@ -35,9 +35,9 @@ import { trackUploadFileInfo, textMetaParams } from './utils/uploadMeta'
 import { reportError } from './utils/userErrors.js'
 import { useArrivalBadge } from './composables/useArrivalBadge'
 import { usePush } from './composables/usePush'
-import ArrivalNotifyPrompt from './components/ArrivalNotifyPrompt.vue'
 import NextTimeHint from './components/NextTimeHint.vue'
 import { useNextTimeHint } from './composables/useNextTimeHint'
+import { shouldSkipPresenceToast, trackPresenceSkipped } from './utils/crowdedPresence'
 import WindowDropOverlay from './components/WindowDropOverlay.vue'
 import { parseSendLink, consumePendingSendLink } from './utils/sendLink'
 import { formatSizeMB } from './utils/fileUtils'
@@ -98,6 +98,9 @@ function presenceRoomName(roomKey) {
 }
 function presenceToast(kind, roomKey, device) {
   if (!isValidIdentity(device?.identity)) return
+  // 기기가 많은 같은 네트워크(교실 등)는 조용히. 기기 수는 기기 카드의 "다른 기기 N대"로 보인다
+  const others = presence.count(roomKey)
+  if (shouldSkipPresenceToast(roomKey, others)) { trackPresenceSkipped(others); return }
   const emoji = animalEmoji(device.identity.animal)
   // 들어옴은 기기·브라우저까지, 나감은 이름만
   const who = kind === 'join' ? `${emoji} ${describeConnected(device, t)}` : `${emoji} ${identityName(device.identity, t)}`
@@ -1513,7 +1516,6 @@ onUnmounted(() => {
         @load-more="handleLoadMore"
       />
 
-      <ArrivalNotifyPrompt :visible="arrival.promptVisible.value" @enable="arrival.enableNotifications" @dismiss="arrival.dismissPrompt" />
       <NextTimeHint :visible="nextTime.visible.value" :variant="nextTime.variant.value" @action="nextTime.act" @dismiss="nextTime.dismiss" />
 
       <!-- 창 전체 드롭 -->

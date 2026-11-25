@@ -108,32 +108,17 @@ describe('useArrivalBadge', () => {
       return { N, created }
     }
 
-    it('권한을 처음부터 묻지 않고, 돌아왔을 때 안내를 1회만 보인다', () => {
+    it('다른 탭에 있는 동안 도착이 생겨도 권유가 뜨지 않고 권한도 묻지 않는다', () => {
       const { N } = mockNotification('default')
       badge = useArrivalBadge({ getMySocketId: () => 'me' })
-      expect(N.requestPermission).not.toHaveBeenCalled()
-      setAway(true)
-      badge.onArrival({ kind: 'file', count: 1, sender: OTHER })
-      expect(badge.promptVisible.value).toBe(false)
-      returnToTab()
-      expect(badge.promptVisible.value).toBe(true)
-      badge.dismissPrompt()
-      expect(badge.promptVisible.value).toBe(false)
       setAway(true)
       badge.onArrival({ kind: 'file', count: 1, sender: OTHER })
       returnToTab()
       expect(badge.promptVisible.value).toBe(false)
       expect(N.requestPermission).not.toHaveBeenCalled()
-    })
-
-    it('거절 기록이 있으면 다시 안 띄운다', () => {
-      mockNotification('default')
-      localStorage.setItem(NOTIFY_PREF_KEY, 'dismissed')
-      badge = useArrivalBadge({ getMySocketId: () => 'me' })
-      setAway(true)
-      badge.onArrival({ kind: 'file', count: 1, sender: OTHER })
-      returnToTab()
-      expect(badge.promptVisible.value).toBe(false)
+      expect(trackEvent).not.toHaveBeenCalledWith('notify_prompt', expect.anything())
+      expect(trackEvent).toHaveBeenCalledWith('arrival_hidden', expect.anything())
+      expect(trackEvent).toHaveBeenCalledWith('arrival_seen', expect.anything())
     })
 
     it('알림 켜기 → 권한 거부면 기록한다', async () => {
@@ -228,18 +213,9 @@ describe('useArrivalBadge', () => {
       await expect(badge.enableNotifications()).resolves.toBeUndefined()
     })
 
-    it('모바일: 푸시가 지원되면 돌아왔을 때 안내를 보인다', () => {
+    it('모바일: 푸시가 지원돼도 권유를 띄우지 않는다', () => {
       mockGranting('default')
       badge = useArrivalBadge({ getMySocketId: () => 'me', isMobile: true, push: fakePush(true) })
-      setAway(true)
-      badge.onArrival({ kind: 'file', count: 1, sender: OTHER })
-      returnToTab()
-      expect(badge.promptVisible.value).toBe(true)
-    })
-
-    it('모바일: 푸시가 지원되지 않으면 안내하지 않는다', () => {
-      mockGranting('default')
-      badge = useArrivalBadge({ getMySocketId: () => 'me', isMobile: true, push: fakePush(false) })
       setAway(true)
       badge.onArrival({ kind: 'file', count: 1, sender: OTHER })
       returnToTab()
