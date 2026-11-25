@@ -38,9 +38,10 @@ const SILENT = new Set(['declined-by-me'])
  *   getRoomDeviceCount?: (roomId: string) => number|null  새 방(prv-g-)의 현재 접속 기기 수. 정확히 2대일 때만 "같은 방"으로 본다
  *   getRoomDevices?: (roomId: string) => object[]|null  방의 현재 접속 기기 목록(나 포함). 서버처럼 그룹 방에 정확히 2대면 상대 기기를 "같은 방"으로 본다
  *   getMySocketId?: () => string|null
+ *   qrVerify?: Function  QR 연결 요청의 증명 확인 (useQrHost.verify)
  * }} deps
  */
-export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t, onRoomReady, leaveRoom, getMyName = () => '', getRoomDeviceCount = null, getRoomDevices = null, getMySocketId = () => null }) {
+export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t, onRoomReady, leaveRoom, getMyName = () => '', getRoomDeviceCount = null, getRoomDevices = null, getMySocketId = () => null, qrVerify = null }) {
   const sessions = ref([])
   /** sessionId → 내가 초대한 대상 socketId */
   const targets = ref({})
@@ -75,7 +76,7 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
       if (!target) continue
       const initiatorWaiting = s.role === 'initiator' && !s.legacy && s.state === 'waiting-peer-confirm'
       if (s.state === 'inviting' || initiatorWaiting) {
-        map[target] = { state: 'pending', sessionId: s.sessionId, expiresAt: s.expiresAt, sas: s.sas, confirmed: !!s.confirmed }
+        map[target] = { state: 'pending', sessionId: s.sessionId, expiresAt: s.expiresAt, sas: s.sas, confirmed: !!s.confirmed, viaQr: !!s.viaQr }
       } else if (['accepted', 'keyed', 'waiting-peer-confirm'].includes(s.state)) {
         map[target] = { state: 'connecting', sessionId: s.sessionId }
       }
@@ -123,6 +124,10 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
       notify.showInfo(t('pair.ended.expired'))
     } else if (reason === 'peer-left') {
       notify.showInfo(t('pair.ended.peerLeft'))
+    } else if (reason === 'qr-expired' || reason === 'qr-invalid') {
+      notify.showError(t('qrLink.expired'))
+    } else if (reason === 'qr-busy') {
+      notify.showInfo(t('qrLink.busy'))
     } else {
       notify.showError(t('pair.ended.failed'))
     }
@@ -179,27 +184,32 @@ export function usePairFlow({ adapter, privateRooms, notify, track = () => {}, t
     await onRoomReady?.(roomId, peer)
   }
 
-  const pairing = adapter ? createPairing({ socket: adapter, onPaired: (info) => { handlePaired(info).catch((e) => console.error('[pair] 완료 처리 실패:', e?.message || e)) } }) : null
+  const pairing = adapter ? createPairing({ socket: adapter, qrVerify, onPaired: (info) => { handlePaired(info).catch((e) => console.error('[pair] 완료 처리 실패:', e?.message || e)) } }) : null
   const unsubscribe = pairing ? pairing.onChange(onSessions) : () => {}
 
   const onVisibility = () => syncTitle()
   if (typeof document !== 'undefined') document.addEventListener('visibilitychange', onVisibility)
 
   // === 동작 ===
-  /** 기기 행의 "1:1" 버튼 */
-  async function invite(device) {
-    if (!pairing || !device?.socketId) return
+  /**
+   * 기기 행의 "1:1" 버튼. QR 연결이면 opts.qr(회차·비밀·지문)를 넘긴다.
+   * opts.silent: 실패 안내를 부르는 쪽이 직접 띄운다
+   * @returns {Promise<{ok: boolean, sessionId?: string, code?: string}>}
+   */
+  async function invite(device, { qr = null, silent = false } = {}) {
+    if (!pairing || !device?.socketId) return { ok: false, code: 'FAILED' }
     const id = device.socketId
-    if (preInvite.value[id] || pairStates.value[id]) return
+    if (preInvite.value[id] || pairStates.value[id]) return { ok: false, code: 'BUSY' }
     preInvite.value = { ...preInvite.value, [id]: true }
     try {
-      const res = await pairing.invite(id)
+      const res = await pairing.invite(id, qr ? { qr } : undefined)
       if (res.ok) {
         targets.value = { ...targets.value, [res.sessionId]: id }
         track('pair_invite')
-      } else {
+      } else if (!silent) {
         notify.showError(inviteErrorText(res.code, t))
       }
+      return res
     } finally {
       const { [id]: _x, ...rest } = preInvite.value
       preInvite.value = rest

@@ -72,6 +72,10 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  /** 빈 화면 QR에 담을 주소 (ConnectionCard로 전달) */
+  qrUrl: { type: String, default: undefined },
+  /** QR로 찾은 다른 네트워크의 PC (ConnectionCard로 전달) */
+  qrPinnedDevice: { type: Object, default: null },
   /** 내 정체성/소켓 ID (구버전 백엔드면 null → 기존 아이콘 표시로 폴백) */
   myIdentity: {
     type: Object,
@@ -282,6 +286,8 @@ watch(
             :other-network-devices="otherNetworkDevices"
             :other-network-pending="scope === 'ip' && globalRoomDevices.length === 0"
             :other-network-more="otherNetworkMore"
+            :qr-url="qrUrl"
+            :pinned-device="qrPinnedDevice"
             @go-find="rosterRef?.goFind()"
             @reroll="$emit('reroll-identity')"
             @hint-copied="$emit('hint-copied', $event)"

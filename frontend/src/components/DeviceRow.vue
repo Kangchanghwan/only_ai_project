@@ -51,6 +51,8 @@ const tilesReady = ref(false)
 const sasReady = computed(() => images.value.length === 4 && tilesReady.value)
 const isPending = computed(() => !!pair && st.value?.state === 'pending')
 const confirmed = computed(() => !!st.value?.confirmed)
+/** QR로 보낸 요청: 그림 비교가 없고 PC 수락만 기다린다 */
+const viaQr = computed(() => !!st.value?.viaQr)
 
 const joinedText = computed(() => {
   const d = props.device
@@ -127,10 +129,15 @@ const joinedText = computed(() => {
       class="mt-2 rounded-none border border-scope-private/50 bg-scope-private/5 p-2 flex flex-col gap-2"
       data-testid="pair-pending-panel"
     >
-      <p class="m-0 text-sm font-semibold">{{ t('pair.confirm.askSame') }}</p>
-      <PairSasTiles :images="images" :size="wide ? 'md' : 'lg'" @ready-change="tilesReady = $event" />
+      <p v-if="viaQr" class="m-0 text-sm font-semibold" role="status" data-testid="pair-qr-waiting">{{ t('qrLink.waiting') }}</p>
+      <template v-else>
+        <p class="m-0 text-sm font-semibold">{{ t('pair.confirm.askSame') }}</p>
+        <PairSasTiles :images="images" :size="wide ? 'md' : 'lg'" @ready-change="tilesReady = $event" />
+      </template>
+      <!-- QR 요청: 그림 확인 버튼 없이 아래 '취소' 줄만 -->
+      <template v-if="viaQr"></template>
       <p
-        v-if="confirmed"
+        v-else-if="confirmed"
         class="m-0 min-h-[44px] flex items-center justify-center text-sm font-semibold text-scope-private text-center"
         role="status"
         data-testid="pair-confirmed-text"
@@ -164,7 +171,7 @@ const joinedText = computed(() => {
           @click="pair.confirm(st.sessionId)"
         >{{ t('pair.confirm.same') }}</button>
       </div>
-      <div v-if="wide || confirmed" class="flex items-center justify-between gap-2">
+      <div v-if="wide || confirmed || viaQr" class="flex items-center justify-between gap-2">
         <span class="text-xs text-text-secondary">{{ t('pair.acceptNote') }}</span>
         <button
           type="button"

@@ -592,5 +592,13 @@
     "notFound": "Ningún dispositivo conectado tiene este nombre ahora",
     "rateLimited": "Inténtalo de nuevo en un momento",
     "findError": "No se encontró. Inténtalo de nuevo"
+  },
+  "qrLink": {
+    "requestTitle": "Solicitud de conexión por QR",
+    "requestBody": "Este dispositivo escaneó tu código QR. Acepta para abrir una sala solo para los dos.",
+    "waiting": "Solicitud de conexión enviada por QR. Cuando el PC acepte se abrirá una sala solo para los dos.",
+    "expired": "Este código QR caducó. Vuelve a escanear el código QR de la pantalla del PC.",
+    "busy": "El PC tiene demasiadas solicitudes. Vuelve a escanear en un momento.",
+    "notFound": "No se encontró el PC. Vuelve a escanear el código QR de la pantalla del PC."
   }
 }

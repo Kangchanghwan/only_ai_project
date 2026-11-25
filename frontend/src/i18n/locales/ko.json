@@ -718,5 +718,13 @@
   },
   "guide": {
     "roomVisibility": "이 방에 들어온 기기에게만 보여요."
+  },
+  "qrLink": {
+    "requestTitle": "QR로 연결 요청",
+    "requestBody": "QR을 찍은 기기예요. 수락하면 둘만 쓰는 방이 열려요.",
+    "waiting": "QR로 연결 요청을 보냈어요. PC에서 수락하면 둘만 쓰는 방이 열려요.",
+    "expired": "QR 시간이 지났어요. PC 화면의 QR을 다시 찍어 주세요.",
+    "busy": "PC에 요청이 많아요. 잠시 뒤에 다시 찍어 주세요.",
+    "notFound": "PC를 찾지 못했어요. PC 화면의 QR을 다시 찍어 주세요."
   }
 }

@@ -592,5 +592,13 @@
     "notFound": "Niciun dispozitiv conectat nu are acest nume acum",
     "rateLimited": "Încearcă din nou peste puțin timp",
     "findError": "Nu a fost găsit. Încearcă din nou"
+  },
+  "qrLink": {
+    "requestTitle": "Cerere de conectare prin QR",
+    "requestBody": "Acest dispozitiv a scanat codul tău QR. Acceptă pentru a deschide o cameră doar pentru voi doi.",
+    "waiting": "Cererea de conectare prin QR a fost trimisă. Când PC-ul acceptă, se deschide o cameră doar pentru voi doi.",
+    "expired": "Codul QR a expirat. Scanează din nou codul QR de pe ecranul PC-ului.",
+    "busy": "PC-ul are prea multe cereri. Scanează din nou peste puțin timp.",
+    "notFound": "PC-ul nu a fost găsit. Scanează din nou codul QR de pe ecranul PC-ului."
   }
 }

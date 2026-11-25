@@ -592,5 +592,13 @@
     "notFound": "Geen verbonden apparaat heeft nu deze naam",
     "rateLimited": "Probeer het zo meteen opnieuw",
     "findError": "Niet gevonden. Probeer het opnieuw"
+  },
+  "qrLink": {
+    "requestTitle": "Verbindingsverzoek via QR",
+    "requestBody": "Dit apparaat heeft je QR-code gescand. Accepteer om een kamer alleen voor jullie twee te openen.",
+    "waiting": "Verbindingsverzoek via QR verstuurd. Zodra de pc accepteert, opent een kamer alleen voor jullie twee.",
+    "expired": "Deze QR-code is verlopen. Scan de QR-code op het pc-scherm opnieuw.",
+    "busy": "De pc heeft te veel verzoeken. Scan zo meteen opnieuw.",
+    "notFound": "Pc niet gevonden. Scan de QR-code op het pc-scherm opnieuw."
   }
 }

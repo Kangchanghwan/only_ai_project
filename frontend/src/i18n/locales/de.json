@@ -592,5 +592,13 @@
     "notFound": "Aktuell ist kein verbundenes Gerät mit diesem Namen online",
     "rateLimited": "Bitte versuche es gleich noch einmal",
     "findError": "Nicht gefunden. Bitte erneut versuchen"
+  },
+  "qrLink": {
+    "requestTitle": "Verbindungsanfrage per QR",
+    "requestBody": "Dieses Gerät hat deinen QR-Code gescannt. Nimm an, um einen Raum nur für euch beide zu öffnen.",
+    "waiting": "Verbindungsanfrage per QR gesendet. Sobald der PC annimmt, öffnet sich ein Raum nur für euch beide.",
+    "expired": "Dieser QR-Code ist abgelaufen. Scanne den QR-Code auf dem PC erneut.",
+    "busy": "Der PC hat zu viele Anfragen. Scanne gleich noch einmal.",
+    "notFound": "PC nicht gefunden. Scanne den QR-Code auf dem PC erneut."
   }
 }

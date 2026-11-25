@@ -592,5 +592,13 @@
     "notFound": "Hiện không có thiết bị nào đang kết nối có tên này",
     "rateLimited": "Vui lòng thử lại sau giây lát",
     "findError": "Không tìm thấy. Vui lòng thử lại"
+  },
+  "qrLink": {
+    "requestTitle": "Yêu cầu kết nối qua QR",
+    "requestBody": "Thiết bị này đã quét mã QR của bạn. Chấp nhận để mở phòng chỉ dành cho hai thiết bị.",
+    "waiting": "Đã gửi yêu cầu kết nối qua QR. Khi máy tính chấp nhận, phòng chỉ dành cho hai thiết bị sẽ mở.",
+    "expired": "Mã QR đã hết hạn. Hãy quét lại mã QR trên màn hình máy tính.",
+    "busy": "Máy tính có quá nhiều yêu cầu. Hãy quét lại sau ít phút.",
+    "notFound": "Không tìm thấy máy tính. Hãy quét lại mã QR trên màn hình máy tính."
   }
 }

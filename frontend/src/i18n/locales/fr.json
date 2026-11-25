@@ -592,5 +592,13 @@
     "notFound": "Aucun appareil connecté n'a ce nom pour le moment",
     "rateLimited": "Réessayez dans un instant",
     "findError": "Introuvable. Veuillez réessayer"
+  },
+  "qrLink": {
+    "requestTitle": "Demande de connexion par QR",
+    "requestBody": "Cet appareil a scanné votre QR code. Acceptez pour ouvrir un salon rien que pour vous deux.",
+    "waiting": "Demande de connexion envoyée par QR. Un salon pour vous deux s'ouvre dès que le PC accepte.",
+    "expired": "Ce QR code a expiré. Scannez à nouveau le QR code affiché sur le PC.",
+    "busy": "Le PC a trop de demandes. Réessayez dans un instant.",
+    "notFound": "PC introuvable. Scannez à nouveau le QR code affiché sur le PC."
   }
 }

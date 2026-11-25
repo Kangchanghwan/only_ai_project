@@ -592,5 +592,13 @@
     "notFound": "Ingen ansluten enhet har det här namnet just nu",
     "rateLimited": "Försök igen om en stund",
     "findError": "Hittades inte. Försök igen"
+  },
+  "qrLink": {
+    "requestTitle": "Anslutningsbegäran via QR",
+    "requestBody": "Den här enheten skannade din QR-kod. Godkänn för att öppna ett rum bara för er två.",
+    "waiting": "Anslutningsbegäran skickad via QR. När datorn godkänner öppnas ett rum bara för er två.",
+    "expired": "QR-koden har gått ut. Skanna QR-koden på datorns skärm igen.",
+    "busy": "Datorn har för många begäranden. Skanna igen om en stund.",
+    "notFound": "Datorn hittades inte. Skanna QR-koden på datorns skärm igen."
   }
 }

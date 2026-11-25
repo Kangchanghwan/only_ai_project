@@ -10,21 +10,28 @@
  *       | accepted(legacy: 수락됨, 키 교환 중) | keyed(legacy 또는 same 없이 수락: sas 확인 대기)
  *       | waiting-peer-confirm(내가 "같아요" 보냄) | done | ended(reason)
  * 비밀(개인키·kWrap·roomSecret)은 컨트롤러 안에만 두고 스냅샷·로그에 절대 내보내지 않는다.
+ *
+ * QR 연결(viaQr): 빈 화면 QR을 찍은 다른 네트워크의 휴대폰이 보낸다. pk 뒤에 회차와 QR 증명이 붙어 온다(utils/qrLink.js).
+ *   받는 쪽(PC)은 qrVerify로 증명을 확인하고 그 회차 키로 답한다. 틀리면 이유(t:'qr')를 알리고 거절한다.
+ *   보낸 쪽(휴대폰)은 받은 PC 키가 QR의 지문과 같으면 "같아요"를 저절로 보낸다. 그래서 그림 비교가 없다.
  */
 import { generateEphemeral, deriveSession, newRoomSecret, wrapSecret, unwrapSecret } from '../utils/pairCrypto.js'
+import { packQrPk, unpackQrPk, qrProof, keyFingerprint, sameString, QR_MAX_PENDING } from '../utils/qrLink.js'
 
 export const PAIR_EVENTS = ['pair:incoming', 'pair:accepted', 'pair:signal', 'pair:ended', 'pair:done']
 
 const isObj = (v) => v && typeof v === 'object' && !Array.isArray(v)
 const isStr = (v) => typeof v === 'string' && v.length > 0
+const QR_REASONS = new Set(['expired', 'invalid', 'busy'])
 
 /**
  * @param {{
  *   socket: { emit(event: string, payload: object): Promise<object>, on(event: string, fn: Function): void, off(event: string, fn: Function): void },
- *   onPaired?: (info: {roomId: string, peer: object, roomToken: string, roomTokenTtlSec: number, roomSecret: Uint8Array}) => void
+ *   onPaired?: (info: {roomId: string, peer: object, roomToken: string, roomTokenTtlSec: number, roomSecret: Uint8Array}) => void,
+ *   qrVerify?: (p: {g: string, proof: string, peerPk: string}) => Promise<{privateKey: CryptoKey, publicRaw: string} | {error: string}>
  * }} deps
  */
-export function createPairing({ socket, onPaired }) {
+export function createPairing({ socket, onPaired, qrVerify = null }) {
   /** @type {Map<string, any>} */
   const sessions = new Map()
   const listeners = new Set()
@@ -39,6 +46,7 @@ export function createPairing({ socket, onPaired }) {
       sas: s.sas ? [...s.sas] : null,
       legacy: !!s.legacy,
       confirmed: !!s.confirmed,
+      viaQr: !!s.viaQr,
       expiresAt: s.expiresAt ?? null,
       reason: s.reason ?? null
     }))
@@ -100,7 +108,7 @@ export function createPairing({ socket, onPaired }) {
       console.warn('[pairing] 세션 처리 실패:', e?.message || e)
       if (s.state !== 'ended' && s.state !== 'done') {
         socket.emit('pair:cancel', { sessionId: s.sessionId }).catch(() => {})
-        end(s, 'invalid')
+        end(s, s.qrReason ? `qr-${s.qrReason}` : 'invalid')
       }
     })
     return s.chain
@@ -108,6 +116,11 @@ export function createPairing({ socket, onPaired }) {
 
   async function tryDeriveAndAdvance(s) {
     if (s.kWrap || !s.peerPk || !s.priv) return
+    if (s.role === 'initiator' && s.viaQr) {
+      // QR로 보낸 요청: 받은 PC 키가 QR에 적힌 지문과 다르면 중간에서 바뀐 것이다
+      const fp = await keyFingerprint(s.peerPk)
+      if (!sameString(fp, s.qrFingerprint)) { s.qrReason = 'mismatch'; throw new Error('QR_KEY_MISMATCH') }
+    }
     const { kWrap, sas } = await deriveSession({ privateKey: s.priv, myPk: s.myPk, peerPk: s.peerPk, sessionId: s.sessionId })
     if (s.state === 'ended' || s.state === 'done') return
     s.kWrap = kWrap
@@ -125,12 +138,47 @@ export function createPairing({ socket, onPaired }) {
       s.secret = await unwrapSecret(kWrap, msg)
     }
     notify()
+    // QR 연결의 보낸 쪽: 키가 확인됐으니 그림 비교 없이 "같아요"를 보낸다 (confirm은 이 처리 순서가 끝난 뒤에 나간다)
+    if (s.role === 'initiator' && s.viaQr && !s.confirmed) queueMicrotask(() => { api.confirm(s.sessionId, true).catch(() => {}) })
+  }
+
+  /** QR 증명이 붙은 요청을 받은 쪽(PC)에서 처리한다 */
+  function handleQrIncoming(p, qr) {
+    const s = make(p.sessionId, 'responder', { peer: p.from, sameNetwork: !!p.sameNetwork, expiresAt: p.expiresAt ?? null, viaQr: true })
+    s.state = 'verifying' // 확인 전에는 요청 창을 띄우지 않는다
+    enqueue(s, async () => {
+      const pendingQr = [...sessions.values()].filter((x) => x !== s && x.viaQr && x.role === 'responder' && x.state === 'incoming').length
+      let res = { error: 'invalid' }
+      if (pendingQr >= QR_MAX_PENDING) res = { error: 'busy' }
+      else if (qrVerify) res = (await qrVerify({ g: qr.g, proof: qr.proof, peerPk: qr.pk })) || { error: 'invalid' }
+      if (s.state === 'ended' || s.state === 'done') return
+      if (res.error || !res.privateKey || !isStr(res.publicRaw)) {
+        const reason = QR_REASONS.has(res.error) ? res.error : 'invalid'
+        // 이유를 먼저 보내고(응답을 기다리지 않는다. 같은 소켓이라 순서는 지켜진다) 거절한다
+        signal(s, { t: 'qr', v: 1, reason }).catch(() => {})
+        await socket.emit('pair:respond', { sessionId: s.sessionId, accept: false }).catch(() => {})
+        end(s, 'declined-by-me')
+        return
+      }
+      s.peerPk = qr.pk
+      s.priv = res.privateKey
+      s.myPk = res.publicRaw
+      s.state = 'incoming'
+      notify()
+      // 서버는 pair:signal에 응답(ack)을 주지 않아 보내기를 기다리면 시간 초과(5초)만큼 수락 버튼이 늦게 켜진다.
+      // 키 계산은 보내기 결과와 상관없으므로 먼저 한다
+      const sending = sendPk(s)
+      await tryDeriveAndAdvance(s)
+      await sending
+    })
   }
 
   // === 서버 이벤트 ===
   const handlers = {
     'pair:incoming'(p) {
       if (!isObj(p) || !isStr(p.sessionId) || !isObj(p.from) || sessions.has(p.sessionId)) return
+      const qr = unpackQrPk(p.pk)
+      if (qr) { handleQrIncoming(p, qr); return }
       const s = make(p.sessionId, 'responder', { peer: p.from, sameNetwork: !!p.sameNetwork, expiresAt: p.expiresAt ?? null })
       s.state = 'incoming'
       if (isStr(p.pk)) {
@@ -198,6 +246,9 @@ export function createPairing({ socket, onPaired }) {
         if (s.peerPk || (s.state !== 'accepted' && s.state !== 'inviting' && s.state !== 'incoming')) return
         s.peerPk = d.pk
         enqueue(s, () => tryDeriveAndAdvance(s))
+      } else if (d.t === 'qr' && d.v === 1 && QR_REASONS.has(d.reason)) {
+        // QR 요청을 PC가 거절한 이유 (뒤이어 오는 pair:ended에 붙인다)
+        if (s.role === 'initiator' && s.viaQr) s.qrReason = d.reason
       } else if (d.t === 'secret' && d.v === 1 && isStr(d.iv) && isStr(d.ct)) {
         if (s.role !== 'responder' || s.secret || s.pendingSecret) return
         enqueue(s, async () => {
@@ -211,7 +262,7 @@ export function createPairing({ socket, onPaired }) {
     'pair:ended'(p) {
       if (!isObj(p) || !isStr(p.sessionId)) return
       const s = sessions.get(p.sessionId)
-      if (s) end(s, isStr(p.reason) ? p.reason : 'ended')
+      if (s) end(s, s.qrReason ? `qr-${s.qrReason}` : isStr(p.reason) ? p.reason : 'ended')
     },
 
     'pair:done'(p) {
@@ -245,12 +296,21 @@ export function createPairing({ socket, onPaired }) {
   for (const [ev, fn] of Object.entries(handlers)) socket.on(ev, fn)
 
   // === 공개 API ===
-  return {
-    /** 1회용 키를 먼저 만들어 pk와 함께 초대한다 @returns {Promise<{ok: boolean, sessionId?: string, code?: string}>} */
-    async invite(toSocketId) {
+  const api = {
+    /**
+     * 1회용 키를 먼저 만들어 pk와 함께 초대한다
+     * @param {string} toSocketId
+     * @param {{ qr?: { g: string, x: Uint8Array, f: string } }} [opts] QR에서 읽은 회차·비밀·지문 (QR 연결일 때만)
+     * @returns {Promise<{ok: boolean, sessionId?: string, code?: string}>}
+     */
+    async invite(toSocketId, { qr = null } = {}) {
       let eph
-      try { eph = await generateEphemeral() } catch { return { ok: false, code: 'FAILED' } }
-      const ack = await socket.emit('pair:invite', { to: toSocketId, pk: eph.publicRaw })
+      let pk
+      try {
+        eph = await generateEphemeral()
+        pk = qr ? packQrPk(eph.publicRaw, qr.g, await qrProof(qr.x, qr.g, eph.publicRaw)) : eph.publicRaw
+      } catch { return { ok: false, code: 'FAILED' } }
+      const ack = await socket.emit('pair:invite', { to: toSocketId, pk })
       if (!ack?.ok || !isStr(ack.sessionId)) return { ok: false, code: ack?.code || 'FAILED' }
       let s = sessions.get(ack.sessionId)
       if (!s) {
@@ -260,6 +320,7 @@ export function createPairing({ socket, onPaired }) {
       s.priv = eph.privateKey
       s.myPk = eph.publicRaw
       s.expiresAt = ack.expiresAt ?? null
+      if (qr) { s.viaQr = true; s.qrFingerprint = qr.f }
       notify()
       // ack보다 먼저 온 상대 pk 처리
       const early = earlySignals.get(ack.sessionId)
@@ -345,4 +406,5 @@ export function createPairing({ socket, onPaired }) {
       listeners.clear()
     }
   }
+  return api
 }
