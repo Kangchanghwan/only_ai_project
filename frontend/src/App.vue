@@ -31,6 +31,7 @@ import { parseInvite } from './utils/groupInvite'
 import { isGroupRoomId } from './utils/groupRoom'
 import { applyFileMessage } from './utils/applyFileMessage'
 import { trackEvent } from './utils/analytics'
+import { trackUploadFileInfo, textMetaParams } from './utils/uploadMeta'
 import { reportError } from './utils/userErrors.js'
 import { useArrivalBadge } from './composables/useArrivalBadge'
 import { usePush } from './composables/usePush'
@@ -697,6 +698,7 @@ async function uploadFiles(files, scopeOverride, lockOverride) {
     return false
   }
   const target = publishTargetForScope(targetScope)
+  const uploadedForMeta = [] // 측정용: 이름·크기만 잠깐 들고 있다가 범주로만 바꿔 보낸다
 
   const summary = await fileManager.uploadFiles(targetRoomId, files, {
     lock,
@@ -705,6 +707,7 @@ async function uploadFiles(files, scopeOverride, lockOverride) {
     onCancel: (file, info) => progress.cancelled(file, info),
     onProgress: (file, percent, extra) => progress.progress(file, percent, extra),
     onComplete: (file, result) => {
+      try { uploadedForMeta.push({ name: file?.name, size: file?.size }) } catch { /* 측정 전용 */ }
       // size/created를 함께 보내 수신 측이 목록을 재조회하지 않고 바로 추가할 수 있게 한다
       try {
         if (isPrv && !result.locked) return
@@ -752,6 +755,7 @@ async function uploadFiles(files, scopeOverride, lockOverride) {
     // GA4 주요 이벤트: 실제로 업로드에 성공한 파일 수만 집계한다
     if (isPrv) trackEvent('private_upload', { file_count: summary.successCount })
     else trackEvent('file_upload', { file_count: summary.successCount, scope: targetScope })
+    trackUploadFileInfo(uploadedForMeta, isPrv ? 'prv' : targetScope)
     notification.showSuccess(t('notification.uploadComplete', { count: summary.successCount }))
     nextTime.markSuccess('upload')
   }
@@ -963,8 +967,8 @@ async function handleAddText(content, scopeOverride) {
     return false
   }
 
-  if (isPrv) trackEvent('private_text')
-  else trackEvent('text_share', { scope: targetScope, locked: !!sealed })
+  if (isPrv) trackEvent('private_text', textMetaParams(content.trim(), false))
+  else trackEvent('text_share', { scope: targetScope, locked: !!sealed, ...textMetaParams(content.trim(), !!sealed) })
   nextTime.markSuccess('text')
 
   // 보관 결과: 크기 초과·서버 보관함 가득이면 지금 열린 기기에만 갔다고 알린다 (구버전 백엔드는 이유가 없어 크기로 판단)
