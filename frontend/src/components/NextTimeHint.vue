@@ -53,7 +53,7 @@ const isKo = computed(() => locale.value === 'ko')
 <style scoped>
 .next-time-hint {
   position: fixed;
-  /* ArrivalNotifyPrompt와 같은 자리. 같은 때에 둘이 뜨지 않도록 App에서 도착 알림이 있으면 건너뛴다 */
+  /* 화면 아래 가운데. 다중 다운로드 시트가 열려 있으면 App에서 건너뛴다 */
   bottom: calc(1.5rem + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);

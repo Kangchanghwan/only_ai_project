@@ -39,15 +39,12 @@ export function senderName(sender) {
  */
 export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = false, push = usePush() } = {}) {
   const count = ref(0)
-  const promptVisible = ref(false)
+  const promptVisible = ref(false) // 자동 권유를 없애 항상 false. 호출하는 쪽 호환용
   let hiddenSince = 0
   let hiddenEvents = 0
-  let promptShown = false
   let iconState = null // { links: [{el, href, type}], token }
 
   const notifySupported = () => !isMobile && typeof Notification !== 'undefined'
-  // 모바일은 푸시를 쓸 수 있을 때만 안내한다 (푸시 지원 여부는 앱 시작 때 push.init()이 정한다)
-  const promptSupported = () => typeof Notification !== 'undefined' && (!isMobile || push.supported.value === true)
 
   /** 모바일(안드로이드 크롬 등)에서는 new Notification이 예외라 서비스워커로 알림을 띄운다 */
   async function showViaServiceWorker(body) {
@@ -151,17 +148,8 @@ export function useArrivalBadge({ getMySocketId = () => undefined, isMobile = fa
       safeTrack('arrival_seen', { wait_sec: Math.round((Date.now() - hiddenSince) / 1000), count: had })
       count.value = 0
       render()
-      maybeShowPrompt()
+      // 알림 켜기 권유는 저절로 띄우지 않는다(83명 중 허용 4명). 켜기는 헤더 ⋯ 메뉴 토글로 한다
     }
-  }
-
-  function maybeShowPrompt() {
-    if (promptShown || !promptSupported()) return
-    if (prefGet()) return
-    if (Notification.permission !== 'default') return
-    promptShown = true
-    promptVisible.value = true
-    safeTrack('notify_prompt', { action: 'shown' })
   }
 
   async function enableNotifications() {
