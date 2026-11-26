@@ -600,5 +600,12 @@
     "expired": "Deze QR-code is verlopen. Scan de QR-code op het pc-scherm opnieuw.",
     "busy": "De pc heeft te veel verzoeken. Scan zo meteen opnieuw.",
     "notFound": "Pc niet gevonden. Scan de QR-code op het pc-scherm opnieuw."
+  },
+  "roomQr": {
+    "toggle": "Deze kamer op je telefoon openen",
+    "line1": "Scan met je telefooncamera om deze kamer te openen",
+    "line2": "Een nieuwe telefoon stuurt een verbindingsverzoek",
+    "arrived": "{name} is de kamer binnengekomen",
+    "opened": "Kamer uit de QR-code geopend"
   }
 }

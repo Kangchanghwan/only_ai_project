@@ -600,5 +600,12 @@
     "expired": "Platnost QR kódu vypršela. Naskenujte znovu QR kód na obrazovce PC.",
     "busy": "PC má příliš mnoho žádostí. Naskenujte znovu za chvíli.",
     "notFound": "PC se nepodařilo najít. Naskenujte znovu QR kód na obrazovce PC."
+  },
+  "roomQr": {
+    "toggle": "Otevřít tuto místnost v telefonu",
+    "line1": "Naskenujte fotoaparátem telefonu a místnost se otevře",
+    "line2": "Nový telefon pošle žádost o připojení",
+    "arrived": "{name} se připojil do místnosti",
+    "opened": "Místnost z QR kódu je otevřená"
   }
 }

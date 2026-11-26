@@ -600,5 +600,12 @@
     "expired": "Kod QR wygasł. Zeskanuj ponownie kod QR z ekranu PC.",
     "busy": "PC ma zbyt wiele próśb. Zeskanuj ponownie za chwilę.",
     "notFound": "Nie znaleziono PC. Zeskanuj ponownie kod QR z ekranu PC."
+  },
+  "roomQr": {
+    "toggle": "Otwórz ten pokój na telefonie",
+    "line1": "Zeskanuj aparatem telefonu, aby otworzyć ten pokój",
+    "line2": "Nowy telefon wyśle prośbę o połączenie",
+    "arrived": "{name} dołączył do pokoju",
+    "opened": "Otwarto pokój z kodu QR"
   }
 }

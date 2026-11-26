@@ -14,6 +14,7 @@ import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 import LandingContent from './LandingContent.vue'
 import { roomDisplayName } from '../utils/roomDisplayName'
 import PrivateRoomStrip from './PrivateRoomStrip.vue'
+import RoomWakeQr from './RoomWakeQr.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
@@ -74,6 +75,8 @@ const props = defineProps({
   },
   /** 빈 화면 QR에 담을 주소 (ConnectionCard로 전달) */
   qrUrl: { type: String, default: undefined },
+  /** 방 탭 QR에 담을 주소 (방 꼬리표 포함, RoomWakeQr로 전달) */
+  roomQrUrl: { type: String, default: '' },
   /** QR로 찾은 다른 네트워크의 PC (ConnectionCard로 전달) */
   qrPinnedDevice: { type: Object, default: null },
   /** 내 정체성/소켓 ID (구버전 백엔드면 null → 기존 아이콘 표시로 폴백) */
@@ -164,6 +167,11 @@ const groupOthers = computed(() => {
   const id = currentRoom.value?.roomId
   const devs = id ? props.privateDevices[id] : null
   return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)) : []
+})
+// 방 탭 QR: 그룹 방은 접속 기기 목록이 온 뒤에만 '아무도 없음'을 판단한다
+const wakeOthers = computed(() => {
+  const id = currentRoom.value?.roomId
+  return id && Array.isArray(props.privateDevices[id]) ? groupOthers.value : null
 })
 // 비공개 방(1:1·그룹)에 다른 기기가 실제 접속 중이면 connected_any (측정 전용, 화면 변화 없음)
 watch([() => groupOthers.value.length, () => props.scope], ([n, sc]) => {
@@ -325,6 +333,12 @@ watch(
         :others="groupOthers"
         @leave="$emit('leave-private', $event)"
         @invite="$emit('group-invite', $event)"
+      />
+      <RoomWakeQr
+        v-if="currentRoom"
+        :room="currentRoom"
+        :others="wakeOthers"
+        :qr-url="roomQrUrl"
       />
 
       <div class="workspace">

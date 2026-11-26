@@ -726,5 +726,12 @@
     "expired": "This QR code has expired. Scan the QR code on the PC screen again.",
     "busy": "The PC has too many requests. Scan again in a moment.",
     "notFound": "Couldn't find the PC. Scan the QR code on the PC screen again."
+  },
+  "roomQr": {
+    "toggle": "Open this room on your phone",
+    "line1": "Scan with your phone camera to open this room",
+    "line2": "A new phone will send a connection request",
+    "arrived": "{name} joined this room",
+    "opened": "Opened the room from the QR code"
   }
 }

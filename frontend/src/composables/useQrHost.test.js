@@ -1,8 +1,8 @@
 // @vitest-environment node
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeAll, vi } from 'vitest'
 import { webcrypto } from 'node:crypto'
 import { useQrHost } from './useQrHost.js'
-import { parseQrLink, QR_ROTATE_MS } from '../utils/qrLink.js'
+import { parseQrLink, roomTag, QR_ROTATE_MS } from '../utils/qrLink.js'
 import { EMPTY_STATE_QR_URL } from '../utils/emptyState.js'
 
 beforeAll(() => { if (!globalThis.crypto?.subtle) globalThis.crypto = webcrypto })
@@ -44,5 +44,20 @@ describe('useQrHost', () => {
     v.visible = false
     advance(QR_ROTATE_MS); await fire()
     expect(gOf(host)).toBe(g1)
+  })
+
+  it('방 탭 QR: 지금 회차에 방 꼬리표를 붙이고, 방을 끄면 null', async () => {
+    const { host, advance, fire } = mk()
+    await host.start()
+    expect(host.roomQrUrl.value).toBeNull()
+    host.setRoom('prv-0123456789abcdef01234567')
+    await vi.waitFor(() => expect(host.roomQrUrl.value).toBeTruthy())
+    const p = parseQrLink('#' + host.roomQrUrl.value.split('#')[1])
+    expect(p.g).toBe(gOf(host))
+    expect(p.r).toBe(await roomTag(p.x, 'prv-0123456789abcdef01234567'))
+    advance(QR_ROTATE_MS); await fire()
+    await vi.waitFor(() => expect(parseQrLink('#' + host.roomQrUrl.value.split('#')[1]).g).toBe(gOf(host)))
+    host.setRoom(null)
+    await vi.waitFor(() => expect(host.roomQrUrl.value).toBeNull())
   })
 })

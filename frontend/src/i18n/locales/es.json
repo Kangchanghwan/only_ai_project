@@ -600,5 +600,12 @@
     "expired": "Este código QR caducó. Vuelve a escanear el código QR de la pantalla del PC.",
     "busy": "El PC tiene demasiadas solicitudes. Vuelve a escanear en un momento.",
     "notFound": "No se encontró el PC. Vuelve a escanear el código QR de la pantalla del PC."
+  },
+  "roomQr": {
+    "toggle": "Abrir esta sala en tu móvil",
+    "line1": "Escanea con la cámara del móvil para abrir esta sala",
+    "line2": "Un móvil nuevo enviará una solicitud de conexión",
+    "arrived": "{name} se unió a esta sala",
+    "opened": "Se abrió la sala del código QR"
   }
 }

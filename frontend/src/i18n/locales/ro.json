@@ -600,5 +600,12 @@
     "expired": "Codul QR a expirat. Scanează din nou codul QR de pe ecranul PC-ului.",
     "busy": "PC-ul are prea multe cereri. Scanează din nou peste puțin timp.",
     "notFound": "PC-ul nu a fost găsit. Scanează din nou codul QR de pe ecranul PC-ului."
+  },
+  "roomQr": {
+    "toggle": "Deschide această cameră pe telefon",
+    "line1": "Scanează cu camera telefonului pentru a deschide camera",
+    "line2": "Un telefon nou va trimite o cerere de conectare",
+    "arrived": "{name} a intrat în cameră",
+    "opened": "Camera din codul QR a fost deschisă"
   }
 }

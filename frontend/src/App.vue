@@ -1387,6 +1387,10 @@ const qrArrival = useQrArrival({
   getMyKey: myPresenceKey,
   getPairStates: () => pairFlow.pairStates.value,
   getSessions: () => pairFlow.sessions.value,
+  getRoomIds: async () => {
+    await privateRooms.hydrate()
+    return privateRooms.rooms.filter((r) => r.status !== 'left').map((r) => r.roomId)
+  },
   invite: (device, opts) => pairFlow.invite(device, opts),
   openRoom: (roomId) => shareScope.setScope(scopeForPrivateRoom(roomId)),
   notify: notification,
@@ -1403,6 +1407,8 @@ function takeQrCode() {
   if (link) qrArrival.start(link)
 }
 const onQrCodeEvent = () => takeQrCode()
+// 방 탭 QR: 지금 보고 있는 방의 꼬리표를 QR에 담는다
+watch(() => privateRoomIdOfScope(shareScope.scope.value), (id) => qrHost.setRoom(id), { immediate: true })
 
 /** 이미 열린 탭에서 주소의 # 뒤만 #/pv?... 로 바뀐 경우 (index.html이 옮겨 두고 이벤트로 알린다) */
 function onGroupInviteEvent() {
@@ -1528,6 +1534,7 @@ onUnmounted(() => {
         :global-room-devices="socket.globalRoomDevices.value"
         :qr-url="qrHost.qrUrl.value"
         :qr-pinned-device="qrArrival.pinned.value"
+        :room-qr-url="qrHost.roomQrUrl.value || ''"
         :my-identity="socket.myIdentity.value"
         :my-socket-id="socket.mySocketId.value"
         :reroll-available-at="socket.rerollAvailableAt.value"

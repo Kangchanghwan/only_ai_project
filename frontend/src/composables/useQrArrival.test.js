@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useQrArrival, QR_FALLBACK_FLAG, QR_ROSTER_TIMEOUT_MS, resultOfReason } from './useQrArrival'
+import { roomTag } from '../utils/qrLink.js'
 
 const link = { s: 'pc1', k: '1-2-0', g: 'AbCd12', x: new Uint8Array(16), f: 'f'.repeat(22) }
 const ME = { socketId: 'me' }
@@ -10,7 +11,7 @@ function setup(over = {}) {
   const track = vi.fn()
   const invite = vi.fn(async () => ({ ok: true, sessionId: 'S1' }))
   const openRoom = vi.fn()
-  const notify = { showError: vi.fn() }
+  const notify = { showError: vi.fn(), showSuccess: vi.fn() }
   let timerFn = null
   const q = useQrArrival({
     getIpDevices: () => state.ip, getGlobalDevices: () => state.global, getMySocketId: () => state.me,
@@ -24,6 +25,32 @@ function setup(over = {}) {
 const flush = () => new Promise((r) => setTimeout(r, 0))
 
 beforeEach(() => sessionStorage.clear())
+
+const ROOM = 'prv-0123456789abcdef01234567'
+
+describe('useQrArrival 방 꼬리표', () => {
+  it('꼬리표가 맞는 방이 있으면 같은 네트워크여도 그 방을 열고 room_tag', async () => {
+    const r = await roomTag(link.x, ROOM)
+    const s = setup({ getRoomIds: async () => ['prv-ffffffffffffffffffffffff', ROOM] })
+    s.q.start({ ...link, r })
+    s.state.ip = [ME, PC]
+    s.q.update()
+    await vi.waitFor(() => expect(s.openRoom).toHaveBeenCalledWith(ROOM))
+    expect(s.invite).not.toHaveBeenCalled()
+    expect(s.notify.showSuccess).toHaveBeenCalledWith('roomQr.opened')
+    expect(s.track).toHaveBeenCalledWith('qr_code_fallback', { result: 'room_tag' })
+  })
+
+  it('맞는 방이 없으면 지금까지처럼 (다른 네트워크면 연결 요청)', async () => {
+    const r = await roomTag(link.x, ROOM)
+    const s = setup({ getRoomIds: async () => ['prv-ffffffffffffffffffffffff'] })
+    s.q.start({ ...link, r })
+    s.state.ip = [ME]; s.state.global = [ME, PC]
+    s.q.update()
+    await vi.waitFor(() => expect(s.invite).toHaveBeenCalledTimes(1))
+    expect(s.openRoom).not.toHaveBeenCalled()
+  })
+})
 
 describe('useQrArrival', () => {
   it('같은 네트워크 목록에 PC가 있으면 요청하지 않고 same_network', async () => {

@@ -600,5 +600,12 @@
     "expired": "Mã QR đã hết hạn. Hãy quét lại mã QR trên màn hình máy tính.",
     "busy": "Máy tính có quá nhiều yêu cầu. Hãy quét lại sau ít phút.",
     "notFound": "Không tìm thấy máy tính. Hãy quét lại mã QR trên màn hình máy tính."
+  },
+  "roomQr": {
+    "toggle": "Mở phòng này trên điện thoại",
+    "line1": "Quét bằng camera điện thoại để mở phòng này",
+    "line2": "Điện thoại mới sẽ gửi yêu cầu kết nối",
+    "arrived": "{name} đã vào phòng này",
+    "opened": "Đã mở phòng từ mã QR"
   }
 }
