@@ -606,6 +606,8 @@
     "line1": "Skanna med mobilkameran för att öppna rummet",
     "line2": "En ny mobil skickar en anslutningsbegäran",
     "arrived": "{name} gick med i rummet",
-    "opened": "Rummet från QR-koden öppnades"
+    "opened": "Rummet från QR-koden öppnades",
+    "toggleIp": "Anslut en mobil med QR-kod",
+    "line2Ip": "En mobil på ett annat nätverk skickar en anslutningsbegäran"
   }
 }

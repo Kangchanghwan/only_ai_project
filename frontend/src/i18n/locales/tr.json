@@ -606,6 +606,8 @@
     "line1": "Odayı açmak için telefon kamerasıyla tarayın",
     "line2": "Yeni bir telefon bağlantı isteği gönderir",
     "arrived": "{name} odaya katıldı",
-    "opened": "QR koddaki oda açıldı"
+    "opened": "QR koddaki oda açıldı",
+    "toggleIp": "Telefonu QR kodla bağla",
+    "line2Ip": "Başka ağdaki bir telefon bağlantı isteği gönderir"
   }
 }

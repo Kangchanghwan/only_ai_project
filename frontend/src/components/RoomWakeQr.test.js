@@ -79,4 +79,16 @@ describe('RoomWakeQr', () => {
     expect(has('room-wake-qr')).toBe(false)
     expect(showSuccess).toHaveBeenCalledTimes(1)
   })
+
+  it('같은 네트워크 모드: 방 없이 접힌 줄, 펼치면 빈 화면과 같은 QR, 들어옴 알림 없음', async () => {
+    const IPURL = 'https://www.clipboardapp.org/#/qc?s=a&g=AbCd12'
+    mk({ network: true, qrUrl: IPURL })
+    expect(w.find('[data-testid="room-wake-qr-toggle"]').text()).toBe('QR로 휴대폰 연결하기')
+    await w.find('[data-testid="room-wake-qr-toggle"]').trigger('click')
+    await flushPromises()
+    expect(w.find('[data-testid="room-wake-qr-img"]').attributes('data-qr-value')).toBe(IPURL)
+    expect(w.find('[data-testid="room-wake-qr-panel"]').text()).toContain('다른 네트워크의 휴대폰이면 연결 요청이 와요')
+    expect(track).toHaveBeenCalledWith('room_qr_open', { room_kind: 'ip' })
+    expect(showSuccess).not.toHaveBeenCalled()
+  })
 })

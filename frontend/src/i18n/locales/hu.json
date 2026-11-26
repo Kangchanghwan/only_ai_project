@@ -606,6 +606,8 @@
     "line1": "Olvasd be a telefon kamerájával a szoba megnyitásához",
     "line2": "Új telefon esetén csatlakozási kérés érkezik",
     "arrived": "{name} belépett a szobába",
-    "opened": "Megnyitottuk a QR-kód szobáját"
+    "opened": "Megnyitottuk a QR-kód szobáját",
+    "toggleIp": "Telefon csatlakoztatása QR-kóddal",
+    "line2Ip": "Másik hálózaton lévő telefon esetén csatlakozási kérés érkezik"
   }
 }

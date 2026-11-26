@@ -732,6 +732,8 @@
     "line1": "Scan with your phone camera to open this room",
     "line2": "A new phone will send a connection request",
     "arrived": "{name} joined this room",
-    "opened": "Opened the room from the QR code"
+    "opened": "Opened the room from the QR code",
+    "toggleIp": "Connect a phone with a QR code",
+    "line2Ip": "A phone on another network will send a connection request"
   }
 }
