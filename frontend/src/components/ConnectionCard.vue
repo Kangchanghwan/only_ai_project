@@ -263,34 +263,34 @@ watch(
       <button
         v-if="!showOtherMore"
         type="button"
-        class="w-full flex items-center gap-2 min-h-[44px] -my-2 bg-transparent border-0 px-0 text-sm font-semibold text-primary cursor-pointer text-left"
+        class="w-full flex items-center gap-2 min-h-[44px] -my-2 bg-transparent border-0 px-0 text-[11px] sm:text-xs font-semibold text-text-secondary cursor-pointer text-left"
         :aria-expanded="otherOpen"
         data-testid="other-network-toggle"
         @click="otherOpenManual = !otherOpenManual"
       >
         <!-- 같은 탭의 'QR로 휴대폰 연결하기' 줄(RoomWakeQr)과 같은 모양: 아이콘 + 글 + 펼침 화살표 -->
-        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
         <span class="flex-1">{{ t('pair.otherNetworkGroup', { n: otherList.length }) }}</span>
-        <svg class="w-4 h-4 shrink-0 transition-transform" :class="otherOpen ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+        <svg class="w-3.5 h-3.5 shrink-0 transition-transform" :class="otherOpen ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
       </button>
       <!-- 기준 인원 초과: 펼치기와 "기기 찾기"를 한 줄에 -->
       <div v-else class="flex flex-wrap items-center gap-x-2 -my-2" data-testid="other-network-row">
         <button
           v-if="otherList.length > 0"
           type="button"
-          class="flex items-center gap-2 min-h-[44px] bg-transparent border-0 px-0 text-sm font-semibold text-primary cursor-pointer text-left"
+          class="flex items-center gap-2 min-h-[44px] bg-transparent border-0 px-0 text-[11px] sm:text-xs font-semibold text-text-secondary cursor-pointer text-left"
           :aria-expanded="otherOpen"
           data-testid="other-network-toggle"
           @click="otherOpenManual = !otherOpenManual"
         >
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
           <span>{{ t('pair.otherNetworkGroup', { n: otherList.length }) }}</span>
-          <svg class="w-4 h-4 shrink-0 transition-transform" :class="otherOpen ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          <svg class="w-3.5 h-3.5 shrink-0 transition-transform" :class="otherOpen ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
         </button>
-        <span v-if="otherList.length > 0" class="text-sm text-text-secondary" aria-hidden="true">·</span>
+        <span v-if="otherList.length > 0" class="text-[11px] sm:text-xs text-text-secondary" aria-hidden="true">·</span>
         <button
           type="button"
-          class="min-h-[44px] p-0 text-sm text-ink underline underline-offset-2 bg-transparent border-0 text-left"
+          class="min-h-[44px] p-0 text-[11px] sm:text-xs text-text-secondary underline underline-offset-2 bg-transparent border-0 text-left"
           data-testid="roster-go-find"
           @click="emit('go-find')"
         >

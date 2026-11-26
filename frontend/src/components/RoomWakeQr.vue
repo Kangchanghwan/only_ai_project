@@ -115,17 +115,16 @@ watch([() => props.room?.roomId, show], ([id, now], [prevId, before]) => {
   <div v-if="show" class="mb-4 border-t border-border" data-testid="room-wake-qr">
     <button
       type="button"
-      class="w-full min-h-[44px] flex items-center gap-2 bg-transparent border-0 px-0 py-2 text-sm font-semibold cursor-pointer text-left"
-      :class="network ? 'text-primary' : 'text-scope-private'"
+      class="w-full min-h-[44px] flex items-center gap-2 bg-transparent border-0 px-0 py-2 text-[11px] sm:text-xs font-semibold text-text-secondary cursor-pointer text-left"
       :aria-expanded="expanded"
       data-testid="room-wake-qr-toggle"
       @click="toggle"
     >
-      <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3" />
       </svg>
       <span class="flex-1">{{ network ? t('roomQr.toggleIp') : t('roomQr.toggle') }}</span>
-      <svg class="w-4 h-4 shrink-0 transition-transform" :class="expanded ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg class="w-3.5 h-3.5 shrink-0 transition-transform" :class="expanded ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="m6 9 6 6 6-6" />
       </svg>
     </button>
