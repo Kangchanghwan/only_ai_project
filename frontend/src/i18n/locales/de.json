@@ -606,6 +606,8 @@
     "line1": "Mit der Handykamera scannen, um diesen Raum zu öffnen",
     "line2": "Ein neues Handy sendet eine Verbindungsanfrage",
     "arrived": "{name} ist dem Raum beigetreten",
-    "opened": "Raum aus dem QR-Code geöffnet"
+    "opened": "Raum aus dem QR-Code geöffnet",
+    "toggleIp": "Handy per QR-Code verbinden",
+    "line2Ip": "Ein Handy in einem anderen Netzwerk sendet eine Verbindungsanfrage"
   }
 }

@@ -18,7 +18,7 @@ import RoomWakeQr from './RoomWakeQr.vue'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
-import { isMeDevice } from '../utils/devices'
+import { isMeDevice, countOtherDevices } from '../utils/devices'
 import { socketService } from '../services/socketService'
 import { sameIdentity } from '../utils/identity'
 import { readListHint, saveListHint, readDeviceHint } from '../utils/layoutHint'
@@ -168,6 +168,8 @@ const groupOthers = computed(() => {
   const devs = id ? props.privateDevices[id] : null
   return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)) : []
 })
+// 같은 네트워크 탭: 다른 기기가 있어 빈 화면 QR이 숨은 동안에도 접힌 QR 줄을 둔다
+const ipWakeQr = computed(() => props.scope === 'ip' && countOtherDevices(props.ipRoomDevices, props.mySocketId, props.myIdentity) > 0)
 // 방 탭 QR: 그룹 방은 접속 기기 목록이 온 뒤에만 '아무도 없음'을 판단한다
 const wakeOthers = computed(() => {
   const id = currentRoom.value?.roomId
@@ -333,6 +335,12 @@ watch(
         :others="groupOthers"
         @leave="$emit('leave-private', $event)"
         @invite="$emit('group-invite', $event)"
+      />
+      <RoomWakeQr
+        v-if="ipWakeQr"
+        key="ip-wake-qr"
+        network
+        :qr-url="qrUrl"
       />
       <RoomWakeQr
         v-if="currentRoom"

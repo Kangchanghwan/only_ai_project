@@ -606,6 +606,8 @@
     "line1": "Scannez avec l’appareil photo du téléphone pour ouvrir ce salon",
     "line2": "Un nouveau téléphone enverra une demande de connexion",
     "arrived": "{name} a rejoint ce salon",
-    "opened": "Salon du code QR ouvert"
+    "opened": "Salon du code QR ouvert",
+    "toggleIp": "Connecter un téléphone par code QR",
+    "line2Ip": "Un téléphone sur un autre réseau enverra une demande de connexion"
   }
 }

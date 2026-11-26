@@ -606,6 +606,8 @@
     "line1": "Scanează cu camera telefonului pentru a deschide camera",
     "line2": "Un telefon nou va trimite o cerere de conectare",
     "arrived": "{name} a intrat în cameră",
-    "opened": "Camera din codul QR a fost deschisă"
+    "opened": "Camera din codul QR a fost deschisă",
+    "toggleIp": "Conectează un telefon cu cod QR",
+    "line2Ip": "Un telefon din altă rețea va trimite o cerere de conectare"
   }
 }

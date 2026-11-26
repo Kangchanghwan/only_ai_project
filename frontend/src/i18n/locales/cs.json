@@ -606,6 +606,8 @@
     "line1": "Naskenujte fotoaparátem telefonu a místnost se otevře",
     "line2": "Nový telefon pošle žádost o připojení",
     "arrived": "{name} se připojil do místnosti",
-    "opened": "Místnost z QR kódu je otevřená"
+    "opened": "Místnost z QR kódu je otevřená",
+    "toggleIp": "Připojit telefon QR kódem",
+    "line2Ip": "Telefon v jiné síti pošle žádost o připojení"
   }
 }

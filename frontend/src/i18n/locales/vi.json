@@ -606,6 +606,8 @@
     "line1": "Quét bằng camera điện thoại để mở phòng này",
     "line2": "Điện thoại mới sẽ gửi yêu cầu kết nối",
     "arrived": "{name} đã vào phòng này",
-    "opened": "Đã mở phòng từ mã QR"
+    "opened": "Đã mở phòng từ mã QR",
+    "toggleIp": "Kết nối điện thoại bằng mã QR",
+    "line2Ip": "Điện thoại ở mạng khác sẽ gửi yêu cầu kết nối"
   }
 }

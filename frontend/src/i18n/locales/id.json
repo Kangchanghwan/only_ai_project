@@ -606,6 +606,8 @@
     "line1": "Pindai dengan kamera ponsel untuk membuka ruang ini",
     "line2": "Ponsel baru akan mengirim permintaan koneksi",
     "arrived": "{name} masuk ke ruang ini",
-    "opened": "Ruang dari kode QR dibuka"
+    "opened": "Ruang dari kode QR dibuka",
+    "toggleIp": "Hubungkan ponsel dengan kode QR",
+    "line2Ip": "Ponsel di jaringan lain akan mengirim permintaan koneksi"
   }
 }

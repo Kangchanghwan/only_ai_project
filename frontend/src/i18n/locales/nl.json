@@ -606,6 +606,8 @@
     "line1": "Scan met je telefooncamera om deze kamer te openen",
     "line2": "Een nieuwe telefoon stuurt een verbindingsverzoek",
     "arrived": "{name} is de kamer binnengekomen",
-    "opened": "Kamer uit de QR-code geopend"
+    "opened": "Kamer uit de QR-code geopend",
+    "toggleIp": "Telefoon koppelen met QR-code",
+    "line2Ip": "Een telefoon op een ander netwerk stuurt een verbindingsverzoek"
   }
 }

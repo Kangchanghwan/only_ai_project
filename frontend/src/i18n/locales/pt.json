@@ -606,6 +606,8 @@
     "line1": "Escaneie com a câmera do celular para abrir esta sala",
     "line2": "Um celular novo enviará um pedido de conexão",
     "arrived": "{name} entrou nesta sala",
-    "opened": "A sala do QR foi aberta"
+    "opened": "A sala do QR foi aberta",
+    "toggleIp": "Conectar um celular por QR",
+    "line2Ip": "Um celular em outra rede enviará um pedido de conexão"
   }
 }

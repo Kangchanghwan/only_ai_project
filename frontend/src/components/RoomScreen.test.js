@@ -54,6 +54,21 @@ describe('RoomScreen.vue', () => {
     globalRoomDevices: []
   }
 
+  describe('같은 네트워크 탭의 QR 줄', () => {
+    const me = { socketId: 'me', identity: { adj: 1, animal: 1, suffix: 0 } }
+    const other = { socketId: 'o1', identity: { adj: 2, animal: 2, suffix: 0 } }
+    const ipWake = (w) => w.findAll('[data-testid="room-wake-qr-toggle"]').filter((b) => b.text() === 'QR로 휴대폰 연결하기')
+    it('다른 기기가 있으면 접힌 QR 줄을 보이고, 혼자면(빈 화면 QR이 있으면) 숨긴다', async () => {
+      i18n.global.locale.value = 'ko'
+      const w = mount(RoomScreen, { props: { ...defaultProps, mySocketId: 'me', myIdentity: me.identity, ipRoomDevices: [me, other] }, global: { plugins: [i18n], stubs } })
+      expect(ipWake(w).length).toBe(1)
+      await w.setProps({ ipRoomDevices: [me] })
+      expect(ipWake(w).length).toBe(0)
+      await w.setProps({ ipRoomDevices: [me, other], scope: 'global' })
+      expect(ipWake(w).length).toBe(0)
+    })
+  })
+
   describe('도움말 창 안의 안내·소개·푸터', () => {
     it('more-info 블록은 더 이상 없고 안내·랜딩·푸터는 AppHeader 슬롯으로 전달된다', () => {
       const w = mount(RoomScreen, { props: defaultProps, global: { plugins: [i18n], stubs } })

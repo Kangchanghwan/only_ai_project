@@ -606,6 +606,8 @@
     "line1": "Zeskanuj aparatem telefonu, aby otworzyć ten pokój",
     "line2": "Nowy telefon wyśle prośbę o połączenie",
     "arrived": "{name} dołączył do pokoju",
-    "opened": "Otwarto pokój z kodu QR"
+    "opened": "Otwarto pokój z kodu QR",
+    "toggleIp": "Połącz telefon kodem QR",
+    "line2Ip": "Telefon w innej sieci wyśle prośbę o połączenie"
   }
 }
