@@ -11,16 +11,17 @@ function setup(over = {}) {
   const track = vi.fn()
   const invite = vi.fn(async () => ({ ok: true, sessionId: 'S1' }))
   const openRoom = vi.fn()
+  const notifyRoomOpen = vi.fn()
   const notify = { showError: vi.fn(), showSuccess: vi.fn() }
   let timerFn = null
   const q = useQrArrival({
     getIpDevices: () => state.ip, getGlobalDevices: () => state.global, getMySocketId: () => state.me,
     getPairStates: () => state.states, getSessions: () => state.sessions,
-    invite, openRoom, notify, t: (k) => k, track,
+    invite, openRoom, notifyRoomOpen, notify, t: (k) => k, track,
     setTimer: (fn) => { timerFn = fn; return 1 }, clearTimer: () => { timerFn = null },
     ...over,
   })
-  return { q, state, track, invite, openRoom, notify, fireTimeout: () => timerFn?.() }
+  return { q, state, track, invite, openRoom, notifyRoomOpen, notify, fireTimeout: () => timerFn?.() }
 }
 const flush = () => new Promise((r) => setTimeout(r, 0))
 
@@ -39,6 +40,17 @@ describe('useQrArrival 방 꼬리표', () => {
     expect(s.invite).not.toHaveBeenCalled()
     expect(s.notify.showSuccess).toHaveBeenCalledWith('roomQr.opened')
     expect(s.track).toHaveBeenCalledWith('qr_code_fallback', { result: 'room_tag' })
+    expect(s.notifyRoomOpen).toHaveBeenCalledWith(ROOM, 'pc1')
+  })
+
+  it('notifyRoomOpen이 throw해도 방을 열고 room_tag로 끝난다', async () => {
+    const r = await roomTag(link.x, ROOM)
+    const s = setup({ getRoomIds: async () => [ROOM], notifyRoomOpen: vi.fn(() => { throw new Error('x') }) })
+    s.q.start({ ...link, r })
+    s.state.ip = [ME, PC]
+    s.q.update()
+    await vi.waitFor(() => expect(s.track).toHaveBeenCalledWith('qr_code_fallback', { result: 'room_tag' }))
+    expect(s.openRoom).toHaveBeenCalledWith(ROOM)
   })
 
   it('맞는 방이 없으면 지금까지처럼 (다른 네트워크면 연결 요청)', async () => {
@@ -102,6 +114,16 @@ describe('useQrArrival', () => {
     s.q.update(); await flush()
     expect(s.invite).not.toHaveBeenCalled()
     expect(s.openRoom).toHaveBeenCalledWith('prv-g-1')
+    expect(s.notifyRoomOpen).toHaveBeenCalledWith('prv-g-1', 'pc1')
+  })
+
+  it('이미 같은 방일 때 notifyRoomOpen이 throw해도 room_ok로 끝난다', async () => {
+    const s = setup({ notifyRoomOpen: vi.fn(() => { throw new Error('x') }) })
+    s.q.start(link)
+    s.state.ip = [ME]; s.state.global = [ME, PC]; s.state.states = { pc1: { state: 'paired', roomId: 'prv-g-1' } }
+    s.q.update(); await flush()
+    expect(s.openRoom).toHaveBeenCalledWith('prv-g-1')
+    expect(s.track).toHaveBeenCalledWith('qr_code_fallback', { result: 'room_ok' })
   })
 
   it('PC를 못 찾으면 안내하고 not_found', async () => {

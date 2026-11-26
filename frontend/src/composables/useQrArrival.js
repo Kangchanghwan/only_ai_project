@@ -3,6 +3,7 @@
  * - 판정: 내 소켓이 들어 있는 첫 같은 네트워크 목록에 QR의 PC(소켓 ID 또는 이름표 키)가 있으면 같은 네트워크. 아무것도 하지 않는다.
  * - 방 탭 QR(꼬리표 r): 내가 가진 방 중 꼬리표가 맞는 방이 있으면 네트워크와 상관없이 그 방을 연다 (가장 먼저 본다).
  * - 다른 네트워크: 이미 같은 방이면 그 방으로 이동, 아니면 PC를 '다른 네트워크 기기' 맨 위에 두고 연결 요청.
+ * - 이미 같은 방이어서 내가 방을 열 때는 notifyRoomOpen으로 PC에도 그 방을 열라고 알린다 (PC가 같은 네트워크 탭에 남지 않게).
  * - 결과는 qr_code_fallback {result}로 QR 도착 세션당 1회만 기록한다. 비밀·소켓 ID·키는 기록하지 않는다.
  */
 import { ref } from 'vue'
@@ -30,6 +31,7 @@ export function resultOfReason(reason) {
  *   getRoomIds?: () => Promise<string[]>|string[],
  *   invite: (device: object, opts: object) => Promise<{ok: boolean, sessionId?: string, code?: string}>,
  *   openRoom?: (roomId: string) => void,
+ *   notifyRoomOpen?: (roomId: string, toSocketId: string) => void,
  *   notify?: { showError: Function }, t?: Function, track?: Function,
  *   session?: () => Storage|null, setTimer?: Function, clearTimer?: Function
  * }} deps
@@ -37,6 +39,7 @@ export function resultOfReason(reason) {
 export function useQrArrival({
   getIpDevices, getGlobalDevices, getMySocketId, getMyKey = () => null,
   getPairStates = () => ({}), getSessions = () => [], getRoomIds = () => [], invite, openRoom = () => {},
+  notifyRoomOpen = () => {},
   notify = { showError: () => {} }, t = (k) => k, track = () => {},
   session = () => { try { return window.sessionStorage } catch { return null } },
   setTimer = setTimeout, clearTimer = clearTimeout,
@@ -72,6 +75,11 @@ export function useQrArrival({
     if (phase === 'idle') { phase = 'done'; record('no_hash') }
   }
 
+  /** PC에 방을 열라고 알린다 (실패해도 흐름은 계속) */
+  function safeNotifyRoomOpen(roomId, toSocketId) {
+    try { notifyRoomOpen(roomId, toSocketId) } catch { /* 알림 실패 무시 */ }
+  }
+
   /** 꼬리표가 맞는 내 방 ID (없으면 null) */
   async function findTaggedRoom(x, r) {
     let ids = []
@@ -103,6 +111,7 @@ export function useQrArrival({
       const roomId = await findTaggedRoom(link.x, link.r)
       if (roomId) {
         openRoom(roomId)
+        safeNotifyRoomOpen(roomId, link.s)
         try { notify.showSuccess?.(t('roomQr.opened')) } catch { /* 알림 실패 무시 */ }
         finish('room_tag')
         return
@@ -116,7 +125,12 @@ export function useQrArrival({
     const target = found || { socketId: link.s, ...(identity ? { identity } : {}) }
 
     const st = getPairStates()?.[target.socketId]
-    if (st?.state === 'paired' && st.roomId) { openRoom(st.roomId); finish('room_ok'); return }
+    if (st?.state === 'paired' && st.roomId) {
+      openRoom(st.roomId)
+      safeNotifyRoomOpen(st.roomId, target.socketId)
+      finish('room_ok')
+      return
+    }
 
     pinned.value = target
     phase = 'inviting'

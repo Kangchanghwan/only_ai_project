@@ -621,6 +621,13 @@ function setupSocketListeners() {
     }
     // 내가 들어간 방(ip, global, 내 1:1 방)이 아닌 roomId의 메시지는 무시한다
     if (!isMyRoom(message.roomId)) return
+    if (message.type === 'room-open') {
+      // QR을 찍은 휴대폰이 우리 1:1 방을 열었다: 나에게 온 것이면 PC도 그 방 탭으로 옮긴다
+      if (message.to && message.to === socket.mySocketId?.value && privateRooms.has(message.roomId)) {
+        shareScope.setScope(scopeForPrivateRoom(message.roomId))
+      }
+      return
+    }
     if (message.type === 'file-uploaded' || message.type === 'file-deleted' || message.type === 'files-cleared') {
       // 메시지에 담긴 정보만으로 로컬 목록을 갱신한다 — 업로드마다 전체 목록을 재조회하지 않는다.
       // 정보가 부족한 구버전 메시지('reload')일 때만 기존처럼 재조회한다.
@@ -1379,6 +1386,20 @@ async function handleShareTargetData() {
   }
 }
 
+// QR로 이미 있는 1:1 방을 연 휴대폰이 PC에게 "이 방 탭을 열어줘"라고 알린다.
+// 휴대폰이 막 방에 다시 들어가는 중이면 서버가 거절(비회원)하므로 1초 간격으로 몇 번 다시 보낸다.
+const ROOM_OPEN_RETRIES = 5
+async function notifyRoomOpen(roomId, toSocketId) {
+  if (!roomId || !toSocketId || typeof socket.publishWithAck !== 'function') return
+  for (let i = 0; i < ROOM_OPEN_RETRIES; i++) {
+    if (i > 0) await new Promise((r) => setTimeout(r, 1000))
+    try {
+      const res = await socket.publishWithAck({ type: 'room-open', roomId, to: toSocketId }, roomId)
+      if (res?.success) return
+    } catch { /* 소켓 미연결: 다시 시도 */ }
+  }
+}
+
 // QR을 찍고 들어온 쪽: 같은 네트워크면 그대로, 다른 네트워크면 QR 증명을 붙여 연결 요청을 저절로 보낸다
 const qrArrival = useQrArrival({
   getIpDevices: () => socket.ipRoomDevices.value,
@@ -1393,6 +1414,7 @@ const qrArrival = useQrArrival({
   },
   invite: (device, opts) => pairFlow.invite(device, opts),
   openRoom: (roomId) => shareScope.setScope(scopeForPrivateRoom(roomId)),
+  notifyRoomOpen,
   notify: notification,
   t,
   track: trackEvent,
