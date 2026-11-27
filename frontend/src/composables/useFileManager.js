@@ -10,6 +10,7 @@ import { lockedUpload } from '../services/lockedUploader.js'
 import { deleteLockedWithProof } from '../services/lockedDownloader.js'
 import { useLockState } from './useLockState.js'
 import { ctPartCount } from '../utils/lockCrypto.js'
+import { perfNow, trackUploadPerf, trackUploadPerfFail } from '../utils/uploadPerf.js'
 
 /** 동시에 진행하는 업로드 수 (모바일 망·메모리 보호) */
 const DEFAULT_UPLOAD_CONCURRENCY = 3
@@ -424,6 +425,7 @@ export function useFileManager() {
       handle.state = 'running'
       onStart?.(file)
       const startedAt = Date.now()
+      const perfStart = perfNow()
       try {
         const res = await multipartUpload(roomId, file, {
           api: r2Service.multipartApi,
@@ -439,6 +441,7 @@ export function useFileManager() {
           retries: res.retries,
           resumed: res.resumed
         })
+        trackUploadPerf({ bytes: file.size, startedAt: perfStart, path: 'multipart', retries: res.retries, resumed: res.resumed })
         const result = {
           success: true,
           path: `${roomId}/${res.fileName}`,
@@ -456,6 +459,7 @@ export function useFileManager() {
           cancelFile(file, 'multipart')
           return undefined
         }
+        trackUploadPerfFail({ bytes: file.size, path: 'multipart', error: err })
         {
           trackEvent('multipart_upload_failed', {
             size_mb: Math.round(file.size / 1024 / 1024),
@@ -494,6 +498,7 @@ export function useFileManager() {
             .catch(err => { console.warn('[useFileManager] 썸네일 업로드 실패(무시):', err); return null })
         : Promise.resolve(null)
 
+      const perfStart = perfNow()
       try {
         await r2Service.putToPresignedUrl(target.uploadUrl, file, contentType, {
           onProgress: percent => onProgress?.(file, percent),
@@ -504,8 +509,10 @@ export function useFileManager() {
           cancelFile(file, 'single')
           return undefined
         }
+        trackUploadPerfFail({ bytes: file.size, path: 'single', error: err })
         throw err
       }
+      trackUploadPerf({ bytes: file.size, startedAt: perfStart, path: 'single' })
       // 응답을 받은 뒤의 취소는 무시하고 완료로 처리한다
       handle.state = 'committed'
       await thumbUpload
@@ -541,6 +548,7 @@ export function useFileManager() {
       handle.state = 'running'
       onStart?.(file)
       const startedAt = Date.now()
+      const perfStart = perfNow()
       try {
         const res = await lockedUpload(roomId, file, lock, {
           signal: handle.controller.signal,
@@ -551,6 +559,7 @@ export function useFileManager() {
           size_mb: Math.round(file.size / 1024 / 1024),
           duration_s: Math.round((Date.now() - startedAt) / 1000)
         })
+        trackUploadPerf({ bytes: file.size, startedAt: perfStart, path: 'locked', locked: true })
         const result = {
           success: true,
           locked: true,
@@ -569,6 +578,7 @@ export function useFileManager() {
           cancelFile(file, 'locked')
           return undefined
         }
+        trackUploadPerfFail({ bytes: file.size, path: 'locked', error: err })
         throw err
       }
     }
