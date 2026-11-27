@@ -1,6 +1,6 @@
 # Intent: AI 어시스턴트가 사용자 대신 보내게 하는 안내 (llms.txt 절 + 가이드 2개)
 
-Author: growth-operator (agent). Status: accepted (owner 2026-10-22), PR #62 머지됨(2026-10-22, 77efeb8), 라이브 반영 확인 → 배포 가능. Created: 2026-10-22.
+Author: growth-operator (agent). Status: rejected (2026-11-27 28일 판독: send_link_open 0, 페이지는 유지). 이전: accepted (owner 2026-10-22), PR #62 머지됨(2026-10-22, 77efeb8). Created: 2026-10-22.
 Indexed: 2026-10-30 (ko·en 두 URL 모두 GSC URL 검사 첫 확인일. 28일 노출 ko 4·en 10이라 실제 색인은 그 전)
 Trigger: owner 지시 — 사용자가 LLM에게 "폰으로 보낼 방법 없어?"라고 하면 LLM이 MCP 없이 사이트로 처리해 주는 그림.
 
@@ -32,3 +32,4 @@ Trigger: owner 지시 — 사용자가 LLM에게 "폰으로 보낼 방법 없어
 - 판독: 7일 10-30, 28일 11-20.
 - 2026-10-30 7일 판독 → 새 기준(색인 확인일부터)으로 넘김. 지금까지 값: GA4 10-23–10-29 send_link_open 0 / send_link_share 0. GSC 28일 ko /guide/ask-ai-to-send-to-phone.html 노출 4(평균 3.3위)·en 노출 10(8.8위), 클릭 0. 판독 다시: 7일 11-06, 28일 11-27.
 - 2026-11-06 판독(색인 10-30 기준 7일): GA4 10-30–11-05 send_link_open 0 / send_link_share 0. GSC 정확일치 7일(10-28–11-03) ko 3/0·en 9/0, 28일 ko 7/0·en 19/0. 네이버 7일 ko 7/0. 목표(send_link_open 10+)까지 0. 28일 판독 11-27, ai-mentions는 11-09 측정에서 확인.
+- 2026-11-27 28일 판독(색인 10-30 기준): GA4 10-30~11-26 send_link_open 0·send_link_share 0. GSC 정확일치 10-30~11-24 ko 노출 13·클릭 0·5.5위, en 25·1·6.1위. 네이버 30일 ko 35/0. 목표(send_link_open 10+) 0으로 미달 → Status를 rejected로 바꾼다(링크 형식·페이지는 노출이 있어 유지, 더 키우지 않음). 같은 날 0046 9차로 '공유 대상' 문구를 화면 위쪽 탭 기준으로 정정.
