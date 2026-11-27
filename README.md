@@ -6,8 +6,7 @@
 
 사용법 영상: [한국어 46초](https://youtu.be/GuX1jUCkDo0) · [English 45s](https://youtu.be/tQPI6wA79OA) · [2편: 방 만들기와 비밀번호 잠금](https://youtu.be/Oy_-4OHoWdc)
 
-Socket.IO 기반 실시간 공유 서버와 Vue 3 프론트엔드로 구성됩니다. (아래 기능 설명 일부는 초기 6자리 룸 모델 기준의 옛 내용입니다.)
-
+Socket.IO 기반 실시간 공유 서버와 Vue 3 프론트엔드로 구성된 모노레포입니다. 파일은 Cloudflare R2에 저장되고, 서버는 방 상태와 중계만 맡습니다.
 
 ## For AI agents and LLMs
 
@@ -16,362 +15,132 @@ Socket.IO 기반 실시간 공유 서버와 Vue 3 프론트엔드로 구성됩�
 - Files: open https://www.clipboardapp.org on both devices; the page has a file input labeled "Choose files" (up to 5GB per file, kept for at most about 1 day).
 - The default "Same network" scope is visible to everyone on that network. For sensitive files, use "Lock with a password" or a room: files and text you share inside a room are encrypted on your device, file names included, and the room key never goes to the server.
 
-## 📋 기능
+## 기능
 
-### ✅ 구현된 핵심 기능
+| 영역 | 내용 |
+|------|------|
+| 자동 연결 | 같은 네트워크(공인 IP 기준 `ip` 범위)의 기기는 접속만 하면 같은 방에 자동 입장합니다. 전체 공유(`global`) 범위로 바꿀 수도 있고, 접속 기기는 동물 이름표로 표시됩니다. |
+| 1:1 방 | QR 코드/코드로 짝을 맺는 비공개 방. 방 안의 파일·텍스트(파일명 포함)는 기기에서 암호화되고 방 키는 서버로 가지 않습니다. |
+| 비밀번호 잠금 | 같은 네트워크/전체 범위의 파일과 텍스트를 비밀번호로 잠가 비공개 버킷에 보관합니다. |
+| 텍스트 공유 | 텍스트 탭 + 10분 텍스트 큐(나중에 접속·새로고침한 기기도 받음, 텍스트당 96KiB, 방당 20개). |
+| 파일 공유 | 파일 선택·드래그 앤 드롭·붙여넣기(Ctrl/Cmd+V). 파일당 최대 5GB, 100MB 초과는 64MiB 조각 멀티파트 업로드(이어올리기). 보관은 최대 약 1일. |
+| 도착 알림 | Web Push(VAPID). 키가 없으면 기능과 UI가 꺼집니다. |
+| PWA / Share Target | 설치형 PWA, 다른 앱의 공유 시트에서 바로 보내기, 오프라인 안내 페이지. |
+| 링크로 보내기 | `/#/send?t=<텍스트>` 로 텍스트 탭을 채워 연 뒤 사용자가 "공유"를 누릅니다(텍스트는 URL fragment라 서버로 가지 않음). |
+| 다국어·테마 | 21개 언어(브라우저 언어 자동 감지, 기본 `ko`), 다크 모드. |
+| SEO | Puppeteer 프리렌더 정적 페이지(`/en/`, `/ja/`, `/ru/`, 사용법·FAQ·가이드 `public/guide/`), `llms.txt`. |
 
-1. **자동 룸 생성**
-   - 웹 접속 시 자동으로 6자리 룸 번호 생성 (100000-999999)
-   - 룸 번호가 웹에 즉시 표시됨
-
-2. **룸 입장**
-   - 다른 사용자가 생성한 룸 번호로 입장 가능
-   - 실시간으로 사용자 수 확인
-
-3. **QR 코드 공유 (NEW!)**
-   - 룸 코드를 QR 코드로 생성하여 모바일 접근성 향상
-   - QR 코드 스캔으로 즉시 룸 입장 가능
-   - QR 코드 다운로드 기능 제공
-   - URL 해시 파라미터 기반 자동 룸 연결 (예: `/#/ABC123`)
-
-4. **실시간 통신**
-   - Socket.IO 기반 양방향 실시간 통신
-   - 룸 내 모든 사용자에게 즉시 메시지 브로드캐스트
-
-5. **사용자 관리**
-   - 사용자 입장/퇴장 실시간 알림
-   - 빈 룸 자동 정리
-
-## 🏗️ 프로젝트 구조
+## 구조
 
 ```
 .
-├── backend/                # Socket.IO 서버 (Node.js + TypeScript)
-│   ├── src/
-│   │   ├── server.ts      # 메인 서버 로직
-│   │   └── __tests__/     # Jest 테스트
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── jest.config.js
-│
-└── frontend/              # Vue 3 클라이언트
-    ├── src/
-    │   ├── App.vue        # 메인 앱 컴포넌트
-    │   ├── components/    # UI 컴포넌트
-    │   └── composables/   # Vue 컴포저블
-    │       └── useSocket.js  # Socket.IO 클라이언트
-    └── package.json
+├── backend/    # Node.js + TypeScript + Express 5 + Socket.IO 4.8
+│   └── src/    # server.ts, handlers/, managers/, routes/ (multipart, texts, push, locked, quickSend),
+│               # services/ (R2), utils/ (textQueue 등), types/index.ts, __tests__/
+├── frontend/   # Vue 3 (Composition API, JavaScript) + Vite 7 + Tailwind CSS 4
+│   ├── src/    # App.vue, components/, composables/, services/, i18n/locales/, utils/
+│   ├── public/ # manifest.json(Share Target), sw.js, 정적 SEO 페이지
+│   └── scripts/# prerender.mjs, generate-brand-assets.mjs
+├── docs/       # 데모 미디어, 설계 메모
+├── Dockerfile  # 백엔드 이미지 (node:22-alpine)
+└── DESIGN.md   # 디자인 시스템
 ```
 
-## 🚀 시작하기
+프론트엔드는 `Components → Composables(useSocket, useFileManager, useTextQueue, usePairFlow, usePush …) → Services` 3계층이며 라우팅은 Vue Router 없이 해시 기반(`/#/send` 등)입니다.
 
-### 사전 요구사항
+## 시작하기
 
-- Node.js 22.9.0 이상
-- npm 또는 yarn
-
-### 백엔드 서버 실행
+Node.js 22.9.0 이상이 필요합니다.
 
 ```bash
-cd backend
+# 백엔드 (http://localhost:3001)
+cd backend && npm install
+npm run dev            # nodemon + ts-node
+npm run build && npm start
 
-# 의존성 설치
-npm install
-
-# 개발 모드 실행 (hot reload)
+# 프론트엔드 (http://localhost:5173)
+cd frontend && npm install
 npm run dev
-
-# 테스트 실행
-npm test
-
-# 프로덕션 빌드
-npm run build
-npm start
+npm run build:prod     # 프로덕션 빌드
+npm run build:seo      # 프로덕션 빌드 + 프리렌더
 ```
 
-서버는 **http://localhost:3001** 에서 실행됩니다.
+## 통신 인터페이스
 
-### 프론트엔드 실행
+Socket.IO 이벤트(`backend/src/types/index.ts`)
+
+| 방향 | 이벤트 | 설명 |
+|------|--------|------|
+| C → S | `publish(message, target, cb)` | `ip`/`global`/비공개 방 ID로 파일·텍스트 메시지 전송(소켓당 속도 제한) |
+| C → S | `room-tokens` / `room-snapshot` | 룸 토큰 재발급 / 명단 스냅샷 재요청 |
+| C → S | `identity:reroll` / `devices:find` | 이름표 다시 뽑기 / 전체 공유 방에서 이름으로 기기 찾기 |
+| C → S | `p2p:signal` / `push:bind` | 같은 IP 기기 간 시그널링 / 도착 알림 기기 ID 묶기 |
+| S → C | `registered` / `identity` | 입장 결과 / 기기 정체성 할당 |
+| S → C | `message` | 방 내 메시지 수신 |
+| S → C | `room-users` / `room-delta` | 접속 기기 전체 목록 / 증분 |
+| S → C | `user-left` / `p2p:signal` / `error` | 퇴장 알림 / 시그널 중계 / 오류 |
+
+REST API(`backend/src/server.ts`, `routes/`)
+
+| 경로 | 용도 |
+|------|------|
+| `GET /health`, `GET /stats` | 서버 상태, 방·사용자 수 |
+| `/api/r2/presigned-url(s)`, `/api/r2/upload` | 업로드 URL 발급, 소용량 직접 업로드 |
+| `/api/r2/download-url/...`, `/api/r2/download-urls` | 다운로드 URL |
+| `GET/DELETE /api/r2/files/:roomId[/:fileName]`, `GET /api/r2/size/:roomId` | 목록·삭제·용량 |
+| `POST /api/r2/multipart/*`(create/sign/parts/complete/abort) | 대용량 멀티파트 업로드 (잠금 변형 포함) |
+| `/api/r2/locked/*` | 비밀번호 잠금 파일 메타·해제·삭제 |
+| `/api/texts/:roomId`, `/api/texts/unlock`, `/api/texts/delete` | 10분 텍스트 큐 |
+| `/api/push/key`, `/api/push/subscribe`, `/api/push/unsubscribe` | Web Push |
+| `POST /api/quick-send` | 링크/공유 시트 빠른 전송 |
+
+## 테스트
 
 ```bash
-cd frontend
-
-# 의존성 설치
-npm install
-
-# 개발 서버 실행
-npm run dev
-
-# 프로덕션 빌드
-npm run build
+cd backend && npm test        # Jest + ts-jest (실제 Socket.IO 서버 사용)
+cd frontend && npm test       # Vitest + Vue Test Utils (happy-dom)
 ```
 
-프론트엔드는 **http://localhost:5174/** 에서 실행됩니다.
+`useFileManager.integration.test.js`는 `RUN_INTEGRATION=1`일 때만 실제 백엔드로 실행됩니다. 백엔드는 `npm run test:watch`, `test:coverage`도 지원합니다.
 
-## 📡 Socket.IO 이벤트
+## 환경 변수
 
-### 서버 → 클라이언트
-
-| 이벤트 | 파라미터 | 설명 |
-|-------|---------|------|
-| `registered` | `roomNumber: number` | 새 룸 생성 완료, 룸 번호 반환 |
-| `subscribed` | `roomNumber: number, userCount: number` | 기존 룸 입장 성공 |
-| `room-not-found` | - | 존재하지 않는 룸 입장 시도 |
-| `message` | `msg: any` | 룸 내 메시지 수신 |
-| `user-left` | `userCount: number` | 사용자 퇴장 알림 |
-
-### 클라이언트 → 서버
-
-| 이벤트 | 파라미터 | 설명 |
-|-------|---------|------|
-| `join` | `roomNumber: number` | 기존 룸 입장 요청 |
-| `publish` | `message: any` | 룸에 메시지 전송 |
-
-## 🎯 사용 흐름
-
-### 1. 새 룸 생성
-
-1. 웹 브라우저에서 http://localhost:5174/ 접속
-2. "새 룸 생성" 버튼 클릭
-3. **자동으로 생성된 6자리 룸 번호가 화면에 표시됨**
-4. 이 번호를 다른 사용자와 공유
-
-### 2. 기존 룸 입장
-
-#### 방법 1: 수동 입력
-1. 웹 브라우저에서 http://localhost:5174/ 접속
-2. "룸 입장" 버튼 클릭
-3. 공유받은 6자리 룸 번호 입력
-4. 입장하면 현재 룸에 있는 사용자 수 표시
-
-#### 방법 2: QR 코드 스캔 (모바일 접근성)
-1. PC에서 룸 코드 옆의 "QR" 버튼 클릭
-2. 표시된 QR 코드를 모바일 기기로 스캔
-3. 자동으로 해당 룸에 입장
-4. QR 코드 다운로드도 가능
-
-### 3. 이미지 공유 (예정)
-
-- Ctrl+V (Mac: Cmd+V)로 클립보드 이미지 업로드
-- 업로드된 이미지는 같은 룸의 모든 사용자에게 실시간 표시
-
-## 📝 개발 로드맵
-
-### Phase 1: 핵심 기능 강화 (우선순위: 높음)
-
-#### 1. 파일 크기 제한 및 예외처리
-- **목표**: 서버 과부하 방지 및 안정성 확보
-- **구현 내용**:
-  - 클라이언트: 업로드 전 파일 크기 사전 검증 (즉시 피드백)
-  - 백엔드: Socket.IO `maxHttpBufferSize` 설정
-  - 제한: 파일당 5GB, 룸 전체 10GB, IP당 하루 업로드 20GB (100MB 초과 파일은 64MiB 조각 멀티파트 업로드 + 이어올리기. 서버에서도 강제, 백엔드 env MAX_FILE_SIZE_MB / MAX_ROOM_SIZE_MB / DAILY_UPLOAD_QUOTA_GB / SINGLE_PUT_MAX_MB) (서버에서도 강제, 백엔드 env MAX_FILE_SIZE_MB / MAX_ROOM_SIZE_MB)
-  - 사용자 친화적 에러 메시지 표시
-
-#### 2. 파일 업로드 UI 개선
-- **목표**: 다양한 업로드 방식 지원으로 접근성 향상
-- **구현 내용**:
-  - ✅ 클립보드 붙여넣기 (Ctrl/Cmd+V)
-  - 파일 선택 버튼 (`<input type="file" multiple>`)
-  - 드래그 앤 드롭 영역
-  - 업로드 방법 안내 UI
-
-#### 3. 닫힌 룸 리소스 정리 전략
-- **목표**: 메모리 효율성과 사용자 경험 균형
-- **구현 방법 검토**:
-  - **옵션 A**: 즉시 정리 (현재 방식)
-    - 마지막 사용자 퇴장 시 바로 삭제
-    - 장점: 메모리 효율적
-    - 단점: 재접속 시 데이터 손실
-  - **옵션 B**: 지연 정리 (권장)
-    - 마지막 사용자 퇴장 후 10분 대기
-    - 재접속 시 데이터 유지
-    - 타임아웃 후 자동 삭제
-  - **옵션 C**: 하이브리드
-    - 텍스트/작은 파일: 30분 유지
-    - 큰 파일: 5분 유지
-- **추가 고려사항**: 임시 파일 디스크 정리, TTL 설정
-
-#### 4. 보안 및 파일 검증
-- **목표**: 악성 파일 차단 및 시스템 보호
-- **구현 내용**:
-  - 허용 파일 타입 화이트리스트 (이미지, 문서, 압축파일 등)
-  - 위험 확장자 차단 (.exe, .bat, .sh, .scr 등)
-  - 파일명 sanitization (경로 조작 공격 방지)
-  - MIME 타입 검증
-  - XSS 방지를 위한 파일 콘텐츠 검사
-
-#### 5. 다중 파일 다운로드
-- **목표**: 여러 파일을 편리하게 저장
-- **구현 내용**:
-  - 파일 목록에 체크박스 UI
-  - 개별 파일 다운로드 버튼
-  - ZIP 압축 일괄 다운로드 (JSZip 라이브러리)
-  - "선택 항목 다운로드" 및 "전체 다운로드" 버튼
-
-### Phase 2: 사용성 개선 (우선순위: 중간)
-
-#### 6. 업로드 파일 수 제한
-- **목표**: 네트워크 부하 및 메모리 관리
-- **구현 내용**:
-  - 동시 업로드 최대 수 제한 (예: 10개)
-  - 룸당 총 파일 수 제한 (예: 100개)
-  - FIFO 방식 자동 정리 옵션
-  - 제한 도달 시 명확한 안내 메시지
-
-#### 7. 텍스트 공유 기능
-- **목표**: 파일과 함께 메시지/설명 공유
-- **구현 내용**:
-  - 텍스트 입력창 추가
-  - 메시지 타입 구분 (text, file, image)
-  - 파일 + 텍스트 동시 전송
-  - 타임스탬프 및 발신자 표시
-
-#### 8. 파일 메타데이터 표시
-- **목표**: 파일 정보를 명확하게 제공
-- **구현 내용**:
-  - 파일명, 크기, 타입
-  - 업로드 시간
-  - 업로더 정보 (익명 ID 또는 닉네임)
-  - 파일 타입별 아이콘
-
-#### 9. 에러 처리 및 사용자 피드백
-- **목표**: 안정성 향상 및 명확한 상태 표시
-- **구현 내용**:
-  - 네트워크 연결 끊김 감지 및 자동 재연결
-  - 업로드 실패 시 재시도 옵션
-  - 로딩 상태 인디케이터
-  - Toast 알림으로 상태 피드백
-
-### Phase 3: 고급 기능 (우선순위: 낮음-중간)
-
-#### 10. 파일 미리보기
-- 이미지: 썸네일 및 전체 미리보기
-- 텍스트/코드: 내용 미리보기 (syntax highlighting)
-- PDF: 첫 페이지 미리보기
-- 비디오: 썸네일 생성
-
-#### 11. 업로드/다운로드 진행 상황
-- 진행률 바 (percentage)
-- 전송 속도 표시 (MB/s)
-- 남은 시간 예측
-- 취소 버튼
-
-#### 12. 사용자 경험 개선
-- 닉네임 설정 기능
-- 파일 개별 삭제 기능
-- 룸 비밀번호 설정 (선택적 보안)
-- 룸 초대 링크 생성 및 복사
-- 파일 검색 및 필터링
-
-#### 13. 성능 최적화
-- 대용량 이미지 자동 압축
-- Lazy loading (파일 목록)
-- Virtual scroll (많은 파일 처리)
-- Web Worker 활용 (파일 처리)
-- 이미지 포맷 최적화 (WebP 변환)
-
-#### 14. 접근성 및 반응형
-- 모바일 최적화 (터치 제스처)
-- 키보드 단축키 지원
-- 스크린 리더 호환성
-- 다크 모드
-- 다국어 지원 (i18n)
-
-## 🧪 테스트
-
-백엔드는 TDD(Test-Driven Development) 방식으로 개발되었습니다.
-
-```bash
-cd backend
-
-# 전체 테스트 실행
-npm test
-
-# 테스트 감시 모드
-npm run test:watch
-
-# 커버리지 확인
-npm run test:coverage
-```
-
-### 테스트 커버리지
-
-- ✅ 룸 생성 플로우
-- ✅ 룸 입장 플로우
-- ✅ 메시지 브로드캐스팅
-- ✅ 사용자 퇴장 처리
-
-## 🛠️ 기술 스택
-
-### 백엔드
-- **Node.js** - 런타임 환경
-- **TypeScript** - 타입 안전성
-- **Socket.IO** - 실시간 양방향 통신
-- **Express** - HTTP 서버
-- **Jest** - 테스트 프레임워크
-
-### 프론트엔드
-- **Vue 3** - 프론트엔드 프레임워크
-- **Vite** - 빌드 도구
-- **Socket.IO Client** - 실시간 통신 클라이언트
-
-## 🔧 환경 설정
-
-### 백엔드 (.env)
+백엔드(`backend/.env`)
 
 ```env
 PORT=3001
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5174
+ALLOWED_ORIGINS=http://localhost:5173
+ROOM_GRACE_PERIOD_SEC=300
+ROOM_ID_SECRET=<긴 임의 문자열>          # IP 방 ID HMAC 시크릿(운영 필수)
+R2_ACCOUNT_ID= R2_ACCESS_KEY_ID= R2_SECRET_ACCESS_KEY= R2_BUCKET_NAME= R2_PUBLIC_URL=
+R2_LOCKED_BUCKET_NAME=                  # 비우면 잠금 기능 꺼짐
+VAPID_PUBLIC_KEY= VAPID_PRIVATE_KEY=    # 비우면 도착 알림 꺼짐
+# 선택: MAX_FILE_SIZE_MB, MAX_ROOM_SIZE_MB, DAILY_UPLOAD_QUOTA_GB, SINGLE_PUT_MAX_MB
 ```
 
-### 프론트엔드 (.env)
+프론트엔드(`frontend/.env`)
 
 ```env
 VITE_SOCKET_URL=http://localhost:3001
+VITE_API_URL=http://localhost:3001
+VITE_R2_PUBLIC_URL=https://store.clipboardapp.org
+VITE_MAX_FILE_SIZE_MB=5120
+VITE_MAX_ROOM_SIZE_MB=10240
 ```
 
-## 📝 개발 원칙
+## 배포
 
-1. **TDD (Test-Driven Development)**
-   - 테스트 먼저 작성
-   - 테스트를 통과하는 최소한의 코드 작성
-   - 리팩토링
+프론트엔드는 Vercel(`frontend/vercel.json`), 백엔드는 Docker 멀티 스테이지 이미지로 수동 배포합니다. 백엔드 배포가 프론트보다 늦을 수 있으니 새 API 호출에는 이전 엔드포인트 폴백을 둡니다.
 
-2. **타입 안전성**
-   - TypeScript strict 모드
-   - 명확한 인터페이스 정의
+## 문제 해결
 
-3. **관심사 분리**
-   - RoomManager 클래스로 룸 로직 캡슐화
-   - Vue Composables로 기능 모듈화
+- 포트 사용 중: `lsof -ti:3001 | xargs kill -9` (프론트는 5173)
+- Socket.IO 연결 오류: 백엔드 실행 여부, `ALLOWED_ORIGINS`(CORS), 브라우저 콘솔 확인
 
-4. **에러 처리**
-   - Promise 기반 비동기 처리
-   - 타임아웃 설정
-   - 명확한 에러 메시지
-
-## 🐛 트러블슈팅
-
-### 포트가 이미 사용 중인 경우
-
-```bash
-# 백엔드 (3001 포트)
-lsof -ti:3001 | xargs kill -9
-
-# 프론트엔드 (5174 포트)
-lsof -ti:5174 | xargs kill -9
-```
-
-### Socket.IO 연결 오류
-
-1. 백엔드 서버가 실행 중인지 확인
-2. CORS 설정 확인 (backend/.env)
-3. 브라우저 콘솔에서 연결 상태 확인
-
-## 📄 라이선스
+## 라이선스
 
 [MIT](LICENSE)
 
-## 👥 기여
+## 기여
 
-프로젝트 개선을 위한 이슈 및 풀 리퀘스트를 환영합니다!
+이슈와 풀 리퀘스트를 환영합니다.

@@ -12,33 +12,34 @@
 - Wormhole.app: dark mode, gradient headline, casual copy tone ("drag stuff here"). Reference for playful tone; gradient accent avoided per anti-slop guidance.
 
 ## Aesthetic Direction
-- **Direction:** Playful/toy-like, restrained (not childish, not maximalist).
+- **Direction:** Playful/toy-like in tone, but the shipped visual language is flat and square-cornered ("hairline-and-ink"): 0px radius, no shadows, 1-2px borders, a navy ink for primary actions. Coral stays the brand accent. (Synced to code 2026-11-26; the original rounded/soft direction was superseded.)
 - **Decoration level:** Intentional — subtle texture/illustration on empty states so the feed feels like a living tray, not a bare form.
 - **Mood:** Warm, casual, physical — items "land" in the feed like they were tossed there. Explicitly not "encrypted vault" or "enterprise security tool" in feel.
 - **Reference sites:** snapdrop.net, sharedrop.io, wormhole.app
 
 ## Typography
-- **Display/Hero:** Cabinet Grotesk — rounded, characterful grotesk that reinforces the toy-like mood without being cute.
-- **Body:** Plus Jakarta Sans — humanist, highly legible, not overused (avoids Inter/Roboto convergence).
-- **UI/Labels:** same as body.
-- **Data/Tables:** Geist (tabular-nums) — for file sizes, timestamps, counts.
-- **Code:** JetBrains Mono (if code/text snippets need monospace treatment).
-- **Loading:** Google Fonts CDN for Plus Jakarta Sans + Geist; Cabinet Grotesk requires a licensed/self-hosted webfont (Fontshare) — confirm license before shipping.
+- **Display/Hero:** Cabinet Grotesk (500/700/800) — loaded from Fontshare (`font-display` token; headers, landing headings). h1-h4 use weight 800, letter-spacing -0.02em.
+- **Body / UI / Labels:** Pretendard Variable (jsDelivr dynamic-subset, handles Korean) — stack: Pretendard Variable, Pretendard, Plus Jakarta Sans, system sans. Plus Jakarta Sans is only a fallback in the stack, not loaded as a webfont.
+- **Data/Tables:** no dedicated face; counts and badges use the body face with `tabular-nums`. (Geist and JetBrains Mono from the original plan are not loaded.)
+- **Loading:** both stylesheets are async (`preload` + `onload` swap, `display=swap`) so they never block first paint; metric-adjusted local fallback `@font-face` blocks (`Cabinet Grotesk Fallback*`, `Plus Jakarta Sans Fallback*`, Arial/Roboto based) live in the `index.html` critical CSS to limit layout shift. `scripts/prerender.mjs` asserts this pattern — change both together. Keep the font stacks in `index.html` and `src/style.css` identical.
 - **Scale:** hero 40-56px / section heading 20-24px / body 15-16px / data 13-14px / caption 11-12px.
 
 ## Color
 - **Approach:** Restrained — one brand accent, one secondary "scope" accent for a specific functional meaning (see Scope Color below).
-- **Primary accent (brand, actions):** `#FF6B4A` coral — warm, close, "handoff" feeling. Deliberately not blue (every competitor — Snapdrop, ShareDrop, AirDroid, Dropbox — uses blue as the trust/tech color).
-- **Neutrals (light):** background `#FAF8F5`, surface `#FFFFFF`, border `#E9E3DA`, text `#2A2622`, muted text `#8A8178`. Warm-toned, not cold slate/gray.
-- **Neutrals (dark):** background `#1C1917`, surface `#262220`, border `#3A3430`, text `#F2EDE7`, muted text `#A69A8D`.
-- **Page letterbox (outside the phone frame):** uses the same themed `--color-background` as the phone frame's interior (light `#FAF8F5` / dark `#1C1917`) — no longer a fixed neutral gray independent of theme. See Decisions Log 2026-07-02.
-- **Semantic:** success `#4A9C6D`, warning `#D9A441`, error `#D9534F`.
-- **Scope color (functional, not brand):** the app has two sharing scopes — `ip` (same public IP / same network, auto-joined) and `global` (visible to everyone using the app). These carry different privacy blast radii and must be visually distinguishable wherever the user picks or sees a scope:
+- **Primary accent (brand):** `#FF6B4A` coral (light) / `#FF7A5C` (dark) — warm, close, "handoff" feeling; it is the `ip` scope color and the logo/icon color. Primary buttons, selection and focus use the navy **ink** token instead (see Neutrals), not coral. Deliberately not blue (every competitor — Snapdrop, ShareDrop, AirDroid, Dropbox — uses blue as the trust/tech color).
+- **Theme default:** dark (`:root` / `[data-theme="dark"]`); light via `[data-theme="light"]`. Tokens are defined in `frontend/src/style.css` (and mirrored in the `index.html` critical CSS).
+- **Neutrals (light):** background `#FFFFFF`, surface `#FFFFFF`, tint `#F1F5FA`, border `#E1E5EC`, text `#0B1F4D`, muted text `#5A6B8C`. Cool navy-tinted (the earlier warm cream palette was replaced).
+- **Neutrals (dark):** background `#0A1430`, surface `#0F1D40`, tint `#13234A`, border `#24335A`, text `#EEF2F8`, muted text `#9AA8C4`.
+- **Ink (primary buttons, selection, focus, active tab underline, badges):** light `#0B1F4D` / `ink-2` `#2D4270`, dark `#DCE4F2` / `#B7C4DC`; text on ink `--color-on-ink` (`#FFFFFF` / `#0A1430`). Text on accent-colored buttons `--color-on-accent` (`#FFFFFF` light / `#0A1430` dark).
+- **Page background:** the page, the app frame and the header all use the themed background/surface tokens; the room view is a single column (see Layout).
+- **Semantic:** danger `#DC2626` light / `#F87171` dark (delete and other destructive actions). Success/warning have no dedicated tokens in code.
+- **Scope color (functional, not brand):** the app has three kinds of sharing scope — `ip` (same public IP / same network, auto-joined), `global` (visible to everyone using the app) and private rooms (`prv:<roomId>`: 1:1 pairing rooms and group rooms, each shown as its own tab). These carry different privacy blast radii and must be visually distinguishable wherever the user picks or sees a scope:
   - `ip` scope uses the primary coral accent (`#FF6B4A`) — close, local, low-risk, and it's the default.
   - `global` scope uses a dedicated sage-green (`#4F8767` light / `#6FAE8A` dark, tint `#E4EEE7` light / `#223026` dark) — deliberately different from coral so switching scope is visually unmissable, not just a label change.
+  - Private rooms (1:1 / group) use a dedicated blue (`--color-scope-private`: `#2F66D0` light / `#5B8DEF` dark, tint `#E3ECFB` light / `#1F2A40` dark) — distinct from coral and sage because the audience is a specific paired device or invited group.
   - `global` is never the default selection in any UI; the user must explicitly switch to it.
-  - The scope accent is not limited to the tab pill — every accent touch below it (upload dropzone border/icon, paste box hover, file card selection highlight/icon/action buttons, sticky bottom action bar icons, text-share hover accents) must switch between coral and sage together with the active scope, so the screen never shows a mismatched mix of the two accents at once. Destructive actions (delete) stay red regardless of scope — that's semantic, not scope color.
-- **Dark mode:** redesign surfaces (not just invert), warm near-black background, slightly desaturate accent by ~5-10%.
+  - The scope accent is not limited to the tab pill — every accent touch below it (upload dropzone border/icon, paste box hover, file card selection highlight/icon/action buttons, sticky bottom action bar icons, text-share hover accents) must switch between coral, sage and blue together with the active scope (`useScopeAccent` returns the class set for all three), so the screen never shows a mismatched mix of the two accents at once. Destructive actions (delete) stay red regardless of scope — that's semantic, not scope color.
+- **Dark mode:** redesigned surfaces (deep navy, not inverted light); the coral accent shifts to `#FF7A5C` (brighter, not desaturated) and ink flips to a light tone so primary buttons stay high-contrast.
 
 ## Spacing
 - **Base unit:** 8px
@@ -46,20 +47,21 @@
 - **Scale:** 2xs(2) xs(4) sm(8) md(16) lg(24) xl(32) 2xl(48) 3xl(64)
 
 ## Layout
-- **Approach:** The file feed is a single-column row list (not a card grid); the upload entry point is allowed to break the list with an oversized, playful drop-zone/pill above it.
-- **App shell — phone frame:** the entire app (all screens: room, download page) renders inside a single "phone frame" container capped at `max-width: 30rem` (480px), centered on the page. Below 480px (real mobile) this is invisible — the frame simply fills the viewport, unchanged from before. Above 480px (desktop/tablet), the frame floats centered with the page background visible as a letterbox on both sides, so the app always looks and behaves like its mobile layout regardless of screen size. The frame uses `contain: layout` so it becomes the containing block for its `position: fixed` descendants (bottom action bar, notification toast, modals) — they anchor to the frame's edges, not the browser viewport.
-  - **Letterbox backdrop:** uses the themed `--color-background` token (same as in-frame surfaces like the header), so the backdrop follows light/dark theme instead of staying pinned to a fixed neutral gray.
-  - **Frame shadow:** `box-shadow: 0 0 3.125rem rgba(22, 28, 1, 0.1)` on the frame itself, so it visually lifts off the gray backdrop.
-- **Feed layout:** file list rows: icon/thumbnail + two-line name/meta + always-visible action buttons (no hover-only reveal — must work on touch). The file feed and text feed always use the mobile stacked/tab layout ("Files" / "Text" tab switcher, defaulting to the file tab) at every screen size — there is no side-by-side split, since the phone frame keeps the content column mobile-width everywhere.
-- **Border radius:** sm 8px (chips, small controls), md 14px (cards), lg 22px (frames, dropzone), full 999px (pills, tabs, primary buttons).
-- **Scope tabs:** a segmented pill control (`우리 네트워크` / `전체 공유`) sits above the feed; active tab fills with the scope color (coral for ip, sage for global). Default active tab is always `ip`.
-- **Sticky/fixed chrome:** the header (`AppHeader`) sticks to the top of the phone frame on scroll (`sticky top-0`). The file-list action bar (select-all/download/QR/delete/reset) is a floating rounded card (`rounded-2xl`, shadow, inset ~1rem from the frame's left/right/bottom edges, safe-area aware) rather than an edge-to-edge bar, always visible whenever the file list is showing — its icons are custom inline SVG (matching `FileCard.vue`'s stroke style), not emoji. On mobile (`<sm`), per-file row actions collapse behind a single "⋯" trigger that opens a bottom action sheet, instead of the row's inline icon buttons (which remain inline at `sm` and above).
+- **Approach:** The room view is one centered column (`page-shell`: max 760px, 880px from 768px up). The file feed is a single-column row list (not a card grid); the upload entry point is allowed to break the list with an oversized, playful drop-zone/pill above it.
+- **App shell:** `.app-frame` is full width with the themed surface background and no shadow. The 480px "phone frame" with letterbox only survives on the download page (`app-frame--narrow`, `max-width: 30rem`); the room screen is no longer phone-framed (the 2026-07-02 phone-frame decision is superseded). `position: fixed` chrome is centered by each element itself rather than via `contain`.
+- **Feed layout:** file list rows: icon/thumbnail + two-line name/meta + always-visible action buttons (no hover-only reveal — must work on touch). Files and text share one column with a Files / Text switcher at every screen size — no side-by-side split.
+- **Border radius:** square. Theme tokens: xs/sm 2px (count badges), md and larger 0px; components use `rounded-none`. Only avatars (`rounded-full`) and the mobile bottom sheets (`rounded-t-2xl`) stay round. **Shadows:** all shadow tokens are `none`; separation comes from 1px `--color-border` lines and 2px `--color-ink` frames (menus, action bar, selected row).
+- **Scope tabs:** an underline tab bar (`ShareScopeTabs`, min-height 44px, horizontally scrollable) above the feed: `같은 네트워크` (ip), `전체 공유` (global), then one tab per private room (1:1 peer name or group name, group tabs get a people icon), plus a trailing "＋ 방" create button. The active tab is bold ink text with a 2px ink underline — the scope color is not the tab fill. Scope is shown by an 8px square mark before the label (sage for global, blue for 1:1 rooms; ip has none) and a lock icon when the scope is password-locked; a newly connected room's tab gets a small blue dot. Default active tab is always `ip`.
+- **Sticky/fixed chrome:** the header (`AppHeader`, `bg-surface`, bottom border) sticks to the top (`sticky top-0`), content width max 880px; it holds the 📋 logo + title, a "more" menu (install / push), help, theme toggle and the connected-devices avatar row / QR. The file-list action bar (`DownloadControls`) is a fixed card centered at the bottom (max 28rem, inset 1rem, safe-area aware) with a 2px ink border and square corners — not rounded or shadowed — grid of icon buttons with an ink count badge (`selected/total`); delete uses danger red. Icons are custom inline SVG. On mobile (`<sm`), per-file row actions collapse behind a single "⋯" trigger that opens a bottom action sheet.
+- **Selected row:** inset 2px ink box-shadow; keyboard focus is a separate 2px blue outline.
+- **Footer / help:** `AppFooter` (privacy, install, push, GitHub, credit) and `LandingContent` live inside the header's help modal (teleported, DOM kept for SEO) and are moved below the main view when the list is empty; the download page also renders `AppFooter` at the bottom.
+- **QR rows:** "QR로 휴대폰 연결하기" and the private-room wake QR (`RoomWakeQr`) are collapsed single rows with a top hairline that expand into a centered QR panel; shown when there is no peer yet or other devices hide the empty-state QR.
 
 ## Motion
-- **Approach:** Intentional — feed items animate in with a soft spring-bounce ("land" animation: translateY + scale with slight overshoot, ~500ms, staggered ~80ms per card) so new shares feel tossed onto the tray rather than silently appearing.
+- **Approach:** Intentional — feed items animate in with a soft spring-bounce ("land" animation: translateY + scale with slight overshoot, ~500ms, staggered ~80ms per card) so new shares feel tossed onto the tray rather than silently appearing. As built (`FileGallery` `card-land`): 350ms transform+opacity with the same overshoot curve; avatars use a short `avatar-enter` transition; reduced-motion is respected.
 - **Easing:** enter `cubic-bezier(.34,1.56,.64,1)` (overshoot), exit `ease-in`, move `ease-in-out`.
 - **Duration:** micro 50-100ms, short 150-250ms, medium 250-400ms (card land), long 400-700ms.
-- **Presence indicator:** replaces the "radar ping" convention with a simple overlapping avatar row (who's currently connected) — no scanning/searching animation, since there is no peer discovery step in this app.
+- **Presence indicator:** replaces the "radar ping" convention with a simple overlapping row of animal avatars (`ConnectedDevices`, 32px circles with `ring-2` in the background color, "+N" overflow chip, tap opens a device list — bottom sheet on mobile, popover on `sm+`) — no scanning/searching animation, since there is no peer discovery step in this app.
 
 ## Decisions Log
 | Date | Decision | Rationale |
@@ -80,3 +82,4 @@
 | 2026-07-03 | 모바일 Share Sheet(Web Share Target) 진입 시 매번 "같은 네트워크"/"전체 공유" 확인 시트를 강제 노출, 취소 시 공유 데이터 전체 폐기 | 마지막 선택 scope가 `localStorage`에 sticky하게 남아 있어 다른 앱에서 공유한 콘텐츠가 인지 없이 `global`로 broadcast될 위험 — 매번 명시적 선택을 요구해 제거. 선택은 이번 공유 1회에만 적용하고 앱의 저장된 기본값은 건드리지 않음 |
 | 2026-09-12 | 검색용 랜딩 섹션(`LandingContent.vue`)과 정적 가이드/FAQ 페이지(`frontend/public/**/*.html`) 추가. 본문 프로즈는 15-16px `--color-text-primary`를 쓰고(muted 금지), 정적 페이지의 밝은 테마 텍스트 링크는 어두운 코랄 `#C8432A`, CTA는 코랄 배경 `#FF6B4A` + 진한 텍스트 `#2A2622` | 브랜드 코랄 `#FF6B4A`는 흰 배경에서 2.8:1, muted `#8A8178`는 3.8:1로 WCAG AA(4.5:1)에 미달해 긴 글에는 쓸 수 없음. 앱(SPA) 안의 `text-primary` 링크도 같은 문제가 있으나 이번엔 손대지 않음 — 링크 전용 코랄 톤을 토큰으로 정하는 별도 결정 필요 |
 | 2026-09-12 | 브랜드 에셋(`favicon.svg`, `og-image.svg`, 모든 PNG/ICO 아이콘, `manifest.json`·`index.html`의 `theme-color`)을 레거시 Vue 그린(`#42b883`/`#35495e`)에서 코랄 팔레트로 재생성. 래스터는 `frontend/scripts/generate-brand-assets.mjs`(`npm run assets:brand`, Puppeteer)가 두 SVG 원본에서 만들고, 브라우저용 캔버스 도구 `convert-images.html`은 삭제. PWA 아이콘에 `icon-192.png`/`icon-512.png`(purpose any)와 `icon-512-maskable.png`(512 캔버스 `#FAF8F5` 위 312px 타일, purpose maskable)를 추가하고 `favicon.svg`는 any 전용으로 변경. `apple-touch-icon.png`는 코랄 풀블리드 | 앱 UI는 코랄인데 파비콘/OG/설치 아이콘만 그린으로 남아 브랜드가 어긋났음. OG는 그라디언트 대신 단색 `#FAF8F5` 배경 + "트레이에 카드가 착지하는" 피드 일러스트(anti-slop, 60KB로 150KB 제한 충족). 둥근 모서리 타일은 maskable 로 쓰면 마스크 안에서 잘리므로 전용 maskable PNG를 분리했고, iOS는 투명 영역을 검게 칠하므로 터치 아이콘은 풀블리드로 |
+| 2026-11-26 | DESIGN.md를 실제 구현에 맞춰 동기화: 폰트(Cabinet Grotesk=Fontshare 로드, 본문=Pretendard, Plus Jakarta는 폴백만, Geist/JetBrains Mono 미사용), 팔레트(웜 크림 → 네이비 중립, 기본 다크, 잉크 `#0B1F4D`/`#DCE4F2`), 라디우스 0·그림자 없음, 폰 프레임은 다운로드 페이지에만 남기고 룸은 760/880px 단일 열, 탭을 밑줄형으로, 1:1/그룹 방 탭과 블루 스코프 색(`#2F66D0`/`#5B8DEF`) 추가, 하단 액션바 2px 잉크 테두리, 푸터/랜딩은 도움말 모달 안(목록이 비면 본문), 접힌 QR 행, 동물 아바타 프레즌스 | 코드가 2026-07 이후 "각진 하이라인+잉크" 스타일로 바뀌며 문서와 어긋나 있었음(문서는 `DESIGN.md`를 디자인 기준으로 삼는 CLAUDE.md 규칙 때문에 최신이어야 함). 위 2026-07-02 폰 프레임·액션바 둥근 카드·레터박스 항목은 이력으로 남기되 현재 구현은 이 행을 따른다 |
