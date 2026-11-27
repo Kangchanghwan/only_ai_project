@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Imágenes",
-    "tabQr": "QR de invitación",
+    "tabQr": "QR",
     "tabLink": "Enlace",
     "showTitle": "Toca estas 4 imágenes en orden en el dispositivo nuevo",
     "expiresIn": "Quedan {min} min {sec} s",
@@ -612,7 +612,6 @@
     "line2Ip": "Un móvil en otra red enviará una solicitud de conexión",
     "inviteCard": "Invitar un móvil",
     "inviteCardSub": "En esta red",
-    "myPhoneTab": "Mi móvil",
     "legacyMine": "Abrir esta sala en mi móvil"
   },
   "header": {

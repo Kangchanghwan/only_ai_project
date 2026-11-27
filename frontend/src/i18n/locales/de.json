@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Bilder",
-    "tabQr": "Einladungs-QR",
+    "tabQr": "QR",
     "tabLink": "Link",
     "showTitle": "Tippe diese 4 Bilder nacheinander auf dem neuen Gerät an",
     "expiresIn": "Noch {min} Min. {sec} Sek.",
@@ -612,7 +612,6 @@
     "line2Ip": "Ein Handy in einem anderen Netzwerk sendet eine Verbindungsanfrage",
     "inviteCard": "Handy einladen",
     "inviteCardSub": "Über dieses Netzwerk",
-    "myPhoneTab": "Mein Handy",
     "legacyMine": "Diesen Raum auf meinem Handy öffnen"
   },
   "header": {

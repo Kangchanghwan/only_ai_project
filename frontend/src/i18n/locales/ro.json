@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Imagini",
-    "tabQr": "QR de invitație",
+    "tabQr": "QR",
     "tabLink": "Link",
     "showTitle": "Atinge aceste 4 imagini în ordine pe dispozitivul nou",
     "expiresIn": "Mai sunt {min} min {sec} s",
@@ -612,7 +612,6 @@
     "line2Ip": "Un telefon din altă rețea va trimite o cerere de conectare",
     "inviteCard": "Invită un telefon",
     "inviteCardSub": "Prin această rețea",
-    "myPhoneTab": "Telefonul meu",
     "legacyMine": "Deschide această cameră pe telefonul meu"
   },
   "header": {

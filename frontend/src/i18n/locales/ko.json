@@ -585,7 +585,7 @@
   },
   "code": {
     "tabPicture": "그림",
-    "tabQr": "초대 QR",
+    "tabQr": "QR",
     "tabLink": "링크",
     "showTitle": "이 그림 4개를 새 기기에서 순서대로 누르세요",
     "expiresIn": "{min}분 {sec}초 남음",
@@ -738,7 +738,6 @@
     "inviteCard": "휴대폰 초대",
     "inviteCardSub": "이 네트워크로",
     "line2Ip": "다른 네트워크의 휴대폰이면 연결 요청이 와요",
-    "myPhoneTab": "내 휴대폰",
     "legacyMine": "내 휴대폰에서 이 방 열기"
   },
   "header": {

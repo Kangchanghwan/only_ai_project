@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Képek",
-    "tabQr": "Meghívó QR",
+    "tabQr": "QR",
     "tabLink": "Link",
     "showTitle": "Koppints erre a 4 képre sorrendben az új eszközön",
     "expiresIn": "{min} perc {sec} mp van hátra",
@@ -612,7 +612,6 @@
     "line2Ip": "Másik hálózaton lévő telefon esetén csatlakozási kérés érkezik",
     "inviteCard": "Telefon meghívása",
     "inviteCardSub": "Ezen a hálózaton",
-    "myPhoneTab": "Saját telefon",
     "legacyMine": "A szoba megnyitása a saját telefonomon"
   },
   "header": {

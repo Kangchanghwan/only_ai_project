@@ -27,7 +27,6 @@ import { usePublicShareGuard } from './composables/usePublicShareGuard'
 import { useLockState } from './composables/useLockState'
 import { isEditableTarget } from './utils/editable'
 import { parseRoute } from './utils/router'
-import { isMeDevice } from './utils/devices'
 import { parseInvite } from './utils/groupInvite'
 import { isGroupRoomId } from './utils/groupRoom'
 import { applyFileMessage } from './utils/applyFileMessage'
@@ -225,11 +224,6 @@ const groupRooms = useGroupRooms({
   waitRegistered: waitSocketRegistered,
   getCodeSocket: () => socketService.getCodeAdapter?.() ?? null,
   isMobile,
-  getOthers: (roomId) => {
-    const devs = socket.privateRoomDevices?.value?.[roomId]
-    return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, socket.mySocketId?.value, socket.myIdentity?.value)) : null
-  },
-  getDeviceName: (d) => (isValidIdentity(d?.identity) ? identityName(d.identity, t) : ''),
   onAlreadyIn: (roomId) => shareScope.setScope(scopeForPrivateRoom(roomId)),
   onRoomReady: async (roomId) => {
     shareScope.setScope(scopeForPrivateRoom(roomId))
@@ -1653,7 +1647,6 @@ onUnmounted(() => {
         :sheet="groupRooms.inviteSheet.value"
         :tab="groupRooms.inviteTab.value"
         :code-state="groupRooms.codeState.value"
-        :mine-qr-url="qrHost.roomQrUrl.value || ''"
         @close="groupRooms.closeInvite"
         @copy="groupRooms.copyInviteLink"
         @tab="groupRooms.selectInviteTab"

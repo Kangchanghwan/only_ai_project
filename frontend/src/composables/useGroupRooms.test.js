@@ -80,11 +80,7 @@ describe('useGroupRooms', () => {
       expect(serialized).not.toContain('prv-')
       expect(serialized).not.toContain('pv1')
       expect(serialized).not.toContain('분홍')
-      // 매개변수는 room_qr_open의 종류·출처(고정 값)만 허용한다
-      for (const [name, params] of track.mock.calls) {
-        if (name === 'room_qr_open') expect(params).toEqual({ room_kind: expect.stringMatching(/^(group|private)$/), source: 'invite_sheet' })
-        else expect(params).toBeUndefined()
-      }
+      for (const [, params] of track.mock.calls) expect(params).toBeUndefined()
     })
   })
 

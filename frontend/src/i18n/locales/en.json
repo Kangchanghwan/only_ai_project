@@ -585,7 +585,7 @@
   },
   "code": {
     "tabPicture": "Pictures",
-    "tabQr": "Invite QR",
+    "tabQr": "QR",
     "tabLink": "Link",
     "showTitle": "Tap these 4 pictures in order on the new device",
     "expiresIn": "{min} min {sec} sec left",
@@ -738,7 +738,6 @@
     "inviteCard": "Invite a phone",
     "inviteCardSub": "On this network",
     "line2Ip": "A phone on another network will send a connection request",
-    "myPhoneTab": "My phone",
     "legacyMine": "Open this room on my phone"
   },
   "header": {

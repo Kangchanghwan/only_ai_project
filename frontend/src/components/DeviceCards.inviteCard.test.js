@@ -30,7 +30,7 @@ describe('DeviceCards 휴대폰 초대 카드', () => {
     expect(w.emitted('invite-phone')).toHaveLength(1)
   })
 
-  it('PC 2줄 용량: 초대 타일이 한 칸을 써서 5칸이면 카드 8장 + 초대 + "+N" 타일 = 10칸', async () => {
+  it('초대 타일은 좁은 화면 전용(sm:hidden)이라 PC 2줄 용량을 줄이지 않는다: 5칸이면 카드 9장 + "+N" 타일', async () => {
     i18n.global.locale.value = 'ko'
     let roCb
     globalThis.ResizeObserver = class { constructor(cb) { roCb = cb } observe() {} disconnect() {} }
@@ -39,10 +39,9 @@ describe('DeviceCards 휴대폰 초대 카드', () => {
     Object.defineProperty(w.find('[data-testid="device-cards-strip"]').element, 'clientWidth', { value: 774, configurable: true })
     roCb([])
     await w.vm.$nextTick()
-    expect(w.findAll('[data-testid="device-card"]')).toHaveLength(8)
-    expect(w.find('[data-testid="invite-phone-card"]').exists()).toBe(true)
+    expect(w.findAll('[data-testid="device-card"]')).toHaveLength(9)
+    expect(w.find('[data-testid="invite-phone-card"]').element.parentElement.className).toContain('sm:hidden')
     expect(w.find('[data-testid="cards-more-tile"]').exists()).toBe(true)
-    expect(strip(w)).toHaveLength(10)
   })
   afterEach(() => { delete globalThis.ResizeObserver })
 })

@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Hình",
-    "tabQr": "QR mời",
+    "tabQr": "QR",
     "tabLink": "Liên kết",
     "showTitle": "Chạm vào 4 hình này theo thứ tự trên thiết bị mới",
     "expiresIn": "Còn {min} phút {sec} giây",
@@ -612,7 +612,6 @@
     "line2Ip": "Điện thoại ở mạng khác sẽ gửi yêu cầu kết nối",
     "inviteCard": "Mời điện thoại",
     "inviteCardSub": "Qua mạng này",
-    "myPhoneTab": "Điện thoại của tôi",
     "legacyMine": "Mở phòng này trên điện thoại của tôi"
   },
   "header": {

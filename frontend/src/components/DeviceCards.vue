@@ -62,9 +62,7 @@ function updateCols() {
   const w = el?.clientWidth || 0
   cols.value = w > 0 ? Math.max(1, Math.floor((w + CARD_GAP) / (CARD_MIN + CARD_GAP))) : 0
 }
-// 초대 타일이 한 칸을 쓴다
-const extra = computed(() => (props.inviteCard ? 1 : 0))
-const capacity = computed(() => cols.value * 2 - extra.value)
+const capacity = computed(() => cols.value * 2)
 const overCapacity = computed(() => desktop.value && cols.value > 0 && sorted.value.length > capacity.value)
 const hiddenCount = computed(() => (overCapacity.value ? sorted.value.length - (capacity.value - 1) : 0))
 // 가려질 순서에 1:1 요청 중인 기기가 있으면 자동으로 펼친다
@@ -122,7 +120,8 @@ watch([() => props.devices.length, () => props.inviteCard], async () => { await 
         class="flex-[0_0_146px] snap-start sm:flex-auto"
         @reroll="emit('reroll')"
       />
-      <li v-if="inviteCard && i === 0" class="list-none m-0 flex flex-[0_0_146px] snap-start sm:flex-auto">
+      <!-- 좁은 화면(sm 미만)에서만 2번째 카드로 보인다. 넓은 화면은 제목 줄의 버튼(ConnectionCard)이 대신해 격자 칸을 쓰지 않는다 -->
+      <li v-if="inviteCard && i === 0" class="list-none m-0 flex flex-[0_0_146px] snap-start sm:hidden">
         <button type="button" :class="INVITE_TILE" data-testid="invite-phone-card" @click="emit('invite-phone')">
           <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" /><path d="M11 18h2" /></svg>
           <span class="font-bold text-xs">{{ t('roomQr.inviteCard') }}</span>
