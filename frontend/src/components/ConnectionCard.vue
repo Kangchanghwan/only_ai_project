@@ -187,6 +187,17 @@ watch(
         <span v-if="otherCount === 0"> · {{ t('room.waiting') }}</span>
       </p>
       <p v-if="scope === 'ip'" class="m-0 min-w-0 text-[11px] sm:text-xs text-text-secondary" data-testid="ip-notice">{{ t('identity.ipNotice') }}</p>
+      <!-- 넓은 화면: 카드 격자 칸을 쓰지 않도록 제목 줄 오른쪽 끝에 둔다 (좁은 화면은 카드 줄의 점선 타일) -->
+      <button
+        v-if="!wide && scope === 'ip' && otherCount > 0"
+        type="button"
+        class="hidden sm:inline-flex ml-auto self-center items-center gap-1.5 min-h-[36px] px-3 rounded-none border-[1.5px] border-dashed border-ink bg-transparent text-ink hover:bg-tint text-xs font-semibold cursor-pointer"
+        data-testid="invite-phone-button"
+        @click="emit('invite-phone')"
+      >
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" /><path d="M11 18h2" /></svg>
+        {{ t('roomQr.inviteCard') }}
+      </button>
     </div>
     <DeviceCards
       v-if="!wide && devices.length > 0"
