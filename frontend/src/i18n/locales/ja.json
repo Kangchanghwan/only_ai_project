@@ -425,7 +425,10 @@
     "peerChecking": "相手を待機中",
     "request": {
       "title": "ルーム接続のリクエスト"
-    }
+    },
+    "otherNetworkLine": "他のネットワークにも{n}台あります",
+    "otherNetworkShow": "表示",
+    "otherNetworkHide": "閉じる"
   },
   "group": {
     "create": "グループルームを作る",
@@ -612,6 +615,8 @@
     "arrived": "{name}がこのルームに入りました",
     "opened": "QRのルームを開きました",
     "toggleIp": "QRでスマホをつなぐ",
-    "line2Ip": "別のネットワークのスマホなら接続リクエストが届きます"
+    "line2Ip": "別のネットワークのスマホなら接続リクエストが届きます",
+    "inviteCard": "スマホを招待",
+    "inviteCardSub": "このネットワークで"
   }
 }

@@ -421,7 +421,10 @@
     "peerChecking": "Warten auf Gegenseite",
     "request": {
       "title": "Raumverbindungsanfrage"
-    }
+    },
+    "otherNetworkLine": "{n} weitere in anderen Netzwerken",
+    "otherNetworkShow": "Anzeigen",
+    "otherNetworkHide": "Ausblenden"
   },
   "group": {
     "create": "Gruppenraum erstellen",
@@ -608,6 +611,8 @@
     "arrived": "{name} ist dem Raum beigetreten",
     "opened": "Raum aus dem QR-Code geöffnet",
     "toggleIp": "Handy per QR-Code verbinden",
-    "line2Ip": "Ein Handy in einem anderen Netzwerk sendet eine Verbindungsanfrage"
+    "line2Ip": "Ein Handy in einem anderen Netzwerk sendet eine Verbindungsanfrage",
+    "inviteCard": "Handy einladen",
+    "inviteCardSub": "Über dieses Netzwerk"
   }
 }

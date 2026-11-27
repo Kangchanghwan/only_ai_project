@@ -57,7 +57,8 @@ describe('ConnectionCard 지난번 배치로 자리 잡기', () => {
     const o = w.find('[data-testid="other-network-placeholder"]')
     expect(o.exists()).toBe(true)
     expect(o.attributes('aria-hidden')).toBe('true')
-    expect(o.classes()).toEqual(expect.arrayContaining(['mt-3', 'pt-3', 'border-t']))
+    expect(o.classes()).toContain('mt-2')
+    expect(o.classes()).not.toContain('border-t')
   })
   it('지난번에 혼자였으면 안내 블록 높이만큼 자리를 잡는다', () => {
     saveDeviceHint('ip', { cards: 1, otherNet: false, soloHeight: 251 })

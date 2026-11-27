@@ -538,6 +538,9 @@
     "peerLeftToast": "They left the room",
     "unreadableText": "Unreadable text",
     "otherNetworkGroup": "{n} devices on other networks",
+    "otherNetworkLine": "{n} more on other networks",
+    "otherNetworkShow": "Show",
+    "otherNetworkHide": "Hide",
     "statusOffline": "Offline",
     "statusConnecting": "Connecting…",
     "offlineUploadNote": "They can receive it when they're online (files are kept up to 1 day)",
@@ -734,6 +737,8 @@
     "arrived": "{name} joined this room",
     "opened": "Opened the room from the QR code",
     "toggleIp": "Connect a phone with a QR code",
+    "inviteCard": "Invite a phone",
+    "inviteCardSub": "On this network",
     "line2Ip": "A phone on another network will send a connection request"
   }
 }

@@ -421,7 +421,10 @@
     "peerChecking": "Đang chờ bên kia",
     "request": {
       "title": "Yêu cầu kết nối phòng"
-    }
+    },
+    "otherNetworkLine": "Còn {n} thiết bị ở mạng khác",
+    "otherNetworkShow": "Xem",
+    "otherNetworkHide": "Ẩn"
   },
   "group": {
     "create": "Tạo phòng nhóm",
@@ -608,6 +611,8 @@
     "arrived": "{name} đã vào phòng này",
     "opened": "Đã mở phòng từ mã QR",
     "toggleIp": "Kết nối điện thoại bằng mã QR",
-    "line2Ip": "Điện thoại ở mạng khác sẽ gửi yêu cầu kết nối"
+    "line2Ip": "Điện thoại ở mạng khác sẽ gửi yêu cầu kết nối",
+    "inviteCard": "Mời điện thoại",
+    "inviteCardSub": "Qua mạng này"
   }
 }

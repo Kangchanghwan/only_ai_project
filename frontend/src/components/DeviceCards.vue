@@ -17,9 +17,11 @@ const props = defineProps({
   mySocketId: { type: String, default: null },
   myIdentity: { type: Object, default: null },
   scope: { type: String, default: 'ip' },
-  rerollAvailableAt: { type: Number, default: 0 }
+  rerollAvailableAt: { type: Number, default: 0 },
+  /** 참이면 "나" 카드 바로 뒤에 "휴대폰 초대" 점선 타일을 둔다 */
+  inviteCard: { type: Boolean, default: false }
 })
-const emit = defineEmits(['reroll'])
+const emit = defineEmits(['reroll', 'invite-phone'])
 const pair = inject(PAIR_CONTEXT_KEY, null)
 
 // 1:1 요청을 주고받는 중인 기기는 내 카드 바로 다음에 둔다
@@ -60,7 +62,9 @@ function updateCols() {
   const w = el?.clientWidth || 0
   cols.value = w > 0 ? Math.max(1, Math.floor((w + CARD_GAP) / (CARD_MIN + CARD_GAP))) : 0
 }
-const capacity = computed(() => cols.value * 2)
+// 초대 타일이 한 칸을 쓴다
+const extra = computed(() => (props.inviteCard ? 1 : 0))
+const capacity = computed(() => cols.value * 2 - extra.value)
 const overCapacity = computed(() => desktop.value && cols.value > 0 && sorted.value.length > capacity.value)
 const hiddenCount = computed(() => (overCapacity.value ? sorted.value.length - (capacity.value - 1) : 0))
 // 가려질 순서에 1:1 요청 중인 기기가 있으면 자동으로 펼친다
@@ -68,6 +72,7 @@ const forcedOpen = computed(() => overCapacity.value && sorted.value.slice(capac
 const isOpen = computed(() => expanded.value || forcedOpen.value)
 const shown = computed(() => (overCapacity.value && !isOpen.value ? sorted.value.slice(0, capacity.value - 1) : sorted.value))
 const TILE = 'hidden sm:flex h-[85px] items-center justify-center text-center px-2 border border-border bg-tint text-ink font-bold text-xs cursor-pointer rounded-none'
+const INVITE_TILE = 'w-full h-[85px] flex flex-col items-center justify-center gap-0.5 text-center px-2 border border-dashed border-ink bg-transparent text-ink cursor-pointer rounded-none hover:bg-tint'
 
 function updateOverflow() {
   updateCols()
@@ -96,7 +101,7 @@ onMounted(() => {
     resizeObserver.observe(strip.value)
   }
 })
-watch(() => props.devices.length, async () => { await nextTick(); updateOverflow() })
+watch([() => props.devices.length, () => props.inviteCard], async () => { await nextTick(); updateOverflow() })
 </script>
 
 <template>
@@ -107,9 +112,8 @@ watch(() => props.devices.length, async () => { await nextTick(); updateOverflow
       data-testid="device-cards-strip"
       @scroll.passive="updateOverflow"
     >
+      <template v-for="(d, i) in shown" :key="d.socketId">
       <DeviceCard
-        v-for="d in shown"
-        :key="d.socketId"
         :device="d"
         :is-me="isMe(d)"
         :cooling="cooling"
@@ -118,6 +122,14 @@ watch(() => props.devices.length, async () => { await nextTick(); updateOverflow
         class="flex-[0_0_146px] snap-start sm:flex-auto"
         @reroll="emit('reroll')"
       />
+      <li v-if="inviteCard && i === 0" class="list-none m-0 flex flex-[0_0_146px] snap-start sm:flex-auto">
+        <button type="button" :class="INVITE_TILE" data-testid="invite-phone-card" @click="emit('invite-phone')">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" /><path d="M11 18h2" /></svg>
+          <span class="font-bold text-xs">{{ t('roomQr.inviteCard') }}</span>
+          <span class="text-[11px] opacity-80">{{ t('roomQr.inviteCardSub') }}</span>
+        </button>
+      </li>
+      </template>
       <li v-if="overCapacity && !isOpen" class="list-none m-0 flex">
         <button type="button" :class="[TILE, 'w-full']" aria-expanded="false" data-testid="cards-more-tile" @click="expanded = true">{{ t('identity.moreDevices', { count: hiddenCount }) }}</button>
       </li>

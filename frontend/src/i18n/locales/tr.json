@@ -421,7 +421,10 @@
     "peerChecking": "Karşı taraf bekleniyor",
     "request": {
       "title": "Oda bağlantı isteği"
-    }
+    },
+    "otherNetworkLine": "Diğer ağlarda {n} cihaz daha var",
+    "otherNetworkShow": "Göster",
+    "otherNetworkHide": "Gizle"
   },
   "group": {
     "create": "Grup odası oluştur",
@@ -608,6 +611,8 @@
     "arrived": "{name} odaya katıldı",
     "opened": "QR koddaki oda açıldı",
     "toggleIp": "Telefonu QR kodla bağla",
-    "line2Ip": "Başka ağdaki bir telefon bağlantı isteği gönderir"
+    "line2Ip": "Başka ağdaki bir telefon bağlantı isteği gönderir",
+    "inviteCard": "Telefon davet et",
+    "inviteCardSub": "Bu ağ üzerinden"
   }
 }

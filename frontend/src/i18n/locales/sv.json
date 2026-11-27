@@ -421,7 +421,10 @@
     "peerChecking": "Väntar på andra",
     "request": {
       "title": "Begäran om rumsanslutning"
-    }
+    },
+    "otherNetworkLine": "{n} till på andra nätverk",
+    "otherNetworkShow": "Visa",
+    "otherNetworkHide": "Dölj"
   },
   "group": {
     "create": "Skapa ett gruppum",
@@ -608,6 +611,8 @@
     "arrived": "{name} gick med i rummet",
     "opened": "Rummet från QR-koden öppnades",
     "toggleIp": "Anslut en mobil med QR-kod",
-    "line2Ip": "En mobil på ett annat nätverk skickar en anslutningsbegäran"
+    "line2Ip": "En mobil på ett annat nätverk skickar en anslutningsbegäran",
+    "inviteCard": "Bjud in telefon",
+    "inviteCardSub": "Via det här nätverket"
   }
 }

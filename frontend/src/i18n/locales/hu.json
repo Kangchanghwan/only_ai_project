@@ -421,7 +421,10 @@
     "peerChecking": "Várakozás a másik félre",
     "request": {
       "title": "Szobacsatlakozási kérés"
-    }
+    },
+    "otherNetworkLine": "További {n} eszköz van más hálózatokon",
+    "otherNetworkShow": "Megjelenítés",
+    "otherNetworkHide": "Elrejtés"
   },
   "group": {
     "create": "Csoportszoba létrehozása",
@@ -608,6 +611,8 @@
     "arrived": "{name} belépett a szobába",
     "opened": "Megnyitottuk a QR-kód szobáját",
     "toggleIp": "Telefon csatlakoztatása QR-kóddal",
-    "line2Ip": "Másik hálózaton lévő telefon esetén csatlakozási kérés érkezik"
+    "line2Ip": "Másik hálózaton lévő telefon esetén csatlakozási kérés érkezik",
+    "inviteCard": "Telefon meghívása",
+    "inviteCardSub": "Ezen a hálózaton"
   }
 }

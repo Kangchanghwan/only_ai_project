@@ -421,7 +421,10 @@
     "peerChecking": "Menunggu lawan",
     "request": {
       "title": "Permintaan koneksi ruang"
-    }
+    },
+    "otherNetworkLine": "Ada {n} perangkat lagi di jaringan lain",
+    "otherNetworkShow": "Lihat",
+    "otherNetworkHide": "Sembunyikan"
   },
   "group": {
     "create": "Buat ruang grup",
@@ -608,6 +611,8 @@
     "arrived": "{name} masuk ke ruang ini",
     "opened": "Ruang dari kode QR dibuka",
     "toggleIp": "Hubungkan ponsel dengan kode QR",
-    "line2Ip": "Ponsel di jaringan lain akan mengirim permintaan koneksi"
+    "line2Ip": "Ponsel di jaringan lain akan mengirim permintaan koneksi",
+    "inviteCard": "Undang ponsel",
+    "inviteCardSub": "Lewat jaringan ini"
   }
 }

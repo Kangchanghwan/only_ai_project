@@ -48,7 +48,7 @@ const props = defineProps({
   /** QR을 찍고 찾아 낸 다른 네트워크의 PC: 묶음 맨 위에 둔다 (전체 공유 목록에 없어도 보인다) */
   pinnedDevice: { type: Object, default: null }
 })
-const emit = defineEmits(['reroll', 'hint-copied', 'group-create', 'code-enter', 'go-find'])
+const emit = defineEmits(['reroll', 'hint-copied', 'group-create', 'code-enter', 'go-find', 'invite-phone'])
 
 const pair = inject(PAIR_CONTEXT_KEY, null)
 
@@ -195,7 +195,9 @@ watch(
       :my-identity="myIdentity"
       :scope="scope"
       :reroll-available-at="rerollAvailableAt"
+      :invite-card="scope === 'ip' && otherCount > 0"
       @reroll="emit('reroll')"
+      @invite-phone="emit('invite-phone')"
     />
     <!-- 서버 연결 전 자리표시: 실제 카드와 같은 높이(85px)·같은 격자로 자리를 잡아 아래 입력 상자가 밀리지 않게 한다.
          지난번 카드 수를 기억하고 있으면 그만큼 그린다 (넓은 화면은 실제와 같이 두 줄까지: 85 + 6 + 85 = 176px) -->
@@ -259,51 +261,36 @@ watch(
     <ul v-if="pendingDevices.length > 0" class="mt-3 pt-3 border-t border-border flex flex-col gap-2 list-none p-0 m-0" data-testid="pair-pending-rows">
       <DeviceRow v-for="d in pendingDevices" :key="d.socketId" :device="d" />
     </ul>
-    <div v-if="otherList.length > 0 || showOtherMore" class="mt-3 pt-3 border-t border-border" data-testid="other-network-group">
-      <button
-        v-if="!showOtherMore"
-        type="button"
-        class="w-full flex items-center gap-2 min-h-[44px] -my-2 bg-transparent border-0 px-0 text-[11px] sm:text-xs font-semibold text-text-secondary cursor-pointer text-left"
-        :aria-expanded="otherOpen"
-        data-testid="other-network-toggle"
-        @click="otherOpenManual = !otherOpenManual"
-      >
-        <!-- 같은 탭의 'QR로 휴대폰 연결하기' 줄(RoomWakeQr)과 같은 모양: 아이콘 + 글 + 펼침 화살표 -->
-        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
-        <span class="flex-1">{{ t('pair.otherNetworkGroup', { n: otherList.length }) }}</span>
-        <svg class="w-3.5 h-3.5 shrink-0 transition-transform" :class="otherOpen ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-      </button>
-      <!-- 기준 인원 초과: 펼치기와 "기기 찾기"를 한 줄에 -->
-      <div v-else class="flex flex-wrap items-center gap-x-2 -my-2" data-testid="other-network-row">
-        <button
-          v-if="otherList.length > 0"
-          type="button"
-          class="flex items-center gap-2 min-h-[44px] bg-transparent border-0 px-0 text-[11px] sm:text-xs font-semibold text-text-secondary cursor-pointer text-left"
-          :aria-expanded="otherOpen"
-          data-testid="other-network-toggle"
-          @click="otherOpenManual = !otherOpenManual"
-        >
-          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
-          <span>{{ t('pair.otherNetworkGroup', { n: otherList.length }) }}</span>
-          <svg class="w-3.5 h-3.5 shrink-0 transition-transform" :class="otherOpen ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-        </button>
-        <span v-if="otherList.length > 0" class="text-[11px] sm:text-xs text-text-secondary" aria-hidden="true">·</span>
-        <button
-          type="button"
-          class="min-h-[44px] p-0 text-[11px] sm:text-xs text-text-secondary underline underline-offset-2 bg-transparent border-0 text-left"
-          data-testid="roster-go-find"
-          @click="emit('go-find')"
-        >
-          {{ t('roster.findTitle') }}
-        </button>
+    <div v-if="otherList.length > 0 || showOtherMore" class="mt-2" data-testid="other-network-group">
+      <div class="flex flex-wrap items-center gap-x-1 text-[11px] sm:text-xs text-text-secondary" data-testid="other-network-row">
+        <template v-if="otherList.length > 0">
+          <span>{{ t('pair.otherNetworkLine', { n: otherList.length }) }}</span>
+          <span aria-hidden="true">·</span>
+          <button
+            type="button"
+            class="min-h-[44px] -my-3 p-0 text-[11px] sm:text-xs text-text-secondary underline underline-offset-2 bg-transparent border-0 cursor-pointer"
+            :aria-expanded="otherOpen"
+            data-testid="other-network-toggle"
+            @click="otherOpenManual = !otherOpenManual"
+          >{{ otherOpen ? t('pair.otherNetworkHide') : t('pair.otherNetworkShow') }}</button>
+        </template>
+        <template v-if="showOtherMore">
+          <span v-if="otherList.length > 0" aria-hidden="true">·</span>
+          <button
+            type="button"
+            class="min-h-[44px] -my-3 p-0 text-[11px] sm:text-xs text-text-secondary underline underline-offset-2 bg-transparent border-0 text-left cursor-pointer"
+            data-testid="roster-go-find"
+            @click="emit('go-find')"
+          >{{ t('roster.findTitle') }}</button>
+        </template>
       </div>
       <ul v-if="otherOpen" class="mt-3 flex flex-col gap-2 list-none p-0" data-testid="other-network-list">
         <DeviceRow v-for="device in otherList" :key="device.socketId" :device="device" />
       </ul>
     </div>
     <!-- "다른 네트워크 기기" 묶음 자리: 지난번에 있었고 아직 목록이 오지 않았을 때 (같은 네트워크 목록이 먼저 와도 유지해 한 프레임 접혔다 펴지지 않게) -->
-    <div v-else-if="layoutHint && layoutHint.otherNet" class="mt-3 pt-3 border-t border-border" aria-hidden="true" data-testid="other-network-placeholder">
-      <div class="min-h-[44px] -my-2"></div>
+    <div v-else-if="layoutHint && layoutHint.otherNet" class="mt-2" aria-hidden="true" data-testid="other-network-placeholder">
+      <div class="min-h-[20px]"></div>
     </div>
     <div v-if="wide && devices.length > 0" class="mt-3 pt-3 border-t border-border" data-testid="device-panel">
       <DeviceList

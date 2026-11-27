@@ -421,7 +421,10 @@
     "peerChecking": "Esperando al otro",
     "request": {
       "title": "Solicitud de conexión a sala"
-    }
+    },
+    "otherNetworkLine": "Hay {n} más en otras redes",
+    "otherNetworkShow": "Ver",
+    "otherNetworkHide": "Ocultar"
   },
   "group": {
     "create": "Crear una sala de grupo",
@@ -608,6 +611,8 @@
     "arrived": "{name} se unió a esta sala",
     "opened": "Se abrió la sala del código QR",
     "toggleIp": "Conectar un móvil con código QR",
-    "line2Ip": "Un móvil en otra red enviará una solicitud de conexión"
+    "line2Ip": "Un móvil en otra red enviará una solicitud de conexión",
+    "inviteCard": "Invitar un móvil",
+    "inviteCardSub": "En esta red"
   }
 }

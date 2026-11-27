@@ -421,7 +421,10 @@
     "peerChecking": "Se așteaptă celălalt",
     "request": {
       "title": "Cerere de conectare la cameră"
-    }
+    },
+    "otherNetworkLine": "Încă {n} în alte rețele",
+    "otherNetworkShow": "Arată",
+    "otherNetworkHide": "Ascunde"
   },
   "group": {
     "create": "Creează o cameră de grup",
@@ -608,6 +611,8 @@
     "arrived": "{name} a intrat în cameră",
     "opened": "Camera din codul QR a fost deschisă",
     "toggleIp": "Conectează un telefon cu cod QR",
-    "line2Ip": "Un telefon din altă rețea va trimite o cerere de conectare"
+    "line2Ip": "Un telefon din altă rețea va trimite o cerere de conectare",
+    "inviteCard": "Invită un telefon",
+    "inviteCardSub": "Prin această rețea"
   }
 }

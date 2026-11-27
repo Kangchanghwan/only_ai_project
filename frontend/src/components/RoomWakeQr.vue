@@ -9,12 +9,11 @@
  */
 import { computed, ref, watch, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
-import QRCode from 'qrcode'
 import { useNotification } from '../composables/useNotification'
 import { trackEvent } from '../utils/analytics'
 import { isGroupRoomId } from '../utils/groupRoom'
 import { isValidIdentity, identityName } from '../utils/identity'
-import { EMPTY_STATE_QR_URL } from '../utils/emptyState'
+import WakeQrPanel from './WakeQrPanel.vue'
 
 const CONNECTING_GRACE_MS = 3000
 const OPEN_FLAG = 'cs_room_qr_open_sent'
@@ -80,21 +79,6 @@ function toggle() {
   }
 }
 
-// QR 그림
-const qrDataUrl = ref('')
-const qrValue = ref('')
-async function makeQr() {
-  const value = props.qrUrl || EMPTY_STATE_QR_URL
-  if (qrDataUrl.value && qrValue.value === value) return
-  try {
-    const url = await QRCode.toDataURL(value, { width: 140, margin: 2, color: { dark: '#000000', light: '#ffffff' } })
-    if ((props.qrUrl || EMPTY_STATE_QR_URL) !== value) return // 그사이 회차·방이 바뀌었다
-    qrDataUrl.value = url
-    qrValue.value = value
-  } catch { /* QR 실패 시 안내 문구만 보인다 */ }
-}
-watch([() => show.value && expanded.value, () => props.qrUrl], ([on]) => { if (on) makeQr() }, { immediate: true })
-
 // 펼쳐 둔 사이 상대가 들어왔다: 한 번 알린다 (방을 옮겨서 사라진 경우는 빼고)
 function arrivedName() {
   if (isGroup.value) {
@@ -128,11 +112,13 @@ watch([() => props.room?.roomId, show], ([id, now], [prevId, before]) => {
         <path d="m6 9 6 6 6-6" />
       </svg>
     </button>
-    <div v-if="expanded" class="pb-3 flex flex-col items-center gap-1.5 text-center" data-testid="room-wake-qr-panel">
-      <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="qrValue" width="140" height="140" alt="QR" class="block mb-1 rounded-none bg-white border border-border" data-testid="room-wake-qr-img" />
-      <div v-else class="mb-1 w-[140px] h-[140px] rounded-none bg-tint border border-border" aria-hidden="true"></div>
-      <p class="m-0 text-sm font-bold text-ink">{{ network ? t('room.emptyState.qrLine') : t('roomQr.line1') }}</p>
-      <p class="m-0 text-xs text-text-secondary">{{ network ? t('roomQr.line2Ip') : t('roomQr.line2') }}</p>
-    </div>
+    <WakeQrPanel
+      v-if="expanded"
+      class="pb-3"
+      data-testid="room-wake-qr-panel"
+      :qr-url="qrUrl"
+      :line1="network ? t('room.emptyState.qrLine') : t('roomQr.line1')"
+      :line2="network ? t('roomQr.line2Ip') : t('roomQr.line2')"
+    />
   </div>
 </template>

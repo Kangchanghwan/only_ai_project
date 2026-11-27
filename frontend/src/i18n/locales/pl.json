@@ -421,7 +421,10 @@
     "peerChecking": "Czekanie na drugą stronę",
     "request": {
       "title": "Prośba o połączenie w pokoju"
-    }
+    },
+    "otherNetworkLine": "Jeszcze {n} w innych sieciach",
+    "otherNetworkShow": "Pokaż",
+    "otherNetworkHide": "Ukryj"
   },
   "group": {
     "create": "Utwórz pokój grupowy",
@@ -608,6 +611,8 @@
     "arrived": "{name} dołączył do pokoju",
     "opened": "Otwarto pokój z kodu QR",
     "toggleIp": "Połącz telefon kodem QR",
-    "line2Ip": "Telefon w innej sieci wyśle prośbę o połączenie"
+    "line2Ip": "Telefon w innej sieci wyśle prośbę o połączenie",
+    "inviteCard": "Zaproś telefon",
+    "inviteCardSub": "Przez tę sieć"
   }
 }

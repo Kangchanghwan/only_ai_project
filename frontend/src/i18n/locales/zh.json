@@ -421,7 +421,10 @@
     "peerChecking": "等待对方",
     "request": {
       "title": "房间连接请求"
-    }
+    },
+    "otherNetworkLine": "其他网络中还有 {n} 台设备",
+    "otherNetworkShow": "查看",
+    "otherNetworkHide": "收起"
   },
   "group": {
     "create": "创建群组房间",
@@ -608,6 +611,8 @@
     "arrived": "{name} 已进入此房间",
     "opened": "已打开二维码中的房间",
     "toggleIp": "用二维码连接手机",
-    "line2Ip": "如果手机在其他网络，会发来连接请求"
+    "line2Ip": "如果手机在其他网络，会发来连接请求",
+    "inviteCard": "邀请手机",
+    "inviteCardSub": "通过此网络"
   }
 }

@@ -15,10 +15,12 @@ import LandingContent from './LandingContent.vue'
 import { roomDisplayName } from '../utils/roomDisplayName'
 import PrivateRoomStrip from './PrivateRoomStrip.vue'
 import RoomWakeQr from './RoomWakeQr.vue'
+import PhoneConnectSheet from './PhoneConnectSheet.vue'
+import { trackEvent } from '../utils/analytics'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
-import { isMeDevice, countOtherDevices } from '../utils/devices'
+import { isMeDevice } from '../utils/devices'
 import { socketService } from '../services/socketService'
 import { sameIdentity } from '../utils/identity'
 import { readListHint, saveListHint, readDeviceHint } from '../utils/layoutHint'
@@ -169,7 +171,19 @@ const groupOthers = computed(() => {
   return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)) : []
 })
 // 같은 네트워크 탭: 다른 기기가 있어 빈 화면 QR이 숨은 동안에도 접힌 QR 줄을 둔다
-const ipWakeQr = computed(() => props.scope === 'ip' && countOtherDevices(props.ipRoomDevices, props.mySocketId, props.myIdentity) > 0)
+// 같은 네트워크 탭 "휴대폰 초대" 시트 (측정은 RoomWakeQr와 같은 세션 플래그: 접속당 한 번)
+const phoneSheetOpen = ref(false)
+let phoneOpenSent = false
+function openPhoneSheet() {
+  phoneSheetOpen.value = true
+  if (phoneOpenSent) return
+  let flagged = false
+  try { flagged = sessionStorage.getItem('cs_room_qr_open_sent') === '1' } catch { /* 무시 */ }
+  if (flagged) return
+  phoneOpenSent = true
+  try { sessionStorage.setItem('cs_room_qr_open_sent', '1') } catch { /* 무시 */ }
+  try { trackEvent('room_qr_open', { room_kind: 'ip', source: 'card' }) } catch { /* 측정 실패 무시 */ }
+}
 // 방 탭 QR: 그룹 방은 접속 기기 목록이 온 뒤에만 '아무도 없음'을 판단한다
 const wakeOthers = computed(() => {
   const id = currentRoom.value?.roomId
@@ -298,6 +312,7 @@ watch(
             :other-network-more="otherNetworkMore"
             :qr-url="qrUrl"
             :pinned-device="qrPinnedDevice"
+            @invite-phone="openPhoneSheet"
             @go-find="rosterRef?.goFind()"
             @reroll="$emit('reroll-identity')"
             @hint-copied="$emit('hint-copied', $event)"
@@ -336,12 +351,7 @@ watch(
         @leave="$emit('leave-private', $event)"
         @invite="$emit('group-invite', $event)"
       />
-      <RoomWakeQr
-        v-if="ipWakeQr"
-        key="ip-wake-qr"
-        network
-        :qr-url="qrUrl"
-      />
+      <PhoneConnectSheet :open="phoneSheetOpen" :qr-url="qrUrl" @close="phoneSheetOpen = false" />
       <RoomWakeQr
         v-if="currentRoom"
         :room="currentRoom"

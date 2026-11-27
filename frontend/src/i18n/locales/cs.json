@@ -421,7 +421,10 @@
     "peerChecking": "Čekání na druhé zařízení",
     "request": {
       "title": "Žádost o připojení do místnosti"
-    }
+    },
+    "otherNetworkLine": "Další zařízení v jiných sítích: {n}",
+    "otherNetworkShow": "Zobrazit",
+    "otherNetworkHide": "Skrýt"
   },
   "group": {
     "create": "Vytvořit skupinovou místnost",
@@ -608,6 +611,8 @@
     "arrived": "{name} se připojil do místnosti",
     "opened": "Místnost z QR kódu je otevřená",
     "toggleIp": "Připojit telefon QR kódem",
-    "line2Ip": "Telefon v jiné síti pošle žádost o připojení"
+    "line2Ip": "Telefon v jiné síti pošle žádost o připojení",
+    "inviteCard": "Pozvat telefon",
+    "inviteCardSub": "Přes tuto síť"
   }
 }
