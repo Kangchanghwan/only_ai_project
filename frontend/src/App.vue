@@ -27,6 +27,7 @@ import { usePublicShareGuard } from './composables/usePublicShareGuard'
 import { useLockState } from './composables/useLockState'
 import { isEditableTarget } from './utils/editable'
 import { parseRoute } from './utils/router'
+import { isMeDevice } from './utils/devices'
 import { parseInvite } from './utils/groupInvite'
 import { isGroupRoomId } from './utils/groupRoom'
 import { applyFileMessage } from './utils/applyFileMessage'
@@ -224,6 +225,11 @@ const groupRooms = useGroupRooms({
   waitRegistered: waitSocketRegistered,
   getCodeSocket: () => socketService.getCodeAdapter?.() ?? null,
   isMobile,
+  getOthers: (roomId) => {
+    const devs = socket.privateRoomDevices?.value?.[roomId]
+    return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, socket.mySocketId?.value, socket.myIdentity?.value)) : null
+  },
+  getDeviceName: (d) => (isValidIdentity(d?.identity) ? identityName(d.identity, t) : ''),
   onAlreadyIn: (roomId) => shareScope.setScope(scopeForPrivateRoom(roomId)),
   onRoomReady: async (roomId) => {
     shareScope.setScope(scopeForPrivateRoom(roomId))
@@ -231,6 +237,13 @@ const groupRooms = useGroupRooms({
     await fileManager.loadFilesFromRooms(allRoomIds.value, { limit: FILE_PAGE_SIZE })
   }
 })
+
+const legacyRoom = computed(() => {
+  const id = groupRooms.legacySheet.value?.roomId
+  return id ? privateRooms.rooms.find((r) => r.roomId === id) || null : null
+})
+const legacyStatus = computed(() => legacyRoom.value?.status ?? '')
+const legacyPeerName = computed(() => (isValidIdentity(legacyRoom.value?.peer?.identity) ? identityName(legacyRoom.value.peer.identity, t) : ''))
 
 const deviceIsPeer = (d, peer) =>
   !!peer && (peer.socketId ? d.socketId === peer.socketId : sameIdentity(d.identity, peer.identity))
@@ -1556,7 +1569,6 @@ onUnmounted(() => {
         :global-room-devices="socket.globalRoomDevices.value"
         :qr-url="qrHost.qrUrl.value"
         :qr-pinned-device="qrArrival.pinned.value"
-        :room-qr-url="qrHost.roomQrUrl.value || ''"
         :my-identity="socket.myIdentity.value"
         :my-socket-id="socket.mySocketId.value"
         :reroll-available-at="socket.rerollAvailableAt.value"
@@ -1641,6 +1653,7 @@ onUnmounted(() => {
         :sheet="groupRooms.inviteSheet.value"
         :tab="groupRooms.inviteTab.value"
         :code-state="groupRooms.codeState.value"
+        :mine-qr-url="qrHost.roomQrUrl.value || ''"
         @close="groupRooms.closeInvite"
         @copy="groupRooms.copyInviteLink"
         @tab="groupRooms.selectInviteTab"
@@ -1658,7 +1671,14 @@ onUnmounted(() => {
         @cancel="groupRooms.cancelEnter"
       />
       <MultiDownloadSheet :sheet="multiDownload.sheet.value" @close="multiDownload.close" @run="multiDownload.run" />
-      <LegacyInviteSheet :sheet="groupRooms.legacySheet.value" @close="groupRooms.closeLegacy" @create="groupRooms.createFromLegacy" />
+      <LegacyInviteSheet
+        :sheet="groupRooms.legacySheet.value"
+        :status="legacyStatus"
+        :peer-name="legacyPeerName"
+        :mine-qr-url="qrHost.roomQrUrl.value || ''"
+        @mine-shown="groupRooms.trackRoomQrOpen('private')"
+        @arrived="groupRooms.legacyArrived(legacyPeerName)"
+        @close="groupRooms.closeLegacy" @create="groupRooms.createFromLegacy" />
       <GroupJoinSheet :sheet="groupRooms.joinSheet.value" @confirm="groupRooms.confirmJoin" @cancel="groupRooms.cancelJoin" />
 
       <FileEditSheet v-if="editSheet" :file="editSheet.file" :scope="editSheet.scope" :hooks="editSheet.hooks" :name-hint="editSheet.nameHint" @close="editSheet = null" />

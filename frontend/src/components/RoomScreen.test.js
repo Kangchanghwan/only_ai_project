@@ -54,18 +54,22 @@ describe('RoomScreen.vue', () => {
     globalRoomDevices: []
   }
 
-  describe('같은 네트워크 탭의 QR 줄', () => {
+  describe('같은 네트워크 탭의 휴대폰 초대 카드', () => {
     const me = { socketId: 'me', identity: { adj: 1, animal: 1, suffix: 0 } }
     const other = { socketId: 'o1', identity: { adj: 2, animal: 2, suffix: 0 } }
-    const ipWake = (w) => w.findAll('[data-testid="room-wake-qr-toggle"]').filter((b) => b.text() === 'QR로 휴대폰 연결하기')
-    it('다른 기기가 있으면 접힌 QR 줄을 보이고, 혼자면(빈 화면 QR이 있으면) 숨긴다', async () => {
+    const stubCC = { ...stubs, ConnectionCard: { name: 'ConnectionCard', template: '<button data-testid="cc" @click="$emit(\'invite-phone\')"></button>', props: ['devices'], emits: ['invite-phone'] } }
+    it('예전 "QR로 휴대폰 연결하기" 접힌 줄은 더 이상 없다', () => {
       i18n.global.locale.value = 'ko'
       const w = mount(RoomScreen, { props: { ...defaultProps, mySocketId: 'me', myIdentity: me.identity, ipRoomDevices: [me, other] }, global: { plugins: [i18n], stubs } })
-      expect(ipWake(w).length).toBe(1)
-      await w.setProps({ ipRoomDevices: [me] })
-      expect(ipWake(w).length).toBe(0)
-      await w.setProps({ ipRoomDevices: [me, other], scope: 'global' })
-      expect(ipWake(w).length).toBe(0)
+      expect(w.findAll('[data-testid="room-wake-qr-toggle"]').filter((b) => b.text() === 'QR로 휴대폰 연결하기').length).toBe(0)
+    })
+    it('ConnectionCard의 invite-phone을 받으면 휴대폰 초대 시트를 연다', async () => {
+      i18n.global.locale.value = 'ko'
+      const w = mount(RoomScreen, { props: { ...defaultProps, mySocketId: 'me', myIdentity: me.identity, ipRoomDevices: [me, other] }, attachTo: document.body, global: { plugins: [i18n], stubs: stubCC } })
+      expect(document.body.querySelector('[data-testid="phone-connect-sheet"]')).toBeNull()
+      await w.find('[data-testid="cc"]').trigger('click')
+      expect(document.body.querySelector('[data-testid="phone-connect-sheet"]')).not.toBeNull()
+      w.unmount()
     })
   })
 

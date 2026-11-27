@@ -248,7 +248,7 @@
     "installButton": "Installer l'application"
   },
   "qr": {
-    "backgroundHint": "Scannez pour ouvrir le même espace"
+    "backgroundHint": "Ouvrir ce site sur votre téléphone"
   },
   "help": {
     "close": "Fermer",
@@ -421,7 +421,10 @@
     "peerChecking": "En attente de l’autre",
     "request": {
       "title": "Demande de connexion au salon"
-    }
+    },
+    "otherNetworkLine": "{n} autres sur d'autres réseaux",
+    "otherNetworkShow": "Afficher",
+    "otherNetworkHide": "Masquer"
   },
   "group": {
     "create": "Créer une salle de groupe",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Images",
-    "tabQr": "QR",
+    "tabQr": "QR d'invitation",
     "tabLink": "Lien",
     "showTitle": "Touchez ces 4 images dans l'ordre sur le nouvel appareil",
     "expiresIn": "Il reste {min} min {sec} s",
@@ -602,12 +605,17 @@
     "notFound": "PC introuvable. Scannez à nouveau le QR code affiché sur le PC."
   },
   "roomQr": {
-    "toggle": "Ouvrir ce salon sur votre téléphone",
     "line1": "Scannez avec l’appareil photo du téléphone pour ouvrir ce salon",
     "line2": "Un nouveau téléphone enverra une demande de connexion",
     "arrived": "{name} a rejoint ce salon",
     "opened": "Salon du code QR ouvert",
-    "toggleIp": "Connecter un téléphone par code QR",
-    "line2Ip": "Un téléphone sur un autre réseau enverra une demande de connexion"
+    "line2Ip": "Un téléphone sur un autre réseau enverra une demande de connexion",
+    "inviteCard": "Inviter un téléphone",
+    "inviteCardSub": "Sur ce réseau",
+    "myPhoneTab": "Mon téléphone",
+    "legacyMine": "Ouvrir cette salle sur mon téléphone"
+  },
+  "header": {
+    "siteQr": "QR de l'adresse du site"
   }
 }

@@ -301,7 +301,7 @@
     "installButton": "앱 설치"
   },
   "qr": {
-    "backgroundHint": "스캔해서 같은 공간 열기"
+    "backgroundHint": "휴대폰에서 이 사이트 열기"
   },
   "seo": {
     "title": "PC와 폰 사이 파일·텍스트 즉시 전송 – 온라인 클립보드 Clipboard Share",
@@ -538,6 +538,9 @@
     "peerLeftToast": "상대가 연결을 끊었어요",
     "unreadableText": "읽을 수 없는 텍스트",
     "otherNetworkGroup": "다른 네트워크 기기 {n}대",
+    "otherNetworkLine": "다른 네트워크에도 {n}대가 있어요",
+    "otherNetworkShow": "보기",
+    "otherNetworkHide": "접기",
     "statusOffline": "오프라인",
     "statusConnecting": "연결 중…",
     "offlineUploadNote": "상대가 접속하면 받을 수 있어요 (파일은 최대 1일 보관)",
@@ -582,7 +585,7 @@
   },
   "code": {
     "tabPicture": "그림",
-    "tabQr": "QR",
+    "tabQr": "초대 QR",
     "tabLink": "링크",
     "showTitle": "이 그림 4개를 새 기기에서 순서대로 누르세요",
     "expiresIn": "{min}분 {sec}초 남음",
@@ -728,12 +731,17 @@
     "notFound": "PC를 찾지 못했어요. PC 화면의 QR을 다시 찍어 주세요."
   },
   "roomQr": {
-    "toggle": "휴대폰에서 이 방 바로 열기",
     "line1": "휴대폰 카메라로 찍으면 이 방이 열려요",
     "line2": "처음 보는 휴대폰이면 연결 요청이 와요",
     "arrived": "{name}이(가) 이 방에 들어왔어요",
     "opened": "QR의 방을 열었어요",
-    "toggleIp": "QR로 휴대폰 연결하기",
-    "line2Ip": "다른 네트워크의 휴대폰이면 연결 요청이 와요"
+    "inviteCard": "휴대폰 초대",
+    "inviteCardSub": "이 네트워크로",
+    "line2Ip": "다른 네트워크의 휴대폰이면 연결 요청이 와요",
+    "myPhoneTab": "내 휴대폰",
+    "legacyMine": "내 휴대폰에서 이 방 열기"
+  },
+  "header": {
+    "siteQr": "사이트 주소 QR"
   }
 }

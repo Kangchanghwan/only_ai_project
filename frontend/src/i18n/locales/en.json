@@ -301,7 +301,7 @@
     "installButton": "Install App"
   },
   "qr": {
-    "backgroundHint": "Scan to join this space"
+    "backgroundHint": "Open this site on your phone"
   },
   "seo": {
     "title": "Online Clipboard – Share Text, Images & Files Between Phone and PC",
@@ -538,6 +538,9 @@
     "peerLeftToast": "They left the room",
     "unreadableText": "Unreadable text",
     "otherNetworkGroup": "{n} devices on other networks",
+    "otherNetworkLine": "{n} more on other networks",
+    "otherNetworkShow": "Show",
+    "otherNetworkHide": "Hide",
     "statusOffline": "Offline",
     "statusConnecting": "Connecting…",
     "offlineUploadNote": "They can receive it when they're online (files are kept up to 1 day)",
@@ -582,7 +585,7 @@
   },
   "code": {
     "tabPicture": "Pictures",
-    "tabQr": "QR",
+    "tabQr": "Invite QR",
     "tabLink": "Link",
     "showTitle": "Tap these 4 pictures in order on the new device",
     "expiresIn": "{min} min {sec} sec left",
@@ -728,12 +731,17 @@
     "notFound": "Couldn't find the PC. Scan the QR code on the PC screen again."
   },
   "roomQr": {
-    "toggle": "Open this room on your phone",
     "line1": "Scan with your phone camera to open this room",
     "line2": "A new phone will send a connection request",
     "arrived": "{name} joined this room",
     "opened": "Opened the room from the QR code",
-    "toggleIp": "Connect a phone with a QR code",
-    "line2Ip": "A phone on another network will send a connection request"
+    "inviteCard": "Invite a phone",
+    "inviteCardSub": "On this network",
+    "line2Ip": "A phone on another network will send a connection request",
+    "myPhoneTab": "My phone",
+    "legacyMine": "Open this room on my phone"
+  },
+  "header": {
+    "siteQr": "Site address QR"
   }
 }

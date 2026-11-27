@@ -248,7 +248,7 @@
     "installButton": "Zainstaluj aplikację"
   },
   "qr": {
-    "backgroundHint": "Zeskanuj, aby otworzyć tę samą przestrzeń"
+    "backgroundHint": "Otwórz tę stronę na telefonie"
   },
   "help": {
     "close": "Zamknij",
@@ -421,7 +421,10 @@
     "peerChecking": "Czekanie na drugą stronę",
     "request": {
       "title": "Prośba o połączenie w pokoju"
-    }
+    },
+    "otherNetworkLine": "Jeszcze {n} w innych sieciach",
+    "otherNetworkShow": "Pokaż",
+    "otherNetworkHide": "Ukryj"
   },
   "group": {
     "create": "Utwórz pokój grupowy",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Obrazki",
-    "tabQr": "QR",
+    "tabQr": "QR zaproszenia",
     "tabLink": "Link",
     "showTitle": "Stuknij te 4 obrazki po kolei na nowym urządzeniu",
     "expiresIn": "Zostało {min} min {sec} s",
@@ -602,12 +605,17 @@
     "notFound": "Nie znaleziono PC. Zeskanuj ponownie kod QR z ekranu PC."
   },
   "roomQr": {
-    "toggle": "Otwórz ten pokój na telefonie",
     "line1": "Zeskanuj aparatem telefonu, aby otworzyć ten pokój",
     "line2": "Nowy telefon wyśle prośbę o połączenie",
     "arrived": "{name} dołączył do pokoju",
     "opened": "Otwarto pokój z kodu QR",
-    "toggleIp": "Połącz telefon kodem QR",
-    "line2Ip": "Telefon w innej sieci wyśle prośbę o połączenie"
+    "line2Ip": "Telefon w innej sieci wyśle prośbę o połączenie",
+    "inviteCard": "Zaproś telefon",
+    "inviteCardSub": "Przez tę sieć",
+    "myPhoneTab": "Mój telefon",
+    "legacyMine": "Otwórz ten pokój na moim telefonie"
+  },
+  "header": {
+    "siteQr": "Kod QR adresu strony"
   }
 }

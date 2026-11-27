@@ -128,6 +128,7 @@ describe('App 그룹 방', () => {
       expect(overlay().props('blocked')).toBe(false)
       invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.inv', expiresAt: Date.now() + 600000 })
       createPrivate.mockResolvedValue({ ok: true, roomId: G, ticket: 'pv1.own', devices: [{ socketId: 'me' }] })
+      privateDevices.value = { [G]: [{ socketId: 'me' }, { socketId: 'other' }] }
       room(w).vm.$emit('group-create')
       await vi.waitFor(() => expect(q('group-invite-qr')).not.toBeNull())
       expect(overlay().props('blocked')).toBe(true)
@@ -175,6 +176,7 @@ describe('App 그룹 방', () => {
     it('"＋ 방" → 서버에 방 만들기 → 그 방 탭 + 초대 시트(QR)', async () => {
       createPrivate.mockResolvedValue({ ok: true, roomId: G, ticket: 'pv1.own', devices: [{ socketId: 'me' }] })
       invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.' + G + '.inv', expiresAt: Date.now() + 600000 })
+      privateDevices.value = { [G]: [{ socketId: 'me' }, { socketId: 'other' }] }
       w = await mountApp()
       room(w).vm.$emit('group-create')
       await vi.waitFor(() => expect(q('group-invite-qr')).not.toBeNull())
@@ -185,6 +187,34 @@ describe('App 그룹 방', () => {
       expect(q('group-invite-sheet')).not.toBeNull()
       expect(q('group-invite-qr').getAttribute('src')).toBe('data:image/png;base64,QR')
       expect(track).toHaveBeenCalledWith('group_create')
+    })
+
+    it('나만 있는 방은 초대 창이 "내 휴대폰" 탭으로 열리고 QR에 방 꼬리표 주소가 든다', async () => {
+      createPrivate.mockResolvedValue({ ok: true, roomId: G, ticket: 'pv1.own', devices: [{ socketId: 'me' }] })
+      invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.' + G + '.inv', expiresAt: Date.now() + 600000 })
+      privateDevices.value = { [G]: [{ socketId: 'me' }] }
+      w = await mountApp()
+      room(w).vm.$emit('group-create')
+      await vi.waitFor(() => expect(q('group-invite-sheet')).not.toBeNull())
+      await flush()
+      expect(q('group-invite-tab-mine').getAttribute('aria-selected')).toBe('true')
+      expect(q('wake-qr-img')).not.toBeNull()
+      expect(q('group-invite-copy')).toBeNull()
+      expect(track).toHaveBeenCalledWith('room_qr_open', { room_kind: 'group', source: 'invite_sheet' })
+    })
+
+    it('"내 휴대폰" 탭을 열어 둔 사이 다른 기기가 들어오면 창이 닫히고 알림이 한 번 뜬다', async () => {
+      createPrivate.mockResolvedValue({ ok: true, roomId: G, ticket: 'pv1.own', devices: [{ socketId: 'me' }] })
+      invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.' + G + '.inv', expiresAt: Date.now() + 600000 })
+      privateDevices.value = { [G]: [{ socketId: 'me' }] }
+      w = await mountApp()
+      room(w).vm.$emit('group-create')
+      await vi.waitFor(() => expect(q('group-invite-sheet')).not.toBeNull())
+      await flush()
+      privateDevices.value = { [G]: [{ socketId: 'me' }, { socketId: 'peer', identity: { adj: 2, animal: 2 } }] }
+      await flush()
+      expect(q('group-invite-sheet')).toBeNull()
+      expect(toastSpy.mock.calls.filter(([m]) => String(m).includes('이 방에 들어왔어요')).length).toBe(1)
     })
 
     it('Strip의 초대 버튼(group-invite)이 새 초대 입장권으로 시트를 연다', async () => {

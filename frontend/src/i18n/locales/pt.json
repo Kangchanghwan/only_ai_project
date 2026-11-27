@@ -248,7 +248,7 @@
     "installButton": "Instalar app"
   },
   "qr": {
-    "backgroundHint": "Escaneie para abrir o mesmo espaço"
+    "backgroundHint": "Abrir este site no celular"
   },
   "help": {
     "close": "Fechar",
@@ -421,7 +421,10 @@
     "peerChecking": "Aguardando o outro",
     "request": {
       "title": "Pedido de conexão à sala"
-    }
+    },
+    "otherNetworkLine": "Há mais {n} em outras redes",
+    "otherNetworkShow": "Ver",
+    "otherNetworkHide": "Ocultar"
   },
   "group": {
     "create": "Criar uma sala de grupo",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Imagens",
-    "tabQr": "QR",
+    "tabQr": "QR de convite",
     "tabLink": "Link",
     "showTitle": "Toque nestas 4 imagens em ordem no novo dispositivo",
     "expiresIn": "Faltam {min} min {sec} s",
@@ -602,12 +605,17 @@
     "notFound": "PC não encontrado. Escaneie novamente o QR code na tela do PC."
   },
   "roomQr": {
-    "toggle": "Abrir esta sala no celular",
     "line1": "Escaneie com a câmera do celular para abrir esta sala",
     "line2": "Um celular novo enviará um pedido de conexão",
     "arrived": "{name} entrou nesta sala",
     "opened": "A sala do QR foi aberta",
-    "toggleIp": "Conectar um celular por QR",
-    "line2Ip": "Um celular em outra rede enviará um pedido de conexão"
+    "line2Ip": "Um celular em outra rede enviará um pedido de conexão",
+    "inviteCard": "Convidar celular",
+    "inviteCardSub": "Nesta rede",
+    "myPhoneTab": "Meu celular",
+    "legacyMine": "Abrir esta sala no meu celular"
+  },
+  "header": {
+    "siteQr": "QR do endereço do site"
   }
 }

@@ -248,7 +248,7 @@
     "installButton": "Instalează aplicația"
   },
   "qr": {
-    "backgroundHint": "Scanează pentru a deschide același spațiu"
+    "backgroundHint": "Deschide acest site pe telefon"
   },
   "help": {
     "close": "Închide",
@@ -421,7 +421,10 @@
     "peerChecking": "Se așteaptă celălalt",
     "request": {
       "title": "Cerere de conectare la cameră"
-    }
+    },
+    "otherNetworkLine": "Încă {n} în alte rețele",
+    "otherNetworkShow": "Arată",
+    "otherNetworkHide": "Ascunde"
   },
   "group": {
     "create": "Creează o cameră de grup",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Imagini",
-    "tabQr": "QR",
+    "tabQr": "QR de invitație",
     "tabLink": "Link",
     "showTitle": "Atinge aceste 4 imagini în ordine pe dispozitivul nou",
     "expiresIn": "Mai sunt {min} min {sec} s",
@@ -602,12 +605,17 @@
     "notFound": "PC-ul nu a fost găsit. Scanează din nou codul QR de pe ecranul PC-ului."
   },
   "roomQr": {
-    "toggle": "Deschide această cameră pe telefon",
     "line1": "Scanează cu camera telefonului pentru a deschide camera",
     "line2": "Un telefon nou va trimite o cerere de conectare",
     "arrived": "{name} a intrat în cameră",
     "opened": "Camera din codul QR a fost deschisă",
-    "toggleIp": "Conectează un telefon cu cod QR",
-    "line2Ip": "Un telefon din altă rețea va trimite o cerere de conectare"
+    "line2Ip": "Un telefon din altă rețea va trimite o cerere de conectare",
+    "inviteCard": "Invită un telefon",
+    "inviteCardSub": "Prin această rețea",
+    "myPhoneTab": "Telefonul meu",
+    "legacyMine": "Deschide această cameră pe telefonul meu"
+  },
+  "header": {
+    "siteQr": "Cod QR cu adresa site-ului"
   }
 }

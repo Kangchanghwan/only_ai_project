@@ -248,7 +248,7 @@
     "installButton": "Installera appen"
   },
   "qr": {
-    "backgroundHint": "Skanna för att öppna samma utrymme"
+    "backgroundHint": "Öppna den här webbplatsen på mobilen"
   },
   "help": {
     "close": "Stäng",
@@ -421,7 +421,10 @@
     "peerChecking": "Väntar på andra",
     "request": {
       "title": "Begäran om rumsanslutning"
-    }
+    },
+    "otherNetworkLine": "{n} till på andra nätverk",
+    "otherNetworkShow": "Visa",
+    "otherNetworkHide": "Dölj"
   },
   "group": {
     "create": "Skapa ett gruppum",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Bilder",
-    "tabQr": "QR",
+    "tabQr": "Inbjudnings-QR",
     "tabLink": "Länk",
     "showTitle": "Tryck på de här 4 bilderna i ordning på den nya enheten",
     "expiresIn": "{min} min {sec} s kvar",
@@ -602,12 +605,17 @@
     "notFound": "Datorn hittades inte. Skanna QR-koden på datorns skärm igen."
   },
   "roomQr": {
-    "toggle": "Öppna det här rummet på mobilen",
     "line1": "Skanna med mobilkameran för att öppna rummet",
     "line2": "En ny mobil skickar en anslutningsbegäran",
     "arrived": "{name} gick med i rummet",
     "opened": "Rummet från QR-koden öppnades",
-    "toggleIp": "Anslut en mobil med QR-kod",
-    "line2Ip": "En mobil på ett annat nätverk skickar en anslutningsbegäran"
+    "line2Ip": "En mobil på ett annat nätverk skickar en anslutningsbegäran",
+    "inviteCard": "Bjud in telefon",
+    "inviteCardSub": "Via det här nätverket",
+    "myPhoneTab": "Min telefon",
+    "legacyMine": "Öppna det här rummet på min telefon"
+  },
+  "header": {
+    "siteQr": "QR-kod för webbplatsens adress"
   }
 }

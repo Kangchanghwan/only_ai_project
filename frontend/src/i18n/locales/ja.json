@@ -301,7 +301,7 @@
     "installButton": "アプリをインストール"
   },
   "qr": {
-    "backgroundHint": "スキャンして同じスペースを開く"
+    "backgroundHint": "スマホでこのサイトを開く"
   },
   "seo": {
     "title": "スマホとPCでテキスト・画像・ファイルを瞬時共有 - クリップボード",
@@ -425,7 +425,10 @@
     "peerChecking": "相手を待機中",
     "request": {
       "title": "ルーム接続のリクエスト"
-    }
+    },
+    "otherNetworkLine": "他のネットワークにも{n}台あります",
+    "otherNetworkShow": "表示",
+    "otherNetworkHide": "閉じる"
   },
   "group": {
     "create": "グループルームを作る",
@@ -462,7 +465,7 @@
   },
   "code": {
     "tabPicture": "絵",
-    "tabQr": "QR",
+    "tabQr": "招待QR",
     "tabLink": "リンク",
     "showTitle": "新しい端末で、この4つの絵を順番にタップしてください",
     "expiresIn": "あと{min}分{sec}秒",
@@ -606,12 +609,17 @@
     "notFound": "PCが見つかりません。PC画面のQRをもう一度読み取ってください。"
   },
   "roomQr": {
-    "toggle": "スマホでこのルームをすぐ開く",
     "line1": "スマホのカメラで読み取るとこのルームが開きます",
     "line2": "初めてのスマホなら接続リクエストが届きます",
     "arrived": "{name}がこのルームに入りました",
     "opened": "QRのルームを開きました",
-    "toggleIp": "QRでスマホをつなぐ",
-    "line2Ip": "別のネットワークのスマホなら接続リクエストが届きます"
+    "line2Ip": "別のネットワークのスマホなら接続リクエストが届きます",
+    "inviteCard": "スマホを招待",
+    "inviteCardSub": "このネットワークで",
+    "myPhoneTab": "自分のスマホ",
+    "legacyMine": "自分のスマホでこの部屋を開く"
+  },
+  "header": {
+    "siteQr": "サイトのアドレスQR"
   }
 }

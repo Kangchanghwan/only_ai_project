@@ -248,7 +248,7 @@
     "installButton": "App installieren"
   },
   "qr": {
-    "backgroundHint": "Scannen, um denselben Raum zu öffnen"
+    "backgroundHint": "Diese Website auf dem Handy öffnen"
   },
   "help": {
     "close": "Schließen",
@@ -421,7 +421,10 @@
     "peerChecking": "Warten auf Gegenseite",
     "request": {
       "title": "Raumverbindungsanfrage"
-    }
+    },
+    "otherNetworkLine": "{n} weitere in anderen Netzwerken",
+    "otherNetworkShow": "Anzeigen",
+    "otherNetworkHide": "Ausblenden"
   },
   "group": {
     "create": "Gruppenraum erstellen",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Bilder",
-    "tabQr": "QR",
+    "tabQr": "Einladungs-QR",
     "tabLink": "Link",
     "showTitle": "Tippe diese 4 Bilder nacheinander auf dem neuen Gerät an",
     "expiresIn": "Noch {min} Min. {sec} Sek.",
@@ -602,12 +605,17 @@
     "notFound": "PC nicht gefunden. Scanne den QR-Code auf dem PC erneut."
   },
   "roomQr": {
-    "toggle": "Diesen Raum auf dem Handy öffnen",
     "line1": "Mit der Handykamera scannen, um diesen Raum zu öffnen",
     "line2": "Ein neues Handy sendet eine Verbindungsanfrage",
     "arrived": "{name} ist dem Raum beigetreten",
     "opened": "Raum aus dem QR-Code geöffnet",
-    "toggleIp": "Handy per QR-Code verbinden",
-    "line2Ip": "Ein Handy in einem anderen Netzwerk sendet eine Verbindungsanfrage"
+    "line2Ip": "Ein Handy in einem anderen Netzwerk sendet eine Verbindungsanfrage",
+    "inviteCard": "Handy einladen",
+    "inviteCardSub": "Über dieses Netzwerk",
+    "myPhoneTab": "Mein Handy",
+    "legacyMine": "Diesen Raum auf meinem Handy öffnen"
+  },
+  "header": {
+    "siteQr": "QR-Code der Website-Adresse"
   }
 }

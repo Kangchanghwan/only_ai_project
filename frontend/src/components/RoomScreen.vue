@@ -14,11 +14,12 @@ import { SENDER_CONTEXT_KEY } from '../utils/senderContext'
 import LandingContent from './LandingContent.vue'
 import { roomDisplayName } from '../utils/roomDisplayName'
 import PrivateRoomStrip from './PrivateRoomStrip.vue'
-import RoomWakeQr from './RoomWakeQr.vue'
+import PhoneConnectSheet from './PhoneConnectSheet.vue'
+import { trackEvent } from '../utils/analytics'
 import { useScopeAccent } from '../composables/useScopeAccent'
 import { isPrivateScope, privateRoomIdOfScope, scopeForPrivateRoom } from '../composables/useShareScope'
 import { PAIR_CONTEXT_KEY } from '../utils/pairContext'
-import { isMeDevice, countOtherDevices } from '../utils/devices'
+import { isMeDevice } from '../utils/devices'
 import { socketService } from '../services/socketService'
 import { sameIdentity } from '../utils/identity'
 import { readListHint, saveListHint, readDeviceHint } from '../utils/layoutHint'
@@ -75,8 +76,6 @@ const props = defineProps({
   },
   /** 빈 화면 QR에 담을 주소 (ConnectionCard로 전달) */
   qrUrl: { type: String, default: undefined },
-  /** 방 탭 QR에 담을 주소 (방 꼬리표 포함, RoomWakeQr로 전달) */
-  roomQrUrl: { type: String, default: '' },
   /** QR로 찾은 다른 네트워크의 PC (ConnectionCard로 전달) */
   qrPinnedDevice: { type: Object, default: null },
   /** 내 정체성/소켓 ID (구버전 백엔드면 null → 기존 아이콘 표시로 폴백) */
@@ -169,12 +168,19 @@ const groupOthers = computed(() => {
   return Array.isArray(devs) ? devs.filter((d) => !isMeDevice(d, props.mySocketId, props.myIdentity)) : []
 })
 // 같은 네트워크 탭: 다른 기기가 있어 빈 화면 QR이 숨은 동안에도 접힌 QR 줄을 둔다
-const ipWakeQr = computed(() => props.scope === 'ip' && countOtherDevices(props.ipRoomDevices, props.mySocketId, props.myIdentity) > 0)
-// 방 탭 QR: 그룹 방은 접속 기기 목록이 온 뒤에만 '아무도 없음'을 판단한다
-const wakeOthers = computed(() => {
-  const id = currentRoom.value?.roomId
-  return id && Array.isArray(props.privateDevices[id]) ? groupOthers.value : null
-})
+// 같은 네트워크 탭 "휴대폰 초대" 시트 (측정은 접속당 한 번: 방 초대 창과 같은 세션 플래그)
+const phoneSheetOpen = ref(false)
+let phoneOpenSent = false
+function openPhoneSheet() {
+  phoneSheetOpen.value = true
+  if (phoneOpenSent) return
+  let flagged = false
+  try { flagged = sessionStorage.getItem('cs_room_qr_open_sent') === '1' } catch { /* 무시 */ }
+  if (flagged) return
+  phoneOpenSent = true
+  try { sessionStorage.setItem('cs_room_qr_open_sent', '1') } catch { /* 무시 */ }
+  try { trackEvent('room_qr_open', { room_kind: 'ip', source: 'card' }) } catch { /* 측정 실패 무시 */ }
+}
 // 비공개 방(1:1·그룹)에 다른 기기가 실제 접속 중이면 connected_any (측정 전용, 화면 변화 없음)
 watch([() => groupOthers.value.length, () => props.scope], ([n, sc]) => {
   if (n >= 1 && isPrivateScope(sc)) onRoomConnected()
@@ -298,6 +304,7 @@ watch(
             :other-network-more="otherNetworkMore"
             :qr-url="qrUrl"
             :pinned-device="qrPinnedDevice"
+            @invite-phone="openPhoneSheet"
             @go-find="rosterRef?.goFind()"
             @reroll="$emit('reroll-identity')"
             @hint-copied="$emit('hint-copied', $event)"
@@ -336,18 +343,7 @@ watch(
         @leave="$emit('leave-private', $event)"
         @invite="$emit('group-invite', $event)"
       />
-      <RoomWakeQr
-        v-if="ipWakeQr"
-        key="ip-wake-qr"
-        network
-        :qr-url="qrUrl"
-      />
-      <RoomWakeQr
-        v-if="currentRoom"
-        :room="currentRoom"
-        :others="wakeOthers"
-        :qr-url="roomQrUrl"
-      />
+      <PhoneConnectSheet :open="phoneSheetOpen" :qr-url="qrUrl" @close="phoneSheetOpen = false" />
 
       <div class="workspace">
         <main class="ws-main sm:bg-surface sm:rounded-none p-0 sm:p-6 sm:border sm:border-border min-w-0">

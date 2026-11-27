@@ -248,7 +248,7 @@
     "installButton": "Alkalmazás telepítése"
   },
   "qr": {
-    "backgroundHint": "Olvassa be ugyanennek a térnek a megnyitásához"
+    "backgroundHint": "Nyisd meg ezt az oldalt a telefonodon"
   },
   "help": {
     "close": "Bezárás",
@@ -421,7 +421,10 @@
     "peerChecking": "Várakozás a másik félre",
     "request": {
       "title": "Szobacsatlakozási kérés"
-    }
+    },
+    "otherNetworkLine": "További {n} eszköz van más hálózatokon",
+    "otherNetworkShow": "Megjelenítés",
+    "otherNetworkHide": "Elrejtés"
   },
   "group": {
     "create": "Csoportszoba létrehozása",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Képek",
-    "tabQr": "QR",
+    "tabQr": "Meghívó QR",
     "tabLink": "Link",
     "showTitle": "Koppints erre a 4 képre sorrendben az új eszközön",
     "expiresIn": "{min} perc {sec} mp van hátra",
@@ -602,12 +605,17 @@
     "notFound": "A PC nem található. Olvasd be újra a PC képernyőjén lévő QR-kódot."
   },
   "roomQr": {
-    "toggle": "Szoba megnyitása a telefonon",
     "line1": "Olvasd be a telefon kamerájával a szoba megnyitásához",
     "line2": "Új telefon esetén csatlakozási kérés érkezik",
     "arrived": "{name} belépett a szobába",
     "opened": "Megnyitottuk a QR-kód szobáját",
-    "toggleIp": "Telefon csatlakoztatása QR-kóddal",
-    "line2Ip": "Másik hálózaton lévő telefon esetén csatlakozási kérés érkezik"
+    "line2Ip": "Másik hálózaton lévő telefon esetén csatlakozási kérés érkezik",
+    "inviteCard": "Telefon meghívása",
+    "inviteCardSub": "Ezen a hálózaton",
+    "myPhoneTab": "Saját telefon",
+    "legacyMine": "A szoba megnyitása a saját telefonomon"
+  },
+  "header": {
+    "siteQr": "Az oldal címének QR-kódja"
   }
 }

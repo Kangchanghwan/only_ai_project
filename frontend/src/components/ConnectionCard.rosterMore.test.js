@@ -13,11 +13,12 @@ const global = { plugins: [i18n], provide: { [PAIR_CONTEXT_KEY]: ctx } }
 const base = { scope: 'ip', devices: [dev('me', fox)], mySocketId: 'me', myIdentity: fox, wide: false, otherNetworkDevices: [dev('x', cat)] }
 
 describe('다른 네트워크 묶음: 기준 인원 초과 시 기기 찾기 링크', () => {
-  it('otherNetworkMore가 0이면 지금과 같은 펼치기 버튼만 있다', () => {
+  it('otherNetworkMore가 0이면 한 줄 안내와 보기 버튼만 있다', () => {
     i18n.global.locale.value = 'ko'
     const w = mount(ConnectionCard, { props: base, global })
     expect(w.find('[data-testid="other-network-toggle"]').exists()).toBe(true)
-    expect(w.find('[data-testid="other-network-row"]').exists()).toBe(false)
+    expect(w.find('[data-testid="other-network-toggle"]').text()).toBe('보기')
+    expect(w.find('[data-testid="other-network-row"]').text()).toContain('다른 네트워크에도 1대가 있어요')
     expect(w.find('[data-testid="roster-go-find"]').exists()).toBe(false)
   })
 
@@ -26,7 +27,8 @@ describe('다른 네트워크 묶음: 기준 인원 초과 시 기기 찾기 링
     const w = mount(ConnectionCard, { props: { ...base, otherNetworkMore: 41 }, global })
     const row = w.find('[data-testid="other-network-row"]')
     expect(row.exists()).toBe(true)
-    expect(row.find('[data-testid="other-network-toggle"]').text()).toContain('1')
+    expect(row.text()).toContain('다른 네트워크에도 1대가 있어요')
+    expect(row.find('[data-testid="other-network-toggle"]').text()).toBe('보기')
     expect(row.find('[data-testid="roster-go-find"]').text()).toBe('기기 찾기')
     await row.find('[data-testid="roster-go-find"]').trigger('click')
     expect(w.emitted('go-find')).toHaveLength(1)

@@ -248,7 +248,7 @@
     "installButton": "Uygulamayı Yükle"
   },
   "qr": {
-    "backgroundHint": "Aynı alanı açmak için tarayın"
+    "backgroundHint": "Bu siteyi telefonunda aç"
   },
   "help": {
     "close": "Kapat",
@@ -421,7 +421,10 @@
     "peerChecking": "Karşı taraf bekleniyor",
     "request": {
       "title": "Oda bağlantı isteği"
-    }
+    },
+    "otherNetworkLine": "Diğer ağlarda {n} cihaz daha var",
+    "otherNetworkShow": "Göster",
+    "otherNetworkHide": "Gizle"
   },
   "group": {
     "create": "Grup odası oluştur",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Resimler",
-    "tabQr": "QR",
+    "tabQr": "Davet QR",
     "tabLink": "Bağlantı",
     "showTitle": "Yeni cihazda bu 4 resme sırayla dokunun",
     "expiresIn": "{min} dk {sec} sn kaldı",
@@ -602,12 +605,17 @@
     "notFound": "Bilgisayar bulunamadı. Bilgisayar ekranındaki QR kodunu yeniden tarayın."
   },
   "roomQr": {
-    "toggle": "Bu odayı telefonda aç",
     "line1": "Odayı açmak için telefon kamerasıyla tarayın",
     "line2": "Yeni bir telefon bağlantı isteği gönderir",
     "arrived": "{name} odaya katıldı",
     "opened": "QR koddaki oda açıldı",
-    "toggleIp": "Telefonu QR kodla bağla",
-    "line2Ip": "Başka ağdaki bir telefon bağlantı isteği gönderir"
+    "line2Ip": "Başka ağdaki bir telefon bağlantı isteği gönderir",
+    "inviteCard": "Telefon davet et",
+    "inviteCardSub": "Bu ağ üzerinden",
+    "myPhoneTab": "Telefonum",
+    "legacyMine": "Bu odayı telefonumda aç"
+  },
+  "header": {
+    "siteQr": "Site adresi QR kodu"
   }
 }

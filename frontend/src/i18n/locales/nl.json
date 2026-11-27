@@ -248,7 +248,7 @@
     "installButton": "App installeren"
   },
   "qr": {
-    "backgroundHint": "Scan om dezelfde ruimte te openen"
+    "backgroundHint": "Open deze site op je telefoon"
   },
   "help": {
     "close": "Sluiten",
@@ -421,7 +421,10 @@
     "peerChecking": "Wachten op de ander",
     "request": {
       "title": "Verzoek voor kamerverbinding"
-    }
+    },
+    "otherNetworkLine": "Nog {n} op andere netwerken",
+    "otherNetworkShow": "Tonen",
+    "otherNetworkHide": "Verbergen"
   },
   "group": {
     "create": "Groepsruimte maken",
@@ -458,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Plaatjes",
-    "tabQr": "QR",
+    "tabQr": "Uitnodigings-QR",
     "tabLink": "Link",
     "showTitle": "Tik deze 4 plaatjes in volgorde aan op het nieuwe apparaat",
     "expiresIn": "Nog {min} min {sec} sec",
@@ -602,12 +605,17 @@
     "notFound": "Pc niet gevonden. Scan de QR-code op het pc-scherm opnieuw."
   },
   "roomQr": {
-    "toggle": "Deze kamer op je telefoon openen",
     "line1": "Scan met je telefooncamera om deze kamer te openen",
     "line2": "Een nieuwe telefoon stuurt een verbindingsverzoek",
     "arrived": "{name} is de kamer binnengekomen",
     "opened": "Kamer uit de QR-code geopend",
-    "toggleIp": "Telefoon koppelen met QR-code",
-    "line2Ip": "Een telefoon op een ander netwerk stuurt een verbindingsverzoek"
+    "line2Ip": "Een telefoon op een ander netwerk stuurt een verbindingsverzoek",
+    "inviteCard": "Telefoon uitnodigen",
+    "inviteCardSub": "Via dit netwerk",
+    "myPhoneTab": "Mijn telefoon",
+    "legacyMine": "Deze kamer openen op mijn telefoon"
+  },
+  "header": {
+    "siteQr": "QR-code van het siteadres"
   }
 }
