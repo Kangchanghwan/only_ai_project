@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Imagens",
-    "tabQr": "QR de convite",
+    "tabQr": "QR",
     "tabLink": "Link",
     "showTitle": "Toque nestas 4 imagens em ordem no novo dispositivo",
     "expiresIn": "Faltam {min} min {sec} s",
@@ -612,7 +612,6 @@
     "line2Ip": "Um celular em outra rede enviará um pedido de conexão",
     "inviteCard": "Convidar celular",
     "inviteCardSub": "Nesta rede",
-    "myPhoneTab": "Meu celular",
     "legacyMine": "Abrir esta sala no meu celular"
   },
   "header": {

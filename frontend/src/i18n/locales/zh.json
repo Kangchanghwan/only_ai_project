@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "图片",
-    "tabQr": "邀请二维码",
+    "tabQr": "QR",
     "tabLink": "链接",
     "showTitle": "请在新设备上按顺序点这 4 张图片",
     "expiresIn": "还剩 {min} 分 {sec} 秒",
@@ -612,7 +612,6 @@
     "line2Ip": "如果手机在其他网络，会发来连接请求",
     "inviteCard": "邀请手机",
     "inviteCardSub": "通过此网络",
-    "myPhoneTab": "我的手机",
     "legacyMine": "在我的手机上打开此房间"
   },
   "header": {

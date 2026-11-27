@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Obrázky",
-    "tabQr": "QR pozvánka",
+    "tabQr": "QR",
     "tabLink": "Odkaz",
     "showTitle": "Na novém zařízení klepněte postupně na tyto 4 obrázky",
     "expiresIn": "Zbývá {min} min {sec} s",
@@ -612,7 +612,6 @@
     "line2Ip": "Telefon v jiné síti pošle žádost o připojení",
     "inviteCard": "Pozvat telefon",
     "inviteCardSub": "Přes tuto síť",
-    "myPhoneTab": "Můj telefon",
     "legacyMine": "Otevřít tuto místnost v mém telefonu"
   },
   "header": {

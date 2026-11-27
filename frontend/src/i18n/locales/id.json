@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Gambar",
-    "tabQr": "QR undangan",
+    "tabQr": "QR",
     "tabLink": "Tautan",
     "showTitle": "Ketuk 4 gambar ini secara berurutan di perangkat baru",
     "expiresIn": "Sisa {min} mnt {sec} dtk",
@@ -612,7 +612,6 @@
     "line2Ip": "Ponsel di jaringan lain akan mengirim permintaan koneksi",
     "inviteCard": "Undang ponsel",
     "inviteCardSub": "Lewat jaringan ini",
-    "myPhoneTab": "Ponsel saya",
     "legacyMine": "Buka ruang ini di ponsel saya"
   },
   "header": {

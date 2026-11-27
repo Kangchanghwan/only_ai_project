@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Resimler",
-    "tabQr": "Davet QR",
+    "tabQr": "QR",
     "tabLink": "Bağlantı",
     "showTitle": "Yeni cihazda bu 4 resme sırayla dokunun",
     "expiresIn": "{min} dk {sec} sn kaldı",
@@ -612,7 +612,6 @@
     "line2Ip": "Başka ağdaki bir telefon bağlantı isteği gönderir",
     "inviteCard": "Telefon davet et",
     "inviteCardSub": "Bu ağ üzerinden",
-    "myPhoneTab": "Telefonum",
     "legacyMine": "Bu odayı telefonumda aç"
   },
   "header": {

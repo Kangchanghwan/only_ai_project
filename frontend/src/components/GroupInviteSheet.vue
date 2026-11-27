@@ -7,22 +7,19 @@ import { ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { trapTab } from '../utils/focusTrap'
 import PictureCodeShow from './PictureCodeShow.vue'
-import WakeQrPanel from './WakeQrPanel.vue'
 
 const { t } = useI18n()
 const props = defineProps({
   /** { roomId, name, url, qrDataUrl, loading } 또는 null */
   sheet: { type: Object, default: null },
-  /** 'mine' | 'picture' | 'qr' | 'link' (나만 있으면 mine, 아니면 폰은 그림·PC는 QR이 기본: 부모가 정한다) */
+  /** 'picture' | 'qr' | 'link' (폰은 그림, PC는 QR이 기본: 부모가 정한다) */
   tab: { type: String, default: 'qr' },
   /** 그림 탭 상태 { code, expiresAt, request, requestCount } 또는 null */
-  codeState: { type: Object, default: null },
-  /** "내 휴대폰" 탭 QR 주소 (방 꼬리표 포함) */
-  mineQrUrl: { type: String, default: '' }
+  codeState: { type: Object, default: null }
 })
 const emit = defineEmits(['close', 'copy', 'tab', 'code-renew', 'code-decide'])
-const TABS = ['mine', 'picture', 'qr', 'link']
-const tabLabel = (k) => (k === 'mine' ? t('roomQr.myPhoneTab') : k === 'picture' ? t('code.tabPicture') : k === 'qr' ? t('code.tabQr') : t('code.tabLink'))
+const TABS = ['picture', 'qr', 'link']
+const tabLabel = (k) => (k === 'picture' ? t('code.tabPicture') : k === 'qr' ? t('code.tabQr') : t('code.tabLink'))
 
 /** 탭 목록에서 좌우 화살표로 이동 */
 function onTabKey(event, i) {
@@ -83,15 +80,8 @@ function onKeydown(event) {
             @keydown="onTabKey($event, i)"
           >{{ tabLabel(k) }}</button>
         </div>
-        <WakeQrPanel
-          v-if="tab === 'mine'"
-          class="mt-4"
-          :qr-url="mineQrUrl"
-          :line1="t('roomQr.line1')"
-          :line2="t('roomQr.line2')"
-        />
         <PictureCodeShow
-          v-else-if="tab === 'picture'"
+          v-if="tab === 'picture'"
           class="mt-4"
           :code="codeState?.code ?? null"
           :expires-at="codeState?.expiresAt ?? 0"
@@ -101,7 +91,7 @@ function onKeydown(event) {
           @decide="emit('code-decide', $event)"
         />
         <p v-if="tab === 'picture'" class="m-0 mt-3 text-xs text-text-secondary leading-relaxed" data-testid="group-invite-picture-warning">{{ t('code.showNote') }}</p>
-        <template v-else-if="tab !== 'mine'">
+        <template v-else>
         <div v-if="tab === 'qr'" class="mt-4 flex justify-center">
           <img
             v-if="sheet.qrDataUrl"
@@ -131,7 +121,7 @@ function onKeydown(event) {
             @click="emit('close')"
           >{{ t('group.close') }}</button>
           <button
-            v-if="tab === 'qr' || tab === 'link'"
+            v-if="tab !== 'picture'"
             type="button"
             class="min-h-[44px] px-4 rounded-none bg-scope-private text-on-accent text-sm font-semibold disabled:opacity-50"
             :disabled="!sheet.url"

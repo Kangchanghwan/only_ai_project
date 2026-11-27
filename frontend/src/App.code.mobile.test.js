@@ -84,8 +84,7 @@ beforeEach(() => {
   joinPrivate.mockResolvedValue({ ok: true, rooms: [], invalid: [] })
   invitePrivate.mockResolvedValue({ ok: true, ticket: 'pv1.' + G + '.inv', expiresAt: Date.now() + 600000 })
   createPrivate.mockResolvedValue({ ok: true, roomId: G, ticket: 'pv1.own', devices: [{ socketId: 'me' }] })
-  // 방에 다른 기기가 이미 있으면 초대 창 기본 탭은 그림(폰)/QR(PC)이다. 나만 있으면 "내 휴대폰" 탭이 기본.
-  privateDevices.value = { [G]: [{ socketId: 'me' }, { socketId: 'other' }] }
+  privateDevices.value = {}
   pr.setStore(createMemoryPrivateRoomStore())
   pr.resetPrivateRooms()
   mock().hosts.length = 0; mock().joiners.length = 0; mock().joinResult = null

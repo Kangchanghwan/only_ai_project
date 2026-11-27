@@ -465,7 +465,7 @@
   },
   "code": {
     "tabPicture": "絵",
-    "tabQr": "招待QR",
+    "tabQr": "QR",
     "tabLink": "リンク",
     "showTitle": "新しい端末で、この4つの絵を順番にタップしてください",
     "expiresIn": "あと{min}分{sec}秒",
@@ -616,7 +616,6 @@
     "line2Ip": "別のネットワークのスマホなら接続リクエストが届きます",
     "inviteCard": "スマホを招待",
     "inviteCardSub": "このネットワークで",
-    "myPhoneTab": "自分のスマホ",
     "legacyMine": "自分のスマホでこの部屋を開く"
   },
   "header": {
