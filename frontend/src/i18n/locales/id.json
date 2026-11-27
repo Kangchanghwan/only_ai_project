@@ -248,7 +248,7 @@
     "installButton": "Instal Aplikasi"
   },
   "qr": {
-    "backgroundHint": "Pindai untuk membuka ruang yang sama"
+    "backgroundHint": "Buka situs ini di ponsel Anda"
   },
   "help": {
     "close": "Tutup",
@@ -614,5 +614,8 @@
     "inviteCardSub": "Lewat jaringan ini",
     "myPhoneTab": "Ponsel saya",
     "legacyMine": "Buka ruang ini di ponsel saya"
+  },
+  "header": {
+    "siteQr": "QR alamat situs"
   }
 }

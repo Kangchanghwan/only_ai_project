@@ -301,7 +301,7 @@
     "installButton": "Install App"
   },
   "qr": {
-    "backgroundHint": "Scan to join this space"
+    "backgroundHint": "Open this site on your phone"
   },
   "seo": {
     "title": "Online Clipboard – Share Text, Images & Files Between Phone and PC",
@@ -740,5 +740,8 @@
     "line2Ip": "A phone on another network will send a connection request",
     "myPhoneTab": "My phone",
     "legacyMine": "Open this room on my phone"
+  },
+  "header": {
+    "siteQr": "Site address QR"
   }
 }

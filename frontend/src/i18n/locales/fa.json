@@ -248,7 +248,7 @@
     "installButton": "نصب برنامه"
   },
   "qr": {
-    "backgroundHint": "برای باز کردن همین فضا اسکن کنید"
+    "backgroundHint": "این سایت را در گوشی خود باز کنید"
   },
   "help": {
     "close": "بستن",
@@ -614,5 +614,8 @@
     "inviteCardSub": "از طریق این شبکه",
     "myPhoneTab": "تلفن من",
     "legacyMine": "باز کردن این اتاق روی تلفن من"
+  },
+  "header": {
+    "siteQr": "کد QR نشانی سایت"
   }
 }

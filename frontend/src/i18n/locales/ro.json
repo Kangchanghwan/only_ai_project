@@ -248,7 +248,7 @@
     "installButton": "Instalează aplicația"
   },
   "qr": {
-    "backgroundHint": "Scanează pentru a deschide același spațiu"
+    "backgroundHint": "Deschide acest site pe telefon"
   },
   "help": {
     "close": "Închide",
@@ -614,5 +614,8 @@
     "inviteCardSub": "Prin această rețea",
     "myPhoneTab": "Telefonul meu",
     "legacyMine": "Deschide această cameră pe telefonul meu"
+  },
+  "header": {
+    "siteQr": "Cod QR cu adresa site-ului"
   }
 }

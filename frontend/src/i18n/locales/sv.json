@@ -248,7 +248,7 @@
     "installButton": "Installera appen"
   },
   "qr": {
-    "backgroundHint": "Skanna för att öppna samma utrymme"
+    "backgroundHint": "Öppna den här webbplatsen på mobilen"
   },
   "help": {
     "close": "Stäng",
@@ -614,5 +614,8 @@
     "inviteCardSub": "Via det här nätverket",
     "myPhoneTab": "Min telefon",
     "legacyMine": "Öppna det här rummet på min telefon"
+  },
+  "header": {
+    "siteQr": "QR-kod för webbplatsens adress"
   }
 }

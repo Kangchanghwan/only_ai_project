@@ -248,7 +248,7 @@
     "installButton": "Alkalmazás telepítése"
   },
   "qr": {
-    "backgroundHint": "Olvassa be ugyanennek a térnek a megnyitásához"
+    "backgroundHint": "Nyisd meg ezt az oldalt a telefonodon"
   },
   "help": {
     "close": "Bezárás",
@@ -614,5 +614,8 @@
     "inviteCardSub": "Ezen a hálózaton",
     "myPhoneTab": "Saját telefon",
     "legacyMine": "A szoba megnyitása a saját telefonomon"
+  },
+  "header": {
+    "siteQr": "Az oldal címének QR-kódja"
   }
 }

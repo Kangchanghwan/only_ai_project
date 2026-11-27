@@ -248,7 +248,7 @@
     "installButton": "App installieren"
   },
   "qr": {
-    "backgroundHint": "Scannen, um denselben Raum zu öffnen"
+    "backgroundHint": "Diese Website auf dem Handy öffnen"
   },
   "help": {
     "close": "Schließen",
@@ -614,5 +614,8 @@
     "inviteCardSub": "Über dieses Netzwerk",
     "myPhoneTab": "Mein Handy",
     "legacyMine": "Diesen Raum auf meinem Handy öffnen"
+  },
+  "header": {
+    "siteQr": "QR-Code der Website-Adresse"
   }
 }

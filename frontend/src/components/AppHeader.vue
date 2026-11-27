@@ -93,7 +93,7 @@ function closeHelpModal() {
 
 function openQrZoom() {
   isQrZoomOpen.value = true
-  trackEvent('qr_open', { qr_type: 'site' })
+  trackEvent('qr_open', { qr_type: 'site', source: 'menu' })
 }
 
 function closeQrZoom() {
@@ -163,6 +163,17 @@ onMounted(async () => {
             </svg>
             <span class="hidden sm:inline whitespace-nowrap">{{ push.enabled.value ? t('arrival.pushOn') : t('arrival.pushEnable') }}</span>
           </button>
+          <button
+            type="button"
+            class="header-qr-menu-item h-11 w-full px-3 rounded-none bg-transparent hover:bg-tint text-ink font-bold text-sm transition-colors duration-200 flex items-center justify-center gap-2 border-2 border-ink"
+            data-testid="header-qr-menu-item"
+            @click="moreOpen = false; openQrZoom()"
+          >
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><path d="M14 14h3v3h-3z" /><path d="M20 14v7h-6" />
+            </svg>
+            <span class="whitespace-nowrap">{{ t('header.siteQr') }}</span>
+          </button>
           <a
             href="https://github.com/Kangchanghwan/only_ai_project/blob/master/PRIVACY.md"
             target="_blank"
@@ -180,16 +191,6 @@ onMounted(async () => {
         :aria-label="t('app.help')"
       >
         ?
-      </button>
-      <button
-        v-if="qrCodeDataUrl"
-        type="button"
-        class="header-qr-button w-11 h-11 flex items-center justify-center bg-white rounded-none border border-border hover:opacity-90 transition-opacity"
-        :title="t('qr.backgroundHint')"
-        :aria-label="t('qr.backgroundHint')"
-        @click="openQrZoom"
-      >
-        <img :src="qrCodeDataUrl" alt="" class="w-full h-full" />
       </button>
     </div>
    </div>

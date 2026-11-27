@@ -248,7 +248,7 @@
     "installButton": "Cài đặt ứng dụng"
   },
   "qr": {
-    "backgroundHint": "Quét để mở cùng không gian"
+    "backgroundHint": "Mở trang này trên điện thoại của bạn"
   },
   "help": {
     "close": "Đóng",
@@ -614,5 +614,8 @@
     "inviteCardSub": "Qua mạng này",
     "myPhoneTab": "Điện thoại của tôi",
     "legacyMine": "Mở phòng này trên điện thoại của tôi"
+  },
+  "header": {
+    "siteQr": "Mã QR địa chỉ trang"
   }
 }

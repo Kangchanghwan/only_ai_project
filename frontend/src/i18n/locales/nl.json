@@ -248,7 +248,7 @@
     "installButton": "App installeren"
   },
   "qr": {
-    "backgroundHint": "Scan om dezelfde ruimte te openen"
+    "backgroundHint": "Open deze site op je telefoon"
   },
   "help": {
     "close": "Sluiten",
@@ -614,5 +614,8 @@
     "inviteCardSub": "Via dit netwerk",
     "myPhoneTab": "Mijn telefoon",
     "legacyMine": "Deze kamer openen op mijn telefoon"
+  },
+  "header": {
+    "siteQr": "QR-code van het siteadres"
   }
 }

@@ -248,7 +248,7 @@
     "installButton": "Instalar app"
   },
   "qr": {
-    "backgroundHint": "Escanea para abrir el mismo espacio"
+    "backgroundHint": "Abre este sitio en tu teléfono"
   },
   "help": {
     "close": "Cerrar",
@@ -614,5 +614,8 @@
     "inviteCardSub": "En esta red",
     "myPhoneTab": "Mi móvil",
     "legacyMine": "Abrir esta sala en mi móvil"
+  },
+  "header": {
+    "siteQr": "QR de la dirección del sitio"
   }
 }

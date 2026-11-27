@@ -248,7 +248,7 @@
     "installButton": "Uygulamayı Yükle"
   },
   "qr": {
-    "backgroundHint": "Aynı alanı açmak için tarayın"
+    "backgroundHint": "Bu siteyi telefonunda aç"
   },
   "help": {
     "close": "Kapat",
@@ -614,5 +614,8 @@
     "inviteCardSub": "Bu ağ üzerinden",
     "myPhoneTab": "Telefonum",
     "legacyMine": "Bu odayı telefonumda aç"
+  },
+  "header": {
+    "siteQr": "Site adresi QR kodu"
   }
 }
