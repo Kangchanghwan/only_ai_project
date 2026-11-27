@@ -1,5 +1,5 @@
 import { roomDisplayName } from '../utils/roomDisplayName.js'
-import { ref, shallowRef, computed } from 'vue'
+import { ref, shallowRef, computed, watch } from 'vue'
 import QRCode from 'qrcode'
 import { newRoomSecret } from '../utils/pairCrypto.js'
 import { buildInviteUrl, sanitizeRoomName } from '../utils/groupInvite.js'
@@ -31,6 +31,9 @@ export function useGroupRooms({
   getMyName = () => '', waitRegistered = async () => true,
   getOrigin = () => window.location.origin, onRoomReady, onAlreadyIn,
   getCodeSocket = () => null, isMobile = false,
+  // 방의 "나 말고 접속한 기기" 목록 (목록이 아직 없으면 null). 초대 창 기본 탭과 "들어왔어요" 알림에 쓴다
+  getOthers = () => null,
+  getDeviceName = () => '',
   // 그림 코드 모듈(과 SPAKE2)은 그림 탭이나 "그림으로 들어가기"를 열 때만 내려받는다
   loadCodeJoin = () => import('../services/codeJoin.js')
 }) {
@@ -45,7 +48,7 @@ export function useGroupRooms({
   const choiceSheet = ref(false)
   /** 그림으로 들어가기 시트 */
   const enterSheet = ref(false)
-  /** 초대 시트 탭: 'picture' | 'qr' | 'link' */
+  /** 초대 시트 탭: 'mine' | 'picture' | 'qr' | 'link' */
   const inviteTab = ref('qr')
   /** 그림 코드 호스트 컨트롤러(그림 탭이 보이는 동안에만 있다) */
   const codeHost = shallowRef(null)
@@ -95,9 +98,11 @@ export function useGroupRooms({
     }
     const name = shownName(roomId, room.name)
     inviteSheet.value = { roomId, name, url: '', qrDataUrl: '', loading: true }
-    // 폰이면 그림, PC면 QR이 기본 탭
-    inviteTab.value = isMobile ? 'picture' : 'qr'
+    // 방에 나 말고 아무도 없으면 "내 휴대폰", 아니면 폰은 그림·PC는 QR이 기본 탭
+    const others = getOthers(roomId)
+    inviteTab.value = !others || others.length === 0 ? 'mine' : isMobile ? 'picture' : 'qr'
     if (inviteTab.value === 'picture') startCode(roomId)
+    else if (inviteTab.value === 'mine') trackRoomQrOpen('group')
     try {
       const secret = await privateRooms.inviteSecretFor(roomId)
       const res = secret ? await socket.invitePrivate?.(roomId) : null
@@ -113,6 +118,37 @@ export function useGroupRooms({
       notify.showError(t('group.failed'))
     }
   }
+
+  const OPEN_FLAG = 'cs_room_qr_open_sent'
+  let qrOpenSent = false
+  /** "내 휴대폰" QR을 처음 보여 줄 때 한 번만 (접속당) */
+  function trackRoomQrOpen(kind) {
+    if (qrOpenSent) return
+    try { if (sessionStorage.getItem(OPEN_FLAG) === '1') return } catch { /* 무시 */ }
+    qrOpenSent = true
+    try { sessionStorage.setItem(OPEN_FLAG, '1') } catch { /* 무시 */ }
+    safeTrack('room_qr_open', { room_kind: kind, source: 'invite_sheet' })
+  }
+
+  /** 1:1 예전 방 시트의 "내 휴대폰" 블록에서 상대가 들어왔다: 창을 닫고 한 번 알린다 */
+  function legacyArrived(name) {
+    if (!legacySheet.value) return
+    legacySheet.value = null
+    try { notify.showSuccess(t('roomQr.arrived', { name: name || t('pair.unknownDevice') })) } catch { /* 알림 실패 무시 */ }
+  }
+
+  // "내 휴대폰" 탭을 펼쳐 둔 사이 다른 기기가 들어오면 창을 닫고 알린다 (이미 있던 기기는 해당 없음)
+  watch(
+    () => (inviteSheet.value && inviteTab.value === 'mine' ? (getOthers(inviteSheet.value.roomId) || []).length : -1),
+    (n, prev) => {
+      if (prev === undefined || prev < 0 || n <= prev || !inviteSheet.value) return
+      const roomId = inviteSheet.value.roomId
+      const first = (getOthers(roomId) || [])[0]
+      stopCode()
+      inviteSheet.value = null
+      try { notify.showSuccess(t('roomQr.arrived', { name: (first && getDeviceName(first)) || t('pair.unknownDevice') })) } catch { /* 알림 실패 무시 */ }
+    }
+  )
 
   function closeLegacy() {
     legacySheet.value = null
@@ -166,10 +202,11 @@ export function useGroupRooms({
 
   /** 초대 시트 탭 바꾸기. 그림 탭이 보일 때만 코드를 연다 */
   function selectInviteTab(tab) {
-    if (!['picture', 'qr', 'link'].includes(tab) || !inviteSheet.value) return
+    if (!['mine', 'picture', 'qr', 'link'].includes(tab) || !inviteSheet.value) return
     inviteTab.value = tab
     if (tab === 'picture') startCode(inviteSheet.value.roomId)
     else stopCode()
+    if (tab === 'mine') trackRoomQrOpen('group')
   }
 
   /** 시트 상태(반응형): 그림 탭에 내려 줄 값 */
@@ -336,5 +373,5 @@ export function useGroupRooms({
   return {
     choiceSheet, enterSheet, inviteTab, codeState, enterState, selectInviteTab, renewCode, decideCode,
     openChoice, closeChoice, createFromChoice, openEnter, closeEnter, cancelEnter, submitCode,
-    inviteSheet, joinSheet, legacySheet, creating, createRoom, openInvite, closeInvite, closeLegacy, createFromLegacy, copyInviteLink, acceptInvite, cancelJoin, confirmJoin, defaultName }
+    inviteSheet, joinSheet, legacySheet, creating, createRoom, openInvite, closeInvite, closeLegacy, legacyArrived, trackRoomQrOpen, createFromLegacy, copyInviteLink, acceptInvite, cancelJoin, confirmJoin, defaultName }
 }

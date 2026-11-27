@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "Hình",
-    "tabQr": "QR",
+    "tabQr": "QR mời",
     "tabLink": "Liên kết",
     "showTitle": "Chạm vào 4 hình này theo thứ tự trên thiết bị mới",
     "expiresIn": "Còn {min} phút {sec} giây",
@@ -605,14 +605,14 @@
     "notFound": "Không tìm thấy máy tính. Hãy quét lại mã QR trên màn hình máy tính."
   },
   "roomQr": {
-    "toggle": "Mở phòng này trên điện thoại",
     "line1": "Quét bằng camera điện thoại để mở phòng này",
     "line2": "Điện thoại mới sẽ gửi yêu cầu kết nối",
     "arrived": "{name} đã vào phòng này",
     "opened": "Đã mở phòng từ mã QR",
-    "toggleIp": "Kết nối điện thoại bằng mã QR",
     "line2Ip": "Điện thoại ở mạng khác sẽ gửi yêu cầu kết nối",
     "inviteCard": "Mời điện thoại",
-    "inviteCardSub": "Qua mạng này"
+    "inviteCardSub": "Qua mạng này",
+    "myPhoneTab": "Điện thoại của tôi",
+    "legacyMine": "Mở phòng này trên điện thoại của tôi"
   }
 }

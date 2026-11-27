@@ -461,7 +461,7 @@
   },
   "code": {
     "tabPicture": "图片",
-    "tabQr": "QR",
+    "tabQr": "邀请二维码",
     "tabLink": "链接",
     "showTitle": "请在新设备上按顺序点这 4 张图片",
     "expiresIn": "还剩 {min} 分 {sec} 秒",
@@ -605,14 +605,14 @@
     "notFound": "找不到电脑。请重新扫描电脑屏幕上的二维码。"
   },
   "roomQr": {
-    "toggle": "在手机上直接打开此房间",
     "line1": "用手机相机扫码即可打开此房间",
     "line2": "如果是新手机，会发来连接请求",
     "arrived": "{name} 已进入此房间",
     "opened": "已打开二维码中的房间",
-    "toggleIp": "用二维码连接手机",
     "line2Ip": "如果手机在其他网络，会发来连接请求",
     "inviteCard": "邀请手机",
-    "inviteCardSub": "通过此网络"
+    "inviteCardSub": "通过此网络",
+    "myPhoneTab": "我的手机",
+    "legacyMine": "在我的手机上打开此房间"
   }
 }

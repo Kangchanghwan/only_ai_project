@@ -1,6 +1,6 @@
 <script setup>
 /**
- * 휴대폰으로 여는 QR 패널: QR 그림(140px) + 두 줄 안내. RoomWakeQr(방 탭)와 PhoneConnectSheet가 함께 쓴다.
+ * 휴대폰으로 여는 QR 패널: QR 그림(140px) + 두 줄 안내. 방 초대 창(내 휴대폰 탭·1:1 시트)과 PhoneConnectSheet가 함께 쓴다.
  */
 import { ref, watch } from 'vue'
 import QRCode from 'qrcode'
