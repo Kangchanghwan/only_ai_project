@@ -2,6 +2,9 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useScopeAccent } from '../composables/useScopeAccent'
+import { scopeForPrivateRoom } from '../composables/useShareScope'
+import { roomDisplayName } from '../utils/roomDisplayName'
+import { isValidIdentity, identityName } from '../utils/identity'
 
 const props = defineProps({
   isOpen: {
@@ -15,6 +18,16 @@ const props = defineProps({
   hasText: {
     type: Boolean,
     default: false
+  },
+  /** 내가 들어가 있는 1:1·그룹 방 [{roomId, peer, name, status}]. 나간 방은 빼고 보인다 */
+  privateRooms: {
+    type: Array,
+    default: () => []
+  },
+  /** 시트를 열 때 미리 골라 둘 범위 (지금 보던 탭). 없으면 ip */
+  initialScope: {
+    type: String,
+    default: 'ip'
   }
 })
 
@@ -24,12 +37,19 @@ const { t } = useI18n()
 
 const localScope = ref('ip')
 
-// 시트가 다시 열릴 때마다 선택을 항상 안전한 기본값(ip)으로 되돌린다.
+const rooms = computed(() => props.privateRooms.filter((r) => r && r.status !== 'left'))
+const peerName = (room) => (isValidIdentity(room.peer?.identity) ? identityName(room.peer.identity, t) : t('pair.unknownDevice'))
+const roomLabel = (room) => roomDisplayName(rooms.value, room.roomId, t('group.unnamed'), peerName)
+const roomScope = (room) => scopeForPrivateRoom(room.roomId)
+const isRoomScope = (s) => rooms.value.some((r) => roomScope(r) === s)
+
+// 시트가 열릴 때마다 지금 보던 방(1:1·그룹)이면 그 방을, 아니면 안전한 기본값(ip)을 고른다.
+// 전체 공유는 공개 범위라 미리 고르지 않는다.
 watch(() => props.isOpen, (isOpen) => {
   if (isOpen) {
-    localScope.value = 'ip'
+    localScope.value = isRoomScope(props.initialScope) ? props.initialScope : 'ip'
   }
-})
+}, { immediate: true })
 
 const {
   border: ipBorder,
@@ -42,6 +62,18 @@ const {
   bgSoft10: globalBgSoft10,
   bg: globalBg
 } = useScopeAccent(() => 'global')
+
+const {
+  border: prvBorder,
+  bgSoft10: prvBgSoft10,
+  bg: prvBg
+} = useScopeAccent(() => 'prv:x')
+
+const confirmBg = computed(() => {
+  if (localScope.value === 'global') return globalBg.value
+  if (localScope.value === 'ip') return ipBg.value
+  return prvBg.value
+})
 
 const title = computed(() => {
   if (props.fileCount > 0 && props.hasText) {
@@ -77,7 +109,7 @@ function handleCancel() {
           <div class="mx-auto mb-3 h-1 w-8 rounded-none bg-border"></div>
           <p class="mb-3 text-sm font-semibold text-text-primary">{{ title }}</p>
 
-          <div class="mb-4 space-y-2">
+          <div class="mb-4 space-y-2 max-h-[50vh] overflow-y-auto">
             <button
               type="button"
               class="w-full min-h-[44px] rounded-none border px-3 py-2.5 text-left transition-colors"
@@ -96,6 +128,17 @@ function handleCancel() {
               <span class="block text-sm font-medium text-text-primary">{{ t('shareScope.global') }}</span>
               <span class="block text-xs text-text-secondary">{{ t('shareScope.globalDescription') }}</span>
             </button>
+            <button
+              v-for="room in rooms"
+              :key="room.roomId"
+              type="button"
+              class="share-room-option w-full min-h-[44px] rounded-none border px-3 py-2.5 text-left transition-colors"
+              :class="localScope === roomScope(room) ? [prvBorder, prvBgSoft10] : 'border-border'"
+              :data-room-id="room.roomId"
+              @click="localScope = roomScope(room)"
+            >
+              <span class="block text-sm font-medium text-text-primary">{{ roomLabel(room) }}</span>
+            </button>
           </div>
 
           <div class="flex gap-2">
@@ -109,7 +152,7 @@ function handleCancel() {
             <button
               type="button"
               class="flex-1 min-h-[44px] rounded-none py-2.5 text-sm font-semibold text-on-accent"
-              :class="localScope === 'global' ? globalBg : ipBg"
+              :class="confirmBg"
               @click="handleConfirm"
             >
               {{ t('shareTargetConfirm.confirm') }}

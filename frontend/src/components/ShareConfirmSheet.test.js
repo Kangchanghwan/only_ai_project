@@ -102,3 +102,39 @@ describe('ShareConfirmSheet', () => {
     expect(reopenedIpButton.classes()).toContain('border-primary')
   })
 })
+
+describe('ShareConfirmSheet 방 선택 (PWA 공유로 들어온 경우)', () => {
+  const rooms = [
+    { roomId: 'prv-abc', peer: null, status: 'online' },
+    { roomId: 'prv-g-xyz', peer: null, name: '우리반', status: 'online' },
+    { roomId: 'prv-old', peer: null, status: 'left' }
+  ]
+
+  it('들어가 있는 1:1·그룹 방을 선택지로 보이고 나간 방은 뺀다', () => {
+    mountSheet({ privateRooms: rooms })
+    const ids = findSheet().findAll('.share-room-option').map((b) => b.attributes('data-room-id'))
+    expect(ids).toEqual(['prv-abc', 'prv-g-xyz'])
+  })
+
+  it('방을 고르고 공유하면 그 방 scope로 confirm한다', async () => {
+    mountSheet({ privateRooms: rooms })
+    await findSheet().find('[data-room-id="prv-g-xyz"]').trigger('click')
+    const buttons = findSheet().findAll('button')
+    await buttons[buttons.length - 1].trigger('click')
+    expect(wrapper.emitted('confirm')[0]).toEqual(['prv:prv-g-xyz'])
+  })
+
+  it('지금 보던 탭이 방이면 그 방을 미리 고른다', async () => {
+    mountSheet({ privateRooms: rooms, initialScope: 'prv:prv-abc' })
+    const buttons = findSheet().findAll('button')
+    await buttons[buttons.length - 1].trigger('click')
+    expect(wrapper.emitted('confirm')[0]).toEqual(['prv:prv-abc'])
+  })
+
+  it('보던 탭이 전체 공유여도 미리 고르지 않고 ip로 둔다', async () => {
+    mountSheet({ privateRooms: rooms, initialScope: 'global' })
+    const buttons = findSheet().findAll('button')
+    await buttons[buttons.length - 1].trigger('click')
+    expect(wrapper.emitted('confirm')[0]).toEqual(['ip'])
+  })
+})
