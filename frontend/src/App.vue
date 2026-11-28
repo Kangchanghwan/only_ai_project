@@ -102,6 +102,8 @@ function presenceRoomName(roomKey) {
 }
 function presenceToast(kind, roomKey, device) {
   if (!isValidIdentity(device?.identity)) return
+  // 초대 시트가 "들어왔어요"를 이미 알렸거나 곧 알릴 방은 같은 토스트를 또 띄우지 않는다
+  if (kind === 'join' && roomKey !== 'ip' && groupRooms.recentlyAnnounced?.(roomKey)) return
   // 기기가 많은 같은 네트워크(교실 등)는 조용히. 기기 수는 기기 카드의 "다른 기기 N대"로 보인다
   const others = presence.count(roomKey)
   if (shouldSkipPresenceToast(roomKey, others)) { trackPresenceSkipped(others); return }
@@ -136,6 +138,14 @@ watch(
       if (Array.isArray(byRoom[r.roomId])) presence.update(r.roomId, byRoom[r.roomId], presenceMe())
     }
     for (const roomId of Object.keys(byRoom)) if (!mine.has(roomId)) presence.forget(roomId)
+  },
+  { deep: true }
+)
+// 초대 시트가 열린 방에 새 기기가 들어오면 알리고 시트를 닫는다
+watch(
+  () => socket.privateRoomDevices?.value,
+  (byRoom) => {
+    for (const [roomId, devices] of Object.entries(byRoom || {})) groupRooms.handleRoomDevices?.(roomId, devices)
   },
   { deep: true }
 )
@@ -225,6 +235,9 @@ const groupRooms = useGroupRooms({
   waitRegistered: waitSocketRegistered,
   getCodeSocket: () => socketService.getCodeAdapter?.() ?? null,
   isMobile,
+  getRoomDevices: (roomId) => socket.privateRoomDevices?.value?.[roomId] ?? null,
+  getMySocketId: () => socket.mySocketId?.value ?? null,
+  describeDevice: (d) => (isValidIdentity(d?.identity) ? `${animalEmoji(d.identity.animal)} ${identityName(d.identity, t)}` : ''),
   onAlreadyIn: (roomId) => shareScope.setScope(scopeForPrivateRoom(roomId)),
   onRoomReady: async (roomId) => {
     shareScope.setScope(scopeForPrivateRoom(roomId))
@@ -251,25 +264,26 @@ const findPeerDevice = (devs, peer) => {
 
 // 상대 접속 상태: 그 방의 room-users에 상대가 있으면 접속 중, 없으면 오프라인(나갔다고 보지 않는다).
 // 'left'는 private-left 메시지로만, 'connecting'은 입장권으로 다시 들어가기 전까지 그대로 둔다.
+function syncPrivateStatuses() {
+  const byRoom = socket.privateRoomDevices?.value || {}
+  for (const r of privateRooms.rooms) {
+    if (r.status === 'left' || r.status === 'connecting') continue
+    const devs = byRoom[r.roomId]
+    if (!Array.isArray(devs)) continue
+    if (isGroupRoomId(r.roomId)) {
+      // 그룹 방은 상대가 한 명이 아니다: 다른 기기가 하나라도 있으면 접속 중
+      const me = socket.mySocketId?.value
+      privateRooms.setStatus(r.roomId, devs.some((d) => d.socketId !== me) ? 'online' : 'offline')
+      continue
+    }
+    const peerDev = findPeerDevice(devs, r.peer)
+    if (peerDev) privateRooms.setPeer(r.roomId, peerDev)
+    privateRooms.setStatus(r.roomId, peerDev ? 'online' : 'offline')
+  }
+}
 watch(
   () => [socket.privateRoomDevices?.value, privateRooms.rooms.length],
-  () => {
-    const byRoom = socket.privateRoomDevices?.value || {}
-    for (const r of privateRooms.rooms) {
-      if (r.status === 'left' || r.status === 'connecting') continue
-      const devs = byRoom[r.roomId]
-      if (!Array.isArray(devs)) continue
-      if (isGroupRoomId(r.roomId)) {
-        // 그룹 방은 상대가 한 명이 아니다: 다른 기기가 하나라도 있으면 접속 중
-        const me = socket.mySocketId?.value
-        privateRooms.setStatus(r.roomId, devs.some((d) => d.socketId !== me) ? 'online' : 'offline')
-        continue
-      }
-      const peerDev = findPeerDevice(devs, r.peer)
-      if (peerDev) privateRooms.setPeer(r.roomId, peerDev)
-      privateRooms.setStatus(r.roomId, peerDev ? 'online' : 'offline')
-    }
-  },
+  syncPrivateStatuses,
   { deep: true }
 )
 
@@ -430,7 +444,7 @@ let cleanupOnMessage = null
 // 재연결 콜백 등록
 // ========================================
 
-socket.onReconnected(() => {
+socket.onReconnected(({ recovered = false } = {}) => {
   // 재접속 후 처음 받는 목록은 초기 목록으로 취급해 토스트를 띄우지 않는다
   presence.markInitial()
   console.log('[App] 재연결 완료')
@@ -438,6 +452,14 @@ socket.onReconnected(() => {
     globalRoomId: socket.globalRoomId.value,
     ipRoomId: socket.ipRoomId.value
   })
+
+  if (recovered) {
+    // 연결 복구: 방 입장·못 받은 메시지는 서버가 이미 되살렸다. 목록·텍스트·방 입장을 다시 묻는 왕복을 모두 건너뛴다
+    for (const r of privateRooms.rooms) if (r.status === 'connecting') privateRooms.setStatus(r.roomId, 'offline')
+    syncPrivateStatuses()
+    notification.showSuccess(t('notification.reconnected'))
+    return
+  }
 
   // 기존 이벤트 리스너 정리 후 재설정
   if (cleanupUserLeft) cleanupUserLeft()

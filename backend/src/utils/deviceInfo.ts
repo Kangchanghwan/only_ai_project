@@ -32,6 +32,8 @@ export interface DeviceInfo {
     /** 접속 시각 (epoch ms) */
     joinedAt: number;
     identity?: Identity;
+    /** 연결이 잠시 끊겨 복구를 기다리는 중 (유예 시간 안에는 명단에서 빼지 않고 '자리 비움'으로 보인다) */
+    away?: boolean;
 }
 
 /** 클라이언트가 접속 시 보내는 선택적 힌트 (신뢰하지 않고 sanitize한다) */

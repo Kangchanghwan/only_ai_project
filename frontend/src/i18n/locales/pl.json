@@ -94,6 +94,7 @@
     "toastJoined": "Nowe urządzenie: {desc}",
     "listTitle": "Połączone urządzenia ({count})",
     "joinedAgo": "Połączono {time}",
+    "away": "Chwilowo nieobecny",
     "verifyHint": "Jeśli zwierzak widoczny u góry na Twoim drugim urządzeniu jest na tej liście, urządzenia są połączone",
     "globalNotice": "To, co tu udostępniasz, mogą zobaczyć wszyscy, także nieznajomi",
     "senderLeft": "Wyszło",

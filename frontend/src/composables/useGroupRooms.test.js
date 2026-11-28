@@ -298,4 +298,69 @@ describe('useGroupRooms', () => {
       expect(pr.rooms.some((r) => r.roomId === G)).toBe(true)
     })
   })
+
+  describe('초대 시트 자동 닫기 / 입장 결과 재사용', () => {
+    const mkRoom = async (devs = [{ socketId: 'me' }]) => {
+      await g.createRoom()
+      let current = devs
+      g = make({ getRoomDevices: () => current, getMySocketId: () => 'me', describeDevice: (d) => d.name || '' })
+      await g.openInvite(G)
+      return { set: (d) => { current = d } }
+    }
+
+    it('새 기기가 들어오면 "○○이 들어왔어요"를 띄우고 시트를 닫는다 (탭 상관없이)', async () => {
+      await mkRoom()
+      for (const tab of ['picture', 'qr', 'link']) {
+        g.inviteSheet.value = { ...g.inviteSheet.value, roomId: G }
+        g.inviteTab.value = tab
+      }
+      expect(g.inviteSheet.value).not.toBeNull()
+      expect(g.handleRoomDevices(G, [{ socketId: 'me' }])).toBe(false)
+      expect(g.inviteSheet.value).not.toBeNull()
+      expect(g.handleRoomDevices(G, [{ socketId: 'me' }, { socketId: 'x', name: '졸린 고래' }])).toBe(true)
+      expect(g.inviteSheet.value).toBeNull()
+      expect(notify.showSuccess).toHaveBeenCalledWith('roomQr.arrived:졸린 고래')
+      expect(g.recentlyAnnounced(G)).toBe(true)
+    })
+
+    it('자리 비움 기기·이미 있던 기기·다른 방 소식은 시트를 닫지 않는다', async () => {
+      await mkRoom([{ socketId: 'me' }, { socketId: 'old' }])
+      expect(g.handleRoomDevices(G, [{ socketId: 'me' }, { socketId: 'old' }, { socketId: 'z', away: true }])).toBe(false)
+      expect(g.handleRoomDevices(G2, [{ socketId: 'me' }, { socketId: 'n' }])).toBe(false)
+      expect(g.inviteSheet.value).not.toBeNull()
+    })
+
+    it('시트가 닫혀 있으면 아무 일도 하지 않는다', () => {
+      expect(g.handleRoomDevices(G, [{ socketId: 'n' }])).toBe(false)
+      expect(notify.showSuccess).not.toHaveBeenCalled()
+      expect(g.recentlyAnnounced(G)).toBe(false)
+    })
+
+    it('입장 결과(joined)가 오면 private:join 왕복 없이 방을 저장한다', async () => {
+      const secret = newRoomSecret()
+      const b64 = Buffer.from(secret).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+      const entry = { roomId: G2, ticket: 'pv1.' + G2 + '.srv', roomToken: 'tok', devices: [{ socketId: 'h' }, { socketId: 'me' }] }
+      socket.applyJoinedEntry = vi.fn((e) => ({ roomId: e.roomId, ticket: e.ticket, devices: e.devices }))
+      const joiner = { join: vi.fn(async () => ({ status: 'joined', payload: { secret: b64, ticket: 'pv1.' + G2 + '.inv', name: '교실', joined: entry } })), cancel: vi.fn(), status: { value: 'idle' }, warn: { value: false }, retryAfterSec: { value: 0 } }
+      const gg = make({ getCodeSocket: () => ({}), loadCodeJoin: async () => ({ createCodeHost: vi.fn(), createCodeJoiner: () => joiner }) })
+      await gg.openEnter()
+      await gg.submitCode([1, 2, 3, 4])
+      expect(socket.applyJoinedEntry).toHaveBeenCalledWith(entry)
+      expect(socket.joinPrivate).not.toHaveBeenCalled()
+      expect(pr.rooms.find((r) => r.roomId === G2)).toMatchObject({ ticket: entry.ticket, name: '교실' })
+      expect(onRoomReady).toHaveBeenCalledWith(G2)
+    })
+
+    it('입장 결과가 없거나 방이 다르면 예전처럼 private:join으로 들어간다', async () => {
+      const secret = newRoomSecret()
+      const b64 = Buffer.from(secret).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+      socket.joinPrivate.mockResolvedValue({ ok: true, rooms: [{ roomId: G2, ticket: 'pv1.' + G2 + '.j', devices: [] }], invalid: [] })
+      const joiner = { join: vi.fn(async () => ({ status: 'joined', payload: { secret: b64, ticket: 'pv1.' + G2 + '.inv', name: '교실' } })), cancel: vi.fn(), status: { value: 'idle' }, warn: { value: false }, retryAfterSec: { value: 0 } }
+      const gg = make({ getCodeSocket: () => ({}), loadCodeJoin: async () => ({ createCodeHost: vi.fn(), createCodeJoiner: () => joiner }) })
+      await gg.openEnter()
+      await gg.submitCode([1, 2, 3, 4])
+      expect(socket.joinPrivate).toHaveBeenCalledWith(['pv1.' + G2 + '.inv'])
+      expect(onRoomReady).toHaveBeenCalledWith(G2)
+    })
+  })
 })

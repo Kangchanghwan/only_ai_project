@@ -94,6 +94,7 @@
     "toastJoined": "{desc}が参加しました",
     "listTitle": "接続中の端末 ({count})",
     "joinedAgo": "{time}に接続",
+    "away": "少し席を外しています",
     "verifyHint": "他の端末の画面上部にいる動物がこの一覧にあれば、接続できています",
     "globalNotice": "全体共有は知らない人にも見られます",
     "senderLeft": "退出した端末",

@@ -94,6 +94,7 @@
     "toastJoined": "{desc}加入了",
     "listTitle": "已连接的设备（{count}）",
     "joinedAgo": "{time}连接",
+    "away": "暂时离开",
     "verifyHint": "如果其他设备屏幕上方的动物出现在这个列表里，就说明已连接",
     "globalNotice": "全体共享的内容，陌生人也能看到",
     "senderLeft": "已离开的设备",

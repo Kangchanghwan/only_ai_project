@@ -47,6 +47,8 @@ export interface CodeSession {
     id: string;
     hostId: string;
     joinerId: string;
+    /** 승인 시 들어오는 쪽을 바로 넣어 줄 방 (코드를 연 방) */
+    roomId?: string;
     state: CodeSessionState;
     expiresAt: number;
 }
@@ -121,11 +123,12 @@ export class CodeRegistry {
         return this.joinerSession.has(joinerId);
     }
 
-    createSession(hostId: string, joinerId: string): CodeSession {
+    createSession(hostId: string, joinerId: string, roomId?: string): CodeSession {
         const s: CodeSession = {
             id: randomBytes(12).toString('hex'),
             hostId,
             joinerId,
+            roomId,
             state: 'open',
             expiresAt: this.now() + SESSION_TTL_MS,
         };

@@ -94,6 +94,7 @@
     "toastJoined": "Neues Gerät: {desc}",
     "listTitle": "Verbundene Geräte ({count})",
     "joinedAgo": "Verbunden {time}",
+    "away": "Kurz abwesend",
     "verifyHint": "Wenn das Tier oben auf deinem anderen Gerät in dieser Liste steht, seid ihr verbunden",
     "globalNotice": "Was du hier mit allen teilst, können auch fremde Personen sehen",
     "senderLeft": "Gegangen",

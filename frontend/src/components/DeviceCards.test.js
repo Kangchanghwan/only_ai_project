@@ -126,4 +126,14 @@ describe('ConnectionCard 헤더', () => {
     expect(mk('ip').find('[data-testid="cards-header"] [data-testid="ip-notice"]').exists()).toBe(true)
     expect(mk('global').find('[data-testid="ip-notice"]').exists()).toBe(false)
   })
+
+  it('연결이 잠시 끊긴(away) 기기는 "잠시 자리 비움"으로 보이고, 나는 해당되지 않는다', () => {
+    const w = build([{ ...a, away: true }, b, { ...me, away: true }])
+    const cards = w.findAll('[data-testid="device-card"]')
+    const awayTexts = w.findAll('[data-testid="device-card-away"]')
+    expect(awayTexts).toHaveLength(1)
+    expect(awayTexts[0].text()).toBe('잠시 자리 비움')
+    expect(cards.filter((c) => c.find('[data-testid="device-card-away"]').exists())).toHaveLength(1)
+    expect(w.findAll('[data-testid="device-card-sub"]').length).toBe(2)
+  })
 })

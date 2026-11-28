@@ -31,6 +31,8 @@ export function useGroupRooms({
   getMyName = () => '', waitRegistered = async () => true,
   getOrigin = () => window.location.origin, onRoomReady, onAlreadyIn,
   getCodeSocket = () => null, isMobile = false,
+  // 초대 시트가 열린 방에 새 기기가 들어오면 알리고 시트를 닫는다 (기기 목록·내 소켓 ID·보여 줄 이름)
+  getRoomDevices = () => null, getMySocketId = () => null, describeDevice = () => '',
   // 그림 코드 모듈(과 SPAKE2)은 그림 탭이나 "그림으로 들어가기"를 열 때만 내려받는다
   loadCodeJoin = () => import('../services/codeJoin.js')
 }) {
@@ -95,6 +97,7 @@ export function useGroupRooms({
     }
     const name = shownName(roomId, room.name)
     inviteSheet.value = { roomId, name, url: '', qrDataUrl: '', loading: true }
+    knownIds = idsOf(getRoomDevices(roomId))
     // 폰이면 그림, PC면 QR이 기본 탭
     inviteTab.value = isMobile ? 'picture' : 'qr'
     if (inviteTab.value === 'picture') startCode(roomId)
@@ -145,6 +148,42 @@ export function useGroupRooms({
   function closeInvite() {
     stopCode()
     inviteSheet.value = null
+    knownIds = null
+  }
+
+  /** 초대 시트를 연 뒤 이미 방에 있던 기기 (새로 들어온 기기를 가려내는 기준) */
+  let knownIds = null
+  /** 입장을 알리고 시트를 닫은 방 → 시각. 같은 입장을 알리는 다른 토스트를 건너뛰는 데 쓴다 */
+  const announcedAt = new Map()
+  const ANNOUNCE_WINDOW_MS = 3000
+  const idsOf = (devices) => new Set((Array.isArray(devices) ? devices : []).map((d) => d?.socketId).filter(Boolean))
+
+  /** 최근 입장 알림을 이 방에서 이미 보여 줬는가 (또는 지금 그 방 초대 시트가 열려 있는가) */
+  function recentlyAnnounced(roomId) {
+    if (inviteSheet.value?.roomId === roomId) return true
+    const at = announcedAt.get(roomId)
+    return !!at && Date.now() - at < ANNOUNCE_WINDOW_MS
+  }
+
+  /**
+   * 방 기기 목록이 바뀔 때마다 부른다. 초대 시트(QR·그림·링크 모든 탭)가 열린 방에 새 기기가 들어오면
+   * "○○이 들어왔어요"를 띄우고 시트를 닫는다. 연결이 끊겨 '자리 비움'인 기기는 새로 온 것으로 치지 않는다.
+   */
+  function handleRoomDevices(roomId, devices) {
+    const sheet = inviteSheet.value
+    if (!sheet || sheet.roomId !== roomId || !Array.isArray(devices)) return false
+    if (!knownIds) { knownIds = idsOf(getRoomDevices(roomId) || devices); return false }
+    const me = getMySocketId()
+    const fresh = devices.filter((d) => d && d.socketId !== me && d.away !== true && !knownIds.has(d.socketId))
+    if (fresh.length === 0) {
+      for (const id of idsOf(devices)) knownIds.add(id)
+      return false
+    }
+    announcedAt.set(roomId, Date.now())
+    closeInvite()
+    try { notify.showSuccess(t('roomQr.arrived', { name: describeDevice(fresh[0]) || t('pair.unknownDevice') })) } catch { /* 알림 실패 무시 */ }
+    safeTrack('group_invite_arrived', { via: 'sheet_autoclose' })
+    return true
   }
 
   // === 그림 코드: 호스트(초대 시트의 그림 탭) ===
@@ -235,7 +274,7 @@ export function useGroupRooms({
     if (!j) return
     const res = await j.join(code)
     if (res.status !== 'joined' || codeJoiner.value !== j) return
-    const { secret, ticket, name } = res.payload
+    const { secret, ticket, name, joined } = res.payload
     const roomId = typeof ticket === 'string' ? ticket.split('.')[1] : ''
     let secretBytes = null
     try { secretBytes = fromB64u(secret) } catch { /* 아래에서 실패 처리 */ }
@@ -244,7 +283,7 @@ export function useGroupRooms({
       closeEnter()
       return
     }
-    const result = await runJoin({ roomId, ticket, secret: secretBytes, name: sanitizeRoomName(name) })
+    const result = await runJoin({ roomId, ticket, secret: secretBytes, name: sanitizeRoomName(name), joined })
     closeEnter()
     if (result === 'joined') await onRoomReady?.(roomId)
   }
@@ -317,7 +356,9 @@ export function useGroupRooms({
         notify.showError(t('group.tooMany'))
         return 'invalid'
       }
-      const res = await socket.joinPrivate?.([p.ticket])
+      // 호스트가 승인하면 서버가 입장까지 해 주고 결과를 신호에 실어 보낸다: 그대로 쓰면 private:join 왕복이 없다
+      const pre = p.joined && p.joined.roomId === p.roomId ? socket.applyJoinedEntry?.(p.joined) : null
+      const res = pre ? { ok: true, rooms: [pre] } : await socket.joinPrivate?.([p.ticket])
       if (!res?.ok) {
         notify.showError(t('group.failed'))
         return 'invalid'
@@ -354,5 +395,5 @@ export function useGroupRooms({
   return {
     choiceSheet, enterSheet, inviteTab, codeState, enterState, selectInviteTab, renewCode, decideCode,
     openChoice, closeChoice, createFromChoice, openEnter, closeEnter, cancelEnter, submitCode,
-    inviteSheet, joinSheet, legacySheet, creating, createRoom, openInvite, closeInvite, closeLegacy, legacyArrived, trackRoomQrOpen, createFromLegacy, copyInviteLink, acceptInvite, cancelJoin, confirmJoin, defaultName }
+    inviteSheet, joinSheet, legacySheet, creating, createRoom, openInvite, closeInvite, closeLegacy, legacyArrived, trackRoomQrOpen, createFromLegacy, copyInviteLink, handleRoomDevices, recentlyAnnounced, acceptInvite, cancelJoin, confirmJoin, defaultName }
 }

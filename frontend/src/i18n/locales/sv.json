@@ -94,6 +94,7 @@
     "toastJoined": "Ny enhet: {desc}",
     "listTitle": "Anslutna enheter ({count})",
     "joinedAgo": "Ansluten {time}",
+    "away": "Tillfälligt borta",
     "verifyHint": "Om djuret högst upp på din andra enhet finns i den här listan är ni anslutna",
     "globalNotice": "Det du delar här med alla kan alla se, även okända personer",
     "senderLeft": "Lämnade",
