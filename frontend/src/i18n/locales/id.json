@@ -162,7 +162,10 @@
     "copyImage": "Salin gambar",
     "selectFile": "Pilih {name}",
     "uploadPasteHint": "(Tempel dengan Ctrl+V)",
-    "inputLabel": "Pilih file"
+    "inputLabel": "Pilih file",
+    "saved": "Tersimpan",
+    "iosSaveHint": "Ketuk 'Unduh' di jendela Safari",
+    "saveAgainConfirm": "Baru saja disimpan. Unduh lagi?"
   },
   "text": {
     "share": "Bagikan Teks",

@@ -162,7 +162,10 @@
     "copyImage": "نسخ الصورة",
     "selectFile": "تحديد {name}",
     "uploadPasteHint": "(الصق بـ Ctrl+V)",
-    "inputLabel": "اختيار ملفات"
+    "inputLabel": "اختيار ملفات",
+    "saved": "تم الحفظ",
+    "iosSaveHint": "اضغط «تنزيل» في نافذة Safari",
+    "saveAgainConfirm": "تم الحفظ للتو. هل تريد التنزيل مرة أخرى؟"
   },
   "text": {
     "share": "مشاركة النص",

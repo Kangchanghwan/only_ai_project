@@ -78,6 +78,26 @@ const isPlain = computed(() => !!revealing.value || !!knownName.value)
 const meta = computed(() => ({ size: formatFileSize(props.file.size), time: formatUploadTime(props.file.created) }))
 const busy = computed(() => phase.value === 'checking' || phase.value === 'downloading')
 
+// 받기가 끝난 직후 몇 초: "저장됨"을 보이고, 실수로 다시 누른 두 번째 받기를 막는다.
+// iOS/iPadOS Safari는 100%가 된 뒤에야 자체 "다운로드하겠습니까?" 창을 띄우므로 안내 문구도 함께 보인다.
+const SAVED_MS = 6000
+const justSaved = ref(false)
+let savedTimer = null
+const isIosSafari = () => {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent || ''
+  return /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)
+}
+const showIosHint = ref(false)
+function markSaved() {
+  justSaved.value = true
+  showIosHint.value = isIosSafari()
+  if (showIosHint.value) notification.showInfo(t('file.iosSaveHint'), SAVED_MS)
+  clearTimeout(savedTimer)
+  savedTimer = setTimeout(() => { justSaved.value = false; showIosHint.value = false }, SAVED_MS)
+}
+onUnmounted(() => clearTimeout(savedTimer))
+
 // 이번 접속에서 같은 비밀번호 묶음(salt)을 이미 풀었거나 내가 잠갔으면 시트 없이 바로 받는다.
 // salt는 공개 정보라 meta로 확인한다 (keyring이 비어 있으면 요청하지 않는다).
 const hasKey = ref(false)
@@ -168,6 +188,8 @@ function handlePasswordBackdrop(event) {
 function handlePrimary() {
   if (busy.value) return
   if (canReceiveDirectly.value) {
+    // 방금 받은 직후 다시 누르면 확인을 거친다 (iOS 다운로드 창을 못 보고 다시 누르는 경우)
+    if (justSaved.value && !window.confirm(t('file.saveAgainConfirm'))) return
     open()
   } else {
     openPasswordSheet()
@@ -198,6 +220,7 @@ async function open(pw) {
     })
     phase.value = 'done'
     percent.value = 0
+    markSaved()
     trackEvent('locked_download_complete', { size_mb: Math.round((props.file.size || 0) / 1024 / 1024) })
   } catch (err) {
     phase.value = 'idle'
@@ -354,6 +377,7 @@ onUnmounted(() => clearInterval(revealTimer))
         @click="handlePrimary"
       >
         <span v-if="busy" class="tabular-nums" role="status" data-testid="locked-progress-label">{{ phase === 'checking' ? '…' : percent + '%' }}</span>
+        <svg v-else-if="justSaved" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="locked-saved-check"><polyline points="20 6 9 17 4 12" /></svg>
         <svg v-else-if="canReceiveDirectly" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
           <polyline points="7 10 12 15 17 10" />
@@ -363,7 +387,7 @@ onUnmounted(() => clearInterval(revealTimer))
           <rect x="5" y="11" width="14" height="9" rx="2" />
           <path d="M8 11V8a4 4 0 0 1 7.5-2" />
         </svg>
-        <span v-if="!busy" class="hidden sm:inline">{{ canReceiveDirectly ? t('file.receive') : t('lock.unlock') }}</span>
+        <span v-if="!busy" :class="justSaved ? '' : 'hidden sm:inline'" :data-testid="justSaved ? 'locked-saved-label' : undefined">{{ justSaved ? t('file.saved') : canReceiveDirectly ? t('file.receive') : t('lock.unlock') }}</span>
       </button>
 
       <button

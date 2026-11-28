@@ -162,7 +162,10 @@
     "copyImage": "Görseli kopyala",
     "selectFile": "{name} seç",
     "uploadPasteHint": "(Ctrl+V ile yapıştırın)",
-    "inputLabel": "Dosya seç"
+    "inputLabel": "Dosya seç",
+    "saved": "Kaydedildi",
+    "iosSaveHint": "Safari penceresinde 'İndir'e dokunun",
+    "saveAgainConfirm": "Az önce kaydedildi. Tekrar indirilsin mi?"
   },
   "text": {
     "share": "Metin Paylaş",

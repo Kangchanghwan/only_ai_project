@@ -162,7 +162,10 @@
     "receive": "Receive",
     "copyImage": "Copy image",
     "selectFile": "Select {name}",
-    "inputLabel": "Choose files"
+    "inputLabel": "Choose files",
+    "saved": "Saved",
+    "iosSaveHint": "Tap 'Download' in the Safari prompt",
+    "saveAgainConfirm": "You just saved this. Download again?"
   },
   "text": {
     "share": "Share Text",

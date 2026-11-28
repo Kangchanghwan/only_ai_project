@@ -162,7 +162,10 @@
     "copyImage": "Kép másolása",
     "selectFile": "{name} kijelölése",
     "uploadPasteHint": "(Illessze be Ctrl+V-vel)",
-    "inputLabel": "Fájlok kiválasztása"
+    "inputLabel": "Fájlok kiválasztása",
+    "saved": "Mentve",
+    "iosSaveHint": "Koppints a Safari ablakában a „Letöltés” gombra",
+    "saveAgainConfirm": "Épp most mentetted. Letöltöd újra?"
   },
   "text": {
     "share": "Szöveg megosztása",
