@@ -306,7 +306,7 @@
     "useCase3": "Envoyer des fichiers entre Android et Mac quand AirDrop n'est pas une option",
     "useCase4": "Coller sur votre PC un long lien, un code à usage unique ou un extrait copié depuis votre mobile",
     "safetyTitle": "Est-ce sûr?",
-    "safety1": "La portée par défaut est « Même réseau », donc seuls les appareils derrière la même IP publique peuvent voir vos éléments. Pour partager avec tout le monde, vous devez basculer vous-même vers l'onglet « Tout le monde ».",
+    "safety1": "Par défaut, le partage se limite au « Même réseau » : seuls les appareils ayant la même IP publique le voient. Pour envoyer à tout le monde, choisissez l’onglet « Public » ou ouvrez le site avec le QR du partage public ; une confirmation vous sera demandée une fois à votre premier envoi.",
     "safety2": "Quand tous les appareils partent, fichiers et textes sont supprimés peu après ; même connecté, un fichier est nettoyé au bout de 1 jour maximum. Ni compte ni historique.",
     "safety3": "Les transferts sont chiffrés en HTTPS et le code source est public sur GitHub.",
     "faqTitle": "Questions fréquentes",
@@ -613,6 +613,13 @@
     "inviteCard": "Inviter un téléphone",
     "inviteCardSub": "Sur ce réseau",
     "legacyMine": "Ouvrir cette salle sur mon téléphone"
+  },
+  "globalQr": {
+    "open": "Ouvrir sur le téléphone",
+    "openSub": "Adresse du site",
+    "line1": "Scannez pour ouvrir directement le partage public",
+    "line2": "Tous les utilisateurs voient ce que vous partagez publiquement",
+    "arrived": "Ouvert sur l’onglet Partage public"
   },
   "header": {
     "siteQr": "QR de l'adresse du site"

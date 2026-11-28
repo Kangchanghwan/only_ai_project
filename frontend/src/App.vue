@@ -1446,6 +1446,21 @@ function onGroupInviteEvent() {
   if (h) groupRooms.acceptInvite(parseInvite(h))
 }
 
+/**
+ * 전체 공유 QR(?open=global)로 열렸으면 이번 방문만 전체 공유 탭으로 연다.
+ * 저장하지 않으므로 새로고침하면 기억된 탭으로 돌아가고, 첫 전송 확인(publicGuard)도 그대로 거친다.
+ */
+function applyGlobalQrArrival() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('open') !== 'global') return
+  shareScope.setScope('global', { remember: false })
+  params.delete('open')
+  const qs = params.toString()
+  window.history.replaceState(window.history.state, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash)
+  notification.showInfo(t('globalQr.arrived'))
+  trackEvent('global_qr_arrive')
+}
+
 onMounted(async () => {
   // 잠긴 파일 링크는 index.html이 주소창에서 미리 지우고 window.__csLockedLink에 옮겨 둔다
   const hash = window.__csLockedLink || window.location.hash
@@ -1474,6 +1489,8 @@ onMounted(async () => {
 
   // 프리렌더 중에는 소켓에 연결하지 않아 정적 HTML에 접속 상태·토스트·룸 파일 목록이 구워지지 않게 한다
   if (window.__PRERENDER__) return
+
+  applyGlobalQrArrival()
 
   window.addEventListener('cs-send-link', onSendLinkEvent)
   window.addEventListener('cs-group-invite', onGroupInviteEvent)

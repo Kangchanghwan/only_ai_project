@@ -306,7 +306,7 @@
     "useCase3": "Android és Mac között küldenél, amikor az AirDrop nem elérhető",
     "useCase4": "Hosszú linket, egyszeri kódot vagy szövegrészletet illesztenél be a telefonodról a gépedre",
     "safetyTitle": "Biztonságos?",
-    "safety1": "Az alapértelmezett hatókör \"Azonos hálózat\", így az elemeidet csak az azonos nyilvános IP-cím mögötti eszközök látják. A mindenkivel való megosztáshoz saját magadnak kell átváltanod a \"Mindenki\" fülre.",
+    "safety1": "Alapértelmezés szerint csak a „Azonos hálózat” szintjén osztasz meg, így csak az azonos nyilvános IP-címet használó eszközök látják. Ha mindenkinek küldenél, válaszd a „Nyilvános” lapot, vagy nyisd meg az oldalt a nyilvános megosztás QR-kódjával; az első küldésnél még egyszer rákérdezünk.",
     "safety2": "Ha minden eszköz kilép, a fájlok és szövegek hamarosan törlődnek; csatlakozás közben is legfeljebb 1 nap után takarítódnak. Nincs fiók, nincs előzmény.",
     "safety3": "Az átvitel HTTPS-sel titkosított, a forráskód pedig nyilvánosan elérhető a GitHubon.",
     "faqTitle": "Gyakori kérdések",
@@ -613,6 +613,13 @@
     "inviteCard": "Telefon meghívása",
     "inviteCardSub": "Ezen a hálózaton",
     "legacyMine": "A szoba megnyitása a saját telefonomon"
+  },
+  "globalQr": {
+    "open": "Megnyitás a telefonon",
+    "openSub": "Az oldal címe",
+    "line1": "Beolvasva rögtön a Nyilvános megosztás nyílik meg",
+    "line2": "A nyilvános megosztást minden felhasználó látja",
+    "arrived": "Megnyitva a Nyilvános megosztás lapon"
   },
   "header": {
     "siteQr": "Az oldal címének QR-kódja"

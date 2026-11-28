@@ -320,7 +320,7 @@
     "useCase3": "Sending between Android and Mac when AirDrop is not an option",
     "useCase4": "Pasting a long link, one-time code or snippet from your phone into your PC",
     "safetyTitle": "Is it safe?",
-    "safety1": "The default scope is \"Same network\", so only devices behind the same public IP can see your items. Sharing with everyone requires switching to the \"Everyone\" tab yourself.",
+    "safety1": "By default, sharing is limited to 'Same network', so only devices with the same public IP can see it. To send to everyone, pick the 'Public' tab or open the site with the Public QR; you'll be asked to confirm once on your first send.",
     "safety2": "When every device leaves, files and text are deleted shortly after, and even while connected, files are cleaned up after at most 1 day. No account, no history.",
     "safety3": "Transfers are encrypted with HTTPS and the source code is public on GitHub. With 'Lock with a password' on, files are encrypted on your device before upload, and only people with the password can open them.",
     "faqTitle": "Frequently asked questions",
@@ -739,6 +739,13 @@
     "inviteCardSub": "On this network",
     "line2Ip": "A phone on another network will send a connection request",
     "legacyMine": "Open this room on my phone"
+  },
+  "globalQr": {
+    "open": "Open on phone",
+    "openSub": "Site address",
+    "line1": "Scan to open Public sharing right away",
+    "line2": "Everyone can see what you share publicly",
+    "arrived": "Opened on the Public tab"
   },
   "header": {
     "siteQr": "Site address QR"

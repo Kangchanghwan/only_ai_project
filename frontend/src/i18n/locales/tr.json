@@ -306,7 +306,7 @@
     "useCase3": "AirDrop kullanılamadığında Android ile Mac arasında gönderim yapmak",
     "useCase4": "Telefonunuzdaki uzun bir bağlantıyı, tek kullanımlık kodu veya metni PC'nize yapıştırmak",
     "safetyTitle": "Güvenli mi?",
-    "safety1": "Varsayılan kapsam \"Aynı ağ\" olduğundan öğelerinizi yalnızca aynı genel IP arkasındaki cihazlar görebilir. Herkesle paylaşmak için kendiniz \"Herkes\" sekmesine geçmeniz gerekir.",
+    "safety1": "Varsayılan paylaşım kapsamı “Aynı ağ” olduğundan yalnızca aynı genel IP’yi kullanan cihazlar görür. Herkese göndermek için “Herkese Açık” sekmesini seçin veya siteyi herkese açık paylaşım QR’ıyla açın; ilk gönderimde bir kez daha onay istenir.",
     "safety2": "Tüm cihazlar çıkınca dosya ve metinler kısa süre sonra silinir; bağlıyken bile dosyalar en geç 1 gün sonra temizlenir. Hesap yok, geçmiş yok.",
     "safety3": "Aktarımlar HTTPS ile şifrelenir ve kaynak kod GitHub'da herkese açıktır.",
     "faqTitle": "Sık sorulan sorular",
@@ -613,6 +613,13 @@
     "inviteCard": "Telefon davet et",
     "inviteCardSub": "Bu ağ üzerinden",
     "legacyMine": "Bu odayı telefonumda aç"
+  },
+  "globalQr": {
+    "open": "Telefonda aç",
+    "openSub": "Site adresi",
+    "line1": "Okutunca Herkese Açık paylaşım hemen açılır",
+    "line2": "Herkese açık paylaştıklarınızı tüm kullanıcılar görebilir",
+    "arrived": "Herkese Açık sekmesinde açıldı"
   },
   "header": {
     "siteQr": "Site adresi QR kodu"

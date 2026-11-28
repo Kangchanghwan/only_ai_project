@@ -28,23 +28,32 @@ export function useShareScope(opts = {}) {
   }
 
   const scope = ref(stored())
+  // remember:false로 정한 ip/global 스코프(이번 방문 한정). 저장값은 그대로 두므로 새로고침하면 기억된 스코프로 돌아간다
+  let sessionOnly = null
 
-  function setScope(next) {
+  function setScope(next, { remember = true } = {}) {
     if (!valid(next)) return
     scope.value = next
-    if (VALID.includes(next)) localStorage.setItem(STORAGE_KEY, next)
+    if (!VALID.includes(next)) return
+    if (remember) {
+      sessionOnly = null
+      localStorage.setItem(STORAGE_KEY, next)
+    } else {
+      sessionOnly = next
+    }
   }
 
   /** 현재 스코프를 즉시 읽는다(업로드 시점의 최신값 보장). 사라진 비공개 방이면 저장된 ip/global로 돌아간다. */
   function getScope() {
     if (isPrivateScope(scope.value)) return valid(scope.value) ? scope.value : stored()
+    if (sessionOnly && scope.value === sessionOnly) return sessionOnly
     return stored()
   }
 
   // 선택한 비공개 방이 사라지면 저장된 스코프로 복귀
   const stop = watch(
     () => isPrivateScope(scope.value) && !isRoomAlive(privateRoomIdOfScope(scope.value)),
-    (gone) => { if (gone) scope.value = stored() },
+    (gone) => { if (gone) { sessionOnly = null; scope.value = stored() } },
     { flush: 'sync' }
   )
   if (getCurrentScope()) onScopeDispose(stop)

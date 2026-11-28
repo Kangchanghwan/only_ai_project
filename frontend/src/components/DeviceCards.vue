@@ -122,10 +122,10 @@ watch([() => props.devices.length, () => props.inviteCard], async () => { await 
       />
       <!-- 좁은 화면(sm 미만)에서만 2번째 카드로 보인다. 넓은 화면은 제목 줄의 버튼(ConnectionCard)이 대신해 격자 칸을 쓰지 않는다 -->
       <li v-if="inviteCard && i === 0" class="list-none m-0 flex flex-[0_0_146px] snap-start sm:hidden">
-        <button type="button" :class="INVITE_TILE" data-testid="invite-phone-card" @click="emit('invite-phone')">
+        <button type="button" :class="INVITE_TILE" data-testid="invite-phone-card" @click="emit('invite-phone', scope)">
           <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" /><path d="M11 18h2" /></svg>
-          <span class="font-bold text-xs">{{ t('roomQr.inviteCard') }}</span>
-          <span class="text-[11px] opacity-80">{{ t('roomQr.inviteCardSub') }}</span>
+          <span class="font-bold text-xs">{{ scope === 'global' ? t('globalQr.open') : t('roomQr.inviteCard') }}</span>
+          <span class="text-[11px] opacity-80">{{ scope === 'global' ? t('globalQr.openSub') : t('roomQr.inviteCardSub') }}</span>
         </button>
       </li>
       </template>

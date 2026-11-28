@@ -306,7 +306,7 @@
     "useCase3": "Skicka mellan Android och Mac när AirDrop inte är ett alternativ",
     "useCase4": "Klistra in en lång länk, engångskod eller textsnutt från mobilen till datorn",
     "safetyTitle": "Är det säkert?",
-    "safety1": "Standardomfånget är \"Samma nätverk\", så bara enheter bakom samma publika IP-adress ser dina objekt. Att dela med alla kräver att du själv byter till fliken \"Alla\".",
+    "safety1": "Som standard delar du bara i ”Samma nätverk”, så bara enheter med samma publika IP-adress ser det. Vill du skicka till alla väljer du fliken ”Offentligt” eller öppnar webbplatsen med QR-koden för offentlig delning; vid första sändningen frågar vi en gång till.",
     "safety2": "När alla enheter lämnat raderas filer och text strax därefter; även under anslutning rensas filer efter högst 1 dag. Inget konto, ingen historik.",
     "safety3": "Överföringar krypteras med HTTPS och källkoden är öppen på GitHub.",
     "faqTitle": "Vanliga frågor",
@@ -613,6 +613,13 @@
     "inviteCard": "Bjud in telefon",
     "inviteCardSub": "Via det här nätverket",
     "legacyMine": "Öppna det här rummet på min telefon"
+  },
+  "globalQr": {
+    "open": "Öppna på mobilen",
+    "openSub": "Webbplatsens adress",
+    "line1": "Skanna så öppnas Offentlig delning direkt",
+    "line2": "Alla användare kan se det du delar offentligt",
+    "arrived": "Öppnade fliken Offentlig delning"
   },
   "header": {
     "siteQr": "QR-kod för webbplatsens adress"

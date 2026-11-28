@@ -306,7 +306,7 @@
     "useCase3": "Trimiterea între Android și Mac atunci când AirDrop nu este o opțiune",
     "useCase4": "Lipirea unui link lung, a unui cod de unică folosință sau a unui fragment de text de pe telefon pe PC",
     "safetyTitle": "Este sigur?",
-    "safety1": "Domeniul implicit este \"Aceeași rețea\", astfel încât doar dispozitivele aflate în spatele aceleiași adrese IP publice îți văd elementele. Distribuirea către toată lumea necesită să comuți singur pe fila \"Toată lumea\".",
+    "safety1": "Implicit, partajarea se face doar în „Aceeași rețea”, deci o văd doar dispozitivele cu aceeași adresă IP publică. Ca să trimiți către toți, alege fila „Public” sau deschide site-ul cu codul QR pentru partajarea publică; la prima trimitere îți cerem încă o confirmare.",
     "safety2": "Când pleacă toate dispozitivele, fișierele și textele sunt șterse la scurt timp; chiar și conectat, fișierele sunt curățate după cel mult 1 zi. Fără cont, fără istoric.",
     "safety3": "Transferurile sunt criptate cu HTTPS, iar codul sursă este public pe GitHub.",
     "faqTitle": "Întrebări frecvente",
@@ -613,6 +613,13 @@
     "inviteCard": "Invită un telefon",
     "inviteCardSub": "Prin această rețea",
     "legacyMine": "Deschide această cameră pe telefonul meu"
+  },
+  "globalQr": {
+    "open": "Deschide pe telefon",
+    "openSub": "Adresa site-ului",
+    "line1": "Scanează ca să se deschidă direct Partajarea publică",
+    "line2": "Toți utilizatorii pot vedea ce partajezi public",
+    "arrived": "Deschis în fila Partajare publică"
   },
   "header": {
     "siteQr": "Cod QR cu adresa site-ului"

@@ -70,4 +70,28 @@ describe('useShareScope 비공개 스코프', () => {
     alive = false
     expect(getScope()).toBe('ip')
   })
+
+  describe('remember: false (이번 방문 한정)', () => {
+    it('global로 바꿔도 localStorage는 그대로이고 getScope는 보이는 스코프(global)를 돌려준다', () => {
+      const { scope, setScope, getScope } = useShareScope()
+      setScope('global', { remember: false })
+      expect(scope.value).toBe('global')
+      expect(getScope()).toBe('global')
+      expect(localStorage.getItem('share-scope')).toBeNull()
+    })
+    it('저장된 값이 있어도 덮어쓰지 않고, 새로 만들면(새로고침) 저장된 스코프로 돌아간다', () => {
+      localStorage.setItem('share-scope', 'ip')
+      const a = useShareScope()
+      a.setScope('global', { remember: false })
+      expect(localStorage.getItem('share-scope')).toBe('ip')
+      expect(useShareScope().scope.value).toBe('ip')
+    })
+    it('이후 기억하는 setScope는 정상 저장하고 세션 스코프를 해제한다', () => {
+      const { setScope, getScope } = useShareScope()
+      setScope('global', { remember: false })
+      setScope('ip')
+      expect(getScope()).toBe('ip')
+      expect(localStorage.getItem('share-scope')).toBe('ip')
+    })
+  })
 })

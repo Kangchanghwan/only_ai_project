@@ -54,6 +54,9 @@ const pair = inject(PAIR_CONTEXT_KEY, null)
 
 const otherCount = computed(() => countOtherDevices(props.devices, props.mySocketId, props.myIdentity))
 
+// 휴대폰 초대 입구: 같은 네트워크는 다른 기기가 있을 때만, 전체 공유는 항상
+const showInvite = computed(() => (props.scope === 'ip' && otherCount.value > 0) || props.scope === 'global')
+
 // ── 다른 기기가 없을 때 연결 안내 (같은 네트워크 방 한정) ──
 const isMobile = isMobileUa()
 const showEmpty = computed(() => props.scope === 'ip' && props.devices.length > 0 && otherCount.value === 0)
@@ -189,14 +192,14 @@ watch(
       <p v-if="scope === 'ip'" class="m-0 min-w-0 text-[11px] sm:text-xs text-text-secondary" data-testid="ip-notice">{{ t('identity.ipNotice') }}</p>
       <!-- 넓은 화면: 카드 격자 칸을 쓰지 않도록 제목 줄 오른쪽 끝에 둔다 (좁은 화면은 카드 줄의 점선 타일) -->
       <button
-        v-if="!wide && scope === 'ip' && otherCount > 0"
+        v-if="!wide && showInvite"
         type="button"
         class="hidden sm:inline-flex ml-auto self-center items-center gap-1.5 min-h-[36px] px-3 rounded-none border-[1.5px] border-dashed border-ink bg-transparent text-ink hover:bg-tint text-xs font-semibold cursor-pointer"
         data-testid="invite-phone-button"
-        @click="emit('invite-phone')"
+        @click="emit('invite-phone', scope)"
       >
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" /><path d="M11 18h2" /></svg>
-        {{ t('roomQr.inviteCard') }}
+        {{ scope === 'global' ? t('globalQr.open') : t('roomQr.inviteCard') }}
       </button>
     </div>
     <DeviceCards
@@ -206,9 +209,9 @@ watch(
       :my-identity="myIdentity"
       :scope="scope"
       :reroll-available-at="rerollAvailableAt"
-      :invite-card="scope === 'ip' && otherCount > 0"
+      :invite-card="showInvite"
       @reroll="emit('reroll')"
-      @invite-phone="emit('invite-phone')"
+      @invite-phone="emit('invite-phone', scope)"
     />
     <!-- 서버 연결 전 자리표시: 실제 카드와 같은 높이(85px)·같은 격자로 자리를 잡아 아래 입력 상자가 밀리지 않게 한다.
          지난번 카드 수를 기억하고 있으면 그만큼 그린다 (넓은 화면은 실제와 같이 두 줄까지: 85 + 6 + 85 = 176px) -->

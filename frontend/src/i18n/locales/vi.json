@@ -306,7 +306,7 @@
     "useCase3": "Gửi giữa Android và Mac khi không thể dùng AirDrop",
     "useCase4": "Dán một liên kết dài, mã dùng một lần hoặc đoạn văn bản từ điện thoại sang PC",
     "safetyTitle": "Có an toàn không?",
-    "safety1": "Phạm vi mặc định là \"Cùng mạng\", nên chỉ các thiết bị sau cùng địa chỉ IP công cộng mới thấy được nội dung của bạn. Muốn chia sẻ với mọi người, bạn phải tự chuyển sang tab \"Mọi người\".",
+    "safety1": "Phạm vi chia sẻ mặc định là “Cùng mạng”, nên chỉ các thiết bị dùng chung IP công cộng mới thấy. Để gửi cho mọi người, hãy chọn tab “Công khai” hoặc mở trang bằng mã QR chia sẻ công khai; lần gửi đầu tiên bạn sẽ được hỏi xác nhận thêm một lần.",
     "safety2": "Khi mọi thiết bị rời đi, tệp và văn bản sẽ sớm bị xóa; dù đang kết nối, tệp vẫn được dọn sau tối đa 1 ngày. Không tài khoản, không lưu lịch sử.",
     "safety3": "Dữ liệu truyền đi được mã hóa bằng HTTPS và mã nguồn được công khai trên GitHub.",
     "faqTitle": "Câu hỏi thường gặp",
@@ -613,6 +613,13 @@
     "inviteCard": "Mời điện thoại",
     "inviteCardSub": "Qua mạng này",
     "legacyMine": "Mở phòng này trên điện thoại của tôi"
+  },
+  "globalQr": {
+    "open": "Mở trên điện thoại",
+    "openSub": "Địa chỉ trang",
+    "line1": "Quét là mở ngay Chia sẻ công khai",
+    "line2": "Mọi người dùng đều thấy nội dung bạn chia sẻ công khai",
+    "arrived": "Đã mở ở tab Chia sẻ công khai"
   },
   "header": {
     "siteQr": "Mã QR địa chỉ trang"

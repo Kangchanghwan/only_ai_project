@@ -10,7 +10,9 @@ const props = defineProps({
   /** QR에 담을 주소. 없으면 고정 주소 */
   qrUrl: { type: String, default: '' },
   line1: { type: String, default: '' },
-  line2: { type: String, default: '' }
+  line2: { type: String, default: '' },
+  /** 둘째 줄 글자색 클래스 (기본 보조색) */
+  line2Class: { type: String, default: 'text-text-secondary' }
 })
 
 const qrDataUrl = ref('')
@@ -33,6 +35,6 @@ watch(() => props.qrUrl, () => { makeQr() }, { immediate: true })
     <img v-if="qrDataUrl" :src="qrDataUrl" :data-qr-value="qrValue" width="140" height="140" alt="QR" class="block mb-1 rounded-none bg-white border border-border" data-testid="wake-qr-img" />
     <div v-else class="mb-1 w-[140px] h-[140px] rounded-none bg-tint border border-border" aria-hidden="true"></div>
     <p class="m-0 text-sm font-bold text-ink">{{ line1 }}</p>
-    <p class="m-0 text-xs text-text-secondary">{{ line2 }}</p>
+    <p class="m-0 text-xs" :class="line2Class" data-testid="wake-qr-line2">{{ line2 }}</p>
   </div>
 </template>
