@@ -162,7 +162,10 @@
     "copyImage": "Copier l'image",
     "selectFile": "Sélectionner {name}",
     "uploadPasteHint": "(Collez avec Ctrl+V)",
-    "inputLabel": "Choisir des fichiers"
+    "inputLabel": "Choisir des fichiers",
+    "saved": "Enregistré",
+    "iosSaveHint": "Touchez « Télécharger » dans la fenêtre Safari",
+    "saveAgainConfirm": "Fichier déjà enregistré. Le télécharger à nouveau ?"
   },
   "text": {
     "share": "Partager le texte",

@@ -162,7 +162,10 @@
     "copyImage": "Kopiera bild",
     "selectFile": "Markera {name}",
     "uploadPasteHint": "(Klistra in med Ctrl+V)",
-    "inputLabel": "Välj filer"
+    "inputLabel": "Välj filer",
+    "saved": "Sparad",
+    "iosSaveHint": "Tryck på ”Hämta” i Safari-rutan",
+    "saveAgainConfirm": "Nyss sparad. Hämta igen?"
   },
   "text": {
     "share": "Dela text",

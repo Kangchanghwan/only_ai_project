@@ -162,7 +162,10 @@
     "copyImage": "Kopírovat obrázek",
     "selectFile": "Vybrat {name}",
     "uploadPasteHint": "(Vložte pomocí Ctrl+V)",
-    "inputLabel": "Vybrat soubory"
+    "inputLabel": "Vybrat soubory",
+    "saved": "Uloženo",
+    "iosSaveHint": "Klepněte v okně Safari na „Stáhnout“",
+    "saveAgainConfirm": "Právě uloženo. Stáhnout znovu?"
   },
   "text": {
     "share": "Sdílet text",

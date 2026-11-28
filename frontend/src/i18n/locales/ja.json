@@ -162,7 +162,10 @@
     "receive": "受け取る",
     "copyImage": "画像をコピー",
     "selectFile": "{name} を選択",
-    "inputLabel": "ファイルを選択"
+    "inputLabel": "ファイルを選択",
+    "saved": "保存しました",
+    "iosSaveHint": "Safariの表示で「ダウンロード」を押してください",
+    "saveAgainConfirm": "さきほど保存しました。もう一度ダウンロードしますか?"
   },
   "text": {
     "share": "テキストを共有",

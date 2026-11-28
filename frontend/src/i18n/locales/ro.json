@@ -162,7 +162,10 @@
     "copyImage": "Copiază imaginea",
     "selectFile": "Selectează {name}",
     "uploadPasteHint": "(Lipiți cu Ctrl+V)",
-    "inputLabel": "Alege fișiere"
+    "inputLabel": "Alege fișiere",
+    "saved": "Salvat",
+    "iosSaveHint": "Atinge „Descarcă” în fereastra Safari",
+    "saveAgainConfirm": "Tocmai ai salvat fișierul. Îl descarci din nou?"
   },
   "text": {
     "share": "Partajează text",

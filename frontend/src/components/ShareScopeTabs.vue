@@ -128,7 +128,7 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
 
 <template>
   <div class="flex items-stretch min-w-0 w-full" data-testid="scope-tabs">
-    <div class="relative flex min-w-0 flex-1 sm:flex-none">
+    <div class="relative flex min-w-0 flex-initial">
     <div
       ref="bar"
       role="tablist"
@@ -216,7 +216,7 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
     <button
       v-if="groupCreate"
       type="button"
-      class="shrink-0 min-h-[44px] inline-flex items-center gap-1 px-3 rounded-none bg-transparent border-0 text-sm font-semibold text-text-primary hover:bg-tint cursor-pointer whitespace-nowrap"
+      class="shrink-0 min-h-[44px] touch-manipulation inline-flex items-center gap-1 px-3 rounded-none bg-transparent border-0 text-sm font-semibold text-text-primary hover:bg-tint cursor-pointer whitespace-nowrap"
       :aria-label="t('group.create')"
       :title="t('group.create')"
       data-testid="group-create"

@@ -162,7 +162,10 @@
     "copyImage": "کپی تصویر",
     "selectFile": "انتخاب {name}",
     "uploadPasteHint": "(با Ctrl+V جای‌گذاری کنید)",
-    "inputLabel": "انتخاب فایل‌ها"
+    "inputLabel": "انتخاب فایل‌ها",
+    "saved": "ذخیره شد",
+    "iosSaveHint": "در پنجرهٔ Safari روی «دانلود» بزنید",
+    "saveAgainConfirm": "همین الان ذخیره شد. دوباره دانلود شود؟"
   },
   "text": {
     "share": "اشتراک‌گذاری متن",

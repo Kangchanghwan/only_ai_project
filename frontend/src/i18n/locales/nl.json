@@ -162,7 +162,10 @@
     "copyImage": "Afbeelding kopiëren",
     "selectFile": "{name} selecteren",
     "uploadPasteHint": "(Plak met Ctrl+V)",
-    "inputLabel": "Bestanden kiezen"
+    "inputLabel": "Bestanden kiezen",
+    "saved": "Opgeslagen",
+    "iosSaveHint": "Tik in het Safari-venster op 'Download'",
+    "saveAgainConfirm": "Net opgeslagen. Opnieuw downloaden?"
   },
   "text": {
     "share": "Tekst delen",

@@ -162,7 +162,10 @@
     "copyImage": "Sao chép ảnh",
     "selectFile": "Chọn {name}",
     "uploadPasteHint": "(Dán bằng Ctrl+V)",
-    "inputLabel": "Chọn tệp"
+    "inputLabel": "Chọn tệp",
+    "saved": "Đã lưu",
+    "iosSaveHint": "Chạm 'Tải xuống' trong cửa sổ Safari",
+    "saveAgainConfirm": "Bạn vừa lưu xong. Tải lại lần nữa?"
   },
   "text": {
     "share": "Chia sẻ văn bản",

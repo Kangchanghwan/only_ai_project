@@ -162,7 +162,10 @@
     "copyImage": "复制图片",
     "selectFile": "选择 {name}",
     "uploadPasteHint": "(按 Ctrl+V 粘贴)",
-    "inputLabel": "选择文件"
+    "inputLabel": "选择文件",
+    "saved": "已保存",
+    "iosSaveHint": "请在 Safari 弹窗中点按“下载”",
+    "saveAgainConfirm": "刚刚已保存。要再下载一次吗?"
   },
   "text": {
     "share": "分享文本",
