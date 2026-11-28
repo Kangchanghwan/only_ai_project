@@ -592,8 +592,9 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQu
         if ((socket.handshake.auth as Record<string, unknown> | undefined)?.roster !== 2) legacySockets.add(socket.id);
         // 복구된 연결은 유예 중이던 퇴장을 취소하고, 새 소켓으로 붙은 같은 기기는 옛 항목을 먼저 정리한다
         if (socket.recovered) cancelAway(socket.id);
-        if (clientId && awayByClient.has(clientId)) {
-            void flushAwayForClient(clientId).then(() => { if (socket.connected) handleConnection(socket, io, roomManager); });
+        const deviceIdHint = parseDeviceId((socket.handshake.auth as Record<string, unknown> | undefined)?.deviceId);
+        if (!socket.recovered && ((clientId && awayByClient.has(clientId)) || hasAwayForDevice(deviceIdHint))) {
+            void flushAwayForClient(clientId).then(() => flushAwayForDevice(deviceIdHint)).then(() => { if (socket.connected) handleConnection(socket, io, roomManager); });
         } else {
             handleConnection(socket, io, roomManager);
         }
@@ -733,11 +734,26 @@ interface PendingAway {
     timer: ReturnType<typeof setTimeout>;
     finalize: () => Promise<void>;
     clientId?: string;
+    deviceId?: string;
 }
 /** 소켓 ID → 유예 중인 퇴장 */
 const pendingAway = new Map<string, PendingAway>();
 /** clientId → 유예 중인 소켓 ID (같은 기기가 새 소켓으로 붙으면 옛 항목을 바로 정리한다) */
 const awayByClient = new Map<string, string>();
+/** deviceId(같은 브라우저) → 유예 중인 소켓 ID들 (새로고침으로 clientId가 바뀌어도 같은 브라우저면 옛 항목을 정리해 이름이 바뀌지 않게) */
+const awayByDevice = new Map<string, Set<string>>();
+
+const hasAwayForDevice = (deviceId: string | undefined): boolean => !!deviceId && (awayByDevice.get(deviceId)?.size ?? 0) > 0;
+
+/** 같은 브라우저(deviceId)가 새 소켓으로 붙었다: 유예 중이던 옛 소켓들을 지금 정리한다 */
+const flushAwayForDevice = async (deviceId: string | undefined) => {
+    if (!deviceId) return;
+    const ids = [...(awayByDevice.get(deviceId) ?? [])];
+    for (const id of ids) {
+        const p = clearPendingAway(id);
+        if (p) await p.finalize();
+    }
+};
 
 const clearPendingAway = (socketId: string): PendingAway | undefined => {
     const p = pendingAway.get(socketId);
@@ -745,6 +761,11 @@ const clearPendingAway = (socketId: string): PendingAway | undefined => {
     clearTimeout(p.timer);
     pendingAway.delete(socketId);
     if (p.clientId && awayByClient.get(p.clientId) === socketId) awayByClient.delete(p.clientId);
+    if (p.deviceId) {
+        const set = awayByDevice.get(p.deviceId);
+        set?.delete(socketId);
+        if (set && set.size === 0) awayByDevice.delete(p.deviceId);
+    }
     return p;
 };
 
@@ -820,8 +841,14 @@ const handleDisconnect = async (
             if (p) void p.finalize();
         }, graceMs);
         timer.unref?.();
-        pendingAway.set(socket.id, { timer, finalize, clientId });
+        const deviceId = (socket.data as { deviceId?: string } | undefined)?.deviceId;
+        pendingAway.set(socket.id, { timer, finalize, clientId, deviceId });
         if (clientId) awayByClient.set(clientId, socket.id);
+        if (deviceId) {
+            const set = awayByDevice.get(deviceId) ?? new Set<string>();
+            set.add(socket.id);
+            awayByDevice.set(deviceId, set);
+        }
         markAway(socket, io, roomManager, privateRooms);
         return;
     }
