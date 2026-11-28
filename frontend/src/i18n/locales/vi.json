@@ -626,5 +626,10 @@
   },
   "header": {
     "siteQr": "Mã QR địa chỉ trang"
+  },
+  "localeNotice": {
+    "message": "Trang này bằng tiếng Hàn.",
+    "link": "Xem bằng {language} →",
+    "dismiss": "Đóng"
   }
 }

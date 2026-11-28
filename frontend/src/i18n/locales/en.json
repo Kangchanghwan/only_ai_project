@@ -752,5 +752,10 @@
   },
   "header": {
     "siteQr": "Site address QR"
+  },
+  "localeNotice": {
+    "message": "This page is in Korean.",
+    "link": "View in {language} →",
+    "dismiss": "Dismiss"
   }
 }

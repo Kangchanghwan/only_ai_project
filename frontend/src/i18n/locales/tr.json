@@ -626,5 +626,10 @@
   },
   "header": {
     "siteQr": "Site adresi QR kodu"
+  },
+  "localeNotice": {
+    "message": "Bu sayfa Korece.",
+    "link": "{language} olarak görüntüle →",
+    "dismiss": "Kapat"
   }
 }

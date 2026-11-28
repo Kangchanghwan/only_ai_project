@@ -626,5 +626,10 @@
   },
   "header": {
     "siteQr": "QR-код адреси сайту"
+  },
+  "localeNotice": {
+    "message": "Ця сторінка корейською.",
+    "link": "Відкрити версію: {language} →",
+    "dismiss": "Закрити"
   }
 }

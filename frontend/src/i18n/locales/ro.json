@@ -626,5 +626,10 @@
   },
   "header": {
     "siteQr": "Cod QR cu adresa site-ului"
+  },
+  "localeNotice": {
+    "message": "Această pagină este în coreeană.",
+    "link": "Vezi în {language} →",
+    "dismiss": "Închide"
   }
 }

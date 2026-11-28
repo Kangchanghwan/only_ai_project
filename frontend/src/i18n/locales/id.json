@@ -626,5 +626,10 @@
   },
   "header": {
     "siteQr": "QR alamat situs"
+  },
+  "localeNotice": {
+    "message": "Halaman ini berbahasa Korea.",
+    "link": "Lihat dalam {language} →",
+    "dismiss": "Tutup"
   }
 }
