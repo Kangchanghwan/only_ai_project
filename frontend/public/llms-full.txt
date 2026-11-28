@@ -419,9 +419,9 @@ So people dig out a cable, install a transfer app, or mail the file to themselve
 ## How to send a file
 - Connect both devices to the same Wi-Fi network.
 - Open [https://www.clipboardapp.org/en/](https://www.clipboardapp.org/en/) in a browser on each device. They are grouped automatically under the **Same network** tab, with no code to enter.
-- On a phone, tap the **Upload File** card and pick the photos you want to send. On a laptop, drag the files onto the page.
-- For something already on your clipboard, one paste is enough. On the phone, tap the "Paste" card once and allow clipboard access; whatever you copied (text or an image) is shared right away. On a PC, press Ctrl+V / Cmd+V anywhere on the page.
-- Tap the item on the receiving device to copy it, or download it to save it. You can select several items and take them all at once.
+- On a phone, tap **Choose files** in the send box and pick the photos you want to send. On a laptop, drag the files onto the page.
+- For something already on your clipboard, one paste is enough. On the phone, tap **Paste** in the send box once (a clipboard icon on narrow screens) and allow clipboard access; whatever you copied (text or an image) is shared right away. On a PC, press Ctrl+V / Cmd+V anywhere on the page.
+- On the receiving device, tap **Receive** to download a file or **Copy** to copy text. For several files, check them and tap **Download** to get one ZIP (files over 200MB download separately).
 
 ## AirDrop alternatives compared (2026)
 
@@ -447,7 +447,7 @@ Checked on October 31, 2026; Quick Share with Apple devices checked on November 
 - **Clipboard Share:** you want a phone, a Mac and a PC to connect in the browser with no sign-up or install, and the receiver may open the file later (kept for at most about 1 day).
 
 ## Good to know
-- On different networks, the **Everyone** tab still gets the file across, but items there are visible to anyone with the service open. Keep anything private on the same network.
+- If the devices are on different networks (for example a phone on mobile data), press **＋ Room** → **Create a new room**, then scan the invite QR code on the other device or join with the 4 pictures. Files and text shared inside a room are encrypted on your device, and the room key never goes to the server. The **Everyone** tab also works across networks, but items there are visible to anyone with the service open, so keep personal files out of it.
 - Files are kept for at most about 1 day and unlocked text for 10 minutes, and both are removed soon after every device leaves, so this is a place to hand something over, not to store it.
 - Show a QR code to hand a file to someone else's phone. They point a camera at it instead of typing an address.
 - Add the page to your home screen for an app-like window and a share button in your gallery.
