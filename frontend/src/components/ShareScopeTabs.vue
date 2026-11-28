@@ -42,7 +42,8 @@ const peerName = (room) => (isValidIdentity(room.peer?.identity) ? identityName(
 const isGroup = (room) => isGroupRoomId(room?.roomId)
 const roomLabel = (room) => roomDisplayName(props.privateRooms, room.roomId, t('group.unnamed'), peerName)
 
-const bar = ref(null)
+const bar = ref(null) // 방 탭만 담는 가로 스크롤 영역
+const tablist = ref(null) // 고정 탭 + 방 탭 전체
 
 // roving tabindex: 고른 탭만 Tab 키로 닿는다. 고른 탭이 목록에 없으면(예: 사라진 방) 첫 탭이 대신 받는다
 const selectedIndex = computed(() => {
@@ -55,11 +56,11 @@ const tabIndexOf = (i) => (i === selectedIndex.value ? 0 : -1)
 
 function onTabKeydown(e) {
   if (e.altKey || e.ctrlKey || e.metaKey) return
-  const els = Array.from(bar.value?.querySelectorAll('[role="tab"]') ?? [])
+  const els = Array.from(tablist.value?.querySelectorAll('[role="tab"]') ?? [])
   if (!els.length) return
   const cur = els.indexOf(e.target.closest?.('[role="tab"]'))
   if (cur < 0) return
-  const rtl = typeof document !== 'undefined' && (document.documentElement.dir === 'rtl' || getComputedStyle(bar.value).direction === 'rtl')
+  const rtl = typeof document !== 'undefined' && (document.documentElement.dir === 'rtl' || getComputedStyle(tablist.value).direction === 'rtl')
   let next
   if (e.key === 'ArrowRight') next = cur + (rtl ? -1 : 1)
   else if (e.key === 'ArrowLeft') next = cur + (rtl ? 1 : -1)
@@ -70,14 +71,22 @@ function onTabKeydown(e) {
   next = (next + els.length) % els.length
   const el = els[next]
   el.focus()
-  if (typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  scrollTabIntoArea(el)
   el.click()
 }
-/** 지금 고른 탭이 가로 스크롤 밖에 있으면 보이는 자리로 */
+/** 방 탭 영역 안에서만 가로 스크롤해 탭이 보이게 한다 (고정 탭·페이지는 움직이지 않는다) */
+function scrollTabIntoArea(el) {
+  const area = bar.value
+  if (!area || !el || !area.contains(el)) return
+  const a = area.getBoundingClientRect()
+  const r = el.getBoundingClientRect()
+  if (r.left < a.left) area.scrollLeft += r.left - a.left
+  else if (r.right > a.right) area.scrollLeft += r.right - a.right
+}
+/** 지금 고른 방 탭이 스크롤 영역 밖에 있으면 보이는 자리로 */
 async function revealActive() {
   await nextTick()
-  const el = bar.value?.querySelector('[aria-selected="true"]')
-  if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  scrollTabIntoArea(bar.value?.querySelector('[aria-selected="true"]'))
 }
 onMounted(revealActive)
 
@@ -104,7 +113,7 @@ function showNextHidden() {
   if (!el) return
   const edge = el.getBoundingClientRect().right
   const next = Array.from(el.querySelectorAll('[role="tab"]')).find((tab) => tab.getBoundingClientRect().right > edge + 1)
-  if (next && typeof next.scrollIntoView === 'function') next.scrollIntoView({ inline: 'start', block: 'nearest', behavior: 'smooth' })
+  if (next && typeof el.scrollBy === 'function') el.scrollBy({ left: next.getBoundingClientRect().left - el.getBoundingClientRect().left, behavior: 'smooth' })
   else if (typeof el.scrollBy === 'function') el.scrollBy({ left: el.clientWidth * 0.8, behavior: 'smooth' })
 }
 function showPrev() {
@@ -115,7 +124,7 @@ let resizeObserver = null
 onMounted(() => {
   updateOverflow()
   if (typeof ResizeObserver !== 'undefined' && bar.value) {
-    resizeObserver = new ResizeObserver(updateOverflow)
+    resizeObserver = new ResizeObserver(() => { revealActive(); updateOverflow() })
     resizeObserver.observe(bar.value)
   }
 })
@@ -127,15 +136,13 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
 </script>
 
 <template>
-  <div class="flex items-stretch min-w-0 w-full" data-testid="scope-tabs">
-    <div class="relative flex min-w-0 flex-initial">
+  <div class="flex items-stretch flex-wrap sm:flex-nowrap min-w-0 w-full" data-testid="scope-tabs">
     <div
-      ref="bar"
+      ref="tablist"
       role="tablist"
       :aria-label="t('shareScope.label')"
-      class="flex flex-nowrap min-w-0 overflow-x-auto -mb-px [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      data-testid="room-tablist"
-      @scroll.passive="updateOverflow"
+      class="flex flex-wrap sm:flex-nowrap min-w-0 flex-initial max-sm:w-full"
+      data-testid="scope-tablist"
       @keydown="onTabKeydown"
     >
       <button
@@ -162,6 +169,13 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
         <svg v-if="lockState.isLocked('global')" class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="scope-lock-global"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg><span v-if="lockState.isLocked('global')" class="sr-only">{{ t('lock.chipOn') }}</span>
         <span class="truncate">{{ t('shareScope.global') }}</span>
       </button>
+    <div class="relative flex min-w-0 flex-initial max-sm:basis-full">
+    <div
+      ref="bar"
+      class="flex flex-nowrap min-w-0 overflow-x-auto -mb-px [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      data-testid="room-tablist"
+      @scroll.passive="updateOverflow"
+    >
       <button
         v-for="(room, ri) in privateRooms"
         :key="room.roomId"
@@ -196,10 +210,11 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
         data-testid="tabs-fade-right"
       ></span>
     </div>
+    </div>
     <button
       v-if="scrolledAway"
       type="button"
-      class="shrink-0 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-none bg-surface border border-border text-ink cursor-pointer hover:bg-tint"
+      class="max-sm:hidden shrink-0 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-none bg-surface border border-border text-ink cursor-pointer hover:bg-tint"
       :aria-label="t('shareScope.label')"
       data-testid="tabs-more-left"
       @click="showPrev"
@@ -207,7 +222,7 @@ const tabClass = (active) => [TAB, active ? 'text-ink font-extrabold border-ink'
     <button
       v-if="overflowRight && hiddenRight > 0"
       type="button"
-      class="shrink-0 min-h-[44px] min-w-[44px] px-1 inline-flex items-center justify-center rounded-none bg-surface border border-border text-ink font-extrabold text-sm cursor-pointer hover:bg-tint whitespace-nowrap"
+      class="max-sm:hidden shrink-0 min-h-[44px] min-w-[44px] px-1 inline-flex items-center justify-center rounded-none bg-surface border border-border text-ink font-extrabold text-sm cursor-pointer hover:bg-tint whitespace-nowrap"
       :aria-label="t('room.moreRooms', { n: hiddenRight })"
       :title="t('room.moreRooms', { n: hiddenRight })"
       data-testid="tabs-more-right"

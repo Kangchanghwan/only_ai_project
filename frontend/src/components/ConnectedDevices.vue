@@ -56,7 +56,7 @@ function deviceTitle(device) {
 }
 
 const visibleDevices = computed(() => sortedDevices.value.slice(0, MAX_VISIBLE))
-const overflowCount = computed(() => Math.max(props.devices.length - MAX_VISIBLE, 0))
+const overflowCount = computed(() => Math.max(sortedDevices.value.length - MAX_VISIBLE, 0))
 const overflowLabel = computed(() =>
   sortedDevices.value.slice(MAX_VISIBLE).map((device) => deviceTitle(device)).join(', ')
 )

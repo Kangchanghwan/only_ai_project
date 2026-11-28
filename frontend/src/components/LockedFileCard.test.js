@@ -270,4 +270,14 @@ describe('LockedFileCard 수정(편집기) 진입', () => {
     expect(openLockedFile).toHaveBeenCalledTimes(2)
     confirmSpy.mockRestore()
   })
+
+  it('받기 버튼 안쪽 아이콘이 클릭 도중 떼어져도 선택을 바꾸지 않는다', async () => {
+    const w = mountCard({ file, selectable: true })
+    const btn = w.find('[data-testid="locked-open"]').element
+    const icon = btn.querySelector('svg')
+    btn.addEventListener('click', () => icon.remove())
+    await new Promise((r) => setTimeout(r, 20))
+    icon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(w.emitted('toggle-selection')).toBeUndefined()
+  })
 })
