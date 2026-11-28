@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { io } from 'socket.io-client'
 import { setRoomTokens, setRoomTokenRefresher, clearRoomTokens } from './roomTokenStore'
 import { trackEvent } from '../utils/analytics.js'
-import { collectClientHints, loadIdentity, saveIdentity, isValidIdentity } from '../utils/identity.js'
+import { collectClientHints, loadIdentity, saveIdentity, isValidIdentity, getDeviceId } from '../utils/identity.js'
 
 /** 이름표 다시 뽑기 쿨다운 (서버와 같은 3초) */
 export const REROLL_COOLDOWN_MS = 3000
@@ -330,7 +330,7 @@ class SocketService {
         auth: (cb) => {
           collectClientHints()
             .catch(() => ({}))
-            .then((hints) => cb({ identity: loadIdentity(), hints, clientId: this.clientId, roster: 2 }))
+            .then((hints) => cb({ identity: loadIdentity(), hints, clientId: this.clientId, deviceId: getDeviceId(), roster: 2 }))
         },
         ...this.reconnectionConfig
       })

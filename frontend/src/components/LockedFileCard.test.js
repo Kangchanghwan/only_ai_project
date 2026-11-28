@@ -253,6 +253,8 @@ describe('LockedFileCard 수정(편집기) 진입', () => {
   it('받기가 끝나면 "저장됨"을 보이고, 곧바로 다시 누르면 확인을 거친다', async () => {
     useLockState().rememberName('room-1', 'abc123', 'report.pdf')
     openLockedFile.mockResolvedValue(undefined)
+    openLockedFile.mockClear()
+    if (typeof window.confirm !== 'function') window.confirm = () => true
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false)
     const w = mountCard()
     await w.find('[data-testid="locked-open"]').trigger('click')

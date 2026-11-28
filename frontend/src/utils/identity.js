@@ -217,6 +217,33 @@ export function loadIdentity(now = Date.now()) {
   }
 }
 
+// === 브라우저(기기) ID ===
+
+const DEVICE_ID_KEY = 'clipboard-device-id'
+let memoryDeviceId = null
+
+function randomId() {
+  try { if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID() } catch { /* 폴백 */ }
+  return `d-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}${Math.random().toString(36).slice(2, 12)}`
+}
+
+/**
+ * 이 브라우저(프로필) 고유의 무작위 ID. localStorage에 한 번만 만들어 두고 모든 탭이 같은 값을 쓴다.
+ * 서버가 같은 브라우저의 탭끼리 같은 이름을 주는 데만 쓰며, 사용자 식별 정보(지문)는 쓰지 않는다.
+ */
+export function getDeviceId() {
+  try {
+    const saved = localStorage.getItem(DEVICE_ID_KEY)
+    if (saved && /^[A-Za-z0-9_-]{8,64}$/.test(saved)) return saved
+    const id = randomId()
+    localStorage.setItem(DEVICE_ID_KEY, id)
+    return id
+  } catch {
+    // 저장소를 못 쓰는 환경: 이 페이지 로드 동안만 유지
+    return (memoryDeviceId ??= randomId())
+  }
+}
+
 // === 접속 시 힌트 ===
 
 /**

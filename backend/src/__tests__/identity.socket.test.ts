@@ -88,6 +88,21 @@ describe('Socket.IO - 정체성 / 보낸 사람 / 업로더', () => {
     expect(second.reg.identity.adj).not.toBe(first.reg.identity.adj);
   });
 
+  test('같은 deviceId(같은 브라우저)의 다른 탭은 같은 이름을 그대로 받는다', async () => {
+    const ip = freshIp();
+    const deviceId = `dev-${Date.now()}-abcdef`;
+    const first = await connect(ip, { deviceId, identity: { adj: 11, animal: 4 } });
+    const second = await connect(ip, { deviceId, identity: { adj: 11, animal: 4 } });
+    expect(second.reg.identity).toMatchObject({ adj: first.reg.identity.adj, animal: first.reg.identity.animal });
+  });
+
+  test('deviceId가 다르면 기존처럼 형용사를 바꿔 재할당한다', async () => {
+    const ip = freshIp();
+    const first = await connect(ip, { deviceId: 'device-aaaaaaaa', identity: { adj: 12, animal: 5 } });
+    const second = await connect(ip, { deviceId: 'device-bbbbbbbb', identity: { adj: 12, animal: 5 } });
+    expect(second.reg.identity.adj).not.toBe(first.reg.identity.adj);
+  });
+
   test('다른 IP 룸이라도 전역 룸에서 겹치면 재할당된다', async () => {
     const first = await connect(freshIp(), { identity: { adj: 7, animal: 3 } });
     const second = await connect(freshIp(), { identity: { adj: 7, animal: 3 } });
