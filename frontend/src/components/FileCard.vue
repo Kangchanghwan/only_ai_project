@@ -89,8 +89,22 @@ function handleThumbError() {
   }
 }
 
+/**
+ * 버튼·링크 등에서 온 클릭인지. 눌린 버튼 안의 요소가 다시 그려지며 떼어지면(받기 → 진행률 등)
+ * 버블링 단계의 event.target.closest가 버튼을 못 찾아 선택이 켜지므로, 어떤 핸들러보다 먼저
+ * 도는 캡처 단계에서 미리 기록해 둔다.
+ */
+const ACTION_SEL = 'button, a, input, textarea, select, [role="menu"], [role="dialog"]'
+let clickFromAction = false
+function markActionClick(event) {
+  clickFromAction = !!(event.target.closest && event.target.closest(ACTION_SEL))
+}
+function isFromAction(event) {
+  return clickFromAction || !!(event.target.closest && event.target.closest(ACTION_SEL))
+}
+
 function onRowClick(event) {
-  if (event.target.closest && event.target.closest('button, a, input, textarea, select, [role="menu"], [role="dialog"]')) return
+  if (isFromAction(event)) return
   emit('toggle-selection', props.file)
 }
 
@@ -193,6 +207,7 @@ async function handleShare(event) {
     class="group file-row flex flex-nowrap items-center gap-1.5 p-2 sm:gap-3 sm:p-3 rounded-none border bg-surface transition-colors duration-200 cursor-pointer select-none"
     :class="[isSelected ? 'border-ink file-row-selected' : 'border-border']"
     :data-selected="isSelected ? 'true' : undefined"
+    @click.capture="markActionClick"
     @click="onRowClick"
   >
     <input

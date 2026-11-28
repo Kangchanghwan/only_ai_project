@@ -87,19 +87,33 @@ describe('ShareScopeTabs (늘 보이는 방 탭 바)', () => {
     const rooms = Array.from({ length: 12 }, (_, i) => one('prv-' + i, (i % 5) + 1))
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: rooms, groupCreate: true } })
     expect(tabs(w)).toHaveLength(14)
-    const list = w.find('[role="tablist"]')
+    const list = w.find('[data-testid="room-tablist"]')
     expect(list.classes()).toContain('overflow-x-auto')
     expect(list.classes()).toContain('flex-nowrap')
     expect(tabs(w)[0].classes()).toContain('whitespace-nowrap')
   })
 
-  it('활성 탭을 보이는 자리로 스크롤한다', async () => {
+  it('같은 네트워크·전체 공유는 스크롤 영역 밖에 고정된다', () => {
+    const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [one()] } })
+    const area = w.get('[data-testid="room-tablist"]').element
+    expect(area.contains(w.get('[data-testid="scope-option-ip"]').element)).toBe(false)
+    expect(area.contains(w.get('[data-testid="scope-option-global"]').element)).toBe(false)
+    expect(area.contains(w.get('[data-testid="private-tab-option"]').element)).toBe(true)
+  })
+  it('활성 방 탭이 가려져 있으면 방 탭 영역만 스크롤하고 페이지는 건드리지 않는다', async () => {
     const spy = vi.fn()
     Element.prototype.scrollIntoView = spy
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: [one()] } })
+    await w.vm.$nextTick()
+    const area = w.get('[data-testid="room-tablist"]').element
+    area.getBoundingClientRect = () => ({ left: 100, right: 300, top: 0, bottom: 44, width: 200, height: 44 })
+    w.get('[data-testid="private-tab-option"]').element.getBoundingClientRect = () => ({ left: 350, right: 450, top: 0, bottom: 44, width: 100, height: 44 })
+    area.scrollLeft = 0
     await w.setProps({ scope: 'prv:prv-a' })
     await w.vm.$nextTick()
-    expect(spy).toHaveBeenCalled()
+    await w.vm.$nextTick()
+    expect(area.scrollLeft).toBe(150)
+    expect(spy).not.toHaveBeenCalled()
     delete Element.prototype.scrollIntoView
   })
 })
@@ -156,9 +170,9 @@ describe('ShareScopeTabs 넘침 표시', () => {
     expect(w.find('[data-testid="tabs-fade-right"]').exists()).toBe(true)
     expect(w.find('[data-testid="tabs-fade-left"]').exists()).toBe(false)
     const spy = vi.fn()
-    w.findAll('[role="tab"]')[3].element.scrollIntoView = spy
+    bar.scrollBy = spy
     await btn.trigger('click')
-    expect(spy).toHaveBeenCalledWith({ inline: 'start', block: 'nearest', behavior: 'smooth' })
+    expect(spy).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }))
   })
   it('스크롤이 시작을 벗어나면 왼쪽 페이드', async () => {
     const w = mount(ShareScopeTabs, { ...opts, props: { scope: 'ip', privateRooms: rooms } })

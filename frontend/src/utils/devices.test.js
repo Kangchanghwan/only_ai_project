@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { countOtherDevices, sortDevices, isMeDevice } from './devices'
+import { countOtherDevices, sortDevices, isMeDevice, mergeSameDevice } from './devices'
 import { isEditableTarget } from './editable'
 
 const fox = { adj: 1, animal: 1 }
@@ -52,5 +52,20 @@ describe('isEditableTarget', () => {
     expect(isEditableTarget(document.body)).toBe(false)
     expect(isEditableTarget(null)).toBe(false)
     expect(isEditableTarget({ tagName: 'DIV', isContentEditable: true })).toBe(true)
+  })
+})
+
+describe('같은 브라우저 탭 합치기', () => {
+  it('같은 이름의 탭 둘은 카드 한 장, 나 카드는 내 소켓이 대표', () => {
+    const out = sortDevices([d('t1', fox, 1), d('t2', fox, 9), d('o', panda, 5)], 't1', fox)
+    expect(out.map((x) => x.socketId)).toEqual(['t1', 'o'])
+    expect(countOtherDevices([d('t1', fox), d('t2', fox), d('o', panda)], 't1', fox)).toBe(1)
+  })
+  it('하나라도 접속 중이면 온라인, 모두 자리 비움이면 자리 비움', () => {
+    expect(mergeSameDevice([{ ...d('a', panda), away: true }, d('b', panda)])[0].away).toBe(false)
+    expect(mergeSameDevice([{ ...d('a', panda), away: true }, { ...d('b', panda), away: true }])[0].away).toBe(true)
+  })
+  it('이름이 없는 항목과 다른 이름은 합치지 않는다', () => {
+    expect(mergeSameDevice([d('a'), d('b'), d('c', panda), d('e', { ...panda, suffix: 2 })])).toHaveLength(4)
   })
 })

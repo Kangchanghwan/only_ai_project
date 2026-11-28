@@ -7,7 +7,7 @@ import { PAIR_CONTEXT_KEY } from '../utils/pairContext.js'
 
 const NOW = Date.now()
 const me = { socketId: 'me', identity: { adj: 0, animal: 0 }, deviceType: 'desktop', browser: 'Chrome', os: 'mac', joinedAt: NOW - 900000 }
-const others = (n) => Array.from({ length: n }, (_, i) => ({ socketId: `d${String(i).padStart(2, '0')}`, identity: { adj: 1, animal: 1 }, deviceType: 'desktop', browser: 'Firefox', os: 'win', joinedAt: NOW - 1000 * (i + 1) }))
+const others = (n) => Array.from({ length: n }, (_, i) => ({ socketId: `d${String(i).padStart(2, '0')}`, identity: { adj: 1 + (i % 10), animal: 1 + Math.floor(i / 10) }, deviceType: 'desktop', browser: 'Firefox', os: 'win', joinedAt: NOW - 1000 * (i + 1) }))
 const ctx = { states: ref({}), incoming: ref(null), invite: vi.fn(), cancel: vi.fn(), open: vi.fn() }
 let roCb = null
 

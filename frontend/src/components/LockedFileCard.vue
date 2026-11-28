@@ -48,9 +48,23 @@ const {
 const lockState = useLockState()
 const notification = useNotification()
 
+/**
+ * 버튼·링크 등에서 온 클릭인지. 눌린 버튼 안의 요소가 다시 그려지며 떼어지면(받기 → 진행률 등)
+ * 버블링 단계의 event.target.closest가 버튼을 못 찾아 선택이 켜지므로, 어떤 핸들러보다 먼저
+ * 도는 캡처 단계에서 미리 기록해 둔다.
+ */
+const ACTION_SEL = 'button, a, input, textarea, select, [role="menu"], [role="dialog"]'
+let clickFromAction = false
+function markActionClick(event) {
+  clickFromAction = !!(event.target.closest && event.target.closest(ACTION_SEL))
+}
+function isFromAction(event) {
+  return clickFromAction || !!(event.target.closest && event.target.closest(ACTION_SEL))
+}
+
 function onRowClick(event) {
   if (!props.selectable) return
-  if (event.target.closest && event.target.closest('button, a, input, textarea, select, [role="menu"], [role="dialog"]')) return
+  if (isFromAction(event)) return
   emit('toggle-selection', props.file)
 }
 
@@ -320,6 +334,7 @@ onUnmounted(() => clearInterval(revealTimer))
     :class="[isSelected ? 'border-ink file-row-selected' : 'border-border', selectable ? 'cursor-pointer select-none' : '']"
     :data-selected="isSelected ? 'true' : undefined"
     data-testid="locked-file"
+    @click.capture="markActionClick"
     @click="onRowClick"
   >
     <input

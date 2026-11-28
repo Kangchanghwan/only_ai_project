@@ -170,6 +170,15 @@ describe('FileCard 행 눌러 선택 (체크박스 없음)', () => {
     await wrapper.find('.more-btn').trigger('click')
     expect(wrapper.emitted('toggle-selection')).toBeUndefined()
   })
+  it('받기 버튼 안쪽 아이콘이 클릭 도중 떼어져도 선택을 바꾸지 않는다', async () => {
+    mountCard()
+    const btn = wrapper.find('.download-btn').element
+    const icon = btn.querySelector('svg')
+    btn.addEventListener('click', () => icon.remove()) // 다시 그리기로 아이콘이 사라지는 상황
+    await new Promise((r) => setTimeout(r, 20)) // Vue는 같은 ms에 붙은 핸들러를 건너뛴다
+    icon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(wrapper.emitted('toggle-selection')).toBeUndefined()
+  })
   it('체크박스 change는 toggle-selection을 정확히 한 번 보낸다', async () => {
     mountCard()
     await wrapper.find('[data-testid="row-select"]').trigger('change')
