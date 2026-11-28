@@ -44,4 +44,13 @@ describe('DeviceCards 휴대폰 초대 카드', () => {
     expect(w.find('[data-testid="cards-more-tile"]').exists()).toBe(true)
   })
   afterEach(() => { delete globalThis.ResizeObserver })
+  it('전체 공유 탭이면 "휴대폰에서 열기 / 사이트 주소" 문구를 쓰고 scope를 실어 보낸다', async () => {
+    i18n.global.locale.value = 'ko'
+    const w = mk({ inviteCard: true, scope: 'global' })
+    const tile = w.find('[data-testid="invite-phone-card"]')
+    expect(tile.text()).toContain('휴대폰에서 열기')
+    expect(tile.text()).toContain('사이트 주소')
+    await tile.trigger('click')
+    expect(w.emitted('invite-phone')).toEqual([['global']])
+  })
 })

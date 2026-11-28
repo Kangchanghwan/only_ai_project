@@ -2,11 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import i18n from '../i18n/index.js'
 vi.mock('qrcode', () => ({ default: { toDataURL: vi.fn(async (v) => `data:${v}`) } }))
+const track = vi.hoisted(() => vi.fn())
+vi.mock('../utils/analytics', () => ({ trackEvent: track }))
 const { default: PhoneConnectSheet } = await import('./PhoneConnectSheet.vue')
 const URL1 = 'https://www.clipboardapp.org/#/qc?s=a&g=AbCd12'
 const q = (id) => document.body.querySelector(`[data-testid="${id}"]`)
 const mk = (props) => mount(PhoneConnectSheet, { props: { open: true, qrUrl: URL1, ...props }, attachTo: document.body, global: { plugins: [i18n] } })
-beforeEach(() => { i18n.global.locale.value = 'ko'; document.body.innerHTML = '' })
+beforeEach(() => { track.mockClear(); i18n.global.locale.value = 'ko'; document.body.innerHTML = '' })
 
 describe('PhoneConnectSheet', () => {
   it('닫혀 있으면 아무것도 그리지 않는다', () => {
@@ -34,6 +36,25 @@ describe('PhoneConnectSheet', () => {
     expect(w.emitted('close')).toHaveLength(2)
     q('phone-connect-sheet').click()
     expect(w.emitted('close')).toHaveLength(3)
+    w.unmount()
+  })
+  it('ip 모드는 qr_open 이벤트를 보내지 않는다', async () => {
+    const w = mk()
+    await flushPromises()
+    expect(track).not.toHaveBeenCalled()
+    w.unmount()
+  })
+  it('global 모드: 제목, 고정 전체 공유 QR 주소, 두 줄 문구(둘째 줄은 sage 글자색), qr_open 이벤트', async () => {
+    const w = mk({ mode: 'global' })
+    await flushPromises()
+    const sheet = q('phone-connect-sheet')
+    expect(sheet.querySelector('h2').textContent).toBe('휴대폰에서 열기')
+    expect(sheet.querySelector('[data-testid="wake-qr-img"]').getAttribute('data-qr-value')).toBe('https://www.clipboardapp.org/?utm_source=qr&utm_medium=global_tab&open=global')
+    expect(sheet.textContent).toContain('찍으면 전체 공유가 바로 열려요')
+    const l2 = sheet.querySelector('[data-testid="wake-qr-line2"]')
+    expect(l2.textContent).toBe('전체 공유는 모든 사용자가 볼 수 있어요')
+    expect(l2.className).toContain('text-scope-global')
+    expect(track).toHaveBeenCalledWith('qr_open', { qr_type: 'global' })
     w.unmount()
   })
 })

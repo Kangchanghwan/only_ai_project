@@ -306,7 +306,7 @@
     "useCase3": "Versturen tussen Android en Mac wanneer AirDrop geen optie is",
     "useCase4": "Een lange link, eenmalige code of stukje tekst vanaf je telefoon op je pc plakken",
     "safetyTitle": "Is het veilig?",
-    "safety1": "De standaardinstelling is \"Zelfde netwerk\", dus alleen apparaten achter hetzelfde publieke IP-adres zien jouw items. Delen met iedereen kan alleen door zelf naar het tabblad \"Iedereen\" te schakelen.",
+    "safety1": "Standaard deel je alleen met het 'Zelfde netwerk', dus alleen apparaten met hetzelfde openbare IP-adres zien het. Om naar iedereen te sturen kies je het tabblad 'Openbaar' of open je de site via de QR voor openbaar delen; bij de eerste keer verzenden vragen we nog één keer om bevestiging.",
     "safety2": "Als alle apparaten weg zijn, worden bestanden en teksten kort daarna verwijderd; ook tijdens verbinding worden bestanden na uiterlijk 1 dag opgeruimd. Geen account, geen geschiedenis.",
     "safety3": "Overdrachten zijn versleuteld met HTTPS en de broncode is openbaar op GitHub.",
     "faqTitle": "Veelgestelde vragen",
@@ -613,6 +613,13 @@
     "inviteCard": "Telefoon uitnodigen",
     "inviteCardSub": "Via dit netwerk",
     "legacyMine": "Deze kamer openen op mijn telefoon"
+  },
+  "globalQr": {
+    "open": "Openen op telefoon",
+    "openSub": "Siteadres",
+    "line1": "Scan om direct Openbaar delen te openen",
+    "line2": "Alle gebruikers kunnen zien wat je openbaar deelt",
+    "arrived": "Geopend op het tabblad Openbaar delen"
   },
   "header": {
     "siteQr": "QR-code van het siteadres"

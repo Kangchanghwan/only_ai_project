@@ -306,7 +306,7 @@
     "useCase3": "Enviar archivos entre Android y Mac cuando AirDrop no es una opción",
     "useCase4": "Pegar en tu PC un enlace largo, un código de un solo uso o un fragmento copiado desde tu móvil",
     "safetyTitle": "¿Es seguro?",
-    "safety1": "El alcance predeterminado es \"Misma red\", así que solo los dispositivos detrás de la misma IP pública pueden ver tus elementos. Para compartir con todos, tienes que cambiar tú mismo a la pestaña \"Todos\".",
+    "safety1": "Por defecto se comparte solo en la «Misma red», así que lo ven únicamente los dispositivos con la misma IP pública. Para enviarlo a todos, elige la pestaña «Todos» o abre el sitio con el QR de Compartir con todos; la primera vez te pediremos confirmar una vez más.",
     "safety2": "Cuando todos los dispositivos salen, los archivos y textos se eliminan poco después; aunque sigas conectado, los archivos se limpian tras 1 día como máximo. Sin cuenta ni historial.",
     "safety3": "Las transferencias se cifran con HTTPS y el código fuente es público en GitHub.",
     "faqTitle": "Preguntas frecuentes",
@@ -613,6 +613,13 @@
     "inviteCard": "Invitar un móvil",
     "inviteCardSub": "En esta red",
     "legacyMine": "Abrir esta sala en mi móvil"
+  },
+  "globalQr": {
+    "open": "Abrir en el móvil",
+    "openSub": "Dirección del sitio",
+    "line1": "Al escanear se abre directamente Compartir con todos",
+    "line2": "Todos los usuarios pueden ver lo que compartes con todos",
+    "arrived": "Abierto en la pestaña Compartir con todos"
   },
   "header": {
     "siteQr": "QR de la dirección del sitio"

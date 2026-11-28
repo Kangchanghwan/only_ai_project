@@ -306,7 +306,7 @@
     "useCase3": "Mengirim antara Android dan Mac saat AirDrop tidak bisa dipakai",
     "useCase4": "Menempelkan tautan panjang, kode sekali pakai, atau cuplikan teks dari HP ke PC",
     "safetyTitle": "Apakah ini aman?",
-    "safety1": "Cakupan default adalah \"Jaringan yang sama\", jadi hanya perangkat di balik IP publik yang sama yang bisa melihat item kamu. Berbagi dengan semua orang perlu beralih sendiri ke tab \"Semua orang\".",
+    "safety1": "Secara default, berbagi hanya untuk 'Jaringan yang sama', jadi hanya perangkat dengan IP publik yang sama yang bisa melihatnya. Untuk mengirim ke semua orang, pilih tab 'Publik' atau buka situs lewat QR Berbagi Publik; Anda akan diminta konfirmasi sekali lagi saat pertama kali mengirim.",
     "safety2": "Saat semua perangkat keluar, file dan teks segera dihapus; meski masih terhubung, file dibersihkan paling lama setelah 1 hari. Tanpa akun, tanpa riwayat.",
     "safety3": "Transfer dienkripsi dengan HTTPS dan kode sumbernya terbuka di GitHub.",
     "faqTitle": "Pertanyaan yang sering diajukan",
@@ -613,6 +613,13 @@
     "inviteCard": "Undang ponsel",
     "inviteCardSub": "Lewat jaringan ini",
     "legacyMine": "Buka ruang ini di ponsel saya"
+  },
+  "globalQr": {
+    "open": "Buka di ponsel",
+    "openSub": "Alamat situs",
+    "line1": "Pindai untuk langsung membuka Berbagi Publik",
+    "line2": "Semua pengguna dapat melihat yang Anda bagikan secara publik",
+    "arrived": "Dibuka di tab Berbagi Publik"
   },
   "header": {
     "siteQr": "QR alamat situs"

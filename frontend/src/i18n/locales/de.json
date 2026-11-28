@@ -306,7 +306,7 @@
     "useCase3": "Zwischen Android und Mac senden, wenn AirDrop keine Option ist",
     "useCase4": "Einen langen Link, einmaligen Code oder Textausschnitt vom Handy auf den PC einfügen",
     "safetyTitle": "Ist es sicher?",
-    "safety1": "Der Standardbereich ist „Gleiches Netzwerk“, sodass nur Geräte hinter derselben öffentlichen IP deine Inhalte sehen können. Um mit allen zu teilen, musst du selbst zum Tab „Alle“ wechseln.",
+    "safety1": "Standardmäßig wird nur im „Gleichen Netzwerk“ geteilt, daher sehen es nur Geräte mit derselben öffentlichen IP. Um an alle zu senden, wähle den Tab „Alle“ oder öffne die Seite über den QR-Code für „Alle“; beim ersten Senden wirst du noch einmal um Bestätigung gebeten.",
     "safety2": "Wenn alle Geräte weg sind, werden Dateien und Texte kurz darauf gelöscht; auch bei bestehender Verbindung werden Dateien nach spätestens 1 Tag bereinigt. Kein Konto, kein Verlauf.",
     "safety3": "Übertragungen sind mit HTTPS verschlüsselt, und der Quellcode ist öffentlich auf GitHub.",
     "faqTitle": "Häufige Fragen",
@@ -613,6 +613,13 @@
     "inviteCard": "Handy einladen",
     "inviteCardSub": "Über dieses Netzwerk",
     "legacyMine": "Diesen Raum auf meinem Handy öffnen"
+  },
+  "globalQr": {
+    "open": "Auf dem Handy öffnen",
+    "openSub": "Website-Adresse",
+    "line1": "Scannen öffnet direkt „Alle“",
+    "line2": "Alle Nutzer können sehen, was du öffentlich teilst",
+    "arrived": "Im Tab „Alle“ geöffnet"
   },
   "header": {
     "siteQr": "QR-Code der Website-Adresse"

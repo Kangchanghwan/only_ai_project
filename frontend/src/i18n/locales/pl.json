@@ -306,7 +306,7 @@
     "useCase3": "Wysłać coś między Android a Mac, gdy AirDrop nie jest dostępny",
     "useCase4": "Wkleić długi link, jednorazowy kod albo fragment tekstu z telefonu na PC",
     "safetyTitle": "Czy to bezpieczne?",
-    "safety1": "Domyślny zakres to „Ta sama sieć”, więc twoje elementy widzą tylko urządzenia za tym samym publicznym adresem IP. Udostępnianie wszystkim wymaga samodzielnego przełączenia na kartę „Wszyscy”.",
+    "safety1": "Domyślnie udostępniasz tylko w „Tej samej sieci”, więc widzą to wyłącznie urządzenia z tym samym publicznym IP. Aby wysłać do wszystkich, wybierz kartę „Publiczne” albo otwórz stronę przez kod QR udostępniania publicznego; przy pierwszym wysłaniu poprosimy jeszcze raz o potwierdzenie.",
     "safety2": "Gdy wszystkie urządzenia wyjdą, pliki i teksty są wkrótce usuwane; nawet przy połączeniu pliki są czyszczone najpóźniej po 1 dniu. Bez konta i historii.",
     "safety3": "Transfery są szyfrowane przez HTTPS, a kod źródłowy jest publicznie dostępny na GitHub.",
     "faqTitle": "Najczęściej zadawane pytania",
@@ -613,6 +613,13 @@
     "inviteCard": "Zaproś telefon",
     "inviteCardSub": "Przez tę sieć",
     "legacyMine": "Otwórz ten pokój na moim telefonie"
+  },
+  "globalQr": {
+    "open": "Otwórz na telefonie",
+    "openSub": "Adres strony",
+    "line1": "Zeskanuj, aby od razu otworzyć Udostępnianie publiczne",
+    "line2": "Udostępnianie publiczne widzą wszyscy użytkownicy",
+    "arrived": "Otwarto na karcie Udostępnianie publiczne"
   },
   "header": {
     "siteQr": "Kod QR adresu strony"

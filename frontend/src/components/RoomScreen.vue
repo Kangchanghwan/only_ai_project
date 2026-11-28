@@ -171,7 +171,9 @@ const groupOthers = computed(() => {
 // 같은 네트워크 탭 "휴대폰 초대" 시트 (측정은 접속당 한 번: 방 초대 창과 같은 세션 플래그)
 const phoneSheetOpen = ref(false)
 let phoneOpenSent = false
+const phoneSheetMode = ref('ip')
 function openPhoneSheet() {
+  phoneSheetMode.value = props.scope === 'global' ? 'global' : 'ip'
   phoneSheetOpen.value = true
   if (phoneOpenSent) return
   let flagged = false
@@ -343,7 +345,7 @@ watch(
         @leave="$emit('leave-private', $event)"
         @invite="$emit('group-invite', $event)"
       />
-      <PhoneConnectSheet :open="phoneSheetOpen" :qr-url="qrUrl" @close="phoneSheetOpen = false" />
+      <PhoneConnectSheet :open="phoneSheetOpen" :mode="phoneSheetMode" :qr-url="qrUrl" @close="phoneSheetOpen = false" />
 
       <div class="workspace">
         <main class="ws-main sm:bg-surface sm:rounded-none p-0 sm:p-6 sm:border sm:border-border min-w-0">

@@ -306,7 +306,7 @@
     "useCase3": "Posílání mezi Androidem a Macem, když AirDrop není k dispozici",
     "useCase4": "Vložení dlouhého odkazu, jednorázového kódu nebo úryvku textu z telefonu do PC",
     "safetyTitle": "Je to bezpečné?",
-    "safety1": "Výchozí rozsah je \"Stejná síť\", takže vaše položky vidí jen zařízení za stejnou veřejnou IP adresou. Sdílení se všemi vyžaduje ruční přepnutí na kartu \"Všichni\".",
+    "safety1": "Výchozí rozsah sdílení je „Stejná síť“, takže obsah uvidí jen zařízení se stejnou veřejnou IP adresou. Chcete-li posílat všem, vyberte kartu „Veřejné sdílení“ nebo web otevřete přes jeho QR kód; při prvním odeslání se vás ještě jednou zeptáme.",
     "safety2": "Když odejdou všechna zařízení, soubory a texty se brzy smažou; i při připojení se soubory uklidí nejpozději po 1 dni. Bez účtu a historie.",
     "safety3": "Přenosy jsou šifrované přes HTTPS a zdrojový kód je veřejně dostupný na GitHubu.",
     "faqTitle": "Časté dotazy",
@@ -613,6 +613,13 @@
     "inviteCard": "Pozvat telefon",
     "inviteCardSub": "Přes tuto síť",
     "legacyMine": "Otevřít tuto místnost v mém telefonu"
+  },
+  "globalQr": {
+    "open": "Otevřít v telefonu",
+    "openSub": "Adresa webu",
+    "line1": "Po naskenování se rovnou otevře Veřejné sdílení",
+    "line2": "Veřejné sdílení vidí všichni uživatelé",
+    "arrived": "Otevřeno na kartě Veřejné sdílení"
   },
   "header": {
     "siteQr": "QR kód adresy webu"

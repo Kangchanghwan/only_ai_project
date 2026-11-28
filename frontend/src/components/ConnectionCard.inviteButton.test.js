@@ -23,10 +23,26 @@ describe('ConnectionCard 휴대폰 초대 입구 (PC 제목 줄 버튼 / 좁은 
     await w.find('[data-testid="invite-phone-card"]').trigger('click')
     expect(w.emitted('invite-phone')).toHaveLength(2)
   })
-  it('혼자이거나 같은 네트워크 탭이 아니면 둘 다 없다', () => {
-    for (const w of [mk({ devices: [dev('me', 1)] }), mk({ scope: 'global' })]) {
+  it('같은 네트워크 탭에서 혼자이거나 1:1 방이면 둘 다 없다', () => {
+    for (const w of [mk({ devices: [dev('me', 1)] }), mk({ scope: 'prv:abc' })]) {
       expect(w.find('[data-testid="invite-phone-button"]').exists()).toBe(false)
       expect(w.find('[data-testid="invite-phone-card"]').exists()).toBe(false)
     }
+  })
+  it('전체 공유 탭은 기기 수와 상관없이 항상 "휴대폰에서 열기" 입구가 있고 scope를 실어 invite-phone을 낸다', async () => {
+    for (const devices of [[dev('me', 1)], [dev('me', 1), dev('o', 2)]]) {
+      const w = mk({ scope: 'global', devices })
+      const btn = w.find('[data-testid="invite-phone-button"]')
+      expect(btn.text()).toBe('휴대폰에서 열기')
+      const tile = w.find('[data-testid="invite-phone-card"]')
+      expect(tile.text()).toContain('휴대폰에서 열기')
+      expect(tile.text()).toContain('사이트 주소')
+      await btn.trigger('click')
+      await tile.trigger('click')
+      expect(w.emitted('invite-phone')).toEqual([['global'], ['global']])
+    }
+  })
+  it('전체 공유 탭에는 빈 방 QR 안내(empty-state)가 없다', () => {
+    expect(mk({ scope: 'global', devices: [dev('me', 1)] }).find('[data-testid="empty-state"]').exists()).toBe(false)
   })
 })
