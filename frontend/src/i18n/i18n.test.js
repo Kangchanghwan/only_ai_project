@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveLocale, pathLocale } from './index.js'
+import { resolveLocale, pathLocale, localeNoticeTarget } from './index.js'
 import ko from './locales/ko.json'
 
 const locales = import.meta.glob('./locales/*.json', { eager: true })
@@ -123,7 +123,9 @@ describe('resolveLocale', () => {
     expect(resolveLocale({ savedLocale: 'ja', pathname: '/en/', browserLanguage: 'de-DE' })).toBe('ja')
     expect(resolveLocale({ savedLocale: null, pathname: '/en/', browserLanguage: 'de-DE' })).toBe('en')
     expect(resolveLocale({ savedLocale: null, pathname: '/', browserLanguage: 'de-DE' })).toBe('de')
-    expect(resolveLocale({ savedLocale: null, pathname: '/', browserLanguage: 'xx-YY' })).toBe('ko')
+    expect(resolveLocale({ savedLocale: null, pathname: '/', browserLanguage: 'xx-YY' })).toBe('en')
+    expect(resolveLocale({ savedLocale: null, pathname: '/', browserLanguage: 'ko-KR' })).toBe('ko')
+    expect(resolveLocale({ savedLocale: null, pathname: '/', browserLanguage: '' })).toBe('ko')
     expect(resolveLocale({ savedLocale: 'nope', pathname: '/', browserLanguage: 'fr' })).toBe('fr')
   })
 })
@@ -361,5 +363,31 @@ describe('i18n 도움말 보완/붙여넣기 번역', () => {
   it('ko 이외 한글 비포함, 플레이스홀더 {size} 등 변수 유지(ja limitResume)', () => {
     const ja = locales['./locales/ja.json'].default || locales['./locales/ja.json']
     expect(ja.file.limitResume).toContain('{size}')
+  })
+})
+
+describe('localeNoticeTarget', () => {
+  const base = { savedLocale: null, pathname: '/' }
+  it('비한국어 브라우저는 언어 페이지로 안내, 없으면 /en/', () => {
+    expect(localeNoticeTarget({ ...base, browserLanguage: 'ja-JP' })).toEqual({ locale: 'ja', path: '/ja/' })
+    expect(localeNoticeTarget({ ...base, browserLanguage: 'ru' })).toEqual({ locale: 'ru', path: '/ru/' })
+    expect(localeNoticeTarget({ ...base, browserLanguage: 'en-US' })).toEqual({ locale: 'en', path: '/en/' })
+    expect(localeNoticeTarget({ ...base, browserLanguage: 'de-DE' })).toEqual({ locale: 'en', path: '/en/' })
+  })
+  it('한국어 브라우저, 저장된 언어, 경로 언어가 있으면 안내하지 않는다', () => {
+    expect(localeNoticeTarget({ ...base, browserLanguage: 'ko-KR' })).toBeNull()
+    expect(localeNoticeTarget({ ...base, savedLocale: 'en', browserLanguage: 'en' })).toBeNull()
+    expect(localeNoticeTarget({ savedLocale: null, pathname: '/en/', browserLanguage: 'en' })).toBeNull()
+  })
+})
+
+describe('localeNotice 번역', () => {
+  it('모든 로케일에 message/link/dismiss가 있고 link에 {language}가 있다', () => {
+    for (const [path, mod] of Object.entries(locales)) {
+      const n = (mod.default || mod).localeNotice
+      expect(n, path).toBeTruthy()
+      for (const k of ['message', 'link', 'dismiss']) expect(n[k]?.length, `${path}.${k}`).toBeGreaterThan(0)
+      expect(n.link, path).toContain('{language}')
+    }
   })
 })

@@ -623,5 +623,10 @@
   },
   "header": {
     "siteQr": "网站地址二维码"
+  },
+  "localeNotice": {
+    "message": "此页面为韩语。",
+    "link": "查看{language}版 →",
+    "dismiss": "关闭"
   }
 }

@@ -623,5 +623,10 @@
   },
   "header": {
     "siteQr": "QR kód adresy webu"
+  },
+  "localeNotice": {
+    "message": "Tato stránka je v korejštině.",
+    "link": "Zobrazit v jazyce: {language} →",
+    "dismiss": "Zavřít"
   }
 }

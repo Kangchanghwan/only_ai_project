@@ -623,5 +623,10 @@
   },
   "header": {
     "siteQr": "QR de la dirección del sitio"
+  },
+  "localeNotice": {
+    "message": "Esta página está en coreano.",
+    "link": "Ver en {language} →",
+    "dismiss": "Cerrar"
   }
 }

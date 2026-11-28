@@ -623,5 +623,10 @@
   },
   "header": {
     "siteQr": "Az oldal címének QR-kódja"
+  },
+  "localeNotice": {
+    "message": "Ez az oldal koreai nyelvű.",
+    "link": "Megtekintés: {language} →",
+    "dismiss": "Bezárás"
   }
 }

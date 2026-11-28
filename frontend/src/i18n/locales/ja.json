@@ -627,5 +627,10 @@
   },
   "header": {
     "siteQr": "サイトのアドレスQR"
+  },
+  "localeNotice": {
+    "message": "このページは韓国語です。",
+    "link": "{language}版を見る →",
+    "dismiss": "閉じる"
   }
 }

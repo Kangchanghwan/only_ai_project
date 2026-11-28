@@ -623,5 +623,10 @@
   },
   "header": {
     "siteQr": "کد QR نشانی سایت"
+  },
+  "localeNotice": {
+    "message": "این صفحه به زبان کره‌ای است.",
+    "link": "مشاهده به {language} ←",
+    "dismiss": "بستن"
   }
 }

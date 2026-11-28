@@ -749,5 +749,10 @@
   },
   "header": {
     "siteQr": "사이트 주소 QR"
+  },
+  "localeNotice": {
+    "message": "이 페이지는 한국어예요.",
+    "link": "{language} 버전 보기 →",
+    "dismiss": "닫기"
   }
 }

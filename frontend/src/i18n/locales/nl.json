@@ -623,5 +623,10 @@
   },
   "header": {
     "siteQr": "QR-code van het siteadres"
+  },
+  "localeNotice": {
+    "message": "Deze pagina is in het Koreaans.",
+    "link": "Bekijk in {language} →",
+    "dismiss": "Sluiten"
   }
 }

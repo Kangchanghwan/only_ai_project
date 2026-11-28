@@ -59,13 +59,27 @@ export function pathLocale(pathname) {
   return m ? m[1] : null
 }
 
-/** 저장된 로케일 > URL 경로 > 브라우저 언어 > 'ko' */
+/** 저장된 로케일 > URL 경로 > 브라우저 언어(ko*는 ko, 미지원 언어는 en) */
 export function resolveLocale({ savedLocale, pathname, browserLanguage }) {
   if (savedLocale && SUPPORTED.has(savedLocale)) return savedLocale
   const fromPath = pathLocale(pathname)
   if (fromPath) return fromPath
-  const code = (browserLanguage || '').split('-')[0]
-  return SUPPORTED.has(code) ? code : 'ko'
+  const code = (browserLanguage || '').split('-')[0].toLowerCase()
+  if (!code) return 'ko'
+  return SUPPORTED.has(code) ? code : 'en'
+}
+
+/**
+ * `/`(한국어 랜딩)에 들어온 비한국어 브라우저에게 안내할 언어 페이지.
+ * 안내 대상이 아니면 null (경로 언어가 있거나, 저장된 언어가 있거나, 브라우저가 한국어).
+ * 자동 이동은 하지 않는다(SEO). { locale, path } 반환.
+ */
+export function localeNoticeTarget({ savedLocale, pathname, browserLanguage }) {
+  if (savedLocale || pathLocale(pathname)) return null
+  const code = (browserLanguage || '').split('-')[0].toLowerCase()
+  if (!code || code === 'ko') return null
+  const locale = PATH_LOCALES.includes(code) ? code : 'en'
+  return { locale, path: `/${locale}/` }
 }
 
 /** 저장소 접근이 막힌 환경(사파리 사생활 보호 모드 등)에서 부팅이 깨지지 않도록 감싼다. 접근이 막히면 null */

@@ -623,5 +623,10 @@
   },
   "header": {
     "siteQr": "QR-kod för webbplatsens adress"
+  },
+  "localeNotice": {
+    "message": "Den här sidan är på koreanska.",
+    "link": "Visa på {language} →",
+    "dismiss": "Stäng"
   }
 }

@@ -623,5 +623,10 @@
   },
   "header": {
     "siteQr": "رمز QR لعنوان الموقع"
+  },
+  "localeNotice": {
+    "message": "هذه الصفحة باللغة الكورية.",
+    "link": "عرض بـ{language} ←",
+    "dismiss": "إغلاق"
   }
 }

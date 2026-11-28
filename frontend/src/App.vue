@@ -36,6 +36,7 @@ import { reportError } from './utils/userErrors.js'
 import { useArrivalBadge } from './composables/useArrivalBadge'
 import { usePush } from './composables/usePush'
 import NextTimeHint from './components/NextTimeHint.vue'
+import LocaleNotice from './components/LocaleNotice.vue'
 import { useNextTimeHint, pickPairTarget } from './composables/useNextTimeHint'
 import { shouldSkipPresenceToast, trackPresenceSkipped } from './utils/crowdedPresence'
 import WindowDropOverlay from './components/WindowDropOverlay.vue'
@@ -1550,6 +1551,7 @@ onUnmounted(() => {
 
 <template>
   <div id="app">
+    <LocaleNotice />
     <div class="app-frame" :class="{ 'app-frame--narrow': currentRoute.type === 'download' }">
       <!-- 잠긴 파일 QR·링크 받기 -->
       <LockedLinkPage
