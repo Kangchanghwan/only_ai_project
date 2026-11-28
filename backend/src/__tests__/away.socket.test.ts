@@ -115,4 +115,35 @@ describe('Socket.IO - 연결이 끊긴 기기를 잠시 자리 비움으로 남�
     expect(removed).toContain(bId);
     expect(b2.id).not.toBe(bId);
   });
+
+  test('유예 안에 같은 브라우저(deviceId)가 새로고침해 다른 clientId로 붙어도 옛 항목을 정리하고 이름을 유지한다', async () => {
+    process.env.AWAY_GRACE_SEC = '30';
+    const ip = `198.51.100.${(++ipCounter % 250) + 1}`;
+    const a = await connect(ip);
+    const deviceId = 'device-away-test-0001';
+    const open = (clientId: string, identity?: unknown) => new Promise<{ c: Client; reg: any }>((resolve) => {
+      const c = (ioClient as unknown as (url: string, opts: Record<string, unknown>) => Client)(`http://localhost:${port}`, {
+        transports: ['polling'],
+        extraHeaders: { 'x-forwarded-for': ip },
+        auth: { roster: 2, clientId, deviceId, ...(identity ? { identity } : {}) },
+        reconnection: false,
+      });
+      clients.push(c);
+      c.on('registered', (reg: any) => resolve({ c, reg }));
+    });
+    const first = await open('client-away-test-1001');
+    await wait();
+    const bId = first.c.id;
+    const name1 = first.reg?.identity ?? first.reg?.device?.identity;
+    const removed: string[] = [];
+    a.on('room-delta', (d: any) => { if (d.op === 'remove') removed.push(d.socketId); });
+    (first.c as any).io.engine.close();
+    await wait(300);
+    expect(removed).toEqual([]);
+    const second = await open('client-away-test-1002', name1);
+    await wait(200);
+    expect(removed).toContain(bId);
+    const name2 = second.reg?.identity ?? second.reg?.device?.identity;
+    if (name1) expect(name2).toEqual(name1);
+  });
 });
