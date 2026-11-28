@@ -54,6 +54,9 @@ const confirmed = computed(() => !!st.value?.confirmed)
 /** QR로 보낸 요청: 그림 비교가 없고 PC 수락만 기다린다 */
 const viaQr = computed(() => !!st.value?.viaQr)
 
+/** 연결이 잠시 끊겨 복구를 기다리는 기기 */
+const isAway = computed(() => !props.isMe && props.device.away === true)
+
 const joinedText = computed(() => {
   const d = props.device
   if (!d.joinedAt) return ''
@@ -74,7 +77,8 @@ const joinedText = computed(() => {
           <span v-if="isMe" class="text-[11px] font-extrabold px-1.5 py-0.5 rounded-[2px] bg-ink text-on-ink shrink-0" data-testid="me-badge">{{ t('identity.me') }}</span>
         </div>
         <div v-if="isValidIdentity(device.identity)" class="text-xs text-text-secondary truncate">{{ deviceAndBrowser(device, t) }}</div>
-        <div v-if="joinedText && !isPending" class="text-xs text-text-secondary">{{ joinedText }}</div>
+        <div v-if="isAway" class="text-xs text-text-secondary" role="status" data-testid="device-row-away">{{ t('identity.away') }}</div>
+        <div v-else-if="joinedText && !isPending" class="text-xs text-text-secondary">{{ joinedText }}</div>
       </div>
 
       <template v-if="pair && !isMe">

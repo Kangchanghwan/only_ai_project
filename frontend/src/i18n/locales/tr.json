@@ -94,6 +94,7 @@
     "toastJoined": "Yeni cihaz: {desc}",
     "listTitle": "Bağlı cihazlar ({count})",
     "joinedAgo": "{time} bağlandı",
+    "away": "Kısa süreliğine uzakta",
     "verifyHint": "Diğer cihazının ekranının üstündeki hayvan bu listede varsa bağlısınız",
     "globalNotice": "Burada herkesle paylaştıkların, tanımadığın kişiler dahil herkes tarafından görülebilir",
     "senderLeft": "Ayrıldı",

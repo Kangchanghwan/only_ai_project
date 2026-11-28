@@ -94,6 +94,7 @@
     "toastJoined": "{desc}{ga} 들어왔어요",
     "listTitle": "연결된 기기 ({count})",
     "joinedAgo": "{time} 접속",
+    "away": "잠시 자리 비움",
     "verifyHint": "다른 기기 화면 위쪽의 동물이 이 목록에 있으면 연결된 거예요",
     "globalNotice": "전체 공유는 모르는 사람도 볼 수 있어요",
     "senderLeft": "나간 기기",

@@ -2,6 +2,7 @@ import { t } from '../i18n/translate.js'
 import { ref } from 'vue'
 import { io } from 'socket.io-client'
 import { setRoomTokens, setRoomTokenRefresher, clearRoomTokens } from './roomTokenStore'
+import { trackEvent } from '../utils/analytics.js'
 import { collectClientHints, loadIdentity, saveIdentity, isValidIdentity } from '../utils/identity.js'
 
 /** 이름표 다시 뽑기 쿨다운 (서버와 같은 3초) */
@@ -25,6 +26,11 @@ function createClientId() {
 export const ROSTER_RECENT = 20
 /** room-snapshot / devices:find ack 대기 시간 */
 const ROSTER_ACK_TIMEOUT_MS = 5000
+
+/** 화면이 돌아왔을 때 살아 있는 척하는 연결(좀비)을 가려내는 ack 대기 시간 */
+const HEARTBEAT_TIMEOUT_MS = 2500
+/** 이 시간 이상 화면이 가려졌다 돌아오면 연결이 살아 있는지 확인한다 */
+const HEARTBEAT_AFTER_HIDDEN_MS = 5000
 
 /** pair/private ack 대기 시간 */
 const PAIR_ACK_TIMEOUT_MS = 5000
@@ -79,6 +85,11 @@ class SocketService {
     this._isIntentionalDisconnect = false
     this._wasConnected = false
     this._reconnectTimer = null
+    // 화면 복귀(resume) 측정/즉시 재연결 상태
+    this._hiddenAt = 0
+    this._resumeStartedAt = 0
+    this._rttSampled = false
+    this._closedByPageHide = false
 
     // 콜백
     this._onReconnectedCallbacks = []
@@ -111,15 +122,71 @@ class SocketService {
   _setupNetworkListeners() {
     window.addEventListener('online', this._boundHandleOnline)
     window.addEventListener('offline', this._boundHandleOffline)
-    this._boundPageHide = () => this._handlePageHide()
+    this._boundPageHide = (e) => this._handlePageHide(e)
     this._boundPageShow = (e) => this._handlePageShow(e)
     window.addEventListener('pagehide', this._boundPageHide)
     window.addEventListener('pageshow', this._boundPageShow)
+    this._boundVisibility = () => this._handleVisibility()
+    document.addEventListener('visibilitychange', this._boundVisibility)
+  }
+
+  /** 화면이 가려지거나 돌아올 때: 돌아오면 백오프를 기다리지 않고 바로 다시 붙는다 */
+  _handleVisibility() {
+    if (document.visibilityState === 'hidden') {
+      this._hiddenAt = Date.now()
+      return
+    }
+    if (document.visibilityState === 'visible') this.resumeNow('visible')
+  }
+
+  /**
+   * 앱이 돌아왔을 때(visible/pageshow/online) 끊겨 있으면 즉시 재연결하고, 붙어 있어도 오래 가려졌다면 살아 있는지 확인한다.
+   * 같은 소켓 객체를 다시 열어 Socket.IO 연결 복구(recovery)가 이어지게 한다.
+   * @returns {'reconnecting'|'checking'|'idle'}
+   */
+  resumeNow(source = 'visible') {
+    if (!this._wasConnected || this._isIntentionalDisconnect || !this.socket) return 'idle'
+    if (this.socket.connected) {
+      const hiddenFor = this._hiddenAt ? Date.now() - this._hiddenAt : 0
+      this._hiddenAt = 0
+      if (hiddenFor >= HEARTBEAT_AFTER_HIDDEN_MS) {
+        this._resumeStartedAt = Date.now()
+        this._heartbeat()
+        return 'checking'
+      }
+      return 'idle'
+    }
+    this._hiddenAt = 0
+    if (!this._resumeStartedAt) this._resumeStartedAt = Date.now()
+    console.log(`[SocketService] 앱 복귀(${source}): 연결이 끊겨 있어 즉시 재연결`)
+    this.socket.connect()
+    return 'reconnecting'
+  }
+
+  /** 가벼운 ack 왕복으로 연결 생존을 확인한다. 응답이 없으면 전송 계층을 닫아 즉시 재연결로 넘긴다 */
+  _heartbeat() {
+    const sock = this.socket
+    if (!sock?.connected) return
+    sock.timeout(HEARTBEAT_TIMEOUT_MS).emit('room-tokens', (err, payload) => {
+      if (!err) {
+        // 살아 있었다: 복구가 필요 없으니 측정 시작값을 비운다
+        this._resumeStartedAt = 0
+        if (payload?.roomTokens) setRoomTokens(payload)
+        return
+      }
+      if (this.socket !== sock) return
+      console.log('[SocketService] 하트비트 응답 없음: 연결을 닫고 즉시 재연결')
+      try { sock.io.engine?.close() } catch { /* 이미 닫힘 */ }
+      setTimeout(() => { if (this.socket === sock && !sock.connected) sock.connect() }, 0)
+    })
   }
 
   /** 페이지를 떠날 때 서버에 바로 알려 유령 기기가 남지 않게 한다 (visibilitychange에서는 끊지 않는다) */
-  _handlePageHide() {
+  _handlePageHide(event) {
+    // bfcache로 들어가는 것(persisted)은 떠나는 게 아니다: 끊지 않고 두면 돌아올 때 연결 복구가 이어진다
+    if (event?.persisted) return
     if (this.socket) {
+      this._closedByPageHide = true
       this._stopReconnectPolling()
       this.socket.disconnect()
       this.isConnected.value = false
@@ -128,8 +195,16 @@ class SocketService {
 
   /** bfcache에서 복원되면 다시 접속한다 */
   _handlePageShow(event) {
-    if (event?.persisted && this._wasConnected && !this.socket?.connected) {
-      this._attemptReconnect()
+    if (event?.persisted && this._wasConnected) {
+      if (this._closedByPageHide || !this.socket) {
+        // pagehide에서 직접 끊었다면 복구할 상태가 없으니 새로 붙는다
+        this._closedByPageHide = false
+        if (!this.socket?.connected) this._attemptReconnect()
+      } else if (!this.socket.connected) {
+        this.resumeNow('pageshow')
+      } else {
+        this.resumeNow('pageshow')
+      }
     }
   }
 
@@ -137,7 +212,9 @@ class SocketService {
     console.log('[SocketService] 네트워크 온라인 감지')
     this.isOnline.value = true
     if (!this.socket?.connected && this._wasConnected) {
-      this._attemptReconnect()
+      // 같은 소켓을 다시 열어 연결 복구를 이어 간다 (소켓이 없을 때만 새로 만든다)
+      if (this.socket) this.resumeNow('online')
+      else this._attemptReconnect()
     }
   }
 
@@ -189,9 +266,18 @@ class SocketService {
     }
   }
 
+  /** 화면 복귀 뒤 다시 붙기까지 걸린 시간을 GA4로 보낸다 (복귀로 시작된 재연결만, 개인정보·내용 없음) */
+  _reportReconnect(recovered) {
+    if (!this._resumeStartedAt) return
+    const ms = Math.max(0, Math.round(Date.now() - this._resumeStartedAt))
+    this._resumeStartedAt = 0
+    if (ms > 120000) return // 복귀와 상관없는 아주 늦은 재연결은 측정에서 뺀다
+    trackEvent('socket_reconnect', { reconnect_ms: ms, recovered: !!recovered })
+  }
+
   /**
    * 재연결 성공 콜백을 등록합니다
-   * @param {Function} callback - () => void
+   * @param {Function} callback - ({recovered}) => void
    */
   onReconnected(callback) {
     this._onReconnectedCallbacks.push(callback)
@@ -208,9 +294,10 @@ class SocketService {
     }
   }
 
-  _emitReconnected() {
+  _emitReconnected(recovered = false) {
+    this._reportReconnect(recovered)
     for (const cb of this._onReconnectedCallbacks) {
-      try { cb() } catch (e) { console.error('[SocketService] onReconnected 콜백 에러:', e) }
+      try { cb({ recovered }) } catch (e) { console.error('[SocketService] onReconnected 콜백 에러:', e) }
     }
   }
 
@@ -233,6 +320,9 @@ class SocketService {
     console.log('[SocketService] 서버 연결 시작:', this.serverUrl)
 
     return new Promise((resolve, reject) => {
+      // 처음 붙기까지 걸린 시간을 재기 위해 io() 호출 시각을 적어 둔다
+      const connectStartedAt = Date.now()
+      let connectReported = false
       // Socket.IO 클라이언트 초기화
       this.socket = io(this.serverUrl, {
         transports: ['websocket', 'polling'],
@@ -289,13 +379,17 @@ class SocketService {
         this.mySocketId.value = this.socket.id
         this.isConnected.value = true
         this.connectionError.value = null
+        if (!connectReported) {
+          connectReported = true
+          trackEvent('socket_connect', { connect_ms: Math.max(0, Date.now() - connectStartedAt) })
+        }
 
         // Socket.IO 자동 재연결 성공 시 처리
         if (this._wasConnected) {
           if (this.socket.recovered) {
             console.log('[SocketService] 연결 복구 완료 (recovery)')
             this._stopReconnectPolling()
-            this._emitReconnected()
+            this._emitReconnected(true)
           } else {
             console.log('[SocketService] 자동 재연결 성공 (recovery 없음)')
             this.socket.once('registered', (payload) => {
@@ -303,7 +397,7 @@ class SocketService {
               setRoomTokens(payload)
               this._applyIdentity(payload.identity)
               this._stopReconnectPolling()
-              this._emitReconnected()
+              this._emitReconnected(false)
             })
           }
         }
@@ -559,6 +653,18 @@ class SocketService {
     return result()
   }
 
+  /**
+   * 서버가 승인 신호에 실어 보낸 입장 결과(그림 코드 승인)를 반영한다. private:join 응답의 방 항목과 같은 모양이다.
+   * @returns {{roomId: string, ticket: string, devices: Array}|null} 반영한 방 항목 (모양이 틀리면 null)
+   */
+  applyJoinedEntry(entry) {
+    if (!entry || typeof entry.roomId !== 'string' || typeof entry.ticket !== 'string') return null
+    this._mergePairToken(entry)
+    const devices = Array.isArray(entry.devices) ? entry.devices : []
+    this.privateRoomDevices.value = { ...this.privateRoomDevices.value, [entry.roomId]: devices }
+    return { roomId: entry.roomId, ticket: entry.ticket, devices }
+  }
+
   /** pairing.js에 주입할 소켓 어댑터 */
   getPairAdapter() {
     return {
@@ -640,8 +746,14 @@ class SocketService {
       return Promise.reject(new Error('Socket not connected'))
     }
     return new Promise((resolve) => {
+      const sentAt = Date.now()
       this.socket.timeout(PAIR_ACK_TIMEOUT_MS).emit('publish', message, target, (timeoutErr, error, response) => {
         if (timeoutErr) return resolve({ success: true, timeout: true })
+        // 세션당 한 번만 ack 왕복 시간을 잰다 (내용·대상 정보 없음)
+        if (!this._rttSampled) {
+          this._rttSampled = true
+          trackEvent('msg_rtt', { msg_rtt_ms: Math.max(0, Date.now() - sentAt) })
+        }
         if (error) return resolve({ success: false, code: 'PUBLISH_ERROR' })
         resolve(response && typeof response === 'object' ? response : { success: true })
       })
@@ -719,6 +831,7 @@ class SocketService {
     window.removeEventListener('offline', this._boundHandleOffline)
     window.removeEventListener('pagehide', this._boundPageHide)
     window.removeEventListener('pageshow', this._boundPageShow)
+    document.removeEventListener('visibilitychange', this._boundVisibility)
     this._onReconnectedCallbacks = []
     this._onIpRoomChangedCallbacks = []
     this.disconnect()

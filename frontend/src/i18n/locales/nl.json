@@ -94,6 +94,7 @@
     "toastJoined": "Nieuw apparaat: {desc}",
     "listTitle": "Verbonden apparaten ({count})",
     "joinedAgo": "Verbonden {time}",
+    "away": "Even weg",
     "verifyHint": "Staat het dier dat bovenaan je andere apparaat staat in deze lijst, dan zijn jullie verbonden",
     "globalNotice": "Wat je hier met iedereen deelt, kan iedereen zien, ook onbekenden",
     "senderLeft": "Vertrokken",

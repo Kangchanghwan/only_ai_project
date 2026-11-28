@@ -67,7 +67,7 @@ describe('Socket.IO - 그림 코드 입장', () => {
   };
 
   test('정상 흐름: open → join → signal 중계 → confirmed → request에 기기 정보 → decide accept → 호스트 신호 1회 중계', async () => {
-    const { host, route, opened } = await openHost();
+    const { host, route, opened, roomId } = await openHost();
     expect(opened.ok).toBe(true);
     expect(opened.expiresAt).toBeGreaterThan(Date.now() + 290 * 1000);
     expect(opened.expiresAt).toBeLessThanOrEqual(Date.now() + 300 * 1000);
@@ -98,7 +98,13 @@ describe('Socket.IO - 그림 코드 입장', () => {
     expect((await ask(host, 'code:decide', { sessionId: sid, accept: true })).ok).toBe(true);
     await ask(host, 'code:signal', { sessionId: sid, data: { m: 'payload' } });
     await wait();
-    expect(j['code:signal'][j['code:signal'].length - 1]).toEqual({ sessionId: sid, data: { m: 'payload' } });
+    const last = j['code:signal'][j['code:signal'].length - 1];
+    expect(last).toMatchObject({ sessionId: sid, data: { m: 'payload' } });
+    // 승인된 신호에는 입장 결과(방 토큰·기기 목록)가 같이 온다: private:join 왕복이 필요 없다
+    expect(last.joined.roomId).toBe(roomId);
+    expect(typeof last.joined.ticket).toBe('string');
+    expect(typeof last.joined.roomToken).toBe('string');
+    expect(last.joined.devices.map((d: { socketId: string }) => d.socketId).sort()).toEqual([host.id, joiner.id].sort());
     // 1회 전달 뒤 세션은 끝났다
     expect(await ask(host, 'code:signal', { sessionId: sid, data: { m: 'again' } })).toMatchObject({ ok: false });
     await wait();

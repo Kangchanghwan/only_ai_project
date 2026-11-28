@@ -3,7 +3,7 @@ import { createCodeHost, createCodeJoiner } from './codeJoin.js'
 import { b64u } from '../utils/lockCrypto.js'
 
 /** 서버 역할을 최소로 흉내 내는 가짜 소켓 쌍 */
-function createFakeServer({ ttlMs = 300_000, maxFails = 5 } = {}) {
+function createFakeServer({ ttlMs = 300_000, maxFails = 5, joined = null } = {}) {
   const codes = new Map() // routeKey → host socket
   const sessions = new Map() // sid → { host, joiner, state }
   const fails = new Map() // joiner id → count
@@ -61,7 +61,8 @@ function createFakeServer({ ttlMs = 300_000, maxFails = 5 } = {}) {
     const s = sessions.get(p?.sessionId)
     if (!s || (s.host !== sock && s.joiner !== sock)) return { ok: false, error: 'NOT_FOUND' }
     if (event === 'code:signal') {
-      ;(sock === s.host ? s.joiner : s.host).deliver('code:signal', { sessionId: p.sessionId, data: p.data })
+      const attach = sock === s.host && s.state === 'approved' && joined ? { joined } : {}
+      ;(sock === s.host ? s.joiner : s.host).deliver('code:signal', { sessionId: p.sessionId, data: p.data, ...attach })
       if (sock === s.host && s.state === 'approved') sessions.delete(p.sessionId)
       return { ok: true }
     }
@@ -263,5 +264,47 @@ describe('그림 코드 호스트·들어오는 쪽 왕복', () => {
     }
     expect(await host.start()).toBe(true)
     expect(calls).toBe(3)
+  })
+})
+
+describe('그림 코드: 승인 왕복 줄이기', () => {
+  it('승인할 때 입장권 요청을 승인 응답과 같이 보낸다 (순서대로 기다리지 않는다)', async () => {
+    const order = []
+    const { host, mkJoiner } = setup({
+      host: { getInviteTicket: async () => { order.push('ticket'); return 'pv1.ticket' } }
+    })
+    await host.start()
+    const joiner = mkJoiner()
+    const p = joiner.join([...host.code.value])
+    await until(() => host.pendingRequest.value)
+    const decide = host.decide(true)
+    // 승인 응답(서버 왕복)이 오기 전에 입장권 요청이 이미 시작됐다
+    expect(order).toEqual(['ticket'])
+    await decide
+    expect((await p).status).toBe('joined')
+  })
+
+  it('입장권을 못 받으면 승인은 취소로 끝난다', async () => {
+    const { host, mkJoiner } = setup({ host: { getInviteTicket: async () => { throw new Error('INVITE_FAILED') } } })
+    await host.start()
+    const joiner = mkJoiner()
+    const p = joiner.join([...host.code.value])
+    await until(() => host.pendingRequest.value)
+    expect(await host.decide(true)).toBe(false)
+    expect(['cancel', 'timeout', 'wrong', 'declined']).toContain((await p).status)
+  })
+
+  it('서버가 승인 신호에 실은 입장 결과(joined)를 들어오는 쪽 결과에 그대로 넘긴다', async () => {
+    const entry = { roomId: 'prv-g-' + 'a'.repeat(24), ticket: 'pv1.srv', roomToken: 't', devices: [{ socketId: 'h' }] }
+    const { host, mkJoiner } = setup({ server: { joined: entry } })
+    await host.start()
+    const joiner = mkJoiner()
+    const p = joiner.join([...host.code.value])
+    await until(() => host.pendingRequest.value)
+    await host.decide(true)
+    const res = await p
+    expect(res.status).toBe('joined')
+    expect(res.payload.joined).toEqual(entry)
+    expect(res.payload.ticket).toBe('pv1.ticket')
   })
 })

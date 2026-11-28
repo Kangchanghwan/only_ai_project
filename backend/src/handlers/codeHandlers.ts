@@ -28,6 +28,9 @@ export const CODE_BUCKET_CAPACITY = 20;
 export const CODE_BUCKET_REFILL_PER_SEC = 5;
 const SWEEP_INTERVAL_MS = 1000;
 
+/** 승인된 들어오는 쪽을 방에 넣고 입장 결과를 돌려준다. 못 넣으면 null (클라이언트가 private:join으로 이어 간다) */
+export type AdmitJoiner = (joiner: ExtendedSocket, roomId: string) => Record<string, unknown> | null;
+
 type Ack = ((res: Record<string, unknown>) => void) | undefined;
 
 const buckets = new WeakMap<object, TokenBucket>();
@@ -79,7 +82,7 @@ const emitEnd = (io: Server, socketId: string, sessionId: string, reason: string
     io.to(socketId).emit('code:end', { sessionId, reason, ...extra });
 };
 
-export const setupCodeHandlers = (socket: ExtendedSocket, io: Server, roomManager: RoomManager) => {
+export const setupCodeHandlers = (socket: ExtendedSocket, io: Server, roomManager: RoomManager, admit?: AdmitJoiner) => {
     const reg = getCodeRegistry(io);
 
     if (!swept.has(io)) {
@@ -163,7 +166,7 @@ export const setupCodeHandlers = (socket: ExtendedSocket, io: Server, roomManage
             if (code.hostId === socket.id) return reply(ack, { ok: false, error: 'NOT_ALLOWED' });
             if (reg.sessionCountForHost(code.hostId) >= MAX_SESSIONS_PER_HOST) return reply(ack, { ok: false, error: 'BUSY' });
 
-            const s = reg.createSession(code.hostId, socket.id);
+            const s = reg.createSession(code.hostId, socket.id, code.roomId);
             io.to(code.hostId).emit('code:incoming', { sessionId: s.id });
             reply(ack, { ok: true, sessionId: s.id });
         } catch (error) {
@@ -183,7 +186,13 @@ export const setupCodeHandlers = (socket: ExtendedSocket, io: Server, roomManage
             const to = isHost ? s.joinerId : s.hostId;
             if (isHost) {
                 // 승인 전에는 SPAKE2 메시지만 오간다. 승인된 세션은 호스트의 신호 1회 전달 뒤 종료
-                io.to(to).emit('code:signal', { sessionId: s.id, data: p.data });
+                // 승인된 마지막 신호: 들어오는 쪽을 방에 바로 넣고 입장 결과(방 토큰·기기 목록)를 같이 보낸다 (private:join 왕복 생략)
+                let joined: Record<string, unknown> | null = null;
+                if (s.state === 'approved' && s.roomId && admit) {
+                    const joiner = io.sockets.sockets.get(s.joinerId) as ExtendedSocket | undefined;
+                    if (joiner) joined = admit(joiner, s.roomId);
+                }
+                io.to(to).emit('code:signal', { sessionId: s.id, data: p.data, ...(joined ? { joined } : {}) });
                 if (s.state === 'approved') reg.removeSession(s.id);
             } else {
                 // 들어오는 쪽은 승인 전에만 보낼 수 있다

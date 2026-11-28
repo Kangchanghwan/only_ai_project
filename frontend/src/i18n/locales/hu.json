@@ -94,6 +94,7 @@
     "toastJoined": "Új eszköz: {desc}",
     "listTitle": "Csatlakoztatott eszközök ({count})",
     "joinedAgo": "Csatlakozott {time}",
+    "away": "Egy pillanatra távol",
     "verifyHint": "Ha a másik eszközöd képernyőjének tetején látható állat szerepel ezen a listán, akkor összekapcsolódtatok",
     "globalNotice": "Amit itt mindenkivel megosztasz, azt bárki láthatja, ismeretlenek is",
     "senderLeft": "Kilépett",

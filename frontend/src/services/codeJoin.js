@@ -181,9 +181,12 @@ export function createCodeHost({ socket, roomId, getInviteTicket, getRoomSecret,
       return true
     }
     try {
-      const res = await socket.emit('code:decide', { sessionId, accept: true })
+      // 승인 응답과 입장권 요청은 서로 기다릴 필요가 없다: 같이 보내 왕복 하나를 줄인다 (승인이 거절돼도 입장권은 쓰지 않는다)
+      const [res, ticket] = await Promise.all([
+        socket.emit('code:decide', { sessionId, accept: true }),
+        getInviteTicket()
+      ])
       if (!res?.ok) return false
-      const ticket = await getInviteTicket()
       const secret = await getRoomSecret()
       const sealed = await s.spake.seal({ v: 1, secret: b64u(secret), ticket, name: roomName })
       await send(sessionId, { t: 'P', ...sealed })
@@ -289,7 +292,7 @@ export function createCodeJoiner({ socket, timeoutMs = REQUEST_TIMEOUT_MS }) {
         finish(resolve, res)
       }
 
-      async function onSignal({ sessionId: sid, data }) {
+      async function onSignal({ sessionId: sid, data, joined }) {
         if (settled || sid !== sessionId || !data || typeof data !== 'object') return
         try {
           if (data.t === 'B1' && !spake) {
@@ -307,7 +310,7 @@ export function createCodeJoiner({ socket, timeoutMs = REQUEST_TIMEOUT_MS }) {
           } else if (data.t === 'P' && spake && confirmOk) {
             const payload = await spake.open({ iv: data.iv, ct: data.ct })
             if (!payload || payload.v !== 1 || !isStr(payload.secret) || !isStr(payload.ticket)) throw new Error('bad')
-            done({ status: 'joined', payload: { secret: payload.secret, ticket: payload.ticket, name: String(payload.name ?? '') } })
+            done({ status: 'joined', payload: { secret: payload.secret, ticket: payload.ticket, name: String(payload.name ?? ''), ...(joined && typeof joined === 'object' ? { joined } : {}) } })
           }
         } catch {
           socket.emit('code:cancel', { sessionId })

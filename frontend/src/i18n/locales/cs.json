@@ -94,6 +94,7 @@
     "toastJoined": "Nové zařízení: {desc}",
     "listTitle": "Připojená zařízení ({count})",
     "joinedAgo": "Připojeno {time}",
+    "away": "Na chvíli pryč",
     "verifyHint": "Pokud je zvířátko zobrazené nahoře na vašem druhém zařízení v tomto seznamu, jste propojeni",
     "globalNotice": "To, co sdílíte zde, mohou vidět všichni, i cizí lidé",
     "senderLeft": "Odešlo",

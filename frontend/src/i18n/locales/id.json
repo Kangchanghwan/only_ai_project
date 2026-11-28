@@ -94,6 +94,7 @@
     "toastJoined": "{desc} bergabung",
     "listTitle": "Perangkat terhubung ({count})",
     "joinedAgo": "Terhubung {time}",
+    "away": "Sedang pergi sebentar",
     "verifyHint": "Jika hewan di bagian atas layar perangkat lain Anda ada di daftar ini, berarti sudah terhubung",
     "globalNotice": "Yang Anda bagikan ke semua orang bisa dilihat siapa saja, termasuk orang asing",
     "senderLeft": "Keluar",

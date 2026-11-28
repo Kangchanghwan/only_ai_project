@@ -46,6 +46,8 @@ const joinedAt = computed(() => props.device.joinedAt || 0)
 const fullTagText = computed(() => (joinedAt.value ? formatRelativeTime(joinedAt.value, locale?.value ?? 'en', props.now) : ''))
 const tagText = computed(() => (joinedAt.value ? formatBadgeTime(joinedAt.value, locale?.value ?? 'en', props.now) : ''))
 const isNow = computed(() => !!joinedAt.value && Math.abs(props.now - joinedAt.value) < props.nowWindowMs)
+/** 연결이 잠시 끊겨 복구를 기다리는 기기 (서버가 유예 시간 동안 명단에 남긴다) */
+const isAway = computed(() => !props.isMe && props.device.away === true)
 const title = computed(() => (sub.value ? `${name.value} · ${sub.value}` : name.value))
 
 function icon(deviceType) {
@@ -90,7 +92,8 @@ const BTN = 'h-[26px] w-full min-w-0 inline-flex items-center justify-center gap
           <span class="text-[11px] font-extrabold text-ink truncate" data-testid="device-card-name">{{ name }}</span>
           <span v-if="isMe" class="shrink-0 text-[9px] leading-none font-bold px-1 py-[2px] bg-ink text-on-ink" data-testid="me-badge">{{ t('identity.me') }}</span>
         </div>
-        <div v-if="sub" class="text-text-secondary truncate" data-testid="device-card-sub">{{ sub }}</div>
+        <div v-if="isAway" class="text-text-secondary truncate" role="status" data-testid="device-card-away">{{ t('identity.away') }}</div>
+        <div v-else-if="sub" class="text-text-secondary truncate" data-testid="device-card-sub">{{ sub }}</div>
       </div>
     </div>
 

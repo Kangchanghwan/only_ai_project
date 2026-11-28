@@ -94,6 +94,7 @@
     "toastJoined": "Nouvel appareil : {desc}",
     "listTitle": "Appareils connectés ({count})",
     "joinedAgo": "Connecté {time}",
+    "away": "Absent un instant",
     "verifyHint": "Si l'animal affiché en haut de votre autre appareil figure dans cette liste, vous êtes connectés",
     "globalNotice": "Tout le monde, y compris des inconnus, peut voir ce que vous partagez ici",
     "senderLeft": "Parti",

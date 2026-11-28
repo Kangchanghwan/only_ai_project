@@ -94,6 +94,7 @@
     "toastJoined": "{desc} joined",
     "listTitle": "Connected devices ({count})",
     "joinedAgo": "Joined {time}",
+    "away": "Away for a moment",
     "verifyHint": "If the animal shown at the top of your other device is in this list, you are connected",
     "globalNotice": "Anyone, including people you do not know, can see what you share here",
     "senderLeft": "Left",

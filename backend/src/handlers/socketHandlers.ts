@@ -279,6 +279,18 @@ const enterPrivateRoom = (socket: ExtendedSocket, io: Server, roomManager: RoomM
     };
 };
 
+/** 그림 코드로 승인된 소켓을 그룹 방에 바로 넣는다. 정원·방 수 제한에 걸리면 null (클라이언트가 private:join으로 이어 간다) */
+const admitToGroupRoom = (joiner: ExtendedSocket, io: Server, roomManager: RoomManager, roomId: string): Record<string, unknown> | null => {
+    const info = roomManager.getUser(SHARED_ROOM_ID, joiner.id);
+    if (!info || !isGroupRoomId(roomId)) return null;
+    const current = getPrivateRooms(joiner);
+    if (!current.includes(roomId)) {
+        if (current.length >= MAX_PRIVATE_ROOMS_PER_SOCKET) return null;
+        if (roomManager.getRoomUserCount(roomId) >= getGroupMaxMembers()) return null;
+    }
+    return enterPrivateRoom(joiner, io, roomManager, roomId, info);
+};
+
 const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: RoomManager, pairs: PairSessionManager) => {
     socket.on('pair:invite', (payload: unknown, ack?: Ack) => {
         try {
@@ -565,17 +577,23 @@ export const setupSocketHandlers = (io: Server, roomManager: RoomManager, textQu
         );
 
         if ((socket.handshake.auth as Record<string, unknown> | undefined)?.roster !== 2) legacySockets.add(socket.id);
-        handleConnection(socket, io, roomManager);
+        // 복구된 연결은 유예 중이던 퇴장을 취소하고, 새 소켓으로 붙은 같은 기기는 옛 항목을 먼저 정리한다
+        if (socket.recovered) cancelAway(socket.id);
+        if (clientId && awayByClient.has(clientId)) {
+            void flushAwayForClient(clientId).then(() => { if (socket.connected) handleConnection(socket, io, roomManager); });
+        } else {
+            handleConnection(socket, io, roomManager);
+        }
 
         socket.on('disconnect', (reason: string) => {
             legacySockets.delete(socket.id);
             if (clientId && clientSockets.get(clientId) === socket.id) clientSockets.delete(clientId);
             logger.info(`[conn] disconnect sid=${short(socket.id)} reason=${reason} secs=${Math.round((Date.now() - connectedAt) / 1000)}`);
-            handleDisconnect(socket, io, roomManager, pairs);
+            handleDisconnect(socket, io, roomManager, pairs, reason, clientId);
         });
 
         setupPairHandlers(socket, io, roomManager, pairs);
-        setupCodeHandlers(socket, io, roomManager);
+        setupCodeHandlers(socket, io, roomManager, (joiner, roomId) => admitToGroupRoom(joiner, io, roomManager, roomId));
         setupRosterHandlers(socket, roomManager);
 
         socket.on('publish', (msg: any, target: PublishTarget, ack?: (error: Error | null, response?: PublishResponse) => void) =>
@@ -684,13 +702,52 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
     }
 };
 
-/** 연결 종료 처리: 두 방 모두에서 사용자 제거 */
-const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager: RoomManager, pairs: PairSessionManager) => {
-    // 진행 중인 연결 세션 정리: 상대에게 peer-left
-    for (const s of pairs.removeBySocket(socket.id)) endSession(io, s, 'peer-left', [otherOf(s, socket.id)]);
+// === 연결이 잠깐 끊긴 기기: 유예 시간 동안 '자리 비움'으로 남긴다 ===
 
+/** 이 이유로 끊기면 (네트워크 전환·화면 꺼짐·앱 백그라운드) 바로 빼지 않고 유예한다. 명시적 나가기·서버 종료는 바로 뺀다 */
+export const AWAY_DISCONNECT_REASONS: ReadonlySet<string> = new Set(['transport close', 'ping timeout', 'transport error']);
+
+/** 자리 비움 유예 시간 (ms). AWAY_GRACE_SEC=0 이면 끈다. 기본 60초 */
+export const getAwayGraceMs = (): number => {
+    const parsed = parseInt(process.env.AWAY_GRACE_SEC ?? '', 10);
+    return (Number.isFinite(parsed) && parsed >= 0 ? parsed : 60) * 1000;
+};
+
+interface PendingAway {
+    timer: ReturnType<typeof setTimeout>;
+    finalize: () => Promise<void>;
+    clientId?: string;
+}
+/** 소켓 ID → 유예 중인 퇴장 */
+const pendingAway = new Map<string, PendingAway>();
+/** clientId → 유예 중인 소켓 ID (같은 기기가 새 소켓으로 붙으면 옛 항목을 바로 정리한다) */
+const awayByClient = new Map<string, string>();
+
+const clearPendingAway = (socketId: string): PendingAway | undefined => {
+    const p = pendingAway.get(socketId);
+    if (!p) return undefined;
+    clearTimeout(p.timer);
+    pendingAway.delete(socketId);
+    if (p.clientId && awayByClient.get(p.clientId) === socketId) awayByClient.delete(p.clientId);
+    return p;
+};
+
+/** 연결이 복구돼 같은 소켓 ID로 돌아왔다: 유예 중이던 퇴장을 취소한다 */
+const cancelAway = (socketId: string) => { clearPendingAway(socketId); };
+
+/** 같은 기기(clientId)가 새 소켓으로 붙었다: 유예 중이던 옛 소켓을 지금 정리한다 (이름표 충돌·유령 방지) */
+const flushAwayForClient = async (clientId: string | undefined) => {
+    if (!clientId) return;
+    const oldId = awayByClient.get(clientId);
+    if (!oldId) return;
+    const p = clearPendingAway(oldId);
+    if (p) await p.finalize();
+};
+
+/** 소켓이 속한 모든 방(전체·IP·비공개)에서 제거하고 알린다 */
+const removeFromAllRooms = async (socket: ExtendedSocket, io: Server, roomManager: RoomManager, privateRooms: string[]) => {
     // 비공개 방은 연결 복구를 위해 socket.data.privateRooms를 지우지 않는다 (서버 메모리 멤버십만 제거)
-    for (const roomId of getPrivateRooms(socket)) {
+    for (const roomId of privateRooms) {
         try {
             await roomManager.removeUserFromRoom(roomId, socket.id);
             broadcastUsers(io, roomManager, roomId);
@@ -700,8 +757,6 @@ const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager:
     }
 
     const rooms = [socket.globalRoomId, socket.ipRoomId].filter((r): r is string => !!r);
-    if (rooms.length === 0) return;
-
     for (const roomId of rooms) {
         try {
             const remainingUsers = await roomManager.removeUserFromRoom(roomId, socket.id);
@@ -713,6 +768,48 @@ const handleDisconnect = async (socket: ExtendedSocket, io: Server, roomManager:
             logger.error(`퇴장 처리 에러 [${socket.id}] @ ${roomId}:`, error);
         }
     }
+};
+
+/** 기기를 '자리 비움'으로 표시하고 방마다 알린다 (명단에는 남는다) */
+const markAway = (socket: ExtendedSocket, io: Server, roomManager: RoomManager, privateRooms: string[]) => {
+    for (const roomId of [socket.globalRoomId, socket.ipRoomId, ...privateRooms]) {
+        if (!roomId) continue;
+        const device = roomManager.getUser(roomId, socket.id);
+        if (device) device.away = true;
+    }
+    for (const roomId of [socket.ipRoomId, socket.globalRoomId]) {
+        if (roomId && roomManager.getUser(roomId, socket.id)) rosterUpdated(io, roomManager, roomId, socket.id);
+    }
+    for (const roomId of privateRooms) broadcastUsers(io, roomManager, roomId);
+};
+
+/** 연결 종료 처리: 두 방 모두에서 사용자 제거 (네트워크성 끊김은 유예 뒤에 제거) */
+const handleDisconnect = async (
+    socket: ExtendedSocket,
+    io: Server,
+    roomManager: RoomManager,
+    pairs: PairSessionManager,
+    reason?: string,
+    clientId?: string
+) => {
+    // 진행 중인 연결 세션 정리: 상대에게 peer-left
+    for (const s of pairs.removeBySocket(socket.id)) endSession(io, s, 'peer-left', [otherOf(s, socket.id)]);
+
+    const privateRooms = [...getPrivateRooms(socket)];
+    const graceMs = getAwayGraceMs();
+    if (graceMs > 0 && reason && AWAY_DISCONNECT_REASONS.has(reason) && socket.globalRoomId) {
+        const finalize = async () => { await removeFromAllRooms(socket, io, roomManager, privateRooms); };
+        const timer = setTimeout(() => {
+            const p = clearPendingAway(socket.id);
+            if (p) void p.finalize();
+        }, graceMs);
+        timer.unref?.();
+        pendingAway.set(socket.id, { timer, finalize, clientId });
+        if (clientId) awayByClient.set(clientId, socket.id);
+        markAway(socket, io, roomManager, privateRooms);
+        return;
+    }
+    await removeFromAllRooms(socket, io, roomManager, privateRooms);
 };
 
 /**

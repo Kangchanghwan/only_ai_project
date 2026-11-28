@@ -94,6 +94,7 @@
     "toastJoined": "Dispozitiv nou: {desc}",
     "listTitle": "Dispozitive conectate ({count})",
     "joinedAgo": "Conectat {time}",
+    "away": "Plecat pentru puțin timp",
     "verifyHint": "Dacă animalul afișat sus pe celălalt dispozitiv se află în această listă, sunteți conectate",
     "globalNotice": "Ce partajezi aici cu toată lumea poate fi văzut de oricine, inclusiv de necunoscuți",
     "senderLeft": "A plecat",
