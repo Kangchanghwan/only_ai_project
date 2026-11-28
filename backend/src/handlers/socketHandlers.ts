@@ -48,6 +48,19 @@ const clientSockets = new Map<string, string>();
 export const parseClientId = (value: unknown): string | undefined =>
     typeof value === 'string' && CLIENT_ID_PATTERN.test(value) ? value : undefined;
 
+/** 브라우저(localStorage)별 기기 ID. 서버는 다른 사람에게 보내지 않고, 같은 브라우저의 탭끼리 이름을 공유하는 데만 쓴다 */
+export const parseDeviceId = parseClientId;
+
+/** 같은 deviceId를 가진 자기 외 소켓 ID 집합 (같은 브라우저의 다른 탭) */
+export const siblingSocketIds = (io: Server, deviceId: string | undefined, selfSocketId: string): Set<string> => {
+    const ids = new Set<string>([selfSocketId]);
+    if (!deviceId) return ids;
+    for (const [id, s] of io.sockets.sockets) {
+        if (id !== selfSocketId && (s.data as { deviceId?: string } | undefined)?.deviceId === deviceId) ids.add(id);
+    }
+    return ids;
+};
+
 const short = (v: string | undefined): string => (v ? v.slice(0, 6) : '-');
 const shortRoom = (v: string | undefined): string => (v ? v.slice(0, 8) : '-');
 
@@ -489,7 +502,7 @@ const setupPairHandlers = (socket: ExtendedSocket, io: Server, roomManager: Room
 const allocateIdentity = (
     roomManager: RoomManager,
     roomIds: string[],
-    socketId: string,
+    socketId: string | ReadonlySet<string>,
     preferred: ReturnType<typeof sanitizeIdentity>,
     avoid?: DeviceInfo['identity']
 ) => {
@@ -526,7 +539,7 @@ const handleIdentityReroll = (
         }
 
         const current = roomManager.getUser(rooms[0], socket.id)?.identity;
-        const next = allocateIdentity(roomManager, rooms, socket.id, null, current);
+        const next = allocateIdentity(roomManager, rooms, siblingSocketIds(io, socket.data.deviceId, socket.id), null, current);
         socket.data.lastRerollAt = now;
         socket.data.identity = next;
         for (const roomId of rooms) {
@@ -638,6 +651,9 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
         const preferred = socket.recovered && socket.data.identity ? socket.data.identity : sanitizeIdentity(handshakeAuth.identity);
         const deviceInfo = parseDeviceInfo(socket.handshake.headers['user-agent'], socket.id, hints);
         socket.data.hints = hints;
+        // 같은 브라우저의 다른 탭과는 같은 이름을 쓴다 (탭을 열 때마다 이름이 바뀌지 않게)
+        socket.data.deviceId = parseDeviceId(handshakeAuth.deviceId);
+        const selfIds = siblingSocketIds(io, socket.data.deviceId, socket.id);
 
         // connectionStateRecovery로 복구된 연결
         if (socket.recovered && socket.data.globalRoomId && socket.data.ipRoomId) {
@@ -647,7 +663,7 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
             const ipChanged = recoveredIpRoomId !== oldIpRoomId;
             socket.globalRoomId = recoveredGlobalRoomId;
             socket.ipRoomId = recoveredIpRoomId;
-            deviceInfo.identity = allocateIdentity(roomManager, [recoveredGlobalRoomId, recoveredIpRoomId], socket.id, preferred);
+            deviceInfo.identity = allocateIdentity(roomManager, [recoveredGlobalRoomId, recoveredIpRoomId], selfIds, preferred);
             socket.data.identity = deviceInfo.identity;
             if (ipChanged) {
                 // IP가 바뀐 채 복구됐다: 옛 IP 룸에서 빼고 새 IP 룸으로 옮긴다
@@ -683,7 +699,7 @@ const handleConnection = (socket: ExtendedSocket, io: Server, roomManager: RoomM
 
         socket.join(globalRoomId);
         socket.join(ipRoomId);
-        deviceInfo.identity = allocateIdentity(roomManager, [globalRoomId, ipRoomId], socket.id, preferred);
+        deviceInfo.identity = allocateIdentity(roomManager, [globalRoomId, ipRoomId], selfIds, preferred);
         socket.data.identity = deviceInfo.identity;
         roomManager.addUserToRoom(globalRoomId, socket.id, deviceInfo);
         roomManager.addUserToRoom(ipRoomId, socket.id, deviceInfo);

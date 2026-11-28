@@ -10,6 +10,7 @@ import {
   describeConnected,
   describeJoined,
   deviceName,
+  getDeviceId,
   deviceAndBrowser,
   koEuro,
   koGa,
@@ -211,5 +212,21 @@ describe('formatBadgeTime (딱지용 짧은 형식)', () => {
     expect(formatBadgeTime(now - 5 * 60_000, 'ko', now)).toBe('5분 전')
     expect(formatBadgeTime(now - 4 * 3600_000, 'ko', now)).toBe('4시간 전')
     expect(formatBadgeTime(now - 2000, 'ko', now)).toBe('지금')
+  })
+})
+
+describe('getDeviceId (브라우저 고유 ID)', () => {
+  beforeEach(() => { localStorage.clear() })
+  it('처음 만든 값을 localStorage에 저장하고 이후 같은 값을 돌려준다', () => {
+    const a = getDeviceId()
+    expect(a).toMatch(/^[A-Za-z0-9_-]{8,64}$/)
+    expect(localStorage.getItem('clipboard-device-id')).toBe(a)
+    expect(getDeviceId()).toBe(a)
+  })
+  it('저장된 값이 형식에 맞지 않으면 새로 만든다', () => {
+    localStorage.setItem('clipboard-device-id', 'x')
+    const id = getDeviceId()
+    expect(id).not.toBe('x')
+    expect(localStorage.getItem('clipboard-device-id')).toBe(id)
   })
 })

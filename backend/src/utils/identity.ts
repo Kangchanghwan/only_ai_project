@@ -21,12 +21,13 @@ export function sanitizeIdentity(raw: unknown): Identity | null {
 
 const comboKey = (adj: number, animal: number, suffix?: number): string => `${adj}:${animal}:${suffix ?? 0}`;
 
-/** 같은 방들에서 이미 쓰는 조합 키 집합 (자기 자신 제외) */
-export function collectUsed(devicesPerRoom: DeviceInfo[][], selfSocketId: string): Set<string> {
+/** 같은 방들에서 이미 쓰는 조합 키 집합 (자기 자신, 또는 같은 브라우저의 다른 탭 소켓들은 제외) */
+export function collectUsed(devicesPerRoom: DeviceInfo[][], selfSocketId: string | ReadonlySet<string>): Set<string> {
+    const isSelf = (id: string) => (typeof selfSocketId === 'string' ? id === selfSocketId : selfSocketId.has(id));
     const used = new Set<string>();
     for (const devices of devicesPerRoom) {
         for (const d of devices) {
-            if (d.socketId === selfSocketId || !d.identity) continue;
+            if (isSelf(d.socketId) || !d.identity) continue;
             used.add(comboKey(d.identity.adj, d.identity.animal, d.identity.suffix));
         }
     }

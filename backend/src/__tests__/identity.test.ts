@@ -68,3 +68,12 @@ describe('assignIdentity', () => {
         }
     });
 });
+
+describe('collectUsed - 같은 브라우저의 다른 탭 소켓 제외', () => {
+    const dev = (socketId: string, adj: number, animal: number) => ({ socketId, identity: { adj, animal } }) as any;
+    it('소켓 ID 집합을 주면 그 소켓들의 조합은 사용 중으로 치지 않는다', () => {
+        const used = collectUsed([[dev('tab1', 2, 7), dev('other', 3, 3)]], new Set(['me', 'tab1']));
+        expect(used.has('2:7:0')).toBe(false);
+        expect(used.has('3:3:0')).toBe(true);
+    });
+});
