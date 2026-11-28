@@ -1681,6 +1681,8 @@ onUnmounted(() => {
         :is-open="isShareConfirmOpen"
         :file-count="shareConfirmSummary.fileCount"
         :has-text="shareConfirmSummary.hasText"
+        :private-rooms="privateRooms.rooms"
+        :initial-scope="shareScope.scope.value"
         @confirm="handleShareConfirm"
         @cancel="handleShareCancel"
       />
